@@ -1,5 +1,6 @@
 # Compiled class file
 *.class
+*.dex
 
 # Log file
 *.log
@@ -22,3 +23,29 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# IDEA/Android Studio project files
+*.iml
+.idea/*
+!.idea/copyright
+# Keep the code styles.
+!/.idea/codeStyles
+/.idea/codeStyles/*
+!/.idea/codeStyles/Project.xml
+!/.idea/codeStyles/codeStyleConfig.xml
+
+# Gradle cache
+.gradle
+
+# Android Studio captures folder
+captures/
+
+# generated files
+bin/
+gen/
+out/
+build/
+
+# built application files
+*.apk
+*.ap_
