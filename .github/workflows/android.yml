@@ -29,6 +29,12 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: app
+          path: app/build/outputs/apk/
+
   test:
     runs-on: ubuntu-latest
     needs: build
