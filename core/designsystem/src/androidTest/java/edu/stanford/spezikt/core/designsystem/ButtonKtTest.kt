@@ -1,4 +1,4 @@
-package edu.stanford.spezikt.core.designsystem.theme.component
+package edu.stanford.spezikt.core.designsystem
 
 import androidx.compose.material3.Text
 import androidx.compose.ui.test.assert
@@ -8,6 +8,7 @@ import androidx.compose.ui.test.isNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import edu.stanford.spezikt.core.designsystem.theme.component.SpeziButton
 import edu.stanford.spezikt.core.designsystem.theme.theme.SpeziKtTheme
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
