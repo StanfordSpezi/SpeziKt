@@ -1,4 +1,4 @@
-package edu.stanford.spezikt.core.designsystem.theme.component
+package edu.stanford.spezikt.core.designsystem.component
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
@@ -9,7 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import edu.stanford.spezikt.core.designsystem.theme.theme.SpeziKtTheme
+import edu.stanford.spezikt.core.designsystem.theme.SpeziKtTheme
 
 @Composable
 fun SpeziButton(
