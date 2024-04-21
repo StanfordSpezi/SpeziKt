@@ -1,4 +1,4 @@
-package edu.stanford.spezikt.core.designsystem.theme
+package edu.stanford.spezikt.core.designsystem.theme.theme
 
 import android.app.Activity
 import android.os.Build
@@ -64,7 +64,7 @@ fun SpeziKtTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = SpeziTypography,
         content = content
     )
 }

@@ -9,7 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import edu.stanford.spezikt.core.designsystem.theme.SpeziKtTheme
+import edu.stanford.spezikt.core.designsystem.theme.theme.SpeziKtTheme
 
 @Composable
 fun SpeziButton(
@@ -37,7 +37,9 @@ fun SpeziButtonDarkPreview() {
     SpeziKtTheme {
         SpeziButton(
             onClick = { },
-            content = { Text(text = "Text") }
+            content = {
+                Text(text = "Text", style = MaterialTheme.typography.bodyLarge)
+            }
         )
     }
 }
