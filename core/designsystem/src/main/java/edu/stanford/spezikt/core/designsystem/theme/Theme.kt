@@ -1,4 +1,4 @@
-package edu.stanford.spezikt.core.designsystem.theme.theme
+package edu.stanford.spezikt.core.designsystem.theme
 
 import android.app.Activity
 import android.os.Build
@@ -16,25 +16,33 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = CardinalRed,
+    secondary = Black60,
+    tertiary = CardinalRedDark,
+
+    background = Black100,
+    surface = Black80,
+    onPrimary = White,
+    onSecondary = White,
+    onTertiary = White,
+    onBackground = White,
+    onSurface = White,
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = CardinalRed,
+    secondary = CoolGrey,
+    tertiary = RectangleBlue,
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    background = White,
+    surface = White,
+
+    onPrimary = White,
+    onSecondary = Black100,
+    onTertiary = Black100,
+
+    onBackground = Black100,
+    onSurface = Black100,
 )
 
 @Composable
