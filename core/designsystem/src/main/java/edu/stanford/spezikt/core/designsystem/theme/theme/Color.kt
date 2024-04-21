@@ -1,4 +1,4 @@
-package edu.stanford.spezikt.core.designsystem.theme
+package edu.stanford.spezikt.core.designsystem.theme.theme
 
 import androidx.compose.ui.graphics.Color
 

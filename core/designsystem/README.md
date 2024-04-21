@@ -32,6 +32,15 @@ dependencies {
 To use a component from the design system, refer to the specific documentation included in the
 module or look at the example usage below:
 
+### Theming
+
+```kotlin
+SpeziKtTheme {
+  Text(text = "Text")
+}
+```
+
+### Components
 ```kotlin
 SpeziButton(
             onClick = { },
@@ -39,12 +48,12 @@ SpeziButton(
         )
 ```
 
+### Typography
 ```kotlin
-SpeziKtTheme {
-    Text(text = "Text")
-}
+Text(text = "Text", style = MaterialTheme.typography.bodyLarge)
 ```
 
+### Icons and Graphics
 ```kotlin
 ImageVector.vectorResource(R.drawable.ic_medications)
 ```
