@@ -26,7 +26,7 @@ import edu.stanford.spezikt.core.designsystem.theme.SpeziKtTheme
 /**
  * A card that displays an address and allows the user to navigate to it.
  * @param address The address to display and navigate to.
- * @sample NavigationCardPreview
+ * @sample edu.stanford.spezikt.spezi_module.contact.component.NavigationCardPreview
  * @see edu.stanford.spezikt.spezi_module.contact.ContactScreen
  */
 @Composable
