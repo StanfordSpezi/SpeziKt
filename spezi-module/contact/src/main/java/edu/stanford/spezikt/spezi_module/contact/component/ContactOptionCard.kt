@@ -27,7 +27,7 @@ import java.util.UUID
 /**
  * A card that displays a contact option.
  * @param option The contact option to display.
- * @sample ContactOptionCardPreview
+ * @sample edu.stanford.spezikt.spezi_module.contact.component.ContactOptionCardPreview
  * @see ContactOption
  * @see ContactOptionType
  * @see edu.stanford.spezikt.spezi_module.contact.ContactScreen
