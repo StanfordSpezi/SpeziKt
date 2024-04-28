@@ -36,7 +36,7 @@ import edu.stanford.spezikt.spezi_module.contact.repository.DefaultContactReposi
  *
  * @param contact Contact object containing contact information.
  *
- * @sample PrevContactScreen
+ * @sample edu.stanford.spezikt.spezi_module.contact.PrevContactScreen
  *
  * @see Contact
  * @see ContactOptionCard
