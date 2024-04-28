@@ -11,6 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import edu.stanford.spezikt.core.designsystem.theme.SpeziKtTheme
 
+/**
+ * A button of the SpeziKt design system with customizable content.
+ */
 @Composable
 fun SpeziButton(
     onClick: () -> Unit,
