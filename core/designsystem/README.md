@@ -1,4 +1,4 @@
-# Design System Module
+# Module designsystem
 
 ## Overview
 
@@ -57,3 +57,8 @@ Text(text = "Text", style = MaterialTheme.typography.bodyLarge)
 ```kotlin
 ImageVector.vectorResource(R.drawable.ic_medications)
 ```
+
+# Package edu.stanford.spezikt.core.designsystem.theme
+
+The `theme` package contains the theme configuration for the Design System Module. It includes:
+Color, Theme and Typography.
