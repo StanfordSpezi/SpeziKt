@@ -1,4 +1,3 @@
-import org.jetbrains.dokka.DokkaConfiguration
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 plugins {
@@ -20,12 +19,11 @@ subprojects {
 
     tasks.withType<DokkaTaskPartial>().configureEach {
         dokkaSourceSets.configureEach {
-            documentedVisibilities.set(
-                setOf(
-                    DokkaConfiguration.Visibility.PUBLIC,
-                    DokkaConfiguration.Visibility.PROTECTED
-                )
-            )
+            noAndroidSdkLink.set(false)
+            skipDeprecated.set(true)
+            skipEmptyPackages.set(true)
+            includeNonPublic.set(false)
+            jdkVersion.set(17)
             if (file("README.md").exists()) {
                 includes.from("README.md")
             }
