@@ -1,4 +1,4 @@
-# Convention Plugins
+# Module Convention Plugins
 
 ## Overview
 
