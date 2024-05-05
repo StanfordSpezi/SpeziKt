@@ -17,7 +17,7 @@ internal fun Project.configureAndroidCompose(
     commonExtension: CommonExtension<*, *, *, *, *, *>,
 ) {
     commonExtension.apply {
-        compileSdk = 34
+        compileSdk = libs.findVersion("compileSdk").get().toString().toInt()
 
         buildFeatures {
             compose = true
@@ -29,7 +29,7 @@ internal fun Project.configureAndroidCompose(
         }
 
         defaultConfig {
-            minSdk = 29
+            minSdk = libs.findVersion("minSdk").get().toString().toInt()
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
 
