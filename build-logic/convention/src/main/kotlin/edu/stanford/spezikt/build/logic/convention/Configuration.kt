@@ -1,4 +1,4 @@
-package edu.stanford.spezikt.build_logic.convention
+package edu.stanford.spezikt.build.logic.convention
 
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
