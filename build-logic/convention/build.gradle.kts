@@ -4,7 +4,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "edu.stanford.spezikt.build_logic"
+group = "edu.stanford.spezikt.build.logic"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
