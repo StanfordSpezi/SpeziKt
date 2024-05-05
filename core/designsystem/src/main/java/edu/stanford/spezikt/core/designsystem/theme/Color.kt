@@ -10,7 +10,7 @@ val CardinalRedLight = Color(0xFFB83A4B)
 val White = Color(0xFFFFFFFF)
 val CoolGrey = Color(0xFF53565A)
 
-val Black100 = Color(0xFF2E2D29)
+val Black = Color(0xFF2E2D29)
 val Black80 = Color(0xFF43423E)
 val Black60 = Color(0xFF767674)
 val Black40 = Color(0xFFABABA9)
