@@ -7,7 +7,7 @@ import android.content.Context
 class BluetoothManager(context: Context) {
     private val bluetoothAdapter: BluetoothAdapter? by lazy {
         val bluetoothManager =
-            context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+            context.getSystemService(BluetoothManager::class.java) as BluetoothManager
         bluetoothManager.adapter
     }
 
