@@ -17,19 +17,18 @@ internal fun Project.configureAndroidCompose(
     commonExtension: CommonExtension<*, *, *, *, *, *>,
 ) {
     commonExtension.apply {
-        compileSdk = libs.findVersion("compileSdk").get().toString().toInt()
+        compileSdk = findVersion("compileSdk").toInt()
 
         buildFeatures {
             compose = true
         }
 
         composeOptions {
-            kotlinCompilerExtensionVersion =
-                libs.findVersion("kotlinCompilerExtensionVersion").get().toString()
+            kotlinCompilerExtensionVersion = findVersion("kotlinCompilerExtensionVersion")
         }
 
         defaultConfig {
-            minSdk = libs.findVersion("minSdk").get().toString().toInt()
+            minSdk = findVersion("minSdk").toInt()
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
 
@@ -39,18 +38,18 @@ internal fun Project.configureAndroidCompose(
         }
 
         dependencies {
-            val bom = libs.findLibrary("androidx-compose-bom").get()
-            add("implementation", platform(bom))
-            add("androidTestImplementation", platform(bom))
+            val bom = findLibrary("androidx-compose-bom")
+            implementation(platform(bom))
+            androidTestImplementation(platform(bom))
 
-            add("implementation", project(":core:designsystem"))
-            add("implementation", libs.findBundle("compose-implementation").get())
+            implementation(project(":core:designsystem"))
+            implementation(findBundle("compose-implementation"))
 
-            add("testImplementation", libs.findBundle("compose-testImplementation").get())
+            testImplementation(findBundle("compose-testImplementation"))
 
-            add("androidTestImplementation", libs.findLibrary("androidx.junit").get())
-            add("androidTestImplementation", libs.findLibrary("androidx.espresso.core").get())
-            add("androidTestImplementation", libs.findLibrary("androidx.ui.test.junit4").get())
+            androidTestImplementation(findLibrary("androidx.junit"))
+            androidTestImplementation(findLibrary("androidx.espresso.core"))
+            androidTestImplementation(findLibrary("androidx.ui.test.junit4"))
         }
     }
     configureKotlin()

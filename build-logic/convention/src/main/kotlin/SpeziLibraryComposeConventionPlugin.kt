@@ -9,14 +9,16 @@ import org.gradle.kotlin.dsl.getByType
 
 class SpeziLibraryComposeConventionPlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        project.plugins.apply("com.android.library")
-        project.plugins.apply("org.jetbrains.kotlin.android")
-        val libraryExtension = project.extensions.getByType<LibraryExtension>()
+        with(project) {
+            plugins.apply("com.android.library")
+            plugins.apply("org.jetbrains.kotlin.android")
+            val libraryExtension = extensions.getByType<LibraryExtension>()
 
-        project.configureAndroidCompose(libraryExtension)
+            configureAndroidCompose(libraryExtension)
 
-        project.extensions.configure<LibraryAndroidComponentsExtension> {
-            disableUnnecessaryAndroidTests(project)
+            extensions.configure<LibraryAndroidComponentsExtension> {
+                disableUnnecessaryAndroidTests(project)
+            }
         }
     }
 }
