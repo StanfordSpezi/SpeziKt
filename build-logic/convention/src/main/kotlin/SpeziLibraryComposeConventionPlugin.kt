@@ -1,7 +1,7 @@
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.LibraryExtension
-import edu.stanford.spezikt.build_logic.convention.configureAndroidCompose
-import edu.stanford.spezikt.build_logic.convention.disableUnnecessaryAndroidTests
+import edu.stanford.spezikt.build.logic.convention.configureAndroidCompose
+import edu.stanford.spezikt.build.logic.convention.disableUnnecessaryAndroidTests
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure

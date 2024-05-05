@@ -1,4 +1,4 @@
-package edu.stanford.spezikt.build_logic.convention
+package edu.stanford.spezikt.build.logic.convention
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
