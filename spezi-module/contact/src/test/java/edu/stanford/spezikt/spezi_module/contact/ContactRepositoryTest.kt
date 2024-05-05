@@ -18,17 +18,19 @@ class DefaultContactRepositoryTest {
     @Test
     fun defaultContactRepository_loadsContact() {
         val contact = repository.getContact()
-        assertEquals(contact.name, "Leland Stanford")
-        assertEquals(contact.title, "CEO")
-        assertEquals(
-            contact.description,
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-        )
-        assertEquals(contact.organization, "Stanford University")
-        assertEquals(contact.address, "450 Jane Stanford Way Stanford, CA")
-        assertEquals(contact.options.size, 3)
-        assertEquals(contact.options[0].name, "Call")
-        assertEquals(contact.options[0].value, "+49 123 456 789")
-        assertEquals(contact.options[0].optionType, ContactOptionType.CALL)
+        with(contact) {
+            assertEquals(name, "Leland Stanford")
+            assertEquals(title, "CEO")
+            assertEquals(
+                description,
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            )
+            assertEquals(organization, "Stanford University")
+            assertEquals(address, "450 Jane Stanford Way Stanford, CA")
+            assertEquals(options.size, 3)
+            assertEquals(options[0].name, "Call")
+            assertEquals(options[0].value, "+49 123 456 789")
+            assertEquals(options[0].optionType, ContactOptionType.CALL)
+        }
     }
 }
