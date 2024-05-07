@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.androidx.material3)
 
     implementation(project(":core:designsystem"))
+    implementation(project(":core:bluetooth"))
 
     testImplementation(libs.junit)
 
