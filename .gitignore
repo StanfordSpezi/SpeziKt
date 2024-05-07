@@ -36,6 +36,7 @@ replay_pid*
 
 # Gradle cache
 .gradle
+local.properties
 
 # Android Studio captures folder
 captures/
