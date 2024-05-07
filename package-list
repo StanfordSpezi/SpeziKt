@@ -1,0 +1,15 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+
+module:app
+edu.stanford.spezikt
+module:designsystem
+edu.stanford.spezikt.core.designsystem.component
+edu.stanford.spezikt.core.designsystem.theme
+module:contact
+edu.stanford.spezikt.spezi_module.contact
+edu.stanford.spezikt.spezi_module.contact.component
+edu.stanford.spezikt.spezi_module.contact.model
+edu.stanford.spezikt.spezi_module.contact.repository
+module:onboarding
+edu.stanford.spezikt.spezi_module.onboarding
