@@ -8,4 +8,5 @@ android {
 
 dependencies {
     androidTestImplementation(libs.bundles.mockito)
+    testImplementation( libs.truth)
 }

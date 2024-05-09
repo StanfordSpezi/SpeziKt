@@ -16,6 +16,7 @@ minSdk = "29"
 mockitoAndroid = "5.11.0"
 mockitoKotlin = "3.2.0"
 targetSdk = "34"
+truth = "1.4.2"
 uiTooling = "1.6.6"
 
 [libraries]
@@ -40,6 +41,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 mockitoAndroid = { group = "org.mockito", name = "mockito-android", version.ref = "mockitoAndroid" }
 mockitoKotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
+truth = { module = "com.google.truth:truth", version.ref = "truth" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
 
 [plugins]
