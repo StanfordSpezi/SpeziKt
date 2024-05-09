@@ -3,9 +3,9 @@ $dokka.linkExtension:html
 
 module:app
 edu.stanford.spezikt
-module:designsystem
-edu.stanford.spezikt.core.designsystem.component
-edu.stanford.spezikt.core.designsystem.theme
+module:design
+edu.stanford.spezikt.core.design.component
+edu.stanford.spezikt.core.design.theme
 module:contact
 edu.stanford.spezikt.spezi_module.contact
 edu.stanford.spezikt.spezi_module.contact.component
