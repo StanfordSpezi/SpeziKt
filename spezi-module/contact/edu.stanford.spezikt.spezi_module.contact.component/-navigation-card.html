@@ -58,14 +58,12 @@
                 <div class="sidebar--inner" id="sideMenu"></div>
             </div>
             <div id="main">
-<div class="main-content" data-page-type="member" id="content" pageids="contact::edu.stanford.spezikt.spezi_module.contact.component//NavigationCard/#kotlin.String/PointingToDeclaration//1788098955">
+<div class="main-content" data-page-type="member" id="content" pageids="contact::edu.stanford.spezikt.spezi_module.contact.component//NavigationCard/#kotlin.String#kotlin.Function1[edu.stanford.spezikt.spezi_module.contact.OnAction,kotlin.Unit]/PointingToDeclaration//1788098955">
   <div class="breadcrumbs"><a href="../index.html">contact</a><span class="delimiter">/</span><a href="index.html">edu.stanford.spezikt.spezi_module.contact.component</a><span class="delimiter">/</span><span class="current">NavigationCard</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Navigation</span><wbr><span><span>Card</span></span></h1>
   </div>
-  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":spezi-module:contact:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">fun </span><a href="-navigation-card.html"><span class="token function">NavigationCard</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">address<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><p class="paragraph">A card that displays an address and allows the user to navigate to it.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":spezi-module:contact:dokkaHtmlPartial/release" data-filterable-set=":spezi-module:contact:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>address</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The address to display and navigate to.</p></div></div></div></div></div><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":spezi-module:contact:dokkaHtmlPartial/release" data-filterable-set=":spezi-module:contact:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../edu.stanford.spezikt.spezi_module.contact/-contact-screen.html"><span>Contact</span><wbr><span><span>Screen</span></span></a></div></span></div><div></div></div></div></div><h4 class="">Samples</h4><div class="sample-container"><pre><code class="runnablesample monospace block lang-kotlin" theme="idea">import android.content.Intent
-import android.net.Uri
-import androidx.compose.foundation.layout.IntrinsicSize
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":spezi-module:contact:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">fun </span><a href="-navigation-card.html"><span class="token function">NavigationCard</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">address<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">publisher<span class="token operator">: </span><span class="token punctuation">(</span><a href="../edu.stanford.spezikt.spezi_module.contact/-on-action/index.html">OnAction</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><p class="paragraph">A card that displays an address and allows the user to navigate to it.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":spezi-module:contact:dokkaHtmlPartial/release" data-filterable-set=":spezi-module:contact:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>address</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The address to display and navigate to.</p></div></div></div></div></div><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":spezi-module:contact:dokkaHtmlPartial/release" data-filterable-set=":spezi-module:contact:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../edu.stanford.spezikt.spezi_module.contact/-contact-screen.html"><span>Contact</span><wbr><span><span>Screen</span></span></a></div></span></div><div></div></div></div></div><h4 class="">Samples</h4><div class="sample-container"><pre><code class="runnablesample monospace block lang-kotlin" theme="idea">import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -81,15 +79,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import edu.stanford.spezikt.core.designsystem.theme.MediumSpacing
 import edu.stanford.spezikt.core.designsystem.theme.SpeziKtTheme
+import edu.stanford.spezikt.spezi_module.contact.OnAction
 
 fun main() { 
    //sampleStart 
    SpeziKtTheme {
-    NavigationCard("1234 Main Street, 12345 City")
+    NavigationCard("1234 Main Street, 12345 City",
+        publisher = { action -&gt; println(action) })
 } 
    //sampleEnd
 }</code></pre></div></div></div>
