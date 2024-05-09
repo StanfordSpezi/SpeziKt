@@ -6,11 +6,9 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import edu.stanford.spezikt.spezi_module.contact.model.Contact
 import edu.stanford.spezikt.spezi_module.contact.model.ContactOption
 import edu.stanford.spezikt.spezi_module.contact.model.ContactOptionType
 import edu.stanford.spezikt.spezi_module.contact.repository.ContactRepository
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
@@ -24,64 +22,23 @@ class ContactScreenTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-
-    @Before
-    fun setup() {
-        whenever(mockContactRepository.getContact()).thenReturn(createContact())
-    }
-
     @Test
     fun contactView_displaysContactName() {
+        val contact = ContactFactory.create(name = "John Doe")
+        whenever(mockContactRepository.getContact()).thenReturn(contact)
 
         composeTestRule.setContent {
-            ContactScreen(mockContactRepository.getContact())
+            ContactScreen(ContactViewModel(mockContactRepository))
         }
 
-        composeTestRule.onNodeWithText(mockContactRepository.getContact().name).assertExists()
+        composeTestRule.onNodeWithText(contact.name).assertExists()
     }
 
 
     @Test
     fun contactView_displaysContactOptions() {
-
-        composeTestRule.setContent {
-            ContactScreen(mockContactRepository.getContact())
-        }
-
-        mockContactRepository.getContact().options.forEach { option ->
-            composeTestRule.onNodeWithText(option.name).assertExists()
-        }
-    }
-
-    @Test
-    fun contactView_displaysContactTitle() {
-        composeTestRule.setContent {
-            ContactScreen(mockContactRepository.getContact())
-        }
-
-        composeTestRule.onNodeWithText(mockContactRepository.getContact().title).assertExists()
-    }
-
-    @Test
-    fun contactView_displaysContactDescription() {
-        composeTestRule.setContent {
-            ContactScreen(mockContactRepository.getContact())
-        }
-
-        composeTestRule.onNodeWithText(mockContactRepository.getContact().description)
-            .assertExists()
-    }
-
-    private fun createContact(): Contact {
-        return Contact(
-            UUID.randomUUID(),
-            null,
-            "John Doe",
-            "CEO",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-            "Company Inc.",
-            "1234 Main Street, 12345 City",
-            listOf(
+        val contact = ContactFactory.create(
+            options = listOf(
                 ContactOption(
                     UUID.randomUUID(),
                     "Call",
@@ -105,5 +62,43 @@ class ContactScreenTest {
                 )
             )
         )
+        whenever(mockContactRepository.getContact()).thenReturn(contact)
+
+        composeTestRule.setContent {
+            ContactScreen(
+                ContactViewModel(mockContactRepository)
+            )
+        }
+
+        mockContactRepository.getContact().options.forEach { option ->
+            composeTestRule.onNodeWithText(option.name).assertExists()
+        }
+    }
+
+    @Test
+    fun contactView_displaysContactTitle() {
+        val contact = ContactFactory.create(title = "CEO")
+        whenever(mockContactRepository.getContact()).thenReturn(contact)
+
+        composeTestRule.setContent {
+            ContactScreen(ContactViewModel(mockContactRepository))
+        }
+
+        composeTestRule.onNodeWithText(mockContactRepository.getContact().title)
+            .assertExists()
+    }
+
+    @Test
+    fun contactView_displaysContactDescription() {
+        val contact =
+            ContactFactory.create(description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+        whenever(mockContactRepository.getContact()).thenReturn(contact)
+
+        composeTestRule.setContent {
+            ContactScreen(ContactViewModel(mockContactRepository))
+        }
+
+        composeTestRule.onNodeWithText(mockContactRepository.getContact().description)
+            .assertExists()
     }
 }

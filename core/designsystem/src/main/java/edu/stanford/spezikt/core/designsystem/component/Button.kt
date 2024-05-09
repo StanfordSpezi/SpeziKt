@@ -1,5 +1,6 @@
 package edu.stanford.spezikt.core.designsystem.component
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.Button
@@ -46,12 +47,14 @@ fun SpeziButton(
 @Composable
 fun SpeziButtonDarkPreview() {
     SpeziKtTheme {
-        SpeziButton(
-            onClick = { },
-            content = {
-                Text(text = "Text", style = MaterialTheme.typography.bodyLarge)
-            }
-        )
+        Column {
+            SpeziButton(
+                onClick = { },
+                content = {
+                    Text(text = "Text", style = MaterialTheme.typography.bodyLarge)
+                }
+            )
+        }
     }
 }
 

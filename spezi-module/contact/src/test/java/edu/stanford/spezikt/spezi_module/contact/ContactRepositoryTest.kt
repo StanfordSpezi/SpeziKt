@@ -17,7 +17,7 @@ class DefaultContactRepositoryTest {
 
     @Test
     fun defaultContactRepository_loadsContact() {
-        val contact = repository.getContactById(1L)
+        val contact = repository.getContact()
         with(contact) {
             assertThat(name).isEqualTo("Leland Stanford")
             assertThat(title).isEqualTo("CEO")
