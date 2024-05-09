@@ -43,9 +43,9 @@ SpeziKtTheme {
 ### Components
 ```kotlin
 SpeziButton(
-            onClick = { },
-            content = { Text(text = "Text") }
-        )
+    onClick = { },
+    content = { Text(text = "Text") }
+)
 ```
 
 ### Typography
