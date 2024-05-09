@@ -1,4 +1,4 @@
-# Module designsystem
+# Module design
 
 ## Overview
 
@@ -23,7 +23,7 @@ your `build.gradle` file:
 
 ```gradle
 dependencies {
-    implementation(project(":core:designsystem"))
+    implementation(project(":core:design"))
 }
 ```
 
@@ -58,7 +58,7 @@ Text(text = "Text", style = MaterialTheme.typography.bodyLarge)
 ImageVector.vectorResource(R.drawable.ic_medications)
 ```
 
-# Package edu.stanford.spezikt.core.designsystem.theme
+# Package edu.stanford.spezikt.core.design.theme
 
 The `theme` package contains the theme configuration for the Design System Module. It includes:
 Color, Theme and Typography.

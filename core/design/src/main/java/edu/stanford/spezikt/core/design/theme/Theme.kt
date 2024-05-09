@@ -17,15 +17,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import edu.stanford.spezikt.core.designsystem.theme.Black
-import edu.stanford.spezikt.core.designsystem.theme.Black60
-import edu.stanford.spezikt.core.designsystem.theme.Black80
-import edu.stanford.spezikt.core.designsystem.theme.CardinalRed
-import edu.stanford.spezikt.core.designsystem.theme.CardinalRedDark
-import edu.stanford.spezikt.core.designsystem.theme.CoolGrey
-import edu.stanford.spezikt.core.designsystem.theme.RectangleBlue
-import edu.stanford.spezikt.core.designsystem.theme.White
-import edu.stanford.spezikt.core.designsystem.theme.typography
 
 typealias ComposableBlock = @Composable () -> Unit
 

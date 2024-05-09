@@ -1,4 +1,4 @@
-package edu.stanford.spezikt.core.designsystem.theme
+package edu.stanford.spezikt.core.design.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable

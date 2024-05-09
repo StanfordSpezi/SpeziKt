@@ -1,4 +1,4 @@
-package edu.stanford.spezikt.core.designsystem.theme
+package edu.stanford.spezikt.core.design.theme
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
@@ -11,11 +11,10 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import edu.stanford.spezikt.core.design.theme.SpeziKtTheme
-import edu.stanford.spezikt.core.designsystem.theme.SpeziTypography.bodyLarge
-import edu.stanford.spezikt.core.designsystem.theme.SpeziTypography.labelSmall
-import edu.stanford.spezikt.core.designsystem.theme.SpeziTypography.titleLarge
-import edu.stanford.spezikt.core.designsystem.theme.SpeziTypography.titleSmall
+import edu.stanford.spezikt.core.design.theme.SpeziTypography.bodyLarge
+import edu.stanford.spezikt.core.design.theme.SpeziTypography.labelSmall
+import edu.stanford.spezikt.core.design.theme.SpeziTypography.titleLarge
+import edu.stanford.spezikt.core.design.theme.SpeziTypography.titleSmall
 
 object SpeziTypography {
     val bodyLarge: TextStyle

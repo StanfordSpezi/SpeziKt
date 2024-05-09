@@ -15,7 +15,7 @@ import edu.stanford.spezikt.core.design.theme.SpeziKtTheme
 /**
  * A button of the SpeziKt design system with customizable content.
  *
- * @sample edu.stanford.spezikt.core.designsystem.component.SpeziButtonDarkPreview
+ * @sample edu.stanford.spezikt.core.design.component.SpeziButtonDarkPreview
  *
  * @param onClick The callback to be invoked when the button is clicked.
  * @param modifier The modifier to be applied to the button.
