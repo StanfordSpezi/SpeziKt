@@ -28,6 +28,6 @@ rootProject.name = "SpeziKt"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 include(":app")
-include(":core:designsystem")
+include(":core:design")
 include(":spezi-module:onboarding")
 include(":spezi-module:contact")
