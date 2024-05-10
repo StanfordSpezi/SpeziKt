@@ -13,8 +13,8 @@ kotlin = "1.9.23"
 kotlinCompilerExtensionVersion = "1.5.12"
 lifecycleRuntimeKtx = "2.7.0"
 minSdk = "29"
-mockitoAndroid = "5.11.0"
-mockitoKotlin = "3.2.0"
+mockkAgent = "1.13.10"
+mockkAndroid = "1.13.10"
 targetSdk = "34"
 truth = "1.4.2"
 uiTooling = "1.6.6"
@@ -39,8 +39,8 @@ androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
-mockitoAndroid = { group = "org.mockito", name = "mockito-android", version.ref = "mockitoAndroid" }
-mockitoKotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
+mockk-agent = { module = "io.mockk:mockk-agent", version.ref = "mockkAgent" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockkAndroid" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
 
@@ -55,4 +55,4 @@ spezikt-android-library-compose = { id = "spezikt.android.library.compose", vers
 compose-androidTestImplementation = []
 compose-implementation = ["androidx-material3", "androidx-ui-tooling-preview", "androidx-ui-tooling", "androidx-core-ktx", "androidx-appcompat"]
 compose-testImplementation = ["junit", "androidx-compose-ui-test"]
-mockito = ["mockitoKotlin", "mockitoAndroid"]
+mockk-androidTestImplementation = ["mockk-agent", "mockk-android"]

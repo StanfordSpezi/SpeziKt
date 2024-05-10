@@ -4,28 +4,28 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import edu.stanford.spezikt.spezi_module.contact.model.ContactOption
 import edu.stanford.spezikt.spezi_module.contact.model.ContactOptionType
 import edu.stanford.spezikt.spezi_module.contact.repository.ContactRepository
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito.mock
-import org.mockito.kotlin.whenever
 import java.util.UUID
 
 class ContactScreenTest {
 
-    private val mockContactRepository: ContactRepository = mock()
+    private val mockContactRepository: ContactRepository = mockk()
 
     @get:Rule
-    val composeTestRule = createComposeRule()
+    val composeTestRule = createAndroidComposeRule<TestActivity>()
 
     @Test
     fun contactView_displaysContactName() {
         val contact = ContactFactory.create(name = "John Doe")
-        whenever(mockContactRepository.getContact()).thenReturn(contact)
+        every { mockContactRepository.getContact() } returns contact
 
         composeTestRule.setContent {
             ContactScreen(ContactViewModel(mockContactRepository))
@@ -62,7 +62,7 @@ class ContactScreenTest {
                 )
             )
         )
-        whenever(mockContactRepository.getContact()).thenReturn(contact)
+        every { mockContactRepository.getContact() } returns contact
 
         composeTestRule.setContent {
             ContactScreen(
@@ -78,7 +78,7 @@ class ContactScreenTest {
     @Test
     fun contactView_displaysContactTitle() {
         val contact = ContactFactory.create(title = "CEO")
-        whenever(mockContactRepository.getContact()).thenReturn(contact)
+        every { mockContactRepository.getContact() } returns contact
 
         composeTestRule.setContent {
             ContactScreen(ContactViewModel(mockContactRepository))
@@ -92,7 +92,7 @@ class ContactScreenTest {
     fun contactView_displaysContactDescription() {
         val contact =
             ContactFactory.create(description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
-        whenever(mockContactRepository.getContact()).thenReturn(contact)
+        every { mockContactRepository.getContact() } returns contact
 
         composeTestRule.setContent {
             ContactScreen(ContactViewModel(mockContactRepository))

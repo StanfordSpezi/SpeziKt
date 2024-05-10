@@ -4,9 +4,13 @@ plugins {
 
 android {
     namespace = "edu.stanford.spezikt.spezi_module.contact"
+
+    packagingOptions {
+        exclude("META-INF/**.md")
+    }
 }
 
 dependencies {
-    androidTestImplementation(libs.bundles.mockito)
+    androidTestImplementation(libs.bundles.mockk.androidTestImplementation)
     testImplementation( libs.truth)
 }
