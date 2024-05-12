@@ -13,7 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
 import edu.stanford.spezikt.core.bluetooth.BluetoothViewModel
 import edu.stanford.spezikt.core.bluetooth.screen.BluetoothScreen
-import edu.stanford.spezikt.core.designsystem.theme.SpeziKtTheme
+import edu.stanford.spezikt.core.design.theme.SpeziKtTheme
 
 class BluetoothActivity : ComponentActivity() {
     private lateinit var viewModel: BluetoothViewModel

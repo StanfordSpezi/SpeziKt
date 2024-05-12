@@ -42,7 +42,7 @@ internal fun Project.configureAndroidCompose(
             implementation(platform(bom))
             androidTestImplementation(platform(bom))
 
-            implementation(project(":core:designsystem"))
+            implementation(project(":core:design"))
             implementation(findBundle("compose-implementation"))
 
             testImplementation(findBundle("compose-testImplementation"))

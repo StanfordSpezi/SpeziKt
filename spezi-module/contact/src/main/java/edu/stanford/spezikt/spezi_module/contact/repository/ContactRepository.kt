@@ -22,14 +22,14 @@ interface ContactRepository {
 class DefaultContactRepository : ContactRepository {
     override fun getContact(): Contact {
         return Contact(
-            UUID.randomUUID(),
-            null,
-            "Leland Stanford",
-            "CEO",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-            "Stanford University",
-            "450 Jane Stanford Way Stanford, CA",
-            listOf(
+            id = UUID.randomUUID(),
+            icon = null,
+            name = "Leland Stanford",
+            title = "CEO",
+            description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            organization = "Stanford University",
+            address = "450 Jane Stanford Way Stanford, CA",
+            options = listOf(
                 ContactOption(
                     UUID.randomUUID(),
                     "Call",
