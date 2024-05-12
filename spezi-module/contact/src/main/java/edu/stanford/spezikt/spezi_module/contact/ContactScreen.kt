@@ -1,7 +1,6 @@
 package edu.stanford.spezikt.spezi_module.contact
 
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -21,11 +20,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import edu.stanford.spezikt.core.designsystem.theme.SpeziKtTheme
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import edu.stanford.spezikt.core.design.theme.IconSize
+import edu.stanford.spezikt.core.design.theme.LargeSpacing
+import edu.stanford.spezikt.core.design.theme.MediumSpacing
+import edu.stanford.spezikt.core.design.theme.SmallSpacing
+import edu.stanford.spezikt.core.design.theme.SpeziKtTheme
+import edu.stanford.spezikt.core.design.theme.SpeziTypography
 import edu.stanford.spezikt.spezi_module.contact.component.ContactOptionCard
 import edu.stanford.spezikt.spezi_module.contact.component.NavigationCard
 import edu.stanford.spezikt.spezi_module.contact.model.Contact
@@ -34,9 +42,9 @@ import edu.stanford.spezikt.spezi_module.contact.repository.DefaultContactReposi
 /**
  * ContactView composable function to display contact information.
  *
- * @param contact Contact object containing contact information.
+ * @param viewModel The ViewModel associated with the screen.
  *
- * @sample edu.stanford.spezikt.spezi_module.contact.PrevContactScreen
+ * @sample edu.stanford.spezikt.spezi_module.contact.ContactScreenPreview
  *
  * @see Contact
  * @see ContactOptionCard
@@ -45,65 +53,81 @@ import edu.stanford.spezikt.spezi_module.contact.repository.DefaultContactReposi
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ContactScreen(contact: Contact) {
+fun ContactScreen(viewModel: ContactViewModel) {
+    val contact by viewModel.contact.collectAsState()
+
     Column {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(MediumSpacing),
         ) {
             Surface {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(MediumSpacing),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(MediumSpacing))
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp),
+                            .padding(MediumSpacing),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(SmallSpacing),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
-                                contact.icon ?: Icons.Default.AccountBox,
+                                contact?.icon ?: Icons.Default.AccountBox,
                                 contentDescription = "Profile Picture",
-                                modifier = Modifier.size(48.dp)
+                                modifier = Modifier.size(IconSize)
                             )
                             Column {
-                                Text(
-                                    text = contact.name,
-                                    style = MaterialTheme.typography.headlineLarge
-                                )
-                                Text(
-                                    text = contact.title,
-                                    style = MaterialTheme.typography.headlineSmall
-                                )
+                                contact?.let {
+                                    Text(
+                                        text = it.name,
+                                        style = SpeziTypography.titleLarge
+                                    )
+                                }
+                                contact?.let {
+                                    Text(
+                                        text = it.title,
+                                        style = SpeziTypography.titleSmall
+                                    )
+                                }
                             }
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = contact.description,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(SmallSpacing))
+                        contact?.let {
+                            Text(
+                                text = it.description,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(LargeSpacing))
                         FlowRow(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
-                            contact.options.forEach { option ->
-                                ContactOptionCard(option = option)
+                            val context = LocalContext.current
+                            contact?.options?.forEach { option ->
+                                ContactOptionCard(option = option) {
+                                    viewModel.handleAction(it, context)
+                                }
                             }
                         }
-                        Spacer(modifier = Modifier.height(24.dp))
-                        NavigationCard(address = contact.address)
+                        Spacer(modifier = Modifier.height(LargeSpacing))
+                        val context = LocalContext.current
+                        contact?.let { contact ->
+                            NavigationCard(address = contact.address) {
+                                viewModel.handleAction(it, context)
+                            }
+                        }
                     }
                 }
             }
@@ -111,10 +135,16 @@ fun ContactScreen(contact: Contact) {
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO or Configuration.UI_MODE_TYPE_NORMAL)
+@Preview
 @Composable
-fun PrevContactScreen() {
+fun ContactScreenPreview(@PreviewParameter(ContactViewModelPreviewParameterProvider::class) viewModel: ContactViewModel) {
     SpeziKtTheme {
-        ContactScreen(DefaultContactRepository().getContact())
+        ContactScreen(viewModel)
     }
+}
+
+class ContactViewModelPreviewParameterProvider : PreviewParameterProvider<ContactViewModel> {
+    override val values: Sequence<ContactViewModel> = sequenceOf(
+        ContactViewModel(DefaultContactRepository()),
+    )
 }

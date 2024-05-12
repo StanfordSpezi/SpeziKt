@@ -10,4 +10,5 @@ SpeziKt is a collection of modules that can be used to build Android application
 
 ### Modules
 
-- **Design System**: Provides a cohesive user interface and user experience components. [Read More](./core/designsystem/README.md)
+- **Design System**: Provides a cohesive user interface and user experience
+  components. [Read More](./core/design/README.md)
