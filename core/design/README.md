@@ -53,7 +53,7 @@ SpeziButton(
 ### Typography
 
 ```kotlin
-Text(text = "Text", style = MaterialTheme.typography.bodyLarge)
+Text(text = "Text", style = TextStyles.bodyLarge)
 ```
 
 ### Icons and Graphics
