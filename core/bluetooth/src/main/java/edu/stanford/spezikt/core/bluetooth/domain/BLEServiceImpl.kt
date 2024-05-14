@@ -47,7 +47,10 @@ internal class BLEServiceImpl @Inject constructor(
         logger.i { "start() requested" }
         when {
             deviceScanner.isScanning -> logger.i { "Already scanning. Ignoring start request" }
-            bluetoothAdapter.isEnabled.not() -> logger.i { "Start ignored, bluetooth not enabled" }
+            bluetoothAdapter.isEnabled.not() -> {
+                logger.i { "Start ignored, bluetooth not enabled" }
+                emitEvent(event = BLEServiceEvent.BluetoothNotEnabled)
+            }
             else -> {
                 val missingPermissions = REQUIRED_PERMISSIONS.filterNot { permissionHandler.isPermissionGranted(it) }
                 if (missingPermissions.isNotEmpty()) {
