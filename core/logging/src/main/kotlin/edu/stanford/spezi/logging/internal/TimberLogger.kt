@@ -3,6 +3,12 @@ package edu.stanford.spezi.logging.internal
 import timber.log.Timber
 import java.util.concurrent.atomic.AtomicBoolean
 
+/**
+ * A logger implementation that delegates logging to Timber.
+ *
+ * @property tag The tag to be used for logging.
+ * @property messagePrefix The optional prefix to be added to each logged message.
+ */
 internal class TimberLogger(
     override val tag: String,
     override val messagePrefix: String?,

@@ -9,12 +9,28 @@ import java.time.ZonedDateTime
 import javax.inject.Inject
 import kotlin.experimental.and
 
+/**
+ * Implementation of a child measurement mapper for weight measurements.
+ */
 internal class WeightMeasurementMapper @Inject constructor() : MeasurementMapper.Child {
 
+    /**
+     * Checks if the given Bluetooth GATT characteristic is recognized as a weight measurement.
+     *
+     * @param characteristic The Bluetooth GATT characteristic to be recognized.
+     * @return true if the characteristic is recognized as a weight measurement, false otherwise.
+     */
     override fun recognises(characteristic: BluetoothGattCharacteristic?): Boolean {
         return with(BLEServiceType.WEIGHT) { characteristic?.let { service == it.service.uuid && this.characteristic == it.uuid } ?: false }
     }
 
+    /**
+     * Maps a Bluetooth GATT characteristic and its data to a weight measurement.
+     *
+     * @param characteristic The Bluetooth GATT characteristic to be mapped.
+     * @param data The byte array representing the data of the characteristic.
+     * @return The weight measurement, or null if the characteristic is not recognized or mapping fails.
+     */
     override suspend fun map(characteristic: BluetoothGattCharacteristic?, data: ByteArray): Measurement? {
         return if (recognises(characteristic).not()) null else runCatching { interpretWeightMeasurement(data) }.getOrNull()
     }

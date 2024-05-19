@@ -1,5 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.stanford.spezikt.spezi_module.contact.test">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
         <activity android:name="edu.stanford.spezikt.spezi_module.contact.TestActivity" />

@@ -28,6 +28,12 @@ class SpeziBaseConfigConventionPlugin : Plugin<Project> {
                 sourceCompatibility = java
                 targetCompatibility = java
             }
+
+            packaging {
+                resources {
+                    excludes += "/META-INF/**.md"
+                }
+            }
         }
 
         tasks.withType<KotlinCompile>().configureEach {

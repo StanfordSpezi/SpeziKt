@@ -21,7 +21,7 @@ abstract class SpeziAbstractConfigPlugin(private val modulePlugin: PluginId) : P
 
         dependencies {
             implementation(project(":core:logging"))
-            testImplementation(findBundle("unit-testing"))
+            testImplementation(project(":core:testing"))
         }
     }
 }

@@ -22,6 +22,18 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 
+/**
+ * Component responsible for establishing and managing a connection to a BLE (Bluetooth Low Energy) device.
+ *
+ * Note that this class, cannot be injected directly as it requires an `@Assisted` [BluetoothDevice] property. In order
+ * to create instances of this class, please inject [BLEDeviceConnector.Factory] and use `factory.create(device)` with
+ * the [BluetoothDevice] that this component should manage.
+ *
+ * @property device The Bluetooth device to connect to.
+ * @property measurementMapper The mapper used for mapping BLE characteristics to measurements.
+ * @property scope The coroutine scope used for launching connection events and mapping measurements.
+ * @property context The application context.
+ */
 @SuppressLint("MissingPermission")
 internal class BLEDeviceConnector @AssistedInject constructor(
     @Assisted private val device: BluetoothDevice,
@@ -34,6 +46,9 @@ internal class BLEDeviceConnector @AssistedInject constructor(
     private val _events = MutableSharedFlow<BLEServiceEvent>(replay = 1, extraBufferCapacity = 1)
     private val isDestroyed = AtomicBoolean(false)
 
+    /**
+     * Flow of events emitted by the BLE device connector.
+     */
     val events = _events.asSharedFlow()
 
     private val gattCallback = object : BluetoothGattCallback() {
@@ -44,7 +59,8 @@ internal class BLEDeviceConnector @AssistedInject constructor(
                     emit(event = BLEServiceEvent.Connected(device))
                 }
                 BluetoothProfile.STATE_DISCONNECTED -> {
-                    emit(event = BLEServiceEvent.Disconnected(device))
+                    bluetoothGatt = null
+                    disconnect()
                 }
             }
         }
@@ -71,26 +87,47 @@ internal class BLEDeviceConnector @AssistedInject constructor(
         }
     }
 
+    /**
+     * Establishes a connection to the BLE device.
+     *
+     * If a connection already exists or the connector is destroyed, this method does nothing.
+     */
     fun connect() {
         val currentGatt = bluetoothGatt
         if (currentGatt != null || isDestroyed.get()) return
         bluetoothGatt = device.connectGatt(context, false, gattCallback)
     }
 
+    /**
+     * Disconnects from the BLE device.
+     *
+     * If the connector is already destroyed, this method does nothing.
+     */
     fun disconnect() {
         if (isDestroyed.getAndSet(true).not()) {
-            bluetoothGatt?.disconnect() ?: emit(event = BLEServiceEvent.Disconnected(device = device))
-            bluetoothGatt = null
+            val currentGatt = bluetoothGatt
+            if (currentGatt != null) {
+                currentGatt.disconnect()
+            } else {
+                emit(event = BLEServiceEvent.Disconnected(device))
+            }
         }
     }
 
     private fun emit(event: BLEServiceEvent) {
-        if (isDestroyed.get()) return
         scope.launch { _events.emit(event) }
     }
 
+    /**
+     * Factory interface for creating instances of [BLEDeviceConnector].
+     */
     @AssistedFactory
     interface Factory {
+        /**
+         * Creates a new instance of [BLEDeviceConnector].
+         * @param device The Bluetooth device to connect to.
+         * @return A new instance of [BLEDeviceConnector].
+         */
         fun create(device: BluetoothDevice): BLEDeviceConnector
     }
 

@@ -2,8 +2,14 @@ package edu.stanford.spezikt.core.bluetooth.data.model
 
 import java.time.ZonedDateTime
 
+/**
+ * Represents a measurement
+ */
 sealed interface Measurement {
 
+    /**
+     * Represents a blood pressure measurement.
+     */
     data class BloodPressure(
         val flags: Flags, // these flags define which data fields are present
         val systolic: Float, // 25-280  mmHg
@@ -20,6 +26,9 @@ sealed interface Measurement {
         val measurementStatus: Status
     ) : Measurement {
 
+        /**
+         * Represents the flags indicating which data fields are present.
+         */
         data class Flags(
             val bloodPressureUnitsFlag: Boolean, // false: mmHg, true: kPa
             val timeStampFlag: Boolean, // false: no timestamp, true: timestamp present
@@ -28,6 +37,9 @@ sealed interface Measurement {
             val measurementStatusFlag: Boolean // false: no measurement status, true: measurement status present
         )
 
+        /**
+         * Represents the status of the measurement.
+         */
         data class Status(
             val bodyMovementDetectionFlag: Boolean, // 0: no body movement, 1: body movement
             val cuffFitDetectionFlag: Boolean, // 0: fit properly, 1: too loose
@@ -37,6 +49,9 @@ sealed interface Measurement {
         )
     }
 
+    /**
+     * Represents a weight measurement.
+     */
     data class Weight(
         val weight: Double?,
         val zonedDateTime: ZonedDateTime?,

@@ -25,10 +25,21 @@ import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Singleton class representing a BLE (Bluetooth Low Energy) service.
+ *
+ * This service manages the BLE functionality, including device scanning and connection.
+ *
+ * @property bluetoothAdapter The Bluetooth adapter used for BLE operations.
+ * @property permissionChecker The permission checker used to check BLE-related permissions.
+ * @property deviceScanner The BLE device scanner used for scanning nearby devices.
+ * @property scope The coroutine scope used for launching BLE-related operations.
+ * @property deviceConnectorFactory The factory used for creating instances of [BLEDeviceConnector].
+ */
 @Singleton
 internal class BLEServiceImpl @Inject constructor(
     private val bluetoothAdapter: BluetoothAdapter,
-    private val permissionHandler: PermissionHandler,
+    private val permissionChecker: PermissionChecker,
     private val deviceScanner: BLEDeviceScanner,
     @Dispatching.IO private val scope: CoroutineScope,
     private val deviceConnectorFactory: BLEDeviceConnector.Factory,
@@ -52,7 +63,7 @@ internal class BLEServiceImpl @Inject constructor(
                 emitEvent(event = BLEServiceEvent.BluetoothNotEnabled)
             }
             else -> {
-                val missingPermissions = REQUIRED_PERMISSIONS.filterNot { permissionHandler.isPermissionGranted(it) }
+                val missingPermissions = REQUIRED_PERMISSIONS.filterNot { permissionChecker.isPermissionGranted(it) }
                 if (missingPermissions.isNotEmpty()) {
                     emitEvent(event = BLEServiceEvent.MissingPermissions(permissions = missingPermissions))
                 } else {

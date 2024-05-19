@@ -41,7 +41,7 @@ fun NamedDomainObjectContainer<PluginDeclaration>.conventionPlugin(id: String, c
 
 gradlePlugin {
     plugins {
-        // Please keep plugins sorted. Select all method calls below and in Android Studio `File > Sort Lines`
+        // Please keep plugins sorted. Select all method calls below and in Android Studio `Edit > Sort Lines`
         conventionPlugin(id = "application", className = "SpeziApplicationConventionPlugin")
         conventionPlugin(id = "base", className = "SpeziBaseConfigConventionPlugin")
         conventionPlugin(id = "compose", className = "SpeziComposeConventionPlugin")
