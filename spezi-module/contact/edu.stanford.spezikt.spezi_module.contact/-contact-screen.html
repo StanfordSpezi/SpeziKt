@@ -78,7 +78,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -90,12 +89,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import edu.stanford.spezikt.core.design.theme.IconSize
-import edu.stanford.spezikt.core.design.theme.LargeSpacing
-import edu.stanford.spezikt.core.design.theme.MediumSpacing
-import edu.stanford.spezikt.core.design.theme.SmallSpacing
-import edu.stanford.spezikt.core.design.theme.SpeziKtTheme
-import edu.stanford.spezikt.core.design.theme.SpeziTypography
+import edu.stanford.spezikt.core.design.theme.Sizes
+import edu.stanford.spezikt.core.design.theme.Spacings
+import edu.stanford.spezikt.core.design.theme.SpeziTheme
+import edu.stanford.spezikt.core.design.theme.TextStyles
 import edu.stanford.spezikt.spezi_module.contact.component.ContactOptionCard
 import edu.stanford.spezikt.spezi_module.contact.component.NavigationCard
 import edu.stanford.spezikt.spezi_module.contact.model.Contact
@@ -103,7 +100,7 @@ import edu.stanford.spezikt.spezi_module.contact.repository.DefaultContactReposi
 
 fun main() { 
    //sampleStart 
-   SpeziKtTheme {
+   SpeziTheme {
     ContactScreen(viewModel)
 } 
    //sampleEnd
