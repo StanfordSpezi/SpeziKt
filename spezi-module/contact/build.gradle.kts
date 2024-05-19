@@ -1,16 +1,19 @@
 plugins {
-    alias(libs.plugins.spezikt.android.library.compose)
+    alias(libs.plugins.spezikt.library)
+    alias(libs.plugins.spezikt.compose)
 }
 
 android {
     namespace = "edu.stanford.spezikt.spezi_module.contact"
 
-    packagingOptions {
-        exclude("META-INF/**.md")
+    packaging {
+        resources {
+            excludes += "/META-INF/**.md"
+        }
     }
 }
 
 dependencies {
-    androidTestImplementation(libs.bundles.mockk.androidTestImplementation)
-    testImplementation(libs.truth)
+    testImplementation(libs.bundles.unit.testing)
+    androidTestImplementation(libs.bundles.compose.androidTest)
 }

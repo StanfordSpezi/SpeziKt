@@ -27,7 +27,12 @@ rootProject.name = "SpeziKt"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
+// Please keep the projects sorted. Select all method calls below and in Android Studio `File > Sort Lines`
 include(":app")
+include(":core:bluetooth")
+include(":core:coroutines")
 include(":core:design")
-include(":spezi-module:onboarding")
+include(":core:logging")
+include(":core:utils")
 include(":spezi-module:contact")
+include(":spezi-module:onboarding")
