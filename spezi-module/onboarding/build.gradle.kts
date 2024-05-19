@@ -1,5 +1,6 @@
 plugins {
-    alias(libs.plugins.spezikt.android.library.compose)
+    alias(libs.plugins.spezikt.library)
+    alias(libs.plugins.spezikt.compose)
 }
 
 android {

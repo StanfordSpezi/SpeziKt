@@ -6,20 +6,23 @@ plugins {
 
 group = "edu.stanford.spezikt.build.logic"
 
+val javaVersion = JavaVersion.VERSION_17
+
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
 }
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+        jvmTarget = javaVersion.toString()
     }
 }
 
 dependencies {
-    compileOnly(libs.android.gradlePlugin)
+    compileOnly(libs.android.gradle)
     compileOnly(libs.android.tools.common)
-    compileOnly(libs.kotlin.gradlePlugin)
+    compileOnly(libs.kotlin.gradle)
+    compileOnly(libs.hilt.gradle)
 }
 
 tasks {
@@ -29,11 +32,20 @@ tasks {
     }
 }
 
+fun NamedDomainObjectContainer<PluginDeclaration>.conventionPlugin(id: String, className: String) {
+    register(className) {
+        this.id = "spezikt.$id"
+        implementationClass = "edu.stanford.spezikt.build.logic.convention.plugins.$className"
+    }
+}
+
 gradlePlugin {
     plugins {
-        register("speziLibraryComposeConventionPlugin") {
-            id = "spezikt.android.library.compose"
-            implementationClass = "SpeziLibraryComposeConventionPlugin"
-        }
+        // Please keep plugins sorted. Select all method calls below and in Android Studio `File > Sort Lines`
+        conventionPlugin(id = "application", className = "SpeziApplicationConventionPlugin")
+        conventionPlugin(id = "base", className = "SpeziBaseConfigConventionPlugin")
+        conventionPlugin(id = "compose", className = "SpeziComposeConventionPlugin")
+        conventionPlugin(id = "hilt", className = "HiltConventionPlugin")
+        conventionPlugin(id = "library", className = "SpeziLibraryConventionPlugin")
     }
 }

@@ -33,7 +33,8 @@ To apply a convention plugin, add the following to your `build.gradle.kts`:
 
 ```kotlin
 plugins {
-    id("spezikt.android.application.compose")
+  alias(libs.plugins.spezikt.application)
+  alias(libs.plugins.spezikt.compose)
 }
 ```
 
@@ -41,4 +42,9 @@ plugins {
 
 Current list of convention plugins:
 
-- [`spezikt.android.library.compose`](convention/src/main/kotlin/SpeziLibraryComposeConventionPlugin.kt)
+- [`spezikt.application`](convention/src/main/kotlin/edu/stanford/spezikt/build/logic/convention/plugins/SpeziApplicationConventionPlugin.kt)
+- [`spezikt.compose`](convention/src/main/kotlin/edu/stanford/spezikt/build/logic/convention/plugins/SpeziComposeConventionPlugin.kt)
+- [`spezikt.base`](convention/src/main/kotlin/edu/stanford/spezikt/build/logic/convention/plugins/SpeziBaseConfigConventionPlugin.kt)
+- [`spezikt.hilt`](convention/src/main/kotlin/edu/stanford/spezikt/build/logic/convention/plugins/HiltConventionPlugin.kt)
+- [`spezikt.library`](convention/src/main/kotlin/edu/stanford/spezikt/build/logic/convention/plugins/SpeziLibraryConventionPlugin.kt)
+

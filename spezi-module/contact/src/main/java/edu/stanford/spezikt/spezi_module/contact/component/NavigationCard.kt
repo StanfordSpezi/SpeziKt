@@ -11,14 +11,14 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import edu.stanford.spezikt.core.design.theme.MediumSpacing
-import edu.stanford.spezikt.core.design.theme.SpeziKtTheme
+import edu.stanford.spezikt.core.design.theme.Spacings
+import edu.stanford.spezikt.core.design.theme.SpeziTheme
+import edu.stanford.spezikt.core.design.theme.TextStyles
 import edu.stanford.spezikt.spezi_module.contact.OnAction
 
 /**
@@ -36,7 +36,7 @@ fun NavigationCard(address: String, publisher: (OnAction) -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(MediumSpacing)
+                .padding(Spacings.medium)
                 .height(IntrinsicSize.Min),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -46,7 +46,7 @@ fun NavigationCard(address: String, publisher: (OnAction) -> Unit) {
             )
             Text(
                 text = address,
-                style = MaterialTheme.typography.bodyMedium,
+                style = TextStyles.bodyMedium,
                 modifier = Modifier.weight(1f)
             )
             IconButton(
@@ -67,7 +67,7 @@ fun NavigationCard(address: String, publisher: (OnAction) -> Unit) {
 @Composable
 @Preview
 fun NavigationCardPreview() {
-    SpeziKtTheme {
+    SpeziTheme {
         NavigationCard("1234 Main Street, 12345 City",
             publisher = { action -> println(action) })
     }
