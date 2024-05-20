@@ -16,8 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import edu.stanford.spezikt.core.design.theme.SmallSpacing
-import edu.stanford.spezikt.core.design.theme.SpeziKtTheme
+import edu.stanford.spezikt.core.design.theme.Spacings
+import edu.stanford.spezikt.core.design.theme.SpeziTheme
 import edu.stanford.spezikt.spezi_module.contact.OnAction
 import edu.stanford.spezikt.spezi_module.contact.model.ContactOption
 import edu.stanford.spezikt.spezi_module.contact.model.ContactOptionType
@@ -44,7 +44,7 @@ fun ContactOptionCard(option: ContactOption, publisher: (OnAction) -> Unit) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .padding(SmallSpacing)
+                .padding(Spacings.small)
                 .fillMaxWidth()
         ) {
             Icon(
@@ -61,7 +61,7 @@ fun ContactOptionCard(option: ContactOption, publisher: (OnAction) -> Unit) {
 @Composable
 @Preview
 fun ContactOptionCardPreview() {
-    SpeziKtTheme {
+    SpeziTheme {
         ContactOptionCard(
             option = ContactOption(
                 id = UUID.randomUUID(),

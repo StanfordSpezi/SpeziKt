@@ -1,10 +1,12 @@
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 plugins {
-    alias(libs.plugins.androidApplication) apply false
-    alias(libs.plugins.jetbrainsKotlinAndroid) apply false
-    alias(libs.plugins.androidLibrary) apply false
-    id("org.jetbrains.dokka") version "1.9.20"
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.jetbrains.kotlin.android) apply false
+    alias(libs.plugins.hilt.android) version libs.versions.hiltVersion apply false
+    alias(libs.plugins.google.devtools.ksp) version libs.versions.kspVersion apply false
+    alias(libs.plugins.dokka) version libs.versions.dokka
 }
 
 subprojects {
