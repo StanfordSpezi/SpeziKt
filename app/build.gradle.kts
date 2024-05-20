@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.spezikt.application)
     alias(libs.plugins.spezikt.compose)
     alias(libs.plugins.spezikt.hilt)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
