@@ -1,4 +1,4 @@
-# Logging module
+# Module logging
 
 This module provides a flexible logging utility designed to handle various logging strategies. 
 It includes a utility class `SpeziLogger` for logging messages using inline functions to avoid unnecessary memory allocation 

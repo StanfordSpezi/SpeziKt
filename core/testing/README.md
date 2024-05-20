@@ -1,4 +1,4 @@
-# Testing module
+# Module testing
 
 This module provides tools and utilities useful for testing. It includes components or functions that facilitate the testing.
 Additionally, it exposes `api` of `libs.bundles.unit.testing` bundle.

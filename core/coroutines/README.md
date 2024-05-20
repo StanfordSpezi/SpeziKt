@@ -1,4 +1,4 @@
-# Coroutines module
+# Module coroutines
 
 Module that provides access to different `CoroutineDispatcher`s and `CoroutineScope`s in coroutine-based components 
 to manage concurrency and threading.
