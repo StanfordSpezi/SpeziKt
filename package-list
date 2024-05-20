@@ -21,6 +21,8 @@ module:logging
 edu.stanford.spezi.logging
 edu.stanford.spezi.logging.internal
 edu.stanford.spezi.logging.models
+module:testing
+edu.stanford.spezi.core.testing
 module:utils
 edu.stanford.spezi.utils
 edu.stanford.spezi.utils.extensions
