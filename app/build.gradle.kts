@@ -41,4 +41,6 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
 
     implementation(project(":core:bluetooth"))
+    implementation(project(":spezi-module:onboarding"))
+    implementation(project(":core:coroutines"))
 }

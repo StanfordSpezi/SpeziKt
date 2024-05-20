@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.hilt.android) version libs.versions.hiltVersion apply false
     alias(libs.plugins.google.devtools.ksp) version libs.versions.kspVersion apply false
     alias(libs.plugins.dokka) version libs.versions.dokka
+    alias(libs.plugins.google.gms.google.services) apply false
 }
 
 subprojects {
