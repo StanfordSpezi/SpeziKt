@@ -43,7 +43,7 @@ sealed interface _Logger {
 
 /**
  * This function retrieves the current tag to be used for logging messages.
- * It considers any pending netxTag and resets the nextTag
+ * It considers any pending nextTag and resets the nextTag
  * property to null after retrieval.
  *
  * @return The current tag for logging.

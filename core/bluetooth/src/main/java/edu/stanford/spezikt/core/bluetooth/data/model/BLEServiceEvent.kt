@@ -60,4 +60,3 @@ sealed interface BLEServiceEvent {
      */
     data class MeasurementReceived(val device: BluetoothDevice, val measurement: Measurement) : BLEServiceEvent
 }
-

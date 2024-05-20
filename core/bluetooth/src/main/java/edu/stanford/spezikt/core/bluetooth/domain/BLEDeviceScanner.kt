@@ -112,4 +112,3 @@ internal class BLEDeviceScanner @Inject constructor(
         data class Failure(val errorCode: Int) : Event
     }
 }
-
