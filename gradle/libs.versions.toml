@@ -15,9 +15,8 @@ hiltNavigation = "1.2.0"
 hiltVersion = "2.51"
 junit = "4.13.2"
 junitVersion = "1.1.5"
-kotlin = "1.9.23"
-kotlinCompilerExtensionVersion = "1.5.12"
-kspVersion = "1.9.23-1.0.20"
+kotlin = "2.0.0"
+kspVersion = "2.0.0-1.0.21"
 lifecycleKtx = "2.8.0"
 lifecycleRuntimeKtx = "2.7.0"
 minSdk = "31"
@@ -69,6 +68,7 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
