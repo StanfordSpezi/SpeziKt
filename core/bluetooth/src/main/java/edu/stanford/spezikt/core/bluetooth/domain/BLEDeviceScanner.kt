@@ -18,6 +18,13 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
+/**
+ * Component responsible for scanning for BLE (Bluetooth Low Energy) devices.
+ *
+ * @property bluetoothAdapter The Bluetooth adapter used for scanning.
+ * @property supportedServices The supported BLE services.
+ * @property scope The coroutine scope used for launching scan events.
+ */
 @SuppressLint("MissingPermission")
 internal class BLEDeviceScanner @Inject constructor(
     private val bluetoothAdapter: BluetoothAdapter,
@@ -27,9 +34,17 @@ internal class BLEDeviceScanner @Inject constructor(
     private val logger by speziLogger()
 
     private val _isScanning = AtomicBoolean(false)
+
+    /**
+     * Flag indicating whether the scanner is currently scanning for BLE devices.
+     */
     val isScanning get() = _isScanning.get()
 
     private val _events = MutableSharedFlow<Event>(replay = 1, extraBufferCapacity = 1)
+
+    /**
+     * Scanning events flow
+     */
     val events = _events.asSharedFlow()
 
     private val scanCallback = object : ScanCallback() {
@@ -49,6 +64,11 @@ internal class BLEDeviceScanner @Inject constructor(
         }
     }
 
+    /**
+     * Starts scanning for BLE devices.
+     *
+     * If scanning is already in progress, this method does nothing.
+     */
     fun startScanning() {
         if (_isScanning.getAndSet(true)) return
         val filters = supportedServices.map {
@@ -62,6 +82,11 @@ internal class BLEDeviceScanner @Inject constructor(
         bluetoothAdapter.bluetoothLeScanner.startScan(filters, settings, scanCallback)
     }
 
+    /**
+     * Stops scanning for BLE devices.
+     *
+     * If scanning is not in progress, this method does nothing.
+     */
     fun stopScanning() {
         if (_isScanning.getAndSet(false).not()) return
         bluetoothAdapter.bluetoothLeScanner.stopScan(scanCallback)
@@ -71,8 +96,19 @@ internal class BLEDeviceScanner @Inject constructor(
         scope.launch { _events.emit(event) }
     }
 
+    /**
+     * Sealed interface representing events emitted by the BLE device scanner.
+     */
     sealed interface Event {
+        /**
+         * Event indicating that a BLE device was found during scanning.
+         */
         data class DeviceFound(val device: BluetoothDevice): Event
+
+        /**
+         * Event indicating a failure during scanning.
+         * @property errorCode The error code indicating the reason for the failure.
+         */
         data class Failure(val errorCode: Int) : Event
     }
 }

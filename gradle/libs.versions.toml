@@ -1,12 +1,14 @@
+# Please keep [versions] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [versions]
 activityCompose = "1.9.0"
 agp = "8.4.0"
-androidTools = "31.3.2"
+androidTools = "31.4.0"
 appcompat = "1.6.1"
 compileSdk = "34"
-composeBom = "2024.04.01"
-coreKtx = "1.13.0"
-coroutinesVersion = "1.6.4"
+composeBom = "2024.05.00"
+coreKtx = "1.13.1"
+coreTestingVersion = "2.2.0"
+coroutinesVersion = "1.8.0"
 dokka = "1.9.20"
 espressoCore = "3.5.1"
 hiltNavigation = "1.2.0"
@@ -16,7 +18,7 @@ junitVersion = "1.1.5"
 kotlin = "1.9.23"
 kotlinCompilerExtensionVersion = "1.5.12"
 kspVersion = "1.9.23-1.0.20"
-lifecycleKtx = "2.7.0"
+lifecycleKtx = "2.8.0"
 lifecycleRuntimeKtx = "2.7.0"
 minSdk = "31"
 mockKVersion = "1.13.10"
@@ -24,13 +26,14 @@ targetSdk = "34"
 timberVersion = "5.0.1"
 truth = "1.4.2"
 
-# Please keep [libraries] block sorted. Select all items and in Android Studio `File > Sort Lines`
+# Please keep [libraries] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [libraries]
 android-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTestingVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleKtx" }
@@ -62,7 +65,7 @@ mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "moc
 mockk-core = { group = "io.mockk", name = "mockk", version.ref = "mockKVersion" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timberVersion" }
 
-# Please keep [plugins] block sorted. Select all items and in Android Studio `File > Sort Lines`
+# Please keep [plugins] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
@@ -76,9 +79,9 @@ spezikt-compose = { id = "spezikt.compose", version = "unspecified" }
 spezikt-hilt = { id = "spezikt.hilt", version = "unspecified" }
 spezikt-library = { id = "spezikt.library", version = "unspecified" }
 
-# Please keep [bundles] block sorted. Select all items and in Android Studio `File > Sort Lines`
+# Please keep [bundles] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [bundles]
 compose = ["compose-ui", "compose-material3", "compose-ui-tooling-preview", "compose-ui-tooling", "androidx-core-ktx", "androidx-appcompat", "androidx-activity-compose"]
 compose-androidTest = ["junit", "androidx-espresso-core", "compose-ui-test", "mockk-agent-core", "mockk-android", "google-truth"]
 ktx-coroutines = ["coroutines-core", "coroutines-android"]
-unit-testing = ["junit", "mockk-core", "google-truth", "coroutines-test"]
+unit-testing = ["junit", "mockk-core", "google-truth", "coroutines-test", "androidx-core-testing"]

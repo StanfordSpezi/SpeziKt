@@ -63,7 +63,7 @@ class BluetoothViewModel @Inject internal constructor(
         }
     }
 
-    override fun onCleared() {
+    public override fun onCleared() {
         super.onCleared()
         bleService.stop()
     }

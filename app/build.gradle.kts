@@ -26,11 +26,6 @@ android {
             isMinifyEnabled = false
         }
     }
-    packaging {
-        resources {
-            excludes += "/META-INF/**.md"
-        }
-    }
 }
 
 dependencies {
