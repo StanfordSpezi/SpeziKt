@@ -11,11 +11,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.SpeziKt">
+        android:theme="@style/Theme.Spezi">
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.SpeziKt">
+            android:theme="@style/Theme.Spezi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

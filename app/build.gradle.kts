@@ -1,14 +1,14 @@
 plugins {
-    alias(libs.plugins.spezikt.application)
-    alias(libs.plugins.spezikt.compose)
-    alias(libs.plugins.spezikt.hilt)
+    alias(libs.plugins.spezi.application)
+    alias(libs.plugins.spezi.compose)
+    alias(libs.plugins.spezi.hilt)
 }
 
 android {
-    namespace = "edu.stanford.spezikt"
+    namespace = "edu.stanford.spezi.app"
 
     defaultConfig {
-        applicationId = "edu.stanford.spezikt"
+        applicationId = "edu.stanford.spezi.app"
         versionCode = 1
         versionName = "1.0"
 

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `build-logic` folder contains SpeziKt specific convention plugins that are used for common
+The `build-logic` folder contains Spezi specific convention plugins that are used for common
 module configurations.
 
 ## Features
@@ -33,8 +33,8 @@ To apply a convention plugin, add the following to your `build.gradle.kts`:
 
 ```kotlin
 plugins {
-  alias(libs.plugins.spezikt.application)
-  alias(libs.plugins.spezikt.compose)
+  alias(libs.plugins.spezi.application)
+  alias(libs.plugins.spezi.compose)
 }
 ```
 
@@ -42,14 +42,14 @@ plugins {
 
 Current list of convention plugins:
 
-- [`spezikt.application`](convention/src/main/kotlin/edu/stanford/spezikt/build/logic/convention/plugins/SpeziApplicationConventionPlugin.kt)
-  - Convention plugin that applies by default `com.android.application` and `org.jetbrains.kotlin.android`. Additionally it applies the default project configuration of `spezikt.base` plugin. Applies `:core:logging` implementation and `:core:testing` test implementation dependencies.
-- [`spezikt.compose`](convention/src/main/kotlin/edu/stanford/spezikt/build/logic/convention/plugins/SpeziComposeConventionPlugin.kt)
-  - - Convention plugin that applies the required configuration and dependencies needed for `Compose`. Note that you need to additionally apply either `spezikt.application` or `spezikt.library` plugins.
-- [`spezikt.base`](convention/src/main/kotlin/edu/stanford/spezikt/build/logic/convention/plugins/SpeziBaseConfigConventionPlugin.kt)
-  - Base convention plugin used by all modules of the project. It makes sure to configure consistently versions and compile options. This plugin is advisable to be used, for modules that are added as a dependency in one of the `spezikt.application` or `spezikt.library` plugins.
-- [`spezikt.hilt`](convention/src/main/kotlin/edu/stanford/spezikt/build/logic/convention/plugins/HiltConventionPlugin.kt)
+- [`spezi.application`](convention/src/main/kotlin/edu/stanford/spezi/build/logic/convention/plugins/SpeziApplicationConventionPlugin.kt)
+  - Convention plugin that applies by default `com.android.application` and `org.jetbrains.kotlin.android`. Additionally it applies the default project configuration of `spezi.base` plugin. Applies `:core:logging` implementation and `:core:testing` test implementation dependencies.
+- [`spezi.compose`](convention/src/main/kotlin/edu/stanford/spezi/build/logic/convention/plugins/SpeziComposeConventionPlugin.kt)
+  - - Convention plugin that applies the required configuration and dependencies needed for `Compose`. Note that you need to additionally apply either `spezi.application` or `spezi.library` plugins.
+- [`spezi.base`](convention/src/main/kotlin/edu/stanford/spezi/build/logic/convention/plugins/SpeziBaseConfigConventionPlugin.kt)
+  - Base convention plugin used by all modules of the project. It makes sure to configure consistently versions and compile options. This plugin is advisable to be used, for modules that are added as a dependency in one of the `spezi.application` or `spezi.library` plugins.
+- [`spezi.hilt`](convention/src/main/kotlin/edu/stanford/spezi/build/logic/convention/plugins/HiltConventionPlugin.kt)
   - Convention plugin that applies all the dependency needed to use Hilt DI.
-- [`spezikt.library`](convention/src/main/kotlin/edu/stanford/spezikt/build/logic/convention/plugins/SpeziLibraryConventionPlugin.kt)
-  - Convention plugin that applies by default `com.android.library` and `org.jetbrains.kotlin.android`. Additionally it applies the default project configuration of `spezikt.base` plugin. Applies `:core:logging` implementation and `:core:testing` test implementation dependencies.
+- [`spezi.library`](convention/src/main/kotlin/edu/stanford/spezi/build/logic/convention/plugins/SpeziLibraryConventionPlugin.kt)
+  - Convention plugin that applies by default `com.android.library` and `org.jetbrains.kotlin.android`. Additionally it applies the default project configuration of `spezi.base` plugin. Applies `:core:logging` implementation and `:core:testing` test implementation dependencies.
 

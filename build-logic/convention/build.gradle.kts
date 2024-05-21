@@ -4,7 +4,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "edu.stanford.spezikt.build.logic"
+group = "edu.stanford.spezi.build.logic"
 
 val javaVersion = JavaVersion.VERSION_17
 
@@ -34,8 +34,8 @@ tasks {
 
 fun NamedDomainObjectContainer<PluginDeclaration>.conventionPlugin(id: String, className: String) {
     register(className) {
-        this.id = "spezikt.$id"
-        implementationClass = "edu.stanford.spezikt.build.logic.convention.plugins.$className"
+        this.id = "spezi.$id"
+        implementationClass = "edu.stanford.spezi.build.logic.convention.plugins.$className"
     }
 }
 

@@ -73,11 +73,11 @@ dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-spezikt-application = { id = "spezikt.application", version = "unspecified" }
-spezikt-base = { id = "spezikt.base", version = "unspecified" }
-spezikt-compose = { id = "spezikt.compose", version = "unspecified" }
-spezikt-hilt = { id = "spezikt.hilt", version = "unspecified" }
-spezikt-library = { id = "spezikt.library", version = "unspecified" }
+spezi-application = { id = "spezi.application", version = "unspecified" }
+spezi-base = { id = "spezi.base", version = "unspecified" }
+spezi-compose = { id = "spezi.compose", version = "unspecified" }
+spezi-hilt = { id = "spezi.hilt", version = "unspecified" }
+spezi-library = { id = "spezi.library", version = "unspecified" }
 
 # Please keep [bundles] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [bundles]

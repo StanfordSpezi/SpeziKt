@@ -6,7 +6,7 @@ for large string messages. The logging utility allows for configuration of logge
 logging strategies through the use of tags and configurations.
 
 ### Dependency
-It should be noted that this module is included by default as implementation in `spezikt.application` and `spezikt.library`
+It should be noted that this module is included by default as implementation in `spezi.application` and `spezi.library`
 convention plugins. If none of these plugins have been applied to module, the dependency can be added as follows:
 
 ```gradle
