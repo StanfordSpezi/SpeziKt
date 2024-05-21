@@ -39,7 +39,7 @@
             <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
             <div class="library-name">
 <a class="library-name--link" href="../../index.html">
-                            SpeziKt Documentation
+                            Spezi Documentation
                     </a>            </div>
             <div class="library-version">
             </div>
@@ -65,13 +65,13 @@
     <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:coroutines:dokkaHtmlPartial/release"><p class="paragraph">Module that provides access to different <code class="lang-kotlin">CoroutineDispatcher</code>s and <code class="lang-kotlin">CoroutineScope</code>s in coroutine-based components  to manage concurrency and threading.</p><p class="paragraph">Access is enabled via <code class="lang-kotlin">DispatchersProvider</code> component which is available in Hilt DI graph:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">interface DispatchersProvider {<br>    fun main(): CoroutineDispatcher<br>    fun default(): CoroutineDispatcher<br>    fun io(): CoroutineDispatcher<br>    fun unconfined(): CoroutineDispatcher<br>}</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">It additionally provides four qualifiers to request the injection of a specific <code class="lang-kotlin">CoroutineDispatcher</code> or <code class="lang-kotlin">CoroutineScope</code>  as shown in #example-usage.</p><h3 class="">Dependency</h3><div class="sample-container"><pre><code class="block lang-gradle" theme="idea">dependencies {<br>    implementation(project(":core:coroutines"))<br>}</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><h3 class="">Example usage</h3><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">class MyClass @Inject constructor(<br>    private val dispatchersProvider: DispatchersProvider,<br>    @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,<br>    @Dispatching.Main private val mainScope: CoroutineScope,<br>) {<br>    <br>    suspend fun executeWithDispatcher() = withContext(ioDispatcher) {<br>        // Perform IO-bound operation here<br>    }<br>    <br>    suspend fun executeWithProvider() = withContext(dispatchersProvider.default()) {<br>        // Perform operation using a dispatcher from the provider<br>    }<br>    <br>    fun launchScope() {<br>        mainScope.launch {<br>            // Perform UI-related task here<br>        }<br>    }<br>}</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
   <h2 class="">Packages</h2>
-  <div class="table"><a data-name="2109834744%2FPackages%2F-704547249" anchor-label="edu.stanford.spezikt.coroutines" id="2109834744%2FPackages%2F-704547249" data-filterable-set=":core:coroutines:dokkaHtmlPartial/release"></a>
+  <div class="table"><a data-name="1794212776%2FPackages%2F-704547249" anchor-label="edu.stanford.spezi.core.coroutines" id="1794212776%2FPackages%2F-704547249" data-filterable-set=":core:coroutines:dokkaHtmlPartial/release"></a>
     <div class="table-row" data-filterable-current=":core:coroutines:dokkaHtmlPartial/release" data-filterable-set=":core:coroutines:dokkaHtmlPartial/release">
       <div>
         <div class="main-subrow ">
           <div class=""><span class="inline-flex">
-              <div><a href="edu.stanford.spezikt.coroutines/index.html">edu.stanford.spezikt.coroutines</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2109834744%2FPackages%2F-704547249"></span>
+              <div><a href="edu.stanford.spezi.core.coroutines/index.html">edu.stanford.spezi.core.coroutines</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1794212776%2FPackages%2F-704547249"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right">
@@ -83,13 +83,13 @@
         <div></div>
       </div>
     </div>
-<a data-name="-1712825473%2FPackages%2F-704547249" anchor-label="edu.stanford.spezikt.coroutines.di" id="-1712825473%2FPackages%2F-704547249" data-filterable-set=":core:coroutines:dokkaHtmlPartial/release"></a>
+<a data-name="1571504079%2FPackages%2F-704547249" anchor-label="edu.stanford.spezi.core.coroutines.di" id="1571504079%2FPackages%2F-704547249" data-filterable-set=":core:coroutines:dokkaHtmlPartial/release"></a>
     <div class="table-row" data-filterable-current=":core:coroutines:dokkaHtmlPartial/release" data-filterable-set=":core:coroutines:dokkaHtmlPartial/release">
       <div>
         <div class="main-subrow ">
           <div class=""><span class="inline-flex">
-              <div><a href="edu.stanford.spezikt.coroutines.di/index.html">edu.stanford.spezikt.coroutines.di</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1712825473%2FPackages%2F-704547249"></span>
+              <div><a href="edu.stanford.spezi.core.coroutines.di/index.html">edu.stanford.spezi.core.coroutines.di</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1571504079%2FPackages%2F-704547249"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right">
