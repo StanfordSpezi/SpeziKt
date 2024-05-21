@@ -8,7 +8,8 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
 import kotlin.coroutines.resumeWithException
 
-class FirebaseAuthManager @Inject constructor() {
+
+class FirebaseInvitationAuthManager @Inject constructor() : InvitationAuthManager {
 
     private val logger by speziLogger()
 
@@ -24,7 +25,7 @@ class FirebaseAuthManager @Inject constructor() {
         instance
     }
 
-    suspend fun checkInvitationCode(invitationCode: String): Result<Unit> {
+    override suspend fun checkInvitationCode(invitationCode: String): Result<Unit> {
         return try {
             auth.signOut()
             val authResult = auth.signInAnonymously().await()

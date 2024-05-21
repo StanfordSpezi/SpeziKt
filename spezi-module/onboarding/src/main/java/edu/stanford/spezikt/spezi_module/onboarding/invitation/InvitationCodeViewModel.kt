@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class InvitationCodeViewModel @Inject internal constructor(
-    private val fam: FirebaseAuthManager,
+    private val iam: InvitationAuthManager,
     @Dispatching.IO private val scope: CoroutineScope,
 ) : ViewModel() {
 
@@ -37,7 +37,7 @@ class InvitationCodeViewModel @Inject internal constructor(
 
     fun redeemInvitationCode() {
         scope.launch {
-            val result = fam.checkInvitationCode(uiState.value.invitationCode)
+            val result = iam.checkInvitationCode(uiState.value.invitationCode)
             if (result.isSuccess) {
                 // TODO navigate to login or register screen
             } else {
