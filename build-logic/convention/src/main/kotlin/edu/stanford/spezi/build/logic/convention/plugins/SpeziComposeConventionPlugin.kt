@@ -1,24 +1,24 @@
 package edu.stanford.spezi.build.logic.convention.plugins
 
 import edu.stanford.spezi.build.logic.convention.extensions.androidTestImplementation
+import edu.stanford.spezi.build.logic.convention.extensions.apply
 import edu.stanford.spezi.build.logic.convention.extensions.commonExtensions
 import edu.stanford.spezi.build.logic.convention.extensions.debugImplementation
 import edu.stanford.spezi.build.logic.convention.extensions.findBundle
 import edu.stanford.spezi.build.logic.convention.extensions.findLibrary
-import edu.stanford.spezi.build.logic.convention.extensions.findVersion
 import edu.stanford.spezi.build.logic.convention.extensions.implementation
+import edu.stanford.spezi.build.logic.convention.model.PluginId
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 
 class SpeziComposeConventionPlugin : Plugin<Project> {
     override fun apply(project: Project) = with(project) {
+        apply(PluginId.COMPOSE_COMPILER)
+
         commonExtensions {
             buildFeatures {
                 compose = true
-            }
-            composeOptions {
-                kotlinCompilerExtensionVersion = findVersion("kotlinCompilerExtensionVersion")
             }
 
             dependencies {

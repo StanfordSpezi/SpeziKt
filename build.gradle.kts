@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android) apply false
     alias(libs.plugins.hilt.android) version libs.versions.hiltVersion apply false
     alias(libs.plugins.google.devtools.ksp) version libs.versions.kspVersion apply false
+    alias(libs.plugins.compose.compiler) version libs.versions.kotlin apply false
     alias(libs.plugins.dokka) version libs.versions.dokka
 }
 
