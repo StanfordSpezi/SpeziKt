@@ -1,10 +1,10 @@
 plugins {
-    alias(libs.plugins.spezikt.library)
-    alias(libs.plugins.spezikt.hilt)
+    alias(libs.plugins.spezi.library)
+    alias(libs.plugins.spezi.hilt)
 }
 
 android {
-    namespace = "edu.stanford.spezikt.coroutines"
+    namespace = "edu.stanford.spezi.core.coroutines"
 }
 
 dependencies {

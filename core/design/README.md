@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Design System Module is part of the SpeziKt framework, designed to provide
+The Design System Module is part of the Spezi framework, designed to provide
 a cohesive user interface and user experience components. It ensures consistent aesthetics and
 functionality across different parts of the application, enhancing both developer efficiency and
 user satisfaction.
@@ -36,7 +36,7 @@ module or look at the example usage below:
 ### Theming
 
 ```kotlin
-SpeziKtTheme {
+SpeziTheme {
     Text(text = "Text")
 }
 ```
@@ -62,7 +62,7 @@ Text(text = "Text", style = TextStyles.bodyLarge)
 ImageVector.vectorResource(R.drawable.ic_medications)
 ```
 
-# Package edu.stanford.spezikt.core.design.theme
+# Package edu.stanford.spezi.core.design.theme
 
 The `theme` package contains the theme configuration for the Design System Module. It includes:
 Color, Theme and Typography.

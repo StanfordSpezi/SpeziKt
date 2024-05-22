@@ -1,9 +1,9 @@
 plugins {
-    alias(libs.plugins.spezikt.library)
+    alias(libs.plugins.spezi.library)
 }
 
 android {
-    namespace = "edu.stanford.spezikt.core.design"
+    namespace = "edu.stanford.spezi.core.design"
 
     buildFeatures {
         compose = true

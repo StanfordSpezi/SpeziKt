@@ -48,7 +48,7 @@ out/
 build/
 
 # track build-logic module
-!**/edu/stanford/spezikt/build
+!**/edu/stanford/spezi/build
 
 # built application files
 *.apk

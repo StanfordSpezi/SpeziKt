@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.spezikt.library)
+    alias(libs.plugins.spezi.library)
 }
 
 android {

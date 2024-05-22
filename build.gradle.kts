@@ -42,5 +42,5 @@ subprojects {
 }
 
 tasks.dokkaHtmlMultiModule {
-    moduleName.set("SpeziKt Documentation")
+    moduleName.set("Spezi Documentation")
 }
