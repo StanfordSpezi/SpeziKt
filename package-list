@@ -7,6 +7,8 @@ edu.stanford.spezi.app.bluetooth
 edu.stanford.spezi.app.bluetooth.data.mapper
 edu.stanford.spezi.app.bluetooth.data.models
 edu.stanford.spezi.app.bluetooth.screen
+module:healthconnectonfhir
+edu.stanford.healthconnectonfhir
 module:bluetooth
 edu.stanford.spezi.core.bluetooth.api
 edu.stanford.spezi.core.bluetooth.data.model
