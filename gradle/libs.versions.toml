@@ -24,6 +24,7 @@ mockKVersion = "1.13.10"
 targetSdk = "34"
 timberVersion = "5.0.1"
 truth = "1.4.2"
+material = "1.12.0"
 
 # Please keep [libraries] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [libraries]
@@ -63,6 +64,7 @@ mockk-agent-jvm = { group = "io.mockk", name = "mockk-agent-jvm", version.ref = 
 mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockKVersion" }
 mockk-core = { group = "io.mockk", name = "mockk", version.ref = "mockKVersion" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timberVersion" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 # Please keep [plugins] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [plugins]
