@@ -13,7 +13,6 @@ import androidx.health.connect.client.units.Mass
 import androidx.health.connect.client.units.Pressure
 import androidx.health.connect.client.units.Temperature
 import ca.uhn.fhir.context.FhirContext
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.hl7.fhir.r4.model.Observation
 import org.hl7.fhir.r4.model.Period
 import org.hl7.fhir.r4.model.Quantity
@@ -24,11 +23,6 @@ import java.time.Instant
 import java.time.ZoneOffset
 import java.util.Date
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 class CreateObservationTests {
     private val fhirContext: FhirContext = FhirContext.forR4()
 

@@ -15,8 +15,8 @@ import org.hl7.fhir.r4.model.Period
 import org.hl7.fhir.r4.model.Quantity
 import java.util.Date
 
-fun <T: Record> T.createObservation(
-    categories: List<Coding>? = null,
+private fun <T: Record> T.createObservation(
+    categories: List<Coding> = listOf(),
     codings: List<Coding>,
     unit: String,
     valueExtractor: T.() -> Double,
@@ -25,13 +25,11 @@ fun <T: Record> T.createObservation(
     val observation = Observation()
     observation.status = Observation.ObservationStatus.FINAL
 
-    if (categories != null) {
-        val categoryConcept = CodeableConcept()
-        categories.forEach { coding ->
-            categoryConcept.addCoding(coding)
-        }
-        observation.addCategory(categoryConcept)
+    val categoryConcept = CodeableConcept()
+    categories.forEach { coding ->
+        categoryConcept.addCoding(coding)
     }
+    observation.addCategory(categoryConcept)
 
     val codeableConcept = CodeableConcept()
     codings.forEach { coding ->
@@ -174,7 +172,10 @@ fun HeartRateRecord.toObservations(): List<Observation> {
 
         observation.category = listOf(
             CodeableConcept().addCoding(
-                Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("vital-signs").setDisplay("Vital Signs")
+                Coding()
+                    .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+                    .setCode("vital-signs")
+                    .setDisplay("Vital Signs")
             )
         )
 
