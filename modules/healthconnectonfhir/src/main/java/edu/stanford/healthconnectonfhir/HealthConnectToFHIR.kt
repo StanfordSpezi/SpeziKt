@@ -22,31 +22,28 @@ private fun <T: Record> T.createObservation(
     valueExtractor: T.() -> Double,
     periodExtractor: T.() -> Pair<Date, Date>
 ): Observation {
-    val observation = Observation()
-    observation.status = Observation.ObservationStatus.FINAL
+    return Observation().apply {
+        status = Observation.ObservationStatus.FINAL
 
-    val categoryConcept = CodeableConcept()
-    categories.forEach { coding ->
-        categoryConcept.addCoding(coding)
+        category = listOf(CodeableConcept().apply{
+            categories.forEach { addCoding(it) }
+        })
+
+        code = CodeableConcept().apply {
+            codings.forEach { addCoding(it) }
+        }
+
+        effective = Period().apply {
+            val (start, end) = periodExtractor()
+            this.start = start
+            this.end = end
+        }
+
+        value = Quantity().apply {
+            this.value = valueExtractor().toBigDecimal()
+            this.unit = unit
+        }
     }
-    observation.addCategory(categoryConcept)
-
-    val codeableConcept = CodeableConcept()
-    codings.forEach { coding ->
-        codeableConcept.addCoding(coding)
-    }
-
-    observation.code = codeableConcept
-
-    val period = Period()
-    val (start, end) = this.periodExtractor()
-    period.start = start
-    period.end = end
-    observation.effective = period
-
-    observation.value = Quantity().setValue(this.valueExtractor()).setUnit(unit)
-
-    return observation
 }
 
 fun StepsRecord.toObservation(): Observation {
