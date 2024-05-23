@@ -20,6 +20,7 @@ import org.junit.Test
 
 import org.junit.Assert.*
 import java.time.Instant
+import java.time.ZoneOffset
 import java.util.Date
 
 /**
@@ -42,8 +43,8 @@ class CreateObservationTests {
             count = 1000,
             startTime = Instant.parse("2023-05-18T10:15:30.00Z"),
             endTime = Instant.parse("2023-05-18T11:15:30.00Z"),
-            startZoneOffset = null,
-            endZoneOffset = null
+            startZoneOffset = ZoneOffset.UTC,
+            endZoneOffset = ZoneOffset.UTC
         )
 
         val observation = stepsRecord.toObservation()
@@ -52,6 +53,7 @@ class CreateObservationTests {
 
         assertEquals(Observation.ObservationStatus.FINAL, observation.status)
         assertEquals("55423-8", observation.code.codingFirstRep.code)
+        assertEquals("activity", observation.categoryFirstRep.codingFirstRep.code)
         assertEquals(
             Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
             (observation.effective as Period).start
@@ -69,7 +71,7 @@ class CreateObservationTests {
         val weightRecord = WeightRecord(
             weight = Mass.kilograms(75.0),
             time = Instant.parse("2023-05-18T10:15:30.00Z"),
-            zoneOffset = null
+            zoneOffset = ZoneOffset.UTC
         )
 
         val observation = weightRecord.toObservation()
@@ -78,6 +80,7 @@ class CreateObservationTests {
 
         assertEquals(Observation.ObservationStatus.FINAL, observation.status)
         assertEquals("29463-7", observation.code.codingFirstRep.code)
+        assertEquals("vital-signs", observation.categoryFirstRep.codingFirstRep.code)
         assertEquals(
             Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
             (observation.effective as Period).start
@@ -96,8 +99,8 @@ class CreateObservationTests {
             energy = Energy.calories(250.0),
             startTime = Instant.parse("2023-05-18T10:15:30.00Z"),
             endTime = Instant.parse("2023-05-18T11:15:30.00Z"),
-            startZoneOffset = null,
-            endZoneOffset = null
+            startZoneOffset = ZoneOffset.UTC,
+            endZoneOffset = ZoneOffset.UTC
         )
 
         val observation = activeCaloriesBurnedRecord.toObservation()
@@ -106,6 +109,7 @@ class CreateObservationTests {
 
         assertEquals(Observation.ObservationStatus.FINAL, observation.status)
         assertEquals("41981-2", observation.code.codingFirstRep.code)
+        assertEquals("activity", observation.categoryFirstRep.codingFirstRep.code)
         assertEquals(
             Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
             (observation.effective as Period).start
@@ -124,7 +128,7 @@ class CreateObservationTests {
             time = Instant.parse("2023-05-18T10:15:30.00Z"),
             systolic = Pressure.millimetersOfMercury(120.0),
             diastolic = Pressure.millimetersOfMercury(80.0),
-            zoneOffset = null
+            zoneOffset = ZoneOffset.UTC
         )
 
         val observation = bloodPressureRecord.toObservation()
@@ -133,6 +137,7 @@ class CreateObservationTests {
 
         assertEquals(Observation.ObservationStatus.FINAL, observation.status)
         assertEquals("85354-9", observation.code.codingFirstRep.code)
+        assertEquals("vital-signs", observation.categoryFirstRep.codingFirstRep.code)
         assertEquals(
             Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
             (observation.effective as Period).start
@@ -152,7 +157,7 @@ class CreateObservationTests {
         val heightRecord = HeightRecord(
             time = Instant.parse("2023-05-18T10:15:30.00Z"),
             height = Length.meters(1.75),
-            zoneOffset = null
+            zoneOffset = ZoneOffset.UTC
         )
 
         val observation = heightRecord.toObservation()
@@ -161,6 +166,7 @@ class CreateObservationTests {
 
         assertEquals(Observation.ObservationStatus.FINAL, observation.status)
         assertEquals("8302-2", observation.code.codingFirstRep.code)
+        assertEquals("vital-signs", observation.categoryFirstRep.codingFirstRep.code)
         assertEquals(
             Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
             (observation.effective as Period).start
@@ -178,7 +184,7 @@ class CreateObservationTests {
         val bodyTemperatureRecord = BodyTemperatureRecord(
             time = Instant.parse("2023-05-18T10:15:30.00Z"),
             temperature = Temperature.celsius(37.5),
-            zoneOffset = null
+            zoneOffset = ZoneOffset.UTC
         )
 
         val observation = bodyTemperatureRecord.toObservation()
@@ -187,6 +193,7 @@ class CreateObservationTests {
 
         assertEquals(Observation.ObservationStatus.FINAL, observation.status)
         assertEquals("8310-5", observation.code.codingFirstRep.code)
+        assertEquals("vital-signs", observation.categoryFirstRep.codingFirstRep.code)
         assertEquals(
             Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
             (observation.effective as Period).start

@@ -5,6 +5,7 @@ import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.BodyTemperatureRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.HeightRecord
+import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.WeightRecord
 import org.hl7.fhir.r4.model.CodeableConcept
@@ -14,21 +15,30 @@ import org.hl7.fhir.r4.model.Period
 import org.hl7.fhir.r4.model.Quantity
 import java.util.Date
 
-fun <T> T.toObservation(
-    code: String,
-    display: String,
+fun <T: Record> T.createObservation(
+    categories: List<Coding>? = null,
+    codings: List<Coding>,
     unit: String,
     valueExtractor: T.() -> Double,
     periodExtractor: T.() -> Pair<Date, Date>
 ): Observation {
     val observation = Observation()
     observation.status = Observation.ObservationStatus.FINAL
-    observation.code = CodeableConcept().addCoding(
-        Coding()
-            .setSystem("http://loinc.org")
-            .setCode(code)
-            .setDisplay(display)
-    )
+
+    if (categories != null) {
+        val categoryConcept = CodeableConcept()
+        categories.forEach { coding ->
+            categoryConcept.addCoding(coding)
+        }
+        observation.addCategory(categoryConcept)
+    }
+
+    val codeableConcept = CodeableConcept()
+    codings.forEach { coding ->
+        codeableConcept.addCoding(coding)
+    }
+
+    observation.code = codeableConcept
 
     val period = Period()
     val (start, end) = this.periodExtractor()
@@ -42,9 +52,13 @@ fun <T> T.toObservation(
 }
 
 inline fun StepsRecord.toObservation(): Observation {
-    return this.toObservation(
-        code = "55423-8",
-        display = "Number of steps",
+    return this.createObservation(
+        categories = listOf(
+            Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("activity").setDisplay("Activity")
+        ),
+        codings = listOf(
+            Coding().setSystem("http://loinc.org").setCode("55423-8").setDisplay("Number of steps")
+        ),
         unit = "steps",
         valueExtractor = { count.toDouble() },
         periodExtractor = { Date.from(startTime) to Date.from(endTime) }
@@ -52,28 +66,71 @@ inline fun StepsRecord.toObservation(): Observation {
 }
 
 inline fun WeightRecord.toObservation(): Observation {
-    return this.toObservation(
-        code = "29463-7",
-        display = "Body weight",
+    return this.createObservation(
+        categories = listOf(
+            Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("vital-signs").setDisplay("Vital Signs")
+        ),
+        codings = listOf(
+            Coding().setSystem("http://loinc.org").setCode("29463-7").setDisplay("Body weight")
+        ),
         unit = "g",
         valueExtractor = { weight.inGrams },
         periodExtractor = { Date.from(time) to Date.from(time) }
     )
 }
 
+inline fun HeightRecord.toObservation(): Observation {
+    return this.createObservation(
+        categories = listOf(
+            Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("vital-signs").setDisplay("Vital Signs")
+        ),
+        codings = listOf(
+            Coding().setSystem("http://loinc.org").setCode("8302-2").setDisplay("Body height")
+        ),
+        unit = "m",
+        valueExtractor = { height.inMeters },
+        periodExtractor = { Date.from(time) to Date.from(time) }
+    )
+}
+
 inline fun ActiveCaloriesBurnedRecord.toObservation(): Observation {
-    return this.toObservation(
-        code = "41981-2",
-        display = "Calories burned",
+    return this.createObservation(
+        categories = listOf(
+            Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("activity").setDisplay("Activity")
+        ),
+        codings = listOf(
+            Coding().setSystem("http://loinc.org").setCode("41981-2").setDisplay("Calories burned")
+        ),
         unit = "kcal",
         valueExtractor = { energy.inCalories },
         periodExtractor = { Date.from(startTime) to Date.from(endTime) }
     )
 }
 
+inline fun BodyTemperatureRecord.toObservation(): Observation {
+    return createObservation(
+        categories = listOf(
+            Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("vital-signs").setDisplay("Vital Signs")
+        ),
+        codings = listOf(
+            Coding().setSystem("http://loinc.org").setCode("8310-5").setDisplay("Body temperature")
+        ),
+        unit = "°C",
+        valueExtractor = { temperature.inCelsius },
+        periodExtractor = { Date.from(time) to Date.from(time) }
+    )
+}
+
 inline fun BloodPressureRecord.toObservation(): Observation {
     val observation = Observation()
     observation.status = Observation.ObservationStatus.FINAL
+
+    observation.category = listOf(
+        CodeableConcept().addCoding(
+            Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("vital-signs").setDisplay("Vital Signs")
+        )
+    )
+
     observation.code = CodeableConcept().addCoding(
         Coding()
             .setSystem("http://loinc.org")
@@ -110,20 +167,17 @@ inline fun BloodPressureRecord.toObservation(): Observation {
     return observation
 }
 
-inline fun HeightRecord.toObservation(): Observation {
-    return this.toObservation(
-        code = "8302-2",
-        display = "Body height",
-        unit = "m",
-        valueExtractor = { height.inMeters },
-        periodExtractor = { Date.from(time) to Date.from(time) }
-    )
-}
-
 inline fun HeartRateRecord.toObservations(): List<Observation> {
     return samples.map { sample ->
         val observation = Observation()
         observation.status = Observation.ObservationStatus.FINAL
+
+        observation.category = listOf(
+            CodeableConcept().addCoding(
+                Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("vital-signs").setDisplay("Vital Signs")
+            )
+        )
+
         observation.code = CodeableConcept().addCoding(
             Coding()
                 .setSystem("http://loinc.org")
@@ -140,14 +194,4 @@ inline fun HeartRateRecord.toObservations(): List<Observation> {
 
         observation
     }
-}
-
-inline fun BodyTemperatureRecord.toObservation(): Observation {
-    return this.toObservation(
-        code = "8310-5",
-        display = "Body temperature",
-        unit = "°C",
-        valueExtractor = { temperature.inCelsius },
-        periodExtractor = { Date.from(time) to Date.from(time) }
-    )
 }
