@@ -51,7 +51,7 @@ fun <T: Record> T.createObservation(
     return observation
 }
 
-inline fun StepsRecord.toObservation(): Observation {
+fun StepsRecord.toObservation(): Observation {
     return this.createObservation(
         categories = listOf(
             Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("activity").setDisplay("Activity")
@@ -65,7 +65,7 @@ inline fun StepsRecord.toObservation(): Observation {
     )
 }
 
-inline fun WeightRecord.toObservation(): Observation {
+fun WeightRecord.toObservation(): Observation {
     return this.createObservation(
         categories = listOf(
             Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("vital-signs").setDisplay("Vital Signs")
@@ -79,7 +79,7 @@ inline fun WeightRecord.toObservation(): Observation {
     )
 }
 
-inline fun HeightRecord.toObservation(): Observation {
+fun HeightRecord.toObservation(): Observation {
     return this.createObservation(
         categories = listOf(
             Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("vital-signs").setDisplay("Vital Signs")
@@ -93,7 +93,7 @@ inline fun HeightRecord.toObservation(): Observation {
     )
 }
 
-inline fun ActiveCaloriesBurnedRecord.toObservation(): Observation {
+fun ActiveCaloriesBurnedRecord.toObservation(): Observation {
     return this.createObservation(
         categories = listOf(
             Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("activity").setDisplay("Activity")
@@ -107,7 +107,7 @@ inline fun ActiveCaloriesBurnedRecord.toObservation(): Observation {
     )
 }
 
-inline fun BodyTemperatureRecord.toObservation(): Observation {
+fun BodyTemperatureRecord.toObservation(): Observation {
     return createObservation(
         categories = listOf(
             Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("vital-signs").setDisplay("Vital Signs")
@@ -121,7 +121,7 @@ inline fun BodyTemperatureRecord.toObservation(): Observation {
     )
 }
 
-inline fun BloodPressureRecord.toObservation(): Observation {
+fun BloodPressureRecord.toObservation(): Observation {
     val observation = Observation()
     observation.status = Observation.ObservationStatus.FINAL
 
@@ -167,7 +167,7 @@ inline fun BloodPressureRecord.toObservation(): Observation {
     return observation
 }
 
-inline fun HeartRateRecord.toObservations(): List<Observation> {
+fun HeartRateRecord.toObservations(): List<Observation> {
     return samples.map { sample ->
         val observation = Observation()
         observation.status = Observation.ObservationStatus.FINAL

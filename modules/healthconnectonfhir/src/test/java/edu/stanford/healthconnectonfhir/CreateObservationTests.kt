@@ -6,6 +6,7 @@ import androidx.health.connect.client.records.BodyTemperatureRecord
 import androidx.health.connect.client.records.HeightRecord
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.WeightRecord
+import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.units.Energy
 import androidx.health.connect.client.units.Length
 import androidx.health.connect.client.units.Mass
@@ -204,5 +205,56 @@ class CreateObservationTests {
         )
         assertEquals(37.5, (observation.value as Quantity).value.toDouble(), 0.0)
         assertEquals("°C", (observation.value as Quantity).unit)
+    }
+
+    @Test
+    fun heartRateRecord_toObservations_isCorrect() {
+        val heartRateRecord = HeartRateRecord(
+            samples = listOf(
+                HeartRateRecord.Sample(
+                    time = Instant.parse("2023-05-18T10:15:30.00Z"),
+                    beatsPerMinute = 72L
+                ),
+                HeartRateRecord.Sample(
+                    time = Instant.parse("2023-05-18T10:16:30.00Z"),
+                    beatsPerMinute = 75L
+                )
+            ),
+            startTime = Instant.parse("2023-05-18T10:15:30.00Z"),
+            endTime = Instant.parse("2023-05-18T10:17:30.00Z"),
+            startZoneOffset = ZoneOffset.UTC,
+            endZoneOffset = ZoneOffset.UTC
+        )
+
+        val observations = heartRateRecord.toObservations()
+
+        observations.forEach { observation ->
+            printObservationAsJson(observation)
+            assertEquals(Observation.ObservationStatus.FINAL, observation.status)
+            assertEquals("8867-4", observation.code.codingFirstRep.code)
+            assertEquals("vital-signs", observation.categoryFirstRep.codingFirstRep.code)
+        }
+
+        assertEquals(
+            Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
+            (observations[0].effective as Period).start
+        )
+        assertEquals(
+            Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
+            (observations[0].effective as Period).end
+        )
+        assertEquals(72.0, (observations[0].value as Quantity).value.toDouble(), 0.0)
+        assertEquals("beats/minute", (observations[0].value as Quantity).unit)
+
+        assertEquals(
+            Date.from(Instant.parse("2023-05-18T10:16:30.00Z")),
+            (observations[1].effective as Period).start
+        )
+        assertEquals(
+            Date.from(Instant.parse("2023-05-18T10:16:30.00Z")),
+            (observations[1].effective as Period).end
+        )
+        assertEquals(75.0, (observations[1].value as Quantity).value.toDouble(), 0.0)
+        assertEquals("beats/minute", (observations[1].value as Quantity).unit)
     }
 }
