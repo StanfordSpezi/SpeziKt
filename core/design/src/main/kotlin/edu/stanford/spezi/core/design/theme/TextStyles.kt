@@ -14,11 +14,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import edu.stanford.spezi.core.design.theme.TextStyles.bodyLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.bodyMedium
-import edu.stanford.spezi.core.design.theme.TextStyles.headlineLarge
-import edu.stanford.spezi.core.design.theme.TextStyles.headlineMedium
+import edu.stanford.spezi.core.design.theme.TextStyles.bodySmall
 import edu.stanford.spezi.core.design.theme.TextStyles.labelSmall
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
-import edu.stanford.spezi.core.design.theme.TextStyles.titleSmall
+import edu.stanford.spezi.core.design.theme.TextStyles.titleMedium
 
 object TextStyles {
     private val typography
@@ -36,10 +35,20 @@ object TextStyles {
         @ReadOnlyComposable
         get() = typography.bodyLarge
 
+    val bodySmall: TextStyle
+        @Composable
+        @ReadOnlyComposable
+        get() = MaterialTheme.typography.bodySmall
+
     val titleLarge: TextStyle
         @Composable
         @ReadOnlyComposable
         get() = typography.titleLarge
+
+    val titleMedium: TextStyle
+        @Composable
+        @ReadOnlyComposable
+        get() = MaterialTheme.typography.titleMedium
 
     val titleSmall: TextStyle
         @Composable
@@ -69,6 +78,20 @@ internal val typography = Typography(
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
+    ),
+    bodySmall = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.4.sp
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.25.sp
     ),
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
@@ -100,11 +123,15 @@ private fun TypographyPreview() {
         Column(verticalArrangement = Arrangement.spacedBy(Spacings.small)) {
             Text(
                 text = "TextStyles.headlineLarge",
-                style = headlineLarge
+                style = titleLarge
             )
             Text(
                 text = "TextStyles.headlineMedium",
-                style = headlineMedium
+                style = titleMedium
+            )
+            Text(
+                text = "titleMedium",
+                style = titleMedium
             )
             Text(
                 text = "TextStyles.bodyLarge",
@@ -115,18 +142,14 @@ private fun TypographyPreview() {
                 style = bodyMedium
             )
             Text(
-                text = "TextStyles.titleLarge",
-                style = titleLarge
+                text = "TextStyles.bodySmall",
+                style = bodySmall
             )
-            Text(
-                text = "TextStyles.titleSmall",
-                style = titleSmall
-            )
-
             Text(
                 text = "TextStyles.labelSmall",
                 style = labelSmall
             )
+
         }
     }
 }
