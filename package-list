@@ -31,7 +31,5 @@ edu.stanford.spezi.modules.contact
 edu.stanford.spezi.modules.contact.component
 edu.stanford.spezi.modules.contact.model
 edu.stanford.spezi.modules.contact.repository
-module:healthconnectonfhir
-edu.stanford.healthconnectonfhir
 module:onboarding
 edu.stanford.spezi.modules.onboarding
