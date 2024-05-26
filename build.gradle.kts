@@ -8,6 +8,8 @@ plugins {
     alias(libs.plugins.google.devtools.ksp) version libs.versions.kspVersion apply false
     alias(libs.plugins.compose.compiler) version libs.versions.kotlin apply false
     alias(libs.plugins.dokka) version libs.versions.dokka
+    alias(libs.plugins.google.gms.google.services) apply false
+    alias(libs.plugins.jetbrains.kotlin.serialization) apply false
 }
 
 subprojects {
