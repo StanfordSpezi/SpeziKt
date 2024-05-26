@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.spezi.library)
-    alias(libs.plugins.spezi.compose)
 }
 
 android {
