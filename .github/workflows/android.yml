@@ -53,6 +53,23 @@ jobs:
       - name: Run Tests with Gradle
         run: ./gradlew test
 
+  detekt:
+    name: Run detekt
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          ref: ${{ github.head_ref }}
+
+      - name: detekt
+        uses: alaegin/Detekt-Action@v1.23.6
+        with:
+          github_token: ${{ secrets.github_token }}
+          detekt_config: config/detekt-config.yml
+
   lint:
     runs-on: ubuntu-latest
     needs: build

@@ -22,6 +22,8 @@ import kotlinx.coroutines.SupervisorJob
 @InstallIn(SingletonComponent::class)
 class CoroutinesModule {
 
+    val _thisShouldVariableNamingAndMagicNumber = 12345
+
     /**
      * Hilt module for binding the implementation of [DispatchersProvider] to its interface.
      */
