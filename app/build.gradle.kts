@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.spezi.application)
     alias(libs.plugins.spezi.compose)
     alias(libs.plugins.spezi.hilt)
+    alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
+    id("kotlin-parcelize") // needed only for non-primitive classes
 }
 
 android {
@@ -34,6 +37,13 @@ dependencies {
     implementation(libs.androidx.lifecycle.view.model.ktx)
 
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
 
     implementation(project(":core:bluetooth"))
+    implementation(project(":modules:onboarding"))
+    implementation(project(":core:coroutines"))
+    implementation(project(":modules:account"))
+    implementation(project(":core:navigation"))
+    androidTestImplementation(project(":core:testing"))
 }
