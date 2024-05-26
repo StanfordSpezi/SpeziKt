@@ -12,7 +12,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android) apply false
 }
 
-subprojects { 
+subprojects {
     setupDokka()
     setupDetekt()
 }
@@ -63,7 +63,6 @@ fun Project.setupDetekt() {
 
     dependencies {
         detektPlugins(libs.detekt.formatting)
-
     }
 
     tasks.withType<Detekt> {

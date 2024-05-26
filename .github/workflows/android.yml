@@ -67,7 +67,7 @@ jobs:
       - name: detect-secrets
         uses: reviewdog/action-detect-secrets@master
         with:
-            reporter: github-pr-review
+            reviewdog_reporter: github-pr-review
       - name: detekt
         uses: alaegin/Detekt-Action@v1.23.6
         with:
