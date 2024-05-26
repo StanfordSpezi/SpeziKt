@@ -1,6 +1,5 @@
 package edu.stanford.spezi.modules.contact
 
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -134,7 +133,9 @@ fun ContactScreen(viewModel: ContactViewModel) {
 
 @Preview
 @Composable
-fun ContactScreenPreview(@PreviewParameter(ContactViewModelPreviewParameterProvider::class) viewModel: ContactViewModel) {
+fun ContactScreenPreview(
+    @PreviewParameter(ContactViewModelPreviewParameterProvider::class) viewModel: ContactViewModel
+) {
     SpeziTheme {
         ContactScreen(viewModel)
     }

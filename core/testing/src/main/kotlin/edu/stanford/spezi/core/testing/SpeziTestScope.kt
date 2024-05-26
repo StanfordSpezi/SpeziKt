@@ -21,4 +21,5 @@ import kotlin.coroutines.CoroutineContext
  * }
  * ```
  */
+@Suppress("FunctionNaming")
 fun SpeziTestScope(context: CoroutineContext = UnconfinedTestDispatcher()): TestScope = TestScope(context = context)

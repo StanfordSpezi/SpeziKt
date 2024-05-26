@@ -19,7 +19,6 @@ import io.mockk.verify
  */
 fun verifyNever(verifyBlock: MockKVerificationScope.() -> Unit) = verify(exactly = 0, verifyBlock = verifyBlock)
 
-
 /**
  * Verifies that a specific interaction with a mock object in a coroutine context never occurred.
  *
@@ -33,4 +32,6 @@ fun verifyNever(verifyBlock: MockKVerificationScope.() -> Unit) = verify(exactly
  *
  * @param verifyBlock The suspendable block of code containing the interaction to verify.
  */
-fun coVerifyNever(verifyBlock: suspend MockKVerificationScope.() -> Unit) = coVerify(exactly = 0, verifyBlock = verifyBlock)
+fun coVerifyNever(
+    verifyBlock: suspend MockKVerificationScope.() -> Unit
+) = coVerify(exactly = 0, verifyBlock = verifyBlock)
