@@ -25,15 +25,8 @@ import java.util.Date
 
 class CreateObservationTests {
     private val fhirContext: FhirContext = FhirContext.forR4()
-
-    private fun printObservationAsJson(observation: Observation) {
-        val parser = fhirContext.newJsonParser()
-        val jsonString = parser.encodeResourceToString(observation)
-        println(jsonString)
-    }
-
     @Test
-    fun stepsRecord_toObservation_isCorrect() {
+    fun `stepsRecord toObservation isCorrect`() {
         val stepsRecord = StepsRecord(
             count = 1000,
             startTime = Instant.parse("2023-05-18T10:15:30.00Z"),
@@ -43,8 +36,6 @@ class CreateObservationTests {
         )
 
         val observation = stepsRecord.toObservation()
-
-        printObservationAsJson(observation)
 
         assertEquals(Observation.ObservationStatus.FINAL, observation.status)
         assertEquals("55423-8", observation.code.codingFirstRep.code)
@@ -62,7 +53,7 @@ class CreateObservationTests {
     }
 
     @Test
-    fun weightRecord_toObservation_isCorrect() {
+    fun `weightRecord toObservation isCorrect`() {
         val weightRecord = WeightRecord(
             weight = Mass.kilograms(75.0),
             time = Instant.parse("2023-05-18T10:15:30.00Z"),
@@ -70,8 +61,6 @@ class CreateObservationTests {
         )
 
         val observation = weightRecord.toObservation()
-
-        printObservationAsJson(observation)
 
         assertEquals(Observation.ObservationStatus.FINAL, observation.status)
         assertEquals("29463-7", observation.code.codingFirstRep.code)
@@ -89,7 +78,7 @@ class CreateObservationTests {
     }
 
     @Test
-    fun activeCaloriesBurnedRecord_toObservation_isCorrect() {
+    fun `activeCaloriesBurnedRecord toObservation isCorrect`() {
         val activeCaloriesBurnedRecord = ActiveCaloriesBurnedRecord(
             energy = Energy.calories(250.0),
             startTime = Instant.parse("2023-05-18T10:15:30.00Z"),
@@ -99,8 +88,6 @@ class CreateObservationTests {
         )
 
         val observation = activeCaloriesBurnedRecord.toObservation()
-
-        printObservationAsJson(observation)
 
         assertEquals(Observation.ObservationStatus.FINAL, observation.status)
         assertEquals("41981-2", observation.code.codingFirstRep.code)
@@ -118,7 +105,7 @@ class CreateObservationTests {
     }
 
     @Test
-    fun bloodPressureRecord_toObservation_isCorrect() {
+    fun `bloodPressureRecord toObservation isCorrect`() {
         val bloodPressureRecord = BloodPressureRecord(
             time = Instant.parse("2023-05-18T10:15:30.00Z"),
             systolic = Pressure.millimetersOfMercury(120.0),
@@ -127,8 +114,6 @@ class CreateObservationTests {
         )
 
         val observation = bloodPressureRecord.toObservation()
-
-        printObservationAsJson(observation)
 
         assertEquals(Observation.ObservationStatus.FINAL, observation.status)
         assertEquals("85354-9", observation.code.codingFirstRep.code)
@@ -148,7 +133,7 @@ class CreateObservationTests {
     }
 
     @Test
-    fun heightRecord_toObservation_isCorrect() {
+    fun `heightRecord toObservation isCorrect`() {
         val heightRecord = HeightRecord(
             time = Instant.parse("2023-05-18T10:15:30.00Z"),
             height = Length.meters(1.75),
@@ -156,8 +141,6 @@ class CreateObservationTests {
         )
 
         val observation = heightRecord.toObservation()
-
-        printObservationAsJson(observation)
 
         assertEquals(Observation.ObservationStatus.FINAL, observation.status)
         assertEquals("8302-2", observation.code.codingFirstRep.code)
@@ -175,7 +158,7 @@ class CreateObservationTests {
     }
 
     @Test
-    fun bodyTemperatureRecord_toObservation_isCorrect() {
+    fun `bodyTemperatureRecord toObservation isCorrect`() {
         val bodyTemperatureRecord = BodyTemperatureRecord(
             time = Instant.parse("2023-05-18T10:15:30.00Z"),
             temperature = Temperature.celsius(37.5),
@@ -183,8 +166,6 @@ class CreateObservationTests {
         )
 
         val observation = bodyTemperatureRecord.toObservation()
-
-        printObservationAsJson(observation)
 
         assertEquals(Observation.ObservationStatus.FINAL, observation.status)
         assertEquals("8310-5", observation.code.codingFirstRep.code)
@@ -202,7 +183,7 @@ class CreateObservationTests {
     }
 
     @Test
-    fun heartRateRecord_toObservations_isCorrect() {
+    fun `heartRateRecord toObservations isCorrect`() {
         val heartRateRecord = HeartRateRecord(
             samples = listOf(
                 HeartRateRecord.Sample(
@@ -223,7 +204,6 @@ class CreateObservationTests {
         val observations = heartRateRecord.toObservations()
 
         observations.forEach { observation ->
-            printObservationAsJson(observation)
             assertEquals(Observation.ObservationStatus.FINAL, observation.status)
             assertEquals("8867-4", observation.code.codingFirstRep.code)
             assertEquals("vital-signs", observation.categoryFirstRep.codingFirstRep.code)
