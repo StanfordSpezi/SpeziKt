@@ -10,4 +10,9 @@ object Sizes {
         @Composable
         @ReadOnlyComposable
         get() = 48.dp
+
+    val smallIcon: Dp
+        @Composable
+        @ReadOnlyComposable
+        get() = 24.dp
 }
