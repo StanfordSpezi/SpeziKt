@@ -1,12 +1,12 @@
 package edu.stanford.spezi.app.onboarding
 
-import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreenRepository
+import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingRepository
 import edu.stanford.spezi.module.onboarding.sequential.Step
 
 /**
- * A implementation of [edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreenRepository] that provides a list of steps to be shown in the sequential onboarding screen.
+ * A implementation of [edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingRepository] that provides a list of steps to be shown in the sequential onboarding screen.
  */
-class DefaultSequentialOnboardingScreenRepository : SequentialOnboardingScreenRepository {
+class DefaultSequentialOnboardingRepository : SequentialOnboardingRepository {
     override suspend fun getSteps(): List<Step> {
         return listOf(
             Step(

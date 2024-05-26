@@ -10,7 +10,7 @@ import edu.stanford.spezi.module.account.register.RegisterScreen
 import edu.stanford.spezi.module.onboarding.consent.ConsentScreen
 import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeScreen
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingScreen
-import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingViewPagerScreen
+import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreen
 
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
@@ -36,7 +36,7 @@ fun NavGraphBuilder.mainGraph() {
     }
 
     composable<Routes.SequentialOnboardingScreen> {
-        SequentialOnboardingViewPagerScreen()
+        SequentialOnboardingScreen()
     }
 
     composable<Routes.ConsentScreen> {

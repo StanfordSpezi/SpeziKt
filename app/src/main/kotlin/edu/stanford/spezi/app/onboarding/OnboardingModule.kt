@@ -8,7 +8,7 @@ import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.module.onboarding.invitation.FirebaseInvitationAuthManager
 import edu.stanford.spezi.module.onboarding.invitation.InvitationAuthManager
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingRepository
-import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreenRepository
+import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingRepository
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
 
@@ -33,7 +33,7 @@ object OnboardingModule {
     }
 
     @Provides
-    fun provideSequentialOnboardingScreenRepository(): SequentialOnboardingScreenRepository {
-        return DefaultSequentialOnboardingScreenRepository()
+    fun provideSequentialOnboardingScreenRepository(): SequentialOnboardingRepository {
+        return DefaultSequentialOnboardingRepository()
     }
 }

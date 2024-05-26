@@ -26,7 +26,7 @@ import edu.stanford.spezi.core.design.theme.TextStyles
 
 /**
  * A composable that represents a page in the onboarding view pager.
- * @sample edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingViewPagerScreen
+ * @sample edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreen
  */
 @Composable
 fun OnboardingViewPage(
