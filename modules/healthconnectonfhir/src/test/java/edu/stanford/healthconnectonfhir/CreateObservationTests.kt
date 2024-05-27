@@ -13,18 +13,18 @@ import androidx.health.connect.client.units.Mass
 import androidx.health.connect.client.units.Pressure
 import androidx.health.connect.client.units.Temperature
 import ca.uhn.fhir.context.FhirContext
+import com.google.common.truth.Truth.assertThat
 import org.hl7.fhir.r4.model.Observation
 import org.hl7.fhir.r4.model.Period
 import org.hl7.fhir.r4.model.Quantity
 import org.junit.Test
-
-import org.junit.Assert.*
 import java.time.Instant
 import java.time.ZoneOffset
 import java.util.Date
 
 class CreateObservationTests {
     private val fhirContext: FhirContext = FhirContext.forR4()
+
     @Test
     fun `stepsRecord toObservation isCorrect`() {
         val stepsRecord = StepsRecord(
@@ -37,19 +37,13 @@ class CreateObservationTests {
 
         val observation = stepsRecord.toObservation()
 
-        assertEquals(Observation.ObservationStatus.FINAL, observation.status)
-        assertEquals("55423-8", observation.code.codingFirstRep.code)
-        assertEquals("activity", observation.categoryFirstRep.codingFirstRep.code)
-        assertEquals(
-            Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
-            (observation.effective as Period).start
-        )
-        assertEquals(
-            Date.from(Instant.parse("2023-05-18T11:15:30.00Z")),
-            (observation.effective as Period).end
-        )
-        assertEquals(1000.0, (observation.value as Quantity).value.toDouble(), 0.0)
-        assertEquals("steps", (observation.value as Quantity).unit)
+        assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
+        assertThat(observation.code.codingFirstRep.code).isEqualTo("55423-8")
+        assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("activity")
+        assertThat((observation.effective as Period).start).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
+        assertThat((observation.effective as Period).end).isEqualTo(Date.from(Instant.parse("2023-05-18T11:15:30.00Z")))
+        assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(1000.0)
+        assertThat((observation.value as Quantity).unit).isEqualTo("steps")
     }
 
     @Test
@@ -62,19 +56,13 @@ class CreateObservationTests {
 
         val observation = weightRecord.toObservation()
 
-        assertEquals(Observation.ObservationStatus.FINAL, observation.status)
-        assertEquals("29463-7", observation.code.codingFirstRep.code)
-        assertEquals("vital-signs", observation.categoryFirstRep.codingFirstRep.code)
-        assertEquals(
-            Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
-            (observation.effective as Period).start
-        )
-        assertEquals(
-            Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
-            (observation.effective as Period).end
-        )
-        assertEquals(75000.0, (observation.value as Quantity).value.toDouble(), 0.0)
-        assertEquals("g", (observation.value as Quantity).unit)
+        assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
+        assertThat(observation.code.codingFirstRep.code).isEqualTo("29463-7")
+        assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
+        assertThat((observation.effective as Period).start).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
+        assertThat((observation.effective as Period).end).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
+        assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(75000.0)
+        assertThat((observation.value as Quantity).unit).isEqualTo("g")
     }
 
     @Test
@@ -89,19 +77,13 @@ class CreateObservationTests {
 
         val observation = activeCaloriesBurnedRecord.toObservation()
 
-        assertEquals(Observation.ObservationStatus.FINAL, observation.status)
-        assertEquals("41981-2", observation.code.codingFirstRep.code)
-        assertEquals("activity", observation.categoryFirstRep.codingFirstRep.code)
-        assertEquals(
-            Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
-            (observation.effective as Period).start
-        )
-        assertEquals(
-            Date.from(Instant.parse("2023-05-18T11:15:30.00Z")),
-            (observation.effective as Period).end
-        )
-        assertEquals(250.0, (observation.value as Quantity).value.toDouble(), 0.0)
-        assertEquals("kcal", (observation.value as Quantity).unit)
+        assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
+        assertThat(observation.code.codingFirstRep.code).isEqualTo("41981-2")
+        assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("activity")
+        assertThat((observation.effective as Period).start).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
+        assertThat((observation.effective as Period).end).isEqualTo(Date.from(Instant.parse("2023-05-18T11:15:30.00Z")))
+        assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(250.0)
+        assertThat((observation.value as Quantity).unit).isEqualTo("kcal")
     }
 
     @Test
@@ -115,21 +97,15 @@ class CreateObservationTests {
 
         val observation = bloodPressureRecord.toObservation()
 
-        assertEquals(Observation.ObservationStatus.FINAL, observation.status)
-        assertEquals("85354-9", observation.code.codingFirstRep.code)
-        assertEquals("vital-signs", observation.categoryFirstRep.codingFirstRep.code)
-        assertEquals(
-            Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
-            (observation.effective as Period).start
-        )
-        assertEquals(
-            Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
-            (observation.effective as Period).end
-        )
-        assertEquals(120.0, (observation.component[0].value as Quantity).value.toDouble(), 0.0)
-        assertEquals("mmHg", (observation.component[0].value as Quantity).unit)
-        assertEquals(80.0, (observation.component[1].value as Quantity).value.toDouble(), 0.0)
-        assertEquals("mmHg", (observation.component[1].value as Quantity).unit)
+        assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
+        assertThat(observation.code.codingFirstRep.code).isEqualTo("85354-9")
+        assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
+        assertThat((observation.effective as Period).start).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
+        assertThat((observation.effective as Period).end).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
+        assertThat((observation.component[0].value as Quantity).value.toDouble()).isEqualTo(120.0)
+        assertThat((observation.component[0].value as Quantity).unit).isEqualTo("mmHg")
+        assertThat((observation.component[1].value as Quantity).value.toDouble()).isEqualTo(80.0)
+        assertThat((observation.component[1].value as Quantity).unit).isEqualTo("mmHg")
     }
 
     @Test
@@ -142,19 +118,13 @@ class CreateObservationTests {
 
         val observation = heightRecord.toObservation()
 
-        assertEquals(Observation.ObservationStatus.FINAL, observation.status)
-        assertEquals("8302-2", observation.code.codingFirstRep.code)
-        assertEquals("vital-signs", observation.categoryFirstRep.codingFirstRep.code)
-        assertEquals(
-            Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
-            (observation.effective as Period).start
-        )
-        assertEquals(
-            Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
-            (observation.effective as Period).end
-        )
-        assertEquals(1.75, (observation.value as Quantity).value.toDouble(), 0.0)
-        assertEquals("m", (observation.value as Quantity).unit)
+        assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
+        assertThat(observation.code.codingFirstRep.code).isEqualTo("8302-2")
+        assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
+        assertThat((observation.effective as Period).start).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
+        assertThat((observation.effective as Period).end).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
+        assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(1.75)
+        assertThat((observation.value as Quantity).unit).isEqualTo("m")
     }
 
     @Test
@@ -167,19 +137,13 @@ class CreateObservationTests {
 
         val observation = bodyTemperatureRecord.toObservation()
 
-        assertEquals(Observation.ObservationStatus.FINAL, observation.status)
-        assertEquals("8310-5", observation.code.codingFirstRep.code)
-        assertEquals("vital-signs", observation.categoryFirstRep.codingFirstRep.code)
-        assertEquals(
-            Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
-            (observation.effective as Period).start
-        )
-        assertEquals(
-            Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
-            (observation.effective as Period).end
-        )
-        assertEquals(37.5, (observation.value as Quantity).value.toDouble(), 0.0)
-        assertEquals("°C", (observation.value as Quantity).unit)
+        assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
+        assertThat(observation.code.codingFirstRep.code).isEqualTo("8310-5")
+        assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
+        assertThat((observation.effective as Period).start).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
+        assertThat((observation.effective as Period).end).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
+        assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(37.5)
+        assertThat((observation.value as Quantity).unit).isEqualTo("°C")
     }
 
     @Test
@@ -204,31 +168,19 @@ class CreateObservationTests {
         val observations = heartRateRecord.toObservations()
 
         observations.forEach { observation ->
-            assertEquals(Observation.ObservationStatus.FINAL, observation.status)
-            assertEquals("8867-4", observation.code.codingFirstRep.code)
-            assertEquals("vital-signs", observation.categoryFirstRep.codingFirstRep.code)
+            assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
+            assertThat(observation.code.codingFirstRep.code).isEqualTo("8867-4")
+            assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
         }
 
-        assertEquals(
-            Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
-            (observations[0].effective as Period).start
-        )
-        assertEquals(
-            Date.from(Instant.parse("2023-05-18T10:15:30.00Z")),
-            (observations[0].effective as Period).end
-        )
-        assertEquals(72.0, (observations[0].value as Quantity).value.toDouble(), 0.0)
-        assertEquals("beats/minute", (observations[0].value as Quantity).unit)
+        assertThat((observations[0].effective as Period).start).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
+        assertThat((observations[0].effective as Period).end).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
+        assertThat((observations[0].value as Quantity).value.toDouble()).isEqualTo(72.0)
+        assertThat((observations[0].value as Quantity).unit).isEqualTo("beats/minute")
 
-        assertEquals(
-            Date.from(Instant.parse("2023-05-18T10:16:30.00Z")),
-            (observations[1].effective as Period).start
-        )
-        assertEquals(
-            Date.from(Instant.parse("2023-05-18T10:16:30.00Z")),
-            (observations[1].effective as Period).end
-        )
-        assertEquals(75.0, (observations[1].value as Quantity).value.toDouble(), 0.0)
-        assertEquals("beats/minute", (observations[1].value as Quantity).unit)
+        assertThat((observations[1].effective as Period).start).isEqualTo(Date.from(Instant.parse("2023-05-18T10:16:30.00Z")))
+        assertThat((observations[1].effective as Period).end).isEqualTo(Date.from(Instant.parse("2023-05-18T10:16:30.00Z")))
+        assertThat((observations[1].value as Quantity).value.toDouble()).isEqualTo(75.0)
+        assertThat((observations[1].value as Quantity).unit).isEqualTo("beats/minute")
     }
 }
