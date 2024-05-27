@@ -6,6 +6,7 @@ build:
     # LongParameterList: 1
     # style: 1
     # comments: 1
+  excludes: ['**/*.kts']
 
 config:
   validation: true
@@ -63,17 +64,14 @@ comments:
     endOfSentenceFormat: '([.?!][ \t\n\r\f<])|([.?!:]$)'
   UndocumentedPublicClass:
     active: false
-    excludes: ['**/test/**', '**/androidTest/**']
     searchInNestedClass: true
     searchInInnerClass: true
     searchInInnerObject: true
     searchInInnerInterface: true
   UndocumentedPublicFunction:
     active: false
-    excludes: ['**/test/**', '**/androidTest/**']
   UndocumentedPublicProperty:
     active: false
-    excludes: ['**/test/**', '**/androidTest/**']
 
 complexity:
   active: true
@@ -411,29 +409,23 @@ naming:
     allowedPattern: '^(is|has|are)'
   ClassNaming:
     active: true
-    excludes: ['**/test/**', '**/androidTest/**']
     classPattern: '[A-Z][a-zA-Z0-9]*'
   ConstructorParameterNaming:
     active: true
-    excludes: ['**/test/**', '**/androidTest/**']
     parameterPattern: '[a-z][A-Za-z0-9]*'
     privateParameterPattern: '[a-z][A-Za-z0-9]*'
     excludeClassPattern: '$^'
   EnumNaming:
     active: true
-    excludes: ['**/test/**', '**/androidTest/**']
     enumEntryPattern: '[A-Z][_a-zA-Z0-9]*'
   ForbiddenClassName:
     active: false
-    excludes: ['**/test/**', '**/androidTest/**']
     forbiddenName: []
   FunctionMaxLength:
     active: false
-    excludes: ['**/test/**', '**/androidTest/**']
     maximumFunctionNameLength: 30
   FunctionMinLength:
     active: false
-    excludes: ['**/test/**', '**/androidTest/**']
     minimumFunctionNameLength: 3
   FunctionNaming:
     active: true
@@ -444,7 +436,6 @@ naming:
       - 'Composable'
   FunctionParameterNaming:
     active: true
-    excludes: ['**/test/**', '**/androidTest/**']
     parameterPattern: '[a-z][A-Za-z0-9]*'
     excludeClassPattern: '$^'
   InvalidPackageDeclaration:
