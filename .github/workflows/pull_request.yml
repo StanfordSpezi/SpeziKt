@@ -20,12 +20,11 @@ jobs:
           fetch-depth: 1
           ref: ${{ github.head_ref }}
 
-      - name: detekt
-        uses: alaegin/Detekt-Action@v1.23.6
-        with:
-          reviewdog_reporter: github-pr-review
-          github_token: ${{ secrets.github_token }}
-          detekt_config: config/detekt-config.yml
+      - name: Change permissions
+        run: chmod +x ./gradlew
+
+      - name: Detekt check
+        run: ./gradlew detekt --info
 
   check:
     name: Build and test

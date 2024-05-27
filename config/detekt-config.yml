@@ -461,7 +461,6 @@ naming:
     privatePropertyPattern: '(_)?[A-Za-z][_A-Za-z0-9]*'
   PackageNaming:
     active: true
-    excludes: ['**/test/**', '**/androidTest/**']
     packagePattern: '[a-z]+(\.[a-z][A-Za-z0-9]*)*'
   TopLevelPropertyNaming:
     active: true
@@ -474,12 +473,10 @@ naming:
     excludes: ['**/test/**', '**/androidTest/**']
     maximumVariableNameLength: 64
   VariableMinLength:
-    active: false
-    excludes: ['**/test/**', '**/androidTest/**']
-    minimumVariableNameLength: 1
+    active: true
+    minimumVariableNameLength: 3
   VariableNaming:
     active: true
-    excludes: ['**/test/**', '**/androidTest/**']
     variablePattern: '[a-z][A-Za-z0-9]*'
     privateVariablePattern: '(_)?[a-z][A-Za-z0-9]*'
     excludeClassPattern: '$^'
@@ -490,10 +487,8 @@ performance:
     active: true
   ForEachOnRange:
     active: true
-    excludes: ['**/test/**', '**/androidTest/**']
   SpreadOperator:
     active: true
-    excludes: ['**/test/**', '**/androidTest/**']
   UnnecessaryTemporaryInstantiation:
     active: true
 

@@ -62,6 +62,7 @@ private fun Devices(readyState: BluetoothUiState.Ready?) {
 
 @Composable
 private fun AdditionalInfo(uiState: BluetoothUiState) {
+    val s = 2
     val text = when (uiState) {
         is BluetoothUiState.Idle -> "Idle state"
         is BluetoothUiState.Scanning -> "Scanning..."
