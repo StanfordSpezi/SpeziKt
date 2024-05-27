@@ -6,9 +6,11 @@ androidTools = "31.4.0"
 appcompat = "1.6.1"
 compileSdk = "34"
 composeBom = "2024.05.00"
+healthConnectClient = "1.1.0-alpha02"
 coreKtx = "1.13.1"
 coreTestingVersion = "2.2.0"
 coroutinesVersion = "1.8.0"
+fhirDataCapture = "1.0.0"
 dokka = "1.9.20"
 espressoCore = "3.5.1"
 hiltNavigation = "1.2.0"
@@ -31,9 +33,11 @@ android-gradle = { group = "com.android.tools.build", name = "gradle", version.r
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-health-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "healthConnectClient" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTestingVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+android-fhir-data-capture = { module = "com.google.android.fhir:data-capture", version.ref = "fhirDataCapture" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleKtx" }
 androidx-lifecycle-view-model-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleKtx" }
