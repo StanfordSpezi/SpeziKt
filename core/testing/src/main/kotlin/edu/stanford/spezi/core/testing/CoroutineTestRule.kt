@@ -37,7 +37,7 @@ import org.junit.runner.Description
  *
  */
 class CoroutineTestRule(
-    private val testDispatcher: TestDispatcher = UnconfinedTestDispatcher()
+    private val testDispatcher: TestDispatcher = UnconfinedTestDispatcher(),
 ) : TestWatcher() {
 
     /**

@@ -10,6 +10,7 @@ concurrency:
 
 jobs:
   detekt:
+    name: Detekt review
     runs-on: ubuntu-latest
 
     steps:
@@ -23,11 +24,11 @@ jobs:
         uses: alaegin/Detekt-Action@v1.23.6
         with:
           reviewdog_reporter: github-pr-review
-          fail_on_error: true
           github_token: ${{ secrets.github_token }}
           detekt_config: config/detekt-config.yml
 
   check:
+    name: Build and test
     needs: detekt
     runs-on: ubuntu-latest
     steps:

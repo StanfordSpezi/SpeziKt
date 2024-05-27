@@ -27,7 +27,7 @@ data class Contact(
     val description: String,
     val organization: String,
     val address: String,
-    val options: List<ContactOption>
+    val options: List<ContactOption>,
 )
 
 /**
@@ -46,7 +46,7 @@ data class ContactOption(
     val name: String,
     val value: String,
     val icon: ImageVector?,
-    val optionType: ContactOptionType
+    val optionType: ContactOptionType,
 )
 
 /**

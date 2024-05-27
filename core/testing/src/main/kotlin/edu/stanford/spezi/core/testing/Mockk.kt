@@ -33,5 +33,5 @@ fun verifyNever(verifyBlock: MockKVerificationScope.() -> Unit) = verify(exactly
  * @param verifyBlock The suspendable block of code containing the interaction to verify.
  */
 fun coVerifyNever(
-    verifyBlock: suspend MockKVerificationScope.() -> Unit
+    verifyBlock: suspend MockKVerificationScope.() -> Unit,
 ) = coVerify(exactly = 0, verifyBlock = verifyBlock)

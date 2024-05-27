@@ -134,7 +134,7 @@ fun ContactScreen(viewModel: ContactViewModel) {
 @Preview
 @Composable
 fun ContactScreenPreview(
-    @PreviewParameter(ContactViewModelPreviewParameterProvider::class) viewModel: ContactViewModel
+    @PreviewParameter(ContactViewModelPreviewParameterProvider::class) viewModel: ContactViewModel,
 ) {
     SpeziTheme {
         ContactScreen(viewModel)

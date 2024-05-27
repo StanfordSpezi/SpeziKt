@@ -22,25 +22,12 @@ import kotlinx.coroutines.SupervisorJob
 @InstallIn(SingletonComponent::class)
 class CoroutinesModule {
 
-
-
-
-    val _thisShouldFaileWithVariableNamingMagicNumberIndentationEmptyLine    = 12345
-
-
-
-    val _thisShouldFaileWithVariableNsdamingMagicNumberIndentationEmptyLine    = 12345
-
     /**
      * Hilt module for binding the implementation of [DispatchersProvider] to its interface.
      */
     @Module
     @InstallIn(SingletonComponent::class)
 
-
-
-
-    
     abstract class Bindings {
         /**
          * Binds the [DispatchersProviderImpl] implementation to the [DispatchersProvider] interface.
@@ -190,6 +177,6 @@ class CoroutinesModule {
      */
     @VisibleForTesting
     internal fun buildCoroutine(
-        dispatcher: CoroutineDispatcher
+        dispatcher: CoroutineDispatcher,
     ): CoroutineScope = CoroutineScope(context = dispatcher + SupervisorJob())
 }
