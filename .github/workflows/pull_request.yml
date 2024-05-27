@@ -10,7 +10,6 @@ concurrency:
 
 jobs:
   detekt:
-    name: Run detekt
     runs-on: ubuntu-latest
 
     steps:
@@ -20,13 +19,23 @@ jobs:
           fetch-depth: 1
           ref: ${{ github.head_ref }}
 
-      - name: detekt
-        uses: alaegin/Detekt-Action@v1.23.6
+      - name: Install Review Dog
+        uses: reviewdog/action-setup@v1
         with:
-          reviewdog_reporter: github-pr-review
-          fail_on_error: true
-          github_token: ${{ secrets.github_token }}
-          detekt_config: config/detekt-config.yml
+          reviewdog_version: latest
+
+      - name: Run Detekt with Review Dog
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.github_token }}
+        run: |
+          chmod +x ./gradlew
+          ./gradlew detekt 2>&1 | grep '.*' | sed 's/^/e: /g' | reviewdog \
+            -name="Detekt" \
+            -reporter=github-pr-review \
+            -efm="%f:%l:%c:%t: %m" \
+            -level=error \
+            -filter-mode=nofilter \
+            -fail-on-error
 
   check:
     needs: detekt
