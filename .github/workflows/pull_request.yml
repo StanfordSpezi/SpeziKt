@@ -13,18 +13,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clone repo
+      - name: checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 1
           ref: ${{ github.head_ref }}
 
       - name: detekt
-        uses: alaegin/Detekt-Action@v1.23.6
+        uses: natiginfo/action-detekt-all@1.23.6
         with:
-          reviewdog_reporter: github-pr-review
-          github_token: ${{ secrets.github_token }}
-          detekt_config: config/detekt-config.yml
+          args: --config config/detekt-config.yml --max-issues 0
 
   check:
     needs: detekt
