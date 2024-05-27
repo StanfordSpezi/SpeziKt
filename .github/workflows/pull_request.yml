@@ -20,9 +20,12 @@ jobs:
           ref: ${{ github.head_ref }}
 
       - name: detekt
-        uses: natiginfo/action-detekt-all@1.23.6
+        uses: DominuS-RU/Detekt-Action@v0.1.2
         with:
-          args: --config config/detekt-config.yml --max-issues 0
+          reviewdog_reporter: github-pr-review
+          fail_on_error: true
+          github_token: ${{ secrets.github_token }}
+          detekt_config: config/detekt-config.yml
 
   check:
     needs: detekt
