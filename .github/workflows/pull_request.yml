@@ -20,7 +20,7 @@ jobs:
           ref: ${{ github.head_ref }}
 
       - name: detekt
-        uses: DominuS-RU/Detekt-Action@v0.1.2
+        uses: DominuS-RU/Detekt-Action@master
         with:
           reviewdog_reporter: github-pr-review
           fail_on_error: true
