@@ -1,9 +1,7 @@
-name: Android CI
+name: Merge
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
     branches: [ "main" ]
 
 concurrency:
@@ -12,9 +10,7 @@ concurrency:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - name: set up JDK 17
@@ -35,45 +31,9 @@ jobs:
           name: app
           path: app/build/outputs/apk/
 
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4.1.0
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3.13.0
-        with:
-          distribution: 'adopt'
-          java-version: '17'
-
-      - name: Grant execute permissions for gradlew
-        run: chmod +x ./gradlew
-
-      - name: Run Tests with Gradle
-        run: ./gradlew test
-
-  detekt:
-    name: Run detekt
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Clone repo
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-          ref: ${{ github.head_ref }}
-
-      - name: detekt
-        uses: alaegin/Detekt-Action@v1.23.6
-        with:
-          reviewdog_reporter: github-pr-review
-          github_token: ${{ secrets.github_token }}
-          detekt_config: config/detekt-config.yml
-
   dokka:
     runs-on: ubuntu-latest
-    needs: [ build, test ]
+    needs: build
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.1.0

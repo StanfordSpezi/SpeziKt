@@ -59,6 +59,7 @@ fun Project.setupDetekt() {
         toolVersion = libs.versions.detekt.get()
         config.setFrom("$rootDir/config/detekt-config.yml")
         autoCorrect = true
+        ignoreFailures = false
     }
 
     dependencies {
