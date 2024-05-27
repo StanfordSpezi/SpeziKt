@@ -19,8 +19,12 @@ jobs:
           fetch-depth: 1
           ref: ${{ github.head_ref }}
 
-      - name: Run Detekt
-        run: chmod +x ./gradlew && ./gradlew detekt --info
+      - name: detekt
+        uses: alaegin/Detekt-Action@v1.23.6
+        with:
+          reviewdog_reporter: github-pr-review
+          github_token: ${{ secrets.github_token }}
+          detekt_config: config/detekt-config.yml
 
   check:
     needs: detekt
@@ -28,11 +32,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.1.0
+
       - name: Set up JDK 17
         uses: actions/setup-java@v3.13.0
         with:
-          distribution: 'adopt'
+          distribution: 'temurin'
           java-version: '17'
+          cache: gradle
 
-      - name: Build and Test with Gradle
-        run: chmod +x ./gradlew && ./gradlew build test
+      - name: Change permissions
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Test with Gradle
+        run: ./gradlew test
