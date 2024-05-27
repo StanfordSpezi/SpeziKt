@@ -27,11 +27,20 @@ class CoroutinesModule {
 
     val _thisShouldFaileWithVariableNamingMagicNumberIndentationEmptyLine    = 12345
 
+
+
+    val _thisShouldFaileWithVariableNsdamingMagicNumberIndentationEmptyLine    = 12345
+
     /**
      * Hilt module for binding the implementation of [DispatchersProvider] to its interface.
      */
     @Module
     @InstallIn(SingletonComponent::class)
+
+
+
+
+    
     abstract class Bindings {
         /**
          * Binds the [DispatchersProviderImpl] implementation to the [DispatchersProvider] interface.
