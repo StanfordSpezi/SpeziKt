@@ -267,7 +267,7 @@ exceptions:
 
 formatting:
   active: true
-  android: false
+  android: true
   autoCorrect: true
   AnnotationOnSeparateLine:
     active: false
@@ -296,11 +296,11 @@ formatting:
     autoCorrect: true
     insertFinalNewLine: true
   ImportOrdering:
-    active: false
+    active: true
     autoCorrect: true
     layout: '*,java.**,javax.**,kotlin.**,^'
   Indentation:
-    active: false
+    active: true
     autoCorrect: true
     indentSize: 4
   MaximumLineLength:
@@ -323,7 +323,7 @@ formatting:
     active: true
     autoCorrect: true
   NoEmptyFirstLineInMethodBlock:
-    active: false
+    active: true
     autoCorrect: true
   NoLineBreakAfterElse:
     active: true
@@ -372,7 +372,7 @@ formatting:
     active: true
     autoCorrect: true
   SpacingAroundDoubleColon:
-    active: false
+    active: true
     autoCorrect: true
   SpacingAroundKeyword:
     active: true
@@ -387,13 +387,13 @@ formatting:
     active: true
     autoCorrect: true
   SpacingAroundUnaryOperator:
-    active: false
+    active: true
     autoCorrect: true
   SpacingBetweenDeclarationsWithAnnotations:
-    active: false
+    active: true
     autoCorrect: true
   SpacingBetweenDeclarationsWithComments:
-    active: false
+    active: true
     autoCorrect: true
   StringTemplate:
     active: true
@@ -712,7 +712,7 @@ style:
   UntilInsteadOfRangeTo:
     active: false
   UnusedImports:
-    active: false
+    active: true
   UnusedPrivateClass:
     active: true
   UnusedPrivateMember:
@@ -726,19 +726,19 @@ style:
   UseCheckOrError:
     active: false
   UseDataClass:
-    active: false
+    active: true
     ignoreAnnotated: []
-    allowVars: false
+    allowVars: true
   UseEmptyCounterpart:
     active: false
   UseIfEmptyOrIfBlank:
-    active: false
+    active: true
   UseIfInsteadOfWhen:
-    active: false
+    active: true
   UseIsNullOrEmpty:
-    active: false
+    active: true
   UseOrEmpty:
-    active: false
+    active: true
   UseRequire:
     active: false
   UseRequireNotNull:
@@ -751,7 +751,6 @@ style:
     active: true
   WildcardImport:
     active: true
-    excludes: ['**/test/**', '**/androidTest/**']
     excludeImports:
       - 'java.util.*'
       - 'kotlinx.android.synthetic.*'

@@ -49,7 +49,6 @@ internal class WeightMeasurementMapper @Inject constructor() : MeasurementMapper
         }
 
         val zonedDateTime = if (flags and 0b00000010 > 0) {
-
             val year = data[3].toInt() and 0xFF or (data[4].toInt() and 0xFF shl 8)
             val month = data[5].toInt()
             val day = data[6].toInt()
