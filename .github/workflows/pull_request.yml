@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
+  detekt:
     name: Detekt review
     runs-on: ubuntu-latest
 
@@ -20,16 +20,16 @@ jobs:
           fetch-depth: 1
           ref: ${{ github.head_ref }}
 
-      - name: detekt
+      - name: detekt-pr-check
         uses: alaegin/Detekt-Action@v1.23.6
         with:
-          reviewdog_reporter: github-pr-review
+          reviewdog_reporter: github-pr-check
           github_token: ${{ secrets.github_token }}
           detekt_config: internal/detekt-config.yml
 
   check:
     name: Build and test
-    needs: [lint]
+    needs: [detekt]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
