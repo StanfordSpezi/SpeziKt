@@ -36,7 +36,7 @@ fun Project.setupDokka() {
             skipDeprecated.set(true)
             skipEmptyPackages.set(true)
             includeNonPublic.set(false)
-            jdkVersion.set(17)
+            jdkVersion.set(JavaVersion.VERSION_17.majorVersion.toInt())
             if (file("README.md").exists()) {
                 includes.from("README.md")
             }

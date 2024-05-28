@@ -23,7 +23,7 @@ jobs:
       - name: detekt
         uses: alaegin/Detekt-Action@v1.23.6
         with:
-          reviewdog_reporter: github-pr-check
+          reviewdog_reporter: github-pr-review
           github_token: ${{ secrets.github_token }}
           detekt_config: internal/detekt-config.yml
 
