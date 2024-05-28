@@ -9,6 +9,7 @@ composeBom = "2024.05.00"
 coreKtx = "1.13.1"
 coreTestingVersion = "2.2.0"
 coroutinesVersion = "1.8.0"
+detekt = "1.23.6" # please adjust github action version as well in case of version change
 dokka = "1.9.20"
 espressoCore = "3.5.1"
 hiltNavigation = "1.2.0"
@@ -49,6 +50,7 @@ compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutinesVersion" }
 coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutinesVersion" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesVersion" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltVersion" }
 hilt-core = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltVersion" }
@@ -69,6 +71,7 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }

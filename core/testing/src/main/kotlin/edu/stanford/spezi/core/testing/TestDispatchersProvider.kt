@@ -12,7 +12,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
  * @property testDispatcher The [CoroutineDispatcher] to be used for all dispatcher contexts. Defaults to [UnconfinedTestDispatcher].
  */
 class TestDispatchersProvider(
-    private val testDispatcher: CoroutineDispatcher = UnconfinedTestDispatcher()
+    private val testDispatcher: CoroutineDispatcher = UnconfinedTestDispatcher(),
 ) : DispatchersProvider {
 
     /**

@@ -22,11 +22,17 @@ import kotlinx.coroutines.SupervisorJob
 @InstallIn(SingletonComponent::class)
 class CoroutinesModule {
 
+
+
+    // FIXME: Should cause NoConsecutiveBlankLines, ForbiddenComment, VariableNaming, NoMultipleSpaces, MagicNumber
+    val _thisShouldFailSeveralWarnings =      123
+
     /**
      * Hilt module for binding the implementation of [DispatchersProvider] to its interface.
      */
     @Module
     @InstallIn(SingletonComponent::class)
+
     abstract class Bindings {
         /**
          * Binds the [DispatchersProviderImpl] implementation to the [DispatchersProvider] interface.
@@ -175,5 +181,7 @@ class CoroutinesModule {
      * @return The [CoroutineScope] instance.
      */
     @VisibleForTesting
-    internal fun buildCoroutine(dispatcher: CoroutineDispatcher) = CoroutineScope(context = dispatcher + SupervisorJob())
+    internal fun buildCoroutine(
+        dispatcher: CoroutineDispatcher,
+    ): CoroutineScope = CoroutineScope(context = dispatcher + SupervisorJob())
 }

@@ -1,0 +1,45 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  detekt:
+    name: Detekt review
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.0
+        with:
+          fetch-depth: 1
+          ref: ${{ github.head_ref }}
+
+      - name: Detekt PR Check
+        uses: alaegin/Detekt-Action@v1.23.6
+        with:
+          reviewdog_reporter: github-pr-check
+          github_token: ${{ secrets.github_token }}
+          detekt_config: internal/detekt-config.yml
+
+  check:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3.13.0
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: gradle
+
+      # Build depends on test task
+      - name: Build and test
+        run: chmod +x ./gradlew && ./gradlew build

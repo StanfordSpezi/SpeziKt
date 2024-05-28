@@ -12,5 +12,5 @@ import android.bluetooth.BluetoothDevice
  */
 data class BLEDeviceSession(
     val device: BluetoothDevice,
-    val measurements: List<Measurement>
+    val measurements: List<Measurement>,
 )
