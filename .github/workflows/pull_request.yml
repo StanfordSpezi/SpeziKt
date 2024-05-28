@@ -26,6 +26,13 @@ jobs:
           reviewdog_reporter: github-pr-check
           github_token: ${{ secrets.github_token }}
           detekt_config: internal/detekt-config.yml
+      - name: detekt-evaluate
+        if: always()  # Ensure this runs even if the previous step fails
+        run: |
+          if grep -q "error" detekt-output.txt; then
+            echo "Detekt found issues" >&2
+            exit 1
+          fi
 
   check:
     name: Build and test
