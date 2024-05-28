@@ -27,7 +27,6 @@ jobs:
           github_token: ${{ secrets.github_token }}
           detekt_config: internal/detekt-config.yml
       - name: detekt-evaluate
-        if: always()  # Ensure this runs even if the previous step fails
         run: |
           if grep -qE "(Analysis failed|conclusion=failure)" <(echo "$GITHUB_JOB_LOG"); then
             echo "Detekt analysis failed" >&2
