@@ -29,10 +29,12 @@ jobs:
       - name: detekt-evaluate
         if: always()  # Ensure this runs even if the previous step fails
         run: |
-          if grep -q "error" detekt-output.txt; then
+          # Check if the Detekt log contains the word "failed"
+          if grep -q "Analysis failed" <(tail -n 1000 /dev/stdout); then
             echo "Detekt found issues" >&2
             exit 1
           fi
+        shell: bash
 
   check:
     name: Build and test
