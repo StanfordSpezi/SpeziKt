@@ -24,11 +24,13 @@ jobs:
         with:
           reviewdog_reporter: github-pr-check
           github_token: ${{ secrets.github_token }}
+          fail_on_error: true
           detekt_config: internal/detekt-config.yml
 
   check:
     name: Build and test
     runs-on: ubuntu-latest
+    needs: detekt
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.1.0
@@ -40,6 +42,5 @@ jobs:
           java-version: '17'
           cache: gradle
 
-      # Build depends on test task
       - name: Build and test
         run: chmod +x ./gradlew && ./gradlew build

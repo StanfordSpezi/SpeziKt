@@ -17,6 +17,8 @@ subprojects {
     setupDetekt()
 }
 
+installCustomTasks()
+
 tasks.dokkaHtmlMultiModule {
     moduleName.set("Spezi Documentation")
 }
@@ -60,6 +62,14 @@ fun Project.setupDetekt() {
         config.setFrom("$rootDir/internal/detekt-config.yml")
         autoCorrect = true
         ignoreFailures = false
+        source.setFrom(
+            files(
+                "src/main",
+                "src/test",
+                "src/androidTest",
+                "build.gradle.kts"
+            )
+        )
     }
 
     dependencies {
@@ -73,5 +83,15 @@ fun Project.setupDetekt() {
             txt.required.set(true)
             sarif.required.set(true)
         }
+    }
+}
+
+/**
+ * Installs all custom tasks defined in /gradle/tasks
+ */
+fun Project.installCustomTasks() {
+    val tasksDir = File("$rootDir/gradle/tasks")
+    if (tasksDir.exists() && tasksDir.isDirectory) {
+        tasksDir.listFiles { file -> file.extension == "kts" }?.forEach { file -> apply(from = file) }
     }
 }
