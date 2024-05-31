@@ -25,7 +25,7 @@ import edu.stanford.spezi.core.design.theme.TextStyles
  * @param content The content of the button.
  */
 @Composable
-fun SpeziButton(
+fun Button(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
@@ -49,7 +49,7 @@ fun SpeziButton(
 fun SpeziButtonDarkPreview() {
     SpeziTheme {
         Column {
-            SpeziButton(
+            Button(
                 onClick = { },
                 content = {
                     Text(text = "Text", style = TextStyles.bodyLarge)

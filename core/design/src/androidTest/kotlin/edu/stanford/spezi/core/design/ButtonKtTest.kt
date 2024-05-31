@@ -8,23 +8,23 @@ import androidx.compose.ui.test.isNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import edu.stanford.spezi.core.design.component.SpeziButton
+import edu.stanford.spezi.core.design.component.Button
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 
-class SpeziButtonKtTest {
+class ButtonKtTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
 
     @Test
-    fun speziButtonIsDisplayed() {
+    fun buttonIsDisplayed() {
         val text = "Test Button"
         composeTestRule.setContent {
             SpeziTheme {
-                SpeziButton(
+                Button(
                     onClick = { },
                     content = { Text(text = text) }
                 )
@@ -35,11 +35,11 @@ class SpeziButtonKtTest {
     }
 
     @Test
-    fun speziButton_isEnabled() {
+    fun button_isEnabled() {
         val text = "Test Button"
         composeTestRule.setContent {
             SpeziTheme {
-                SpeziButton(
+                Button(
                     onClick = { /**/ },
                     content = { Text(text = text) }
                 )
@@ -50,11 +50,11 @@ class SpeziButtonKtTest {
     }
 
     @Test
-    fun speziButton_isDisabled() {
+    fun button_isDisabled() {
         val text = "Test Button"
         composeTestRule.setContent {
             SpeziTheme {
-                SpeziButton(
+                Button(
                     onClick = { },
                     enabled = false,
                     content = { Text(text = text) }
@@ -66,12 +66,12 @@ class SpeziButtonKtTest {
     }
 
     @Test
-    fun speziButton_onClick() {
+    fun button_onClick() {
         val text = "Test Button"
         var clicked = false
         composeTestRule.setContent {
             SpeziTheme {
-                SpeziButton(
+                Button(
                     onClick = { clicked = true },
                     content = { Text(text = text) }
                 )
