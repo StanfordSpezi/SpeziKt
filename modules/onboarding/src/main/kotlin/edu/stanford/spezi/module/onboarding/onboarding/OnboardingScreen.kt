@@ -86,7 +86,7 @@ fun FeatureItem(area: Area) {
         Icon(
             painter = painterResource(id = area.iconId),
             contentDescription = "Area Icon",
-            modifier = Modifier.size(Sizes.icon),
+            modifier = Modifier.size(Sizes.iconMedium),
             tint = primary
         )
         Spacer(Modifier.width(Spacings.medium))
