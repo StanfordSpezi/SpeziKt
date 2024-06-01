@@ -47,7 +47,7 @@ class SequentialOnboardingViewModel @Inject internal constructor(
 
                     ButtonEvent.BACKWARD -> {
                         if (uiState.value.currentPage == 0) {
-                            navigator.navigateTo(NavigationEvent.OnboardingScreen)
+                            navigator.navigateTo(NavigationEvent.InvitationCodeScreen)
                             return
                         } else {
                             uiState.value.currentPage - 1
