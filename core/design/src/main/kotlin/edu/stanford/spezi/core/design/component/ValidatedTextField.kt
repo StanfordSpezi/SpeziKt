@@ -3,7 +3,6 @@ package edu.stanford.spezi.core.design.component
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -13,12 +12,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import edu.stanford.spezi.core.design.theme.Colors
+import edu.stanford.spezi.core.design.theme.TextStyles.labelSmall
 
 @Composable
 fun ValidatedTextField(
-    onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     value: String = "",
+    onValueChange: (String) -> Unit,
     labelText: String = "",
     errorText: String? = null,
     singleLine: Boolean = true,
@@ -41,8 +42,8 @@ fun ValidatedTextField(
         if (errorText != null) {
             Text(
                 text = errorText,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.error
+                style = labelSmall,
+                color = Colors.error
             )
         }
     }
