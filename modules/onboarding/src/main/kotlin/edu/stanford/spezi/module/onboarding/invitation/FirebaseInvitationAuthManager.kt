@@ -18,9 +18,12 @@ class FirebaseInvitationAuthManager @Inject constructor(
 
     override suspend fun checkInvitationCode(invitationCode: String): Result<Unit> {
         return runCatching {
-            auth.signOut()
-            val authResult = auth.signInAnonymously().await()
-            val userId = authResult.user?.uid
+            val userId = if (auth.currentUser == null) {
+                val authResult = auth.signInAnonymously().await()
+                authResult.user?.uid
+            } else {
+                auth.currentUser?.uid
+            }
 
             val data = hashMapOf(
                 "invitationCode" to invitationCode,
