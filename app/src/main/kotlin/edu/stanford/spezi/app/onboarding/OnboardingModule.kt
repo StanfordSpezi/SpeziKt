@@ -17,6 +17,8 @@ import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingRepos
 @InstallIn(SingletonComponent::class)
 class OnboardingModule {
 
+    @Module
+    @InstallIn(SingletonComponent::class)
     abstract class Bindings {
 
 
