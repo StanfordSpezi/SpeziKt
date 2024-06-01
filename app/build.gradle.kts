@@ -45,5 +45,8 @@ dependencies {
     implementation(project(":core:coroutines"))
     implementation(project(":modules:account"))
     implementation(project(":core:navigation"))
+    implementation(libs.firebase.functions.ktx)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore.ktx)
     androidTestImplementation(project(":core:testing"))
 }
