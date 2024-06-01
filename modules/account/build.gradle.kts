@@ -18,7 +18,7 @@ android {
 dependencies {
     implementation(libs.firebase.functions.ktx)
     implementation(libs.hilt.navigation.compose)
-    implementation(libs.firebase.auth)
+    implementation(libs.firebase.auth.ktx)
     implementation(libs.play.services.auth)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)

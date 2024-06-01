@@ -42,8 +42,7 @@ class LoginViewModel @Inject constructor(
                 is Action.NavigateToRegister -> {
                     when (action.type) {
                         NavigationTarget.LOGIN -> {
-                            // TODO
-                            navigator.navigateTo(NavigationEvent.BluetoothScreen)
+                            passwordSignIn()
                             it
                         }
 
@@ -55,15 +54,20 @@ class LoginViewModel @Inject constructor(
                 }
 
                 is Action.GoogleSignIn -> {
-                    signIn(action.context)
+                    googleSignIn(action.context)
                     it
                 }
             }
         }
     }
 
+    private fun passwordSignIn() {
+        // TODO()
+        navigator.navigateTo(NavigationEvent.BluetoothScreen)
+    }
+
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    private fun signIn(context: Context) {
+    private fun googleSignIn(context: Context) {
         credentialManagerAuth.handleSignIn(context, viewModelScope) {
             _uiState.update {
                 it.copy(googleIdTokenCredential = it.googleIdTokenCredential)
