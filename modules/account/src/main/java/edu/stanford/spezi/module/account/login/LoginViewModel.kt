@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val cma: CredentialManagerAuth,
+    private val credentialManagerAuth: CredentialManagerAuth,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
@@ -64,7 +64,7 @@ class LoginViewModel @Inject constructor(
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     private fun signIn(context: Context) {
-        cma.handleSignIn(context, viewModelScope) {
+        credentialManagerAuth.handleSignIn(context, viewModelScope) {
             _uiState.update {
                 it.copy(googleIdTokenCredential = it.googleIdTokenCredential)
             }
