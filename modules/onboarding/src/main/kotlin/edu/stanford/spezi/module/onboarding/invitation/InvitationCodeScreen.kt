@@ -18,8 +18,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.spezi.core.design.component.SpeziValidatedOutlinedTextField
+import edu.stanford.spezi.core.design.component.ValidatedOutlinedTextField
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Sizes
@@ -27,11 +30,21 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 
 @Composable
-fun InvitationCodeScreen(
-) {
+fun InvitationCodeScreen() {
     val viewModel = hiltViewModel<InvitationCodeViewModel>()
     val uiState by viewModel.uiState.collectAsState()
+    InvitationCodeScreen(
+        uiState = uiState,
+        onAction = viewModel::onAction
+    )
+}
 
+
+@Composable
+fun InvitationCodeScreen(
+    uiState: InvitationCodeUiState,
+    onAction: (Action) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -54,25 +67,19 @@ fun InvitationCodeScreen(
         Spacer(modifier = Modifier.height(Spacings.medium))
         Text("Please enter your invitation code to join the ENGAGE-HF study.")
         Spacer(modifier = Modifier.height(Spacings.medium))
-        SpeziValidatedOutlinedTextField(
+        ValidatedOutlinedTextField(
             value = uiState.invitationCode,
             onValueChange = {
-                viewModel.onAction(
-                    Action.UpdateInvitationCode(
-                        it,
-                        TextFieldType.INVITATION_CODE
-                    )
-                )
-                viewModel.onAction(Action.ClearError)
+                onAction(Action.UpdateInvitationCode(it))
+                onAction(Action.ClearError)
             },
             labelText = "Invitation Code",
             errorText = uiState.error,
-            isValid = uiState.error == null
         )
         Spacer(modifier = Modifier.height(Spacings.medium))
         Button(
             onClick = {
-                viewModel.onAction(Action.RedeemInvitationCode)
+                onAction(Action.ClearError)
             },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -80,9 +87,28 @@ fun InvitationCodeScreen(
         }
         Spacer(modifier = Modifier.height(Spacings.small))
         TextButton(onClick = {
-            viewModel.onAction(Action.AlreadyHasAccountPressed)
+            onAction(Action.AlreadyHasAccountPressed)
         }) {
             Text("I Already Have an Account")
         }
     }
+}
+
+private class InvitationCodeScreenProvider : PreviewParameterProvider<InvitationCodeUiState> {
+    override val values: Sequence<InvitationCodeUiState> = sequenceOf(
+        InvitationCodeUiState(invitationCode = "", error = null),
+        InvitationCodeUiState(invitationCode = "123456", error = null),
+        InvitationCodeUiState(invitationCode = "", error = "Invalid code")
+    )
+}
+
+@Preview
+@Composable
+fun InvitationCodeScreenPreview(
+    @PreviewParameter(InvitationCodeScreenProvider::class) uiState: InvitationCodeUiState
+) {
+    InvitationCodeScreen(
+        uiState = uiState,
+        onAction = { }
+    )
 }
