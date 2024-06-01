@@ -9,24 +9,15 @@ import javax.inject.Inject
 import kotlin.coroutines.resumeWithException
 
 
-class FirebaseInvitationAuthManager @Inject constructor() : InvitationAuthManager {
+class FirebaseInvitationAuthManager @Inject constructor(
+    private val functions: FirebaseFunctions,
+    private val auth: FirebaseAuth,
+) : InvitationAuthManager {
 
     private val logger by speziLogger()
 
-    private val functions: FirebaseFunctions by lazy {
-        val instance = FirebaseFunctions.getInstance()
-        instance.useEmulator("10.0.2.2", 5001)
-        instance
-    }
-
-    private val auth: FirebaseAuth by lazy {
-        val instance = FirebaseAuth.getInstance()
-        instance.useEmulator("10.0.2.2", 9099)
-        instance
-    }
-
     override suspend fun checkInvitationCode(invitationCode: String): Result<Unit> {
-        return try {
+        return runCatching {
             auth.signOut()
             val authResult = auth.signInAnonymously().await()
             val userId = authResult.user?.uid
@@ -44,17 +35,18 @@ class FirebaseInvitationAuthManager @Inject constructor() : InvitationAuthManage
 
             logger.i { "Successfully checked invitation code" }
             Result.success(Unit)
-        } catch (e: Exception) {
+        }.onFailure { e ->
             logger.e { "Failed to check invitation code: ${e.message}" }
-            Result.failure(e)
-        }
+        }.getOrNull()?.let {
+            Result.success(Unit)
+        } ?: Result.failure(Exception("Failed to check invitation code"))
     }
+}
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun <T> com.google.android.gms.tasks.Task<T>.await(): T {
-        return suspendCancellableCoroutine { cont ->
-            addOnSuccessListener { result -> cont.resume(result) { } }
-            addOnFailureListener { exception -> cont.resumeWithException(exception) }
-        }
+@OptIn(ExperimentalCoroutinesApi::class)
+suspend fun <T> com.google.android.gms.tasks.Task<T>.await(): T {
+    return suspendCancellableCoroutine { cont ->
+        addOnSuccessListener { result -> cont.resume(result) { } }
+        addOnFailureListener { exception -> cont.resumeWithException(exception) }
     }
 }
