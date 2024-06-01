@@ -1,11 +1,10 @@
 package edu.stanford.spezi.module.onboarding.invitation
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -14,8 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class InvitationCodeViewModel @Inject internal constructor(
-    private val iam: InvitationAuthManager,
-    @Dispatching.IO private val scope: CoroutineScope,
+    private val invitationAuthManager: InvitationAuthManager,
     private val navigator: Navigator
 ) : ViewModel() {
 
@@ -49,8 +47,8 @@ class InvitationCodeViewModel @Inject internal constructor(
     }
 
     private fun redeemInvitationCode() {
-        scope.launch {
-            val result = iam.checkInvitationCode(uiState.value.invitationCode)
+        viewModelScope.launch {
+            val result = invitationAuthManager.checkInvitationCode(uiState.value.invitationCode)
             if (result.isSuccess) {
                 navigator.navigateTo(NavigationEvent.RegisterScreen)
             } else {
