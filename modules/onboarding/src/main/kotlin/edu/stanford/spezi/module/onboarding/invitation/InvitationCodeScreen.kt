@@ -62,7 +62,7 @@ fun InvitationCodeScreen(
             contentDescription = "Edit Icon",
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .size(Sizes.icon)
+                .size(Sizes.iconMedium)
         )
         Spacer(modifier = Modifier.height(Spacings.medium))
         Text("Please enter your invitation code to join the ENGAGE-HF study.")
