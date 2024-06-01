@@ -29,6 +29,7 @@ fun AppNavigation(navigator: Navigator) {
                     is NavigationEvent.InvitationCodeScreen -> navController.navigate(Routes.InvitationCodeScreen)
                     is NavigationEvent.OnboardingScreen -> navController.navigate(Routes.OnboardingScreen)
                     is NavigationEvent.SequentialOnboardingScreen -> navController.navigate(Routes.SequentialOnboardingScreen)
+                    is NavigationEvent.ConsentScreen -> navController.navigate(Routes.ConsentScreen)
                 }
             }
         }
