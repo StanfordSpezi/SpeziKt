@@ -48,5 +48,6 @@ dependencies {
     implementation(libs.firebase.functions.ktx)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.storage.ktx)
     androidTestImplementation(project(":core:testing"))
 }
