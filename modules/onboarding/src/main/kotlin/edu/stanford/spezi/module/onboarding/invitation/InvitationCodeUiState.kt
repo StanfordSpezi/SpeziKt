@@ -5,12 +5,8 @@ data class InvitationCodeUiState(
     val error: String? = ""
 )
 
-enum class TextFieldType {
-    INVITATION_CODE
-}
-
 sealed interface Action {
-    data class UpdateInvitationCode(val invitationCode: String, val type: TextFieldType) : Action
+    data class UpdateInvitationCode(val invitationCode: String) : Action
 
     data object ClearError : Action
 
