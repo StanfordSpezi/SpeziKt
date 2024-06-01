@@ -104,7 +104,7 @@ private class InvitationCodeScreenProvider : PreviewParameterProvider<Invitation
 
 @Preview
 @Composable
-fun InvitationCodeScreenPreview(
+private fun InvitationCodeScreenPreview(
     @PreviewParameter(InvitationCodeScreenProvider::class) uiState: InvitationCodeUiState
 ) {
     InvitationCodeScreen(
