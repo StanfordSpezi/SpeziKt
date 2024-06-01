@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -58,8 +59,8 @@ fun OnboardingScreen(
             Spacer(modifier = Modifier.height(Spacings.small))
 
             LazyColumn {
-                items(uiState.areas.size) { index ->
-                    FeatureItem(area = uiState.areas[index])
+                items(uiState.areas) { area ->
+                    FeatureItem(area = area)
                     Spacer(modifier = Modifier.height(Spacings.medium))
                 }
             }
