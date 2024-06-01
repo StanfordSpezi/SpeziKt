@@ -7,4 +7,5 @@ sealed class NavigationEvent {
     data object InvitationCodeScreen : NavigationEvent()
     data object OnboardingScreen : NavigationEvent()
     data object SequentialOnboardingScreen : NavigationEvent()
+    data object ConsentScreen : NavigationEvent()
 }

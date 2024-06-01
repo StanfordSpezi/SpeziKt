@@ -3,12 +3,17 @@ package edu.stanford.spezi.core.design.component
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -24,6 +29,9 @@ fun ValidatedTextField(
     errorText: String? = null,
     singleLine: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    readOnly: Boolean = false,
+    trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         TextField(
@@ -38,6 +46,9 @@ fun ValidatedTextField(
             singleLine = singleLine,
             keyboardOptions = keyboardOptions,
             isError = errorText != null,
+            visualTransformation = visualTransformation,
+            trailingIcon = trailingIcon,
+            readOnly = readOnly
         )
         if (errorText != null) {
             Text(
@@ -55,10 +66,15 @@ private fun ValidatedTextFieldPreview(
     @PreviewParameter(ValidatedTextFieldProvider::class) params: ValidatedTextFieldParams
 ) {
     ValidatedTextField(
-        onValueChange = {},
         value = params.value,
+        onValueChange = {},
         labelText = params.labelText,
         errorText = params.errorText,
+        trailingIcon = {
+            IconButton(onClick = { }) {
+                Icon(Icons.Filled.Edit, contentDescription = "Select Date")
+            }
+        },
     )
 }
 

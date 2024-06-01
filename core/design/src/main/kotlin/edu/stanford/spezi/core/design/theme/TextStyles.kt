@@ -60,6 +60,11 @@ object TextStyles {
         @ReadOnlyComposable
         get() = typography.labelSmall
 
+    val labelLarge: TextStyle
+        @Composable
+        @ReadOnlyComposable
+        get() = typography.labelLarge
+
     val headlineMedium
         @Composable
         @ReadOnlyComposable

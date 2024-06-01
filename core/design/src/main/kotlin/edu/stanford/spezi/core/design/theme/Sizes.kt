@@ -6,13 +6,18 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 object Sizes {
-    val icon: Dp
+    val iconMedium: Dp
         @Composable
         @ReadOnlyComposable
         get() = 48.dp
 
-    val smallIcon: Dp
+    val iconSmall: Dp
         @Composable
         @ReadOnlyComposable
         get() = 24.dp
+
+    val iconLarge: Dp
+        @Composable
+        @ReadOnlyComposable
+        get() = 64.dp
 }
