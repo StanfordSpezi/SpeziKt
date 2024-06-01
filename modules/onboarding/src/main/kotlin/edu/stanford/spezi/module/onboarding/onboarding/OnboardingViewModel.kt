@@ -1,10 +1,9 @@
 package edu.stanford.spezi.module.onboarding.onboarding
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.navigation.Navigator
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -14,7 +13,6 @@ import javax.inject.Inject
 @HiltViewModel
 class OnboardingViewModel @Inject internal constructor(
     private val repository: OnboardingRepository,
-    @Dispatching.IO private val scope: CoroutineScope,
     private val navigator: Navigator
 ) : ViewModel() {
 
@@ -47,7 +45,7 @@ class OnboardingViewModel @Inject internal constructor(
     }
 
     private fun init() {
-        scope.launch {
+        viewModelScope.launch {
             val result = repository.getAreas()
             if (result.isSuccess) {
                 _uiState.update {
