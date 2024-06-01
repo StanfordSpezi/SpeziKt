@@ -81,7 +81,7 @@ fun ContactScreen(viewModel: ContactViewModel) {
                             Icon(
                                 contact?.icon ?: Icons.Default.AccountBox,
                                 contentDescription = "Profile Picture",
-                                modifier = Modifier.size(Sizes.icon)
+                                modifier = Modifier.size(Sizes.iconMedium)
                             )
                             Column {
                                 contact?.let {
