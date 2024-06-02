@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 sealed class Routes {
 
     @Serializable
-    data object RegisterScreen : Routes()
+    data class RegisterScreen(val isGoogleSignIn: Boolean) : Routes()
 
     @Serializable
     data class LoginScreen(val isAlreadyRegistered: @Serializable Boolean = true) : Routes()

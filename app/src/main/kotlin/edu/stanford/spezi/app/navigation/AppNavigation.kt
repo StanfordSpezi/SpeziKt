@@ -22,12 +22,19 @@ fun AppNavigation(navigator: Navigator) {
         coroutineScope.launch {
             navigator.events.collect { event ->
                 when (event) {
-                    is AccountNavigationEvent.RegisterScreen -> navController.navigate(Routes.RegisterScreen)
+                    is AccountNavigationEvent.RegisterScreen -> navController.navigate(
+                        Routes.RegisterScreen(
+                            isGoogleSignIn =
+                            event.isGoogleSignIn
+                        )
+                    )
+
                     is AccountNavigationEvent.LoginScreen -> navController.navigate(
                         Routes.LoginScreen(
                             isAlreadyRegistered = event.isAlreadyRegistered
                         )
                     )
+
                     is DefaultNavigationEvent.BluetoothScreen -> navController.navigate(Routes.BluetoothScreen)
                     is OnboardingNavigationEvent.InvitationCodeScreen -> navController.navigate(
                         Routes.InvitationCodeScreen

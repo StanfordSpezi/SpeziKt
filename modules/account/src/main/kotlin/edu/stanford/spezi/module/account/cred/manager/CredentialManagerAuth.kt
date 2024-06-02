@@ -85,7 +85,11 @@ class CredentialManagerAuth @Inject constructor(
                         if (isNewUser(googleIdTokenCredential)) {
                             logger.i { "New user detected" }
                             if (firebaseAuthManager.linkUserToGoogleAccount(googleIdTokenCredential.idToken)) {
-                                navigator.navigateTo(AccountNavigationEvent.RegisterScreen)
+                                navigator.navigateTo(
+                                    AccountNavigationEvent.RegisterScreen(
+                                        isGoogleSignIn = true
+                                    )
+                                )
                             } else {
                                 logger.e { "Failed to link user to google account" }
                             }
