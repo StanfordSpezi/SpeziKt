@@ -1,8 +1,6 @@
 package edu.stanford.spezi.module.account.cred.manager
 
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.credentials.CreateCredentialResponse
 import androidx.credentials.CreatePasswordRequest
 import androidx.credentials.CredentialManager
@@ -30,7 +28,6 @@ class CredentialManagerAuth @Inject constructor(
 ) : SignInHandler {
     private val logger by speziLogger()
 
-    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun handleSignIn(
         context: Context,
         scope: CoroutineScope,

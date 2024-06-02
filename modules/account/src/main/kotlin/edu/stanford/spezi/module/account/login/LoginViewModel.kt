@@ -67,7 +67,6 @@ class LoginViewModel @Inject constructor(
         navigator.navigateTo(DefaultNavigationEvent.BluetoothScreen)
     }
 
-    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     private fun googleSignIn(context: Context) {
         credentialManagerAuth.handleSignIn(context, viewModelScope) {
             _uiState.update {
