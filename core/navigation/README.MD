@@ -13,9 +13,11 @@ their own navigation events to custom routes by implementing this interface.
 
 ### DefaultNavigationEvent
 
-`DefaultNavigationEvent` is a sealed class that extends NavigationEvent. It defines several data
-objects representing common navigation destinations in the application provided by the SPEZI
-Framework.
+For
+example [`AccountNavigationEvent`](../../modules/account/src/main/kotlin/edu/stanford/spezi/module/account/AccountNavigationEvent.kt)
+is a sealed class that extends NavigationEvent. Each Spezi
+Module provides a implementation of `NavigationEvent` so the user has access to all public available
+navigation destinations.
 
 ### Navigator
 
