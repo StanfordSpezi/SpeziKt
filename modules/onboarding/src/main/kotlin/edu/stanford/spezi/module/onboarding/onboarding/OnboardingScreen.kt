@@ -66,7 +66,7 @@ fun OnboardingScreen(
             }
         }
         Button(
-            onClick = { viewModel.onAction(Action.OnLearnMoreClicked) },
+            onClick = { viewModel.onAction(Action.ContinueButtonAction) },
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text("Learn More")

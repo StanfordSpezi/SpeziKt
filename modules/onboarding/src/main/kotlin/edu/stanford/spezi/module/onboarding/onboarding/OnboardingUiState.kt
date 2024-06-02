@@ -6,7 +6,7 @@ package edu.stanford.spezi.module.onboarding.onboarding
 sealed class Action {
     data class UpdateArea(val areas: List<Area>) : Action()
 
-    data object OnLearnMoreClicked : Action()
+    data object ContinueButtonAction : Action()
 
 }
 

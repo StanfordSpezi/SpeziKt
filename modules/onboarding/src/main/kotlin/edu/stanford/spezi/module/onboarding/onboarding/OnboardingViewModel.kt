@@ -3,8 +3,6 @@ package edu.stanford.spezi.module.onboarding.onboarding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -14,7 +12,6 @@ import javax.inject.Inject
 @HiltViewModel
 class OnboardingViewModel @Inject internal constructor(
     private val repository: OnboardingRepository,
-    private val navigator: Navigator
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(OnboardingUiState())
@@ -22,10 +19,6 @@ class OnboardingViewModel @Inject internal constructor(
 
     init {
         init()
-    }
-
-    private fun navigateToNextScreen() {
-        navigator.navigateTo(OnboardingNavigationEvent.SequentialOnboardingScreen)
     }
 
 
@@ -37,8 +30,11 @@ class OnboardingViewModel @Inject internal constructor(
                     it.copy(areas = newAreas)
                 }
 
-                Action.OnLearnMoreClicked -> {
-                    navigateToNextScreen()
+                Action.ContinueButtonAction -> {
+                    viewModelScope.launch {
+                        val onboardingData = repository.getOnboardingData().getOrNull()
+                        onboardingData?.continueButtonAction?.invoke()
+                    }
                     it
                 }
             }
@@ -47,28 +43,18 @@ class OnboardingViewModel @Inject internal constructor(
 
     private fun init() {
         viewModelScope.launch {
-            val result = repository.getAreas()
+            val result = repository.getOnboardingData()
             if (result.isSuccess) {
                 _uiState.update {
-                    it.copy(areas = result.getOrNull() ?: emptyList())
+                    it.copy(
+                        areas = result.getOrNull()?.areas ?: emptyList(),
+                        title = result.getOrNull()?.title ?: "",
+                        subtitle = result.getOrNull()?.subTitle ?: ""
+                    )
                 }
             } else {
                 _uiState.update {
-                    it.copy(error = "Failed to load areas")
-                }
-            }
-
-            val title = repository.getTitle()
-            if (title.isSuccess) {
-                _uiState.update {
-                    it.copy(title = title.getOrNull() ?: "")
-                }
-            }
-
-            val subTitle = repository.getSubtitle()
-            if (title.isSuccess) {
-                _uiState.update {
-                    it.copy(subtitle = subTitle.getOrNull() ?: "")
+                    it.copy(error = result.exceptionOrNull()?.message ?: "Unknown error")
                 }
             }
         }
