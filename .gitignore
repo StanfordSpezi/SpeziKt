@@ -53,3 +53,8 @@ build/
 # built application files
 *.apk
 *.ap_
+
+# services and secrets
+app/google-services.json
+app/src/main/res/values/secrets.xml
+modules/account/src/main/res/values/secrets.xml
