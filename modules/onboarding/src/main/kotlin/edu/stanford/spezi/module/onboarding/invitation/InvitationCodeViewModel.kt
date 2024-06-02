@@ -12,20 +12,20 @@ import javax.inject.Inject
 @HiltViewModel
 class InvitationCodeViewModel @Inject internal constructor(
     private val invitationAuthManager: InvitationAuthManager,
-    private val invitationCodeRepository: InvitationCodeRepository,
+    invitationCodeRepository: InvitationCodeRepository,
 ) : ViewModel() {
 
     private val _uiState =
         MutableStateFlow(InvitationCodeUiState(invitationCode = "", error = null))
     val uiState = _uiState.asStateFlow()
 
-    private val screenInfo = invitationCodeRepository.getScreenData()
+    private val screenData = invitationCodeRepository.getScreenData()
 
     init {
         _uiState.update {
             it.copy(
-                title = screenInfo.title,
-                description = screenInfo.description
+                title = screenData.title,
+                description = screenData.description
             )
         }
     }
@@ -44,11 +44,12 @@ class InvitationCodeViewModel @Inject internal constructor(
                 }
 
                 Action.AlreadyHasAccountPressed -> {
-                    screenInfo.gotAnAccountAction()
+                    screenData.gotAnAccountAction()
                     it
                 }
 
                 Action.RedeemInvitationCode -> {
+                    screenData.redeemAction()
                     redeemInvitationCode()
                     it
                 }
@@ -60,7 +61,7 @@ class InvitationCodeViewModel @Inject internal constructor(
         viewModelScope.launch {
             val result = invitationAuthManager.checkInvitationCode(uiState.value.invitationCode)
             if (result.isSuccess) {
-                screenInfo.redeemAction()
+                screenData.redeemAction()
             } else {
                 _uiState.update {
                     it.copy(error = "Invitation Code is already used or incorrect")
