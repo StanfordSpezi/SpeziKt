@@ -14,7 +14,8 @@ import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScree
 
 fun NavGraphBuilder.mainGraph() {
     composable<Routes.RegisterScreen> {
-        RegisterScreen()
+        val args = it.toRoute<Routes.RegisterScreen>()
+        RegisterScreen(args.isGoogleSignIn)
     }
 
     composable<Routes.LoginScreen> {
