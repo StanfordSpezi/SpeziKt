@@ -23,7 +23,11 @@ fun AppNavigation(navigator: Navigator) {
             navigator.events.collect { event ->
                 when (event) {
                     is AccountNavigationEvent.RegisterScreen -> navController.navigate(Routes.RegisterScreen)
-                    is AccountNavigationEvent.LoginScreen -> navController.navigate(Routes.LoginScreen)
+                    is AccountNavigationEvent.LoginScreen -> navController.navigate(
+                        Routes.LoginScreen(
+                            isAlreadyRegistered = event.isAlreadyRegistered
+                        )
+                    )
                     is DefaultNavigationEvent.BluetoothScreen -> navController.navigate(Routes.BluetoothScreen)
                     is OnboardingNavigationEvent.InvitationCodeScreen -> navController.navigate(
                         Routes.InvitationCodeScreen

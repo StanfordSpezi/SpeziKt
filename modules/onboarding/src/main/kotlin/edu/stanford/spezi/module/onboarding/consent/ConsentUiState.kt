@@ -7,8 +7,16 @@ data class ConsentUiState(
     val firstName: FieldState = FieldState(value = "", error = false),
     val lastName: FieldState = FieldState(value = "", error = false),
     val paths: List<Path> = emptyList(),
-    val isValidForm: Boolean = false
-)
+    val markdownText: String = """
+        # Consent
+        The ENGAGE-HF Android Mobile Application will connect to external devices via Bluetooth to record personal health information, including weight, heart rate, and blood pressure.
+            
+        Your personal information will only be shared with the research team conducting the study.
+    """.trimIndent()
+) {
+    val isValidForm: Boolean =
+        firstName.value.isNotBlank() && lastName.value.isNotBlank() && paths.isNotEmpty()
+}
 
 data class FieldState(
     val value: String = "",

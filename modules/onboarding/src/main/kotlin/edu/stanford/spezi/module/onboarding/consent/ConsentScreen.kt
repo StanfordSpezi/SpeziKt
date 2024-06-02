@@ -35,12 +35,7 @@ private fun ConsentScreen(
     Column(modifier = Modifier.padding(Spacings.medium)) {
         Spacer(modifier = Modifier.height(Spacings.medium))
         MarkdownComponent(
-            markdownText = """
-        # Consent
-        The ENGAGE-HF Android Mobile Application will connect to external devices via Bluetooth to record personal health information, including weight, heart rate, and blood pressure.
-            
-        Your personal information will only be shared with the research team conducting the study.
-        """.trimIndent()
+            markdownText = uiState.markdownText
         )
         SignaturePad(
             uiState = uiState,
@@ -65,12 +60,10 @@ private class ConsentScreenPreviewProvider : PreviewParameterProvider<ConsentUiS
             firstName = FieldState("John"),
             lastName = FieldState("Doe"),
             paths = mutableListOf(Path().apply { lineTo(100f, 100f) }),
-            isValidForm = true,
         ), ConsentUiState(
             firstName = FieldState(""),
             lastName = FieldState(""),
             paths = mutableListOf(),
-            isValidForm = false,
         )
     )
 }

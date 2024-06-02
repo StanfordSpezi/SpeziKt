@@ -5,6 +5,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import edu.stanford.spezi.module.onboarding.consent.FirebasePdfService
+import edu.stanford.spezi.module.onboarding.consent.PdfService
 import edu.stanford.spezi.module.onboarding.invitation.FirebaseInvitationAuthManager
 import edu.stanford.spezi.module.onboarding.invitation.InvitationAuthManager
 import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeRepository
@@ -37,6 +39,11 @@ class OnboardingModule {
         abstract fun bindInvitationCodeRepository(
             defaultInvitationCodeRepository: DefaultInvitationCodeRepository
         ): InvitationCodeRepository
+
+        @Binds
+        abstract fun bindPdfService(
+            firebasePdfService: FirebasePdfService
+        ): PdfService
     }
 
     @Provides

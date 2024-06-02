@@ -9,7 +9,7 @@ sealed class Routes {
     data object RegisterScreen : Routes()
 
     @Serializable
-    data class LoginScreen(val isAlreadyRegistered: @Serializable Boolean) : Routes()
+    data class LoginScreen(val isAlreadyRegistered: @Serializable Boolean = true) : Routes()
 
     @Serializable
     data object SequentialOnboardingScreen : Routes()

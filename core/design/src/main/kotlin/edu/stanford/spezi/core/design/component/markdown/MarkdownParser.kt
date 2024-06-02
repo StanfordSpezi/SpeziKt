@@ -1,6 +1,6 @@
 package edu.stanford.spezi.core.design.component.markdown
 
-internal fun parseMarkdown(markdownText: String): List<MarkdownElement> {
+fun parseMarkdown(markdownText: String): List<MarkdownElement> {
     val elements = mutableListOf<MarkdownElement>()
     markdownText.lines().forEach { line ->
         when {
