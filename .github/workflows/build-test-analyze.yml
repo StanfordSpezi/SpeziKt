@@ -4,10 +4,6 @@ on:
   workflow_dispatch:
   workflow_call:
 
-concurrency:
-  group: build-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   buildtestandanalyze:
     name: Build, Test and Analyze
