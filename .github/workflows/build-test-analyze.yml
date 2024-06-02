@@ -37,3 +37,10 @@ jobs:
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:java-kotlin"
+      - name: Upload JaCoCo report to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: '**/build/reports/jacoco/jacocoCoverageReport/jacocoCoverageReport.xml'
+          flags: unittests
+          name: codecov-coverage
+          token: ${{ secrets.CODECOV_TOKEN }}

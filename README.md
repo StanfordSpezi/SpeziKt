@@ -1,5 +1,6 @@
-[![Android CI](https://github.com/Basler182/Spezi/actions/workflows/android.yml/badge.svg)](https://github.com/StanfordSpezi/SpeziKt/actions/workflows/android.yml)
-[![pages-build-deployment](https://github.com/Basler182/SpeziKt/actions/workflows/pages/pages-build-deployment/badge.svg?branch=gh-pages)](https://github.com/Basler182/SpeziKt/actions/workflows/pages/pages-build-deployment)
+[![Main](https://github.com/StanfordSpezi/SpeziKt/actions/workflows/main.yml/badge.svg)](https://github.com/StanfordSpezi/SpeziKt/actions/workflows/main.yml)
+[![Github Pages](https://github.com/StanfordSpezi/SpeziKt/actions/workflows/pages/pages-build-deployment/badge.svg?branch=gh-pages)](https://github.com/StanfordSpezi/SpeziKt/actions/workflows/pages/pages-build-deployment)
+[![Codecov](https://codecov.io/gh/StanfordSpezi/SpeziKt/branch/main/graph/badge.svg)](https://app.codecov.io/gh/StanfordSpezi/SpeziKt)
 
 # Spezi
 Kotlin &amp; Android Version of the Stanford Spezi Framework

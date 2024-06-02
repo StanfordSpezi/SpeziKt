@@ -9,12 +9,14 @@ plugins {
     alias(libs.plugins.dokka) version libs.versions.dokka
     alias(libs.plugins.google.devtools.ksp) version libs.versions.kspVersion apply false
     alias(libs.plugins.hilt.android) version libs.versions.hiltVersion apply false
+    jacoco
     alias(libs.plugins.jetbrains.kotlin.android) apply false
 }
 
 subprojects {
     setupDokka()
     setupDetekt()
+    setupJacoco()
 }
 
 installCustomTasks()
@@ -83,6 +85,47 @@ fun Project.setupDetekt() {
             txt.required.set(true)
             sarif.required.set(true)
         }
+    }
+}
+
+fun Project.setupJacoco() {
+    apply(plugin = "jacoco")
+    val buildDir = layout.buildDirectory.get()
+    val coverageExclusions = listOf(
+        // Android
+        "**/R.class",
+        "**/R\$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*_Hilt*.class",
+        "**/Hilt_*.class",
+        "**/*Activity.class",
+        "**/*Application.class",
+        "**/di/*Module.*",
+    )
+    val reportTask = tasks.register("jacocoCoverageReport", JacocoReport::class.java) {
+        classDirectories.setFrom(
+            fileTree("$buildDir/intermediates/classes/debug") {
+                exclude(coverageExclusions)
+            } + fileTree("$buildDir/tmp/kotlin-classes/debug") {
+                exclude(coverageExclusions)
+            }
+        )
+        reports {
+            html.required.set(true)
+            xml.required.set(true)
+        }
+
+        sourceDirectories.setFrom(files("$projectDir/src/main"))
+        executionData.setFrom(files("$buildDir/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"))
+    }
+
+    tasks.withType<Test>().configureEach {
+        configure<JacocoTaskExtension> {
+            isIncludeNoLocationClasses = true
+            excludes = listOf("jdk.internal.*")
+        }
+        finalizedBy(reportTask)
     }
 }
 
