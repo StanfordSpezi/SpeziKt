@@ -25,19 +25,37 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles.bodyLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.module.account.login.components.SignInWithGoogleButton
 import edu.stanford.spezi.module.account.login.components.TextDivider
 
+
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun LoginScreen(
-    viewModel: LoginViewModel = hiltViewModel(),
-) {
+fun LoginScreen() {
+    val viewModel = hiltViewModel<LoginViewModel>()
     val uiState by viewModel.uiState.collectAsState()
+
+    LoginScreen(
+        uiState = uiState,
+        onAction = viewModel::onAction
+    )
+}
+
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+@Composable
+internal fun LoginScreen(
+    uiState: UiState,
+    onAction: (Action) -> Unit,
+) {
+
     val context = LocalContext.current
 
     Column(
@@ -61,7 +79,7 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth(),
             value = uiState.email,
             onValueChange = { email ->
-                viewModel.onAction(Action.TextFieldUpdate(email, TextFieldType.EMAIL))
+                onAction(Action.TextFieldUpdate(email, TextFieldType.EMAIL))
             },
             label = { Text("E-Mail Address") },
             singleLine = true,
@@ -72,13 +90,13 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth(),
             value = uiState.password,
             onValueChange = {
-                viewModel.onAction(Action.TextFieldUpdate(it, TextFieldType.PASSWORD))
+                onAction(Action.TextFieldUpdate(it, TextFieldType.PASSWORD))
             },
             label = { Text("Password") },
             singleLine = true,
             visualTransformation = if (uiState.passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = { viewModel.onAction(Action.TogglePasswordVisibility) })
+            keyboardActions = KeyboardActions(onDone = { onAction(Action.TogglePasswordVisibility) })
         )
         TextButton(
             onClick = {
@@ -106,7 +124,7 @@ fun LoginScreen(
         ) {
             Text("Don't have an Account yet?")
             TextButton(onClick = {
-                viewModel.onAction(Action.NavigateToRegister(NavigationTarget.REGISTER))
+                onAction(Action.NavigateToRegister(NavigationTarget.REGISTER))
             }) {
                 Text("Signup")
             }
@@ -114,6 +132,35 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(Spacings.medium))
         TextDivider(text = "or")
         Spacer(modifier = Modifier.height(Spacings.medium))
-        SignInWithGoogleButton { viewModel.onAction(Action.GoogleSignIn(context)) }
+        SignInWithGoogleButton { onAction(Action.GoogleSignIn(context)) }
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+@Preview
+@Composable
+private fun LoginScreenPreview(
+    @PreviewParameter(LoginScreenPreviewProvider::class) uiState: UiState
+) {
+    SpeziTheme {
+        LoginScreen(
+            uiState = uiState,
+            onAction = { }
+        )
+    }
+}
+
+private class LoginScreenPreviewProvider : PreviewParameterProvider<UiState> {
+    override val values: Sequence<UiState> = sequenceOf(
+        UiState(
+            email = "",
+            password = "",
+            passwordVisibility = false,
+        ),
+        UiState(
+            email = "test@test.de",
+            password = "password",
+            passwordVisibility = true,
+        )
+    )
 }
