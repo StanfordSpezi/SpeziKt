@@ -24,13 +24,13 @@ class SequentialOnboardingViewModelTest {
 
     @Before
     fun setup() = runBlocking {
-        coEvery { repository.getSteps() } returns listOf(
+        coEvery { repository.getSequentialOnboardingData().steps } returns listOf(
             Step(title = "title", description = "description", icon = 0),
             Step(title = "title", description = "description", icon = 0)
         )
 
         sequentialOnboardingViewModel =
-            SequentialOnboardingViewModelFactory.create(navigator, repository)
+            SequentialOnboardingViewModelFactory.create(repository)
     }
 
     @Test
@@ -39,7 +39,7 @@ class SequentialOnboardingViewModelTest {
         val uiState = sequentialOnboardingViewModel.uiState.first()
 
         // then
-        verify { runBlocking { repository.getSteps() } }
+        verify { runBlocking { repository.getSequentialOnboardingData().steps } }
         assertThat(uiState.steps).isNotEmpty()
     }
 
