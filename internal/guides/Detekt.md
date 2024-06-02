@@ -22,7 +22,7 @@ Detekt plugin will create several Gradle tasks for the root project and for each
 
 It's important to note that the Detekt task is configured to automatically correct any found violations (if the issue is autocorrectable); otherwise, the fix should be performed manually.
 
-Furthermore, Detekt is configured as a job in a [Github action](https://github.com/alaegin/Detekt-Action?tab=readme-ov-file) to run on every [pull request](../../.github/workflows/pull_request.yml) pointing to the main project branch. The job is configured to comment violations in the `Files changed` section of the pull request.
+Furthermore, Detekt is configured as a job in a [Github action](https://github.com/alaegin/Detekt-Action?tab=readme-ov-file) to run on every [pull request](../../.github/workflows/build-and-test.yml) pointing to the main project branch. The job is configured to comment violations in the `Files changed` section of the pull request.
 
 ## Android Studio and local setup
 
