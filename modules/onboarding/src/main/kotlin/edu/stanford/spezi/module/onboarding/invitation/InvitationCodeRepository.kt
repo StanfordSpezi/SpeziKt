@@ -1,6 +1,6 @@
 package edu.stanford.spezi.module.onboarding.invitation
 
-import edu.stanford.spezi.core.navigation.NavigationEvent
+import edu.stanford.spezi.core.navigation.DefaultNavigationEvent
 
 interface InvitationCodeRepository {
     fun getScreenInfo(): InvitationCodeScreenInfo
@@ -9,6 +9,6 @@ interface InvitationCodeRepository {
 data class InvitationCodeScreenInfo(
     val title: String = "Title",
     val description: String = "description",
-    val redeemButtonNavigationEvent: NavigationEvent = NavigationEvent.RegisterScreen,
-    val alreadyHaveAnAccountNavigationEvent: NavigationEvent = NavigationEvent.LoginScreen
+    val redeemButtonDefaultNavigationEvent: DefaultNavigationEvent = DefaultNavigationEvent.RegisterScreen,
+    val alreadyHaveAnAccountDefaultNavigationEvent: DefaultNavigationEvent = DefaultNavigationEvent.LoginScreen
 )

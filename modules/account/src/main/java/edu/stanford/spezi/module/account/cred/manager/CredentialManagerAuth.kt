@@ -15,7 +15,7 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.core.navigation.NavigationEvent
+import edu.stanford.spezi.core.navigation.DefaultNavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.module.account.R
 import kotlinx.coroutines.CoroutineScope
@@ -87,13 +87,13 @@ class CredentialManagerAuth @Inject constructor(
                         if (isNewUser(googleIdTokenCredential)) {
                             logger.i { "New user detected" }
                             if (firebaseAuthManager.linkUserToGoogleAccount(googleIdTokenCredential.idToken)) {
-                                navigator.navigateTo(NavigationEvent.RegisterScreen)
+                                navigator.navigateTo(DefaultNavigationEvent.RegisterScreen)
                             } else {
                                 logger.e { "Failed to link user to google account" }
                             }
                         } else {
                             logger.i { "Existing user detected" }
-                            navigator.navigateTo(NavigationEvent.BluetoothScreen)
+                            navigator.navigateTo(DefaultNavigationEvent.BluetoothScreen)
                         }
                     } catch (e: GoogleIdTokenParsingException) {
                         logger.e { "Received an invalid google id token response" }

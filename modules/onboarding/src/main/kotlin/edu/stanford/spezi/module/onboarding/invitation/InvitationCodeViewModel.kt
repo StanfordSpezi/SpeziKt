@@ -46,7 +46,7 @@ class InvitationCodeViewModel @Inject internal constructor(
                 }
 
                 Action.AlreadyHasAccountPressed -> {
-                    navigator.navigateTo(screenInfo.alreadyHaveAnAccountNavigationEvent)
+                    navigator.navigateTo(screenInfo.alreadyHaveAnAccountDefaultNavigationEvent)
                     it
                 }
 
@@ -62,7 +62,7 @@ class InvitationCodeViewModel @Inject internal constructor(
         viewModelScope.launch {
             val result = invitationAuthManager.checkInvitationCode(uiState.value.invitationCode)
             if (result.isSuccess) {
-                navigator.navigateTo(screenInfo.redeemButtonNavigationEvent)
+                navigator.navigateTo(screenInfo.redeemButtonDefaultNavigationEvent)
             } else {
                 _uiState.update {
                     it.copy(error = "Invitation Code is already used or incorrect")

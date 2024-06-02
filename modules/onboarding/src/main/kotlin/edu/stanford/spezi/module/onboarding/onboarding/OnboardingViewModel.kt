@@ -24,7 +24,7 @@ class OnboardingViewModel @Inject internal constructor(
     }
 
     private fun navigateToNextScreen() {
-        navigator.navigateTo(edu.stanford.spezi.core.navigation.NavigationEvent.SequentialOnboardingScreen)
+        navigator.navigateTo(edu.stanford.spezi.core.navigation.DefaultNavigationEvent.SequentialOnboardingScreen)
     }
 
 

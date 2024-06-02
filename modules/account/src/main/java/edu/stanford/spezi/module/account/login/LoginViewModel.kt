@@ -6,7 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.spezi.core.navigation.NavigationEvent
+import edu.stanford.spezi.core.navigation.DefaultNavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.module.account.cred.manager.CredentialManagerAuth
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,7 +47,7 @@ class LoginViewModel @Inject constructor(
                         }
 
                         NavigationTarget.REGISTER -> {
-                            navigator.navigateTo(NavigationEvent.RegisterScreen)
+                            navigator.navigateTo(DefaultNavigationEvent.RegisterScreen)
                             it
                         }
                     }
@@ -63,7 +63,7 @@ class LoginViewModel @Inject constructor(
 
     private fun passwordSignIn() {
         // TODO()
-        navigator.navigateTo(NavigationEvent.BluetoothScreen)
+        navigator.navigateTo(DefaultNavigationEvent.BluetoothScreen)
     }
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
