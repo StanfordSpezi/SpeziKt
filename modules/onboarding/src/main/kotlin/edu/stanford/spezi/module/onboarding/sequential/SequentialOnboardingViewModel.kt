@@ -3,8 +3,6 @@ package edu.stanford.spezi.module.onboarding.sequential
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -15,11 +13,12 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class SequentialOnboardingViewModel @Inject internal constructor(
-    private val navigator: Navigator,
     private val repository: SequentialOnboardingRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SequentialOnboardingUiState())
     val uiState: StateFlow<SequentialOnboardingUiState> = _uiState
+
+    private lateinit var sequentialOnboardingData: SequentialOnboardingData
 
     init {
         fetchSteps()
@@ -27,8 +26,11 @@ class SequentialOnboardingViewModel @Inject internal constructor(
 
     private fun fetchSteps() {
         viewModelScope.launch {
-            val steps = repository.getSteps()
-            _uiState.value = SequentialOnboardingUiState(steps = steps)
+            sequentialOnboardingData = repository.getSequentialOnboardingData()
+            _uiState.value = SequentialOnboardingUiState(
+                steps = sequentialOnboardingData.steps,
+                actionText = sequentialOnboardingData.actionText,
+            )
         }
     }
 
@@ -38,7 +40,8 @@ class SequentialOnboardingViewModel @Inject internal constructor(
                 when (action.event) {
                     ButtonEvent.FORWARD -> {
                         if (uiState.value.currentPage == uiState.value.pageCount - 1) {
-                            navigator.navigateTo(OnboardingNavigationEvent.InvitationCodeScreen)
+                            // start case
+                            sequentialOnboardingData.onAction()
                             return
                         } else {
                             uiState.value.currentPage + 1
@@ -47,7 +50,8 @@ class SequentialOnboardingViewModel @Inject internal constructor(
 
                     ButtonEvent.BACKWARD -> {
                         if (uiState.value.currentPage == 0) {
-                            navigator.navigateTo(OnboardingNavigationEvent.InvitationCodeScreen)
+                            // skip case
+                            sequentialOnboardingData.onAction()
                             return
                         } else {
                             uiState.value.currentPage - 1
@@ -62,11 +66,10 @@ class SequentialOnboardingViewModel @Inject internal constructor(
     }
 }
 
-object SequentialOnboardingViewModelFactory {
+internal object SequentialOnboardingViewModelFactory {
     fun create(
-        navigator: Navigator,
         repository: SequentialOnboardingRepository
     ): SequentialOnboardingViewModel {
-        return SequentialOnboardingViewModel(navigator, repository)
+        return SequentialOnboardingViewModel(repository = repository)
     }
 }

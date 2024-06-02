@@ -41,7 +41,8 @@ fun PageIndicator(
     textColor: Color,
     onForward: () -> Unit,
     onBack: () -> Unit,
-    backgroundColor: Color
+    backgroundColor: Color,
+    actionText: String,
 ) {
     Row(
         modifier = Modifier
@@ -97,7 +98,7 @@ fun PageIndicator(
             onClick = { onForward() },
             content = {
                 Text(
-                    text = if (currentPage < pageCount - 1) "Forward" else "Start",
+                    text = if (currentPage < pageCount - 1) "Forward" else actionText,
                     color = textColor
                 )
                 Icon(
@@ -112,18 +113,19 @@ fun PageIndicator(
 
 @Preview
 @Composable
-fun PageIndicatorPreview(@PreviewParameter(PageIndicatorPreviewProvider::class) params: PageIndicatorPreviewParams) {
+private fun PageIndicatorPreview(@PreviewParameter(PageIndicatorPreviewProvider::class) params: PageIndicatorPreviewParams) {
     PageIndicator(
         currentPage = params.currentPage,
         pageCount = params.pageCount,
         textColor = params.textColor,
         onForward = {},
         onBack = {},
-        backgroundColor = params.backgroundColor
+        backgroundColor = params.backgroundColor,
+        actionText = "Start"
     )
 }
 
-class PageIndicatorPreviewProvider : PreviewParameterProvider<PageIndicatorPreviewParams> {
+private class PageIndicatorPreviewProvider : PreviewParameterProvider<PageIndicatorPreviewParams> {
     override val values: Sequence<PageIndicatorPreviewParams> = sequenceOf(
         PageIndicatorPreviewParams(0, 5, Color.Black, Color.White),
         PageIndicatorPreviewParams(2, 5, Color.Black, Color.White),
@@ -131,7 +133,7 @@ class PageIndicatorPreviewProvider : PreviewParameterProvider<PageIndicatorPrevi
     )
 }
 
-data class PageIndicatorPreviewParams(
+private data class PageIndicatorPreviewParams(
     val currentPage: Int,
     val pageCount: Int,
     val textColor: Color,

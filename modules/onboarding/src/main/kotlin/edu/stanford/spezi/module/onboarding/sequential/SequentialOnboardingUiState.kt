@@ -7,6 +7,7 @@ data class SequentialOnboardingUiState(
     val steps: List<Step> = emptyList(),
     val currentPage: Int = 0,
     val pageCount: Int = steps.size,
+    val actionText: String = "Start",
 )
 
 /**

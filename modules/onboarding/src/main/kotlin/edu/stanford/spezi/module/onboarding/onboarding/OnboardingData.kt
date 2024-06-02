@@ -5,5 +5,5 @@ data class OnboardingData(
     val title: String = "Title",
     val subTitle: String = "SubTitle",
     val continueButtonText: String = "Learn more",
-    val continueButtonAction: () -> Unit
+    val continueButtonAction: () -> Unit = {}
 )

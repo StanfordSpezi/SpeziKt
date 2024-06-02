@@ -2,7 +2,6 @@ package edu.stanford.spezi.app.onboarding
 
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import edu.stanford.spezi.module.onboarding.consent.FirebasePdfService
@@ -44,10 +43,10 @@ class OnboardingModule {
         abstract fun bindPdfService(
             firebasePdfService: FirebasePdfService
         ): PdfService
-    }
 
-    @Provides
-    fun provideSequentialOnboardingScreenRepository(): SequentialOnboardingRepository {
-        return DefaultSequentialOnboardingRepository()
+        @Binds
+        abstract fun bindSequentialOnboardingRepository(
+            defaultSequentialOnboardingRepository: DefaultSequentialOnboardingRepository
+        ): SequentialOnboardingRepository
     }
 }
