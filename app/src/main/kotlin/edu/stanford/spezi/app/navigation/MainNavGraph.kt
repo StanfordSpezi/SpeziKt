@@ -1,9 +1,8 @@
 package edu.stanford.spezi.app.navigation
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import edu.stanford.spezi.app.bluetooth.screen.BluetoothScreen
 import edu.stanford.spezi.module.account.login.LoginScreen
 import edu.stanford.spezi.module.account.register.RegisterScreen
@@ -13,14 +12,14 @@ import edu.stanford.spezi.module.onboarding.onboarding.OnboardingScreen
 import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreen
 
 
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 fun NavGraphBuilder.mainGraph() {
     composable<Routes.RegisterScreen> {
         RegisterScreen()
     }
 
     composable<Routes.LoginScreen> {
-        LoginScreen()
+        val args = it.toRoute<Routes.LoginScreen>()
+        LoginScreen(args.isAlreadyRegistered)
     }
 
     composable<Routes.BluetoothScreen> {

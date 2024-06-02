@@ -1,7 +1,5 @@
 package edu.stanford.spezi.module.account.login
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,21 +35,23 @@ import edu.stanford.spezi.module.account.login.components.SignInWithGoogleButton
 import edu.stanford.spezi.module.account.login.components.TextDivider
 
 
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    isAlreadyRegistered: Boolean,
+) {
     val viewModel = hiltViewModel<LoginViewModel>()
     val uiState by viewModel.uiState.collectAsState()
 
     LoginScreen(
+        isAlreadyRegistered = isAlreadyRegistered,
         uiState = uiState,
         onAction = viewModel::onAction
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 internal fun LoginScreen(
+    isAlreadyRegistered: Boolean,
     uiState: UiState,
     onAction: (Action) -> Unit,
 ) {
@@ -123,9 +123,13 @@ internal fun LoginScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text("Don't have an Account yet?")
-            TextButton(onClick = {
-                onAction(Action.NavigateToRegister(NavigationTarget.REGISTER))
-            }) {
+            TextButton(
+                enabled = !isAlreadyRegistered,
+                onClick = {
+                    onAction(Action.NavigateToRegister(NavigationTarget.REGISTER))
+                },
+
+                ) {
                 Text("Signup")
             }
         }
@@ -136,7 +140,6 @@ internal fun LoginScreen(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Preview
 @Composable
 private fun LoginScreenPreview(
@@ -144,6 +147,7 @@ private fun LoginScreenPreview(
 ) {
     SpeziTheme {
         LoginScreen(
+            isAlreadyRegistered = true,
             uiState = uiState,
             onAction = { }
         )

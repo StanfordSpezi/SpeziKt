@@ -1,10 +1,7 @@
 package edu.stanford.spezi.module.account.login.components
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
@@ -18,7 +15,6 @@ import edu.stanford.spezi.core.design.R
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun SignInWithGoogleButton(
     onButtonClick: () -> Unit,
@@ -29,7 +25,6 @@ fun SignInWithGoogleButton(
         },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Spacings.large)
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_google),
@@ -41,7 +36,6 @@ fun SignInWithGoogleButton(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Preview
 @Composable
 fun SignInWithGoogleButtonPreview() {

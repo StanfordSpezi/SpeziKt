@@ -1,7 +1,5 @@
 package edu.stanford.spezi.app.navigation
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
@@ -16,7 +14,6 @@ import kotlinx.coroutines.launch
 /**
  * The main navigation component of the app.
  */
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun AppNavigation(navigator: Navigator) {
     val navController = rememberNavController()
