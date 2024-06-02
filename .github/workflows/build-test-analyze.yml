@@ -1,33 +1,12 @@
-name: Pull Request
+name: Build, Test and Analyze
 
 on:
-  pull_request:
-    branches: [ "main" ]
-
-concurrency:
-  group: build-${{ github.ref }}
-  cancel-in-progress: true
+  workflow_dispatch:
+  workflow_call:
 
 jobs:
-  detekt:
-    name: Detekt review
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4.1.0
-        with:
-          fetch-depth: 1
-          ref: ${{ github.head_ref }}
-      - name: Detekt PR Check
-        uses: alaegin/Detekt-Action@v1.23.6
-        with:
-          reviewdog_reporter: github-pr-check
-          github_token: ${{ secrets.github_token }}
-          fail_on_error: true
-          detekt_config: internal/detekt-config.yml
-
-  buildtestanalyze:
-    name: Build, test and analyze
+  buildtestandanalyze:
+    name: Build, Test and Analyze
     runs-on: ubuntu-latest
     timeout-minutes: 120
     permissions: # needed for CodeQL steps
