@@ -1,12 +1,5 @@
 package edu.stanford.spezi.module.onboarding.invitation
 
 interface InvitationCodeRepository {
-    fun getScreenInfo(): InvitationCodeScreenInfo
+    fun getScreenData(): InvitationCodeScreenData
 }
-
-data class InvitationCodeScreenInfo(
-    val title: String = "Title",
-    val description: String = "description",
-    val redeemAction: () -> Unit,
-    val gotAnAccountAction: () -> Unit
-)

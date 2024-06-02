@@ -5,15 +5,27 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ConsentViewModel @Inject internal constructor(
-    private val pdfService: PdfService
+    private val repository: ConsentRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ConsentUiState())
     val uiState: StateFlow<ConsentUiState> = _uiState
+    private lateinit var consentData: ConsentData
+
+    init {
+        viewModelScope.launch {
+            consentData = repository.getConsentData()
+            _uiState.update {
+                it.copy(markdownText = consentData.markdownText)
+            }
+        }
+    }
+
 
     fun onAction(action: ConsentAction) {
         _uiState.value = when (action) {
@@ -39,9 +51,7 @@ class ConsentViewModel @Inject internal constructor(
 
             is ConsentAction.Consent -> {
                 viewModelScope.launch {
-                    pdfService.createPdf(
-                        uiState.value
-                    )
+                    consentData.onAction(_uiState.value)
                 }
                 _uiState.value
             }

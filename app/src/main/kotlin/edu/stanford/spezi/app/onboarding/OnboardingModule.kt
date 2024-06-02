@@ -4,6 +4,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import edu.stanford.spezi.module.onboarding.consent.ConsentRepository
 import edu.stanford.spezi.module.onboarding.consent.FirebasePdfService
 import edu.stanford.spezi.module.onboarding.consent.PdfService
 import edu.stanford.spezi.module.onboarding.invitation.FirebaseInvitationAuthManager
@@ -48,5 +49,10 @@ class OnboardingModule {
         abstract fun bindSequentialOnboardingRepository(
             defaultSequentialOnboardingRepository: DefaultSequentialOnboardingRepository
         ): SequentialOnboardingRepository
+
+        @Binds
+        abstract fun bindOnConsentRepository(
+            defaultConsentRepository: DefaultConsentRepository
+        ): ConsentRepository
     }
 }
