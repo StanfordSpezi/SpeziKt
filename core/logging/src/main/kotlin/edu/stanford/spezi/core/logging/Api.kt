@@ -46,5 +46,5 @@ fun groupLogger(tag: String, config: LoggerConfig.() -> Unit = {}) = object : Re
  */
 fun speziLogger(
     tag: String,
-    config: LoggerConfig.() -> Unit = {}
+    config: LoggerConfig.() -> Unit = {},
 ) = lazy { SpeziLogger(tag, LoggerConfig().apply(config)) }

@@ -1,3 +1,4 @@
+@file:Suppress("MagicNumber")
 package edu.stanford.spezi.core.bluetooth.data.mapper
 
 import android.bluetooth.BluetoothGattCharacteristic

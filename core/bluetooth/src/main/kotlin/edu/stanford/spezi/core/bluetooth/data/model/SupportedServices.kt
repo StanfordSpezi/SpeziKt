@@ -5,4 +5,4 @@ package edu.stanford.spezi.core.bluetooth.data.model
  *
  * @param services The list of supported BLE service types.
  */
-internal class SupportedServices(services: List<BLEServiceType>): List<BLEServiceType> by services
+internal class SupportedServices(services: List<BLEServiceType>) : List<BLEServiceType> by services

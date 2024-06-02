@@ -34,7 +34,6 @@ class ContactScreenTest {
         composeTestRule.onNodeWithText(contact.name).assertExists()
     }
 
-
     @Test
     fun contactView_displaysContactOptions() {
         val contact = ContactFactory.create(
@@ -90,15 +89,14 @@ class ContactScreenTest {
 
     @Test
     fun contactView_displaysContactDescription() {
-        val contact =
-            ContactFactory.create(description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+        val description = "Lorem ipsum dolor sit amet"
+        val contact = ContactFactory.create(description = description)
         every { mockContactRepository.getContact() } returns contact
 
         composeTestRule.setContent {
             ContactScreen(ContactViewModel(mockContactRepository))
         }
 
-        composeTestRule.onNodeWithText(mockContactRepository.getContact().description)
-            .assertExists()
+        composeTestRule.onNodeWithText(description).assertExists()
     }
 }

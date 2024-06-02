@@ -31,7 +31,7 @@ internal class PrintLogger(
     ) = buildString {
         append("($level) ")
         append("${getCurrentTag()} - ")
-        append(getMessage(message) )
+        append(getMessage(message))
         throwable?.let {
             append(" Error: $it")
         }
