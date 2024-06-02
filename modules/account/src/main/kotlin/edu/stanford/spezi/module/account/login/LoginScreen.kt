@@ -41,9 +41,9 @@ fun LoginScreen(
 ) {
     val viewModel = hiltViewModel<LoginViewModel>()
     val uiState by viewModel.uiState.collectAsState()
+    viewModel.onAction(Action.SetIsAlreadyRegistered(isAlreadyRegistered))
 
     LoginScreen(
-        isAlreadyRegistered = isAlreadyRegistered,
         uiState = uiState,
         onAction = viewModel::onAction
     )
@@ -51,7 +51,6 @@ fun LoginScreen(
 
 @Composable
 internal fun LoginScreen(
-    isAlreadyRegistered: Boolean,
     uiState: UiState,
     onAction: (Action) -> Unit,
 ) {
@@ -124,7 +123,7 @@ internal fun LoginScreen(
         ) {
             Text("Don't have an Account yet?")
             TextButton(
-                enabled = !isAlreadyRegistered,
+                enabled = !uiState.isAlreadyRegistered,
                 onClick = {
                     onAction(Action.NavigateToRegister(NavigationTarget.REGISTER))
                 },
@@ -147,7 +146,6 @@ private fun LoginScreenPreview(
 ) {
     SpeziTheme {
         LoginScreen(
-            isAlreadyRegistered = true,
             uiState = uiState,
             onAction = { }
         )
@@ -165,6 +163,7 @@ private class LoginScreenPreviewProvider : PreviewParameterProvider<UiState> {
             email = "test@test.de",
             password = "password",
             passwordVisibility = true,
+            isAlreadyRegistered = true
         )
     )
 }

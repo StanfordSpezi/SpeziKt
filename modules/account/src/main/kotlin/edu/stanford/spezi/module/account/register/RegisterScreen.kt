@@ -51,10 +51,12 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun RegisterScreen() {
-
+fun RegisterScreen(
+    isGoogleSignIn: Boolean
+) {
     val viewModel = hiltViewModel<RegisterViewModel>()
     val uiState by viewModel.uiState.collectAsState()
+    viewModel.onAction(Action.SetIsGoogleSignIn(isGoogleSignIn))
 
     RegisterScreen(
         uiState = uiState,
@@ -108,16 +110,18 @@ fun RegisterScreen(
             errorText = uiState.email.error,
         )
         VerticalSpacer(height = Spacings.small)
-        ValidatedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = uiState.password.value,
-            onValueChange = {
-                onAction(Action.TextFieldUpdate(it, TextFieldType.PASSWORD))
-            },
-            labelText = "Password",
-            errorText = uiState.password.error,
-            visualTransformation = PasswordVisualTransformation(),
-        )
+        if (!uiState.isGoogleSignIn) {
+            ValidatedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = uiState.password.value,
+                onValueChange = {
+                    onAction(Action.TextFieldUpdate(it, TextFieldType.PASSWORD))
+                },
+                labelText = "Password",
+                errorText = uiState.password.error,
+                visualTransformation = PasswordVisualTransformation(),
+            )
+        }
         VerticalSpacer()
         Text("NAME", style = labelLarge)
         ValidatedTextField(
@@ -241,6 +245,7 @@ private class RegisterScreenProvider : PreviewParameterProvider<RegisterUiState>
         RegisterUiState(
             email = FieldState("test@test.de", null),
             password = FieldState("password", null),
+            isGoogleSignIn = true,
             firstName = FieldState("John", null),
             lastName = FieldState("Doe", null),
             selectedGender = FieldState("Male", null),

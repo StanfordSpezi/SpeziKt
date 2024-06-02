@@ -9,7 +9,8 @@ data class UiState(
     val passwordVisibility: Boolean = false,
     val showProgress: Boolean = false,
     val showFilterByAuthorizedAccounts: Boolean = true,
-    val googleIdTokenCredential: GoogleIdTokenCredential? = null
+    val googleIdTokenCredential: GoogleIdTokenCredential? = null,
+    val isAlreadyRegistered: Boolean = false,
 )
 
 enum class TextFieldType {
@@ -25,4 +26,6 @@ sealed interface Action {
     data object TogglePasswordVisibility : Action
     data class NavigateToRegister(val type: NavigationTarget) : Action
     data class GoogleSignIn(val context: Context) : Action
+
+    data class SetIsAlreadyRegistered(val isAlreadyRegistered: Boolean) : Action
 }

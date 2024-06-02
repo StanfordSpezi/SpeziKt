@@ -59,6 +59,8 @@ class LoginViewModel @Inject constructor(
                     googleSignIn(action.context)
                     it
                 }
+
+                is Action.SetIsAlreadyRegistered -> it.copy(isAlreadyRegistered = action.isAlreadyRegistered)
             }
         }
     }

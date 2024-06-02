@@ -22,10 +22,8 @@ class RegisterViewModel @Inject internal constructor(
 ) : ViewModel() {
     private val logger by speziLogger()
 
-
     private val _uiState = MutableStateFlow(RegisterUiState())
     val uiState = _uiState.asStateFlow()
-
 
     init {
         val firebaseUser = firebaseAuthManager.getUserData()
@@ -98,6 +96,8 @@ class RegisterViewModel @Inject internal constructor(
                     )
 
                 }
+
+                is Action.SetIsGoogleSignIn -> it.copy(isGoogleSignIn = action.isGoogleSignIn)
             }
         }
     }
