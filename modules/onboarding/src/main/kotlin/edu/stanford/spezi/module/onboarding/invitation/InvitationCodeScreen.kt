@@ -65,7 +65,7 @@ fun InvitationCodeScreen(
                 .size(Sizes.iconMedium)
         )
         Spacer(modifier = Modifier.height(Spacings.medium))
-        Text("Please enter your invitation code to join the ENGAGE-HF study.")
+        Text(uiState.description)
         Spacer(modifier = Modifier.height(Spacings.medium))
         ValidatedOutlinedTextField(
             value = uiState.invitationCode,
@@ -96,9 +96,24 @@ fun InvitationCodeScreen(
 
 private class InvitationCodeScreenProvider : PreviewParameterProvider<InvitationCodeUiState> {
     override val values: Sequence<InvitationCodeUiState> = sequenceOf(
-        InvitationCodeUiState(invitationCode = "", error = null),
-        InvitationCodeUiState(invitationCode = "123456", error = null),
-        InvitationCodeUiState(invitationCode = "", error = "Invalid code")
+        InvitationCodeUiState(
+            invitationCode = "",
+            error = null,
+            description = "Please enter your invitation code to join the ENGAGE-HF study.",
+            title = "Invitation Code"
+        ),
+        InvitationCodeUiState(
+            invitationCode = "123456",
+            error = null,
+            description = "Please enter your invitation code to join the ENGAGE-HF study.",
+            title = "Invitation Code"
+        ),
+        InvitationCodeUiState(
+            invitationCode = "",
+            error = "Invalid code",
+            description = "Please enter your invitation code to join the ENGAGE-HF study.",
+            title = "Invitation Code"
+        )
     )
 }
 

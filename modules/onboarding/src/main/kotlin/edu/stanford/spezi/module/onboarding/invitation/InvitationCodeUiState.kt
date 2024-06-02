@@ -1,6 +1,8 @@
 package edu.stanford.spezi.module.onboarding.invitation
 
 data class InvitationCodeUiState(
+    val title: String = "",
+    val description: String = "",
     val invitationCode: String = "",
     val error: String? = ""
 )

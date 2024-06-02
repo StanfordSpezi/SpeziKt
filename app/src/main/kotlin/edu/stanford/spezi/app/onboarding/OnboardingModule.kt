@@ -7,6 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import edu.stanford.spezi.module.onboarding.invitation.FirebaseInvitationAuthManager
 import edu.stanford.spezi.module.onboarding.invitation.InvitationAuthManager
+import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeRepository
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingRepository
 import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingRepository
 
@@ -31,6 +32,11 @@ class OnboardingModule {
         abstract fun bindOnboardingRepository(
             defaultOnboardingRepository: DefaultOnboardingRepository
         ): OnboardingRepository
+
+        @Binds
+        abstract fun bindInvitationCodeRepository(
+            defaultInvitationCodeRepository: DefaultInvitationCodeRepository
+        ): InvitationCodeRepository
     }
 
     @Provides
