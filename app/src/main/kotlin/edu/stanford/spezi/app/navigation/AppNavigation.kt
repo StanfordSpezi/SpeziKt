@@ -9,6 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import edu.stanford.spezi.core.navigation.DefaultNavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.module.account.AccountNavigationEvent
+import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
 import kotlinx.coroutines.launch
 
 /**
@@ -23,16 +25,19 @@ fun AppNavigation(navigator: Navigator) {
         coroutineScope.launch {
             navigator.events.collect { event ->
                 when (event) {
-                    is DefaultNavigationEvent.RegisterScreen -> navController.navigate(Routes.RegisterScreen)
-                    is DefaultNavigationEvent.LoginScreen -> navController.navigate(Routes.LoginScreen)
+                    is AccountNavigationEvent.RegisterScreen -> navController.navigate(Routes.RegisterScreen)
+                    is AccountNavigationEvent.LoginScreen -> navController.navigate(Routes.LoginScreen)
                     is DefaultNavigationEvent.BluetoothScreen -> navController.navigate(Routes.BluetoothScreen)
-                    is DefaultNavigationEvent.InvitationCodeScreen -> navController.navigate(Routes.InvitationCodeScreen)
-                    is DefaultNavigationEvent.OnboardingScreen -> navController.navigate(Routes.OnboardingScreen)
-                    is DefaultNavigationEvent.SequentialOnboardingScreen -> navController.navigate(
+                    is OnboardingNavigationEvent.InvitationCodeScreen -> navController.navigate(
+                        Routes.InvitationCodeScreen
+                    )
+
+                    is OnboardingNavigationEvent.OnboardingScreen -> navController.navigate(Routes.OnboardingScreen)
+                    is OnboardingNavigationEvent.SequentialOnboardingScreen -> navController.navigate(
                         Routes.SequentialOnboardingScreen
                     )
 
-                    is DefaultNavigationEvent.ConsentScreen -> navController.navigate(Routes.ConsentScreen)
+                    is OnboardingNavigationEvent.ConsentScreen -> navController.navigate(Routes.ConsentScreen)
                 }
             }
         }

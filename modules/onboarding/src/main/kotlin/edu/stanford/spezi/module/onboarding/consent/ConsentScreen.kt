@@ -65,12 +65,12 @@ private class ConsentScreenPreviewProvider : PreviewParameterProvider<ConsentUiS
             firstName = FieldState("John"),
             lastName = FieldState("Doe"),
             paths = mutableListOf(Path().apply { lineTo(100f, 100f) }),
-            isValidForm = true
+            isValidForm = true,
         ), ConsentUiState(
             firstName = FieldState(""),
             lastName = FieldState(""),
             paths = mutableListOf(),
-            isValidForm = false
+            isValidForm = false,
         )
     )
 }

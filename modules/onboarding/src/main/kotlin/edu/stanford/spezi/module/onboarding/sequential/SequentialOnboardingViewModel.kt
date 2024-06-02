@@ -3,8 +3,8 @@ package edu.stanford.spezi.module.onboarding.sequential
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.spezi.core.navigation.DefaultNavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -38,7 +38,7 @@ class SequentialOnboardingViewModel @Inject internal constructor(
                 when (action.event) {
                     ButtonEvent.FORWARD -> {
                         if (uiState.value.currentPage == uiState.value.pageCount - 1) {
-                            navigator.navigateTo(DefaultNavigationEvent.InvitationCodeScreen)
+                            navigator.navigateTo(OnboardingNavigationEvent.InvitationCodeScreen)
                             return
                         } else {
                             uiState.value.currentPage + 1
@@ -47,7 +47,7 @@ class SequentialOnboardingViewModel @Inject internal constructor(
 
                     ButtonEvent.BACKWARD -> {
                         if (uiState.value.currentPage == 0) {
-                            navigator.navigateTo(DefaultNavigationEvent.InvitationCodeScreen)
+                            navigator.navigateTo(OnboardingNavigationEvent.InvitationCodeScreen)
                             return
                         } else {
                             uiState.value.currentPage - 1

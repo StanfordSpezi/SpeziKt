@@ -17,6 +17,7 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingExcept
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.DefaultNavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.module.account.AccountNavigationEvent
 import edu.stanford.spezi.module.account.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -87,7 +88,7 @@ class CredentialManagerAuth @Inject constructor(
                         if (isNewUser(googleIdTokenCredential)) {
                             logger.i { "New user detected" }
                             if (firebaseAuthManager.linkUserToGoogleAccount(googleIdTokenCredential.idToken)) {
-                                navigator.navigateTo(DefaultNavigationEvent.RegisterScreen)
+                                navigator.navigateTo(AccountNavigationEvent.RegisterScreen)
                             } else {
                                 logger.e { "Failed to link user to google account" }
                             }

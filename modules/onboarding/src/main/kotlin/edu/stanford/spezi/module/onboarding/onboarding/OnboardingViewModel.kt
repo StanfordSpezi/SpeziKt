@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -24,7 +25,7 @@ class OnboardingViewModel @Inject internal constructor(
     }
 
     private fun navigateToNextScreen() {
-        navigator.navigateTo(edu.stanford.spezi.core.navigation.DefaultNavigationEvent.SequentialOnboardingScreen)
+        navigator.navigateTo(OnboardingNavigationEvent.SequentialOnboardingScreen)
     }
 
 

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.spezi.core.navigation.DefaultNavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.module.account.AccountNavigationEvent
 import edu.stanford.spezi.module.account.cred.manager.CredentialManagerAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -47,7 +48,7 @@ class LoginViewModel @Inject constructor(
                         }
 
                         NavigationTarget.REGISTER -> {
-                            navigator.navigateTo(DefaultNavigationEvent.RegisterScreen)
+                            navigator.navigateTo(AccountNavigationEvent.RegisterScreen)
                             it
                         }
                     }
