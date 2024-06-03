@@ -71,7 +71,6 @@ private fun AdditionalInfo(uiState: BluetoothUiState) {
     Text(text = text)
 }
 
-
 @Composable
 fun DeviceComposable(device: DeviceUiModel) {
     ElevatedCard(modifier = Modifier.fillMaxWidth()) {

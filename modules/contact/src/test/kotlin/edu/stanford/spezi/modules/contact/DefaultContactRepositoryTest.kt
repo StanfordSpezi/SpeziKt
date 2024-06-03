@@ -21,9 +21,7 @@ class DefaultContactRepositoryTest {
         with(contact) {
             assertThat(name).isEqualTo("Leland Stanford")
             assertThat(title).isEqualTo("CEO")
-            assertThat(description).isEqualTo(
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-            )
+            assertThat(description).isEqualTo("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
             assertThat(organization).isEqualTo("Stanford University")
             assertThat(address).isEqualTo("450 Jane Stanford Way Stanford, CA")
             assertThat(options.size).isEqualTo(3)

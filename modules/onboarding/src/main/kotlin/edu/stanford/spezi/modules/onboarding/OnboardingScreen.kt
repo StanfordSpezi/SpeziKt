@@ -10,7 +10,6 @@ fun OnboardingScreen() {
     Text(text = "Onboarding Screen")
 }
 
-
 @Preview
 @Composable
 fun OnboardingScreenPreview() {

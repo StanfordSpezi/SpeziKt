@@ -1,3 +1,4 @@
+@file:Suppress("Filename")
 package edu.stanford.spezi.core.utils
 
 import androidx.compose.runtime.Composable

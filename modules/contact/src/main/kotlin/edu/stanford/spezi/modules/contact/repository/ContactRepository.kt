@@ -26,7 +26,7 @@ class DefaultContactRepository : ContactRepository {
             icon = null,
             name = "Leland Stanford",
             title = "CEO",
-            description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
             organization = "Stanford University",
             address = "450 Jane Stanford Way Stanford, CA",
             options = listOf(
