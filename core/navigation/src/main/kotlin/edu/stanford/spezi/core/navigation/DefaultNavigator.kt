@@ -1,11 +1,10 @@
-package edu.stanford.spezi.app.navigation
+package edu.stanford.spezi.core.navigation
 
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.core.navigation.NavigationEvent
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 
-class DefaultNavigator : edu.stanford.spezi.core.navigation.Navigator {
+class DefaultNavigator : Navigator {
     private val logger by speziLogger()
 
     private val _events =
