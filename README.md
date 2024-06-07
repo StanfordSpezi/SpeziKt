@@ -1,4 +1,4 @@
-[![Android CI](https://github.com/StanfordSpezi/Spezi/actions/workflows/android.yml/badge.svg)](https://github.com/StanfordSpezi/SpeziKt/actions/workflows/android.yml)
+[![Android CI](https://github.com/StanfordSpezi/SpeziKt/actions/workflows/android.yml/badge.svg)](https://github.com/StanfordSpezi/SpeziKt/actions/workflows/android.yml)
 [![pages-build-deployment](https://github.com/StanfordSpezi/SpeziKt/actions/workflows/pages/pages-build-deployment/badge.svg?branch=gh-pages)](https://github.com/StanfordSpezi/SpeziKt/actions/workflows/pages/pages-build-deployment)
 
 # Spezi
