@@ -17,8 +17,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.TextStyles.labelSmall
 
 @Composable
 fun ValidatedTextField(
@@ -46,17 +44,17 @@ fun ValidatedTextField(
             singleLine = singleLine,
             keyboardOptions = keyboardOptions,
             isError = errorText != null,
+            supportingText = {
+                if (errorText != null) {
+                    Text(
+                        text = errorText,
+                    )
+                }
+            },
             visualTransformation = visualTransformation,
             trailingIcon = trailingIcon,
             readOnly = readOnly
         )
-        if (errorText != null) {
-            Text(
-                text = errorText,
-                style = labelSmall,
-                color = Colors.error
-            )
-        }
     }
 }
 
