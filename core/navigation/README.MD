@@ -1,6 +1,6 @@
 # Module navigation
 
-This module provides a structured approach to handling navigation events in the SPEZI Framework. The
+This module provides a structured approach to handling navigation events in the Spezi Framework. The
 module defines navigation events and a navigator interface to manage navigation within the app.
 
 ## Components
