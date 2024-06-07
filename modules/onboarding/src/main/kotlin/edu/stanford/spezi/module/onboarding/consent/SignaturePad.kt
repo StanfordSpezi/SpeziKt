@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -67,6 +68,18 @@ internal fun SignaturePad(
             )
             Spacer(modifier = Modifier.height(Spacings.medium))
             Row(modifier = Modifier.fillMaxWidth()) {
+                FilledTonalButton(
+                    onClick = {
+                        if (uiState.paths.isNotEmpty()) {
+                            onAction(ConsentAction.Undo)
+                        }
+                    },
+                    enabled = uiState.paths.isNotEmpty(),
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text("Undo")
+                }
+                Spacer(modifier = Modifier.width(Spacings.medium))
                 Button(
                     onClick = {
                         onAction(ConsentAction.Consent)
@@ -75,20 +88,6 @@ internal fun SignaturePad(
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("I Consent")
-                }
-
-                Spacer(modifier = Modifier.width(Spacings.medium))
-
-                Button(
-                    onClick = {
-                        if (uiState.paths.isNotEmpty()) {
-                            onAction(ConsentAction.Undo)
-                        }
-                    },
-                    enabled = uiState.paths.isNotEmpty(),
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text("Undo")
                 }
             }
         }
@@ -102,12 +101,13 @@ internal fun SignaturePad(
 private fun SignaturePadPreview(
     @PreviewParameter(SignaturePadPreviewProvider::class) data: SignaturePadPreviewData
 ) {
-    SignatureCanvas(
-        paths = data.paths,
-        firstName = data.firstName,
-        lastName = data.lastName,
-        onPathAdd = { }
-    )
+    SignaturePad(
+        uiState = ConsentUiState(
+            firstName = FieldState(data.firstName),
+            lastName = FieldState(data.lastName),
+            paths = data.paths
+        )
+    ) {}
 }
 
 private data class SignaturePadPreviewData(
