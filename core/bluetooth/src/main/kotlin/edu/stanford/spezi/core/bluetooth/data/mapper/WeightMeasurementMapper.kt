@@ -1,3 +1,4 @@
+@file:Suppress("MagicNumber")
 package edu.stanford.spezi.core.bluetooth.data.mapper
 
 import android.bluetooth.BluetoothGattCharacteristic
@@ -35,10 +36,9 @@ internal class WeightMeasurementMapper @Inject constructor() : MeasurementMapper
         return if (recognises(characteristic).not()) null else runCatching { interpretWeightMeasurement(data) }.getOrNull()
     }
 
-
     private fun interpretWeightMeasurement(data: ByteArray): Measurement.Weight {
         val flags = data[0]
-        val unitKg = (flags and 0b00000001).toInt() == 0  // Check if bit 0 is 0 for kg, 1 for lb
+        val unitKg = (flags and 0b00000001).toInt() == 0 // Check if bit 0 is 0 for kg, 1 for lb
 
         val weight = if (unitKg) {
             // Kilograms, resolution of 0.005 kg
@@ -49,26 +49,30 @@ internal class WeightMeasurementMapper @Inject constructor() : MeasurementMapper
         }
 
         val zonedDateTime = if (flags and 0b00000010 > 0) {
-
             val year = data[3].toInt() and 0xFF or (data[4].toInt() and 0xFF shl 8)
             val month = data[5].toInt()
             val day = data[6].toInt()
             val hour = data[7].toInt()
             val minute = data[8].toInt()
             val second = data[9].toInt()
-            if (year == 0 || month == 0 || day == 0) null
-            else {
+            if (year == 0 || month == 0 || day == 0) {
+                null
+            } else {
                 val localDateTime = LocalDateTime.of(year, month, day, hour, minute, second)
                 val zoneId = ZoneId.systemDefault()
                 ZonedDateTime.of(localDateTime, zoneId)
             }
-        } else null
+        } else {
+            null
+        }
 
         val userId = if (flags and 0b00000100 > 0) data[10].toInt() else null
-        val bmi =
-            if (flags and 0b00001000 > 0) (data[11].toInt() and 0xFF or (data[12].toInt() and 0xFF shl 8)) * 0.1 else null
-        val height =
-            if (flags and 0b00001000 > 0) (data[13].toInt() and 0xFF or (data[14].toInt() and 0xFF shl 8)) * (if (unitKg) 0.005 else 0.1) else null
+        val bmi = if (flags and 0b00001000 > 0) (data[11].toInt() and 0xFF or (data[12].toInt() and 0xFF shl 8)) * 0.1 else null
+        val height = if (flags and 0b00001000 > 0) {
+            (data[13].toInt() and 0xFF or (data[14].toInt() and 0xFF shl 8)) * (if (unitKg) 0.005 else 0.1)
+        } else {
+            null
+        }
 
         return Measurement.Weight(
             weight = weight,

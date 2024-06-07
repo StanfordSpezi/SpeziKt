@@ -11,6 +11,7 @@ import edu.stanford.spezi.core.logging.SpeziLogger
  * of [SpeziLogger] which requires it to be visible outside of the component for the inline function to access it.
  * @see [SpeziLogger] for the reasoning behind inline functions.
  */
+@Suppress("ClassNaming")
 sealed interface _Logger {
     val tag: String
     val messagePrefix: String?

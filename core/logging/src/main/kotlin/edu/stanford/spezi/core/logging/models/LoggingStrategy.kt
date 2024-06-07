@@ -19,5 +19,5 @@ enum class LoggingStrategy {
     /**
      * The logging strategy that logs messages using the Log utility.
      */
-    LOG
+    LOG,
 }

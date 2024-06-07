@@ -41,7 +41,6 @@ object Colors {
         @ReadOnlyComposable
         get() = scheme.onPrimary
 
-
     val onSecondary
         @Composable
         @ReadOnlyComposable
@@ -51,7 +50,6 @@ object Colors {
         @Composable
         @ReadOnlyComposable
         get() = scheme.onTertiary
-
 
     val onBackground
         @Composable

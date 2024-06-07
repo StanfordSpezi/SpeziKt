@@ -103,7 +103,7 @@ internal class BLEDeviceScanner @Inject constructor(
         /**
          * Event indicating that a BLE device was found during scanning.
          */
-        data class DeviceFound(val device: BluetoothDevice): Event
+        data class DeviceFound(val device: BluetoothDevice) : Event
 
         /**
          * Event indicating a failure during scanning.

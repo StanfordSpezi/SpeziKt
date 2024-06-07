@@ -14,8 +14,17 @@ object ContactFactory {
         description: String = "",
         organization: String = "",
         address: String = "",
-        options: List<ContactOption> = emptyList()
+        options: List<ContactOption> = emptyList(),
     ): Contact {
-        return Contact(id, icon, name, title, description, organization, address, options)
+        return Contact(
+            id = id,
+            icon = icon,
+            name = name,
+            title = title,
+            description = description,
+            organization = organization,
+            address = address,
+            options = options,
+        )
     }
 }

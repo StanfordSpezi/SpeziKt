@@ -175,5 +175,7 @@ class CoroutinesModule {
      * @return The [CoroutineScope] instance.
      */
     @VisibleForTesting
-    internal fun buildCoroutine(dispatcher: CoroutineDispatcher) = CoroutineScope(context = dispatcher + SupervisorJob())
+    internal fun buildCoroutine(
+        dispatcher: CoroutineDispatcher,
+    ): CoroutineScope = CoroutineScope(context = dispatcher + SupervisorJob())
 }

@@ -38,4 +38,3 @@ class LoggerConfig internal constructor() {
         SpeziLogger.GLOBAL_CONFIG?.invoke(this)
     }
 }
-
