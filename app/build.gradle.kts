@@ -27,6 +27,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            buildConfigField("boolean", "USE_FIREBASE_EMULATOR", "false")
+        }
+        debug {
+            buildConfigField("boolean", "USE_FIREBASE_EMULATOR", "true")
         }
     }
 }

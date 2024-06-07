@@ -8,6 +8,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import edu.stanford.spezi.app.BuildConfig
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -17,21 +18,29 @@ class FirebaseModule {
 
     @Provides
     fun provideFirebaseFunctions(): FirebaseFunctions = FirebaseFunctions.getInstance().apply {
-        useEmulator(host, 5001)
+        if (BuildConfig.USE_FIREBASE_EMULATOR) {
+            useEmulator(host, 5001)
+        }
     }
 
     @Provides
     fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance().apply {
-        useEmulator(host, 9099)
+        if (BuildConfig.USE_FIREBASE_EMULATOR) {
+            useEmulator(host, 9099)
+        }
     }
 
     @Provides
     fun provideFirebaseFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance().apply {
-        useEmulator(host, 8080)
+        if (BuildConfig.USE_FIREBASE_EMULATOR) {
+            useEmulator(host, 8080)
+        }
     }
 
     @Provides
     fun provideFirebaseStorage(): FirebaseStorage = FirebaseStorage.getInstance().apply {
-        useEmulator(host, 9199)
+        if (BuildConfig.USE_FIREBASE_EMULATOR) {
+            useEmulator(host, 9199)
+        }
     }
 }
