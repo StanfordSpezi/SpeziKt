@@ -154,7 +154,6 @@ private fun TypographyPreview() {
                 text = "TextStyles.labelSmall",
                 style = labelSmall
             )
-
         }
     }
 }

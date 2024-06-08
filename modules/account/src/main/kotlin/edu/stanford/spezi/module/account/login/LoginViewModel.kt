@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val navigator: Navigator,

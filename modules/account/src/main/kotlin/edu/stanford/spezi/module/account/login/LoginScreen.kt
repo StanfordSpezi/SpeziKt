@@ -34,7 +34,6 @@ import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.module.account.login.components.SignInWithGoogleButton
 import edu.stanford.spezi.module.account.login.components.TextDivider
 
-
 @Composable
 fun LoginScreen(
     isAlreadyRegistered: Boolean,
@@ -54,7 +53,6 @@ internal fun LoginScreen(
     uiState: UiState,
     onAction: (Action) -> Unit,
 ) {
-
     val context = LocalContext.current
 
     Column(
@@ -142,7 +140,7 @@ internal fun LoginScreen(
 @Preview
 @Composable
 private fun LoginScreenPreview(
-    @PreviewParameter(LoginScreenPreviewProvider::class) uiState: UiState
+    @PreviewParameter(LoginScreenPreviewProvider::class) uiState: UiState,
 ) {
     SpeziTheme {
         LoginScreen(

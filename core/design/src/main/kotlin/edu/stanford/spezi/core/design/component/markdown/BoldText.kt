@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
 import edu.stanford.spezi.core.design.theme.TextStyles
 
-
 @Composable
 internal fun BoldText(element: MarkdownElement.Bold) {
     BasicText(

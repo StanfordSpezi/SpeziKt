@@ -13,12 +13,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
 class RegisterViewModel @Inject internal constructor(
     private val navigator: Navigator,
     private val firebaseAuthManager: FirebaseAuthManager,
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
 ) : ViewModel() {
     private val logger by speziLogger()
 
@@ -94,7 +93,6 @@ class RegisterViewModel @Inject internal constructor(
                         dateOfBirthError = if (isDobValid(it.dateOfBirth)) null else "Please select valid date of birth",
                         isFormValid = isFormValid(it)
                     )
-
                 }
 
                 is Action.SetIsGoogleSignIn -> it.copy(isGoogleSignIn = action.isGoogleSignIn)

@@ -21,9 +21,9 @@ fun isDobValid(dateOfBirth: LocalDate?): Boolean =
     dateOfBirth != null && dateOfBirth.isBefore(LocalDate.now())
 
 fun isFormValid(uiState: RegisterUiState): Boolean =
-    isEmailValid(uiState.email.value)
-            && isPasswordValid(uiState.password.value)
-            && isFirstNameValid(uiState.firstName.value)
-            && isLastNameValid(uiState.lastName.value)
-            && isGenderValid(uiState.selectedGender.value)
-            && isDobValid(uiState.dateOfBirth)
+    isEmailValid(uiState.email.value) &&
+            isPasswordValid(uiState.password.value) &&
+            isFirstNameValid(uiState.firstName.value) &&
+            isLastNameValid(uiState.lastName.value) &&
+            isGenderValid(uiState.selectedGender.value) &&
+            isDobValid(uiState.dateOfBirth)

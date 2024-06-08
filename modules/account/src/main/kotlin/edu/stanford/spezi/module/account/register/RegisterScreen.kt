@@ -52,7 +52,7 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun RegisterScreen(
-    isGoogleSignIn: Boolean
+    isGoogleSignIn: Boolean,
 ) {
     val viewModel = hiltViewModel<RegisterViewModel>()
     val uiState by viewModel.uiState.collectAsState()
@@ -70,7 +70,6 @@ fun RegisterScreen(
     uiState: RegisterUiState,
     onAction: (Action) -> Unit,
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -177,7 +176,6 @@ fun RegisterScreen(
             errorText = uiState.selectedGender.error,
         )
 
-
         VerticalSpacer(height = Spacings.small)
         var isDatePickerDialogOpen by remember { mutableStateOf(false) }
         ValidatedTextField(
@@ -221,7 +219,7 @@ fun RegisterScreen(
 @Preview
 @Composable
 private fun RegisterScreenPreview(
-    @PreviewParameter(RegisterScreenProvider::class) uiState: RegisterUiState
+    @PreviewParameter(RegisterScreenProvider::class) uiState: RegisterUiState,
 ) {
     SpeziTheme {
         RegisterScreen(

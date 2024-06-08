@@ -1,6 +1,5 @@
 package edu.stanford.spezi.core.design.component.markdown
 
-
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -44,7 +43,7 @@ private fun MarkdownPreview() {
                             - Item 1
                             - Item 2
                             - Item 3
-                        """.trimIndent()
+            """.trimIndent()
         )
     }
 }

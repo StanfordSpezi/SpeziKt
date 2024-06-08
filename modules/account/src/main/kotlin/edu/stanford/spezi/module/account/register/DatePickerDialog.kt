@@ -18,7 +18,7 @@ import java.time.ZoneId
 @Composable
 fun DatePickerDialog(
     onDateSelected: (LocalDate) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
         override fun isSelectableDate(utcTimeMillis: Long): Boolean {
@@ -58,7 +58,6 @@ fun DatePickerDialog(
         )
     }
 }
-
 
 private fun convertMillisToDate(millis: Long): LocalDate {
     return Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate()

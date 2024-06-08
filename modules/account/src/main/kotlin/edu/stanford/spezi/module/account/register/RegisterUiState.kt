@@ -18,7 +18,7 @@ data class RegisterUiState(
 
 data class FieldState(
     val value: String = "",
-    val error: String? = null
+    val error: String? = null,
 )
 
 enum class TextFieldType {

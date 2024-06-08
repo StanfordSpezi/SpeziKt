@@ -8,6 +8,6 @@ interface SignInHandler {
     fun handleSignIn(
         context: Context,
         scope: CoroutineScope,
-        updateUiState: (GoogleIdTokenCredential) -> Unit
+        updateUiState: (GoogleIdTokenCredential) -> Unit,
     )
 }

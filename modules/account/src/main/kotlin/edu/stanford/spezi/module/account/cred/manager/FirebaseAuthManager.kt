@@ -12,7 +12,6 @@ import java.time.LocalDate
 import javax.inject.Inject
 import kotlin.coroutines.resumeWithException
 
-
 class FirebaseAuthManager @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
@@ -26,7 +25,6 @@ class FirebaseAuthManager @Inject constructor(
         }
     }
 
-
     suspend fun login(email: String, password: String): Boolean {
         return try {
             val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
@@ -35,7 +33,6 @@ class FirebaseAuthManager @Inject constructor(
             false
         }
     }
-
 
     suspend fun checkIfNewUser(account: GoogleIdTokenCredential): AuthResult? {
         return runCatching {
@@ -67,7 +64,7 @@ class FirebaseAuthManager @Inject constructor(
         firstName: String,
         lastName: String,
         selectedGender: String,
-        dateOfBirth: LocalDate?
+        dateOfBirth: LocalDate?,
     ) {
         runCatching {
             if (password != null) {
@@ -93,4 +90,3 @@ class FirebaseAuthManager @Inject constructor(
         }
     }
 }
-

@@ -24,14 +24,14 @@ import javax.inject.Inject
 class CredentialManagerAuth @Inject constructor(
     private val credentialManager: CredentialManager,
     private val firebaseAuthManager: FirebaseAuthManager,
-    private val navigator: Navigator
+    private val navigator: Navigator,
 ) : SignInHandler {
     private val logger by speziLogger()
 
     override fun handleSignIn(
         context: Context,
         scope: CoroutineScope,
-        updateUiState: (GoogleIdTokenCredential) -> Unit
+        updateUiState: (GoogleIdTokenCredential) -> Unit,
     ) {
         scope.launch {
             var result = getCredential(context, true)
@@ -45,7 +45,7 @@ class CredentialManagerAuth @Inject constructor(
 
     private suspend fun getCredential(
         context: Context,
-        filterByAuthorizedAccounts: Boolean
+        filterByAuthorizedAccounts: Boolean,
     ): GetCredentialResponse? {
         val googleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
@@ -69,7 +69,7 @@ class CredentialManagerAuth @Inject constructor(
 
     private suspend fun handleSignIn(
         result: GetCredentialResponse,
-        updateUiState: (GoogleIdTokenCredential) -> Unit
+        updateUiState: (GoogleIdTokenCredential) -> Unit,
     ) {
         when (val credential = result.credential) {
             is CustomCredential -> {
