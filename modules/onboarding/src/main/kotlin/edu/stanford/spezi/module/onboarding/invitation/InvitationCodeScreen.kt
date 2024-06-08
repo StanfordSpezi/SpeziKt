@@ -79,7 +79,7 @@ fun InvitationCodeScreen(
         Spacer(modifier = Modifier.height(Spacings.medium))
         Button(
             onClick = {
-                onAction(Action.ClearError)
+                onAction(Action.RedeemInvitationCode)
             },
             modifier = Modifier.fillMaxWidth(),
         ) {
