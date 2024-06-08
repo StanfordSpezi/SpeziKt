@@ -14,33 +14,39 @@ import edu.stanford.spezi.app.BuildConfig
 @InstallIn(SingletonComponent::class)
 class FirebaseModule {
 
-    private val host = "10.0.2.2"
+    companion object {
+        private const val FIREBASE_EMULATOR_HOST = "10.0.2.2"
+        private const val FIREBASE_FUNCTIONS_EMULATOR_PORT = 5001
+        private const val FIREBASE_AUTH_EMULATOR_PORT = 9099
+        private const val FIREBASE_FIRESTORE_EMULATOR_PORT = 8080
+        private const val FIREBASE_STORAGE_EMULATOR_PORT = 9199
+    }
 
     @Provides
     fun provideFirebaseFunctions(): FirebaseFunctions = FirebaseFunctions.getInstance().apply {
         if (BuildConfig.USE_FIREBASE_EMULATOR) {
-            useEmulator(host, 5001)
+            useEmulator(FIREBASE_EMULATOR_HOST, FIREBASE_FUNCTIONS_EMULATOR_PORT)
         }
     }
 
     @Provides
     fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance().apply {
         if (BuildConfig.USE_FIREBASE_EMULATOR) {
-            useEmulator(host, 9099)
+            useEmulator(FIREBASE_EMULATOR_HOST, FIREBASE_AUTH_EMULATOR_PORT)
         }
     }
 
     @Provides
     fun provideFirebaseFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance().apply {
         if (BuildConfig.USE_FIREBASE_EMULATOR) {
-            useEmulator(host, 8080)
+            useEmulator(FIREBASE_EMULATOR_HOST, FIREBASE_FIRESTORE_EMULATOR_PORT)
         }
     }
 
     @Provides
     fun provideFirebaseStorage(): FirebaseStorage = FirebaseStorage.getInstance().apply {
         if (BuildConfig.USE_FIREBASE_EMULATOR) {
-            useEmulator(host, 9199)
+            useEmulator(FIREBASE_EMULATOR_HOST, FIREBASE_STORAGE_EMULATOR_PORT)
         }
     }
 }

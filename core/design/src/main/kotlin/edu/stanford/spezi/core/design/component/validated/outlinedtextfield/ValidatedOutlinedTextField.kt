@@ -45,11 +45,10 @@ fun ValidatedOutlinedTextField(
     }
 }
 
-
 @Preview
 @Composable
 private fun ValidatedOutlinedTextFieldPreview(
-    @PreviewParameter(ValidatedOutlinedTextFieldProvider::class) params: ValidatedOutlinedTextFieldParams
+    @PreviewParameter(ValidatedOutlinedTextFieldProvider::class) params: ValidatedOutlinedTextFieldParams,
 ) {
     ValidatedOutlinedTextField(
         onValueChange = {},
@@ -70,5 +69,3 @@ private val data =
         labelText = "Label",
         errorText = "The input is invalid",
     )
-
-

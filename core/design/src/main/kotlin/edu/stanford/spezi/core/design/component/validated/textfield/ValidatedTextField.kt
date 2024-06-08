@@ -61,7 +61,7 @@ fun ValidatedTextField(
 @Preview
 @Composable
 private fun ValidatedTextFieldPreview(
-    @PreviewParameter(ValidatedTextFieldProvider::class) params: ValidatedTextFieldParams
+    @PreviewParameter(ValidatedTextFieldProvider::class) params: ValidatedTextFieldParams,
 ) {
     ValidatedTextField(
         value = params.value,
@@ -87,7 +87,6 @@ private val data =
         labelText = "Label",
         errorText = "The input is invalid",
     )
-
 
 private data class ValidatedTextFieldParams(
     val value: String,
