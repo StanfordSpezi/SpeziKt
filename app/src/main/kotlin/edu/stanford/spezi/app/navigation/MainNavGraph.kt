@@ -11,7 +11,6 @@ import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeScreen
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingScreen
 import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreen
 
-
 fun NavGraphBuilder.mainGraph() {
     composable<Routes.RegisterScreen> {
         val args = it.toRoute<Routes.RegisterScreen>()
