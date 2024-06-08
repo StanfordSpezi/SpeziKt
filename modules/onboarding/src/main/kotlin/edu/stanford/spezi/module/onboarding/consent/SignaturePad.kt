@@ -11,8 +11,8 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -29,7 +29,7 @@ internal fun SignaturePad(
     onAction: (ConsentAction) -> Unit,
 ) {
     Column {
-        TextField(
+        OutlinedTextField(
             value = uiState.firstName.value,
             onValueChange = {
                 onAction(ConsentAction.TextFieldUpdate(it, TextFieldType.FIRST_NAME))
@@ -41,7 +41,7 @@ internal fun SignaturePad(
             trailingIcon = { Icon(Icons.Filled.Info, contentDescription = "Information Icon") }
         )
         Spacer(modifier = Modifier.height(Spacings.small))
-        TextField(
+        OutlinedTextField(
             value = uiState.lastName.value,
             onValueChange = {
                 onAction(ConsentAction.TextFieldUpdate(it, TextFieldType.LAST_NAME))
@@ -49,6 +49,7 @@ internal fun SignaturePad(
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Last Name") },
             isError = uiState.lastName.error,
+            singleLine = true,
             trailingIcon = {
                 Icon(
                     Icons.Filled.Info,
@@ -95,11 +96,10 @@ internal fun SignaturePad(
 }
 
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Preview
 @Composable
 private fun SignaturePadPreview(
-    @PreviewParameter(SignaturePadPreviewProvider::class) data: SignaturePadPreviewData
+    @PreviewParameter(SignaturePadPreviewProvider::class) data: SignaturePadPreviewData,
 ) {
     SignaturePad(
         uiState = ConsentUiState(
@@ -113,7 +113,7 @@ private fun SignaturePadPreview(
 private data class SignaturePadPreviewData(
     val paths: MutableList<Path>,
     val firstName: String,
-    val lastName: String
+    val lastName: String,
 )
 
 private class SignaturePadPreviewProvider : PreviewParameterProvider<SignaturePadPreviewData> {
