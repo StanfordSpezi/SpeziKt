@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class DefaultConsentRepository @Inject internal constructor(
+class EngageConsentRepository @Inject internal constructor(
     private val pdfService: PdfService,
     private val navigator: Navigator,
     @Dispatching.IO private val ioScope: CoroutineScope,
@@ -23,7 +23,7 @@ class DefaultConsentRepository @Inject internal constructor(
         The ENGAGE-HF Android Mobile Application will connect to external devices via Bluetooth to record personal health information, including weight, heart rate, and blood pressure.
             
         Your personal information will only be shared with the research team conducting the study.
-    """.trimIndent(),
+            """.trimIndent(),
             onAction = {
                 ioScope.launch {
                     pdfService.createPdf(it)

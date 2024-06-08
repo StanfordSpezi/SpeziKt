@@ -6,8 +6,8 @@ import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeRepository
 import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeScreenData
 import javax.inject.Inject
 
-class DefaultInvitationCodeRepository @Inject constructor(
-    private val navigator: Navigator
+class EngageInvitationCodeRepository @Inject constructor(
+    private val navigator: Navigator,
 ) : InvitationCodeRepository {
 
     override fun getScreenData(): InvitationCodeScreenData {

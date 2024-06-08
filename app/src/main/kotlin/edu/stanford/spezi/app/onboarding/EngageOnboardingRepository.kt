@@ -8,8 +8,8 @@ import edu.stanford.spezi.module.onboarding.onboarding.OnboardingData
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingRepository
 import javax.inject.Inject
 
-class DefaultOnboardingRepository @Inject constructor(
-    private val navigator: Navigator
+class EngageOnboardingRepository @Inject constructor(
+    private val navigator: Navigator,
 ) : OnboardingRepository {
 
     override suspend fun getOnboardingData(): Result<OnboardingData> = Result.success(

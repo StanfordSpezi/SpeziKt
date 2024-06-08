@@ -24,35 +24,34 @@ class OnboardingModule {
     @InstallIn(SingletonComponent::class)
     abstract class Bindings {
 
-
         @Binds
         abstract fun bindInvitationAuthManager(
-            firebaseInvitationAuthManager: FirebaseInvitationAuthManager
+            firebaseInvitationAuthManager: FirebaseInvitationAuthManager,
         ): InvitationAuthManager
 
         @Binds
         abstract fun bindOnboardingRepository(
-            defaultOnboardingRepository: DefaultOnboardingRepository
+            engageOnboardingRepository: EngageOnboardingRepository,
         ): OnboardingRepository
 
         @Binds
         abstract fun bindInvitationCodeRepository(
-            defaultInvitationCodeRepository: DefaultInvitationCodeRepository
+            engageInvitationCodeRepository: EngageInvitationCodeRepository,
         ): InvitationCodeRepository
 
         @Binds
         abstract fun bindPdfService(
-            firebasePdfService: FirebasePdfService
+            firebasePdfService: FirebasePdfService,
         ): PdfService
 
         @Binds
         abstract fun bindSequentialOnboardingRepository(
-            defaultSequentialOnboardingRepository: DefaultSequentialOnboardingRepository
+            engageSequentialOnboardingRepository: EngageSequentialOnboardingRepository,
         ): SequentialOnboardingRepository
 
         @Binds
         abstract fun bindOnConsentRepository(
-            defaultConsentRepository: DefaultConsentRepository
+            engageConsentRepository: EngageConsentRepository,
         ): ConsentRepository
     }
 }

@@ -8,10 +8,11 @@ import edu.stanford.spezi.module.onboarding.sequential.Step
 import javax.inject.Inject
 
 /**
- * A implementation of [edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingRepository] that provides a list of steps to be shown in the sequential onboarding screen.
+ * A implementation of [edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingRepository]
+ * that provides a list of steps to be shown in the sequential onboarding screen.
  */
-class DefaultSequentialOnboardingRepository @Inject internal constructor(
-    private val navigator: Navigator
+class EngageSequentialOnboardingRepository @Inject internal constructor(
+    private val navigator: Navigator,
 ) : SequentialOnboardingRepository {
     override suspend fun getSequentialOnboardingData(): SequentialOnboardingData {
         return SequentialOnboardingData(
