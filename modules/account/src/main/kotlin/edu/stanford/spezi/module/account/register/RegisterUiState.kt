@@ -13,7 +13,7 @@ data class RegisterUiState(
     val isDropdownMenuExpanded: Boolean = false,
     val isFormValid: Boolean = false,
     val genderOptions: List<String> = listOf("Male", "Female", "Other"),
-    val isGoogleSignIn: Boolean = false,
+    val isGoogleSignUp: Boolean = false,
 )
 
 data class FieldState(
@@ -35,5 +35,5 @@ sealed interface Action {
     data class DropdownMenuExpandedUpdate(val isExpanded: Boolean) : Action
     data object OnRegisterPressed : Action
 
-    data class SetIsGoogleSignIn(val isGoogleSignIn: Boolean) : Action
+    data class SetIsGoogleSignUp(val isGoogleSignUp: Boolean) : Action
 }

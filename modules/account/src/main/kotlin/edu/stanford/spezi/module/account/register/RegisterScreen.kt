@@ -25,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,11 +53,17 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun RegisterScreen(
-    isGoogleSignIn: Boolean,
+    isGoogleSignUp: Boolean,
+    email: String,
+    password: String,
 ) {
     val viewModel = hiltViewModel<RegisterViewModel>()
     val uiState by viewModel.uiState.collectAsState()
-    viewModel.onAction(Action.SetIsGoogleSignIn(isGoogleSignIn))
+    LaunchedEffect(key1 = isGoogleSignUp, key2 = email, key3 = password) {
+        viewModel.onAction(Action.SetIsGoogleSignUp(isGoogleSignUp))
+        viewModel.onAction(Action.TextFieldUpdate(email, TextFieldType.EMAIL))
+        viewModel.onAction(Action.TextFieldUpdate(password, TextFieldType.PASSWORD))
+    }
 
     RegisterScreen(
         uiState = uiState,
@@ -109,7 +116,7 @@ fun RegisterScreen(
             errorText = uiState.email.error,
         )
         VerticalSpacer(height = Spacings.small)
-        if (!uiState.isGoogleSignIn) {
+        if (!uiState.isGoogleSignUp) {
             ValidatedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = uiState.password.value,
@@ -243,7 +250,7 @@ private class RegisterScreenProvider : PreviewParameterProvider<RegisterUiState>
         RegisterUiState(
             email = FieldState("test@test.de", null),
             password = FieldState("password", null),
-            isGoogleSignIn = true,
+            isGoogleSignUp = true,
             firstName = FieldState("John", null),
             lastName = FieldState("Doe", null),
             selectedGender = FieldState("Male", null),
