@@ -8,7 +8,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.ActionProvider
-import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.module.account.cred.manager.CredentialRegisterManagerAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,10 +18,10 @@ import javax.inject.Named
 
 @HiltViewModel
 class RegisterViewModel @Inject internal constructor(
-    private val navigator: Navigator,
     private val credentialRegisterManagerAuth: CredentialRegisterManagerAuth,
     @ApplicationContext private val appContext: Context,
     @Named("account-register") private val actionProvider: ActionProvider,
+    private val validator: RegisterFormValidator,
 ) : ViewModel() {
     private val logger by speziLogger()
 
@@ -43,12 +42,12 @@ class RegisterViewModel @Inject internal constructor(
                         TextFieldType.LAST_NAME -> it.copy(lastName = newValue)
                         TextFieldType.GENDER -> it.copy(selectedGender = newValue)
                     }
-                    updatedUiState.copy(isFormValid = isFormValid(updatedUiState))
+                    updatedUiState.copy(isFormValid = validator.isFormValid(updatedUiState))
                 }
 
                 is Action.DateFieldUpdate -> {
                     val updatedUiState = it.copy(dateOfBirth = action.newValue)
-                    updatedUiState.copy(isFormValid = isFormValid(updatedUiState))
+                    updatedUiState.copy(isFormValid = validator.isFormValid(updatedUiState))
                 }
 
                 is Action.DropdownMenuExpandedUpdate -> {
@@ -56,7 +55,7 @@ class RegisterViewModel @Inject internal constructor(
                 }
 
                 Action.OnRegisterPressed -> {
-                    if (isFormValid(it)) {
+                    if (validator.isFormValid(it)) {
                         viewModelScope.launch {
                             val result = if (it.isGoogleSignUp) {
                                 logger.i { "Google sign up: $googleCredential" }
@@ -87,23 +86,23 @@ class RegisterViewModel @Inject internal constructor(
                         }
                     }
                     it.copy(
-                        email = it.email.copy(error = if (isEmailValid(it.email.value)) null else "Invalid email"),
+                        email = it.email.copy(error = if (validator.isEmailValid(it.email.value)) null else "Invalid email"),
                         password = it.password.copy(
-                            error = if (isPasswordValid(it.password.value)) {
+                            error = if (validator.isPasswordValid(it.password.value)) {
                                 null
                             } else {
                                 "Password must be at least 6 characters"
                             }
                         ),
                         firstName = it.firstName.copy(
-                            error = if (isFirstNameValid(it.firstName.value)) {
+                            error = if (validator.isFirstNameValid(it.firstName.value)) {
                                 null
                             } else {
                                 "First name cannot be empty"
                             }
                         ),
                         lastName = it.lastName.copy(
-                            error = if (isLastNameValid(it.lastName.value)) {
+                            error = if (validator.isLastNameValid(it.lastName.value)) {
                                 null
                             } else {
                                 "Last name cannot be empty"
@@ -111,18 +110,18 @@ class RegisterViewModel @Inject internal constructor(
                         ),
                         selectedGender = it.selectedGender.copy(
                             error =
-                            if (isGenderValid(it.selectedGender.value)) {
+                            if (validator.isGenderValid(it.selectedGender.value)) {
                                 null
                             } else {
                                 "Please select valid gender"
                             }
                         ),
-                        dateOfBirthError = if (isDobValid(it.dateOfBirth)) {
+                        dateOfBirthError = if (validator.isDobValid(it.dateOfBirth)) {
                             null
                         } else {
                             "Please select valid date of birth"
                         },
-                        isFormValid = isFormValid(it)
+                        isFormValid = validator.isFormValid(it)
                     )
                 }
 
