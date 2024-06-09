@@ -30,9 +30,9 @@ replay_pid*
 !.idea/copyright
 # Keep the code styles.
 !/.idea/codeStyles
-/.idea/codeStyles/*
 !/.idea/codeStyles/Project.xml
 !/.idea/codeStyles/codeStyleConfig.xml
+!/.idea/detekt.xml
 
 # Gradle cache
 .gradle
