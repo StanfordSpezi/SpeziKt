@@ -1,3 +1,4 @@
+@file:Suppress("FunctionName", "LongParameterList", "UnusedPrivateMember")
 package edu.stanford.spezi.core.design.component.validated.textfield
 
 import androidx.compose.foundation.layout.Column
