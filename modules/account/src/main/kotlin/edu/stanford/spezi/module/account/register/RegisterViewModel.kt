@@ -1,51 +1,35 @@
 package edu.stanford.spezi.module.account.register
 
+import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.core.navigation.ActionProvider
 import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.module.account.cred.manager.FirebaseAuthManager
+import edu.stanford.spezi.module.account.cred.manager.CredentialRegisterManagerAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Named
 
 @HiltViewModel
 class RegisterViewModel @Inject internal constructor(
     private val navigator: Navigator,
-    private val firebaseAuthManager: FirebaseAuthManager,
-    private val firestore: FirebaseFirestore,
+    private val credentialRegisterManagerAuth: CredentialRegisterManagerAuth,
+    @ApplicationContext private val appContext: Context,
+    @Named("account-register") private val actionProvider: ActionProvider,
 ) : ViewModel() {
     private val logger by speziLogger()
 
     private val _uiState = MutableStateFlow(RegisterUiState())
     val uiState = _uiState.asStateFlow()
 
-    init {
-        val firebaseUser = firebaseAuthManager.getUserData()
-        if (firebaseUser != null) {
-            _uiState.update {
-                RegisterUiState(
-                    email = FieldState(value = firebaseUser.email ?: ""),
-                    password = FieldState(value = ""),
-                    firstName = FieldState(
-                        value = (firebaseUser.displayName ?: firebaseUser).toString().split(" ")[0]
-                    ),
-                    lastName = FieldState(
-                        value = (firebaseUser.displayName ?: firebaseUser).toString().split(" ")[1]
-                    ),
-                    selectedGender = FieldState(value = ""),
-                    dateOfBirth = null,
-                    dateOfBirthError = null,
-                    isDropdownMenuExpanded = false,
-                    isFormValid = false,
-                )
-            }
-        }
-    }
+    private var googleCredential: String? = null
 
     fun onAction(action: Action) {
         _uiState.update {
@@ -74,28 +58,108 @@ class RegisterViewModel @Inject internal constructor(
                 Action.OnRegisterPressed -> {
                     if (isFormValid(it)) {
                         viewModelScope.launch {
-                            firebaseAuthManager.signUp(
-                                uiState.value.email.value,
-                                uiState.value.password.value,
-                                uiState.value.firstName.value,
-                                uiState.value.lastName.value,
-                                uiState.value.selectedGender.value,
-                                uiState.value.dateOfBirth
-                            )
+                            val result = if (it.isGoogleSignUp) {
+                                logger.i { "Google sign up: $googleCredential" }
+                                credentialRegisterManagerAuth.googleSignUp(
+                                    idToken = googleCredential!!,
+                                    firstName = uiState.value.firstName.value,
+                                    lastName = uiState.value.lastName.value,
+                                    selectedGender = uiState.value.selectedGender.value,
+                                    dateOfBirth = uiState.value.dateOfBirth!!,
+                                    email = uiState.value.email.value,
+                                )
+                            } else {
+                                credentialRegisterManagerAuth.passwordAndEmailSignUp(
+                                    email = uiState.value.email.value,
+                                    password = uiState.value.password.value,
+                                    firstName = uiState.value.firstName.value,
+                                    lastName = uiState.value.lastName.value,
+                                    selectedGender = uiState.value.selectedGender.value,
+                                    dateOfBirth = uiState.value.dateOfBirth!!,
+                                )
+                            }
+                            if (result.isSuccess) {
+                                actionProvider.provideContinueButtonAction().invoke()
+                            } else {
+                                Toast.makeText(appContext, "Failed to sign up", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
                         }
                     }
                     it.copy(
                         email = it.email.copy(error = if (isEmailValid(it.email.value)) null else "Invalid email"),
-                        password = it.password.copy(error = if (isPasswordValid(it.password.value)) null else "Password must be at least 6 characters"),
-                        firstName = it.firstName.copy(error = if (isFirstNameValid(it.firstName.value)) null else "First name cannot be empty"),
-                        lastName = it.lastName.copy(error = if (isLastNameValid(it.lastName.value)) null else "Last name cannot be empty"),
-                        selectedGender = it.selectedGender.copy(error = if (isGenderValid(it.selectedGender.value)) null else "Please select valid gender"),
-                        dateOfBirthError = if (isDobValid(it.dateOfBirth)) null else "Please select valid date of birth",
+                        password = it.password.copy(
+                            error = if (isPasswordValid(it.password.value)) {
+                                null
+                            } else {
+                                "Password must be at least 6 characters"
+                            }
+                        ),
+                        firstName = it.firstName.copy(
+                            error = if (isFirstNameValid(it.firstName.value)) {
+                                null
+                            } else {
+                                "First name cannot be empty"
+                            }
+                        ),
+                        lastName = it.lastName.copy(
+                            error = if (isLastNameValid(it.lastName.value)) {
+                                null
+                            } else {
+                                "Last name cannot be empty"
+                            }
+                        ),
+                        selectedGender = it.selectedGender.copy(
+                            error =
+                            if (isGenderValid(it.selectedGender.value)) {
+                                null
+                            } else {
+                                "Please select valid gender"
+                            }
+                        ),
+                        dateOfBirthError = if (isDobValid(it.dateOfBirth)) {
+                            null
+                        } else {
+                            "Please select valid date of birth"
+                        },
                         isFormValid = isFormValid(it)
                     )
                 }
 
-                is Action.SetIsGoogleSignIn -> it.copy(isGoogleSignIn = action.isGoogleSignIn)
+                is Action.SetIsGoogleSignUp -> {
+                    if (action.isGoogleSignUp) {
+                        initializeGoogleSignUp()
+                    }
+                    it.copy(isGoogleSignUp = action.isGoogleSignUp)
+                }
+            }
+        }
+    }
+
+    private fun initializeGoogleSignUp() {
+        viewModelScope.launch {
+            val credential = credentialRegisterManagerAuth.getGoogleSignUpCredential(appContext)
+            credential?.let {
+                onAction(
+                    Action.TextFieldUpdate(
+                        it.displayName.toString().split(" ")[0],
+                        TextFieldType.FIRST_NAME,
+                    )
+                )
+                onAction(
+                    Action.TextFieldUpdate(
+                        it.displayName.toString().split(" ")[1],
+                        TextFieldType.LAST_NAME,
+                    )
+                )
+                googleCredential = it.idToken
+            } ?: run {
+                Toast.makeText(appContext, "Failed to get Google account", Toast.LENGTH_SHORT)
+                    .show()
+                _uiState.update {
+                    // swap to email sign up when google fails
+                    it.copy(isGoogleSignUp = false)
+                }
             }
         }
     }
