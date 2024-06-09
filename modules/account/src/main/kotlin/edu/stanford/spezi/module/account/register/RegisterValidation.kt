@@ -1,3 +1,4 @@
+@file:Suppress("MagicNumber")
 package edu.stanford.spezi.module.account.register
 
 import java.time.LocalDate
@@ -21,9 +22,17 @@ fun isDobValid(dateOfBirth: LocalDate?): Boolean =
     dateOfBirth != null && dateOfBirth.isBefore(LocalDate.now())
 
 fun isFormValid(uiState: RegisterUiState): Boolean =
-    isEmailValid(uiState.email.value) &&
+    if (uiState.isGoogleSignUp) {
+        isEmailValid(uiState.email.value) &&
+                isFirstNameValid(uiState.firstName.value) &&
+                isLastNameValid(uiState.lastName.value) &&
+                isGenderValid(uiState.selectedGender.value) &&
+                isDobValid(uiState.dateOfBirth)
+    } else {
+        isEmailValid(uiState.email.value) &&
             isPasswordValid(uiState.password.value) &&
             isFirstNameValid(uiState.firstName.value) &&
             isLastNameValid(uiState.lastName.value) &&
             isGenderValid(uiState.selectedGender.value) &&
             isDobValid(uiState.dateOfBirth)
+    }
