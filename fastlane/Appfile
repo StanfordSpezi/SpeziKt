@@ -6,4 +6,4 @@
 # SPDX-License-Identifier: MIT
 #
 
-package_name("edu.stanford.spezi.app")
+package_name("edu.stanford.bdh.engagehf")

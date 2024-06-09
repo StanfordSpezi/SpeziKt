@@ -16,10 +16,27 @@ platform :android do
 
   desc "Deploy a new version to the Google Play (Alpha)"
   lane :alpha do
+    version_codes = google_play_track_version_codes(
+      track: "alpha",
+      json_key_data: ENV['SERVICE_ACCOUNT_JSON_KEY']
+    )
+
+    if version_codes.nil? || version_codes.empty?
+      previous_version_code = 0
+    else
+      previous_version_code = version_codes.max
+    end
+
+    current_version_code = previous_version_code + 1
+
+    UI.message("Previous version code: #{previous_version_code}")
+    UI.message("Current version code: #{current_version_code}")
+
     gradle(
-      task: "clean assembleRelease",
+      task: "clean bundle",
+      build_type: 'Release',
       properties: {
-        "android.injected.version.code" => 100,
+        "android.injected.version.code" => current_version_code,
         "android.injected.version.name" => "1.0.0",
         "android.injected.signing.store.file" => "keystore.jks",
         "android.injected.signing.store.password" => ENV['KEY_PASSWORD'],
@@ -29,7 +46,7 @@ platform :android do
     )
     upload_to_play_store(
       track: 'alpha',
-      json_key_data: ENV['FASTLANE_SERVICE_ACCOUNT_JSON_KEY']
+      json_key_data: ENV['SERVICE_ACCOUNT_JSON_KEY']
     )
   end
 end
