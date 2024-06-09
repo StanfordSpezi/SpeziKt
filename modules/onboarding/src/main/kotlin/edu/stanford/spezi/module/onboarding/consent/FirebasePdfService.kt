@@ -16,22 +16,20 @@ class FirebasePdfService @Inject internal constructor(
     private val logger by speziLogger()
 
     override suspend fun uploadPdf(pdfBytes: ByteArray): Boolean {
-        kotlin.runCatching {
+        return kotlin.runCatching {
             withContext(Dispatchers.IO) {
                 firebaseAuth.uid?.let { uid ->
                     val inputStream = ByteArrayInputStream(pdfBytes)
                     logger.i { "Uploading file to Firebase Storage" }
-                    val reference = firebaseStorage.getReference("users/$uid/signature.pdf")
-                        .putStream(inputStream).result.metadata?.reference
-                    reference?.downloadUrl?.await()
-                }
+                    val uploadTask = firebaseStorage.getReference("users/$uid/signature.pdf")
+                        .putStream(inputStream)
+                    uploadTask.await()
+                    uploadTask.isSuccessful
+                } ?: false
             }
-        }.onSuccess {
-            return true
-        }.onFailure {
+        }.getOrElse {
             logger.e(it) { "Failed to upload PDF to Firebase Storage" }
-            return false
+            false
         }
-        return false
     }
 }
