@@ -1,3 +1,11 @@
+#
+# This source file is part of the Stanford Spezi open-source project
+#
+# SPDX-FileCopyrightText: 2024 Stanford University
+#
+# SPDX-License-Identifier: MIT
+#
+
 name: Build, Test and Analyze
 
 on:
@@ -14,17 +22,16 @@ jobs:
       packages: read
       actions: read
       contents: read
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.1.0
+        uses: actions/checkout@v4
       - name: Initialize CodeQL # CodeQL init should happen before project build!
         uses: github/codeql-action/init@v3
         with:
           languages: java-kotlin
           build-mode: manual
       - name: Set up JDK 17
-        uses: actions/setup-java@v3.13.0
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'

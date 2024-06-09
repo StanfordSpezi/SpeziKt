@@ -1,3 +1,11 @@
+#
+# This source file is part of the Stanford Spezi open-source project
+#
+# SPDX-FileCopyrightText: 2024 Stanford University
+#
+# SPDX-License-Identifier: MIT
+#
+
 name: Pull Request
 
 on:
@@ -25,8 +33,6 @@ jobs:
           github_token: ${{ secrets.github_token }}
           fail_on_error: true
           detekt_config: internal/detekt-config.yml
-
   buildtestandanalyze:
     uses: ./.github/workflows/build-test-analyze.yml
     secrets: inherit
-

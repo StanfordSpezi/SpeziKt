@@ -53,3 +53,9 @@ build/
 # built application files
 *.apk
 *.ap_
+
+# Other files
+.DS_Store
+
+# fastlane
+play-store-credentials.json
