@@ -1,4 +1,4 @@
-package edu.stanford.spezi.app
+package edu.stanford.bdh.engagehf
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

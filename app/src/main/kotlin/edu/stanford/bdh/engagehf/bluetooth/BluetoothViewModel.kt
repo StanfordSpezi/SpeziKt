@@ -1,10 +1,10 @@
-package edu.stanford.spezi.app.bluetooth
+package edu.stanford.bdh.engagehf.bluetooth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.spezi.app.bluetooth.data.mapper.BluetoothUiStateMapper
-import edu.stanford.spezi.app.bluetooth.data.models.BluetoothUiState
+import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
+import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.spezi.core.bluetooth.api.BLEService
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState

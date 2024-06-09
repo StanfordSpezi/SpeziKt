@@ -1,4 +1,4 @@
-package edu.stanford.spezi.app.bluetooth.data.models
+package edu.stanford.bdh.engagehf.bluetooth.data.models
 
 sealed interface BluetoothUiState {
     // Initial states

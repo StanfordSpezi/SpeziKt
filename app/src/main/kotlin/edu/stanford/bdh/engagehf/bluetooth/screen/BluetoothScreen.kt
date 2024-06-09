@@ -1,4 +1,4 @@
-package edu.stanford.spezi.app.bluetooth.screen
+package edu.stanford.bdh.engagehf.bluetooth.screen
 
 import android.app.Activity
 import android.widget.Toast
@@ -19,9 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.spezi.app.bluetooth.BluetoothViewModel
-import edu.stanford.spezi.app.bluetooth.data.models.BluetoothUiState
-import edu.stanford.spezi.app.bluetooth.data.models.DeviceUiModel
+import edu.stanford.bdh.engagehf.bluetooth.BluetoothViewModel
+import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
+import edu.stanford.bdh.engagehf.bluetooth.data.models.DeviceUiModel
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles

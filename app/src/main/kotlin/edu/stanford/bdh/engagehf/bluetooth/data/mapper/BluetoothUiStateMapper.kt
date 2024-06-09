@@ -1,7 +1,7 @@
-package edu.stanford.spezi.app.bluetooth.data.mapper
+package edu.stanford.bdh.engagehf.bluetooth.data.mapper
 
-import edu.stanford.spezi.app.bluetooth.data.models.BluetoothUiState
-import edu.stanford.spezi.app.bluetooth.data.models.DeviceUiModel
+import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
+import edu.stanford.bdh.engagehf.bluetooth.data.models.DeviceUiModel
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
 import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import java.util.Locale

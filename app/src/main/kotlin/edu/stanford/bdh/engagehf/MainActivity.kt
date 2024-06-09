@@ -1,10 +1,10 @@
-package edu.stanford.spezi.app
+package edu.stanford.bdh.engagehf
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import dagger.hilt.android.AndroidEntryPoint
-import edu.stanford.spezi.app.bluetooth.screen.BluetoothScreen
+import edu.stanford.bdh.engagehf.bluetooth.screen.BluetoothScreen
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 
 @AndroidEntryPoint

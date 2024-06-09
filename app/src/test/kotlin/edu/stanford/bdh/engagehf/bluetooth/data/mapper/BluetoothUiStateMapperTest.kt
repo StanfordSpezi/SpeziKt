@@ -1,8 +1,8 @@
-package edu.stanford.spezi.app.bluetooth.data.mapper
+package edu.stanford.bdh.engagehf.bluetooth.data.mapper
 
 import android.bluetooth.BluetoothDevice
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.spezi.app.bluetooth.data.models.DeviceUiModel
+import edu.stanford.bdh.engagehf.bluetooth.data.models.DeviceUiModel
 import edu.stanford.spezi.core.bluetooth.data.model.BLEDeviceSession
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
 import edu.stanford.spezi.core.bluetooth.data.model.Measurement

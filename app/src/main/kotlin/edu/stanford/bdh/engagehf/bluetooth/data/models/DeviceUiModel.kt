@@ -1,4 +1,4 @@
-package edu.stanford.spezi.app.bluetooth.data.models
+package edu.stanford.bdh.engagehf.bluetooth.data.models
 
 data class DeviceUiModel(
     val address: String,
