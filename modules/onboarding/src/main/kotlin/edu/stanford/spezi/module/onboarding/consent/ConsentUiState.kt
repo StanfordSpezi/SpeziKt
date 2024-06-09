@@ -1,16 +1,13 @@
 package edu.stanford.spezi.module.onboarding.consent
 
 import androidx.compose.ui.graphics.Path
-
+import edu.stanford.spezi.core.design.component.markdown.MarkdownElement
 
 data class ConsentUiState(
     val firstName: FieldState = FieldState(value = "", error = false),
     val lastName: FieldState = FieldState(value = "", error = false),
     val paths: List<Path> = emptyList(),
-    val markdownText: String = """
-        # Consent Title
-        This is the consent text. Please read it carefully.
-    """.trimIndent()
+    val markdownElements: List<MarkdownElement> = emptyList(),
 ) {
     val isValidForm: Boolean =
         firstName.value.isNotBlank() && lastName.value.isNotBlank() && paths.isNotEmpty()
@@ -18,7 +15,7 @@ data class ConsentUiState(
 
 data class FieldState(
     val value: String = "",
-    val error: Boolean = false
+    val error: Boolean = false,
 )
 
 enum class TextFieldType {

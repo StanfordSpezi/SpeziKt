@@ -34,9 +34,7 @@ private fun ConsentScreen(
 ) {
     Column(modifier = Modifier.padding(Spacings.medium)) {
         Spacer(modifier = Modifier.height(Spacings.medium))
-        MarkdownComponent(
-            markdownText = uiState.markdownText
-        )
+        MarkdownComponent(markdownElements = uiState.markdownElements)
         SignaturePad(
             uiState = uiState,
             onAction = onAction,
@@ -47,13 +45,14 @@ private fun ConsentScreen(
 @Preview
 @Composable
 private fun ConsentScreenPreview(
-    @PreviewParameter(ConsentScreenPreviewProvider::class) uiState: ConsentUiState
+    @PreviewParameter(ConsentScreenPreviewProvider::class) uiState: ConsentUiState,
 ) {
     SpeziTheme {
         ConsentScreen(uiState = uiState, onAction = { })
     }
 }
 
+@Suppress("MagicNumber")
 private class ConsentScreenPreviewProvider : PreviewParameterProvider<ConsentUiState> {
     override val values: Sequence<ConsentUiState> = sequenceOf(
         ConsentUiState(

@@ -1,3 +1,4 @@
+@file:Suppress("MagicNumber")
 package edu.stanford.spezi.module.onboarding.sequential.components
 
 import androidx.compose.foundation.background
@@ -61,7 +62,6 @@ fun PageIndicator(
                         contentDescription = "Arrow Back",
                         tint = textColor
                     )
-
                 }
                 Text(
                     text = if (currentPage == 0) "Skip" else "Back",
@@ -113,7 +113,9 @@ fun PageIndicator(
 
 @Preview
 @Composable
-private fun PageIndicatorPreview(@PreviewParameter(PageIndicatorPreviewProvider::class) params: PageIndicatorPreviewParams) {
+private fun PageIndicatorPreview(
+    @PreviewParameter(PageIndicatorPreviewProvider::class) params: PageIndicatorPreviewParams,
+) {
     PageIndicator(
         currentPage = params.currentPage,
         pageCount = params.pageCount,
@@ -137,5 +139,5 @@ private data class PageIndicatorPreviewParams(
     val currentPage: Int,
     val pageCount: Int,
     val textColor: Color,
-    val backgroundColor: Color
+    val backgroundColor: Color,
 )

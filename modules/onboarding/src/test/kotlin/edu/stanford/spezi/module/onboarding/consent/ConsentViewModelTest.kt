@@ -2,9 +2,13 @@ package edu.stanford.spezi.module.onboarding.consent
 
 import androidx.compose.ui.graphics.Path
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.spezi.core.design.component.markdown.MarkdownElement
+import edu.stanford.spezi.core.design.component.markdown.MarkdownParser
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.core.utils.MessageNotifier
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
 import org.junit.Before
@@ -16,12 +20,20 @@ class ConsentViewModelTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
-    private val repository: ConsentRepository = mockk(relaxed = true)
-    private lateinit var viewModel: ConsentViewModel
+    private val consentManager: ConsentManager = mockk(relaxed = true)
+    private val markdownParser: MarkdownParser = mockk(relaxed = true)
+    private val messageNotifier: MessageNotifier = mockk(relaxed = true)
+    private val viewModel by lazy {
+        ConsentViewModel(
+            consentManager = consentManager,
+            markdownParser = markdownParser,
+            messageNotifier = messageNotifier
+        )
+    }
 
     @Before
     fun setup() {
-        viewModel = ConsentViewModel(repository)
+        every { markdownParser.parse(any()) } returns emptyList()
     }
 
     @Test
@@ -68,14 +80,15 @@ class ConsentViewModelTest {
     @Test
     fun `init block should fetch ConsentData correctly`() = runTestUnconfined {
         // Given
-        val consentData = ConsentData("markdownText") {}
-        coEvery { repository.getConsentData() } returns consentData
+        val markdownText = "some markdown text"
+        val elements: List<MarkdownElement> = emptyList()
+        every { markdownParser.parse(markdownText) } returns elements
+        coEvery { consentManager.getMarkdownText() } returns markdownText
 
         // When
-        viewModel = ConsentViewModel(repository)
+        val uiState = viewModel.uiState.first()
 
         // Then
-        val uiState = viewModel.uiState.first()
-        assertThat(consentData.markdownText).isEqualTo(uiState.markdownText)
+        assertThat(uiState.markdownElements).isEqualTo(elements)
     }
 }

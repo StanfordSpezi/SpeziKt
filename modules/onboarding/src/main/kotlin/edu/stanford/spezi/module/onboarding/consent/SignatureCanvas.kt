@@ -1,5 +1,5 @@
+@file:Suppress("MagicNumber")
 package edu.stanford.spezi.module.onboarding.consent
-
 
 import android.graphics.Paint
 import android.view.MotionEvent
@@ -25,14 +25,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 
-
 @ExperimentalComposeUiApi
 @Composable
 internal fun SignatureCanvas(
     paths: MutableList<Path>,
     firstName: String,
     lastName: String,
-    onPathAdd: (Path) -> Unit
+    onPathAdd: (Path) -> Unit,
 ) {
     if (paths.isEmpty()) {
         paths.add(Path())
@@ -49,11 +48,10 @@ internal fun SignatureCanvas(
             .onSizeChanged { size -> canvasSize.value = size }
             .pointerInteropFilter {
                 when (it.action) {
-
-
                     MotionEvent.ACTION_DOWN -> {
-                        if (it.x in 0f..canvasSize.value.width.toFloat() && it.y in 0f..canvasSize.value.height.toFloat())
+                        if (it.x in 0f..canvasSize.value.width.toFloat() && it.y in 0f..canvasSize.value.height.toFloat()) {
                             currentPath.moveTo(it.x, it.y)
+                        }
                     }
 
                     MotionEvent.ACTION_MOVE -> {
@@ -138,4 +136,3 @@ private fun SignatureCanvasPreview() {
         onPathAdd = { paths.add(it) }
     )
 }
-

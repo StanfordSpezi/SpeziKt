@@ -93,7 +93,7 @@ fun RegisterScreen(
             tint = primary,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .size(Sizes.iconLarge)
+                .size(Sizes.Icon.large)
         )
         Text(
             text = "Create a new Account",

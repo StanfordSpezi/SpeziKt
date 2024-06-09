@@ -21,7 +21,6 @@ class OnboardingViewModel @Inject internal constructor(
         init()
     }
 
-
     fun onAction(action: Action) {
         _uiState.update {
             when (action) {

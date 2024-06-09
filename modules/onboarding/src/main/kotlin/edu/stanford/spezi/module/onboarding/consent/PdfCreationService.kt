@@ -1,3 +1,4 @@
+@file:Suppress("MagicNumber")
 package edu.stanford.spezi.module.onboarding.consent
 
 import android.graphics.Canvas
@@ -8,15 +9,19 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import androidx.compose.ui.graphics.asAndroidPath
+import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.design.component.markdown.MarkdownElement
-import edu.stanford.spezi.core.design.component.markdown.parseMarkdown
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.time.LocalDate
 import javax.inject.Inject
 
-class PdfCreationService @Inject internal constructor() {
+class PdfCreationService @Inject internal constructor(
+    @Dispatching.IO private val ioCoroutineDispatcher: CoroutineDispatcher,
+) {
 
-    fun createPdf(uiState: ConsentUiState): ByteArray {
+    suspend fun createPdf(uiState: ConsentUiState): ByteArray = withContext(ioCoroutineDispatcher) {
         val pdfDocument = PdfDocument()
         val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create()
         val page = pdfDocument.startPage(pageInfo)
@@ -25,7 +30,7 @@ class PdfCreationService @Inject internal constructor() {
 
         var yOffset = 50f
 
-        parseMarkdown(uiState.markdownText).forEach {
+        uiState.markdownElements.forEach {
             yOffset = when (it) {
                 is MarkdownElement.Heading -> drawHeading(canvas, it, yOffset)
                 is MarkdownElement.Paragraph -> drawParagraph(canvas, it, yOffset)
@@ -41,8 +46,7 @@ class PdfCreationService @Inject internal constructor() {
         val outputStream = ByteArrayOutputStream()
         pdfDocument.writeTo(outputStream)
         pdfDocument.close()
-
-        return outputStream.toByteArray()
+        outputStream.toByteArray()
     }
 
     private fun drawNamesAndSignature(

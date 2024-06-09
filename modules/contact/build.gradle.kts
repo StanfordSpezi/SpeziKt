@@ -9,5 +9,6 @@ android {
 
 dependencies {
     testImplementation(project(":core:testing"))
+
     androidTestImplementation(libs.bundles.compose.androidTest)
 }

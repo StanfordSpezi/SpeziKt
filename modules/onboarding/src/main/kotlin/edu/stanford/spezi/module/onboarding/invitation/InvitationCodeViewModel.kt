@@ -30,7 +30,6 @@ class InvitationCodeViewModel @Inject internal constructor(
         }
     }
 
-
     fun onAction(action: Action) {
         _uiState.update {
             when (action) {

@@ -12,5 +12,5 @@ package edu.stanford.spezi.module.onboarding.sequential
 data class Step(
     val title: String,
     val description: String,
-    val icon: Int = edu.stanford.spezi.core.design.R.drawable.ic_groups
+    val icon: Int = edu.stanford.spezi.core.design.R.drawable.ic_groups,
 )

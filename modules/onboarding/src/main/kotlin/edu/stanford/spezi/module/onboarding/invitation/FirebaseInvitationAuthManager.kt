@@ -8,8 +8,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
 import kotlin.coroutines.resumeWithException
 
-
-class FirebaseInvitationAuthManager @Inject constructor(
+internal class FirebaseInvitationAuthManager @Inject constructor(
     private val functions: FirebaseFunctions,
     private val auth: FirebaseAuth,
 ) : InvitationAuthManager {

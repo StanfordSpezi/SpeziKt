@@ -10,39 +10,30 @@ import androidx.credentials.PasswordCredential
 import androidx.credentials.exceptions.GetCredentialException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.module.account.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CredentialLoginManagerAuth @Inject constructor(
     private val credentialManager: CredentialManager,
     private val firebaseAuthManager: FirebaseAuthManager,
+    @ApplicationContext private val context: Context,
 ) {
     private val logger by speziLogger()
 
-    fun handleGoogleSignIn(
-        context: Context,
-        scope: CoroutineScope,
-        onResult: (Boolean) -> Unit,
-    ) {
-        scope.launch {
-            val result = getCredential(context, true)
-            if (result != null) {
-                val idToken = result.idToken
-                onResult(firebaseAuthManager.signInWithGoogle(idToken).getOrDefault(false))
-            } else {
-                onResult(false)
-                logger.i { "No authorized accounts found" }
-            }
+    suspend fun handleGoogleSignIn(): Result<Boolean> {
+        val result = getCredential(true)
+        return if (result != null) {
+            firebaseAuthManager.signInWithGoogle(result.idToken)
+        } else {
+            Result.success(false)
         }
     }
 
     suspend fun handlePasswordSignIn(
         username: String,
         password: String,
-        context: Context,
     ): Boolean {
         val createPasswordRequest = CreatePasswordRequest(id = username, password = password)
         val createCredential = credentialManager.createCredential(context, createPasswordRequest)
@@ -52,10 +43,7 @@ class CredentialLoginManagerAuth @Inject constructor(
         return false
     }
 
-    private suspend fun getCredential(
-        context: Context,
-        filterByAuthorizedAccounts: Boolean,
-    ): GoogleIdTokenCredential? {
+    private suspend fun getCredential(filterByAuthorizedAccounts: Boolean): GoogleIdTokenCredential? {
         return try {
             val googleIdOption = GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
@@ -79,8 +67,7 @@ class CredentialLoginManagerAuth @Inject constructor(
             when (val credential = response.credential) {
                 is CustomCredential -> {
                     if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-                        val googleIdTokenCredential =
-                            GoogleIdTokenCredential.createFrom(credential.data)
+                        val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                         return googleIdTokenCredential
                     }
                     if (credential.type == PasswordCredential.TYPE_PASSWORD_CREDENTIAL) {

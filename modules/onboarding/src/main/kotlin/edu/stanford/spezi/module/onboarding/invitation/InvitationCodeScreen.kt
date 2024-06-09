@@ -39,11 +39,10 @@ fun InvitationCodeScreen() {
     )
 }
 
-
 @Composable
 fun InvitationCodeScreen(
     uiState: InvitationCodeUiState,
-    onAction: (Action) -> Unit
+    onAction: (Action) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -62,7 +61,7 @@ fun InvitationCodeScreen(
             contentDescription = "Edit Icon",
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .size(Sizes.iconMedium)
+                .size(Sizes.Icon.medium)
         )
         Spacer(modifier = Modifier.height(Spacings.medium))
         Text(uiState.description)
@@ -120,7 +119,7 @@ private class InvitationCodeScreenProvider : PreviewParameterProvider<Invitation
 @Preview
 @Composable
 private fun InvitationCodeScreenPreview(
-    @PreviewParameter(InvitationCodeScreenProvider::class) uiState: InvitationCodeUiState
+    @PreviewParameter(InvitationCodeScreenProvider::class) uiState: InvitationCodeUiState,
 ) {
     InvitationCodeScreen(
         uiState = uiState,

@@ -1,13 +1,11 @@
 package edu.stanford.spezi.module.account.login
 
-import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import edu.stanford.spezi.core.navigation.DefaultNavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.utils.MessageNotifier
+import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.AccountNavigationEvent
 import edu.stanford.spezi.module.account.cred.manager.CredentialLoginManagerAuth
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +18,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val navigator: Navigator,
     private val credentialLoginManagerAuth: CredentialLoginManagerAuth,
-    @ApplicationContext private val appContext: Context,
+    private val accountEvents: AccountEvents,
+    private val messageNotifier: MessageNotifier,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
@@ -105,8 +104,7 @@ class LoginViewModel @Inject constructor(
 
     private fun forgotPassword() {
         if (uiState.value.email.isEmpty()) {
-            Toast.makeText(appContext, "Please enter your email", Toast.LENGTH_SHORT)
-                .show()
+            messageNotifier.notify("Please enter your email")
         } else {
             sendForgotPasswordEmail(uiState.value.email)
         }
@@ -125,9 +123,9 @@ class LoginViewModel @Inject constructor(
     private fun sendForgotPasswordEmail(email: String) {
         viewModelScope.launch {
             if (credentialLoginManagerAuth.sendForgotPasswordEmail(email).isSuccess) {
-                Toast.makeText(appContext, "Email sent", Toast.LENGTH_SHORT).show()
+                messageNotifier.notify("Email sent")
             } else {
-                Toast.makeText(appContext, "Failed to send email", Toast.LENGTH_SHORT).show()
+                messageNotifier.notify("Failed to send email")
             }
         }
     }
@@ -137,23 +135,30 @@ class LoginViewModel @Inject constructor(
             val result = credentialLoginManagerAuth.handlePasswordSignIn(
                 _uiState.value.email,
                 _uiState.value.password,
-                appContext
             )
             if (result) {
-                navigator.navigateTo(DefaultNavigationEvent.BluetoothScreen)
+                accountEvents.emit(event = AccountEvents.Event.SignInSuccess)
             } else {
-                Toast.makeText(appContext, "Failed to sign in", Toast.LENGTH_SHORT).show()
+                accountEvents.emit(event = AccountEvents.Event.SignInFailure)
+                messageNotifier.notify("Failed to sign in")
             }
         }
     }
 
     private fun googleSignIn() {
-        credentialLoginManagerAuth.handleGoogleSignIn(appContext, viewModelScope) { success ->
-            if (success) {
-                navigator.navigateTo(DefaultNavigationEvent.BluetoothScreen)
-            } else {
-                Toast.makeText(appContext, "Failed to sign in", Toast.LENGTH_SHORT).show()
-            }
+        viewModelScope.launch {
+            credentialLoginManagerAuth.handleGoogleSignIn()
+                .onSuccess { success ->
+                    if (success) {
+                        accountEvents.emit(event = AccountEvents.Event.SignInSuccess)
+                    } else {
+                        accountEvents.emit(event = AccountEvents.Event.SignInFailure)
+                        messageNotifier.notify("Failed to sign in")
+                    }
+                }.onFailure {
+                    accountEvents.emit(event = AccountEvents.Event.SignInFailure)
+                    messageNotifier.notify("Failed to sign in")
+                }
         }
     }
 }

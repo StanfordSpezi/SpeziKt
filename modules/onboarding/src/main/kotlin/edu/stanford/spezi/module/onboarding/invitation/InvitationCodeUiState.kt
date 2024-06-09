@@ -4,7 +4,7 @@ data class InvitationCodeUiState(
     val title: String = "",
     val description: String = "",
     val invitationCode: String = "",
-    val error: String? = ""
+    val error: String? = "",
 )
 
 sealed interface Action {

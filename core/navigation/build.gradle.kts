@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.spezi.library)
+    alias(libs.plugins.spezi.hilt)
 }
 
 android {
@@ -7,5 +8,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:coroutines"))
+
     implementation(libs.androidx.core.ktx)
 }

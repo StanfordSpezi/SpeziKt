@@ -1,26 +1,23 @@
 package edu.stanford.spezi.module.account.register
 
-import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.core.navigation.ActionProvider
+import edu.stanford.spezi.core.utils.MessageNotifier
+import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.cred.manager.CredentialRegisterManagerAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Named
 
 @HiltViewModel
 class RegisterViewModel @Inject internal constructor(
     private val credentialRegisterManagerAuth: CredentialRegisterManagerAuth,
-    @ApplicationContext private val appContext: Context,
-    @Named("account-register") private val actionProvider: ActionProvider,
+    private val messageNotifier: MessageNotifier,
+    private val accountEvents: AccountEvents,
     private val validator: RegisterFormValidator,
 ) : ViewModel() {
     private val logger by speziLogger()
@@ -55,74 +52,7 @@ class RegisterViewModel @Inject internal constructor(
                 }
 
                 Action.OnRegisterPressed -> {
-                    if (validator.isFormValid(it)) {
-                        viewModelScope.launch {
-                            val result = if (it.isGoogleSignUp) {
-                                logger.i { "Google sign up: $googleCredential" }
-                                credentialRegisterManagerAuth.googleSignUp(
-                                    idToken = googleCredential!!,
-                                    firstName = uiState.value.firstName.value,
-                                    lastName = uiState.value.lastName.value,
-                                    selectedGender = uiState.value.selectedGender.value,
-                                    dateOfBirth = uiState.value.dateOfBirth!!,
-                                    email = uiState.value.email.value,
-                                )
-                            } else {
-                                credentialRegisterManagerAuth.passwordAndEmailSignUp(
-                                    email = uiState.value.email.value,
-                                    password = uiState.value.password.value,
-                                    firstName = uiState.value.firstName.value,
-                                    lastName = uiState.value.lastName.value,
-                                    selectedGender = uiState.value.selectedGender.value,
-                                    dateOfBirth = uiState.value.dateOfBirth!!,
-                                )
-                            }
-                            if (result.isSuccess) {
-                                actionProvider.provideContinueButtonAction().invoke()
-                            } else {
-                                Toast.makeText(appContext, "Failed to sign up", Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                        }
-                    }
-                    it.copy(
-                        email = it.email.copy(error = if (validator.isEmailValid(it.email.value)) null else "Invalid email"),
-                        password = it.password.copy(
-                            error = if (validator.isPasswordValid(it.password.value)) {
-                                null
-                            } else {
-                                "Password must be at least 6 characters"
-                            }
-                        ),
-                        firstName = it.firstName.copy(
-                            error = if (validator.isFirstNameValid(it.firstName.value)) {
-                                null
-                            } else {
-                                "First name cannot be empty"
-                            }
-                        ),
-                        lastName = it.lastName.copy(
-                            error = if (validator.isLastNameValid(it.lastName.value)) {
-                                null
-                            } else {
-                                "Last name cannot be empty"
-                            }
-                        ),
-                        selectedGender = it.selectedGender.copy(
-                            error =
-                            if (validator.isGenderValid(it.selectedGender.value)) {
-                                null
-                            } else {
-                                "Please select valid gender"
-                            }
-                        ),
-                        dateOfBirthError = if (validator.isDobValid(it.dateOfBirth)) {
-                            null
-                        } else {
-                            "Please select valid date of birth"
-                        },
-                        isFormValid = validator.isFormValid(it)
-                    )
+                    onRegisteredPressed()
                 }
 
                 is Action.SetIsGoogleSignUp -> {
@@ -137,7 +67,7 @@ class RegisterViewModel @Inject internal constructor(
 
     private fun initializeGoogleSignUp() {
         viewModelScope.launch {
-            val credential = credentialRegisterManagerAuth.getGoogleSignUpCredential(appContext)
+            val credential = credentialRegisterManagerAuth.getGoogleSignUpCredential()
             credential?.let {
                 onAction(
                     Action.TextFieldUpdate(
@@ -153,13 +83,64 @@ class RegisterViewModel @Inject internal constructor(
                 )
                 googleCredential = it.idToken
             } ?: run {
-                Toast.makeText(appContext, "Failed to get Google account", Toast.LENGTH_SHORT)
-                    .show()
+                messageNotifier.notify("Failed to get Google account")
                 _uiState.update {
                     // swap to email sign up when google fails
                     it.copy(isGoogleSignUp = false)
                 }
             }
+        }
+    }
+
+    private fun onRegisteredPressed(): RegisterUiState {
+        val uiState = _uiState.value
+        return if (validator.isFormValid(uiState)) {
+            viewModelScope.launch {
+                if (uiState.isGoogleSignUp) {
+                    logger.i { "Google sign up: $googleCredential" }
+                    credentialRegisterManagerAuth.googleSignUp(
+                        idToken = googleCredential!!,
+                        firstName = uiState.firstName.value,
+                        lastName = uiState.lastName.value,
+                        selectedGender = uiState.selectedGender.value,
+                        dateOfBirth = uiState.dateOfBirth!!,
+                        email = uiState.email.value,
+                    )
+                } else {
+                    credentialRegisterManagerAuth.passwordAndEmailSignUp(
+                        email = uiState.email.value,
+                        password = uiState.password.value,
+                        firstName = uiState.firstName.value,
+                        lastName = uiState.lastName.value,
+                        selectedGender = uiState.selectedGender.value,
+                        dateOfBirth = uiState.dateOfBirth!!,
+                    )
+                }.onSuccess {
+                    accountEvents.emit(AccountEvents.Event.SignUpSuccess)
+                }.onFailure {
+                    accountEvents.emit(AccountEvents.Event.SignUpFailure)
+                    messageNotifier.notify("Failed to sign up")
+                }
+            }
+            uiState
+        } else {
+            uiState.copy(
+                email = uiState.email.copy(error = validator.emailResult(uiState.email.value).errorMessageOrNull()),
+                password = uiState.password.copy(
+                    error = validator.passwordResult(uiState.password.value).errorMessageOrNull()
+                ),
+                firstName = uiState.firstName.copy(
+                    error = validator.firstnameResult(uiState.firstName.value).errorMessageOrNull()
+                ),
+                lastName = uiState.lastName.copy(
+                    error = validator.lastnameResult(uiState.lastName.value).errorMessageOrNull()
+                ),
+                selectedGender = uiState.selectedGender.copy(
+                    error = validator.isGenderValid(uiState.selectedGender.value).errorMessageOrNull()
+                ),
+                dateOfBirthError = validator.birthdayResult(uiState.dateOfBirth).errorMessageOrNull(),
+                isFormValid = validator.isFormValid(uiState)
+            )
         }
     }
 }
