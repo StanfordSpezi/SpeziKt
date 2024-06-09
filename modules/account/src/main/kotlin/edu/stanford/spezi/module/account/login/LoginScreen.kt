@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName", "UnusedPrivateMember")
+
 package edu.stanford.spezi.module.account.login
 
 import androidx.compose.foundation.layout.Arrangement
@@ -11,15 +13,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -43,8 +44,7 @@ fun LoginScreen(
     viewModel.onAction(Action.SetIsAlreadyRegistered(isAlreadyRegistered))
 
     LoginScreen(
-        uiState = uiState,
-        onAction = viewModel::onAction
+        uiState = uiState, onAction = viewModel::onAction
     )
 }
 
@@ -53,8 +53,6 @@ internal fun LoginScreen(
     uiState: UiState,
     onAction: (Action) -> Unit,
 ) {
-    val context = LocalContext.current
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -63,16 +61,18 @@ internal fun LoginScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Your Account",
-            style = titleLarge
+            text = "Your Account", style = titleLarge
         )
         Spacer(modifier = Modifier.height(Spacings.large))
         Text(
-            text = "The ENGAGE-HF demonstrates the usage of the Firebase Account Module. \n\nYou may login to your existing account or create a new one if you don't have one already.",
+            text = """
+The ENGAGE-HF demonstrates the usage of the Firebase Account Module. 
+                
+You may login to your existing account or create a new one if you don't have one already.""",
             style = bodyLarge,
         )
         Spacer(modifier = Modifier.height(Spacings.large))
-        TextField(
+        OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = uiState.email,
             onValueChange = { email ->
@@ -83,7 +83,7 @@ internal fun LoginScreen(
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
         )
         Spacer(modifier = Modifier.height(Spacings.small))
-        TextField(
+        OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = uiState.password,
             onValueChange = {
@@ -91,27 +91,36 @@ internal fun LoginScreen(
             },
             label = { Text("Password") },
             singleLine = true,
-            visualTransformation = if (uiState.passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = if (uiState.passwordVisibility) {
+                VisualTransformation.None
+            } else {
+                PasswordVisualTransformation()
+            },
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = { onAction(Action.TogglePasswordVisibility) })
         )
         TextButton(
             onClick = {
-                // TODO
-            },
-            modifier = Modifier.align(Alignment.End)
+                onAction(Action.ForgotPassword)
+            }, modifier = Modifier.align(Alignment.End)
         ) {
             Text("Forgot Password?")
         }
         Spacer(modifier = Modifier.height(Spacings.medium))
         Button(
             onClick = {
-                // TODO
+                if (uiState.isAlreadyRegistered) {
+                    onAction(Action.PasswordCredentialSignIn)
+                } else {
+                    onAction(Action.NavigateToRegister)
+                }
             },
             modifier = Modifier.fillMaxWidth(),
             enabled = uiState.email.isNotEmpty() && uiState.password.isNotEmpty()
         ) {
-            Text("Login")
+            Text(
+                text = if (uiState.isAlreadyRegistered) "Login" else "Register"
+            )
         }
 
         Spacer(modifier = Modifier.height(Spacings.medium))
@@ -123,17 +132,25 @@ internal fun LoginScreen(
             TextButton(
                 enabled = !uiState.isAlreadyRegistered,
                 onClick = {
-                    onAction(Action.NavigateToRegister(NavigationTarget.REGISTER))
+                    onAction(Action.NavigateToRegister)
                 },
-
-                ) {
+            ) {
                 Text("Signup")
             }
         }
         Spacer(modifier = Modifier.height(Spacings.medium))
         TextDivider(text = "or")
         Spacer(modifier = Modifier.height(Spacings.medium))
-        SignInWithGoogleButton { onAction(Action.GoogleSignIn(context)) }
+        SignInWithGoogleButton(
+            onButtonClick = {
+                if (uiState.isAlreadyRegistered) {
+                    onAction(Action.GoogleSignIn)
+                } else {
+                    onAction(Action.GoogleSignUp)
+                }
+            },
+            isAlreadyRegistered = uiState.isAlreadyRegistered,
+        )
     }
 }
 
@@ -143,10 +160,7 @@ private fun LoginScreenPreview(
     @PreviewParameter(LoginScreenPreviewProvider::class) uiState: UiState,
 ) {
     SpeziTheme {
-        LoginScreen(
-            uiState = uiState,
-            onAction = { }
-        )
+        LoginScreen(uiState = uiState, onAction = { })
     }
 }
 
@@ -156,8 +170,7 @@ private class LoginScreenPreviewProvider : PreviewParameterProvider<UiState> {
             email = "",
             password = "",
             passwordVisibility = false,
-        ),
-        UiState(
+        ), UiState(
             email = "test@test.de",
             password = "password",
             passwordVisibility = true,
