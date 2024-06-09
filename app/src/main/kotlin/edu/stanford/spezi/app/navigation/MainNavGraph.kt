@@ -10,16 +10,25 @@ import edu.stanford.spezi.module.onboarding.consent.ConsentScreen
 import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeScreen
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingScreen
 import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreen
+import kotlin.reflect.typeOf
 
 fun NavGraphBuilder.mainGraph() {
-    composable<Routes.RegisterScreen> {
+    composable<Routes.RegisterScreen>(
+        typeMap = mapOf(
+            typeOf<RegisterParams>() to serializableType<RegisterParams>()
+        )
+    ) {
         val args = it.toRoute<Routes.RegisterScreen>()
-        RegisterScreen(args.isGoogleSignIn)
+        RegisterScreen(
+            args.registerParams.isGoogleSignUp,
+            args.registerParams.email,
+            args.registerParams.password
+        )
     }
 
     composable<Routes.LoginScreen> {
         val args = it.toRoute<Routes.LoginScreen>()
-        LoginScreen(args.isAlreadyRegistered)
+        LoginScreen(isAlreadyRegistered = args.isAlreadyRegistered)
     }
 
     composable<Routes.BluetoothScreen> {

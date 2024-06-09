@@ -24,8 +24,11 @@ fun AppNavigation(navigator: Navigator) {
                 when (event) {
                     is AccountNavigationEvent.RegisterScreen -> navController.navigate(
                         Routes.RegisterScreen(
-                            isGoogleSignIn =
-                            event.isGoogleSignIn
+                            registerParams = RegisterParams(
+                                isGoogleSignUp = event.isGoogleSignUp,
+                                email = event.email,
+                                password = event.password
+                            ),
                         )
                     )
 
