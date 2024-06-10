@@ -50,4 +50,4 @@ jobs:
           flags: unittests
           name: codecov-coverage
           token: ${{ secrets.CODECOV_TOKEN }}
-          threshold: 20%
+          threshold: 20
