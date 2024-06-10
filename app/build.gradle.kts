@@ -11,7 +11,7 @@ android {
     namespace = "edu.stanford.spezi.app"
 
     defaultConfig {
-        applicationId = "edu.stanford.spezi"
+        applicationId = "edu.stanford.bdh.engagehf"
         versionCode = 1
         versionName = "1.0"
 
