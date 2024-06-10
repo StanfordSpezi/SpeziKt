@@ -42,6 +42,7 @@ jobs:
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:java-kotlin"
+      # TODO: remove threshold once changes have been unit tested
       - name: Upload JaCoCo report to Codecov
         uses: codecov/codecov-action@v4
         with:
@@ -49,3 +50,4 @@ jobs:
           flags: unittests
           name: codecov-coverage
           token: ${{ secrets.CODECOV_TOKEN }}
+          threshold: 20%
