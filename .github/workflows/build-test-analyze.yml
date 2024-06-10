@@ -25,10 +25,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Bundle Install
-        run: |
-          gem install bundler
-          bundle install
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
