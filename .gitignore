@@ -2,6 +2,9 @@
 *.class
 *.dex
 
+# Kotlin compiler
+.kotlin
+
 # Log file
 *.log
 
@@ -62,3 +65,7 @@ play-store-credentials.json
 keystore.jks
 app/release/*
 app/debug/*
+
+# services and secrets
+app/google-services.json
+modules/account/src/main/res/values/secrets.xml
