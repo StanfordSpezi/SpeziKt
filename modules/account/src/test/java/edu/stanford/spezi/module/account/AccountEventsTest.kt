@@ -1,21 +1,14 @@
 package edu.stanford.spezi.module.account
 
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.spezi.core.testing.SpeziTestScope
 import edu.stanford.spezi.core.testing.runTestUnconfined
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import org.junit.Before
 import org.junit.Test
 
 class AccountEventsTest {
 
-    private lateinit var accountEvents: AccountEvents
-
-    @Before
-    fun setUp() {
-        accountEvents = AccountEvents(CoroutineScope(Dispatchers.Unconfined))
-    }
+    private val accountEvents = AccountEvents(scope = SpeziTestScope())
 
     @Test
     fun `given SignInSuccess event when emit is called then events should emit SignInSuccess`() =
