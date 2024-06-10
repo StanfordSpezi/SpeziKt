@@ -2,6 +2,9 @@
 *.class
 *.dex
 
+# Kotlin compiler
+.kotlin
+
 # Log file
 *.log
 
@@ -53,3 +56,7 @@ build/
 # built application files
 *.apk
 *.ap_
+
+# services and secrets
+app/google-services.json
+modules/account/src/main/res/values/secrets.xml
