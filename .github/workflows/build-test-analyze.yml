@@ -17,7 +17,7 @@ jobs:
     name: Build, Test and Analyze
     runs-on: ubuntu-latest
     timeout-minutes: 120
-    permissions: # needed for CodeQL steps
+    permissions:
       security-events: write
       packages: read
       actions: read
@@ -25,31 +25,21 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Initialize CodeQL # CodeQL init should happen before project build!
+      - name: Bundle Install
+        run: |
+          gem install bundler
+          bundle install
+      - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: java-kotlin
           build-mode: manual
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-          cache: gradle
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-      - name: decode and write google service json
-        env: 
-            GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: echo $GOOGLE_SERVICES_JSON | base64 --decode >./app/google-services.json
-      # TODO: Add step to inject secrets.xml at ./modules/account/src/main/res/values/secrets.xml
-      - name: Build and test
-        run: ./gradlew build
-      - name: Perform CodeQL Analysis # CodeQL analysis needs project build!
+      - name: Build and Test
+        run: bundle exec fastlane test
+      - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:java-kotlin"
-      # TODO: remove threshold once changes have been unit tested
       - name: Upload JaCoCo report to Codecov
         uses: codecov/codecov-action@v4
         with:
@@ -57,4 +47,3 @@ jobs:
           flags: unittests
           name: codecov-coverage
           token: ${{ secrets.CODECOV_TOKEN }}
-          threshold: 20
