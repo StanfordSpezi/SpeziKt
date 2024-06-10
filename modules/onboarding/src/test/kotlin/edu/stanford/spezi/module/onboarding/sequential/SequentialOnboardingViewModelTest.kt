@@ -5,10 +5,9 @@ import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -23,7 +22,7 @@ class SequentialOnboardingViewModelTest {
     private lateinit var sequentialOnboardingViewModel: SequentialOnboardingViewModel
 
     @Before
-    fun setup() = runBlocking {
+    fun setup() {
         coEvery { repository.getSequentialOnboardingData().steps } returns listOf(
             Step(title = "title", description = "description", icon = 0),
             Step(title = "title", description = "description", icon = 0)
@@ -39,7 +38,7 @@ class SequentialOnboardingViewModelTest {
         val uiState = sequentialOnboardingViewModel.uiState.first()
 
         // then
-        verify { runBlocking { repository.getSequentialOnboardingData().steps } }
+        coVerify { repository.getSequentialOnboardingData().steps }
         assertThat(uiState.steps).isNotEmpty()
     }
 
