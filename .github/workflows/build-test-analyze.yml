@@ -35,6 +35,7 @@ jobs:
         env: 
             GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: echo $GOOGLE_SERVICES_JSON | base64 --decode >./app/google-services.json
+      # TODO: Add step to inject secrets.xml at ./modules/account/src/main/res/values/secrets.xml
       - name: Build and test
         run: ./gradlew build
       - name: Perform CodeQL Analysis # CodeQL analysis needs project build!

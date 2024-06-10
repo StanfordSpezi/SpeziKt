@@ -12,7 +12,6 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.module.account.R
 import javax.inject.Inject
 
 class CredentialLoginManagerAuth @Inject constructor(
@@ -48,7 +47,8 @@ class CredentialLoginManagerAuth @Inject constructor(
             val googleIdOption = GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
                 .setAutoSelectEnabled(true)
-                .setServerClientId(context.getString(R.string.serverClientId))
+                // TODO: Uncomment once secrets xml has been added in CI secrets
+                // .setServerClientId(context.getString(R.string.serverClientId))
                 .build()
 
             val passwordOption = GetPasswordOption(
