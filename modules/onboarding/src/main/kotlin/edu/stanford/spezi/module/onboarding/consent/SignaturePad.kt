@@ -1,3 +1,4 @@
+@file:Suppress("MagicNumber")
 package edu.stanford.spezi.module.onboarding.consent
 
 import androidx.compose.foundation.layout.Column
@@ -94,7 +95,6 @@ internal fun SignaturePad(
         }
     }
 }
-
 
 @Preview
 @Composable

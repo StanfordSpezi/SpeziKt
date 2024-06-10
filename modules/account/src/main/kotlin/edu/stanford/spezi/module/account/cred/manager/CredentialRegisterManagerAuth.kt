@@ -8,6 +8,7 @@ import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.module.account.R
 import java.time.LocalDate
@@ -16,6 +17,7 @@ import javax.inject.Inject
 class CredentialRegisterManagerAuth @Inject internal constructor(
     private val firebaseAuthManager: FirebaseAuthManager,
     private val credentialManager: CredentialManager,
+    @ApplicationContext private val context: Context,
 ) {
 
     private val logger by speziLogger()
@@ -63,21 +65,16 @@ class CredentialRegisterManagerAuth @Inject internal constructor(
         )
     }
 
-    suspend fun getGoogleSignUpCredential(
-        context: Context,
-    ): GoogleIdTokenCredential? {
-        var result = getCredential(context = context, filterByAuthorizedAccounts = true)
+    suspend fun getGoogleSignUpCredential(): GoogleIdTokenCredential? {
+        var result = getCredential(filterByAuthorizedAccounts = true)
         if (result == null) {
             logger.i { "No authorized accounts found" }
-            result = getCredential(context = context, filterByAuthorizedAccounts = false)
+            result = getCredential(filterByAuthorizedAccounts = false)
         }
         return result
     }
 
-    private suspend fun getCredential(
-        context: Context,
-        filterByAuthorizedAccounts: Boolean,
-    ): GoogleIdTokenCredential? {
+    private suspend fun getCredential(filterByAuthorizedAccounts: Boolean): GoogleIdTokenCredential? {
         return runCatching {
             val googleIdOption = GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
@@ -93,16 +90,11 @@ class CredentialRegisterManagerAuth @Inject internal constructor(
                 request = request,
                 context = context
             )
-            when (val credential = response.credential) {
-                is CustomCredential -> {
-                    if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-                        GoogleIdTokenCredential.createFrom(credential.data)
-                    } else {
-                        null
-                    }
-                }
-
-                else -> null
+            val credential = response.credential
+            if (credential is CustomCredential && credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                GoogleIdTokenCredential.createFrom(credential.data)
+            } else {
+                null
             }
         }.onFailure { e ->
             logger.e { "Error getting credential: ${e.message}" }

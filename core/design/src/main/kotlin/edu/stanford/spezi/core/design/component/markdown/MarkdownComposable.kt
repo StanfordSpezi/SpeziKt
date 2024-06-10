@@ -1,18 +1,23 @@
 package edu.stanford.spezi.core.design.component.markdown
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
+import edu.stanford.spezi.core.design.theme.TextStyles
 
 @Composable
-fun MarkdownComponent(markdownText: String) {
-    val elements = parseMarkdown(markdownText)
-    Column(modifier = Modifier.padding(Spacings.medium)) {
-        elements.forEach { element ->
+fun MarkdownComponent(markdownElements: List<MarkdownElement>) {
+    LazyColumn(modifier = Modifier.padding(Spacings.medium)) {
+        items(markdownElements) { element ->
             when (element) {
                 is MarkdownElement.Heading -> Heading(element)
                 is MarkdownElement.Paragraph -> Paragraph(element)
@@ -23,12 +28,56 @@ fun MarkdownComponent(markdownText: String) {
     }
 }
 
+@Composable
+private fun Heading(element: MarkdownElement.Heading) {
+    BasicText(
+        text = element.text,
+        style = when (element.level) {
+            1 -> TextStyles.headlineLarge
+            2 -> TextStyles.headlineMedium
+            3 -> TextStyles.titleMedium
+            else -> TextStyles.titleMedium
+        },
+    )
+}
+
+@Composable
+private fun Paragraph(element: MarkdownElement.Paragraph) {
+    BasicText(
+        text = element.text,
+        style = TextStyles.bodyMedium,
+    )
+}
+
+@Composable
+private fun BoldText(element: MarkdownElement.Bold) {
+    BasicText(
+        text = element.text,
+        style = TextStyles.bodyMedium.copy(fontWeight = FontWeight.Bold),
+    )
+}
+
+@Composable
+private fun ListItem(element: MarkdownElement.ListItem) {
+    Row {
+        BasicText(
+            text = "    - ",
+            style = TextStyles.bodyMedium
+        )
+        BasicText(
+            text = element.text,
+            style = TextStyles.bodyMedium
+        )
+    }
+}
+
 @Preview
 @Composable
 private fun MarkdownPreview() {
     SpeziTheme {
-        MarkdownComponent(
-            markdownText = """
+        val elements = remember {
+            MarkdownParser().parse(
+                """
                             # Markdown Title
                             This is a paragraph in **Markdown**.
                             
@@ -43,7 +92,9 @@ private fun MarkdownPreview() {
                             - Item 1
                             - Item 2
                             - Item 3
-            """.trimIndent()
-        )
+                """.trimIndent()
+            )
+        }
+        MarkdownComponent(markdownElements = elements)
     }
 }

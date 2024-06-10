@@ -30,13 +30,11 @@ import edu.stanford.spezi.core.design.theme.TextStyles.bodyMedium
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.titleSmall
 
-
 /**
  * The onboarding screen.
  */
 @Composable
-fun OnboardingScreen(
-) {
+fun OnboardingScreen() {
     val viewModel = hiltViewModel<OnboardingViewModel>()
     val uiState by viewModel.uiState.collectAsState()
 
@@ -74,7 +72,6 @@ fun OnboardingScreen(
     }
 }
 
-
 @Composable
 fun FeatureItem(area: Area) {
     Row(
@@ -86,7 +83,7 @@ fun FeatureItem(area: Area) {
         Icon(
             painter = painterResource(id = area.iconId),
             contentDescription = "Area Icon",
-            modifier = Modifier.size(Sizes.iconMedium),
+            modifier = Modifier.size(Sizes.Icon.medium),
             tint = primary
         )
         Spacer(Modifier.width(Spacings.medium))

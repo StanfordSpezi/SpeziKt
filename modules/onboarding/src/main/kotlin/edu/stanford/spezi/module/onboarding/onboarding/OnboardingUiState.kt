@@ -7,7 +7,6 @@ sealed class Action {
     data class UpdateArea(val areas: List<Area>) : Action()
 
     data object ContinueButtonAction : Action()
-
 }
 
 /**

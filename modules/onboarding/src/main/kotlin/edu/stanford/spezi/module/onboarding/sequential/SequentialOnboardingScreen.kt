@@ -34,15 +34,12 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.module.onboarding.sequential.components.OnboardingViewPage
 import edu.stanford.spezi.module.onboarding.sequential.components.PageIndicator
 
-
 /**
  * The screen that displays the sequential onboarding steps.
  *
  */
 @Composable
-fun SequentialOnboardingScreen(
-
-) {
+fun SequentialOnboardingScreen() {
     val viewModel: SequentialOnboardingViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
@@ -131,7 +128,7 @@ fun SequentialOnboardingScreen(
 @Preview
 @Composable
 private fun SequentialOnboardingScreenPreview(
-    @PreviewParameter(SequentialOnboardingUiStateProvider::class) uiState: SequentialOnboardingUiState
+    @PreviewParameter(SequentialOnboardingUiStateProvider::class) uiState: SequentialOnboardingUiState,
 ) {
     SequentialOnboardingScreen(
         uiState = uiState,

@@ -35,7 +35,6 @@ class EngageOnboardingRepository @Inject constructor(
             subTitle = "Remote study participation made easy.",
             continueButtonText = "Learn more",
             continueButtonAction = { navigator.navigateTo(OnboardingNavigationEvent.SequentialOnboardingScreen) }
-
         )
     )
 }

@@ -20,21 +20,21 @@ firebaseFirestoreKtx = "25.0.0"
 firebaseFunctionsKtx = "21.0.0"
 firebaseStorageKtx = "21.0.0"
 foundation = "1.6.7"
-googleGmsGoogleServices = "4.4.1"
+googleGmsGoogleServices = "4.4.2"
 googleid = "1.1.0"
 hiltNavigation = "1.2.0"
 hiltVersion = "2.51"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 kotlin = "2.0.0"
-kotlinxSerialization = "1.9.0"
+kotlinxSerialization = "1.9.22"
 kotlinxSerializationJson = "1.6.3"
 kspVersion = "2.0.0-1.0.21"
-lifecycleKtx = "2.8.0"
+lifecycleKtx = "2.8.1"
 lifecycleRuntimeKtx = "2.7.0"
 minSdk = "31"
 mockKVersion = "1.13.10"
-playServicesAuth = "21.1.1"
+playServicesAuth = "21.2.0"
 targetSdk = "34"
 timberVersion = "5.0.1"
 truth = "1.4.2"
@@ -101,7 +101,8 @@ google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersio
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerialization" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerialization" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 spezi-application = { id = "spezi.application", version = "unspecified" }
 spezi-base = { id = "spezi.base", version = "unspecified" }
 spezi-compose = { id = "spezi.compose", version = "unspecified" }

@@ -13,7 +13,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class SequentialOnboardingViewModel @Inject internal constructor(
-    private val repository: SequentialOnboardingRepository
+    private val repository: SequentialOnboardingRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SequentialOnboardingUiState())
     val uiState: StateFlow<SequentialOnboardingUiState> = _uiState
@@ -68,7 +68,7 @@ class SequentialOnboardingViewModel @Inject internal constructor(
 
 internal object SequentialOnboardingViewModelFactory {
     fun create(
-        repository: SequentialOnboardingRepository
+        repository: SequentialOnboardingRepository,
     ): SequentialOnboardingViewModel {
         return SequentialOnboardingViewModel(repository = repository)
     }

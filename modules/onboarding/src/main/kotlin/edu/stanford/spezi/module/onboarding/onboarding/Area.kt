@@ -9,5 +9,5 @@ package edu.stanford.spezi.module.onboarding.onboarding
 data class Area(
     val title: String,
     val iconId: Int, // Resource ID for the icon
-    val description: String
+    val description: String,
 )

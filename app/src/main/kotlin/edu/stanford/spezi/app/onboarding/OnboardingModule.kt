@@ -4,11 +4,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import edu.stanford.spezi.module.onboarding.consent.ConsentRepository
-import edu.stanford.spezi.module.onboarding.consent.FirebasePdfService
-import edu.stanford.spezi.module.onboarding.consent.PdfService
-import edu.stanford.spezi.module.onboarding.invitation.FirebaseInvitationAuthManager
-import edu.stanford.spezi.module.onboarding.invitation.InvitationAuthManager
+import edu.stanford.spezi.module.onboarding.consent.ConsentManager
 import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeRepository
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingRepository
 import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingRepository
@@ -18,40 +14,25 @@ import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingRepos
  */
 @Module
 @InstallIn(SingletonComponent::class)
-class OnboardingModule {
+abstract class OnboardingModule {
 
-    @Module
-    @InstallIn(SingletonComponent::class)
-    abstract class Bindings {
+    @Binds
+    abstract fun bindOnboardingRepository(
+        engageOnboardingRepository: EngageOnboardingRepository,
+    ): OnboardingRepository
 
-        @Binds
-        abstract fun bindInvitationAuthManager(
-            firebaseInvitationAuthManager: FirebaseInvitationAuthManager,
-        ): InvitationAuthManager
+    @Binds
+    abstract fun bindInvitationCodeRepository(
+        engageInvitationCodeRepository: EngageInvitationCodeRepository,
+    ): InvitationCodeRepository
 
-        @Binds
-        abstract fun bindOnboardingRepository(
-            engageOnboardingRepository: EngageOnboardingRepository,
-        ): OnboardingRepository
+    @Binds
+    abstract fun bindSequentialOnboardingRepository(
+        engageSequentialOnboardingRepository: EngageSequentialOnboardingRepository,
+    ): SequentialOnboardingRepository
 
-        @Binds
-        abstract fun bindInvitationCodeRepository(
-            engageInvitationCodeRepository: EngageInvitationCodeRepository,
-        ): InvitationCodeRepository
-
-        @Binds
-        abstract fun bindPdfService(
-            firebasePdfService: FirebasePdfService,
-        ): PdfService
-
-        @Binds
-        abstract fun bindSequentialOnboardingRepository(
-            engageSequentialOnboardingRepository: EngageSequentialOnboardingRepository,
-        ): SequentialOnboardingRepository
-
-        @Binds
-        abstract fun bindOnConsentRepository(
-            engageConsentRepository: EngageConsentRepository,
-        ): ConsentRepository
-    }
+    @Binds
+    abstract fun bindOnConsentRepository(
+        engageConsentManager: EngageConsentManager,
+    ): ConsentManager
 }
