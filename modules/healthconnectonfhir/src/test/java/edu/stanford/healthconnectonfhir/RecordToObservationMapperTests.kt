@@ -3,10 +3,10 @@ package edu.stanford.healthconnectonfhir
 import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
 import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.BodyTemperatureRecord
+import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.HeightRecord
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.WeightRecord
-import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.units.Energy
 import androidx.health.connect.client.units.Length
 import androidx.health.connect.client.units.Mass

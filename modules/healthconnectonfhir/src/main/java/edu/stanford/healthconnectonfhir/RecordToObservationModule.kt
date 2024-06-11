@@ -11,6 +11,6 @@ abstract class RecordToObservationModule {
 
     @Binds
     abstract fun bindRecordToObservationMapper(
-        impl: RecordToObservationMapperImpl
+        impl: RecordToObservationMapperImpl,
     ): RecordToObservationMapper
 }

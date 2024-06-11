@@ -11,5 +11,5 @@ interface RecordToObservationMapper {
      * @param record the record to be mapped
      * @return a list of `Observation` objects derived from the provided health record
      */
-    fun <T: Record> map(record: T): List<Observation>
+    fun <T : Record> map(record: T): List<Observation>
 }

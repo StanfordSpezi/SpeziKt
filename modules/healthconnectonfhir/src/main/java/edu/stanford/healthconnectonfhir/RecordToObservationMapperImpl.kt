@@ -23,7 +23,7 @@ class RecordToObservationMapperImpl : RecordToObservationMapper {
      * @param record the health record to be mapped
      * @return a list of `Observation` objects derived from the provided health record
      */
-    override fun <T: Record> map(record: T): List<Observation> {
+    override fun <T : Record> map(record: T): List<Observation> {
         return when (record) {
             is StepsRecord -> listOf(mapStepsRecord(record))
             is WeightRecord -> listOf(mapWeightRecord(record))
@@ -38,10 +38,16 @@ class RecordToObservationMapperImpl : RecordToObservationMapper {
 
     private fun mapStepsRecord(record: StepsRecord) = record.createObservation(
         categories = listOf(
-            Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("activity").setDisplay("Activity")
+            Coding()
+                .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+                .setCode("activity")
+                .setDisplay("Activity")
         ),
         codings = listOf(
-            Coding().setSystem("http://loinc.org").setCode("55423-8").setDisplay("Number of steps")
+            Coding()
+                .setSystem("http://loinc.org")
+                .setCode("55423-8")
+                .setDisplay("Number of steps")
         ),
         unit = "steps",
         valueExtractor = { count.toDouble() },
@@ -49,52 +55,64 @@ class RecordToObservationMapperImpl : RecordToObservationMapper {
     )
 
     private fun mapWeightRecord(record: WeightRecord) = record.createObservation(
-            categories = listOf(
-                Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("vital-signs").setDisplay("Vital Signs")
-            ),
-            codings = listOf(
-                Coding().setSystem("http://loinc.org").setCode("29463-7").setDisplay("Body weight")
-            ),
-            unit = "g",
-            valueExtractor = { weight.inGrams },
-            periodExtractor = { Date.from(time) to Date.from(time) }
-        )
+        categories = listOf(
+            Coding()
+                .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+                .setCode("vital-signs")
+                .setDisplay("Vital Signs")
+        ),
+        codings = listOf(
+            Coding()
+                .setSystem("http://loinc.org")
+                .setCode("29463-7")
+                .setDisplay("Body weight")
+        ),
+        unit = "g",
+        valueExtractor = { weight.inGrams },
+        periodExtractor = { Date.from(time) to Date.from(time) }
+    )
 
     private fun mapHeightRecord(record: HeightRecord) = record.createObservation(
-            categories = listOf(
-                Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("vital-signs").setDisplay("Vital Signs")
-            ),
-            codings = listOf(
-                Coding().setSystem("http://loinc.org").setCode("8302-2").setDisplay("Body height")
-            ),
-            unit = "m",
-            valueExtractor = { height.inMeters },
-            periodExtractor = { Date.from(time) to Date.from(time) }
-        )
+        categories = listOf(
+            Coding()
+                .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+                .setCode("vital-signs")
+                .setDisplay("Vital Signs")
+        ),
+        codings = listOf(
+            Coding().setSystem("http://loinc.org").setCode("8302-2").setDisplay("Body height")
+        ),
+        unit = "m",
+        valueExtractor = { height.inMeters },
+        periodExtractor = { Date.from(time) to Date.from(time) }
+    )
 
     private fun mapActiveCaloriesBurnedRecord(record: ActiveCaloriesBurnedRecord) = record.createObservation(
-            categories = listOf(
-                Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("activity").setDisplay("Activity")
-            ),
-            codings = listOf(
-                Coding().setSystem("http://loinc.org").setCode("41981-2").setDisplay("Calories burned")
-            ),
-            unit = "kcal",
-            valueExtractor = { energy.inCalories },
-            periodExtractor = { Date.from(startTime) to Date.from(endTime) }
-        )
+        categories = listOf(
+            Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("activity").setDisplay("Activity")
+        ),
+        codings = listOf(
+            Coding().setSystem("http://loinc.org").setCode("41981-2").setDisplay("Calories burned")
+        ),
+        unit = "kcal",
+        valueExtractor = { energy.inCalories },
+        periodExtractor = { Date.from(startTime) to Date.from(endTime) }
+    )
 
     private fun mapBodyTemperatureRecord(record: BodyTemperatureRecord) = record.createObservation(
-            categories = listOf(
-                Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("vital-signs").setDisplay("Vital Signs")
-            ),
-            codings = listOf(
-                Coding().setSystem("http://loinc.org").setCode("8310-5").setDisplay("Body temperature")
-            ),
-            unit = "°C",
-            valueExtractor = { temperature.inCelsius },
-            periodExtractor = { Date.from(time) to Date.from(time) }
-        )
+        categories = listOf(
+            Coding()
+                .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+                .setCode("vital-signs")
+                .setDisplay("Vital Signs")
+        ),
+        codings = listOf(
+            Coding().setSystem("http://loinc.org").setCode("8310-5").setDisplay("Body temperature")
+        ),
+        unit = "°C",
+        valueExtractor = { temperature.inCelsius },
+        periodExtractor = { Date.from(time) to Date.from(time) }
+    )
 
     private fun mapBloodPressureRecord(record: BloodPressureRecord): Observation {
         val observation = Observation()
@@ -102,7 +120,10 @@ class RecordToObservationMapperImpl : RecordToObservationMapper {
 
         observation.category = listOf(
             CodeableConcept().addCoding(
-                Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("vital-signs").setDisplay("Vital Signs")
+                Coding()
+                    .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+                    .setCode("vital-signs")
+                    .setDisplay("Vital Signs")
             )
         )
 
@@ -174,18 +195,17 @@ class RecordToObservationMapperImpl : RecordToObservationMapper {
         }
     }
 
-
-    private fun <T: Record> T.createObservation(
+    private fun <T : Record> T.createObservation(
         categories: List<Coding> = listOf(),
         codings: List<Coding>,
         unit: String,
         valueExtractor: T.() -> Double,
-        periodExtractor: T.() -> Pair<Date, Date>
+        periodExtractor: T.() -> Pair<Date, Date>,
     ): Observation {
         return Observation().apply {
             status = Observation.ObservationStatus.FINAL
 
-            category = listOf(CodeableConcept().apply{
+            category = listOf(CodeableConcept().apply {
                 categories.forEach { addCoding(it) }
             })
 
