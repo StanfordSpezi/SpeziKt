@@ -23,12 +23,7 @@ import java.time.ZoneOffset
 import java.util.Date
 
 class RecordToObservationMapperTests {
-    private lateinit var mapper: RecordToObservationMapper
-
-    @Before
-    fun setup() {
-        mapper = RecordToObservationMapperImpl()
-    }
+    private var mapper = RecordToObservationMapperImpl()
 
     @Test
     fun `stepsRecord toObservation isCorrect`() {
