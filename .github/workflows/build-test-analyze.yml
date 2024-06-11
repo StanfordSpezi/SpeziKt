@@ -72,7 +72,6 @@ jobs:
   dokka:
     name: Dokka Documentation Deployment
     runs-on: ubuntu-latest
-    needs: buildtestandanalyze
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
