@@ -16,7 +16,6 @@ import com.google.common.truth.Truth.assertThat
 import org.hl7.fhir.r4.model.Observation
 import org.hl7.fhir.r4.model.Period
 import org.hl7.fhir.r4.model.Quantity
-import org.junit.Before
 import org.junit.Test
 import java.time.Instant
 import java.time.ZoneOffset
