@@ -17,13 +17,22 @@ import com.google.common.truth.Truth.assertThat
 import org.hl7.fhir.r4.model.Observation
 import org.hl7.fhir.r4.model.Period
 import org.hl7.fhir.r4.model.Quantity
+import org.junit.Before
 import org.junit.Test
 import java.time.Instant
 import java.time.ZoneOffset
 import java.util.Date
 
-class CreateObservationTests {
+class RecordToObservationMapperTests {
+
     private val fhirContext: FhirContext = FhirContext.forR4()
+
+    private lateinit var mapper: RecordToObservationMapper
+
+    @Before
+    fun setup() {
+        mapper = RecordToObservationMapperImpl()
+    }
 
     @Test
     fun `stepsRecord toObservation isCorrect`() {
@@ -35,7 +44,7 @@ class CreateObservationTests {
             endZoneOffset = ZoneOffset.UTC
         )
 
-        val observation = stepsRecord.toObservation()
+        val observation = mapper.map(stepsRecord)
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.code.codingFirstRep.code).isEqualTo("55423-8")
@@ -54,7 +63,7 @@ class CreateObservationTests {
             zoneOffset = ZoneOffset.UTC
         )
 
-        val observation = weightRecord.toObservation()
+        val observation = mapper.map(weightRecord)
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.code.codingFirstRep.code).isEqualTo("29463-7")
@@ -75,7 +84,7 @@ class CreateObservationTests {
             endZoneOffset = ZoneOffset.UTC
         )
 
-        val observation = activeCaloriesBurnedRecord.toObservation()
+        val observation = mapper.map(activeCaloriesBurnedRecord)
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.code.codingFirstRep.code).isEqualTo("41981-2")
@@ -95,7 +104,7 @@ class CreateObservationTests {
             zoneOffset = ZoneOffset.UTC
         )
 
-        val observation = bloodPressureRecord.toObservation()
+        val observation = mapper.map(bloodPressureRecord)
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.code.codingFirstRep.code).isEqualTo("85354-9")
@@ -116,7 +125,7 @@ class CreateObservationTests {
             zoneOffset = ZoneOffset.UTC
         )
 
-        val observation = heightRecord.toObservation()
+        val observation = mapper.map(heightRecord)
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.code.codingFirstRep.code).isEqualTo("8302-2")
@@ -135,7 +144,7 @@ class CreateObservationTests {
             zoneOffset = ZoneOffset.UTC
         )
 
-        val observation = bodyTemperatureRecord.toObservation()
+        val observation = mapper.map(bodyTemperatureRecord)
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.code.codingFirstRep.code).isEqualTo("8310-5")
