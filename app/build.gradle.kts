@@ -8,12 +8,14 @@ plugins {
 }
 
 android {
-    namespace = "edu.stanford.spezi.app"
+    namespace = "edu.stanford.bdh.engagehf"
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "edu.stanford.bdh.engagehf"
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = (project.findProperty("android.injected.version.code") as? String)?.toInt() ?: 1
+        versionName = (project.findProperty("android.injected.version.name") as? String) ?: "1.0.0"
+        targetSdk = libs.versions.targetSdk.get().toInt()
 
         vectorDrawables {
             useSupportLibrary = true

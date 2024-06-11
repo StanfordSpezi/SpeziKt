@@ -2,15 +2,13 @@
 
 This module provides Account management components.
 
-## Components
-
-### Package edu.stanford.spezi.module.account.login
+# Package edu.stanford.spezi.module.account.login
 
 The LoginScreen is a key component of the account module. It is responsible for handling user
 authentication in Spezi Framework. This screen provides an interface for users to enter their email
 and password to log into their account.
 
-### Package edu.stanford.spezi.module.account.register
+# Package edu.stanford.spezi.module.account.register
 
 The RegisterScreen is a key component of the account module. It is responsible for handling user
 registration in the Spezi Framework. This screen provides an interface for users to create a new

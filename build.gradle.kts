@@ -82,6 +82,7 @@ fun Project.setupDetekt() {
     }
 
     tasks.withType<Detekt> {
+        jvmTarget = JavaVersion.VERSION_17.toString()
         reports {
             xml.required.set(true)
             html.required.set(true)
