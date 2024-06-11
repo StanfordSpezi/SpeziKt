@@ -3,6 +3,7 @@ package edu.stanford.healthconnectonfhir
 import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
 import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.BodyTemperatureRecord
+import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.HeightRecord
 import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.StepsRecord
@@ -15,14 +16,22 @@ import org.hl7.fhir.r4.model.Quantity
 import java.util.Date
 
 class RecordToObservationMapperImpl : RecordToObservationMapper {
-    override fun <T: Record> map(record: T): Observation {
+    /**
+     * Maps a given Health Connect record to a list of HL7 FHIR Observations.
+     *
+     * @param T the type of the health record, extending from `Record`
+     * @param record the health record to be mapped
+     * @return a list of `Observation` objects derived from the provided health record
+     */
+    override fun <T: Record> map(record: T): List<Observation> {
         return when (record) {
-            is StepsRecord -> mapStepsRecord(record)
-            is WeightRecord -> mapWeightRecord(record)
-            is HeightRecord -> mapHeightRecord(record)
-            is BodyTemperatureRecord -> mapBodyTemperatureRecord(record)
-            is BloodPressureRecord -> mapBloodPressureRecord(record)
-            is ActiveCaloriesBurnedRecord -> mapActiveCaloriesBurnedRecord(record)
+            is StepsRecord -> listOf(mapStepsRecord(record))
+            is WeightRecord -> listOf(mapWeightRecord(record))
+            is HeightRecord -> listOf(mapHeightRecord(record))
+            is BodyTemperatureRecord -> listOf(mapBodyTemperatureRecord(record))
+            is BloodPressureRecord -> listOf(mapBloodPressureRecord(record))
+            is ActiveCaloriesBurnedRecord -> listOf(mapActiveCaloriesBurnedRecord(record))
+            is HeartRateRecord -> mapHeartRateRecord(record)
             else -> error("Unsupported record type ${record.javaClass.name}")
         }
     }
@@ -131,6 +140,38 @@ class RecordToObservationMapperImpl : RecordToObservationMapper {
         observation.addComponent(diastolicComponent)
 
         return observation
+    }
+
+    private fun mapHeartRateRecord(record: HeartRateRecord): List<Observation> {
+        return record.samples.map { sample ->
+            val observation = Observation()
+            observation.status = Observation.ObservationStatus.FINAL
+
+            observation.category = listOf(
+                CodeableConcept().addCoding(
+                    Coding()
+                        .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+                        .setCode("vital-signs")
+                        .setDisplay("Vital Signs")
+                )
+            )
+
+            observation.code = CodeableConcept().addCoding(
+                Coding()
+                    .setSystem("http://loinc.org")
+                    .setCode("8867-4")
+                    .setDisplay("Heart rate")
+            )
+
+            val period = Period()
+            period.start = Date.from(sample.time)
+            period.end = Date.from(sample.time)
+            observation.effective = period
+
+            observation.value = Quantity().setValue(sample.beatsPerMinute).setUnit("beats/minute")
+
+            observation
+        }
     }
 
 

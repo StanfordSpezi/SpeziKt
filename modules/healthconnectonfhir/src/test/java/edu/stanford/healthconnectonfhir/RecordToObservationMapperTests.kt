@@ -44,7 +44,7 @@ class RecordToObservationMapperTests {
             endZoneOffset = ZoneOffset.UTC
         )
 
-        val observation = mapper.map(stepsRecord)
+        val observation = mapper.map(stepsRecord).first()
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.code.codingFirstRep.code).isEqualTo("55423-8")
@@ -63,7 +63,7 @@ class RecordToObservationMapperTests {
             zoneOffset = ZoneOffset.UTC
         )
 
-        val observation = mapper.map(weightRecord)
+        val observation = mapper.map(weightRecord).first()
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.code.codingFirstRep.code).isEqualTo("29463-7")
@@ -84,7 +84,7 @@ class RecordToObservationMapperTests {
             endZoneOffset = ZoneOffset.UTC
         )
 
-        val observation = mapper.map(activeCaloriesBurnedRecord)
+        val observation = mapper.map(activeCaloriesBurnedRecord).first()
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.code.codingFirstRep.code).isEqualTo("41981-2")
@@ -104,7 +104,7 @@ class RecordToObservationMapperTests {
             zoneOffset = ZoneOffset.UTC
         )
 
-        val observation = mapper.map(bloodPressureRecord)
+        val observation = mapper.map(bloodPressureRecord).first()
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.code.codingFirstRep.code).isEqualTo("85354-9")
@@ -125,7 +125,7 @@ class RecordToObservationMapperTests {
             zoneOffset = ZoneOffset.UTC
         )
 
-        val observation = mapper.map(heightRecord)
+        val observation = mapper.map(heightRecord).first()
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.code.codingFirstRep.code).isEqualTo("8302-2")
@@ -144,7 +144,7 @@ class RecordToObservationMapperTests {
             zoneOffset = ZoneOffset.UTC
         )
 
-        val observation = mapper.map(bodyTemperatureRecord)
+        val observation = mapper.map(bodyTemperatureRecord).first()
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.code.codingFirstRep.code).isEqualTo("8310-5")
@@ -174,7 +174,7 @@ class RecordToObservationMapperTests {
             endZoneOffset = ZoneOffset.UTC
         )
 
-        val observations = heartRateRecord.toObservations()
+        val observations = mapper.map(heartRateRecord)
 
         observations.forEach { observation ->
             assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
