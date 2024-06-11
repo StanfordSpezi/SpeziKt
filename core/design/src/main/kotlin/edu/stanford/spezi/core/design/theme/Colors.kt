@@ -60,6 +60,11 @@ object Colors {
         @Composable
         @ReadOnlyComposable
         get() = scheme.onSurface
+
+    val error
+        @Composable
+        @ReadOnlyComposable
+        get() = scheme.error
 }
 
 @Suppress("unused")

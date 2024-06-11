@@ -1,35 +1,49 @@
 # Please keep [versions] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [versions]
+accompanistPager = "0.35.1-alpha"
 activityCompose = "1.9.0"
-agp = "8.4.0"
-androidTools = "31.4.0"
-appcompat = "1.6.1"
+agp = "8.4.1"
+androidTools = "31.4.1"
+appcompat = "1.7.0"
 compileSdk = "34"
 composeBom = "2024.05.00"
-healthConnectClient = "1.1.0-alpha02"
+composeNavigation = "2.8.0-alpha08"
 coreKtx = "1.13.1"
 coreTestingVersion = "2.2.0"
 coroutinesVersion = "1.8.0"
 detekt = "1.23.6" # please adjust github action version as well in case of version change
+credentialsPlayServicesAuth = "1.2.2"
 dokka = "1.9.20"
 espressoCore = "3.5.1"
 fhirDataCapture = "1.0.0"
+firebaseAuthKtx = "23.0.0"
+firebaseFirestoreKtx = "25.0.0"
+firebaseFunctionsKtx = "21.0.0"
+firebaseStorageKtx = "21.0.0"
+foundation = "1.6.7"
+googleGmsGoogleServices = "4.4.2"
+googleid = "1.1.0"
+healthConnectClient = "1.1.0-alpha02"
 hiltNavigation = "1.2.0"
 hiltVersion = "2.51"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 kotlin = "2.0.0"
+kotlinxSerialization = "1.9.22"
+kotlinxSerializationJson = "1.6.3"
 kspVersion = "2.0.0-1.0.21"
-lifecycleKtx = "2.8.0"
+lifecycleKtx = "2.8.1"
 lifecycleRuntimeKtx = "2.7.0"
 minSdk = "31"
 mockKVersion = "1.13.10"
+playServicesAuth = "21.2.0"
 targetSdk = "34"
 timberVersion = "5.0.1"
 truth = "1.4.2"
 
 # Please keep [libraries] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [libraries]
+accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
 android-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -37,8 +51,10 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 androidx-health-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "healthConnectClient" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTestingVersion" }
+androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentialsPlayServicesAuth" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 android-fhir-data-capture = { module = "com.google.android.fhir:data-capture", version.ref = "fhirDataCapture" }
+androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleKtx" }
 androidx-lifecycle-view-model-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleKtx" }
@@ -55,7 +71,12 @@ coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutin
 coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutinesVersion" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesVersion" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
+firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
+firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-functions-ktx", version.ref = "firebaseFunctionsKtx" }
+firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
+googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltVersion" }
 hilt-core = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltVersion" }
 hilt-gradle = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hiltVersion" }
@@ -64,10 +85,13 @@ hilt-test = { group = "com.google.dagger", name = "hilt-android-testing", versio
 hilt-test-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hiltVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlin-gradle = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 mockk-agent-core = { group = "io.mockk", name = "mockk-agent", version.ref = "mockKVersion" }
 mockk-agent-jvm = { group = "io.mockk", name = "mockk-agent-jvm", version.ref = "mockKVersion" }
 mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockKVersion" }
 mockk-core = { group = "io.mockk", name = "mockk", version.ref = "mockKVersion" }
+navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
+play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timberVersion" }
 
 # Please keep [plugins] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
@@ -78,8 +102,11 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerialization" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 spezi-application = { id = "spezi.application", version = "unspecified" }
 spezi-base = { id = "spezi.base", version = "unspecified" }
 spezi-compose = { id = "spezi.compose", version = "unspecified" }

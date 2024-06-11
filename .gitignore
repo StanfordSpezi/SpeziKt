@@ -2,6 +2,9 @@
 *.class
 *.dex
 
+# Kotlin compiler
+.kotlin
+
 # Log file
 *.log
 
@@ -30,9 +33,9 @@ replay_pid*
 !.idea/copyright
 # Keep the code styles.
 !/.idea/codeStyles
-/.idea/codeStyles/*
 !/.idea/codeStyles/Project.xml
 !/.idea/codeStyles/codeStyleConfig.xml
+!/.idea/detekt.xml
 
 # Gradle cache
 .gradle
@@ -53,3 +56,15 @@ build/
 # built application files
 *.apk
 *.ap_
+
+# Other files
+.DS_Store
+
+# fastlane
+play-store-credentials.json
+keystore.jks
+app/release/*
+app/debug/*
+
+# services and secrets
+modules/account/src/main/res/values/secrets.xml

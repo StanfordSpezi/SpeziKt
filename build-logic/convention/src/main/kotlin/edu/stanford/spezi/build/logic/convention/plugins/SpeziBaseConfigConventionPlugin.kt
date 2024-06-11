@@ -10,6 +10,8 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 class SpeziBaseConfigConventionPlugin : Plugin<Project> {
@@ -36,12 +38,16 @@ class SpeziBaseConfigConventionPlugin : Plugin<Project> {
             }
         }
 
+        tasks.withType<KotlinCompilationTask<*>>().configureEach {
+            compilerOptions {
+                languageVersion.set(KotlinVersion.KOTLIN_2_0)
+                freeCompilerArgs.add("-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
+            }
+        }
+
         tasks.withType<KotlinCompile>().configureEach {
             kotlinOptions {
                 jvmTarget = java.toString()
-                val warningsAsErrors: String? by project
-                allWarningsAsErrors = warningsAsErrors.toBoolean()
-                freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
             }
         }
 
