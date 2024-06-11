@@ -25,7 +25,7 @@ Spezi is a collection of modules that can be used to build Android applications
 
 ### Continous Integration and Delivery Setup
 
-#### Google Play Alpha Deployment
+#### Google Play Internal Deployment
 
 First, create a Google Cloud Services Account and corresponding JSON secrets key in accordance to the [fastlane supply](https://docs.fastlane.tools/actions/supply/) documentation. Store the JSON representation of the key in a `SERVICE_ACCOUNT_JSON_KEY` secret available to the GitHub action.
 

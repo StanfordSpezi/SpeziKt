@@ -17,22 +17,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  detekt:
-    name: Detekt review
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4.1.0
-        with:
-          fetch-depth: 1
-          ref: ${{ github.head_ref }}
-      - name: Detekt PR Check
-        uses: alaegin/Detekt-Action@v1.23.6
-        with:
-          reviewdog_reporter: github-pr-check
-          github_token: ${{ secrets.github_token }}
-          fail_on_error: true
-          detekt_config: internal/detekt-config.yml
   buildtestandanalyze:
     uses: ./.github/workflows/build-test-analyze.yml
     secrets: inherit
