@@ -14,8 +14,9 @@ import org.hl7.fhir.r4.model.Observation
 import org.hl7.fhir.r4.model.Period
 import org.hl7.fhir.r4.model.Quantity
 import java.util.Date
+import javax.inject.Inject
 
-class RecordToObservationMapperImpl : RecordToObservationMapper {
+class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationMapper {
     /**
      * Maps a given Health Connect record to a list of HL7 FHIR Observations.
      *
