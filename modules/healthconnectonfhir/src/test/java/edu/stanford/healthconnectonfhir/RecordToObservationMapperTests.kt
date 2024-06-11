@@ -12,7 +12,6 @@ import androidx.health.connect.client.units.Length
 import androidx.health.connect.client.units.Mass
 import androidx.health.connect.client.units.Pressure
 import androidx.health.connect.client.units.Temperature
-import ca.uhn.fhir.context.FhirContext
 import com.google.common.truth.Truth.assertThat
 import org.hl7.fhir.r4.model.Observation
 import org.hl7.fhir.r4.model.Period
@@ -24,9 +23,6 @@ import java.time.ZoneOffset
 import java.util.Date
 
 class RecordToObservationMapperTests {
-
-    private val fhirContext: FhirContext = FhirContext.forR4()
-
     private lateinit var mapper: RecordToObservationMapper
 
     @Before

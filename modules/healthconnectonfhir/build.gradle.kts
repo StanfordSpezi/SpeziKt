@@ -8,6 +8,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.health.connect.client)
-    implementation(libs.android.fhir.data.capture)
+    api(libs.androidx.health.connect.client)
+    api(libs.hapi.fhir.structures.r4)
 }
