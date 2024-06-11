@@ -45,6 +45,12 @@ class SpeziBaseConfigConventionPlugin : Plugin<Project> {
             }
         }
 
+        tasks.withType<KotlinCompile>().configureEach {
+            kotlinOptions {
+                jvmTarget = java.toString()
+            }
+        }
+
         /**
          * The purpose of this function is to optimize the build process.
          * If there are no Android tests for a variant, there's no need to spend time

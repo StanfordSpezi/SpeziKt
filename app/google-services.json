@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "PROJECT_NUMBER",
-    "project_id": "stanfordbdhengagehf",
-    "storage_bucket": "STORAGE_BUCKET"
+    "project_number": "662213548508",
+    "project_id": "stanford-bdhg-engage-hf",
+    "storage_bucket": "stanford-bdhg-engage-hf.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:123456789012:ios:1234567890123456789012",
+        "mobilesdk_app_id": "1:662213548508:android:45bc04d7c231ff13e8d719",
         "android_client_info": {
           "package_name": "edu.stanford.bdh.engagehf"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "API_KEY"
+          "current_key": "AIzaSyCXJ31l00_tpEfiLp3fn_d-s6E3shTY92k"
         }
       ],
       "services": {
