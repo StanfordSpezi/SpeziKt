@@ -8,6 +8,7 @@ import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.HeightRecord
 import androidx.health.connect.client.records.OxygenSaturationRecord
 import androidx.health.connect.client.records.Record
+import androidx.health.connect.client.records.RespiratoryRateRecord
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.WeightRecord
 import org.hl7.fhir.r4.model.CodeableConcept
@@ -35,6 +36,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             is HeartRateRecord -> mapHeartRateRecord(record)
             is HeightRecord -> listOf(mapHeightRecord(record))
             is OxygenSaturationRecord -> listOf(mapOxygenSaturationRecord(record))
+            is RespiratoryRateRecord -> listOf(mapRespiratoryRateRecord(record))
             is StepsRecord -> listOf(mapStepsRecord(record))
             is WeightRecord -> listOf(mapWeightRecord(record))
             else -> error("Unsupported record type ${record.javaClass.name}")
@@ -191,6 +193,24 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         ),
         unit = "%",
         valueExtractor = { percentage.value },
+        periodExtractor = { Date.from(time) to Date.from(time) }
+    )
+
+    private fun mapRespiratoryRateRecord(record: RespiratoryRateRecord) = record.createObservation(
+        categories = listOf(
+            Coding()
+                .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+                .setCode("vital-signs")
+                .setDisplay("Vital Signs")
+        ),
+        codings = listOf(
+            Coding()
+                .setSystem("http://loinc.org")
+                .setCode("9279-1")
+                .setDisplay("Respiratory rate")
+        ),
+        unit = "/min",
+        valueExtractor = { rate },
         periodExtractor = { Date.from(time) to Date.from(time) }
     )
 

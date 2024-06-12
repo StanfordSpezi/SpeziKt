@@ -7,6 +7,7 @@ import androidx.health.connect.client.records.BodyTemperatureRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.HeightRecord
 import androidx.health.connect.client.records.OxygenSaturationRecord
+import androidx.health.connect.client.records.RespiratoryRateRecord
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.units.Energy
@@ -147,6 +148,7 @@ class RecordToObservationMapperTests {
         assertThat((observation.value as Quantity).unit).isEqualTo("%")
     }
 
+    @Test
     fun `oxygenSaturationRecord toObservation isCorrect`() {
         val oxygenSaturationRecord = OxygenSaturationRecord(
             time = Instant.parse("2023-05-18T10:15:30.00Z"),
@@ -163,6 +165,25 @@ class RecordToObservationMapperTests {
         assertThat((observation.effective as Period).end).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
         assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(99.0)
         assertThat((observation.value as Quantity).unit).isEqualTo("%")
+    }
+
+    @Test
+    fun `respiratoryRate toObservation isCorrect`() {
+        val respiratoryRateRecord = RespiratoryRateRecord(
+            time = Instant.parse("2023-05-18T10:15:30.00Z"),
+            rate = 18.0,
+            zoneOffset = ZoneOffset.UTC
+        )
+
+        val observation = mapper.map(respiratoryRateRecord).first()
+
+        assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
+        assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
+        assertThat(observation.code.codingFirstRep.code).isEqualTo("9279-1")
+        assertThat((observation.effective as Period).start).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
+        assertThat((observation.effective as Period).end).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
+        assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(18.0)
+        assertThat((observation.value as Quantity).unit).isEqualTo("/min")
     }
 
     @Test
