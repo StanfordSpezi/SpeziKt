@@ -2,6 +2,7 @@ package edu.stanford.healthconnectonfhir
 
 import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
 import androidx.health.connect.client.records.BloodPressureRecord
+import androidx.health.connect.client.records.BodyFatRecord
 import androidx.health.connect.client.records.BodyTemperatureRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.HeightRecord
@@ -26,13 +27,14 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
      */
     override fun <T : Record> map(record: T): List<Observation> {
         return when (record) {
-            is StepsRecord -> listOf(mapStepsRecord(record))
-            is WeightRecord -> listOf(mapWeightRecord(record))
-            is HeightRecord -> listOf(mapHeightRecord(record))
+            is ActiveCaloriesBurnedRecord -> listOf(mapActiveCaloriesBurnedRecord(record))
+            is BodyFatRecord -> listOf(mapBodyFatRecord(record))
             is BodyTemperatureRecord -> listOf(mapBodyTemperatureRecord(record))
             is BloodPressureRecord -> listOf(mapBloodPressureRecord(record))
-            is ActiveCaloriesBurnedRecord -> listOf(mapActiveCaloriesBurnedRecord(record))
             is HeartRateRecord -> mapHeartRateRecord(record)
+            is HeightRecord -> listOf(mapHeightRecord(record))
+            is StepsRecord -> listOf(mapStepsRecord(record))
+            is WeightRecord -> listOf(mapWeightRecord(record))
             else -> error("Unsupported record type ${record.javaClass.name}")
         }
     }
@@ -97,6 +99,18 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
 
         return observation
     }
+
+    private fun mapBodyFatRecord(record: BodyFatRecord) = record.createObservation(
+        codings = listOf(
+            Coding()
+                .setSystem("http://loinc.org")
+                .setCode("41982-0")
+                .setDisplay("Percentage of body fat Measured")
+        ),
+        unit = "%",
+        valueExtractor = { percentage.value },
+        periodExtractor = { Date.from(time) to Date.from(time) }
+    )
 
     private fun mapBodyTemperatureRecord(record: BodyTemperatureRecord) = record.createObservation(
         categories = listOf(
