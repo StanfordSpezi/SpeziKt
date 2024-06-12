@@ -6,6 +6,7 @@ import androidx.health.connect.client.records.BodyFatRecord
 import androidx.health.connect.client.records.BodyTemperatureRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.HeightRecord
+import androidx.health.connect.client.records.OxygenSaturationRecord
 import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.WeightRecord
@@ -33,6 +34,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             is BloodPressureRecord -> listOf(mapBloodPressureRecord(record))
             is HeartRateRecord -> mapHeartRateRecord(record)
             is HeightRecord -> listOf(mapHeightRecord(record))
+            is OxygenSaturationRecord -> listOf(mapOxygenSaturationRecord(record))
             is StepsRecord -> listOf(mapStepsRecord(record))
             is WeightRecord -> listOf(mapWeightRecord(record))
             else -> error("Unsupported record type ${record.javaClass.name}")
@@ -171,6 +173,24 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         ),
         unit = "m",
         valueExtractor = { height.inMeters },
+        periodExtractor = { Date.from(time) to Date.from(time) }
+    )
+
+    private fun mapOxygenSaturationRecord(record: OxygenSaturationRecord) = record.createObservation(
+        categories = listOf(
+            Coding()
+                .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+                .setCode("vital-signs")
+                .setDisplay("Vital Signs")
+        ),
+        codings = listOf(
+            Coding()
+                .setSystem("http://loinc.org")
+                .setCode("59408-5")
+                .setDisplay("Oxygen saturation in Arterial blood by Pulse oximetry")
+        ),
+        unit = "%",
+        valueExtractor = { percentage.value },
         periodExtractor = { Date.from(time) to Date.from(time) }
     )
 

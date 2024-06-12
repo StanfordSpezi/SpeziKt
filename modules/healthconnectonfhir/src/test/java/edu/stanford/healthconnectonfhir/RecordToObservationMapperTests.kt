@@ -6,6 +6,7 @@ import androidx.health.connect.client.records.BodyFatRecord
 import androidx.health.connect.client.records.BodyTemperatureRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.HeightRecord
+import androidx.health.connect.client.records.OxygenSaturationRecord
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.units.Energy
@@ -143,6 +144,24 @@ class RecordToObservationMapperTests {
         assertThat((observation.effective as Period).start).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
         assertThat((observation.effective as Period).end).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
         assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(10.0)
+        assertThat((observation.value as Quantity).unit).isEqualTo("%")
+    }
+
+    fun `oxygenSaturationRecord toObservation isCorrect`() {
+        val oxygenSaturationRecord = OxygenSaturationRecord(
+            time = Instant.parse("2023-05-18T10:15:30.00Z"),
+            percentage = Percentage(99.0),
+            zoneOffset = ZoneOffset.UTC
+        )
+
+        val observation = mapper.map(oxygenSaturationRecord).first()
+
+        assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
+        assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
+        assertThat(observation.code.codingFirstRep.code).isEqualTo("59408-5")
+        assertThat((observation.effective as Period).start).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
+        assertThat((observation.effective as Period).end).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
+        assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(99.0)
         assertThat((observation.value as Quantity).unit).isEqualTo("%")
     }
 
