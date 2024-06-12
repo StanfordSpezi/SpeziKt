@@ -37,57 +37,6 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         }
     }
 
-    private fun mapStepsRecord(record: StepsRecord) = record.createObservation(
-        categories = listOf(
-            Coding()
-                .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
-                .setCode("activity")
-                .setDisplay("Activity")
-        ),
-        codings = listOf(
-            Coding()
-                .setSystem("http://loinc.org")
-                .setCode("55423-8")
-                .setDisplay("Number of steps")
-        ),
-        unit = "steps",
-        valueExtractor = { count.toDouble() },
-        periodExtractor = { Date.from(startTime) to Date.from(endTime) }
-    )
-
-    private fun mapWeightRecord(record: WeightRecord) = record.createObservation(
-        categories = listOf(
-            Coding()
-                .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
-                .setCode("vital-signs")
-                .setDisplay("Vital Signs")
-        ),
-        codings = listOf(
-            Coding()
-                .setSystem("http://loinc.org")
-                .setCode("29463-7")
-                .setDisplay("Body weight")
-        ),
-        unit = "g",
-        valueExtractor = { weight.inGrams },
-        periodExtractor = { Date.from(time) to Date.from(time) }
-    )
-
-    private fun mapHeightRecord(record: HeightRecord) = record.createObservation(
-        categories = listOf(
-            Coding()
-                .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
-                .setCode("vital-signs")
-                .setDisplay("Vital Signs")
-        ),
-        codings = listOf(
-            Coding().setSystem("http://loinc.org").setCode("8302-2").setDisplay("Body height")
-        ),
-        unit = "m",
-        valueExtractor = { height.inMeters },
-        periodExtractor = { Date.from(time) to Date.from(time) }
-    )
-
     private fun mapActiveCaloriesBurnedRecord(record: ActiveCaloriesBurnedRecord) = record.createObservation(
         categories = listOf(
             Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("activity").setDisplay("Activity")
@@ -98,21 +47,6 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         unit = "kcal",
         valueExtractor = { energy.inCalories },
         periodExtractor = { Date.from(startTime) to Date.from(endTime) }
-    )
-
-    private fun mapBodyTemperatureRecord(record: BodyTemperatureRecord) = record.createObservation(
-        categories = listOf(
-            Coding()
-                .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
-                .setCode("vital-signs")
-                .setDisplay("Vital Signs")
-        ),
-        codings = listOf(
-            Coding().setSystem("http://loinc.org").setCode("8310-5").setDisplay("Body temperature")
-        ),
-        unit = "°C",
-        valueExtractor = { temperature.inCelsius },
-        periodExtractor = { Date.from(time) to Date.from(time) }
     )
 
     private fun mapBloodPressureRecord(record: BloodPressureRecord): Observation {
@@ -164,6 +98,21 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         return observation
     }
 
+    private fun mapBodyTemperatureRecord(record: BodyTemperatureRecord) = record.createObservation(
+        categories = listOf(
+            Coding()
+                .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+                .setCode("vital-signs")
+                .setDisplay("Vital Signs")
+        ),
+        codings = listOf(
+            Coding().setSystem("http://loinc.org").setCode("8310-5").setDisplay("Body temperature")
+        ),
+        unit = "°C",
+        valueExtractor = { temperature.inCelsius },
+        periodExtractor = { Date.from(time) to Date.from(time) }
+    )
+
     private fun mapHeartRateRecord(record: HeartRateRecord): List<Observation> {
         return record.samples.map { sample ->
             val observation = Observation()
@@ -195,6 +144,57 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             observation
         }
     }
+
+    private fun mapHeightRecord(record: HeightRecord) = record.createObservation(
+        categories = listOf(
+            Coding()
+                .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+                .setCode("vital-signs")
+                .setDisplay("Vital Signs")
+        ),
+        codings = listOf(
+            Coding().setSystem("http://loinc.org").setCode("8302-2").setDisplay("Body height")
+        ),
+        unit = "m",
+        valueExtractor = { height.inMeters },
+        periodExtractor = { Date.from(time) to Date.from(time) }
+    )
+
+    private fun mapStepsRecord(record: StepsRecord) = record.createObservation(
+        categories = listOf(
+            Coding()
+                .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+                .setCode("activity")
+                .setDisplay("Activity")
+        ),
+        codings = listOf(
+            Coding()
+                .setSystem("http://loinc.org")
+                .setCode("55423-8")
+                .setDisplay("Number of steps")
+        ),
+        unit = "steps",
+        valueExtractor = { count.toDouble() },
+        periodExtractor = { Date.from(startTime) to Date.from(endTime) }
+    )
+
+    private fun mapWeightRecord(record: WeightRecord) = record.createObservation(
+        categories = listOf(
+            Coding()
+                .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+                .setCode("vital-signs")
+                .setDisplay("Vital Signs")
+        ),
+        codings = listOf(
+            Coding()
+                .setSystem("http://loinc.org")
+                .setCode("29463-7")
+                .setDisplay("Body weight")
+        ),
+        unit = "g",
+        valueExtractor = { weight.inGrams },
+        periodExtractor = { Date.from(time) to Date.from(time) }
+    )
 
     private fun <T : Record> T.createObservation(
         categories: List<Coding> = listOf(),
