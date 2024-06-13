@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 
 /**
  * A page indicator that shows the current page and the total number of pages.
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.dp
  */
 @Composable
 fun PageIndicator(
+    modifier: Modifier = Modifier,
     currentPage: Int,
     pageCount: Int,
     textColor: Color,
@@ -46,12 +48,13 @@ fun PageIndicator(
     actionText: String,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(backgroundColor),
         verticalAlignment = Alignment.CenterVertically
     ) {
         TextButton(
+            modifier = Modifier.testIdentifier(PageIndicatorTestIdentifier.BACK),
             onClick = {
                 onBack()
             },
@@ -95,6 +98,7 @@ fun PageIndicator(
         }
         Spacer(modifier = Modifier.weight(1f))
         TextButton(
+            modifier = Modifier.testIdentifier(PageIndicatorTestIdentifier.FORWARD),
             onClick = { onForward() },
             content = {
                 Text(
@@ -141,3 +145,8 @@ private data class PageIndicatorPreviewParams(
     val textColor: Color,
     val backgroundColor: Color,
 )
+
+enum class PageIndicatorTestIdentifier {
+    BACK,
+    FORWARD,
+}

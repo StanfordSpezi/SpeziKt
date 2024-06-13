@@ -32,6 +32,7 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles.bodyLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.module.account.login.components.SignInWithGoogleButton
 import edu.stanford.spezi.module.account.login.components.TextDivider
 
@@ -55,6 +56,7 @@ internal fun LoginScreen(
 ) {
     Column(
         modifier = Modifier
+            .testIdentifier(LoginScreenTestIdentifier.ROOT)
             .fillMaxSize()
             .padding(Spacings.medium),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -177,4 +179,8 @@ private class LoginScreenPreviewProvider : PreviewParameterProvider<UiState> {
             isAlreadyRegistered = true
         )
     )
+}
+
+enum class LoginScreenTestIdentifier {
+    ROOT,
 }

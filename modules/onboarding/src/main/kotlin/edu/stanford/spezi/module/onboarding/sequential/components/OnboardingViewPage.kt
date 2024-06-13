@@ -30,6 +30,7 @@ import edu.stanford.spezi.core.design.theme.TextStyles
  */
 @Composable
 fun OnboardingViewPage(
+    modifier: Modifier = Modifier,
     backgroundColor: Color,
     onColor: Color,
     title: String,
@@ -37,7 +38,7 @@ fun OnboardingViewPage(
     iconId: Int,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(backgroundColor),
         contentAlignment = Alignment.Center

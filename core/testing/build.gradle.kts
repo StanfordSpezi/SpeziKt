@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.spezi.base)
+    alias(libs.plugins.spezi.hilt)
 }
 
 android {
@@ -10,6 +11,11 @@ android {
 
 dependencies {
     implementation(project(":core:coroutines"))
+    implementation(project(":core:utils"))
+
+    implementation(libs.hilt.test)
+    implementation(libs.androidx.test.runner)
 
     api(libs.bundles.unit.testing)
+    api(libs.bundles.compose.androidTest)
 }

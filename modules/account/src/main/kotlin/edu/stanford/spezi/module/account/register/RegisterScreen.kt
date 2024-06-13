@@ -48,6 +48,7 @@ import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles.labelLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.titleSmall
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -79,6 +80,7 @@ fun RegisterScreen(
 ) {
     Column(
         modifier = Modifier
+            .testIdentifier(RegisterScreenTestIdentifier.ROOT)
             .fillMaxSize()
             .padding(Spacings.medium)
             .imePadding()
@@ -267,4 +269,8 @@ private class RegisterScreenProvider : PreviewParameterProvider<RegisterUiState>
             isFormValid = false,
         ),
     )
+}
+
+enum class RegisterScreenTestIdentifier {
+    ROOT,
 }

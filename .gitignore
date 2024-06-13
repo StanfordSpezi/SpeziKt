@@ -29,7 +29,8 @@ replay_pid*
 
 # IDEA/Android Studio project files
 *.iml
-.idea/*
+.idea/
+**/.idea/
 !.idea/copyright
 # Keep the code styles.
 !/.idea/codeStyles
