@@ -17,7 +17,6 @@ import androidx.health.connect.client.units.Mass
 import androidx.health.connect.client.units.Percentage
 import androidx.health.connect.client.units.Pressure
 import androidx.health.connect.client.units.Temperature
-import ca.uhn.fhir.context.FhirContext
 import com.google.common.truth.Truth.assertThat
 import org.hl7.fhir.r4.model.DateTimeType
 import org.hl7.fhir.r4.model.Observation
@@ -31,14 +30,6 @@ import java.util.Date
 class RecordToObservationMapperTests {
     private var mapper = RecordToObservationMapperImpl()
 
-    private val fhirContext: FhirContext = FhirContext.forR4()
-
-    private fun printObservationAsJson(observation: Observation) {
-        val parser = fhirContext.newJsonParser()
-        val jsonString = parser.encodeResourceToString(observation)
-        println(jsonString)
-    }
-
     @Test
     fun `activeCaloriesBurnedRecord toObservation isCorrect`() {
         val activeCaloriesBurnedRecord = ActiveCaloriesBurnedRecord(
@@ -51,8 +42,6 @@ class RecordToObservationMapperTests {
         )
 
         val observation = mapper.map(activeCaloriesBurnedRecord).first()
-
-        printObservationAsJson(observation)
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.identifier.first().id).isEqualTo("123456")
