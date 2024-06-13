@@ -69,8 +69,9 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         observation.addCommonElements()
 
         observation.identifier = listOf(
-            Identifier()
-                .setValue(record.metadata.id)
+            Identifier().apply {
+                this.setId(record.metadata.id)
+            }
         )
 
         observation.category = listOf(
@@ -286,7 +287,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             addCommonElements()
 
             identifier = listOf(Identifier().apply {
-                this.value = this@createObservation.metadata.id
+                this.setId(this@createObservation.metadata.id)
             })
 
             category = listOf(CodeableConcept().apply {
