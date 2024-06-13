@@ -280,7 +280,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         codings: List<Coding>,
         unit: String,
         valueExtractor: T.() -> Double,
-        periodExtractor: T.() -> Pair<Date, Date>
+        periodExtractor: T.() -> Pair<Date, Date>,
     ): Observation {
         return Observation().apply {
             addCommonElements()
