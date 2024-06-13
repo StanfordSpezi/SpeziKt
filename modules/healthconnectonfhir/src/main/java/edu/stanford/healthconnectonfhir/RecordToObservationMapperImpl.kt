@@ -58,7 +58,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setCode("41981-2")
                 .setDisplay("Calories burned")
         ),
-        unit = "kcal",
+        unit = MappedUnit(
+            code = "kcal",
+            unit = "kcal",
+            system = "http://unitsofmeasure.org"
+        ),
         valueExtractor = { energy.inCalories },
         periodExtractor = { Date.from(startTime) to Date.from(endTime) }
     )
@@ -103,6 +107,8 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         systolicComponent.value = Quantity()
             .setValue(record.systolic.inMillimetersOfMercury)
             .setUnit("mmHg")
+            .setCode("mm[Hg]")
+            .setSystem("http://unitsofmeasure.org")
 
         val diastolicComponent = Observation.ObservationComponentComponent()
         diastolicComponent.code = CodeableConcept().addCoding(
@@ -114,6 +120,8 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         diastolicComponent.value = Quantity()
             .setValue(record.diastolic.inMillimetersOfMercury)
             .setUnit("mmHg")
+            .setCode("mm[Hg]")
+            .setSystem("http://unitsofmeasure.org")
 
         observation.addComponent(systolicComponent)
         observation.addComponent(diastolicComponent)
@@ -128,7 +136,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setCode("41982-0")
                 .setDisplay("Percentage of body fat Measured")
         ),
-        unit = "%",
+        unit = MappedUnit(
+            code = "%",
+            system = "http://unitsofmeasure.org",
+            unit = "%"
+        ),
         valueExtractor = { percentage.value },
         periodExtractor = { Date.from(time) to Date.from(time) }
     )
@@ -141,9 +153,16 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setDisplay("Vital Signs")
         ),
         codings = listOf(
-            Coding().setSystem("http://loinc.org").setCode("8310-5").setDisplay("Body temperature")
+            Coding()
+                .setSystem("http://loinc.org")
+                .setCode("8310-5")
+                .setDisplay("Body temperature")
         ),
-        unit = "°C",
+        unit = MappedUnit(
+            code = "Cel",
+            system = "http://unitsofmeasure.org",
+            unit = "C"
+        ),
         valueExtractor = { temperature.inCelsius },
         periodExtractor = { Date.from(time) to Date.from(time) }
     )
@@ -176,6 +195,8 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             observation.value = Quantity()
                 .setValue(sample.beatsPerMinute)
                 .setUnit("beats/minute")
+                .setCode("/min")
+                .setSystem("http://unitsofmeasure.org")
 
             observation
         }
@@ -194,8 +215,12 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setCode("8302-2")
                 .setDisplay("Body height")
         ),
-        unit = "m",
-        valueExtractor = { height.inMeters },
+        unit = MappedUnit(
+            code = "[in_i]",
+            system = "http://unitsofmeasure.org",
+            unit = "in"
+        ),
+        valueExtractor = { height.inInches },
         periodExtractor = { Date.from(time) to Date.from(time) }
     )
 
@@ -212,7 +237,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setCode("59408-5")
                 .setDisplay("Oxygen saturation in Arterial blood by Pulse oximetry")
         ),
-        unit = "%",
+        unit = MappedUnit(
+            code = "%",
+            system = "http://unitsofmeasure.org",
+            unit = "%"
+        ),
         valueExtractor = { percentage.value },
         periodExtractor = { Date.from(time) to Date.from(time) }
     )
@@ -230,7 +259,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setCode("9279-1")
                 .setDisplay("Respiratory rate")
         ),
-        unit = "/min",
+        unit = MappedUnit(
+            code = "/min",
+            system = "http://unitsofmeasure.org",
+            unit = "breaths/minute"
+        ),
         valueExtractor = { rate },
         periodExtractor = { Date.from(time) to Date.from(time) }
     )
@@ -248,7 +281,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setCode("55423-8")
                 .setDisplay("Number of steps")
         ),
-        unit = "steps",
+        unit = MappedUnit(
+            unit = "steps",
+            code = "",
+            system = ""
+        ),
         valueExtractor = { count.toDouble() },
         periodExtractor = { Date.from(startTime) to Date.from(endTime) }
     )
@@ -266,8 +303,12 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setCode("29463-7")
                 .setDisplay("Body weight")
         ),
-        unit = "g",
-        valueExtractor = { weight.inGrams },
+        unit = MappedUnit(
+            code = "[lb_av]",
+            system = "http://unitsofmeasure.org",
+            unit = "lbs"
+        ),
+        valueExtractor = { weight.inPounds },
         periodExtractor = { Date.from(time) to Date.from(time) }
     )
 
@@ -279,7 +320,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
     private fun <T : Record> T.createObservation(
         categories: List<Coding> = listOf(),
         codings: List<Coding>,
-        unit: String,
+        unit: MappedUnit,
         valueExtractor: T.() -> Double,
         periodExtractor: T.() -> Pair<Date, Date>,
     ): Observation {
@@ -313,7 +354,9 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
 
             value = Quantity().apply {
                 this.value = valueExtractor().toBigDecimal()
-                this.unit = unit
+                this.unit = unit.unit
+                this.code = unit.code
+                this.system = unit.system
             }
         }
     }
