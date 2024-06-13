@@ -14,6 +14,7 @@ import androidx.health.connect.client.records.WeightRecord
 import org.hl7.fhir.r4.model.CodeableConcept
 import org.hl7.fhir.r4.model.Coding
 import org.hl7.fhir.r4.model.DateTimeType
+import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Observation
 import org.hl7.fhir.r4.model.Period
 import org.hl7.fhir.r4.model.Quantity
@@ -64,7 +65,13 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
 
     private fun mapBloodPressureRecord(record: BloodPressureRecord): Observation {
         val observation = Observation()
+
         observation.status = Observation.ObservationStatus.FINAL
+
+        observation.identifier = listOf(
+            Identifier()
+                .setValue(record.metadata.id)
+        )
 
         observation.category = listOf(
             CodeableConcept().addCoding(
@@ -267,9 +274,13 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         codings: List<Coding>,
         unit: String,
         valueExtractor: T.() -> Double,
-        periodExtractor: T.() -> Pair<Date, Date>,
+        periodExtractor: T.() -> Pair<Date, Date>
     ): Observation {
         return Observation().apply {
+            identifier = listOf(Identifier().apply {
+                this.value = this@createObservation.metadata.id
+            })
+
             status = Observation.ObservationStatus.FINAL
 
             category = listOf(CodeableConcept().apply {
