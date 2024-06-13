@@ -13,6 +13,7 @@ import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.WeightRecord
 import org.hl7.fhir.r4.model.CodeableConcept
 import org.hl7.fhir.r4.model.Coding
+import org.hl7.fhir.r4.model.DateTimeType
 import org.hl7.fhir.r4.model.Observation
 import org.hl7.fhir.r4.model.Period
 import org.hl7.fhir.r4.model.Quantity
@@ -45,10 +46,16 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
 
     private fun mapActiveCaloriesBurnedRecord(record: ActiveCaloriesBurnedRecord) = record.createObservation(
         categories = listOf(
-            Coding().setSystem("http://terminology.hl7.org/CodeSystem/observation-category").setCode("activity").setDisplay("Activity")
+            Coding()
+                .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+                .setCode("activity")
+                .setDisplay("Activity")
         ),
         codings = listOf(
-            Coding().setSystem("http://loinc.org").setCode("41981-2").setDisplay("Calories burned")
+            Coding()
+                .setSystem("http://loinc.org")
+                .setCode("41981-2")
+                .setDisplay("Calories burned")
         ),
         unit = "kcal",
         valueExtractor = { energy.inCalories },
@@ -75,10 +82,8 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setDisplay("Blood pressure panel with all children optional")
         )
 
-        val period = Period()
-        period.start = Date.from(record.time)
-        period.end = Date.from(record.time)
-        observation.effective = period
+        val dateTime = DateTimeType(Date.from(record.time))
+        observation.effective = dateTime
 
         val systolicComponent = Observation.ObservationComponentComponent()
         systolicComponent.code = CodeableConcept().addCoding(
@@ -87,7 +92,9 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setCode("8480-6")
                 .setDisplay("Systolic blood pressure")
         )
-        systolicComponent.value = Quantity().setValue(record.systolic.inMillimetersOfMercury).setUnit("mmHg")
+        systolicComponent.value = Quantity()
+            .setValue(record.systolic.inMillimetersOfMercury)
+            .setUnit("mmHg")
 
         val diastolicComponent = Observation.ObservationComponentComponent()
         diastolicComponent.code = CodeableConcept().addCoding(
@@ -96,7 +103,9 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setCode("8462-4")
                 .setDisplay("Diastolic blood pressure")
         )
-        diastolicComponent.value = Quantity().setValue(record.diastolic.inMillimetersOfMercury).setUnit("mmHg")
+        diastolicComponent.value = Quantity()
+            .setValue(record.diastolic.inMillimetersOfMercury)
+            .setUnit("mmHg")
 
         observation.addComponent(systolicComponent)
         observation.addComponent(diastolicComponent)
@@ -152,12 +161,12 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                     .setDisplay("Heart rate")
             )
 
-            val period = Period()
-            period.start = Date.from(sample.time)
-            period.end = Date.from(sample.time)
-            observation.effective = period
+            val dateTime = DateTimeType(Date.from(sample.time))
+            observation.effective = dateTime
 
-            observation.value = Quantity().setValue(sample.beatsPerMinute).setUnit("beats/minute")
+            observation.value = Quantity()
+                .setValue(sample.beatsPerMinute)
+                .setUnit("beats/minute")
 
             observation
         }
@@ -171,7 +180,10 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setDisplay("Vital Signs")
         ),
         codings = listOf(
-            Coding().setSystem("http://loinc.org").setCode("8302-2").setDisplay("Body height")
+            Coding()
+                .setSystem("http://loinc.org")
+                .setCode("8302-2")
+                .setDisplay("Body height")
         ),
         unit = "m",
         valueExtractor = { height.inMeters },
@@ -268,10 +280,17 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 codings.forEach { addCoding(it) }
             }
 
-            effective = Period().apply {
-                val (start, end) = periodExtractor()
-                this.start = start
-                this.end = end
+            val (start, end) = periodExtractor()
+
+            if (start == end) {
+                effective = DateTimeType().apply {
+                    this.value = start
+                }
+            } else {
+                effective = Period().apply {
+                    this.start = start
+                    this.end = end
+                }
             }
 
             value = Quantity().apply {
