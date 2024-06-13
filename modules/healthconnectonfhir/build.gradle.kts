@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.spezi.library)
+    alias(libs.plugins.spezi.hilt)
     id("maven-publish")
 }
 
@@ -8,8 +9,8 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.health.connect.client)
-    implementation(libs.android.fhir.data.capture)
+    api(libs.androidx.health.connect.client)
+    api(libs.hapi.fhir.structures.r4)
 }
 
 afterEvaluate {

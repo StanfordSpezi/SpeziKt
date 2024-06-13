@@ -10,5 +10,6 @@ android {
 
 dependencies {
     implementation(project(":core:coroutines"))
+
     api(libs.bundles.unit.testing)
 }

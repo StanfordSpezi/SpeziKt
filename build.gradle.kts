@@ -11,6 +11,9 @@ plugins {
     alias(libs.plugins.hilt.android) version libs.versions.hiltVersion apply false
     jacoco
     alias(libs.plugins.jetbrains.kotlin.android) apply false
+    alias(libs.plugins.google.gms.google.services) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.kotlin.parcelize) apply false
 }
 
 subprojects {
@@ -79,6 +82,7 @@ fun Project.setupDetekt() {
     }
 
     tasks.withType<Detekt> {
+        jvmTarget = JavaVersion.VERSION_17.toString()
         reports {
             xml.required.set(true)
             html.required.set(true)
