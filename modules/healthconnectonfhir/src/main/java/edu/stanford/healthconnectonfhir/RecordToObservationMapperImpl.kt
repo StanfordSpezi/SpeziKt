@@ -66,7 +66,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
     private fun mapBloodPressureRecord(record: BloodPressureRecord): Observation {
         val observation = Observation()
 
-        observation.status = Observation.ObservationStatus.FINAL
+        observation.addCommonElements()
 
         observation.identifier = listOf(
             Identifier()
@@ -150,7 +150,8 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
     private fun mapHeartRateRecord(record: HeartRateRecord): List<Observation> {
         return record.samples.map { sample ->
             val observation = Observation()
-            observation.status = Observation.ObservationStatus.FINAL
+
+            observation.addCommonElements()
 
             observation.category = listOf(
                 CodeableConcept().addCoding(
@@ -269,6 +270,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         periodExtractor = { Date.from(time) to Date.from(time) }
     )
 
+    private fun Observation.addCommonElements() {
+        this.setStatus(Observation.ObservationStatus.FINAL)
+        this.setIssued(Date())
+    }
+
     private fun <T : Record> T.createObservation(
         categories: List<Coding> = listOf(),
         codings: List<Coding>,
@@ -277,11 +283,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         periodExtractor: T.() -> Pair<Date, Date>
     ): Observation {
         return Observation().apply {
+            addCommonElements()
+
             identifier = listOf(Identifier().apply {
                 this.value = this@createObservation.metadata.id
             })
-
-            status = Observation.ObservationStatus.FINAL
 
             category = listOf(CodeableConcept().apply {
                 categories.forEach { addCoding(it) }

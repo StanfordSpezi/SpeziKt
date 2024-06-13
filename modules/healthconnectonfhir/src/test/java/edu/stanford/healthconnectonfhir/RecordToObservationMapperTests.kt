@@ -45,6 +45,7 @@ class RecordToObservationMapperTests {
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.identifier.first().value).isEqualTo("123456")
+        assertThat(observation.issued.time).isAtMost(Date().time)
         assertThat(observation.code.codingFirstRep.code).isEqualTo("41981-2")
         assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("activity")
         assertThat((observation.effective as Period).start).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
@@ -67,6 +68,7 @@ class RecordToObservationMapperTests {
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.identifier.first().value).isEqualTo("123456")
+        assertThat(observation.issued.time).isAtMost(Date().time)
         assertThat(observation.code.codingFirstRep.code).isEqualTo("85354-9")
         assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
         assertThat((observation.effective as DateTimeType).value).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
@@ -89,6 +91,7 @@ class RecordToObservationMapperTests {
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.identifier.first().value).isEqualTo("123456")
+        assertThat(observation.issued.time).isAtMost(Date().time)
         assertThat(observation.code.codingFirstRep.code).isEqualTo("41982-0")
         assertThat((observation.effective as DateTimeType).value).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
         assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(10.0)
@@ -108,6 +111,7 @@ class RecordToObservationMapperTests {
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.identifier.first().value).isEqualTo("123456")
+        assertThat(observation.issued.time).isAtMost(Date().time)
         assertThat(observation.code.codingFirstRep.code).isEqualTo("8310-5")
         assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
         assertThat((observation.effective as DateTimeType).value).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
@@ -138,6 +142,7 @@ class RecordToObservationMapperTests {
 
         observations.forEach { observation ->
             assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
+            assertThat(observation.issued.time).isAtMost(Date().time)
             assertThat(observation.code.codingFirstRep.code).isEqualTo("8867-4")
             assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
         }
@@ -164,6 +169,7 @@ class RecordToObservationMapperTests {
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.identifier.first().value).isEqualTo("123456")
+        assertThat(observation.issued.time).isAtMost(Date().time)
         assertThat(observation.code.codingFirstRep.code).isEqualTo("8302-2")
         assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
         assertThat((observation.effective as DateTimeType).value).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
@@ -184,6 +190,7 @@ class RecordToObservationMapperTests {
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.identifier.first().value).isEqualTo("123456")
+        assertThat(observation.issued.time).isAtMost(Date().time)
         assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
         assertThat(observation.code.codingFirstRep.code).isEqualTo("59408-5")
         assertThat((observation.effective as DateTimeType).value).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
@@ -204,6 +211,7 @@ class RecordToObservationMapperTests {
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.identifier.first().value).isEqualTo("123456")
+        assertThat(observation.issued.time).isAtMost(Date().time)
         assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
         assertThat(observation.code.codingFirstRep.code).isEqualTo("9279-1")
         assertThat((observation.effective as DateTimeType).value).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
@@ -226,6 +234,7 @@ class RecordToObservationMapperTests {
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.identifier.first().value).isEqualTo("123456")
+        assertThat(observation.issued.time).isAtMost(Date().time)
         assertThat(observation.code.codingFirstRep.code).isEqualTo("55423-8")
         assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("activity")
         assertThat((observation.effective as Period).start).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
@@ -247,6 +256,7 @@ class RecordToObservationMapperTests {
 
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.identifier.first().value).isEqualTo("123456")
+        assertThat(observation.issued.time).isAtMost(Date().time)
         assertThat(observation.code.codingFirstRep.code).isEqualTo("29463-7")
         assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
         assertThat((observation.effective as DateTimeType).value).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
