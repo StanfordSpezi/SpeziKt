@@ -40,7 +40,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.component.validated.textfield.ValidatedTextField
+import edu.stanford.spezi.core.design.component.validated.outlinedtextfield.ValidatedOutlinedTextField
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
@@ -106,7 +106,7 @@ fun RegisterScreen(
         )
         VerticalSpacer(height = Spacings.large)
         Text("CREDENTIALS", style = labelLarge)
-        ValidatedTextField(
+        ValidatedOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = uiState.email.value,
             onValueChange = {
@@ -117,7 +117,7 @@ fun RegisterScreen(
         )
         VerticalSpacer(height = Spacings.small)
         if (!uiState.isGoogleSignUp) {
-            ValidatedTextField(
+            ValidatedOutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = uiState.password.value,
                 onValueChange = {
@@ -130,7 +130,7 @@ fun RegisterScreen(
         }
         VerticalSpacer()
         Text("NAME", style = labelLarge)
-        ValidatedTextField(
+        ValidatedOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = uiState.firstName.value,
             onValueChange = { onAction(Action.TextFieldUpdate(it, TextFieldType.FIRST_NAME)) },
@@ -138,7 +138,7 @@ fun RegisterScreen(
             errorText = uiState.firstName.error,
         )
         VerticalSpacer(height = Spacings.small)
-        ValidatedTextField(
+        ValidatedOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = uiState.lastName.value,
             onValueChange = {
@@ -165,7 +165,7 @@ fun RegisterScreen(
             }
         }
 
-        ValidatedTextField(
+        ValidatedOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = uiState.selectedGender.value,
             onValueChange = {
@@ -185,7 +185,7 @@ fun RegisterScreen(
 
         VerticalSpacer(height = Spacings.small)
         var isDatePickerDialogOpen by remember { mutableStateOf(false) }
-        ValidatedTextField(
+        ValidatedOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = uiState.dateOfBirth?.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")) ?: "",
             onValueChange = { /* Do nothing as we handle the date through the DatePicker */ },
