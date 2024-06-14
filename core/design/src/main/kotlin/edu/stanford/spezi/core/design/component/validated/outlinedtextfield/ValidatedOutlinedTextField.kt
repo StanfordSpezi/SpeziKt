@@ -2,6 +2,7 @@ package edu.stanford.spezi.core.design.component.validated.outlinedtextfield
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -9,11 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.TextStyles.labelSmall
 
 @Composable
 fun ValidatedOutlinedTextField(
@@ -22,6 +22,12 @@ fun ValidatedOutlinedTextField(
     onValueChange: (String) -> Unit,
     labelText: String = "",
     errorText: String? = null,
+    singleLine: Boolean = true,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    readOnly: Boolean = false,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         OutlinedTextField(
@@ -31,17 +37,21 @@ fun ValidatedOutlinedTextField(
                 onValueChange(it)
             },
             label = { Text(labelText) },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+            singleLine = singleLine,
+            keyboardOptions = keyboardOptions,
             isError = errorText != null,
+            readOnly = readOnly,
+            trailingIcon = trailingIcon,
+            keyboardActions = keyboardActions,
+            visualTransformation = visualTransformation,
+            supportingText = {
+                if (errorText != null) {
+                    Text(
+                        text = errorText,
+                    )
+                }
+            },
         )
-        if (errorText != null) {
-            Text(
-                text = errorText,
-                style = labelSmall,
-                color = Colors.error
-            )
-        }
     }
 }
 
