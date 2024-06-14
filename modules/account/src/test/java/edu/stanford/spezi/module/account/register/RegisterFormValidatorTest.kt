@@ -17,7 +17,7 @@ class RegisterFormValidatorTest {
         val result = registerFormValidator.passwordResult(validPassword)
 
         // Then
-        assertThat(result).isEqualTo(RegisterFormValidator.Result.Valid)
+        assertThat(result).isEqualTo(FormValidator.Result.Valid)
     }
 
     @Test
@@ -29,7 +29,7 @@ class RegisterFormValidatorTest {
         val result = registerFormValidator.passwordResult(invalidPassword)
 
         // Then
-        assertThat(result).isInstanceOf(RegisterFormValidator.Result.Invalid::class.java)
+        assertThat(result).isInstanceOf(FormValidator.Result.Invalid::class.java)
     }
 
     @Test
@@ -41,7 +41,7 @@ class RegisterFormValidatorTest {
         val result = registerFormValidator.firstnameResult(validFirstName)
 
         // Then
-        assertThat(result).isEqualTo(RegisterFormValidator.Result.Valid)
+        assertThat(result).isEqualTo(FormValidator.Result.Valid)
     }
 
     @Test
@@ -53,7 +53,7 @@ class RegisterFormValidatorTest {
         val result = registerFormValidator.firstnameResult(invalidFirstName)
 
         // Then
-        assertThat(result).isInstanceOf(RegisterFormValidator.Result.Invalid::class.java)
+        assertThat(result).isInstanceOf(FormValidator.Result.Invalid::class.java)
     }
 
     @Test
@@ -65,7 +65,7 @@ class RegisterFormValidatorTest {
         val result = registerFormValidator.lastnameResult(validLastName)
 
         // Then
-        assertThat(result).isEqualTo(RegisterFormValidator.Result.Valid)
+        assertThat(result).isEqualTo(FormValidator.Result.Valid)
     }
 
     @Test
@@ -77,7 +77,7 @@ class RegisterFormValidatorTest {
         val result = registerFormValidator.lastnameResult(invalidLastName)
 
         // Then
-        assertThat(result).isInstanceOf(RegisterFormValidator.Result.Invalid::class.java)
+        assertThat(result).isInstanceOf(FormValidator.Result.Invalid::class.java)
     }
 
     @Test
@@ -89,7 +89,7 @@ class RegisterFormValidatorTest {
         val result = registerFormValidator.birthdayResult(validDateOfBirth)
 
         // Then
-        assertThat(result).isEqualTo(RegisterFormValidator.Result.Valid)
+        assertThat(result).isEqualTo(FormValidator.Result.Valid)
     }
 
     @Test
@@ -101,6 +101,6 @@ class RegisterFormValidatorTest {
         val result = registerFormValidator.birthdayResult(invalidDateOfBirth)
 
         // Then
-        assertThat(result).isInstanceOf(RegisterFormValidator.Result.Invalid::class.java)
+        assertThat(result).isInstanceOf(FormValidator.Result.Invalid::class.java)
     }
 }
