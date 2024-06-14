@@ -13,7 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -21,6 +22,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -28,12 +31,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import edu.stanford.spezi.core.design.component.validated.outlinedtextfield.ValidatedOutlinedTextField
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles.bodyLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.module.account.login.components.SignInWithGoogleButton
 import edu.stanford.spezi.module.account.login.components.TextDivider
+import edu.stanford.spezi.module.account.register.FieldState
 
 @Composable
 fun LoginScreen(
@@ -72,32 +77,48 @@ You may login to your existing account or create a new one if you don't have one
             style = bodyLarge,
         )
         Spacer(modifier = Modifier.height(Spacings.large))
-        OutlinedTextField(
+        ValidatedOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = uiState.email,
+            value = uiState.email.value,
+            errorText = uiState.email.error,
             onValueChange = { email ->
                 onAction(Action.TextFieldUpdate(email, TextFieldType.EMAIL))
             },
-            label = { Text("E-Mail Address") },
+            labelText = "E-Mail Address",
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
         )
         Spacer(modifier = Modifier.height(Spacings.small))
-        OutlinedTextField(
+        ValidatedOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = uiState.password,
+            value = uiState.password.value,
+            errorText = uiState.password.error,
             onValueChange = {
                 onAction(Action.TextFieldUpdate(it, TextFieldType.PASSWORD))
             },
-            label = { Text("Password") },
-            singleLine = true,
+            labelText = "Password",
             visualTransformation = if (uiState.passwordVisibility) {
                 VisualTransformation.None
             } else {
                 PasswordVisualTransformation()
             },
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = { onAction(Action.TogglePasswordVisibility) })
+            keyboardActions = KeyboardActions(onDone = {
+                onAction(Action.PasswordSignInOrSignUp)
+            }),
+            trailingIcon = {
+                IconButton(onClick = { onAction(Action.TogglePasswordVisibility) }) {
+                    val icon: Painter = if (uiState.passwordVisibility) {
+                        painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_visibility)
+                    } else {
+                        painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_visibility_off)
+                    }
+                    Icon(
+                        painter = icon,
+                        contentDescription = if (uiState.passwordVisibility) "Hide password" else "Show password"
+                    )
+                }
+            }
         )
         TextButton(
             onClick = {
@@ -109,14 +130,10 @@ You may login to your existing account or create a new one if you don't have one
         Spacer(modifier = Modifier.height(Spacings.medium))
         Button(
             onClick = {
-                if (uiState.isAlreadyRegistered) {
-                    onAction(Action.PasswordCredentialSignIn)
-                } else {
-                    onAction(Action.NavigateToRegister)
-                }
+                onAction(Action.PasswordSignInOrSignUp)
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = uiState.email.isNotEmpty() && uiState.password.isNotEmpty()
+            enabled = uiState.email.value.isNotEmpty() && uiState.password.value.isNotEmpty()
         ) {
             Text(
                 text = if (uiState.isAlreadyRegistered) "Login" else "Register"
@@ -143,11 +160,7 @@ You may login to your existing account or create a new one if you don't have one
         Spacer(modifier = Modifier.height(Spacings.medium))
         SignInWithGoogleButton(
             onButtonClick = {
-                if (uiState.isAlreadyRegistered) {
-                    onAction(Action.GoogleSignIn)
-                } else {
-                    onAction(Action.GoogleSignUp)
-                }
+                onAction(Action.GoogleSignInOrSignUp)
             },
             isAlreadyRegistered = uiState.isAlreadyRegistered,
         )
@@ -167,12 +180,12 @@ private fun LoginScreenPreview(
 private class LoginScreenPreviewProvider : PreviewParameterProvider<UiState> {
     override val values: Sequence<UiState> = sequenceOf(
         UiState(
-            email = "",
-            password = "",
+            email = FieldState(""),
+            password = FieldState(""),
             passwordVisibility = false,
         ), UiState(
-            email = "test@test.de",
-            password = "password",
+            email = FieldState("test@test.de"),
+            password = FieldState("password"),
             passwordVisibility = true,
             isAlreadyRegistered = true
         )
