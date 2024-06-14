@@ -144,9 +144,9 @@ internal class LoginViewModel @Inject constructor(
 
     private fun forgotPassword() {
         if (validator.isEmailValid(uiState.value.email.value)) {
-            messageNotifier.notify("Please enter a valid email")
-        } else {
             sendForgotPasswordEmail(uiState.value.email.value)
+        } else {
+            messageNotifier.notify("Please enter a valid email")
         }
     }
 
