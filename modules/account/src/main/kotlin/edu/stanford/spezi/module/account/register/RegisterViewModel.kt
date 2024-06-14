@@ -51,7 +51,7 @@ class RegisterViewModel @Inject internal constructor(
                     it.copy(isDropdownMenuExpanded = action.isExpanded)
                 }
 
-                Action.OnRegisterPressed -> {
+                is Action.OnRegisterPressed -> {
                     onRegisteredPressed()
                 }
 
@@ -60,6 +60,10 @@ class RegisterViewModel @Inject internal constructor(
                         initializeGoogleSignUp()
                     }
                     it.copy(isGoogleSignUp = action.isGoogleSignUp)
+                }
+
+                is Action.TogglePasswordVisibility -> {
+                    it.copy(isPasswordVisible = !it.isPasswordVisible)
                 }
             }
         }

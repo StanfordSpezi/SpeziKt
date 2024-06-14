@@ -36,8 +36,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -133,7 +136,24 @@ fun RegisterScreen(
                         },
                         labelText = "Password",
                         errorText = uiState.password.error,
-                        visualTransformation = PasswordVisualTransformation(),
+                        trailingIcon = {
+                            IconButton(onClick = { onAction(Action.TogglePasswordVisibility) }) {
+                                val icon: Painter = if (uiState.isPasswordVisible) {
+                                    painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_visibility)
+                                } else {
+                                    painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_visibility_off)
+                                }
+                                Icon(
+                                    painter = icon,
+                                    contentDescription = if (uiState.isPasswordVisible) "Hide password" else "Show password"
+                                )
+                            }
+                        },
+                        visualTransformation = if (uiState.isPasswordVisible) {
+                            VisualTransformation.None
+                        } else {
+                            PasswordVisualTransformation()
+                        },
                     )
                 })
         }

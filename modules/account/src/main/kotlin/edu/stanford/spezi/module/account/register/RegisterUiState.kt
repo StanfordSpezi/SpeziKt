@@ -14,6 +14,7 @@ data class RegisterUiState(
     val isFormValid: Boolean = false,
     val genderOptions: List<String> = listOf("Male", "Female", "Other"),
     val isGoogleSignUp: Boolean = false,
+    val isPasswordVisible: Boolean = false,
 )
 
 data class FieldState(
@@ -34,6 +35,6 @@ sealed interface Action {
     data class DateFieldUpdate(val newValue: LocalDate) : Action
     data class DropdownMenuExpandedUpdate(val isExpanded: Boolean) : Action
     data object OnRegisterPressed : Action
-
+    data object TogglePasswordVisibility : Action
     data class SetIsGoogleSignUp(val isGoogleSignUp: Boolean) : Action
 }
