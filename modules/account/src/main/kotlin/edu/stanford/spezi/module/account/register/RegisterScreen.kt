@@ -18,6 +18,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -45,7 +48,6 @@ import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles.labelLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.titleSmall
 import java.time.LocalDate
@@ -105,50 +107,67 @@ fun RegisterScreen(
             style = titleSmall,
         )
         VerticalSpacer(height = Spacings.large)
-        Text("CREDENTIALS", style = labelLarge)
-        ValidatedOutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = uiState.email.value,
-            onValueChange = {
-                onAction(Action.TextFieldUpdate(it, TextFieldType.EMAIL))
-            },
-            labelText = "E-Mail Address",
-            errorText = uiState.email.error,
-        )
+        IconLeadingContent(
+            icon = Icons.Outlined.Email,
+            content = {
+                ValidatedOutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = uiState.email.value,
+                    onValueChange = {
+                        onAction(Action.TextFieldUpdate(it, TextFieldType.EMAIL))
+                    },
+                    labelText = "E-Mail Address",
+                    errorText = uiState.email.error,
+                )
+            })
         VerticalSpacer(height = Spacings.small)
         if (!uiState.isGoogleSignUp) {
-            ValidatedOutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = uiState.password.value,
-                onValueChange = {
-                    onAction(Action.TextFieldUpdate(it, TextFieldType.PASSWORD))
-                },
-                labelText = "Password",
-                errorText = uiState.password.error,
-                visualTransformation = PasswordVisualTransformation(),
-            )
+            IconLeadingContent(
+                icon = Icons.Outlined.Lock,
+                content = {
+                    ValidatedOutlinedTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        value = uiState.password.value,
+                        onValueChange = {
+                            onAction(Action.TextFieldUpdate(it, TextFieldType.PASSWORD))
+                        },
+                        labelText = "Password",
+                        errorText = uiState.password.error,
+                        visualTransformation = PasswordVisualTransformation(),
+                    )
+                })
         }
-        VerticalSpacer()
-        Text("NAME", style = labelLarge)
-        ValidatedOutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = uiState.firstName.value,
-            onValueChange = { onAction(Action.TextFieldUpdate(it, TextFieldType.FIRST_NAME)) },
-            labelText = "First Name",
-            errorText = uiState.firstName.error,
-        )
+        IconLeadingContent(
+            icon = Icons.Outlined.Person,
+            content = {
+                ValidatedOutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = uiState.firstName.value,
+                    onValueChange = {
+                        onAction(
+                            Action.TextFieldUpdate(
+                                it,
+                                TextFieldType.FIRST_NAME
+                            )
+                        )
+                    },
+                    labelText = "First Name",
+                    errorText = uiState.firstName.error,
+                )
+            })
         VerticalSpacer(height = Spacings.small)
-        ValidatedOutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = uiState.lastName.value,
-            onValueChange = {
-                onAction(Action.TextFieldUpdate(it, TextFieldType.LAST_NAME))
-            },
-            labelText = "Last Name",
-            errorText = uiState.lastName.error,
-        )
-        VerticalSpacer()
-        Text("PERSONAL DETAILS", style = labelLarge)
+        IconLeadingContent(
+            content = {
+                ValidatedOutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = uiState.lastName.value,
+                    onValueChange = {
+                        onAction(Action.TextFieldUpdate(it, TextFieldType.LAST_NAME))
+                    },
+                    labelText = "Last Name",
+                    errorText = uiState.lastName.error,
+                )
+            })
         DropdownMenu(
             modifier = Modifier.fillMaxWidth(),
             expanded = uiState.isDropdownMenuExpanded,
@@ -164,41 +183,47 @@ fun RegisterScreen(
                     })
             }
         }
-
-        ValidatedOutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = uiState.selectedGender.value,
-            onValueChange = {
-                onAction(Action.TextFieldUpdate(it, TextFieldType.GENDER))
-            },
-            labelText = "Gender",
-            readOnly = true,
-            trailingIcon = {
-                IconButton(onClick = {
-                    onAction(Action.DropdownMenuExpandedUpdate(true))
-                }) {
-                    Icon(Icons.Filled.ArrowDropDown, contentDescription = "Select Gender")
-                }
-            },
-            errorText = uiState.selectedGender.error,
-        )
+        IconLeadingContent(
+            content = {
+                ValidatedOutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = uiState.selectedGender.value,
+                    onValueChange = {
+                        onAction(Action.TextFieldUpdate(it, TextFieldType.GENDER))
+                    },
+                    labelText = "Gender",
+                    readOnly = true,
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            onAction(Action.DropdownMenuExpandedUpdate(true))
+                        }) {
+                            Icon(Icons.Filled.ArrowDropDown, contentDescription = "Select Gender")
+                        }
+                    },
+                    errorText = uiState.selectedGender.error,
+                )
+            })
 
         VerticalSpacer(height = Spacings.small)
         var isDatePickerDialogOpen by remember { mutableStateOf(false) }
-        ValidatedOutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = uiState.dateOfBirth?.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")) ?: "",
-            onValueChange = { /* Do nothing as we handle the date through the DatePicker */ },
-            labelText = "Date of Birth",
-            singleLine = true,
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-            trailingIcon = {
-                IconButton(onClick = { isDatePickerDialogOpen = true }) {
-                    Icon(Icons.Filled.Edit, contentDescription = "Select Date")
-                }
-            },
-            readOnly = true
-        )
+        IconLeadingContent(
+            content = {
+                ValidatedOutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = uiState.dateOfBirth?.format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))
+                        ?: "",
+                    onValueChange = { /* Do nothing as we handle the date through the DatePicker */ },
+                    labelText = "Date of Birth",
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                    trailingIcon = {
+                        IconButton(onClick = { isDatePickerDialogOpen = true }) {
+                            Icon(Icons.Filled.Edit, contentDescription = "Select Date")
+                        }
+                    },
+                    readOnly = true
+                )
+            })
 
         if (isDatePickerDialogOpen) {
             DatePickerDialog(
