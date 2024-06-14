@@ -1,8 +1,10 @@
 package edu.stanford.spezi.module.account.register
 
+import androidx.core.util.PatternsCompat
+
 internal open class FormValidator {
     fun isValidEmail(email: String): Boolean {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        return PatternsCompat.EMAIL_ADDRESS.matcher(email).matches()
     }
 
     fun isValidPassword(password: String): Boolean {
