@@ -11,6 +11,7 @@ data class RegisterUiState(
     val dateOfBirth: LocalDate? = null,
     val dateOfBirthError: String? = null,
     val isDropdownMenuExpanded: Boolean = false,
+    val isDatePickerDialogOpen: Boolean = false,
     val isFormValid: Boolean = false,
     val genderOptions: List<String> = listOf("Male", "Female", "Other"),
     val isGoogleSignUp: Boolean = false,
@@ -37,4 +38,5 @@ sealed interface Action {
     data object OnRegisterPressed : Action
     data object TogglePasswordVisibility : Action
     data class SetIsGoogleSignUp(val isGoogleSignUp: Boolean) : Action
+    data class SetIsDatePickerOpen(val isOpen: Boolean) : Action
 }
