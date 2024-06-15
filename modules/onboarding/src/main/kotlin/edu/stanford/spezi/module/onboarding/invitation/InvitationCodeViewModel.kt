@@ -48,7 +48,6 @@ class InvitationCodeViewModel @Inject internal constructor(
                 }
 
                 Action.RedeemInvitationCode -> {
-                    screenData.redeemAction()
                     redeemInvitationCode()
                     it
                 }
