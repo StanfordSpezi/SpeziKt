@@ -52,7 +52,8 @@ class RegisterViewModel @Inject internal constructor(
                 }
 
                 is Action.OnRegisterPressed -> {
-                    onRegisteredPressed()
+                    _uiState.value = onRegisteredPressed()
+                    it
                 }
 
                 is Action.SetIsGoogleSignUp -> {
