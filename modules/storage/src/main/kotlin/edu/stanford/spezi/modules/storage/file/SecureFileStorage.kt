@@ -5,4 +5,3 @@ interface SecureFileStorage {
     suspend fun deleteFile(fileName: String)
     suspend fun saveFile(fileName: String, data: ByteArray)
 }
-
