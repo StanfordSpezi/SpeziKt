@@ -14,7 +14,7 @@ class EncryptedFileStorage @Inject constructor(
     @ApplicationContext private val context: Context,
     @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
 ) :
-    SecureFileStorage {
+    FileStorage {
     private val masterKey = MasterKey.Builder(context)
         .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
         .build()

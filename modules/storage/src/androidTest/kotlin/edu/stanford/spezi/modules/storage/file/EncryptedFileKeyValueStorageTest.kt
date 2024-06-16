@@ -10,9 +10,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class EncryptedFileStorageTest {
+class EncryptedFileKeyValueStorageTest {
     private var context: Context = ApplicationProvider.getApplicationContext()
-    private var secureFileStorage: SecureFileStorage =
+    private var fileStorage: FileStorage =
         EncryptedFileStorage(
             context = context,
             ioDispatcher = Dispatchers.Unconfined,
@@ -25,10 +25,10 @@ class EncryptedFileStorageTest {
         val data = "Hello, World!".toByteArray()
 
         // When
-        secureFileStorage.saveFile(fileName, data)
+        fileStorage.saveFile(fileName, data)
 
         // Then
-        val readData = secureFileStorage.readFile(fileName)
+        val readData = fileStorage.readFile(fileName)
         assertThat(readData).isEqualTo(data)
     }
 
@@ -38,7 +38,7 @@ class EncryptedFileStorageTest {
         val fileName = "nonExistentFile"
 
         // When
-        val readData = secureFileStorage.readFile(fileName)
+        val readData = fileStorage.readFile(fileName)
 
         // Then
         assertThat(readData).isNull()
@@ -52,11 +52,11 @@ class EncryptedFileStorageTest {
         val newData = "New data".toByteArray()
 
         // When
-        secureFileStorage.saveFile(fileName, initialData)
-        secureFileStorage.saveFile(fileName, newData)
+        fileStorage.saveFile(fileName, initialData)
+        fileStorage.saveFile(fileName, newData)
 
         // Then
-        val readData = secureFileStorage.readFile(fileName)
+        val readData = fileStorage.readFile(fileName)
         assertThat(readData).isEqualTo(newData)
     }
 
@@ -65,13 +65,13 @@ class EncryptedFileStorageTest {
         // Given
         val fileName = "testFile"
         val data = "Hello, World!".toByteArray()
-        secureFileStorage.saveFile(fileName, data)
+        fileStorage.saveFile(fileName, data)
 
         // When
-        secureFileStorage.deleteFile(fileName)
+        fileStorage.deleteFile(fileName)
 
         // Then
-        val readData = secureFileStorage.readFile(fileName)
+        val readData = fileStorage.readFile(fileName)
         assertThat(readData).isNull()
     }
 }

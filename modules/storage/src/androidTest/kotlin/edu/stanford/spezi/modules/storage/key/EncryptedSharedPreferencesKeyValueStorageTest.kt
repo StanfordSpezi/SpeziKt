@@ -8,11 +8,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
-class EncryptedSharedPreferencesStorageTest {
+class EncryptedSharedPreferencesKeyValueStorageTest {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
-    private var storage: EncryptedSharedPreferencesStorage =
-        EncryptedSharedPreferencesStorage(context)
+    private var storage: EncryptedSharedPreferencesKeyValueStorage =
+        EncryptedSharedPreferencesKeyValueStorage(context)
 
 
     @Test

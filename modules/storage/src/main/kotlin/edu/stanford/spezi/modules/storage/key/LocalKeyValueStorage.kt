@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class LocalStorage @Inject constructor(
+class LocalKeyValueStorage @Inject constructor(
     @ApplicationContext context: Context,
-) : Storage {
+) : KeyValueStorage {
     companion object {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
             name = "spezi_preferences"

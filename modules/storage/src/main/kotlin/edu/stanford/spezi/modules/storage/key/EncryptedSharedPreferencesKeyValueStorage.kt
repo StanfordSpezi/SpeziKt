@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class EncryptedSharedPreferencesStorage @Inject constructor(
+class EncryptedSharedPreferencesKeyValueStorage @Inject constructor(
     @ApplicationContext private val context: Context,
-) : Storage {
+) : KeyValueStorage {
     private val masterKey = MasterKey.Builder(context)
         .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
         .build()

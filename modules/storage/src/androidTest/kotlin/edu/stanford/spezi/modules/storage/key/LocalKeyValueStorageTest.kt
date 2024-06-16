@@ -10,9 +10,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class LocalStorageTest {
+class LocalKeyValueStorageTest {
     private var context: Context = ApplicationProvider.getApplicationContext()
-    private var localStorage: LocalStorage = LocalStorage(context)
+    private var localStorage: LocalKeyValueStorage = LocalKeyValueStorage(context)
 
     @Test
     fun `it should save and read data correctly`() = runTestUnconfined {
