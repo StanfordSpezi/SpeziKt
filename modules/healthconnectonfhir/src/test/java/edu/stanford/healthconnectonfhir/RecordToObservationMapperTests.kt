@@ -197,7 +197,7 @@ class RecordToObservationMapperTests {
         val heightRecord = HeightRecord(
             metadata = Metadata(id = "123456"),
             time = Instant.parse("2023-05-18T10:15:30.00Z"),
-            height = Length.inches(72.0),
+            height = Length.meters(1.5),
             zoneOffset = ZoneOffset.UTC
         )
 
@@ -209,9 +209,9 @@ class RecordToObservationMapperTests {
         assertThat(observation.code.codingFirstRep.code).isEqualTo("8302-2")
         assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
         assertThat((observation.effective as DateTimeType).value).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
-        assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(72.0)
-        assertThat((observation.value as Quantity).unit).isEqualTo("in")
-        assertThat((observation.value as Quantity).code).isEqualTo("[in_i]")
+        assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(1.5)
+        assertThat((observation.value as Quantity).unit).isEqualTo("m")
+        assertThat((observation.value as Quantity).code).isEqualTo("m")
         assertThat((observation.value as Quantity).system).isEqualTo("http://unitsofmeasure.org")
     }
 
@@ -289,7 +289,7 @@ class RecordToObservationMapperTests {
     fun `weightRecord toObservation isCorrect`() {
         val weightRecord = WeightRecord(
             metadata = Metadata(id = "123456"),
-            weight = Mass.pounds(150.0),
+            weight = Mass.kilograms(75.0),
             time = Instant.parse("2023-05-18T10:15:30.00Z"),
             zoneOffset = ZoneOffset.UTC
         )
@@ -302,9 +302,9 @@ class RecordToObservationMapperTests {
         assertThat(observation.code.codingFirstRep.code).isEqualTo("29463-7")
         assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
         assertThat((observation.effective as DateTimeType).value).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
-        assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(150.0)
-        assertThat((observation.value as Quantity).unit).isEqualTo("lbs")
-        assertThat((observation.value as Quantity).code).isEqualTo("[lb_av]")
+        assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(75.0)
+        assertThat((observation.value as Quantity).unit).isEqualTo("kg")
+        assertThat((observation.value as Quantity).code).isEqualTo("kg")
         assertThat((observation.value as Quantity).system).isEqualTo("http://unitsofmeasure.org")
     }
 }
