@@ -14,7 +14,6 @@ class EncryptedSharedPreferencesKeyValueStorageTest {
     private var storage: EncryptedSharedPreferencesKeyValueStorage =
         EncryptedSharedPreferencesKeyValueStorage(context)
 
-
     @Test
     fun `it should save and read string data correctly`() = runTestUnconfined {
         // Given
@@ -155,7 +154,6 @@ class EncryptedSharedPreferencesKeyValueStorageTest {
         val actualValue = storage.readDataBlocking(key)
         assertThat(actualValue).isNull()
     }
-
 
     @Test
     fun `it should read data flow correctly`() = runTestUnconfined {
