@@ -8,8 +8,11 @@ android {
 }
 
 dependencies {
-
     androidTestImplementation(libs.bundles.compose.androidTest)
+
+    androidTestImplementation(project(":core:testing"))
+
+    implementation(project(":core:coroutines"))
 
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.security.crypto.ktx)
