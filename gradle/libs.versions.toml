@@ -9,10 +9,11 @@ compileSdk = "34"
 composeBom = "2024.05.00"
 composeNavigation = "2.8.0-alpha08"
 coreKtx = "1.13.1"
+coreKtxVersion = "1.5.0"
 coreTestingVersion = "2.2.0"
 coroutinesVersion = "1.8.0"
-detekt = "1.23.6" # please adjust github action version as well in case of version change
 credentialsPlayServicesAuth = "1.2.2"
+detekt = "1.23.6" # please adjust github action version as well in case of version change
 dokka = "1.9.20"
 espressoCore = "3.5.1"
 firebaseAuthKtx = "23.0.0"
@@ -35,6 +36,7 @@ lifecycleRuntimeKtx = "2.7.0"
 minSdk = "31"
 mockKVersion = "1.13.10"
 playServicesAuth = "21.2.0"
+securityCryptoKtx = "1.1.0-alpha06"
 targetSdk = "34"
 timberVersion = "5.0.1"
 truth = "1.4.2"
@@ -49,11 +51,13 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTestingVersion" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentialsPlayServicesAuth" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleKtx" }
 androidx-lifecycle-view-model-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleKtx" }
+androidx-security-crypto-ktx = { group = "androidx.security", name = "security-crypto-ktx", version.ref = "securityCryptoKtx" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
@@ -63,6 +67,7 @@ compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtxVersion" }
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutinesVersion" }
 coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutinesVersion" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesVersion" }
