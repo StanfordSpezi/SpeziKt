@@ -1,6 +1,7 @@
 package edu.stanford.healthconnectonfhir
 
 import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
+import androidx.health.connect.client.records.BloodGlucoseRecord
 import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.BodyFatRecord
 import androidx.health.connect.client.records.BodyTemperatureRecord
@@ -11,6 +12,7 @@ import androidx.health.connect.client.records.RespiratoryRateRecord
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.records.metadata.Metadata
+import androidx.health.connect.client.units.BloodGlucose
 import androidx.health.connect.client.units.Energy
 import androidx.health.connect.client.units.Length
 import androidx.health.connect.client.units.Mass
@@ -82,6 +84,28 @@ class RecordToObservationMapperTests {
         assertThat((observation.component[1].value as Quantity).unit).isEqualTo("mmHg")
         assertThat((observation.component[1].value as Quantity).code).isEqualTo("mm[Hg]")
         assertThat((observation.component[1].value as Quantity).system).isEqualTo("http://unitsofmeasure.org")
+    }
+
+    @Test
+    fun `bloodGlucoseRecord toObservation isCorrect`() {
+        val bloodGlucoseRecord = BloodGlucoseRecord(
+            metadata = Metadata(id = "123456"),
+            time = Instant.parse("2023-05-18T10:15:30.00Z"),
+            level = BloodGlucose.milligramsPerDeciliter(90.0),
+            zoneOffset = ZoneOffset.UTC
+        )
+
+        val observation = mapper.map(bloodGlucoseRecord).first()
+
+        assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
+        assertThat(observation.identifier.first().id).isEqualTo("123456")
+        assertThat(observation.issued.time).isAtMost(Date().time)
+        assertThat(observation.code.codingFirstRep.code).isEqualTo("41653-7")
+        assertThat((observation.effective as DateTimeType).value).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
+        assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(90.0)
+        assertThat((observation.value as Quantity).unit).isEqualTo("mg/dL")
+        assertThat((observation.value as Quantity).code).isEqualTo("mg/dL")
+        assertThat((observation.value as Quantity).system).isEqualTo("http://unitsofmeasure.org")
     }
 
     @Test

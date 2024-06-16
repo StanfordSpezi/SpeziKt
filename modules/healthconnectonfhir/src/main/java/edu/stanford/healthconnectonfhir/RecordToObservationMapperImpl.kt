@@ -1,6 +1,7 @@
 package edu.stanford.healthconnectonfhir
 
 import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
+import androidx.health.connect.client.records.BloodGlucoseRecord
 import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.BodyFatRecord
 import androidx.health.connect.client.records.BodyTemperatureRecord
@@ -34,6 +35,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             is ActiveCaloriesBurnedRecord -> listOf(mapActiveCaloriesBurnedRecord(record))
             is BodyFatRecord -> listOf(mapBodyFatRecord(record))
             is BodyTemperatureRecord -> listOf(mapBodyTemperatureRecord(record))
+            is BloodGlucoseRecord -> listOf(mapBloodGlucoseRecord(record))
             is BloodPressureRecord -> listOf(mapBloodPressureRecord(record))
             is HeartRateRecord -> mapHeartRateRecord(record)
             is HeightRecord -> listOf(mapHeightRecord(record))
@@ -66,7 +68,23 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         valueExtractor = { energy.inCalories },
         periodExtractor = { Date.from(startTime) to Date.from(endTime) }
     )
-    
+
+    private fun mapBloodGlucoseRecord(record: BloodGlucoseRecord) = record.createObservation(
+        codings = listOf(
+            Coding()
+                .setSystem("http://loinc.org")
+                .setCode("41653-7")
+                .setDisplay("Glucose Glucometer (BldC) [Mass/Vol]")
+        ),
+        unit = MappedUnit(
+            code = "mg/dL",
+            unit = "mg/dL",
+            system = "http://unitsofmeasure.org"
+        ),
+        valueExtractor = { level.inMilligramsPerDeciliter },
+        periodExtractor = { Date.from(time) to Date.from(time) }
+    )
+
     private fun mapBloodPressureRecord(record: BloodPressureRecord): Observation {
         val observation = Observation()
 
