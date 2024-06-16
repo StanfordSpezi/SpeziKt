@@ -1,4 +1,4 @@
-package edu.stanford.spezi.modules.storage
+package edu.stanford.spezi.modules.storage.key
 
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
