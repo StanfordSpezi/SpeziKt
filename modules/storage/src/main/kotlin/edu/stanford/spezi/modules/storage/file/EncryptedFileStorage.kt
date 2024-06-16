@@ -1,4 +1,4 @@
-package edu.stanford.spezi.modules.storage
+package edu.stanford.spezi.modules.storage.file
 
 import android.content.Context
 import androidx.security.crypto.EncryptedFile

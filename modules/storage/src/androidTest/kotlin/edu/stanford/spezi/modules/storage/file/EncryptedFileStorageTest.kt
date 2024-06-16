@@ -1,4 +1,4 @@
-package edu.stanford.spezi.modules.storage
+package edu.stanford.spezi.modules.storage.file
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -58,5 +58,20 @@ class EncryptedFileStorageTest {
         // Then
         val readData = secureFileStorage.readFile(fileName)
         assertThat(readData).isEqualTo(newData)
+    }
+
+    @Test
+    fun `it should delete file correctly`() = runTestUnconfined {
+        // Given
+        val fileName = "testFile"
+        val data = "Hello, World!".toByteArray()
+        secureFileStorage.saveFile(fileName, data)
+
+        // When
+        secureFileStorage.deleteFile(fileName)
+
+        // Then
+        val readData = secureFileStorage.readFile(fileName)
+        assertThat(readData).isNull()
     }
 }
