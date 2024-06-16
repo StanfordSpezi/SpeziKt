@@ -66,7 +66,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         valueExtractor = { energy.inCalories },
         periodExtractor = { Date.from(startTime) to Date.from(endTime) }
     )
-
+    
     private fun mapBloodPressureRecord(record: BloodPressureRecord): Observation {
         val observation = Observation()
 
@@ -216,11 +216,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setDisplay("Body height")
         ),
         unit = MappedUnit(
-            code = "[in_i]",
+            code = "m",
             system = "http://unitsofmeasure.org",
-            unit = "in"
+            unit = "m"
         ),
-        valueExtractor = { height.inInches },
+        valueExtractor = { height.inMeters },
         periodExtractor = { Date.from(time) to Date.from(time) }
     )
 
@@ -304,11 +304,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setDisplay("Body weight")
         ),
         unit = MappedUnit(
-            code = "[lb_av]",
+            code = "kg",
             system = "http://unitsofmeasure.org",
-            unit = "lbs"
+            unit = "kg"
         ),
-        valueExtractor = { weight.inPounds },
+        valueExtractor = { weight.inKilograms },
         periodExtractor = { Date.from(time) to Date.from(time) }
     )
 
