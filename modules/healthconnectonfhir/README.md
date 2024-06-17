@@ -23,7 +23,7 @@ For more information, please refer to the API documentation.
 
 ## Installation
 
-HealthConnectOnFHIR can be installed into your Android Studio project [via Jitpack](https://jitpack.io/#StanfordSpezi/SpeziKt/healthconnectonfhir).
+HealthConnectOnFHIR can be installed into your Android Studio project [via Jitpack](https://jitpack.io/#StanfordSpezi/SpeziKt/healthconnectonfhir-maven).
 
 ## Usage
 
