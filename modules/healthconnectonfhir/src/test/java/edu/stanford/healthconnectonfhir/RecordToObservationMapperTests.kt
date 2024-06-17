@@ -31,7 +31,7 @@ import java.time.ZoneOffset
 import java.util.Date
 
 class RecordToObservationMapperTests {
-    private var mapper = RecordToObservationMapperImpl()
+    private val mapper = RecordToObservationMapperImpl()
 
     @Test
     fun `activeCaloriesBurnedRecord toObservation isCorrect`() {
