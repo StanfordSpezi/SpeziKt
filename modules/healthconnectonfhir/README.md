@@ -1,24 +1,24 @@
 # HealthConnectOnFHIR
 
-The HealthConnectOnFHIR library provides a mapper that converts supported [Android Health Connect](https://health.google/health-connect-android/) Records to corresponding [HL7(r) FHIR(r) R4 Observations](https://hl7.org/fhir/r4/observation.html) with standardized codes (e.g. [LOINC](https://loinc.org/)).
+The HealthConnectOnFHIR library provides a mapper that converts supported [Android Health Connect](https://health.google/health-connect-android/) Records to corresponding [HL7® FHIR® R4 Observations](https://hl7.org/fhir/r4/observation.html) with standardized codes (e.g. [LOINC](https://loinc.org/)).
 
 For more information, please refer to the API documentation.
 
 ## Mapping Table
 
-| Health Connect Record         | FHIR Observation Category | FHIR Observation Code     | Unit       | Display                                    |
-|-------------------------------|---------------------------|---------------------------|------------|--------------------------------------------|
-| ActiveCaloriesBurnedRecord    | Activity                  | 41981-2                   | kcal       | Calories burned                            |
-| BloodGlucoseRecord            |                           | 41653-7                   | mg/dL      | Glucose Glucometer (BldC) [Mass/Vol]       |
-| BloodPressureRecord           | Vital Signs               | 85354-9                   | mmHg       | Blood pressure panel with all children optional |
-| BodyFatRecord                 |                           | 41982-0                   | %          | Percentage of body fat Measured            |
-| BodyTemperatureRecord         | Vital Signs               | 8310-5                    | Cel        | Body temperature                           |
-| HeartRateRecord               | Vital Signs               | 8867-4                    | /min       | Heart rate                                 |
-| HeightRecord                  | Vital Signs               | 8302-2                    | m          | Body height                                |
-| OxygenSaturationRecord        | Vital Signs               | 59408-5                   | %          | Oxygen saturation in Arterial blood by Pulse oximetry |
-| RespiratoryRateRecord         | Vital Signs               | 9279-1                    | /min       | Respiratory rate                           |
-| StepsRecord                   | Activity                  | 55423-8                   | steps      | Number of steps                            |
-| WeightRecord                  | Vital Signs               | 29463-7                   | kg         | Body weight                                |
+| Health Connect Record                                                                                                                          | FHIR Observation Category | LOINC Code | Unit       | Display                                    |
+|------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------|------------|------------|--------------------------------------------|
+| [ActiveCaloriesBurnedRecord](https://developer.android.com/reference/kotlin/androidx/health/connect/client/records/ActiveCaloriesBurnedRecord) | Activity                  | 41981-2    | kcal       | Calories burned                            |
+| [BloodGlucoseRecord](https://developer.android.com/reference/kotlin/androidx/health/connect/client/records/BloodGlucoseRecord)                 |                           | 41653-7    | mg/dL      | Glucose Glucometer (BldC) [Mass/Vol]       |
+| [BloodPressureRecord](https://developer.android.com/reference/kotlin/androidx/health/connect/client/records/BloodPressureRecord)               | Vital Signs               | 85354-9    | mmHg       | Blood pressure panel with all children optional |
+| [BodyFatRecord](https://developer.android.com/reference/kotlin/androidx/health/connect/client/records/BodyFatRecord)                           |                           | 41982-0    | %          | Percentage of body fat Measured            |
+| [BodyTemperatureRecord](https://developer.android.com/reference/kotlin/androidx/health/connect/client/records/BodyTemperatureRecord)           | Vital Signs               | 8310-5     | Cel        | Body temperature                           |
+| [HeartRateRecord](https://developer.android.com/reference/kotlin/androidx/health/connect/client/records/HeartRateRecord)                       | Vital Signs               | 8867-4     | /min       | Heart rate                                 |
+| [HeightRecord](https://developer.android.com/reference/kotlin/androidx/health/connect/client/records/HeightRecord)                             | Vital Signs               | 8302-2     | m          | Body height                                |
+| [OxygenSaturationRecord](https://developer.android.com/reference/kotlin/androidx/health/connect/client/records/OxygenSaturationRecord)         | Vital Signs               | 59408-5    | %          | Oxygen saturation in Arterial blood by Pulse oximetry |
+| [RespiratoryRateRecord](https://developer.android.com/reference/kotlin/androidx/health/connect/client/records/RespiratoryRateRecord)           | Vital Signs               | 9279-1     | /min       | Respiratory rate                           |
+| [StepsRecord](https://developer.android.com/reference/kotlin/androidx/health/connect/client/records/StepsRecord)                               | Activity                  | 55423-8    | steps      | Number of steps                            |
+| [WeightRecord](https://developer.android.com/reference/kotlin/androidx/health/connect/client/records/WeightRecord)                             | Vital Signs               | 29463-7    | kg         | Body weight                                |
 
 
 ## Installation
