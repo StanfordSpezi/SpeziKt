@@ -5,6 +5,7 @@ import androidx.health.connect.client.records.BloodGlucoseRecord
 import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.BodyFatRecord
 import androidx.health.connect.client.records.BodyTemperatureRecord
+import androidx.health.connect.client.records.FloorsClimbedRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.HeightRecord
 import androidx.health.connect.client.records.OxygenSaturationRecord
@@ -306,5 +307,19 @@ class RecordToObservationMapperTests {
         assertThat((observation.value as Quantity).unit).isEqualTo("kg")
         assertThat((observation.value as Quantity).code).isEqualTo("kg")
         assertThat((observation.value as Quantity).system).isEqualTo("http://unitsofmeasure.org")
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `map throws IllegalArgumentException for unsupported record type`() {
+        val record = FloorsClimbedRecord(
+            metadata = Metadata(id = "123456"),
+            startTime = Instant.parse("2023-05-18T10:15:30.00Z"),
+            endTime = Instant.parse("2023-05-18T11:15:30.00Z"),
+            startZoneOffset = ZoneOffset.UTC,
+            endZoneOffset = ZoneOffset.UTC,
+            floors = 2.0
+        )
+
+        mapper.map(record)
     }
 }
