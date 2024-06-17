@@ -1,4 +1,4 @@
-# HealthConnectOnFHIR
+# Module healthconnectonfhir
 
 The HealthConnectOnFHIR library provides a mapper that converts supported [Android Health Connect](https://health.google/health-connect-android/) Records to corresponding [HL7® FHIR® R4 Observations](https://hl7.org/fhir/r4/observation.html) with standardized codes (e.g. [LOINC](https://loinc.org/)).
 
