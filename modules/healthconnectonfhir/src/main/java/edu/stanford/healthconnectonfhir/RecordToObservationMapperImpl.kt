@@ -1,6 +1,7 @@
 package edu.stanford.healthconnectonfhir
 
 import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
+import androidx.health.connect.client.records.BloodGlucoseRecord
 import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.BodyFatRecord
 import androidx.health.connect.client.records.BodyTemperatureRecord
@@ -25,15 +26,17 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
     /**
      * Maps a given Health Connect record to a list of HL7 FHIR Observations.
      *
-     * @param T the type of the health record, extending from `Record`
+     * @param T the type of the health record, extending from Record
      * @param record the health record to be mapped
-     * @return a list of `Observation` objects derived from the provided health record
+     * @return a list of Observation objects derived from the provided health record
+     * @throws IllegalArgumentException if the record type is unsupported
      */
     override fun <T : Record> map(record: T): List<Observation> {
         return when (record) {
             is ActiveCaloriesBurnedRecord -> listOf(mapActiveCaloriesBurnedRecord(record))
             is BodyFatRecord -> listOf(mapBodyFatRecord(record))
             is BodyTemperatureRecord -> listOf(mapBodyTemperatureRecord(record))
+            is BloodGlucoseRecord -> listOf(mapBloodGlucoseRecord(record))
             is BloodPressureRecord -> listOf(mapBloodPressureRecord(record))
             is HeartRateRecord -> mapHeartRateRecord(record)
             is HeightRecord -> listOf(mapHeightRecord(record))
@@ -41,10 +44,16 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             is RespiratoryRateRecord -> listOf(mapRespiratoryRateRecord(record))
             is StepsRecord -> listOf(mapStepsRecord(record))
             is WeightRecord -> listOf(mapWeightRecord(record))
-            else -> error("Unsupported record type ${record.javaClass.name}")
+            else -> throw IllegalArgumentException("Unsupported record type ${record.javaClass.name}")
         }
     }
 
+    /**
+     * Maps an ActiveCaloriesBurnedRecord to a FHIR Observation.
+     *
+     * @param record the ActiveCaloriesBurnedRecord to be mapped
+     * @return an Observation object derived from the provided ActiveCaloriesBurnedRecord
+     */
     private fun mapActiveCaloriesBurnedRecord(record: ActiveCaloriesBurnedRecord) = record.createObservation(
         categories = listOf(
             Coding()
@@ -67,6 +76,35 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         periodExtractor = { Date.from(startTime) to Date.from(endTime) }
     )
 
+    /**
+     * Maps a BloodGlucoseRecord to a FHIR Observation.
+     *
+     * @param record the BloodGlucoseRecord to be mapped
+     * @return an Observation object derived from the provided BloodGlucoseRecord
+     */
+    private fun mapBloodGlucoseRecord(record: BloodGlucoseRecord) = record.createObservation(
+        codings = listOf(
+            Coding()
+                .setSystem("http://loinc.org")
+                .setCode("41653-7")
+                .setDisplay("Glucose Glucometer (BldC) [Mass/Vol]")
+        ),
+        unit = MappedUnit(
+            code = "mg/dL",
+            unit = "mg/dL",
+            system = "http://unitsofmeasure.org"
+        ),
+        valueExtractor = { level.inMilligramsPerDeciliter },
+        periodExtractor = { Date.from(time) to Date.from(time) }
+    )
+
+    /**
+     * Maps a BloodPressureRecord to a FHIR Observation.
+     *
+     * @param record the BloodPressureRecord to be mapped
+     * @return an Observation object derived from the provided BloodPressureRecord in which
+     * the systolic and diastolic blood pressure values are represented as separate components.
+     */
     private fun mapBloodPressureRecord(record: BloodPressureRecord): Observation {
         val observation = Observation()
 
@@ -129,6 +167,12 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         return observation
     }
 
+    /**
+     * Maps a BodyFatRecord to a FHIR Observation.
+     *
+     * @param record the BodyFatRecord to be mapped
+     * @return an Observation object derived from the provided BodyFatRecord
+     */
     private fun mapBodyFatRecord(record: BodyFatRecord) = record.createObservation(
         codings = listOf(
             Coding()
@@ -145,6 +189,12 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         periodExtractor = { Date.from(time) to Date.from(time) }
     )
 
+    /**
+     * Maps a BodyTemperatureRecord to a FHIR Observation.
+     *
+     * @param record the BodyTemperatureRecord to be mapped
+     * @return an Observation object derived from the provided BodyTemperatureRecord
+     */
     private fun mapBodyTemperatureRecord(record: BodyTemperatureRecord) = record.createObservation(
         categories = listOf(
             Coding()
@@ -167,6 +217,13 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         periodExtractor = { Date.from(time) to Date.from(time) }
     )
 
+    /**
+     * Maps a HeartRateRecord to a list of FHIR Observations.
+     *
+     * @param record the HeartRateRecord to be mapped
+     * @return a list of Observation objects derived from the provided HeartRateRecord.
+     * Each object represents a single sample from the HeartRateRecord.
+     */
     private fun mapHeartRateRecord(record: HeartRateRecord): List<Observation> {
         return record.samples.map { sample ->
             val observation = Observation()
@@ -202,6 +259,12 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         }
     }
 
+    /**
+     * Maps a HeightRecord to a FHIR Observation.
+     *
+     * @param record the HeightRecord to be mapped
+     * @return an Observation object derived from the provided HeightRecord
+     */
     private fun mapHeightRecord(record: HeightRecord) = record.createObservation(
         categories = listOf(
             Coding()
@@ -216,14 +279,20 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setDisplay("Body height")
         ),
         unit = MappedUnit(
-            code = "[in_i]",
+            code = "m",
             system = "http://unitsofmeasure.org",
-            unit = "in"
+            unit = "m"
         ),
-        valueExtractor = { height.inInches },
+        valueExtractor = { height.inMeters },
         periodExtractor = { Date.from(time) to Date.from(time) }
     )
 
+    /**
+     * Maps an OxygenSaturationRecord to a FHIR Observation.
+     *
+     * @param record the OxygenSaturationRecord to be mapped
+     * @return an Observation object derived from the provided OxygenSaturationRecord
+     */
     private fun mapOxygenSaturationRecord(record: OxygenSaturationRecord) = record.createObservation(
         categories = listOf(
             Coding()
@@ -246,6 +315,12 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         periodExtractor = { Date.from(time) to Date.from(time) }
     )
 
+    /**
+     * Maps a RespiratoryRateRecord to a FHIR Observation.
+     *
+     * @param record the RespiratoryRateRecord to be mapped
+     * @return an Observation object derived from the provided RespiratoryRateRecord
+     */
     private fun mapRespiratoryRateRecord(record: RespiratoryRateRecord) = record.createObservation(
         categories = listOf(
             Coding()
@@ -268,6 +343,12 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         periodExtractor = { Date.from(time) to Date.from(time) }
     )
 
+    /**
+     * Maps a StepsRecord to a FHIR Observation.
+     *
+     * @param record the StepsRecord to be mapped
+     * @return an Observation object derived from the provided StepsRecord
+     */
     private fun mapStepsRecord(record: StepsRecord) = record.createObservation(
         categories = listOf(
             Coding()
@@ -290,6 +371,12 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
         periodExtractor = { Date.from(startTime) to Date.from(endTime) }
     )
 
+    /**
+     * Maps a WeightRecord to a FHIR Observation.
+     *
+     * @param record the WeightRecord to be mapped
+     * @return an Observation object derived from the provided WeightRecord
+     */
     private fun mapWeightRecord(record: WeightRecord) = record.createObservation(
         categories = listOf(
             Coding()
@@ -304,11 +391,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setDisplay("Body weight")
         ),
         unit = MappedUnit(
-            code = "[lb_av]",
+            code = "kg",
             system = "http://unitsofmeasure.org",
-            unit = "lbs"
+            unit = "kg"
         ),
-        valueExtractor = { weight.inPounds },
+        valueExtractor = { weight.inKilograms },
         periodExtractor = { Date.from(time) to Date.from(time) }
     )
 
