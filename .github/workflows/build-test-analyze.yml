@@ -73,7 +73,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        api-level: [29, 33, 34, 35]
+        api-level: [34] # api-level: [29, 33, 34, 35]
+        profile: ["Pixel 7"] # profile: ["Small Phone", Medium Phone, "Pixel 7"]
+        target: ["google_apis"] # target: ["default", "google_apis"]
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -105,6 +107,8 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
+          target: ${{ matrix.target }}
+          profile: ${{ matrix.profile }}
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
