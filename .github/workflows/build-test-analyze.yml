@@ -74,7 +74,7 @@ jobs:
     strategy:
       matrix:
         api-level: [34] # api-level: [29, 33, 34, 35]
-        profile: ["Pixel 7"] # profile: ["Small Phone", Medium Phone, "Pixel 7"]
+        profile: ["pixel_7"] # profile: ["small_phone", "medium_phone", "pixel_7"]
         target: ["google_apis"] # target: ["default", "google_apis"]
     steps:
       - name: checkout
