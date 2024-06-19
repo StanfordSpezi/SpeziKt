@@ -22,6 +22,8 @@ firebaseStorageKtx = "21.0.0"
 foundation = "1.6.7"
 googleGmsGoogleServices = "4.4.2"
 googleid = "1.1.0"
+hapiFhirVersion = "5.7.9"
+healthConnectClient = "1.1.0-alpha07"
 hiltNavigation = "1.2.0"
 hiltVersion = "2.51"
 junit = "4.13.2"
@@ -48,6 +50,7 @@ android-gradle = { group = "com.android.tools.build", name = "gradle", version.r
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-health-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "healthConnectClient" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTestingVersion" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentialsPlayServicesAuth" }
@@ -78,6 +81,7 @@ firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-funct
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
+hapi-fhir-structures-r4 = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-r4", version.ref = "hapiFhirVersion"}
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltVersion" }
 hilt-core = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltVersion" }
 hilt-gradle = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hiltVersion" }
