@@ -13,62 +13,62 @@ on:
   workflow_call:
 
 jobs:
-  # detekt:
-  #   name: Detekt review
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4.1.0
-  #       with:
-  #         fetch-depth: 1
-  #         ref: ${{ github.head_ref }}
-  #     - name: Detekt PR Check
-  #       uses: alaegin/Detekt-Action@v1.23.6
-  #       with:
-  #         reviewdog_reporter: github-pr-check
-  #         github_token: ${{ secrets.github_token }}
-  #         fail_on_error: true
-  #         detekt_config: internal/detekt-config.yml
-  # buildtestandanalyze:
-  #   name: Build, Test and Analyze
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 120
-  #   permissions:
-  #     security-events: write
-  #     packages: read
-  #     actions: read
-  #     contents: read
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-  #     - name: Set up JDK 17
-  #       uses: actions/setup-java@v3.13.0
-  #       with:
-  #         distribution: 'temurin'
-  #         java-version: '17'
-  #         cache: gradle
-  #     - uses: ruby/setup-ruby@v1
-  #       with:
-  #         ruby-version: '3.3'
-  #         bundler-cache: true
-  #     - name: Initialize CodeQL
-  #       uses: github/codeql-action/init@v3
-  #       with:
-  #         languages: java-kotlin
-  #         build-mode: manual
-  #     - name: Build and Test
-  #       run: bundle exec fastlane test
-  #     - name: Perform CodeQL Analysis
-  #       uses: github/codeql-action/analyze@v3
-  #       with:
-  #         category: "/language:java-kotlin"
-  #     - name: Upload JaCoCo report to Codecov
-  #       uses: codecov/codecov-action@v4
-  #       with:
-  #         files: '**/build/reports/jacoco/jacocoCoverageReport/jacocoCoverageReport.xml'
-  #         flags: unittests
-  #         name: codecov-coverage
-  #         token: ${{ secrets.CODECOV_TOKEN }}
+  detekt:
+    name: Detekt review
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.0
+        with:
+          fetch-depth: 1
+          ref: ${{ github.head_ref }}
+      - name: Detekt PR Check
+        uses: alaegin/Detekt-Action@v1.23.6
+        with:
+          reviewdog_reporter: github-pr-check
+          github_token: ${{ secrets.github_token }}
+          fail_on_error: true
+          detekt_config: internal/detekt-config.yml
+  buildtestandanalyze:
+    name: Build, Test and Analyze
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3.13.0
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: gradle
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: java-kotlin
+          build-mode: manual
+      - name: Build and Test
+        run: bundle exec fastlane test
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:java-kotlin"
+      - name: Upload JaCoCo report to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: '**/build/reports/jacoco/jacocoCoverageReport/jacocoCoverageReport.xml'
+          flags: unittests
+          name: codecov-coverage
+          token: ${{ secrets.CODECOV_TOKEN }}
   test:
     runs-on: ubuntu-latest
     strategy:
@@ -133,25 +133,25 @@ jobs:
           flags: uitests
           name: codecov-coverage
           token: ${{ secrets.CODECOV_TOKEN }}
-  # dokka:
-  #   name: Dokka Documentation Deployment
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-  #     - name: Set up JDK 17
-  #       uses: actions/setup-java@v4
-  #       with:
-  #         distribution: 'temurin'
-  #         java-version: '17'
-  #         cache: gradle
-  #     - name: Setup Gradle
-  #       uses: gradle/actions/setup-gradle@v3
-  #     - name: Run Dokka with Gradle
-  #       run: ./gradlew dokkaHtmlMultiModule
-  #     - name: Deploy to GitHub Pages
-  #       if: github.ref == 'refs/heads/main'
-  #       uses: JamesIves/github-pages-deploy-action@v4
-  #       with:
-  #         branch: gh-pages
-  #         folder: build/dokka/htmlMultiModule
+  dokka:
+    name: Dokka Documentation Deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: gradle
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Run Dokka with Gradle
+        run: ./gradlew dokkaHtmlMultiModule
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: build/dokka/htmlMultiModule
