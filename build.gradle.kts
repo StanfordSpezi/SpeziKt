@@ -141,7 +141,7 @@ fun Project.setupJacoco() {
 
     tasks.matching { it.name.contains("connectedDebugAndroidTest") }.configureEach {
         finalizedBy(reportTask)
-        println("Jacoco configured in: ${name}")
+        println("Jacoco configured in: $name")
     }
 }
 
