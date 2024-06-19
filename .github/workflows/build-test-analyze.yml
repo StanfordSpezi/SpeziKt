@@ -74,7 +74,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [29, 33, 34, 35]
+        api-level: [31, 34]
         profile: ["pixel_6"]
         target: ["default", "google_apis"]
     steps:
