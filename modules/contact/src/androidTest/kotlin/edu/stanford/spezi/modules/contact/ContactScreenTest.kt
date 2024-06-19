@@ -23,7 +23,6 @@ class ContactScreenTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<TestActivity>()
 
-    @Ignore("Currently fails, fix before merning the PR.")
     @Test
     fun contactView_displaysContactName() {
         val contact = ContactFactory.create(name = "John Doe")
@@ -36,7 +35,6 @@ class ContactScreenTest {
         composeTestRule.onNodeWithText(contact.name).assertExists()
     }
 
-    @Ignore("Currently fails, fix before merning the PR.")
     @Test
     fun contactView_displaysContactOptions() {
         val contact = ContactFactory.create(
@@ -77,7 +75,6 @@ class ContactScreenTest {
         }
     }
 
-    @Ignore("Currently fails, fix before merning the PR.")
     @Test
     fun contactView_displaysContactTitle() {
         val contact = ContactFactory.create(title = "CEO")
@@ -91,7 +88,6 @@ class ContactScreenTest {
             .assertExists()
     }
 
-    @Ignore("Currently fails, fix before merning the PR.")
     @Test
     fun contactView_displaysContactDescription() {
         val description = "Lorem ipsum dolor sit amet"
