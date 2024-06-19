@@ -119,9 +119,16 @@ fun Project.setupJacoco() {
             html.required.set(true)
             xml.required.set(true)
         }
-
         sourceDirectories.setFrom(files("$projectDir/src/main"))
-        executionData.setFrom(files("$buildDir/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"))
+        executionData.setFrom(
+            files(
+                "$buildDir/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
+                "$buildDir/outputs/code_coverage/debugAndroidTest/connected/*.ec"
+            )
+        )
+        doLast {
+            println("Jacoco report generated in: ${reports.html.outputLocation.get()}")
+        }
     }
 
     tasks.withType<Test>().configureEach {
@@ -130,6 +137,11 @@ fun Project.setupJacoco() {
             excludes = listOf("jdk.internal.*")
         }
         finalizedBy(reportTask)
+    }
+
+    tasks.matching { it.name.contains("connectedDebugAndroidTest") }.configureEach {
+        finalizedBy(reportTask)
+        println("Jacoco configured in: ${name}")
     }
 }
 
