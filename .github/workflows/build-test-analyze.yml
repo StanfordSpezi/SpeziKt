@@ -94,10 +94,12 @@ jobs:
             ~/.android/avd/*
             ~/.android/adb*
           key: avd-${{ matrix.api-level }}
-      - name: List Available SDKs
-        run: sdkmanager --list
-      - name: List Available Devices
-        run: avdmanager list devices
+      - name: List Available SDKs & Devices
+        run: |
+          sudo chown $USER:$USER /usr/local/lib/android/sdk -R
+          yes | sdkmanager --licenses > /dev/null
+          sdkmanager --list
+          avdmanager list devices
       - name: Create AVD and Generate Snapshot for Caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
