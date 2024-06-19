@@ -94,12 +94,6 @@ jobs:
             ~/.android/avd/*
             ~/.android/adb*
           key: avd-${{ matrix.api-level }}
-      - name: List Available SDKs & Devices
-        run: |
-          sudo chown $USER:$USER /usr/local/lib/android/sdk -R
-          yes | sdkmanager --licenses > /dev/null
-          sdkmanager --list
-          avdmanager list devices
       - name: Create AVD and Generate Snapshot for Caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
@@ -111,7 +105,9 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
-          script: echo "Generated AVD snapshot for caching."
+          script: |
+            sdkmanager --list
+            avdmanager list devices
       - name: Run Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
