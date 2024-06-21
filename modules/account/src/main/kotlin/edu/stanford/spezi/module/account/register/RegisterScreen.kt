@@ -54,6 +54,7 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.titleSmall
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import java.time.LocalDate
 
 @Composable
@@ -86,6 +87,7 @@ fun RegisterScreen(
     val dateOfBirthFocus = remember { FocusRequester() }
     Column(
         modifier = Modifier
+            .testIdentifier(RegisterScreenTestIdentifier.ROOT)
             .fillMaxSize()
             .padding(Spacings.medium)
             .imePadding()
@@ -352,4 +354,8 @@ private class RegisterScreenProvider : PreviewParameterProvider<RegisterUiState>
             isFormValid = false,
         ),
     )
+}
+
+enum class RegisterScreenTestIdentifier {
+    ROOT,
 }

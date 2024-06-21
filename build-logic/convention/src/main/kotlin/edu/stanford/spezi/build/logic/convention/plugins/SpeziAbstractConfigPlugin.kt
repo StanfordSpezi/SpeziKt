@@ -1,5 +1,7 @@
 package edu.stanford.spezi.build.logic.convention.plugins
 
+import edu.stanford.spezi.build.logic.convention.extensions.android
+import edu.stanford.spezi.build.logic.convention.extensions.androidTestImplementation
 import edu.stanford.spezi.build.logic.convention.extensions.apply
 import edu.stanford.spezi.build.logic.convention.extensions.implementation
 import edu.stanford.spezi.build.logic.convention.extensions.testImplementation
@@ -18,9 +20,19 @@ abstract class SpeziAbstractConfigPlugin(private val modulePlugin: PluginId) : P
 
         defaultConfig.apply(this)
 
+        android {
+            defaultConfig {
+                testInstrumentationRunner = "edu.stanford.spezi.core.testing.HiltApplicationTestRunner"
+            }
+        }
+
         dependencies {
+            implementation(project(":core:utils"))
             implementation(project(":core:logging"))
+
             testImplementation(project(":core:testing"))
+
+            androidTestImplementation(project(":core:testing"))
         }
     }
 }

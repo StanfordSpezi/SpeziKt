@@ -29,6 +29,7 @@ import edu.stanford.spezi.core.design.theme.TextStyles.bodyLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.bodyMedium
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.titleSmall
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 
 /**
  * The onboarding screen.
@@ -38,8 +39,17 @@ fun OnboardingScreen() {
     val viewModel = hiltViewModel<OnboardingViewModel>()
     val uiState by viewModel.uiState.collectAsState()
 
+    OnboardingScreen(uiState = uiState, onAction = viewModel::onAction)
+}
+
+@Composable
+fun OnboardingScreen(
+    uiState: OnboardingUiState,
+    onAction: (OnboardingAction) -> Unit,
+) {
     Column(
         modifier = Modifier
+            .testIdentifier(OnboardingScreenTestIdentifier.ROOT)
             .fillMaxSize()
             .padding(Spacings.medium),
         verticalArrangement = Arrangement.SpaceBetween,
@@ -50,13 +60,18 @@ fun OnboardingScreen() {
         ) {
             Text(
                 text = uiState.title,
+                modifier = Modifier.testIdentifier(OnboardingScreenTestIdentifier.TITLE),
                 style = titleLarge
             )
 
-            Text(text = uiState.subtitle, style = bodyLarge)
+            Text(
+                text = uiState.subtitle,
+                modifier = Modifier.testIdentifier(OnboardingScreenTestIdentifier.SUBTITLE),
+                style = bodyLarge
+            )
             Spacer(modifier = Modifier.height(Spacings.small))
 
-            LazyColumn {
+            LazyColumn(modifier = Modifier.testIdentifier(OnboardingScreenTestIdentifier.AREAS_LIST)) {
                 items(uiState.areas) { area ->
                     FeatureItem(area = area)
                     Spacer(modifier = Modifier.height(Spacings.medium))
@@ -64,10 +79,12 @@ fun OnboardingScreen() {
             }
         }
         Button(
-            onClick = { viewModel.onAction(Action.ContinueButtonAction) },
-            modifier = Modifier.fillMaxWidth(),
+            onClick = { onAction(OnboardingAction.Continue) },
+            modifier = Modifier
+                .testIdentifier(OnboardingScreenTestIdentifier.LEARN_MORE_BUTTON)
+                .fillMaxWidth(),
         ) {
-            Text("Learn More")
+            Text(text = uiState.continueButtonText)
         }
     }
 }
@@ -90,6 +107,7 @@ fun FeatureItem(area: Area) {
         Column {
             Text(
                 text = area.title,
+                modifier = Modifier.testIdentifier(OnboardingScreenTestIdentifier.AREA_TITLE, area.title),
                 style = titleSmall
             )
             Text(
@@ -98,4 +116,13 @@ fun FeatureItem(area: Area) {
             )
         }
     }
+}
+
+enum class OnboardingScreenTestIdentifier {
+    ROOT,
+    TITLE,
+    SUBTITLE,
+    AREAS_LIST,
+    AREA_TITLE,
+    LEARN_MORE_BUTTON,
 }

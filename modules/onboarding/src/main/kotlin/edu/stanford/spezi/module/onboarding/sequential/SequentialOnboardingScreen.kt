@@ -31,6 +31,7 @@ import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Colors.secondary
 import edu.stanford.spezi.core.design.theme.Colors.tertiary
 import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.module.onboarding.sequential.components.OnboardingViewPage
 import edu.stanford.spezi.module.onboarding.sequential.components.PageIndicator
 
@@ -97,22 +98,32 @@ fun SequentialOnboardingScreen(
 
     Column(
         modifier = Modifier
+            .testIdentifier(SequentialOnboardingScreenTestIdentifier.ROOT)
             .fillMaxSize()
             .background(currentPageColor)
     ) {
         HorizontalPager(
             state,
-            modifier = Modifier.weight(1f)
-        ) { step ->
+            modifier = Modifier
+                .testIdentifier(SequentialOnboardingScreenTestIdentifier.PAGER)
+                .weight(1f)
+        ) { index ->
+            val step = uiState.steps[index]
             OnboardingViewPage(
+                modifier = Modifier
+                    .testIdentifier(
+                        identifier = SequentialOnboardingScreenTestIdentifier.PAGE,
+                        suffix = step.title
+                    ),
                 backgroundColor = currentPageColor,
                 onColor = currentOnColor,
-                title = uiState.steps[step].title,
-                description = uiState.steps[step].description,
-                iconId = uiState.steps[step].icon,
+                title = step.title,
+                description = step.description,
+                iconId = step.icon,
             )
         }
         PageIndicator(
+            modifier = Modifier.testIdentifier(SequentialOnboardingScreenTestIdentifier.PAGE_INDICATOR),
             currentPage = uiState.currentPage,
             pageCount = uiState.pageCount,
             backgroundColor = currentPageColor,
@@ -175,4 +186,11 @@ private class SequentialOnboardingUiStateProvider :
             currentPage = 1,
         )
     )
+}
+
+enum class SequentialOnboardingScreenTestIdentifier {
+    ROOT,
+    PAGER,
+    PAGE,
+    PAGE_INDICATOR,
 }

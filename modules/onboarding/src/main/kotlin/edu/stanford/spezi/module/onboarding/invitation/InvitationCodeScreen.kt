@@ -27,7 +27,9 @@ import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 
 @Composable
 fun InvitationCodeScreen() {
@@ -46,12 +48,14 @@ fun InvitationCodeScreen(
 ) {
     Column(
         modifier = Modifier
+            .testIdentifier(InvitationCodeScreenTestIdentifier.ROOT)
             .fillMaxSize()
             .padding(Spacings.medium),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "Invitation Code",
+            modifier = Modifier.testIdentifier(InvitationCodeScreenTestIdentifier.TITLE),
             style = titleLarge,
         )
         Spacer(modifier = Modifier.height(Spacings.medium))
@@ -64,9 +68,13 @@ fun InvitationCodeScreen(
                 .size(Sizes.Icon.medium)
         )
         Spacer(modifier = Modifier.height(Spacings.medium))
-        Text(uiState.description)
+        Text(
+            text = uiState.description,
+            modifier = Modifier.testIdentifier(InvitationCodeScreenTestIdentifier.DESCRIPTION)
+        )
         Spacer(modifier = Modifier.height(Spacings.medium))
         ValidatedOutlinedTextField(
+            modifier = Modifier.testIdentifier(InvitationCodeScreenTestIdentifier.INPUT),
             value = uiState.invitationCode,
             onValueChange = {
                 onAction(Action.UpdateInvitationCode(it))
@@ -80,14 +88,18 @@ fun InvitationCodeScreen(
             onClick = {
                 onAction(Action.RedeemInvitationCode)
             },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .testIdentifier(InvitationCodeScreenTestIdentifier.MAIN_ACTION_BUTTON)
+                .fillMaxWidth(),
         ) {
             Text("Redeem Invitation Code", color = onPrimary)
         }
         Spacer(modifier = Modifier.height(Spacings.small))
-        TextButton(onClick = {
-            onAction(Action.AlreadyHasAccountPressed)
-        }) {
+        TextButton(
+            modifier = Modifier.testIdentifier(InvitationCodeScreenTestIdentifier.SECONDARY_ACTION_BUTTON),
+            onClick = {
+                onAction(Action.AlreadyHasAccountPressed)
+            }) {
             Text("I Already Have an Account")
         }
     }
@@ -121,8 +133,19 @@ private class InvitationCodeScreenProvider : PreviewParameterProvider<Invitation
 private fun InvitationCodeScreenPreview(
     @PreviewParameter(InvitationCodeScreenProvider::class) uiState: InvitationCodeUiState,
 ) {
-    InvitationCodeScreen(
-        uiState = uiState,
-        onAction = { }
-    )
+    SpeziTheme {
+        InvitationCodeScreen(
+            uiState = uiState,
+            onAction = { }
+        )
+    }
+}
+
+enum class InvitationCodeScreenTestIdentifier {
+    ROOT,
+    TITLE,
+    DESCRIPTION,
+    INPUT,
+    MAIN_ACTION_BUTTON,
+    SECONDARY_ACTION_BUTTON,
 }
