@@ -1,17 +1,17 @@
 package edu.stanford.spezi.module.account.register
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imeNestedScroll
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -31,12 +31,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -76,19 +78,27 @@ fun RegisterScreen(
     )
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RegisterScreen(
     uiState: RegisterUiState,
     onAction: (Action) -> Unit,
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val genderFocus = remember { FocusRequester() }
+    val dateOfBirthFocus = remember { FocusRequester() }
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(Spacings.medium)
             .imePadding()
-            .imeNestedScroll()
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        keyboardController?.hide()
+                    }
+                )
+            },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -186,6 +196,13 @@ fun RegisterScreen(
                     },
                     labelText = "Last Name",
                     errorText = uiState.lastName.error,
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = {
+                        genderFocus.requestFocus()
+                        if (uiState.selectedGender.value.isEmpty()) {
+                            onAction(Action.DropdownMenuExpandedUpdate(true))
+                        }
+                    })
                 )
             })
         DropdownMenu(
@@ -193,6 +210,7 @@ fun RegisterScreen(
             expanded = uiState.isDropdownMenuExpanded,
             onDismissRequest = {
                 onAction(Action.DropdownMenuExpandedUpdate(false))
+                dateOfBirthFocus.requestFocus()
             }
         ) {
             uiState.genderOptions.forEach { gender ->
@@ -200,13 +218,16 @@ fun RegisterScreen(
                     onClick = {
                         onAction(Action.TextFieldUpdate(gender, TextFieldType.GENDER))
                         onAction(Action.DropdownMenuExpandedUpdate(false))
+                        dateOfBirthFocus.requestFocus()
                     })
             }
         }
         IconLeadingContent(
             content = {
                 ValidatedOutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(genderFocus),
                     value = uiState.selectedGender.value,
                     onValueChange = {
                         onAction(Action.TextFieldUpdate(it, TextFieldType.GENDER))
@@ -217,41 +238,59 @@ fun RegisterScreen(
                         IconButton(onClick = {
                             onAction(Action.DropdownMenuExpandedUpdate(true))
                         }) {
-                            Icon(Icons.Filled.ArrowDropDown, contentDescription = "Select Gender")
+                            Icon(
+                                Icons.Filled.ArrowDropDown,
+                                contentDescription = "Select Gender",
+                            )
                         }
                     },
                     errorText = uiState.selectedGender.error,
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = {
+                        dateOfBirthFocus.requestFocus()
+                        if (uiState.selectedGender.value.isNotEmpty()) {
+                            onAction(Action.SetIsDatePickerOpen(true))
+                        }
+                    }),
                 )
             })
 
         VerticalSpacer(height = Spacings.small)
-        var isDatePickerDialogOpen by remember { mutableStateOf(false) }
         IconLeadingContent(
             content = {
                 ValidatedOutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(dateOfBirthFocus),
                     value = uiState.dateOfBirth?.format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))
                         ?: "",
                     onValueChange = { /* Do nothing as we handle the date through the DatePicker */ },
                     labelText = "Date of Birth",
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                     trailingIcon = {
-                        IconButton(onClick = { isDatePickerDialogOpen = true }) {
+                        IconButton(onClick = {
+                            onAction(Action.SetIsDatePickerOpen(true))
+                        }) {
                             Icon(Icons.Filled.Edit, contentDescription = "Select Date")
                         }
                     },
-                    readOnly = true
+                    readOnly = true,
+                    keyboardActions = KeyboardActions(onDone = {
+                        onAction(Action.OnRegisterPressed)
+                    })
                 )
             })
 
-        if (isDatePickerDialogOpen) {
+        if (uiState.isDatePickerDialogOpen) {
             DatePickerDialog(
                 onDateSelected = { date ->
                     onAction(Action.DateFieldUpdate(date))
-                    isDatePickerDialogOpen = false
+                    onAction(Action.SetIsDatePickerOpen(false))
                 },
-                onDismiss = { isDatePickerDialogOpen = false }
+                onDismiss = {
+                    onAction(Action.SetIsDatePickerOpen(false))
+                }
             )
         }
 
@@ -261,7 +300,11 @@ fun RegisterScreen(
                 onAction(Action.OnRegisterPressed)
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = uiState.isFormValid
+            enabled = uiState.email.value.isNotEmpty() &&
+                uiState.firstName.value.isNotEmpty() &&
+                uiState.lastName.value.isNotEmpty() &&
+                uiState.selectedGender.value.isNotEmpty() &&
+                uiState.dateOfBirth != null
         ) {
             Text("Signup")
         }

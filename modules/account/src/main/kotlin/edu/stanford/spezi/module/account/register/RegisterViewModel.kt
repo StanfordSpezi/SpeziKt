@@ -52,7 +52,8 @@ class RegisterViewModel @Inject internal constructor(
                 }
 
                 is Action.OnRegisterPressed -> {
-                    onRegisteredPressed()
+                    _uiState.value = onRegisteredPressed()
+                    it
                 }
 
                 is Action.SetIsGoogleSignUp -> {
@@ -64,6 +65,10 @@ class RegisterViewModel @Inject internal constructor(
 
                 is Action.TogglePasswordVisibility -> {
                     it.copy(isPasswordVisible = !it.isPasswordVisible)
+                }
+
+                is Action.SetIsDatePickerOpen -> {
+                    it.copy(isDatePickerDialogOpen = action.isOpen)
                 }
             }
         }
@@ -129,7 +134,9 @@ class RegisterViewModel @Inject internal constructor(
             uiState
         } else {
             uiState.copy(
-                email = uiState.email.copy(error = validator.emailResult(uiState.email.value).errorMessageOrNull()),
+                email = uiState.email.copy(
+                    error = validator.emailResult(uiState.email.value).errorMessageOrNull()
+                ),
                 password = uiState.password.copy(
                     error = validator.passwordResult(uiState.password.value).errorMessageOrNull()
                 ),
@@ -140,9 +147,11 @@ class RegisterViewModel @Inject internal constructor(
                     error = validator.lastnameResult(uiState.lastName.value).errorMessageOrNull()
                 ),
                 selectedGender = uiState.selectedGender.copy(
-                    error = validator.isGenderValid(uiState.selectedGender.value).errorMessageOrNull()
+                    error = validator.isGenderValid(uiState.selectedGender.value)
+                        .errorMessageOrNull()
                 ),
-                dateOfBirthError = validator.birthdayResult(uiState.dateOfBirth).errorMessageOrNull(),
+                dateOfBirthError = validator.birthdayResult(uiState.dateOfBirth)
+                    .errorMessageOrNull(),
                 isFormValid = validator.isFormValid(uiState)
             )
         }
