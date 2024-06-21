@@ -36,7 +36,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -148,13 +147,13 @@ fun RegisterScreen(
                         errorText = uiState.password.error,
                         trailingIcon = {
                             IconButton(onClick = { onAction(Action.TogglePasswordVisibility) }) {
-                                val icon: Painter = if (uiState.isPasswordVisible) {
-                                    painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_visibility)
+                                val iconId: Int = if (uiState.isPasswordVisible) {
+                                    edu.stanford.spezi.core.design.R.drawable.ic_visibility
                                 } else {
-                                    painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_visibility_off)
+                                    edu.stanford.spezi.core.design.R.drawable.ic_visibility_off
                                 }
                                 Icon(
-                                    painter = icon,
+                                    painter = painterResource(id = iconId),
                                     contentDescription = if (uiState.isPasswordVisible) "Hide password" else "Show password"
                                 )
                             }
