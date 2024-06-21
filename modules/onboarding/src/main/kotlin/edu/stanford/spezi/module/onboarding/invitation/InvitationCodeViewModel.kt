@@ -14,44 +14,37 @@ class InvitationCodeViewModel @Inject internal constructor(
     private val invitationAuthManager: InvitationAuthManager,
     invitationCodeRepository: InvitationCodeRepository,
 ) : ViewModel() {
-
+    private val screenData = invitationCodeRepository.getScreenData()
     private val _uiState =
-        MutableStateFlow(InvitationCodeUiState(invitationCode = "", error = null))
+        MutableStateFlow(
+            InvitationCodeUiState(
+                title = screenData.title,
+                description = screenData.description,
+                error = null,
+            )
+        )
     val uiState = _uiState.asStateFlow()
 
-    private val screenData = invitationCodeRepository.getScreenData()
-
-    init {
-        _uiState.update {
-            it.copy(
-                title = screenData.title,
-                description = screenData.description
-            )
-        }
-    }
-
     fun onAction(action: Action) {
-        _uiState.update {
-            when (action) {
-                is Action.UpdateInvitationCode -> {
-                    val newValue = action.invitationCode
-                    it.copy(invitationCode = newValue)
+        when (action) {
+            is Action.UpdateInvitationCode -> {
+                _uiState.update {
+                    it.copy(invitationCode = action.invitationCode)
                 }
+            }
 
-                is Action.ClearError -> {
+            is Action.ClearError -> {
+                _uiState.update {
                     it.copy(error = null)
                 }
+            }
 
-                Action.AlreadyHasAccountPressed -> {
-                    screenData.gotAnAccountAction()
-                    it
-                }
+            Action.AlreadyHasAccountPressed -> {
+                screenData.gotAnAccountAction()
+            }
 
-                Action.RedeemInvitationCode -> {
-                    screenData.redeemAction()
-                    redeemInvitationCode()
-                    it
-                }
+            Action.RedeemInvitationCode -> {
+                redeemInvitationCode()
             }
         }
     }
