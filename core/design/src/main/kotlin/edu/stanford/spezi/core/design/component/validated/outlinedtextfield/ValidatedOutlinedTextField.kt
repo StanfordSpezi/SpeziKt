@@ -44,12 +44,14 @@ fun ValidatedOutlinedTextField(
             trailingIcon = trailingIcon,
             keyboardActions = keyboardActions,
             visualTransformation = visualTransformation,
-            supportingText = {
-                if (errorText != null) {
+            supportingText = if (errorText != null) {
+                {
                     Text(
                         text = errorText,
                     )
                 }
+            } else {
+                null
             },
         )
     }
