@@ -28,7 +28,7 @@ inline fun <reified T : Any> Project.extension(configBlock: T.() -> Unit) {
     extensions.getByType<T>().apply(configBlock)
 }
 
-internal fun Project.commonExtensions(configBlock: CommonExtension<*,*,*,*,*,*>.() -> Unit) {
+internal fun Project.android(configBlock: CommonExtension<*, *, *, *, *, *>.() -> Unit) {
     when {
         isApp() -> extension<BaseAppModuleExtension>(configBlock)
         isLibrary() -> extension<LibraryExtension>(configBlock)
