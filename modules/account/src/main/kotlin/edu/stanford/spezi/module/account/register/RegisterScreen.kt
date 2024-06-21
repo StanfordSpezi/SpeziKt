@@ -55,7 +55,6 @@ import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.titleSmall
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun RegisterScreen(
@@ -261,8 +260,7 @@ fun RegisterScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(dateOfBirthFocus),
-                    value = uiState.dateOfBirth?.format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))
-                        ?: "",
+                    value = uiState.formattedDateOfBirth,
                     onValueChange = { /* Do nothing as we handle the date through the DatePicker */ },
                     labelText = "Date of Birth",
                     singleLine = true,

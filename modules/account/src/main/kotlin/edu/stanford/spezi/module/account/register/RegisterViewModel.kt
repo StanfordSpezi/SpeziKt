@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,7 +45,16 @@ class RegisterViewModel @Inject internal constructor(
                 }
 
                 is Action.DateFieldUpdate -> {
-                    val updatedUiState = it.copy(dateOfBirth = action.newValue)
+                    val deviceLocale: Locale = Locale.getDefault()
+                    val updatedUiState = it.copy(
+                        dateOfBirth = action.newValue,
+                        formattedDateOfBirth = action.newValue.format(
+                            DateTimeFormatter.ofPattern(
+                                "dd MMMM yyyy",
+                                deviceLocale
+                            )
+                        )
+                    )
                     updatedUiState.copy(isFormValid = validator.isFormValid(updatedUiState))
                 }
 

@@ -9,6 +9,7 @@ data class RegisterUiState(
     val lastName: FieldState = FieldState(),
     val selectedGender: FieldState = FieldState(),
     val dateOfBirth: LocalDate? = null,
+    val formattedDateOfBirth: String = "",
     val dateOfBirthError: String? = null,
     val isDropdownMenuExpanded: Boolean = false,
     val isDatePickerDialogOpen: Boolean = false,
