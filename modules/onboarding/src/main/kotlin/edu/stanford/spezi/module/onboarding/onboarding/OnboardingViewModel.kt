@@ -21,41 +21,33 @@ class OnboardingViewModel @Inject internal constructor(
         init()
     }
 
-    fun onAction(action: Action) {
-        _uiState.update {
-            when (action) {
-                is Action.UpdateArea -> {
-                    val newAreas = action.areas
-                    it.copy(areas = newAreas)
-                }
-
-                Action.ContinueButtonAction -> {
-                    viewModelScope.launch {
-                        val onboardingData = repository.getOnboardingData().getOrNull()
-                        onboardingData?.continueButtonAction?.invoke()
-                    }
-                    it
-                }
+    fun onAction(action: OnboardingAction) {
+        when (action) {
+            OnboardingAction.Continue -> {
+                _uiState.value.continueAction.invoke()
             }
         }
     }
 
     private fun init() {
         viewModelScope.launch {
-            val result = repository.getOnboardingData()
-            if (result.isSuccess) {
-                _uiState.update {
-                    it.copy(
-                        areas = result.getOrNull()?.areas ?: emptyList(),
-                        title = result.getOrNull()?.title ?: "",
-                        subtitle = result.getOrNull()?.subTitle ?: ""
-                    )
+            repository.getOnboardingData()
+                .onSuccess { onboardingData ->
+                    _uiState.update {
+                        it.copy(
+                            areas = onboardingData.areas,
+                            title = onboardingData.title,
+                            subtitle = onboardingData.subTitle,
+                            continueButtonText = onboardingData.continueButtonText,
+                            continueAction = onboardingData.continueButtonAction,
+                        )
+                    }
                 }
-            } else {
-                _uiState.update {
-                    it.copy(error = result.exceptionOrNull()?.message ?: "Unknown error")
+                .onFailure { error ->
+                    _uiState.update {
+                        it.copy(error = error.message ?: "Unknown error")
+                    }
                 }
-            }
         }
     }
 }

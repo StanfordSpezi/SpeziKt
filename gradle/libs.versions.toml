@@ -3,7 +3,7 @@
 accompanistPager = "0.35.1-alpha"
 activityCompose = "1.9.0"
 agp = "8.4.1"
-androidTools = "31.4.1"
+androidTools = "31.4.2"
 appcompat = "1.7.0"
 compileSdk = "34"
 composeBom = "2024.05.00"
@@ -12,9 +12,9 @@ coreKtx = "1.13.1"
 coreKtxVersion = "1.5.0"
 coreTestingVersion = "2.2.0"
 coroutinesVersion = "1.8.0"
-credentialsPlayServicesAuth = "1.2.2"
 datastorePreferences = "1.1.1"
 detekt = "1.23.6" # please adjust github action version as well in case of version change
+credentialsPlayServicesAuth = "1.2.2"
 dokka = "1.9.20"
 espressoCore = "3.5.1"
 firebaseAuthKtx = "23.0.0"
@@ -24,12 +24,13 @@ firebaseStorageKtx = "21.0.0"
 foundation = "1.6.7"
 googleGmsGoogleServices = "4.4.2"
 googleid = "1.1.0"
+hapiFhirVersion = "5.7.9"
+healthConnectClient = "1.1.0-alpha07"
 hiltNavigation = "1.2.0"
 hiltVersion = "2.51"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 kotlin = "2.0.0"
-kotlinxSerialization = "1.9.22"
 kotlinxSerializationJson = "1.6.3"
 kspVersion = "2.0.0-1.0.21"
 lifecycleKtx = "2.8.1"
@@ -37,8 +38,11 @@ lifecycleRuntimeKtx = "2.7.0"
 minSdk = "31"
 mockKVersion = "1.13.10"
 playServicesAuth = "21.2.0"
+rulesVersion = "1.5.0"
+runnerVersion = "1.5.2"
 securityCryptoKtx = "1.1.0-alpha06"
 targetSdk = "34"
+testCoreVersion = "1.5.0"
 timberVersion = "5.0.1"
 truth = "1.4.2"
 
@@ -49,6 +53,7 @@ android-gradle = { group = "com.android.tools.build", name = "gradle", version.r
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-health-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "healthConnectClient" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTestingVersion" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentialsPlayServicesAuth" }
@@ -58,6 +63,9 @@ androidx-foundation = { module = "androidx.compose.foundation:foundation", versi
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleKtx" }
 androidx-lifecycle-view-model-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleKtx" }
+androidx-test-core = { group = "androidx.test", name = "core", version.ref = "testCoreVersion" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "runnerVersion" }
+androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "rulesVersion" }
 androidx-security-crypto-ktx = { group = "androidx.security", name = "security-crypto-ktx", version.ref = "securityCryptoKtx" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3" }
@@ -79,6 +87,7 @@ firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-funct
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
+hapi-fhir-structures-r4 = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-r4", version.ref = "hapiFhirVersion"}
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltVersion" }
 hilt-core = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltVersion" }
 hilt-gradle = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hiltVersion" }
@@ -107,8 +116,8 @@ google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersio
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerialization" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 spezi-application = { id = "spezi.application", version = "unspecified" }
 spezi-base = { id = "spezi.base", version = "unspecified" }
 spezi-compose = { id = "spezi.compose", version = "unspecified" }
@@ -120,4 +129,4 @@ spezi-library = { id = "spezi.library", version = "unspecified" }
 compose = ["compose-ui", "compose-material3", "compose-ui-tooling-preview", "compose-ui-tooling", "androidx-core-ktx", "androidx-appcompat", "androidx-activity-compose"]
 compose-androidTest = ["junit", "androidx-espresso-core", "compose-ui-test", "mockk-agent-core", "mockk-android", "google-truth"]
 ktx-coroutines = ["coroutines-core", "coroutines-android"]
-unit-testing = ["junit", "mockk-core", "google-truth", "coroutines-test", "androidx-core-testing"]
+unit-testing = ["junit", "mockk-core", "google-truth", "coroutines-test", "androidx-core-testing", "androidx-test-rules"]

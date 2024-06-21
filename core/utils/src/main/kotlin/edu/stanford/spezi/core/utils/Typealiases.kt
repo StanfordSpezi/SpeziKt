@@ -2,6 +2,7 @@
 package edu.stanford.spezi.core.utils
 
 import androidx.compose.runtime.Composable
+import edu.stanford.spezi.core.utils.extensions.tag
 
 /**
  * A type alias for a composable lambda function with no parameters and no return value.
@@ -24,3 +25,9 @@ import androidx.compose.runtime.Composable
  * ```
  */
 typealias ComposableBlock = @Composable () -> Unit
+
+/**
+ * A type alias on any enum type. Useful to set test tag on composable of a Screen to
+ * ensure uniqueness of the tags, see [tag]
+ */
+typealias TestIdentifier = Enum<*>

@@ -2,7 +2,7 @@ package edu.stanford.spezi.build.logic.convention.plugins
 
 import edu.stanford.spezi.build.logic.convention.extensions.androidTestImplementation
 import edu.stanford.spezi.build.logic.convention.extensions.apply
-import edu.stanford.spezi.build.logic.convention.extensions.commonExtensions
+import edu.stanford.spezi.build.logic.convention.extensions.android
 import edu.stanford.spezi.build.logic.convention.extensions.debugImplementation
 import edu.stanford.spezi.build.logic.convention.extensions.findBundle
 import edu.stanford.spezi.build.logic.convention.extensions.findLibrary
@@ -16,7 +16,7 @@ class SpeziComposeConventionPlugin : Plugin<Project> {
     override fun apply(project: Project) = with(project) {
         apply(PluginId.COMPOSE_COMPILER)
 
-        commonExtensions {
+        android {
             buildFeatures {
                 compose = true
             }

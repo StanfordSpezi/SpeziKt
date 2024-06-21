@@ -16,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.core.design.component.markdown.MarkdownComponent
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 
 @Composable
 fun ConsentScreen() {
@@ -32,7 +33,11 @@ private fun ConsentScreen(
     uiState: ConsentUiState,
     onAction: (ConsentAction) -> Unit,
 ) {
-    Column(modifier = Modifier.padding(Spacings.medium)) {
+    Column(
+        modifier = Modifier
+            .testIdentifier(ConsentScreenTestIdentifier.ROOT)
+            .padding(Spacings.medium)
+    ) {
         Spacer(modifier = Modifier.height(Spacings.medium))
         MarkdownComponent(markdownElements = uiState.markdownElements)
         SignaturePad(
@@ -65,4 +70,8 @@ private class ConsentScreenPreviewProvider : PreviewParameterProvider<ConsentUiS
             paths = mutableListOf(),
         )
     )
+}
+
+enum class ConsentScreenTestIdentifier {
+    ROOT,
 }

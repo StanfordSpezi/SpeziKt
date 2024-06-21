@@ -25,6 +25,7 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.DeviceUiModel
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -39,6 +40,7 @@ fun BluetoothScreen() {
 private fun BluetoothScreen(uiState: BluetoothUiState) {
     Column(
         modifier = Modifier
+            .testIdentifier(BluetoothScreenTestIdentifier.ROOT)
             .fillMaxSize()
             .padding(Spacings.medium)
     ) {
@@ -101,4 +103,8 @@ private fun BluetoothEvents(events: Flow<BluetoothViewModel.Event>) {
             }
         }
     }
+}
+
+enum class BluetoothScreenTestIdentifier {
+    ROOT,
 }
