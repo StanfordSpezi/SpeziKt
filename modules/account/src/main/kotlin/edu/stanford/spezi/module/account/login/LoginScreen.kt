@@ -2,6 +2,7 @@
 
 package edu.stanford.spezi.module.account.login
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,9 +10,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,6 +30,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -39,6 +48,7 @@ import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.module.account.login.components.SignInWithGoogleButton
 import edu.stanford.spezi.module.account.login.components.TextDivider
 import edu.stanford.spezi.module.account.register.FieldState
+import edu.stanford.spezi.module.account.register.IconLeadingContent
 
 @Composable
 fun LoginScreen(
@@ -58,10 +68,22 @@ internal fun LoginScreen(
     uiState: UiState,
     onAction: (Action) -> Unit,
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(Spacings.medium),
+            .imePadding()
+            .verticalScroll(rememberScrollState())
+            .padding(Spacings.medium)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        println("Hide Keyboard")
+                        keyboardController?.hide()
+                    }
+                )
+            },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -77,49 +99,57 @@ You may login to your existing account or create a new one if you don't have one
             style = bodyLarge,
         )
         Spacer(modifier = Modifier.height(Spacings.large))
-        ValidatedOutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = uiState.email.value,
-            errorText = uiState.email.error,
-            onValueChange = { email ->
-                onAction(Action.TextFieldUpdate(email, TextFieldType.EMAIL))
-            },
-            labelText = "E-Mail Address",
-            singleLine = true,
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
-        )
+        IconLeadingContent(
+            icon = Icons.Outlined.Email,
+            content = {
+                ValidatedOutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = uiState.email.value,
+                    errorText = uiState.email.error,
+                    onValueChange = { email ->
+                        onAction(Action.TextFieldUpdate(email, TextFieldType.EMAIL))
+                    },
+                    labelText = "E-Mail Address",
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
+                )
+            })
         Spacer(modifier = Modifier.height(Spacings.small))
-        ValidatedOutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = uiState.password.value,
-            errorText = uiState.password.error,
-            onValueChange = {
-                onAction(Action.TextFieldUpdate(it, TextFieldType.PASSWORD))
-            },
-            labelText = "Password",
-            visualTransformation = if (uiState.passwordVisibility) {
-                VisualTransformation.None
-            } else {
-                PasswordVisualTransformation()
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = {
-                onAction(Action.PasswordSignInOrSignUp)
-            }),
-            trailingIcon = {
-                IconButton(onClick = { onAction(Action.TogglePasswordVisibility) }) {
-                    val icon: Painter = if (uiState.passwordVisibility) {
-                        painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_visibility)
+        IconLeadingContent(
+            icon = Icons.Outlined.Lock,
+            content = {
+                ValidatedOutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = uiState.password.value,
+                    errorText = uiState.password.error,
+                    onValueChange = {
+                        onAction(Action.TextFieldUpdate(it, TextFieldType.PASSWORD))
+                    },
+                    labelText = "Password",
+                    visualTransformation = if (uiState.passwordVisibility) {
+                        VisualTransformation.None
                     } else {
-                        painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_visibility_off)
+                        PasswordVisualTransformation()
+                    },
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = {
+                        onAction(Action.PasswordSignInOrSignUp)
+                    }),
+                    trailingIcon = {
+                        IconButton(onClick = { onAction(Action.TogglePasswordVisibility) }) {
+                            val icon: Painter = if (uiState.passwordVisibility) {
+                                painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_visibility)
+                            } else {
+                                painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_visibility_off)
+                            }
+                            Icon(
+                                painter = icon,
+                                contentDescription = if (uiState.passwordVisibility) "Hide password" else "Show password"
+                            )
+                        }
                     }
-                    Icon(
-                        painter = icon,
-                        contentDescription = if (uiState.passwordVisibility) "Hide password" else "Show password"
-                    )
-                }
-            }
-        )
+                )
+            })
         TextButton(
             onClick = {
                 onAction(Action.ForgotPassword)
