@@ -5,7 +5,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.testing.runTestUnconfined
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -15,7 +15,7 @@ class EncryptedFileKeyValueStorageTest {
     private var fileStorage: FileStorage =
         EncryptedFileStorage(
             context = context,
-            ioDispatcher = Dispatchers.Unconfined,
+            ioDispatcher = UnconfinedTestDispatcher(),
         )
 
     @Test
