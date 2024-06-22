@@ -28,9 +28,9 @@ internal abstract class FormValidator {
         data object Valid : Result
         data class Invalid(val message: String) : Result
 
-        fun errorMessageOrNull() = if (this is Invalid) message else null
-
         val isValid: Boolean
             get() = this is Valid
+
+        fun errorMessageOrNull() = if (this is Invalid) message else null
     }
 }
