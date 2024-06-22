@@ -29,7 +29,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -50,6 +49,7 @@ import edu.stanford.spezi.module.account.login.components.SignInWithGoogleButton
 import edu.stanford.spezi.module.account.login.components.TextDivider
 import edu.stanford.spezi.module.account.register.FieldState
 import edu.stanford.spezi.module.account.register.IconLeadingContent
+import edu.stanford.spezi.core.design.R as DesignR
 
 @Composable
 fun LoginScreen(
@@ -139,13 +139,13 @@ You may login to your existing account or create a new one if you don't have one
                     }),
                     trailingIcon = {
                         IconButton(onClick = { onAction(Action.TogglePasswordVisibility) }) {
-                            val icon: Painter = if (uiState.passwordVisibility) {
-                                painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_visibility)
+                            val iconId = if (uiState.passwordVisibility) {
+                                DesignR.drawable.ic_visibility
                             } else {
-                                painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_visibility_off)
+                                DesignR.drawable.ic_visibility_off
                             }
                             Icon(
-                                painter = icon,
+                                painter = painterResource(id = iconId),
                                 contentDescription = if (uiState.passwordVisibility) "Hide password" else "Show password"
                             )
                         }
@@ -165,7 +165,7 @@ You may login to your existing account or create a new one if you don't have one
                 onAction(Action.PasswordSignInOrSignUp)
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = uiState.email.value.isNotEmpty() && uiState.password.value.isNotEmpty()
+            enabled = uiState.isPasswordSignInEnabled
         ) {
             Text(
                 text = if (uiState.isAlreadyRegistered) "Login" else "Register"
