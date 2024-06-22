@@ -7,7 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -35,7 +35,7 @@ class LocalKeyValueStorage @Inject constructor(
     }
 
     override suspend fun <T> readDataBlocking(key: PreferenceKey<T>): T? {
-        return dataStore.data.first()[key.key]
+        return dataStore.data.firstOrNull()?.get(key.key)
     }
 
     override suspend fun <T> deleteData(key: PreferenceKey<T>) {
