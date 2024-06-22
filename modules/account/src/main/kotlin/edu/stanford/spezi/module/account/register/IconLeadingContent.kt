@@ -42,7 +42,7 @@ internal fun IconLeadingContent(
             Spacer(modifier = Modifier.width(Spacings.medium))
         } else {
             // Reserve the space for the icon
-            Spacer(modifier = Modifier.width(Sizes.Icon.small + Spacings.small))
+            Spacer(modifier = Modifier.width(Sizes.Icon.small + Spacings.small + Spacings.small))
         }
         content()
     }
