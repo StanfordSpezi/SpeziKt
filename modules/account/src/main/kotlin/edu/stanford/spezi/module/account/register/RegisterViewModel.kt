@@ -50,7 +50,7 @@ class RegisterViewModel @Inject internal constructor(
                     }
                     updatedUiState.copy(
                         isFormValid = validator.isFormValid(updatedUiState),
-                        isRegisterButtonEnabled = validator.isRegisterButtonEnabled(updatedUiState)
+                        isRegisterButtonEnabled = isRegisterButtonEnabled(updatedUiState)
                     )
                 }
 
@@ -62,7 +62,7 @@ class RegisterViewModel @Inject internal constructor(
                     )
                     updatedUiState.copy(
                         isFormValid = validator.isFormValid(updatedUiState),
-                        isRegisterButtonEnabled = validator.isRegisterButtonEnabled(updatedUiState)
+                        isRegisterButtonEnabled = isRegisterButtonEnabled(updatedUiState)
                     )
                 }
 
@@ -173,5 +173,13 @@ class RegisterViewModel @Inject internal constructor(
                 isFormValid = validator.isFormValid(uiState)
             )
         }
+    }
+
+    private fun isRegisterButtonEnabled(uiState: RegisterUiState): Boolean {
+        return uiState.email.value.isNotEmpty() &&
+            uiState.firstName.value.isNotEmpty() &&
+            uiState.lastName.value.isNotEmpty() &&
+            uiState.selectedGender.value.isNotEmpty() &&
+            uiState.dateOfBirth != null
     }
 }

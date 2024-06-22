@@ -45,12 +45,4 @@ internal class RegisterFormValidator @Inject constructor() : FormValidator() {
             birthdayResult(uiState.dateOfBirth).isValid &&
             passwordConditionSatisfied()
     }
-
-    fun isRegisterButtonEnabled(uiState: RegisterUiState): Boolean {
-        return uiState.email.value.isNotEmpty() &&
-            uiState.firstName.value.isNotEmpty() &&
-            uiState.lastName.value.isNotEmpty() &&
-            uiState.selectedGender.value.isNotEmpty() &&
-            uiState.dateOfBirth != null
-    }
 }
