@@ -9,7 +9,7 @@ To use the Storage module in your project, add the following dependency to your 
 
 ```gradle
 dependencies {
-    implementation(":core:storage")`
+    implementation(":modules:storage")`
 }
 ```
 
