@@ -2,6 +2,7 @@ package edu.stanford.spezi.module.account.login
 
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.module.account.AccountEvents
@@ -13,10 +14,8 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.setMain
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class LoginViewModelTest {
@@ -28,6 +27,9 @@ class LoginViewModelTest {
     private val validator: LoginFormValidator = LoginFormValidator()
     private val navigator: Navigator = mockk(relaxed = true)
 
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+
     @Before
     fun setUp() {
         loginViewModel = LoginViewModel(
@@ -38,7 +40,6 @@ class LoginViewModelTest {
             validator = validator
         )
         every { navigator.navigateTo(any()) } just Runs
-        Dispatchers.setMain(UnconfinedTestDispatcher())
     }
 
     @Test

@@ -2,7 +2,6 @@ package edu.stanford.spezi.module.account.login
 
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.module.account.register.FieldState
-import edu.stanford.spezi.module.account.register.FormValidator
 import org.junit.Test
 
 class LoginFormValidatorTest {
@@ -10,51 +9,51 @@ class LoginFormValidatorTest {
     private val loginFormValidator = LoginFormValidator()
 
     @Test
-    fun `given valid email when emailResult is called then return Valid`() {
+    fun `given valid email when isValidEmail is called then return Valid`() {
         // Given
         val validEmail = "test@test.com"
 
         // When
-        val result = loginFormValidator.emailResult(validEmail)
+        val result = loginFormValidator.isValidEmail(validEmail)
 
         // Then
-        assertThat(result).isEqualTo(FormValidator.Result.Valid)
+        assertThat(result.isValid).isTrue()
     }
 
     @Test
-    fun `given invalid email when emailResult is called then return Invalid`() {
+    fun `given invalid email when isValidEmail is called then return Invalid`() {
         // Given
         val invalidEmail = "invalidEmail"
 
         // When
-        val result = loginFormValidator.emailResult(invalidEmail)
+        val result = loginFormValidator.isValidEmail(invalidEmail)
 
         // Then
-        assertThat(result).isInstanceOf(FormValidator.Result.Invalid::class.java)
+        assertThat(result.isValid).isFalse()
     }
 
     @Test
-    fun `given valid password when passwordResult is called then return Valid`() {
+    fun `given valid password when isValidPassword is called then return Valid`() {
         // Given
         val validPassword = "password123"
 
         // When
-        val result = loginFormValidator.passwordResult(validPassword)
+        val result = loginFormValidator.isValidPassword(validPassword)
 
         // Then
-        assertThat(result).isEqualTo(FormValidator.Result.Valid)
+        assertThat(result.isValid).isTrue()
     }
 
     @Test
-    fun `given invalid password when passwordResult is called then return Invalid`() {
+    fun `given invalid password when isValidPassword is called then return Invalid`() {
         // Given
         val invalidPassword = "pass"
 
         // When
-        val result = loginFormValidator.passwordResult(invalidPassword)
+        val result = loginFormValidator.isValidPassword(invalidPassword)
 
         // Then
-        assertThat(result).isInstanceOf(FormValidator.Result.Invalid::class.java)
+        assertThat(result.isValid).isFalse()
     }
 
     @Test
