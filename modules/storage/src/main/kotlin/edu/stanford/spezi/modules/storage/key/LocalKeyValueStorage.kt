@@ -4,9 +4,11 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -29,13 +31,17 @@ class LocalKeyValueStorage @Inject constructor(
     }
 
     override fun <T> readData(key: PreferenceKey<T>): Flow<T?> {
-        return dataStore.data.map { preferences ->
-            preferences[key.key]
-        }
+        return dataStore.data
+            .catch { emit(emptyPreferences()) }
+            .map { preferences ->
+                preferences[key.key]
+            }
     }
 
     override suspend fun <T> readDataBlocking(key: PreferenceKey<T>): T? {
-        return dataStore.data.firstOrNull()?.get(key.key)
+        return dataStore.data
+            .catch { emit(emptyPreferences()) }
+            .firstOrNull()?.get(key.key)
     }
 
     override suspend fun <T> deleteData(key: PreferenceKey<T>) {

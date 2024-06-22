@@ -51,7 +51,6 @@ class LocalKeyValueStorageTest {
         localStorage.saveData(key, initialData)
         localStorage.saveData(key, newData)
 
-
         // Then
         val readData = localStorage.readDataBlocking(key)
         assertThat(readData).isEqualTo(newData)
