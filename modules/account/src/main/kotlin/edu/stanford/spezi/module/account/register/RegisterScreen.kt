@@ -285,7 +285,6 @@ fun RegisterScreen(
             DatePickerDialog(
                 onDateSelected = { date ->
                     onAction(Action.DateFieldUpdate(date))
-                    onAction(Action.SetIsDatePickerOpen(false))
                 },
                 onDismiss = {
                     onAction(Action.SetIsDatePickerOpen(false))
@@ -299,11 +298,7 @@ fun RegisterScreen(
                 onAction(Action.OnRegisterPressed)
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = uiState.email.value.isNotEmpty() &&
-                uiState.firstName.value.isNotEmpty() &&
-                uiState.lastName.value.isNotEmpty() &&
-                uiState.selectedGender.value.isNotEmpty() &&
-                uiState.dateOfBirth != null
+            enabled = uiState.isRegisterButtonEnabled
         ) {
             Text("Signup")
         }
