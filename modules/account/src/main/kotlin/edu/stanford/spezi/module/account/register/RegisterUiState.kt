@@ -17,6 +17,7 @@ data class RegisterUiState(
     val genderOptions: List<String> = listOf("Male", "Female", "Other"),
     val isGoogleSignUp: Boolean = false,
     val isPasswordVisible: Boolean = false,
+    val isRegisterButtonEnabled: Boolean = false,
 )
 
 data class FieldState(
