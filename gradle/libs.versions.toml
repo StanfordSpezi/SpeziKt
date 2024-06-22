@@ -12,9 +12,9 @@ coreKtx = "1.13.1"
 coreKtxVersion = "1.5.0"
 coreTestingVersion = "2.2.0"
 coroutinesVersion = "1.8.0"
+credentialsPlayServicesAuth = "1.2.2"
 datastorePreferences = "1.1.1"
 detekt = "1.23.6" # please adjust github action version as well in case of version change
-credentialsPlayServicesAuth = "1.2.2"
 dokka = "1.9.20"
 espressoCore = "3.5.1"
 firebaseAuthKtx = "23.0.0"
@@ -53,20 +53,20 @@ android-gradle = { group = "com.android.tools.build", name = "gradle", version.r
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-androidx-health-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "healthConnectClient" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTestingVersion" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentialsPlayServicesAuth" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
+androidx-health-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "healthConnectClient" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleKtx" }
 androidx-lifecycle-view-model-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleKtx" }
-androidx-test-core = { group = "androidx.test", name = "core", version.ref = "testCoreVersion" }
-androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "runnerVersion" }
-androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "rulesVersion" }
 androidx-security-crypto-ktx = { group = "androidx.security", name = "security-crypto-ktx", version.ref = "securityCryptoKtx" }
+androidx-test-core = { group = "androidx.test", name = "core", version.ref = "testCoreVersion" }
+androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "rulesVersion" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "runnerVersion" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
