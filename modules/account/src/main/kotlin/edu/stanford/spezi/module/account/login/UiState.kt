@@ -10,7 +10,7 @@ data class UiState(
     val showFilterByAuthorizedAccounts: Boolean = true,
     val isFormValid: Boolean = false,
     val isAlreadyRegistered: Boolean = false,
-    val hasAttemptedSubmit: Boolean = false,
+    val isPasswordSignInEnabled: Boolean = false,
 )
 
 enum class TextFieldType {
