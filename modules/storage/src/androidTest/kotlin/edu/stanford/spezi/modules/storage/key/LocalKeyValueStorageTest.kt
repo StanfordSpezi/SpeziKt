@@ -21,7 +21,7 @@ class LocalKeyValueStorageTest {
         val data = "Hello, Leland Stanford!"
 
         // When
-        runBlocking { localStorage.saveData(key, data) }
+        localStorage.saveData(key, data)
 
         // Then
         val readData = runBlocking { localStorage.readDataBlocking(key) }
@@ -34,7 +34,7 @@ class LocalKeyValueStorageTest {
         val key = PreferenceKey.StringKey("nonExistentKey")
 
         // When
-        val readData = runBlocking { localStorage.readDataBlocking(key) }
+        val readData = localStorage.readDataBlocking(key)
 
         // Then
         assertThat(readData).isNull()
@@ -48,13 +48,12 @@ class LocalKeyValueStorageTest {
         val newData = "New data"
 
         // When
-        runBlocking {
-            localStorage.saveData(key, initialData)
-            localStorage.saveData(key, newData)
-        }
+        localStorage.saveData(key, initialData)
+        localStorage.saveData(key, newData)
+
 
         // Then
-        val readData = runBlocking { localStorage.readDataBlocking(key) }
+        val readData = localStorage.readDataBlocking(key)
         assertThat(readData).isEqualTo(newData)
     }
 
@@ -65,13 +64,12 @@ class LocalKeyValueStorageTest {
         val data = "Hello, Leland Stanford!"
 
         // When
-        runBlocking {
-            localStorage.saveData(key, data)
-            localStorage.deleteData(key)
-        }
+
+        localStorage.saveData(key, data)
+        localStorage.deleteData(key)
 
         // Then
-        val readData = runBlocking { localStorage.readDataBlocking(key) }
+        val readData = localStorage.readDataBlocking(key)
         assertThat(readData).isNull()
     }
 }
