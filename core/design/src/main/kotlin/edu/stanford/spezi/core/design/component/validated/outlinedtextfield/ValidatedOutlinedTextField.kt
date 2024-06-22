@@ -14,6 +14,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import edu.stanford.spezi.core.utils.ComposableBlock
 
 @Composable
 fun ValidatedOutlinedTextField(
@@ -26,7 +27,7 @@ fun ValidatedOutlinedTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
     visualTransformation: VisualTransformation = VisualTransformation.None,
     readOnly: Boolean = false,
-    trailingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: ComposableBlock? = null,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -44,14 +45,8 @@ fun ValidatedOutlinedTextField(
             trailingIcon = trailingIcon,
             keyboardActions = keyboardActions,
             visualTransformation = visualTransformation,
-            supportingText = if (errorText != null) {
-                {
-                    Text(
-                        text = errorText,
-                    )
-                }
-            } else {
-                null
+            supportingText = errorText?.let {
+                { Text(text = it) }
             },
         )
     }
