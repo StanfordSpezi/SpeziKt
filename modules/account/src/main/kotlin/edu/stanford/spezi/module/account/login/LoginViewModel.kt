@@ -27,44 +27,46 @@ internal class LoginViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
 
+    private var hasAttemptedSubmit: Boolean = false
+
     fun onAction(action: Action) {
-        _uiState.update {
-            when (action) {
-                is Action.TextFieldUpdate -> {
+        when (action) {
+            is Action.TextFieldUpdate -> {
+                _uiState.update {
                     updateTextField(action, it)
                 }
+            }
 
-                is Action.TogglePasswordVisibility -> {
+            is Action.TogglePasswordVisibility -> {
+                _uiState.update {
                     it.copy(passwordVisibility = !it.passwordVisibility)
                 }
+            }
 
-                is Action.NavigateToRegister -> {
-                    navigateToRegister()
-                    it
+            is Action.NavigateToRegister -> {
+                navigateToRegister()
+            }
+
+            is Action.GoogleSignInOrSignUp -> {
+                if (uiState.value.isAlreadyRegistered) {
+                    googleSignIn()
+                } else {
+                    googleSignUp()
                 }
+            }
 
-                is Action.GoogleSignInOrSignUp -> {
-                    if (uiState.value.isAlreadyRegistered) {
-                        googleSignIn()
-                    } else {
-                        googleSignUp()
-                    }
-                    it
-                }
-
-                is Action.SetIsAlreadyRegistered -> {
+            is Action.SetIsAlreadyRegistered -> {
+                _uiState.update {
                     handleIsAlreadyRegistered(action, it)
                 }
+            }
 
-                is Action.ForgotPassword -> {
-                    forgotPassword()
-                    it
-                }
+            is Action.ForgotPassword -> {
+                forgotPassword()
+            }
 
-                Action.PasswordSignInOrSignUp -> {
-                    handleLoginOrRegister()
-                    it
-                }
+            Action.PasswordSignInOrSignUp -> {
+                handleLoginOrRegister()
             }
         }
     }
@@ -79,17 +81,16 @@ internal class LoginViewModel @Inject constructor(
             navigateToRegister()
         }
 
+        hasAttemptedSubmit = true
         _uiState.update {
             it.copy(
-                hasAttemptedSubmit = true,
-                email = FieldState(
-                    uiState.email.value,
-                    error = validator.emailResult(uiState.email.value).errorMessageOrNull()
+                email = it.email.copy(
+                    error = validator.isValidEmail(email = uiState.email.value).errorMessageOrNull()
                 ),
-                password = FieldState(
-                    uiState.password.value,
-                    error = validator.passwordResult(uiState.password.value).errorMessageOrNull()
-                )
+                password = it.password.copy(
+                    error = validator.isValidPassword(password = uiState.password.value)
+                        .errorMessageOrNull()
+                ),
             )
         }
     }
@@ -124,26 +125,28 @@ internal class LoginViewModel @Inject constructor(
     ): UiState {
         val newValue = FieldState(action.newValue)
         val result = when (action.type) {
-            TextFieldType.PASSWORD -> validator.passwordResult(action.newValue)
-            TextFieldType.EMAIL -> validator.emailResult(action.newValue)
+            TextFieldType.PASSWORD -> validator.isValidPassword(action.newValue)
+            TextFieldType.EMAIL -> validator.isValidEmail(action.newValue)
         }
         val error =
-            if (uiState.hasAttemptedSubmit && result is FormValidator.Result.Invalid) result.errorMessageOrNull() else null
+            if (hasAttemptedSubmit && result is FormValidator.Result.Invalid) result.errorMessageOrNull() else null
         return when (action.type) {
             TextFieldType.PASSWORD -> uiState.copy(
                 password = newValue.copy(error = error),
-                isFormValid = validator.isFormValid(uiState)
+                isFormValid = validator.isFormValid(uiState),
+                isPasswordSignInEnabled = uiState.email.value.isNotEmpty() && newValue.value.isNotEmpty()
             )
 
             TextFieldType.EMAIL -> uiState.copy(
                 email = newValue.copy(error = error),
-                isFormValid = validator.isFormValid(uiState)
+                isFormValid = validator.isFormValid(uiState),
+                isPasswordSignInEnabled = newValue.value.isNotEmpty() && uiState.password.value.isNotEmpty()
             )
         }
     }
 
     private fun forgotPassword() {
-        if (validator.isEmailValid(uiState.value.email.value)) {
+        if (validator.isValidEmail(uiState.value.email.value) is FormValidator.Result.Valid) {
             sendForgotPasswordEmail(uiState.value.email.value)
         } else {
             messageNotifier.notify("Please enter a valid email")
@@ -176,7 +179,7 @@ internal class LoginViewModel @Inject constructor(
                 _uiState.value.email.value,
                 _uiState.value.password.value,
             )
-            if (result) {
+            if (result.isSuccess) {
                 accountEvents.emit(event = AccountEvents.Event.SignInSuccess)
             } else {
                 accountEvents.emit(event = AccountEvents.Event.SignInFailure)
