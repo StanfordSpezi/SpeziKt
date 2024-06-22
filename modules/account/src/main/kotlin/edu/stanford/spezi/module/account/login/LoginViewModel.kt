@@ -9,7 +9,6 @@ import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.AccountNavigationEvent
 import edu.stanford.spezi.module.account.cred.manager.CredentialLoginManagerAuth
 import edu.stanford.spezi.module.account.register.FieldState
-import edu.stanford.spezi.module.account.register.FormValidator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -129,7 +128,7 @@ internal class LoginViewModel @Inject constructor(
             TextFieldType.EMAIL -> validator.isValidEmail(action.newValue)
         }
         val error =
-            if (hasAttemptedSubmit && result is FormValidator.Result.Invalid) result.errorMessageOrNull() else null
+            if (hasAttemptedSubmit && result.isValid.not()) result.errorMessageOrNull() else null
         return when (action.type) {
             TextFieldType.PASSWORD -> uiState.copy(
                 password = newValue.copy(error = error),
@@ -146,7 +145,7 @@ internal class LoginViewModel @Inject constructor(
     }
 
     private fun forgotPassword() {
-        if (validator.isValidEmail(uiState.value.email.value) is FormValidator.Result.Valid) {
+        if (validator.isValidEmail(uiState.value.email.value).isValid) {
             sendForgotPasswordEmail(uiState.value.email.value)
         } else {
             messageNotifier.notify("Please enter a valid email")
