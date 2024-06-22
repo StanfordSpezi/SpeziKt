@@ -1,7 +1,6 @@
 package edu.stanford.spezi.module.account.cred.manager
 
 import android.content.Context
-import androidx.credentials.CreatePasswordRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -33,13 +32,10 @@ class CredentialLoginManagerAuth @Inject constructor(
     suspend fun handlePasswordSignIn(
         username: String,
         password: String,
-    ): Boolean {
-        val createPasswordRequest = CreatePasswordRequest(id = username, password = password)
-        val createCredential = credentialManager.createCredential(context, createPasswordRequest)
-        if (createCredential.type == PasswordCredential.TYPE_PASSWORD_CREDENTIAL) {
-            return firebaseAuthManager.signInWithEmailAndPassword(username, password)
+    ): Result<Unit> {
+        return runCatching {
+            firebaseAuthManager.signInWithEmailAndPassword(username, password)
         }
-        return false
     }
 
     private suspend fun getCredential(filterByAuthorizedAccounts: Boolean): GoogleIdTokenCredential? {
@@ -67,7 +63,8 @@ class CredentialLoginManagerAuth @Inject constructor(
             when (val credential = response.credential) {
                 is CustomCredential -> {
                     if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-                        val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                        val googleIdTokenCredential =
+                            GoogleIdTokenCredential.createFrom(credential.data)
                         return googleIdTokenCredential
                     }
                     if (credential.type == PasswordCredential.TYPE_PASSWORD_CREDENTIAL) {

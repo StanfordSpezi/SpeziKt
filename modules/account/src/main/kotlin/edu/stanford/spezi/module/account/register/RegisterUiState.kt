@@ -9,11 +9,15 @@ data class RegisterUiState(
     val lastName: FieldState = FieldState(),
     val selectedGender: FieldState = FieldState(),
     val dateOfBirth: LocalDate? = null,
+    val formattedDateOfBirth: String = "",
     val dateOfBirthError: String? = null,
     val isDropdownMenuExpanded: Boolean = false,
+    val isDatePickerDialogOpen: Boolean = false,
     val isFormValid: Boolean = false,
     val genderOptions: List<String> = listOf("Male", "Female", "Other"),
     val isGoogleSignUp: Boolean = false,
+    val isPasswordVisible: Boolean = false,
+    val isRegisterButtonEnabled: Boolean = false,
 )
 
 data class FieldState(
@@ -34,6 +38,7 @@ sealed interface Action {
     data class DateFieldUpdate(val newValue: LocalDate) : Action
     data class DropdownMenuExpandedUpdate(val isExpanded: Boolean) : Action
     data object OnRegisterPressed : Action
-
+    data object TogglePasswordVisibility : Action
     data class SetIsGoogleSignUp(val isGoogleSignUp: Boolean) : Action
+    data class SetIsDatePickerOpen(val isOpen: Boolean) : Action
 }
