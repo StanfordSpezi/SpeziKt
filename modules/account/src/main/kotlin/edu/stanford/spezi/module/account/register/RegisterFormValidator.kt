@@ -3,19 +3,7 @@ package edu.stanford.spezi.module.account.register
 import java.time.LocalDate
 import javax.inject.Inject
 
-internal class RegisterFormValidator @Inject internal constructor() : FormValidator() {
-
-    fun emailResult(email: String): Result = if (isValidEmail(email)) {
-        Result.Valid
-    } else {
-        Result.Invalid("Invalid email")
-    }
-
-    fun passwordResult(password: String): Result = if (isValidPassword(password)) {
-        Result.Valid
-    } else {
-        Result.Invalid("Password must be at least $MIN_PASSWORD_LENGTH characters")
-    }
+internal class RegisterFormValidator @Inject constructor() : FormValidator() {
 
     fun firstnameResult(firstName: String): Result =
         if (firstName.isNotEmpty()) Result.Valid else Result.Invalid("First name cannot be empty")
@@ -45,16 +33,24 @@ internal class RegisterFormValidator @Inject internal constructor() : FormValida
     fun isFormValid(uiState: RegisterUiState): Boolean {
         val passwordConditionSatisfied = {
             if (uiState.isGoogleSignUp) {
-                passwordResult(uiState.password.value) is Result.Valid
+                isValidPassword(uiState.password.value).isValid
             } else {
                 true
             }
         }
-        return emailResult(uiState.email.value) is Result.Valid &&
-            firstnameResult(uiState.firstName.value) is Result.Valid &&
-            lastnameResult(uiState.lastName.value) is Result.Valid &&
-            isGenderValid(uiState.selectedGender.value) is Result.Valid &&
-            birthdayResult(uiState.dateOfBirth) is Result.Valid &&
+        return isValidEmail(uiState.email.value).isValid &&
+            firstnameResult(uiState.firstName.value).isValid &&
+            lastnameResult(uiState.lastName.value).isValid &&
+            isGenderValid(uiState.selectedGender.value).isValid &&
+            birthdayResult(uiState.dateOfBirth).isValid &&
             passwordConditionSatisfied()
+    }
+
+    fun isRegisterButtonEnabled(uiState: RegisterUiState): Boolean {
+        return uiState.email.value.isNotEmpty() &&
+            uiState.firstName.value.isNotEmpty() &&
+            uiState.lastName.value.isNotEmpty() &&
+            uiState.selectedGender.value.isNotEmpty() &&
+            uiState.dateOfBirth != null
     }
 }
