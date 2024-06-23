@@ -30,6 +30,10 @@ class SpeziBaseConfigConventionPlugin : Plugin<Project> {
                 targetCompatibility = java
             }
 
+            buildTypes {
+                getByName("debug").enableAndroidTestCoverage = true
+            }
+
             packaging {
                 resources {
                     excludes += "/META-INF/**.md"
