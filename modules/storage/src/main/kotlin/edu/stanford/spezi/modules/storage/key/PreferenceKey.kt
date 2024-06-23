@@ -8,7 +8,6 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.core.stringSetPreferencesKey
 
 sealed class PreferenceKey<T>(val key: Preferences.Key<T>) {
     class IntKey(name: String) : PreferenceKey<Int>(intPreferencesKey(name))
@@ -17,6 +16,5 @@ sealed class PreferenceKey<T>(val key: Preferences.Key<T>) {
     class BooleanKey(name: String) : PreferenceKey<Boolean>(booleanPreferencesKey(name))
     class FloatKey(name: String) : PreferenceKey<Float>(floatPreferencesKey(name))
     class LongKey(name: String) : PreferenceKey<Long>(longPreferencesKey(name))
-    class StringSetKey(name: String) : PreferenceKey<Set<String>>(stringSetPreferencesKey(name))
     class ByteArrayKey(name: String) : PreferenceKey<ByteArray>(byteArrayPreferencesKey(name))
 }

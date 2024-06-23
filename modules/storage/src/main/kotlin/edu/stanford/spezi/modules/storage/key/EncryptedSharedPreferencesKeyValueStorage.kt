@@ -37,7 +37,6 @@ class EncryptedSharedPreferencesKeyValueStorage @Inject constructor(
                 is Long -> putLong(key.key.name, data)
                 is Double -> putString(key.key.name, data.toString())
                 is ByteArray -> putString(key.key.name, data.toHexString())
-                else -> throw IllegalArgumentException("Unsupported type")
             }
         }
     }
@@ -56,10 +55,6 @@ class EncryptedSharedPreferencesKeyValueStorage @Inject constructor(
 
                 is PreferenceKey.ByteArrayKey -> sharedPreferences.getString(key.key.name, null)
                     ?.hexToByteArray()
-
-                else -> {
-                    throw IllegalArgumentException("Unsupported type")
-                }
             } as T?
         )
     }
@@ -77,10 +72,6 @@ class EncryptedSharedPreferencesKeyValueStorage @Inject constructor(
 
             is PreferenceKey.ByteArrayKey -> sharedPreferences.getString(key.key.name, null)
                 ?.hexToByteArray()
-
-            else -> {
-                throw IllegalArgumentException("Unsupported type")
-            }
         } as T?
     }
 
