@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
@@ -13,16 +14,17 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.setMain
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class MainActivityViewModelTest {
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     private lateinit var viewModel: MainActivityViewModel
     private val accountEvents: AccountEvents = mockk(relaxed = true)
@@ -33,7 +35,6 @@ class MainActivityViewModelTest {
 
     @Before
     fun setUp() {
-        Dispatchers.setMain(UnconfinedTestDispatcher())
         every { accountEvents.events } returns MutableSharedFlow()
         viewModel = MainActivityViewModel(accountEvents, navigator, firebaseAuth, pdfService)
     }
