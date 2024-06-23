@@ -111,11 +111,7 @@ fun Project.setupJacoco() {
         classDirectories.setFrom(
             fileTree("$buildDir/intermediates/classes/debug") {
                 exclude(coverageExclusions)
-            } + fileTree("$buildDir/intermediates/classes/release") {
-                exclude(coverageExclusions)
             } + fileTree("$buildDir/tmp/kotlin-classes/debug") {
-                exclude(coverageExclusions)
-            } + fileTree("$buildDir/tmp/kotlin-classes/release") {
                 exclude(coverageExclusions)
             }
         )
@@ -125,18 +121,8 @@ fun Project.setupJacoco() {
         }
         sourceDirectories.setFrom(files("$projectDir/src/main"))
 
-        /**
-         * We enable androidTests coverage for debug builds in SpeziBaseConfigConventionPlugin.
-         * There is however an issue when generating jacoco report of unit and android tests
-         * as the classes are already instrumented from the former test type. We follow the solution
-         * from this SO answer: https://stackoverflow.com/a/68481159
-         * We use release execution data for unit test coverage, and debug data for androidTests
-         */
         executionData.setFrom(
-            files(
-                "$buildDir/outputs/unit_test_code_coverage/releaseUnitTest/*.exec",
-                "$buildDir/outputs/code_coverage/debugAndroidTest/connected/**/*.ec"
-            )
+            files("$buildDir/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
         )
         doLast {
             println("Jacoco report generated in: ${reports.html.outputLocation.get()}")
@@ -149,11 +135,6 @@ fun Project.setupJacoco() {
             excludes = listOf("jdk.internal.*")
         }
         finalizedBy(reportTask)
-    }
-
-    tasks.matching { it.name.contains("connectedDebugAndroidTest") }.configureEach {
-        finalizedBy(reportTask)
-        println("Jacoco configured in: $name")
     }
 }
 
