@@ -1,5 +1,7 @@
 package edu.stanford.bdh.engagehf.bluetooth.data.models
 
+import edu.stanford.spezi.core.bluetooth.data.model.Measurement
+
 sealed interface BluetoothUiState {
     // Initial states
     data object Idle : BluetoothUiState
@@ -10,4 +12,14 @@ sealed interface BluetoothUiState {
 
     // Generic error
     data class Error(val message: String) : BluetoothUiState
+}
+
+data class MeasurementDialogUiState(
+    val measurement: Measurement? = null,
+    val isVisible: Boolean = false,
+)
+
+sealed interface Action {
+    data class ConfirmMeasurement(val measurement: Measurement) : Action
+    data object DismissDialog : Action
 }
