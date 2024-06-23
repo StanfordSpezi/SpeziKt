@@ -70,7 +70,8 @@ internal class BLEDeviceScanner @Inject constructor(
      * If scanning is already in progress, this method does nothing.
      */
     fun startScanning() {
-        if (_isScanning.getAndSet(true)) return
+        val scanner = bluetoothAdapter.bluetoothLeScanner
+        if (_isScanning.getAndSet(scanner != null)) return
         val filters = supportedServices.map {
             ScanFilter.Builder()
                 .setServiceUuid(ParcelUuid(it.service))
@@ -79,7 +80,7 @@ internal class BLEDeviceScanner @Inject constructor(
         val settings = ScanSettings.Builder()
             .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
             .build()
-        bluetoothAdapter.bluetoothLeScanner?.startScan(filters, settings, scanCallback)
+        scanner?.startScan(filters, settings, scanCallback)
     }
 
     /**
