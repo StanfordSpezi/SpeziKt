@@ -30,7 +30,7 @@ class MainActivityViewModel @Inject constructor(
             if (!it.isAnonymous) {
                 // If the user is not anonymous, we can check if the PDF has been uploaded
                 viewModelScope.launch {
-                    if (pdfService.isPdfUploaded().isSuccess) {
+                    if (pdfService.isPdfUploaded().getOrDefault(false)) {
                         navigator.navigateTo(AppNavigationEvent.BluetoothScreen)
                     } else {
                         // User has to consent to the study before proceeding and upload the PDF
