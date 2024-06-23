@@ -20,8 +20,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.BluetoothViewModel
+import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.DeviceUiModel
+import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
@@ -32,12 +34,21 @@ import kotlinx.coroutines.flow.Flow
 fun BluetoothScreen() {
     val viewModel = hiltViewModel<BluetoothViewModel>()
     val state by viewModel.uiState.collectAsState(initial = BluetoothUiState.Idle)
+    val stateDialog by viewModel.dialogUiState.collectAsState()
     BluetoothEvents(events = viewModel.events)
-    BluetoothScreen(uiState = state)
+    BluetoothScreen(
+        uiState = state,
+        uiStateDialog = stateDialog,
+        onAction = viewModel::onAction
+    )
 }
 
 @Composable
-private fun BluetoothScreen(uiState: BluetoothUiState) {
+private fun BluetoothScreen(
+    uiState: BluetoothUiState,
+    uiStateDialog: MeasurementDialogUiState,
+    onAction: (Action) -> Unit,
+) {
     Column(
         modifier = Modifier
             .testIdentifier(BluetoothScreenTestIdentifier.ROOT)
@@ -47,6 +58,10 @@ private fun BluetoothScreen(uiState: BluetoothUiState) {
         Text(text = "Hello ENGAGE!", style = TextStyles.headlineLarge)
         AdditionalInfo(uiState = uiState)
         Devices(uiState as? BluetoothUiState.Ready)
+        MeasurementDialog(
+            uiState = uiStateDialog,
+            onAction = onAction,
+        )
     }
 }
 
@@ -97,6 +112,7 @@ private fun BluetoothEvents(events: Flow<BluetoothViewModel.Event>) {
                         1
                     )
                 }
+
                 is BluetoothViewModel.Event.EnableBluetooth -> {
                     Toast.makeText(activity, "Bluetooth is not enabled", Toast.LENGTH_LONG).show()
                 }
