@@ -134,8 +134,8 @@ fun Project.setupJacoco() {
          */
         executionData.setFrom(
             files(
-                "$buildDir/outputs/unit_test_code_coverage/releaseUnitTest/releaseDebugUnitTest.exec",
-                "$buildDir/outputs/code_coverage/debugAndroidTest/connected/*.ec"
+                "$buildDir/outputs/unit_test_code_coverage/releaseUnitTest/*.exec",
+                "$buildDir/outputs/code_coverage/debugAndroidTest/connected/**/*.ec"
             )
         )
         doLast {
