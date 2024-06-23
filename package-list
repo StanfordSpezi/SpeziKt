@@ -57,3 +57,6 @@ edu.stanford.spezi.module.onboarding.invitation
 edu.stanford.spezi.module.onboarding.onboarding
 edu.stanford.spezi.module.onboarding.sequential
 edu.stanford.spezi.module.onboarding.sequential.components
+module:storage
+edu.stanford.spezi.modules.storage.file
+edu.stanford.spezi.modules.storage.key
