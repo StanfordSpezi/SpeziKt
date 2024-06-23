@@ -79,7 +79,7 @@ internal class BLEDeviceScanner @Inject constructor(
         val settings = ScanSettings.Builder()
             .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
             .build()
-        bluetoothAdapter.bluetoothLeScanner.startScan(filters, settings, scanCallback)
+        bluetoothAdapter.bluetoothLeScanner?.startScan(filters, settings, scanCallback)
     }
 
     /**
@@ -89,7 +89,7 @@ internal class BLEDeviceScanner @Inject constructor(
      */
     fun stopScanning() {
         if (_isScanning.getAndSet(false).not()) return
-        bluetoothAdapter.bluetoothLeScanner.stopScan(scanCallback)
+        bluetoothAdapter.bluetoothLeScanner?.stopScan(scanCallback)
     }
 
     private fun emit(event: Event) {

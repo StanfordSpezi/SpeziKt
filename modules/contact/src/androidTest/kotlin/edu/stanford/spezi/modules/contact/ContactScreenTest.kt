@@ -4,14 +4,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import edu.stanford.spezi.modules.contact.model.ContactOption
 import edu.stanford.spezi.modules.contact.model.ContactOptionType
 import edu.stanford.spezi.modules.contact.repository.ContactRepository
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import java.util.UUID
@@ -21,9 +20,8 @@ class ContactScreenTest {
     private val mockContactRepository: ContactRepository = mockk()
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<TestActivity>()
+    val composeTestRule = createComposeRule()
 
-    @Ignore("Currently fails, fix before merning the PR.")
     @Test
     fun contactView_displaysContactName() {
         val contact = ContactFactory.create(name = "John Doe")
@@ -36,7 +34,6 @@ class ContactScreenTest {
         composeTestRule.onNodeWithText(contact.name).assertExists()
     }
 
-    @Ignore("Currently fails, fix before merning the PR.")
     @Test
     fun contactView_displaysContactOptions() {
         val contact = ContactFactory.create(
@@ -77,7 +74,6 @@ class ContactScreenTest {
         }
     }
 
-    @Ignore("Currently fails, fix before merning the PR.")
     @Test
     fun contactView_displaysContactTitle() {
         val contact = ContactFactory.create(title = "CEO")
@@ -91,7 +87,6 @@ class ContactScreenTest {
             .assertExists()
     }
 
-    @Ignore("Currently fails, fix before merning the PR.")
     @Test
     fun contactView_displaysContactDescription() {
         val description = "Lorem ipsum dolor sit amet"
