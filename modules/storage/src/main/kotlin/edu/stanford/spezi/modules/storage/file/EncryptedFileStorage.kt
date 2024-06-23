@@ -30,28 +30,36 @@ class EncryptedFileStorage @Inject constructor(
         ).build()
     }
 
-    override suspend fun saveFile(fileName: String, data: ByteArray) = withContext(ioDispatcher) {
-        deleteFile(fileName)
-        val encryptedFile = getEncryptedFile(fileName)
-        encryptedFile.openFileOutput().use { outputStream ->
-            outputStream.write(data)
+    override suspend fun saveFile(fileName: String, data: ByteArray): Result<Unit> =
+        withContext(ioDispatcher) {
+            runCatching {
+                deleteFile(fileName)
+                val encryptedFile = getEncryptedFile(fileName)
+                encryptedFile.openFileOutput().use { outputStream ->
+                    outputStream.write(data)
+                }
+            }
         }
-    }
 
-    override suspend fun readFile(fileName: String): ByteArray? = withContext(ioDispatcher) {
-        val file = File(context.filesDir, fileName)
-        if (!file.exists()) return@withContext null
+    override suspend fun readFile(fileName: String): Result<ByteArray?> =
+        withContext(ioDispatcher) {
+            runCatching {
+                val file = File(context.filesDir, fileName)
+                if (!file.exists()) return@runCatching null
 
-        val encryptedFile = getEncryptedFile(fileName)
-        return@withContext encryptedFile.openFileInput().use { inputStream ->
-            inputStream.readBytes()
+                val encryptedFile = getEncryptedFile(fileName)
+                encryptedFile.openFileInput().use { inputStream ->
+                    inputStream.readBytes()
+                }
+            }
         }
-    }
 
-    override suspend fun deleteFile(fileName: String) = withContext(ioDispatcher) {
-        val file = File(context.filesDir, fileName)
-        if (file.exists()) {
-            file.delete()
+    override suspend fun deleteFile(fileName: String): Result<Unit> = withContext(ioDispatcher) {
+        runCatching {
+            val file = File(context.filesDir, fileName)
+            if (file.exists()) {
+                file.delete()
+            }
         }
     }
 }
