@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -17,11 +18,17 @@ class EncryptedFileKeyValueStorageTest {
             context = context,
             ioDispatcher = UnconfinedTestDispatcher(),
         )
+    private val fileName = "testFile"
+
+    @After
+    fun tearDown() = runTestUnconfined {
+        // Delete the file after each test to clean up
+        fileStorage.deleteFile(fileName)
+    }
 
     @Test
     fun `it should save and read file correctly`() = runTestUnconfined {
         // Given
-        val fileName = "testFile"
         val data = "Hello, World!".toByteArray()
 
         // When
@@ -47,7 +54,6 @@ class EncryptedFileKeyValueStorageTest {
     @Test
     fun `it should overwrite existing file when saving with same filename`() = runTestUnconfined {
         // Given
-        val fileName = "testFile"
         val initialData = "Hello, World!".toByteArray()
         val newData = "New data".toByteArray()
 
@@ -63,7 +69,6 @@ class EncryptedFileKeyValueStorageTest {
     @Test
     fun `it should delete file correctly`() = runTestUnconfined {
         // Given
-        val fileName = "testFile"
         val data = "Hello, World!".toByteArray()
         fileStorage.saveFile(fileName, data)
 
