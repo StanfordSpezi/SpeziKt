@@ -5,7 +5,6 @@ import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class EncryptedSharedPreferencesKeyValueStorageTest {
@@ -163,7 +162,7 @@ class EncryptedSharedPreferencesKeyValueStorageTest {
         storage.saveData(key, expectedValue)
 
         // When
-        val actualValue = runBlocking { storage.readData(key).first() }
+        val actualValue = storage.readData(key).first()
 
         // Then
         assertThat(actualValue).isEqualTo(expectedValue)

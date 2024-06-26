@@ -4,7 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import edu.stanford.spezi.modules.contact.model.ContactOption
 import edu.stanford.spezi.modules.contact.model.ContactOptionType
@@ -20,7 +20,7 @@ class ContactScreenTest {
     private val mockContactRepository: ContactRepository = mockk()
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<TestActivity>()
+    val composeTestRule = createComposeRule()
 
     @Test
     fun contactView_displaysContactName() {
