@@ -15,7 +15,7 @@ platform :android do
   end
 
   desc "Runs all UI tests"
-  lane :uitest do
+  lane :connectedCheck do
     gradle(task: "connectedCheck")
   end
 
