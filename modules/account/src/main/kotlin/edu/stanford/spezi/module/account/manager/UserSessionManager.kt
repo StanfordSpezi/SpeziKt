@@ -17,12 +17,6 @@ import java.io.ByteArrayInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
-data class UserState(
-    val isAnonymous: Boolean,
-    val hasConsented: Boolean,
-)
-
-// TODO; review, emit account event instead
 @Singleton
 class UserSessionManager @Inject constructor(
     private val firebaseStorage: FirebaseStorage,
@@ -52,19 +46,28 @@ class UserSessionManager @Inject constructor(
         firebaseAuth.addAuthStateListener(authStateListener)
     }
 
-    suspend fun uploadConsentPdf(pdfBytes: ByteArray): Result<Unit> =
-        withContext(ioDispatcher) {
-            runCatching {
-                val uploaded = firebaseAuth.uid?.let { uid ->
-                    val inputStream = ByteArrayInputStream(pdfBytes)
-                    logger.i { "Uploading file to Firebase Storage" }
-                    firebaseStorage.getReference("users/$uid/signature.pdf")
-                        .putStream(inputStream).await().task.isSuccessful
-                } ?: false
-                if (uploaded.not()) error("Failed to upload signature.pdf")
-                // TODO; update user state flow if uploaded?!
+    suspend fun uploadConsentPdf(pdfBytes: ByteArray): Result<Unit> = withContext(ioDispatcher) {
+        runCatching {
+            val currentUser = firebaseAuth.currentUser ?: error("User not available")
+            val inputStream = ByteArrayInputStream(pdfBytes)
+            logger.i { "Uploading file to Firebase Storage" }
+            val uploaded = firebaseStorage
+                .getReference("users/${currentUser.uid}/signature.pdf")
+                .putStream(inputStream)
+                .await().task.isSuccessful
+
+            if (uploaded) {
+                _userState.update {
+                    UserState(
+                        isAnonymous = currentUser.isAnonymous,
+                        hasConsented = true,
+                    )
+                }
+            } else {
+                error("Failed to upload signature.pdf")
             }
         }
+    }
 
     fun observeUserState(): Flow<UserState> = _userState.filterNotNull()
 

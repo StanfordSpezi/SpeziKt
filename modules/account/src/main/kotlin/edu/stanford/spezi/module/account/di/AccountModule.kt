@@ -22,6 +22,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class AccountModule {
+    private val userFirebaseEmulator by lazy { BuildConfig.DEBUG }
 
     @Singleton
     @Provides
@@ -35,13 +36,11 @@ class AccountModule {
         return CredentialManager.create(context)
     }
 
-    private val isDebug by lazy { BuildConfig.DEBUG }
-
     @Provides
     @Singleton
     internal fun provideFirebaseFunctions(): FirebaseFunctions =
         FirebaseFunctions.getInstance().apply {
-            if (isDebug) {
+            if (userFirebaseEmulator) {
                 useEmulator(FIREBASE_EMULATOR_HOST, FIREBASE_FUNCTIONS_EMULATOR_PORT)
             }
         }
@@ -49,7 +48,7 @@ class AccountModule {
     @Provides
     @Singleton
     internal fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance().apply {
-        if (isDebug) {
+        if (userFirebaseEmulator) {
             useEmulator(FIREBASE_EMULATOR_HOST, FIREBASE_AUTH_EMULATOR_PORT)
         }
     }
@@ -58,7 +57,7 @@ class AccountModule {
     @Singleton
     internal fun provideFirebaseFirestore(): FirebaseFirestore =
         FirebaseFirestore.getInstance().apply {
-            if (isDebug) {
+            if (userFirebaseEmulator) {
                 useEmulator(FIREBASE_EMULATOR_HOST, FIREBASE_FIRESTORE_EMULATOR_PORT)
             }
         }
@@ -66,7 +65,7 @@ class AccountModule {
     @Provides
     @Singleton
     internal fun provideFirebaseStorage(): FirebaseStorage = FirebaseStorage.getInstance().apply {
-        if (isDebug) {
+        if (userFirebaseEmulator) {
             useEmulator(FIREBASE_EMULATOR_HOST, FIREBASE_STORAGE_EMULATOR_PORT)
         }
     }

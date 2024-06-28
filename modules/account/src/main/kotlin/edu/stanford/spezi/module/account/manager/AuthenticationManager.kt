@@ -13,7 +13,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 import kotlin.coroutines.resumeWithException
 
-class AuthenticationManager @Inject constructor(
+internal class AuthenticationManager @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
 ) {
@@ -81,22 +81,21 @@ class AuthenticationManager @Inject constructor(
                 )
                 firestore.collection("users").document(user.uid).set(userMap).await()
             }
-            true
-        }.getOrElse { e ->
+        }.onFailure { e ->
             logger.e { "Error saving user data: ${e.message}" }
-            false
-        }
+        }.isSuccess
     }
 
-    internal suspend fun sendForgotPasswordEmail(email: String): Result<Void> {
-        return kotlin.runCatching {
+    suspend fun sendForgotPasswordEmail(email: String): Result<Unit> {
+        return runCatching {
             firebaseAuth.sendPasswordResetEmail(email).await()
+            Unit
         }.onFailure { e ->
             logger.e { "Error sending forgot password email: ${e.message}" }
         }
     }
 
-    internal suspend fun signInWithEmailAndPassword(email: String, password: String): Boolean {
+    suspend fun signInWithEmailAndPassword(email: String, password: String): Boolean {
         return runCatching {
             val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
             result.user != null

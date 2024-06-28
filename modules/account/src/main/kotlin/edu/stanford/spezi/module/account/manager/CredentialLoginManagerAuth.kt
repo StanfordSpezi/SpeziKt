@@ -79,7 +79,7 @@ internal class CredentialLoginManagerAuth @Inject constructor(
         }
     }
 
-    suspend fun sendForgotPasswordEmail(email: String): Result<Void> {
+    suspend fun sendForgotPasswordEmail(email: String): Result<Unit> {
         return authenticationManager.sendForgotPasswordEmail(email)
     }
 }
