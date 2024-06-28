@@ -130,12 +130,17 @@ class MainActivity : ComponentActivity() {
                             Routes.InvitationCodeScreen
                         )
 
-                        is OnboardingNavigationEvent.OnboardingScreen -> navHostController.navigate(Routes.OnboardingScreen)
+                        is OnboardingNavigationEvent.OnboardingScreen -> navHostController.navigate(
+                            Routes.OnboardingScreen
+                        )
+
                         is OnboardingNavigationEvent.SequentialOnboardingScreen -> navHostController.navigate(
                             Routes.SequentialOnboardingScreen
                         )
 
-                        is OnboardingNavigationEvent.ConsentScreen -> navHostController.navigate(Routes.ConsentScreen)
+                        is OnboardingNavigationEvent.ConsentScreen -> navHostController.navigate(
+                            Routes.ConsentScreen
+                        )
                     }
                 }
             }

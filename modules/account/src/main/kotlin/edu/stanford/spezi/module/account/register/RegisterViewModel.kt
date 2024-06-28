@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,6 +29,13 @@ class RegisterViewModel @Inject internal constructor(
 
     private var googleCredential: String? = null
 
+    private val birthdayDateFormatter by lazy {
+        DateTimeFormatter.ofPattern(
+            "dd MMMM yyyy",
+            Locale.getDefault()
+        )
+    }
+
     fun onAction(action: Action) {
         _uiState.update {
             when (action) {
@@ -39,19 +48,29 @@ class RegisterViewModel @Inject internal constructor(
                         TextFieldType.LAST_NAME -> it.copy(lastName = newValue)
                         TextFieldType.GENDER -> it.copy(selectedGender = newValue)
                     }
-                    updatedUiState.copy(isFormValid = validator.isFormValid(updatedUiState))
+                    updatedUiState.copy(
+                        isFormValid = validator.isFormValid(updatedUiState),
+                        isRegisterButtonEnabled = isRegisterButtonEnabled(updatedUiState)
+                    )
                 }
 
                 is Action.DateFieldUpdate -> {
-                    val updatedUiState = it.copy(dateOfBirth = action.newValue)
-                    updatedUiState.copy(isFormValid = validator.isFormValid(updatedUiState))
+                    val updatedUiState = it.copy(
+                        dateOfBirth = action.newValue,
+                        formattedDateOfBirth = birthdayDateFormatter.format(action.newValue),
+                        isDatePickerDialogOpen = false,
+                    )
+                    updatedUiState.copy(
+                        isFormValid = validator.isFormValid(updatedUiState),
+                        isRegisterButtonEnabled = isRegisterButtonEnabled(updatedUiState)
+                    )
                 }
 
                 is Action.DropdownMenuExpandedUpdate -> {
                     it.copy(isDropdownMenuExpanded = action.isExpanded)
                 }
 
-                Action.OnRegisterPressed -> {
+                is Action.OnRegisterPressed -> {
                     onRegisteredPressed()
                 }
 
@@ -60,6 +79,14 @@ class RegisterViewModel @Inject internal constructor(
                         initializeGoogleSignUp()
                     }
                     it.copy(isGoogleSignUp = action.isGoogleSignUp)
+                }
+
+                is Action.TogglePasswordVisibility -> {
+                    it.copy(isPasswordVisible = !it.isPasswordVisible)
+                }
+
+                is Action.SetIsDatePickerOpen -> {
+                    it.copy(isDatePickerDialogOpen = action.isOpen)
                 }
             }
         }
@@ -125,9 +152,11 @@ class RegisterViewModel @Inject internal constructor(
             uiState
         } else {
             uiState.copy(
-                email = uiState.email.copy(error = validator.emailResult(uiState.email.value).errorMessageOrNull()),
+                email = uiState.email.copy(
+                    error = validator.isValidEmail(uiState.email.value).errorMessageOrNull()
+                ),
                 password = uiState.password.copy(
-                    error = validator.passwordResult(uiState.password.value).errorMessageOrNull()
+                    error = validator.isValidPassword(uiState.password.value).errorMessageOrNull()
                 ),
                 firstName = uiState.firstName.copy(
                     error = validator.firstnameResult(uiState.firstName.value).errorMessageOrNull()
@@ -136,11 +165,21 @@ class RegisterViewModel @Inject internal constructor(
                     error = validator.lastnameResult(uiState.lastName.value).errorMessageOrNull()
                 ),
                 selectedGender = uiState.selectedGender.copy(
-                    error = validator.isGenderValid(uiState.selectedGender.value).errorMessageOrNull()
+                    error = validator.isGenderValid(uiState.selectedGender.value)
+                        .errorMessageOrNull()
                 ),
-                dateOfBirthError = validator.birthdayResult(uiState.dateOfBirth).errorMessageOrNull(),
+                dateOfBirthError = validator.birthdayResult(uiState.dateOfBirth)
+                    .errorMessageOrNull(),
                 isFormValid = validator.isFormValid(uiState)
             )
         }
+    }
+
+    private fun isRegisterButtonEnabled(uiState: RegisterUiState): Boolean {
+        return uiState.email.value.isNotEmpty() &&
+            uiState.firstName.value.isNotEmpty() &&
+            uiState.lastName.value.isNotEmpty() &&
+            uiState.selectedGender.value.isNotEmpty() &&
+            uiState.dateOfBirth != null
     }
 }
