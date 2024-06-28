@@ -19,8 +19,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.Action
 import edu.stanford.bdh.engagehf.MainActivityViewModel
 import edu.stanford.bdh.engagehf.NavigationItemEnum
-import edu.stanford.bdh.engagehf.UiState
 import edu.stanford.bdh.engagehf.bluetooth.screen.BluetoothScreen
+import edu.stanford.bdh.engagehf.navigation.data.models.AppUiState
 import edu.stanford.spezi.core.design.component.AppTopAppBar
 import edu.stanford.spezi.modules.education.EducationScreen
 
@@ -37,7 +37,7 @@ fun AppScreen() {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AppScreen(
-    uiState: UiState,
+    uiState: AppUiState,
     onAction: (Action) -> Unit,
 ) {
     Scaffold(
