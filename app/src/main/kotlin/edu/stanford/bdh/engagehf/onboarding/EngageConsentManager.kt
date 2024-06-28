@@ -2,16 +2,13 @@ package edu.stanford.bdh.engagehf.onboarding
 
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.module.onboarding.consent.ConsentManager
-import edu.stanford.spezi.module.onboarding.consent.ConsentUiState
-import edu.stanford.spezi.module.onboarding.consent.PdfCreationService
-import edu.stanford.spezi.module.onboarding.consent.PdfService
 import javax.inject.Inject
 
 class EngageConsentManager @Inject internal constructor(
-    private val pdfService: PdfService,
     private val navigator: Navigator,
-    private val pdfCreationService: PdfCreationService,
+    private val messageNotifier: MessageNotifier,
 ) : ConsentManager {
 
     override suspend fun getMarkdownText(): String {
@@ -23,12 +20,11 @@ class EngageConsentManager @Inject internal constructor(
         """.trimIndent()
     }
 
-    override suspend fun onConsented(uiState: ConsentUiState): Result<Unit> = runCatching {
-        val pdfBytes = pdfCreationService.createPdf(uiState)
-        if (pdfService.uploadPdf(pdfBytes).getOrThrow()) {
-            navigator.navigateTo(AppNavigationEvent.BluetoothScreen)
-        } else {
-            error("Upload went wrong")
-        }
+    override suspend fun onConsented() {
+        navigator.navigateTo(AppNavigationEvent.BluetoothScreen)
+    }
+
+    override suspend fun onConsentFailure(error: Throwable) {
+        messageNotifier.notify(message = "Something went wrong, failed to submit the consent!")
     }
 }

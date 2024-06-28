@@ -1,21 +1,22 @@
 package edu.stanford.bdh.engagehf
 
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
+import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
+import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.module.account.AccountEvents
+import edu.stanford.spezi.module.account.manager.UserSessionManager
+import edu.stanford.spezi.module.account.manager.UserState
 import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
-import edu.stanford.spezi.module.onboarding.consent.PdfService
-import io.mockk.coEvery
-import io.mockk.coVerify
+import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.slot
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -26,80 +27,124 @@ class MainActivityViewModelTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
-    private lateinit var viewModel: MainActivityViewModel
+    private val accountEventsFlow = MutableSharedFlow<AccountEvents.Event>()
     private val accountEvents: AccountEvents = mockk(relaxed = true)
     private val navigator: Navigator = mockk(relaxed = true)
-    private val firebaseAuth: FirebaseAuth = mockk(relaxed = true)
-    private val pdfService: PdfService = mockk(relaxed = true)
-    private val firebaseUser: FirebaseUser = mockk(relaxed = true)
+    private val userStateFlow = MutableSharedFlow<UserState>()
+    private val userSessionManager: UserSessionManager = mockk()
+    private lateinit var viewModel: MainActivityViewModel
 
     @Before
     fun setUp() {
-        every { accountEvents.events } returns MutableSharedFlow()
-        viewModel = MainActivityViewModel(accountEvents, navigator, firebaseAuth, pdfService)
+        every { accountEvents.events } returns accountEventsFlow
+        every { userSessionManager.observeUserState() } returns userStateFlow
+        viewModel = MainActivityViewModel(
+            accountEvents = accountEvents,
+            navigator = navigator,
+            userSessionManager = userSessionManager,
+        )
     }
 
     @Test
-    fun `when user is logged in and pdf is uploaded, should navigate to BluetoothScreen`() =
-        runTestUnconfined {
-            // given
-            coEvery { firebaseAuth.currentUser } returns firebaseUser
-            coEvery { firebaseUser.isAnonymous } returns false
-            coEvery { pdfService.isPdfUploaded() } returns Result.success(true)
-
-            // when
-            getAuthStateListener().onAuthStateChanged(firebaseAuth)
-
-            // then
-            coVerify { navigator.navigateTo(AppNavigationEvent.BluetoothScreen) }
-        }
+    fun `it should start observing on init`() {
+        verify { accountEvents.events }
+        verify { userSessionManager.observeUserState() }
+    }
 
     @Test
-    fun `when user is logged in and pdf is not uploaded, should navigate to ConsentScreen`() =
-        runTestUnconfined {
-            // given
-            coEvery { firebaseAuth.currentUser } returns firebaseUser
-            coEvery { firebaseUser.isAnonymous } returns false
-            coEvery { pdfService.isPdfUploaded() } returns Result.success(false)
-
-            // when
-            getAuthStateListener().onAuthStateChanged(firebaseAuth)
-
-            // then
-            coVerify { navigator.navigateTo(OnboardingNavigationEvent.ConsentScreen) }
-        }
-
-    @Test
-    fun `when user is logged in and pdf is uploaded returns failure, should navigate to ConsentScreen`() =
-        runTestUnconfined {
-            // given
-            coEvery { firebaseAuth.currentUser } returns firebaseUser
-            coEvery { firebaseUser.isAnonymous } returns false
-            coEvery { pdfService.isPdfUploaded() } returns Result.failure(Exception())
-
-            // when
-            getAuthStateListener().onAuthStateChanged(firebaseAuth)
-
-            // then
-            coVerify { navigator.navigateTo(OnboardingNavigationEvent.ConsentScreen) }
-        }
-
-    @Test
-    fun `when no user is logged in, should not navigate`() = runTestUnconfined {
+    fun `it should navigate to bluetooth screen on SignUpSuccess event`() = runTestUnconfined {
         // given
-        coEvery { firebaseAuth.currentUser } returns null
+        val event = AccountEvents.Event.SignUpSuccess
 
         // when
-        getAuthStateListener().onAuthStateChanged(firebaseAuth)
+        accountEventsFlow.emit(event)
 
         // then
-        coVerify(exactly = 0) { navigator.navigateTo(any()) }
+        verify { navigator.navigateTo(event = AppNavigationEvent.BluetoothScreen) }
     }
 
-    private fun getAuthStateListener(): FirebaseAuth.AuthStateListener {
-        val slot = slot<FirebaseAuth.AuthStateListener>()
-        every { firebaseAuth.addAuthStateListener(capture(slot)) } answers { }
-        viewModel = MainActivityViewModel(accountEvents, navigator, firebaseAuth, pdfService)
-        return slot.captured
+    @Test
+    fun `it should navigate to bluetooth screen on SignInSuccess event`() = runTestUnconfined {
+        // given
+        val event = AccountEvents.Event.SignInSuccess
+
+        // when
+        accountEventsFlow.emit(event)
+
+        // then
+        verify { navigator.navigateTo(event = AppNavigationEvent.BluetoothScreen) }
     }
+
+    @Test
+    fun `it should not navigate on other account events`() = runTestUnconfined {
+        // given
+        val event = AccountEvents.Event.SignInFailure
+
+        // when
+        accountEventsFlow.emit(event)
+
+        // then
+        verify { navigator wasNot Called }
+    }
+
+    @Test
+    fun `it should return navigation events`() {
+        // given
+        val events: SharedFlow<NavigationEvent> = mockk()
+        every { navigator.events } returns events
+
+        // when
+        val result = viewModel.getNavigationEvents()
+
+        // then
+        assertThat(result).isEqualTo(events)
+    }
+
+    @Test
+    fun `it should navigate to bluetooth screen for non anonymous user if consented`() =
+        runTestUnconfined {
+            // given
+            val userState = UserState(
+                isAnonymous = false,
+                hasConsented = true,
+            )
+
+            // when
+            userStateFlow.emit(userState)
+
+            // then
+            verify { navigator.navigateTo(event = AppNavigationEvent.BluetoothScreen) }
+        }
+
+    @Test
+    fun `it should navigate to consent screen for non anonymous user if consented`() =
+        runTestUnconfined {
+            // given
+            val userState = UserState(
+                isAnonymous = false,
+                hasConsented = false,
+            )
+
+            // when
+            userStateFlow.emit(userState)
+
+            // then
+            verify { navigator.navigateTo(event = OnboardingNavigationEvent.ConsentScreen) }
+        }
+
+    @Test
+    fun `it should not navigate for anonymous users`() =
+        runTestUnconfined {
+            // given
+            val userState = UserState(
+                isAnonymous = true,
+                hasConsented = false,
+            )
+
+            // when
+            userStateFlow.emit(userState)
+
+            // then
+            verify { navigator wasNot Called }
+        }
 }

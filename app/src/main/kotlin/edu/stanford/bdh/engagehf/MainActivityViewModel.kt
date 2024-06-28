@@ -2,16 +2,16 @@ package edu.stanford.bdh.engagehf
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.module.account.AccountEvents
+import edu.stanford.spezi.module.account.manager.UserSessionManager
 import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
-import edu.stanford.spezi.module.onboarding.consent.PdfService
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,32 +19,16 @@ import javax.inject.Inject
 class MainActivityViewModel @Inject constructor(
     private val accountEvents: AccountEvents,
     private val navigator: Navigator,
-    private val firebaseAuth: FirebaseAuth,
-    private val pdfService: PdfService,
+    private val userSessionManager: UserSessionManager,
 ) : ViewModel() {
     private val logger by speziLogger()
 
-    private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
-        val user = firebaseAuth.currentUser
-        user?.let {
-            if (!it.isAnonymous) {
-                // If the user is not anonymous, we can check if the PDF has been uploaded
-                viewModelScope.launch {
-                    if (pdfService.isPdfUploaded().getOrDefault(false)) {
-                        navigator.navigateTo(AppNavigationEvent.BluetoothScreen)
-                    } else {
-                        // User has to consent to the study before proceeding and upload the PDF
-                        navigator.navigateTo(OnboardingNavigationEvent.ConsentScreen)
-                    }
-                }
-            }
-            // If the user is anonymous, we don't need to check for the PDF and user stays on the start screen
-        }
+    init {
+        startObserving()
     }
 
-    init {
+    private fun startObserving() {
         viewModelScope.launch {
-            firebaseAuth.addAuthStateListener(authStateListener)
             accountEvents.events.collect { event ->
                 when (event) {
                     is AccountEvents.Event.SignUpSuccess, AccountEvents.Event.SignInSuccess -> {
@@ -57,11 +41,19 @@ class MainActivityViewModel @Inject constructor(
                 }
             }
         }
-    }
 
-    override fun onCleared() {
-        super.onCleared()
-        firebaseAuth.removeAuthStateListener(authStateListener)
+        viewModelScope.launch {
+            userSessionManager.observeUserState()
+                .filter { it.isAnonymous.not() }
+                .collect { userState ->
+                    val navigationEvent = if (userState.hasConsented) {
+                        AppNavigationEvent.BluetoothScreen
+                    } else {
+                        OnboardingNavigationEvent.ConsentScreen
+                    }
+                    navigator.navigateTo(event = navigationEvent)
+                }
+        }
     }
 
     fun getNavigationEvents(): Flow<NavigationEvent> = navigator.events

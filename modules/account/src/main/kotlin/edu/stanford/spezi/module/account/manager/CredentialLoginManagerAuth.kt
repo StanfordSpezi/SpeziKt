@@ -1,4 +1,4 @@
-package edu.stanford.spezi.module.account.cred.manager
+package edu.stanford.spezi.module.account.manager
 
 import android.content.Context
 import androidx.credentials.CredentialManager
@@ -13,9 +13,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.logging.speziLogger
 import javax.inject.Inject
 
-class CredentialLoginManagerAuth @Inject constructor(
+internal class CredentialLoginManagerAuth @Inject constructor(
     private val credentialManager: CredentialManager,
-    private val firebaseAuthManager: FirebaseAuthManager,
+    private val authenticationManager: AuthenticationManager,
     @ApplicationContext private val context: Context,
 ) {
     private val logger by speziLogger()
@@ -23,7 +23,7 @@ class CredentialLoginManagerAuth @Inject constructor(
     suspend fun handleGoogleSignIn(): Result<Boolean> {
         val result = getCredential(true)
         return if (result != null) {
-            firebaseAuthManager.signInWithGoogle(result.idToken)
+            authenticationManager.signInWithGoogle(result.idToken)
         } else {
             Result.success(false)
         }
@@ -34,7 +34,7 @@ class CredentialLoginManagerAuth @Inject constructor(
         password: String,
     ): Result<Unit> {
         return runCatching {
-            firebaseAuthManager.signInWithEmailAndPassword(username, password)
+            authenticationManager.signInWithEmailAndPassword(username, password)
         }
     }
 
@@ -80,6 +80,6 @@ class CredentialLoginManagerAuth @Inject constructor(
     }
 
     suspend fun sendForgotPasswordEmail(email: String): Result<Void> {
-        return firebaseAuthManager.sendForgotPasswordEmail(email)
+        return authenticationManager.sendForgotPasswordEmail(email)
     }
 }

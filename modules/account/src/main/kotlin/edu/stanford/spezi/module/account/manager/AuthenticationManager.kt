@@ -1,6 +1,6 @@
 @file:Suppress("LongParameterList")
 
-package edu.stanford.spezi.module.account.cred.manager
+package edu.stanford.spezi.module.account.manager
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -13,18 +13,11 @@ import java.time.LocalDate
 import javax.inject.Inject
 import kotlin.coroutines.resumeWithException
 
-class FirebaseAuthManager @Inject constructor(
+class AuthenticationManager @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
 ) {
     private val logger by speziLogger()
-
-    private suspend fun <T> com.google.android.gms.tasks.Task<T>.await(): T {
-        return suspendCancellableCoroutine { cont ->
-            addOnSuccessListener { result -> cont.resume(result) { } }
-            addOnFailureListener { exception -> cont.resumeWithException(exception) }
-        }
-    }
 
     suspend fun linkUserToGoogleAccount(googleIdToken: String): Boolean {
         return runCatching {
@@ -121,6 +114,13 @@ class FirebaseAuthManager @Inject constructor(
             result.user != null
         }.onFailure {
             logger.e { "Error signing in with google: ${it.message}" }
+        }
+    }
+
+    private suspend fun <T> com.google.android.gms.tasks.Task<T>.await(): T {
+        return suspendCancellableCoroutine { cont ->
+            addOnSuccessListener { result -> cont.resume(result) { } }
+            addOnFailureListener { exception -> cont.resumeWithException(exception) }
         }
     }
 }

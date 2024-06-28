@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.credentials.CredentialManager
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.module.account.manager.AuthenticationManager
+import edu.stanford.spezi.module.account.manager.CredentialRegisterManagerAuth
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Before
@@ -13,14 +15,14 @@ import java.time.LocalDate
 class CredentialRegisterManagerAuthTest {
 
     private lateinit var credentialRegisterManagerAuth: CredentialRegisterManagerAuth
-    private val firebaseAuthManager: FirebaseAuthManager = mockk()
+    private val authenticationManager: AuthenticationManager = mockk()
     private val credentialManager: CredentialManager = mockk()
     private val context: Context = mockk()
 
     @Before
     fun setUp() {
         credentialRegisterManagerAuth = CredentialRegisterManagerAuth(
-            firebaseAuthManager,
+            authenticationManager,
             credentialManager,
             context
         )
@@ -36,9 +38,9 @@ class CredentialRegisterManagerAuthTest {
         val selectedGender = "Male"
         val dateOfBirth = LocalDate.now()
 
-        coEvery { firebaseAuthManager.linkUserToGoogleAccount(idToken) } returns true
+        coEvery { authenticationManager.linkUserToGoogleAccount(idToken) } returns true
         coEvery {
-            firebaseAuthManager.saveUserData(
+            authenticationManager.saveUserData(
                 firstName,
                 lastName,
                 email,
@@ -73,7 +75,7 @@ class CredentialRegisterManagerAuthTest {
             val dateOfBirth = LocalDate.now()
 
             coEvery {
-                firebaseAuthManager.signUpWithEmailAndPassword(
+                authenticationManager.signUpWithEmailAndPassword(
                     email,
                     password,
                     firstName,
