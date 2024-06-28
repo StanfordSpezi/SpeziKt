@@ -26,7 +26,7 @@ class EngageConsentManager @Inject internal constructor(
     override suspend fun onConsented(uiState: ConsentUiState): Result<Unit> = runCatching {
         val pdfBytes = pdfCreationService.createPdf(uiState)
         if (pdfService.uploadPdf(pdfBytes).getOrThrow()) {
-            navigator.navigateTo(AppNavigationEvent.BluetoothScreen)
+            navigator.navigateTo(AppNavigationEvent.AppScreen)
         } else {
             error("Upload went wrong")
         }
