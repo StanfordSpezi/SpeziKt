@@ -13,10 +13,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import dagger.hilt.android.AndroidEntryPoint
-import edu.stanford.bdh.engagehf.bluetooth.screen.BluetoothScreen
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.RegisterParams
 import edu.stanford.bdh.engagehf.navigation.Routes
+import edu.stanford.bdh.engagehf.navigation.VideoParams
+import edu.stanford.bdh.engagehf.navigation.screens.AppScreen
 import edu.stanford.bdh.engagehf.navigation.serializableType
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.design.theme.SpeziTheme
@@ -28,6 +29,9 @@ import edu.stanford.spezi.module.onboarding.consent.ConsentScreen
 import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeScreen
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingScreen
 import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreen
+import edu.stanford.spezi.modules.education.EducationNavigationEvent
+import edu.stanford.spezi.modules.education.EducationNavigationEvents
+import edu.stanford.spezi.modules.education.video.VideoScreen
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -82,8 +86,17 @@ class MainActivity : ComponentActivity() {
             LoginScreen(isAlreadyRegistered = args.isAlreadyRegistered)
         }
 
-        composable<Routes.BluetoothScreen> {
-            BluetoothScreen()
+        composable<Routes.VideoDetail>(
+            typeMap = mapOf(
+                typeOf<VideoParams>() to serializableType<VideoParams>()
+            )
+        ) {
+            val args = it.toRoute<Routes.VideoDetail>()
+            VideoScreen(videoId = args.videoParams.youtubeId, videoTitle = args.videoParams.title)
+        }
+
+        composable<Routes.AppScreen> {
+            AppScreen()
         }
 
         composable<Routes.InvitationCodeScreen> {
@@ -125,7 +138,6 @@ class MainActivity : ComponentActivity() {
                             )
                         )
 
-                        is AppNavigationEvent.BluetoothScreen -> navHostController.navigate(Routes.BluetoothScreen)
                         is OnboardingNavigationEvent.InvitationCodeScreen -> navHostController.navigate(
                             Routes.InvitationCodeScreen
                         )
@@ -140,6 +152,17 @@ class MainActivity : ComponentActivity() {
 
                         is OnboardingNavigationEvent.ConsentScreen -> navHostController.navigate(
                             Routes.ConsentScreen
+                        )
+
+                        is AppNavigationEvent.AppScreen -> navHostController.navigate(Routes.AppScreen)
+                        is EducationNavigationEvents.PopUp -> navHostController.popBackStack()
+
+                        is EducationNavigationEvent.VideoSectionClicked -> navHostController.navigate(
+                            Routes.VideoDetail(
+                                videoParams = VideoParams(
+                                    youtubeId = event.youtubeId, title = event.title
+                                )
+                            )
                         )
                     }
                 }
