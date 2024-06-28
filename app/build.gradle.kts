@@ -42,6 +42,7 @@ dependencies {
     implementation(project(":core:coroutines"))
     implementation(project(":core:navigation"))
     implementation(project(":modules:account"))
+    implementation(project(":modules:education"))
     implementation(project(":modules:onboarding"))
 
     implementation(libs.androidx.core.ktx)
