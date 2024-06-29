@@ -4,7 +4,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import edu.stanford.spezi.modules.education.EducationRepository
+import edu.stanford.spezi.modules.education.videos.data.repository.EducationRepository
 
 @Module
 @InstallIn(SingletonComponent::class)

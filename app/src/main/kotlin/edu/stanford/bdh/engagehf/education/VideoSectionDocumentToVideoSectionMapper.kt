@@ -2,8 +2,8 @@ package edu.stanford.bdh.engagehf.education
 
 import com.google.firebase.firestore.DocumentSnapshot
 import edu.stanford.spezi.module.onboarding.invitation.await
-import edu.stanford.spezi.modules.education.Video
-import edu.stanford.spezi.modules.education.VideoSection
+import edu.stanford.spezi.modules.education.videos.Video
+import edu.stanford.spezi.modules.education.videos.VideoSection
 import javax.inject.Inject
 
 class VideoSectionDocumentToVideoSectionMapper @Inject constructor() {

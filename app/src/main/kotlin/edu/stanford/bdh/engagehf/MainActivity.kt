@@ -30,7 +30,6 @@ import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeScreen
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingScreen
 import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreen
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
-import edu.stanford.spezi.modules.education.EducationNavigationEvents
 import edu.stanford.spezi.modules.education.video.VideoScreen
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -155,7 +154,7 @@ class MainActivity : ComponentActivity() {
                         )
 
                         is AppNavigationEvent.AppScreen -> navHostController.navigate(Routes.AppScreen)
-                        is EducationNavigationEvents.PopUp -> navHostController.popBackStack()
+                        is EducationNavigationEvent.PopUp -> navHostController.popBackStack()
 
                         is EducationNavigationEvent.VideoSectionClicked -> navHostController.navigate(
                             Routes.VideoDetail(

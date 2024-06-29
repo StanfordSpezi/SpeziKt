@@ -22,7 +22,7 @@ import edu.stanford.bdh.engagehf.NavigationItemEnum
 import edu.stanford.bdh.engagehf.bluetooth.screen.BluetoothScreen
 import edu.stanford.bdh.engagehf.navigation.data.models.AppUiState
 import edu.stanford.spezi.core.design.component.AppTopAppBar
-import edu.stanford.spezi.modules.education.EducationScreen
+import edu.stanford.spezi.modules.education.videos.EducationScreen
 
 @Composable
 fun AppScreen() {
