@@ -17,6 +17,7 @@ sealed interface BluetoothUiState {
 data class MeasurementDialogUiState(
     val measurement: Measurement? = null,
     val isVisible: Boolean = false,
+    val isProcessing: Boolean = false,
 )
 
 sealed interface Action {
