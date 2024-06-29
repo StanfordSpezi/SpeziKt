@@ -14,7 +14,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
@@ -22,6 +21,8 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.Abs
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
+import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,7 +40,12 @@ fun VideoScreen(videoId: String?, videoTitle: String) {
                     titleContentColor = onPrimary,
                     actionIconContentColor = onPrimary
                 ),
-                title = { Text(text = videoTitle) },
+                title = {
+                    Text(
+                        modifier = Modifier.testIdentifier(VideoScreenTestIdentifier.TITLE),
+                        text = videoTitle
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = {
                         viewModel.onAction(Action.BackPressed)
@@ -64,9 +70,16 @@ fun VideoScreen(videoId: String?, videoTitle: String) {
                 }, update = {
                     // Any updates to the player view if needed
                 },
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier
+                        .padding(Spacings.medium)
+                        .testIdentifier(VideoScreenTestIdentifier.VIDEO_PLAYER)
                 )
             }
         }
     )
+}
+
+enum class VideoScreenTestIdentifier {
+    TITLE,
+    VIDEO_PLAYER
 }

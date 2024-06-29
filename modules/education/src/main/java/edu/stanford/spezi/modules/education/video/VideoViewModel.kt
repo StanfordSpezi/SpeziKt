@@ -7,7 +7,7 @@ import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import javax.inject.Inject
 
 @HiltViewModel
-class VideoViewModel @Inject internal constructor(
+internal class VideoViewModel @Inject constructor(
     private val navigator: Navigator,
 ) : ViewModel() {
 
