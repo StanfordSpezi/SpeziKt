@@ -3,7 +3,9 @@
 package edu.stanford.bdh.engagehf.bluetooth.screen
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,6 +17,7 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
 import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import edu.stanford.spezi.core.design.component.Button
+import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 
 @Composable
@@ -57,9 +60,16 @@ fun MeasurementDialog(
                         uiState.measurement?.let {
                             onAction(Action.ConfirmMeasurement(it))
                         }
-                    }
+                    },
+                    enabled = uiState.isProcessing.not()
                 ) {
-                    Text("Confirm")
+                    if (uiState.isProcessing) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(Sizes.Icon.small)
+                        )
+                    } else {
+                        Text("Confirm")
+                    }
                 }
             },
             dismissButton = {
@@ -90,7 +100,8 @@ private fun MeasurementDialogPreview(@PreviewParameter(MeasurementPreviewProvide
     MeasurementDialog(
         uiState = MeasurementDialogUiState(
             measurement = measurement,
-            isVisible = true
+            isVisible = true,
+            isProcessing = true
         ),
         onAction = { }
     )
