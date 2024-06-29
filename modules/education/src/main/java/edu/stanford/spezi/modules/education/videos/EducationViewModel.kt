@@ -14,7 +14,7 @@ import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class EducationViewModel @Inject internal constructor(
+internal class EducationViewModel @Inject constructor(
     private val educationRepository: EducationRepository,
     private val navigator: Navigator,
 ) : ViewModel() {
