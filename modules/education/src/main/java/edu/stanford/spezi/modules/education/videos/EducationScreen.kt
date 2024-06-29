@@ -37,6 +37,7 @@ import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.modules.education.videos.component.ExpandableSection
 
 @Composable
@@ -68,7 +69,13 @@ internal fun VideoItem(video: Video, onVideoClick: () -> Unit) {
             val painter = painter
             if (state is AsyncImagePainter.State.Loading) {
                 Box(Modifier.matchParentSize()) {
-                    CircularProgressIndicator(Modifier.align(Alignment.Center))
+                    CircularProgressIndicator(
+                        Modifier
+                            .align(Alignment.Center)
+                            .testIdentifier(
+                                EducationScreenTestIdentifier.PROGRESS_BAR
+                            )
+                    )
                 }
             }
 
@@ -137,9 +144,13 @@ fun EducationScreen(
                     )
                     VerticalSpacer()
                     Button(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testIdentifier(EducationScreenTestIdentifier.RETRY_BUTTON),
                         onClick = { onAction(Action.Retry) }) {
-                        Text(text = "Retry")
+                        Text(
+                            text = "Retry"
+                        )
                     }
                 }
             }
@@ -157,6 +168,7 @@ fun EducationScreen(
                 LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
                     itemsIndexed(uiState.videoSections) { _, videoSection ->
                         ExpandableSection(
+                            modifier = Modifier.testIdentifier(EducationScreenTestIdentifier.VIDEO_SECTION),
                             title = videoSection.title,
                             description = videoSection.description,
                             videos = videoSection.videos,
@@ -243,4 +255,10 @@ private fun getVideoSection(): VideoSection {
             Video("Video Title 3", "Video Description 3", youtubeId = "W3R_ETKMj0E")
         )
     )
+}
+
+enum class EducationScreenTestIdentifier {
+    RETRY_BUTTON,
+    VIDEO_SECTION,
+    PROGRESS_BAR
 }
