@@ -71,6 +71,7 @@ fun SectionHeader(
 
 @Composable
 fun ExpandableSection(
+    modifier: Modifier = Modifier,
     title: String?,
     description: String?,
     videos: List<Video> = emptyList(),
@@ -86,7 +87,7 @@ fun ExpandableSection(
         colors = CardDefaults.cardColors(
             containerColor = lightenColor(Colors.surface),
         ),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(Spacings.small)
             .clickable { expanded = !expanded },
