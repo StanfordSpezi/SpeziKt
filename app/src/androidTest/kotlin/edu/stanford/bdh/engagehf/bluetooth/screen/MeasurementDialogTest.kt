@@ -4,6 +4,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
+import edu.stanford.bdh.engagehf.simulator.MeasurementDialogSimulator
 import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import edu.stanford.spezi.core.design.component.ComposeContentActivity
 import org.junit.Before
@@ -30,11 +31,33 @@ class MeasurementDialogTest {
     }
 
     @Test
-    fun `it should display the measurement data correctly`() {
+    fun `it should display the weight measurement data correctly`() {
+        val uiState = MeasurementDialogUiStateFactory.createDefaultWeightMeasurementUiState()
         measurementDialog {
             assertDisplayed()
             assertTitle("New Measurement")
-            assertWeight("Weight: 70.0")
+            assertLabel("Weight:")
+            assertValue(uiState.formattedWeight)
+        }
+    }
+
+    @Test
+    fun `it should display the blood pressure measurement data correctly`() {
+        composeTestRule.activity.setScreen {
+            MeasurementDialog(
+                uiState = MeasurementDialogUiStateFactory.createDefaultBloodPressureMeasurementUiState(),
+                onAction = {}
+            )
+        }
+        measurementDialog {
+            assertDisplayed()
+            assertTitle("New Measurement")
+            assertLabel("Systolic:")
+            assertValue("120.0 mmHg")
+            assertLabel("Diastolic:")
+            assertValue("80.0 mmHg")
+            assertLabel("Pulse rate:")
+            assertValue("60.0 bpm")
         }
     }
 
@@ -48,6 +71,40 @@ class MeasurementDialogTest {
                     userId = 1,
                     bmi = 25.0,
                     height = 190.0
+                ),
+                formattedWeight = "70.0 kg"
+            )
+        }
+
+        fun createDefaultBloodPressureMeasurementUiState(): MeasurementDialogUiState {
+            return MeasurementDialogUiState(
+                isVisible = true,
+                measurement = Measurement.BloodPressure(
+                    flags = Measurement.BloodPressure.Flags(
+                        bloodPressureUnitsFlag = false,
+                        timeStampFlag = true,
+                        pulseRateFlag = true,
+                        userIdFlag = true,
+                        measurementStatusFlag = true
+                    ),
+                    systolic = 120f,
+                    diastolic = 80f,
+                    meanArterialPressure = 90f,
+                    timestampYear = 2022,
+                    timestampMonth = 12,
+                    timestampDay = 31,
+                    timeStampHour = 23,
+                    timeStampMinute = 59,
+                    timeStampSecond = 59,
+                    pulseRate = 60f,
+                    userId = 1,
+                    measurementStatus = Measurement.BloodPressure.Status(
+                        bodyMovementDetectionFlag = false,
+                        cuffFitDetectionFlag = false,
+                        irregularPulseDetectionFlag = false,
+                        pulseRateRangeDetectionFlags = 0,
+                        measurementPositionDetectionFlag = false
+                    )
                 )
             )
         }
