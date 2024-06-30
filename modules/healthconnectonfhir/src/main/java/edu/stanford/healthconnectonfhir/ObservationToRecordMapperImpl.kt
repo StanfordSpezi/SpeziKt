@@ -50,7 +50,6 @@ class ObservationToRecordMapperImpl @Inject constructor() : ObservationToRecordM
         val zoneOffset =
             ZoneOffset.ofTotalSeconds(observation.effectiveDateTimeType.value.timezoneOffset)
 
-
         val systolic =
             observation.component.first { it.code.codingFirstRep.code == Loinc.BloodPressure.COMPONENT.SYSTOLIC }
                 .valueQuantity.value.toDouble()
