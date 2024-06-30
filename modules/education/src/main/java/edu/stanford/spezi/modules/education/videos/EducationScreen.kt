@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.CircularProgressIndicator
@@ -92,14 +93,24 @@ internal fun VideoItem(video: Video, onVideoClick: () -> Unit) {
                         painter = painter,
                         contentDescription = "Video thumbnail",
                     )
-                    Icon(
-                        imageVector = Icons.Default.PlayArrow,
-                        contentDescription = "Play button",
+                    Box(
                         modifier = Modifier
                             .align(Alignment.Center)
-                            .size(Sizes.Icon.medium),
-                        tint = Colors.primary
-                    )
+                            .background(
+                                color = Colors.primary,
+                                shape = CircleShape
+                            )
+                            .padding(Spacings.medium)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.PlayArrow,
+                            contentDescription = "Play button",
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .size(Sizes.Icon.medium),
+                            tint = Colors.onPrimary
+                        )
+                    }
                 }
             }
         }
