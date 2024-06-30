@@ -24,6 +24,7 @@ firebaseStorageKtx = "21.0.0"
 foundation = "1.6.7"
 googleGmsGoogleServices = "4.4.2"
 googleid = "1.1.0"
+gson = "2.11.0"
 hapiFhirVersion = "5.7.9"
 healthConnectClient = "1.1.0-alpha07"
 hiltNavigation = "1.2.0"
@@ -87,6 +88,7 @@ firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-funct
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 hapi-fhir-structures-r4 = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-r4", version.ref = "hapiFhirVersion"}
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltVersion" }
 hilt-core = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltVersion" }
