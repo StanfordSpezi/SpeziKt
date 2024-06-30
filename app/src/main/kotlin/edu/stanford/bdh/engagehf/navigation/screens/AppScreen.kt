@@ -1,6 +1,5 @@
 package edu.stanford.bdh.engagehf.navigation.screens
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
@@ -34,7 +33,6 @@ fun AppScreen() {
     )
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AppScreen(
     uiState: AppUiState,
