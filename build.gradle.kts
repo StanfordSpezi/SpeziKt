@@ -119,9 +119,14 @@ fun Project.setupJacoco() {
             html.required.set(true)
             xml.required.set(true)
         }
-
         sourceDirectories.setFrom(files("$projectDir/src/main"))
-        executionData.setFrom(files("$buildDir/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"))
+
+        executionData.setFrom(
+            files("$buildDir/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
+        )
+        doLast {
+            println("Jacoco report generated in: ${reports.html.outputLocation.get()}")
+        }
     }
 
     tasks.withType<Test>().configureEach {
