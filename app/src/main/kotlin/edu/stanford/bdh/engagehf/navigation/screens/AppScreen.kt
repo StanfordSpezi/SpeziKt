@@ -96,5 +96,5 @@ fun AppScreen(
 }
 
 enum class AppScreenTestIdentifier {
-    ROOT
+    ROOT,
 }
