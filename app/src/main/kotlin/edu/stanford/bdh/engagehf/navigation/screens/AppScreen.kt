@@ -21,6 +21,7 @@ import edu.stanford.bdh.engagehf.NavigationItemEnum
 import edu.stanford.bdh.engagehf.bluetooth.screen.BluetoothScreen
 import edu.stanford.bdh.engagehf.navigation.data.models.AppUiState
 import edu.stanford.spezi.core.design.component.AppTopAppBar
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.modules.education.videos.EducationScreen
 
 @Composable
@@ -39,6 +40,7 @@ fun AppScreen(
     onAction: (Action) -> Unit,
 ) {
     Scaffold(
+        modifier = Modifier.testIdentifier(AppScreenTestIdentifier.ROOT),
         topBar = {
             AppTopAppBar(title = uiState.navigationItems[uiState.selectedIndex].label)
         },
@@ -91,4 +93,8 @@ fun AppScreen(
             }
         }
     }
+}
+
+enum class AppScreenTestIdentifier {
+    ROOT
 }
