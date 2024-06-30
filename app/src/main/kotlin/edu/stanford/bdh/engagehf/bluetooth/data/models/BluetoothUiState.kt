@@ -18,6 +18,7 @@ data class MeasurementDialogUiState(
     val measurement: Measurement? = null,
     val isVisible: Boolean = false,
     val isProcessing: Boolean = false,
+    val formattedWeight: String = "",
 )
 
 sealed interface Action {
