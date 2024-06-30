@@ -2,8 +2,13 @@
 
 package edu.stanford.bdh.engagehf.bluetooth.screen
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
@@ -13,11 +18,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.dp
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
 import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import edu.stanford.spezi.core.design.component.Button
 import edu.stanford.spezi.core.design.theme.Sizes
+import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 
 @Composable
@@ -27,29 +35,35 @@ fun MeasurementDialog(
 ) {
     if (uiState.isVisible) {
         AlertDialog(
-            modifier = Modifier.testIdentifier(MeasurementDialogTestIdentifier.ROOT),
+            modifier = Modifier
+                .testIdentifier(MeasurementDialogTestIdentifier.ROOT)
+                .padding(Spacings.medium),
             onDismissRequest = {
                 onAction(Action.DismissDialog)
             },
             title = {
                 Text(
                     text = "New Measurement",
+                    style = TextStyles.titleMedium,
                     modifier = Modifier.testIdentifier(MeasurementDialogTestIdentifier.TITLE)
                 )
             },
             text = {
-                Column {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(Spacings.small),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     uiState.measurement?.let {
                         if (it is Measurement.Weight) {
-                            Text(
-                                text = "Weight: ${it.weight}",
-                                modifier = Modifier.testIdentifier(MeasurementDialogTestIdentifier.WEIGHT)
+                            MeasurementRow(
+                                label = "Weight:",
+                                value = uiState.formattedWeight,
                             )
                         }
                         if (it is Measurement.BloodPressure) {
-                            Text(text = "Systolic: ${it.systolic}")
-                            Text(text = "Diastolic: ${it.diastolic}")
-                            Text(text = "Pulse rate: ${it.pulseRate}")
+                            MeasurementRow(label = "Systolic:", value = "${it.systolic} mmHg")
+                            MeasurementRow(label = "Diastolic:", value = "${it.diastolic} mmHg")
+                            MeasurementRow(label = "Pulse rate:", value = "${it.pulseRate} bpm")
                         }
                     }
                 }
@@ -85,10 +99,31 @@ fun MeasurementDialog(
     }
 }
 
+@Composable
+fun MeasurementRow(modifier: Modifier = Modifier, label: String, value: String) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(Spacings.small)
+    ) {
+        Text(
+            text = label,
+            style = TextStyles.bodyMedium,
+            modifier = Modifier
+                .width(80.dp)
+                .testIdentifier(MeasurementDialogTestIdentifier.MEASUREMENT_LABEL)
+        )
+        Text(
+            text = value,
+            style = TextStyles.bodyMedium,
+            modifier = Modifier.testIdentifier(MeasurementDialogTestIdentifier.MEASUREMENT_VALUE)
+        )
+    }
+}
+
 private class MeasurementPreviewProvider : PreviewParameterProvider<Measurement> {
     override val values: Sequence<Measurement> = sequenceOf(
         MeasurementFactory.createDefaultWeight(),
-        MeasurementFactory.createDefaultBloodPressure()
+        MeasurementFactory.createDefaultBloodPressure(),
     )
 }
 
@@ -153,5 +188,6 @@ private object MeasurementFactory {
 enum class MeasurementDialogTestIdentifier {
     ROOT,
     TITLE,
-    WEIGHT,
+    MEASUREMENT_LABEL,
+    MEASUREMENT_VALUE,
 }
