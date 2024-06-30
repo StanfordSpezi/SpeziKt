@@ -53,7 +53,7 @@ sealed interface Measurement {
      * Represents a weight measurement.
      */
     data class Weight(
-        val weight: Double?,
+        val weight: Double,
         val zonedDateTime: ZonedDateTime?,
         val userId: Int?,
         val bmi: Double?,

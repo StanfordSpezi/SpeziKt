@@ -4,6 +4,7 @@ import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,8 +21,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.BluetoothViewModel
+import edu.stanford.bdh.engagehf.bluetooth.component.VitalDisplay
+import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.DeviceUiModel
+import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
+import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayUiState
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
@@ -32,12 +37,23 @@ import kotlinx.coroutines.flow.Flow
 fun BluetoothScreen() {
     val viewModel = hiltViewModel<BluetoothViewModel>()
     val state by viewModel.uiState.collectAsState(initial = BluetoothUiState.Idle)
+    val stateDialog by viewModel.dialogUiState.collectAsState()
+    val stateVitalDisplay by viewModel.vitalDisplayUiState.collectAsState()
     BluetoothEvents(events = viewModel.events)
-    BluetoothScreen(uiState = state)
+    BluetoothScreen(
+        uiState = state,
+        uiStateDialog = stateDialog, uiVitalDisplayUiState = stateVitalDisplay,
+        onAction = viewModel::onAction
+    )
 }
 
 @Composable
-private fun BluetoothScreen(uiState: BluetoothUiState) {
+private fun BluetoothScreen(
+    uiState: BluetoothUiState,
+    uiStateDialog: MeasurementDialogUiState,
+    uiVitalDisplayUiState: VitalDisplayUiState,
+    onAction: (Action) -> Unit,
+) {
     Column(
         modifier = Modifier
             .testIdentifier(BluetoothScreenTestIdentifier.ROOT)
@@ -47,6 +63,25 @@ private fun BluetoothScreen(uiState: BluetoothUiState) {
         Text(text = "Hello ENGAGE!", style = TextStyles.headlineLarge)
         AdditionalInfo(uiState = uiState)
         Devices(uiState as? BluetoothUiState.Ready)
+        MeasurementDialog(
+            uiState = uiStateDialog,
+            onAction = onAction,
+        )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(Spacings.medium),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            VitalDisplay(
+                modifier = Modifier.weight(1f), vitalDisplayUiState = uiVitalDisplayUiState.weight
+            )
+            VitalDisplay(
+                modifier = Modifier.weight(1f),
+                vitalDisplayUiState = uiVitalDisplayUiState.heartRate
+            )
+        }
+        VitalDisplay(
+            vitalDisplayUiState = uiVitalDisplayUiState.bloodPressure
+        )
     }
 }
 
@@ -97,6 +132,7 @@ private fun BluetoothEvents(events: Flow<BluetoothViewModel.Event>) {
                         1
                     )
                 }
+
                 is BluetoothViewModel.Event.EnableBluetooth -> {
                     Toast.makeText(activity, "Bluetooth is not enabled", Toast.LENGTH_LONG).show()
                 }
