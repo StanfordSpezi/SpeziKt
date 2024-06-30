@@ -9,9 +9,14 @@
 default_platform(:android)
 
 platform :android do
-  desc "Runs all the tests"
+  desc "Runs all unit tests"
   lane :test do
     gradle(task: "test")
+  end
+
+  desc "Runs all UI tests"
+  lane :connectedCheck do
+    gradle(task: "connectedCheck")
   end
 
   desc "Deploy a new version to the Google Play (Internal)"

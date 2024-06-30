@@ -12,6 +12,7 @@ import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceType
 import edu.stanford.spezi.core.bluetooth.data.model.SupportedServices
 import edu.stanford.spezi.core.testing.SpeziTestScope
 import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.core.testing.verifyNever
 import io.mockk.Called
 import io.mockk.Runs
 import io.mockk.every
@@ -87,6 +88,19 @@ class BLEDeviceScannerTest {
     }
 
     @Test
+    fun `it should not start scanning if le scanner is not available`() {
+        // given
+        every { bluetoothAdapter.bluetoothLeScanner } returns null
+
+        // when
+        bleDeviceScanner.startScanning()
+
+        // then
+        assertThat(bleDeviceScanner.isScanning).isFalse()
+        verifyNever { bluetoothLeScanner.startScan(any()) }
+    }
+
+    @Test
     fun `it should start scanning only once if already scanning`() {
         // given
         bleDeviceScanner.startScanning()
@@ -126,6 +140,22 @@ class BLEDeviceScannerTest {
         // then
         assertThat(startedScanning).isTrue()
         verify { bluetoothLeScanner.stopScan(callback) }
+        assertThat(bleDeviceScanner.isScanning).isFalse()
+    }
+
+    @Test
+    fun `it should safely stop scanning`() {
+        // given
+        val callback = getCallback()
+        val startedScanning = bleDeviceScanner.isScanning
+        every { bluetoothAdapter.bluetoothLeScanner } returns null
+
+        // when
+        bleDeviceScanner.stopScanning()
+
+        // then
+        assertThat(startedScanning).isTrue()
+        verifyNever { bluetoothLeScanner.stopScan(callback) }
         assertThat(bleDeviceScanner.isScanning).isFalse()
     }
 

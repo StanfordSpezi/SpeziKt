@@ -35,7 +35,7 @@ class EncryptedFileKeyValueStorageTest {
         fileStorage.saveFile(fileName, data)
 
         // Then
-        val readData = fileStorage.readFile(fileName)
+        val readData = fileStorage.readFile(fileName).getOrNull()
         assertThat(readData).isEqualTo(data)
     }
 
@@ -45,7 +45,7 @@ class EncryptedFileKeyValueStorageTest {
         val fileName = "nonExistentFile"
 
         // When
-        val readData = fileStorage.readFile(fileName)
+        val readData = fileStorage.readFile(fileName).getOrNull()
 
         // Then
         assertThat(readData).isNull()
@@ -62,7 +62,7 @@ class EncryptedFileKeyValueStorageTest {
         fileStorage.saveFile(fileName, newData)
 
         // Then
-        val readData = fileStorage.readFile(fileName)
+        val readData = fileStorage.readFile(fileName).getOrNull()
         assertThat(readData).isEqualTo(newData)
     }
 
@@ -76,7 +76,7 @@ class EncryptedFileKeyValueStorageTest {
         fileStorage.deleteFile(fileName)
 
         // Then
-        val readData = fileStorage.readFile(fileName)
+        val readData = fileStorage.readFile(fileName).getOrNull()
         assertThat(readData).isNull()
     }
 }
