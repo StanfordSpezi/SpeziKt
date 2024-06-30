@@ -5,7 +5,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.testing.runTestUnconfined
-import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -24,7 +23,7 @@ class LocalKeyValueStorageTest {
         localStorage.saveData(key, data)
 
         // Then
-        val readData = runBlocking { localStorage.readDataBlocking(key) }
+        val readData = localStorage.readDataBlocking(key)
         assertThat(readData).isEqualTo(data)
     }
 
