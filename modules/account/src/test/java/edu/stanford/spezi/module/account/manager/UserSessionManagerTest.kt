@@ -82,7 +82,7 @@ class UserSessionManagerTest {
         }
 
     @Test
-    fun `it should reflect non anonymous user without uid state correctly`() =
+    fun `it should reflect registered user without uid state correctly`() =
         runTestUnconfined {
             // given
             val firebaseUser: FirebaseUser = mockk {
@@ -101,7 +101,7 @@ class UserSessionManagerTest {
         }
 
     @Test
-    fun `it should reflect non anonymous user consented state correctly`() =
+    fun `it should reflect registered user consented state correctly`() =
         runTestUnconfined {
             // given
             val uid = "uid"
