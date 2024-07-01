@@ -271,5 +271,5 @@ private fun getVideoSection(): VideoSection {
 enum class EducationScreenTestIdentifier {
     RETRY_BUTTON,
     VIDEO_SECTION,
-    PROGRESS_BAR
+    PROGRESS_BAR,
 }
