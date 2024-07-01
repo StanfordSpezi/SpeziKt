@@ -7,7 +7,7 @@ import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.AccountNavigationEvent
-import edu.stanford.spezi.module.account.cred.manager.CredentialLoginManagerAuth
+import edu.stanford.spezi.module.account.manager.CredentialLoginManagerAuth
 import edu.stanford.spezi.module.account.register.FieldState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

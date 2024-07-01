@@ -1,4 +1,4 @@
-package edu.stanford.spezi.module.onboarding.invitation
+package edu.stanford.spezi.module.account.manager
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.functions.FirebaseFunctions
