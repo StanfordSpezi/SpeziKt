@@ -143,7 +143,8 @@ private class OnboardingUiStateProvider : PreviewParameterProvider<OnboardingUiS
                 ),
                 Area(
                     title = "Area 3 title",
-                    description = "The colors on the screen are from the Spezi theme and if the user has dark mode or dynamic colors enabled, the colors will change accordingly.",
+                    description = "The colors on the screen are from the Spezi theme and if " +
+                        "the user has dark mode or dynamic colors enabled, the colors will change accordingly.",
                     iconId = edu.stanford.spezi.core.design.R.drawable.ic_vital_signs
                 ),
             ),
@@ -164,7 +165,6 @@ private fun OnboardingScreenPreview(
         )
     }
 }
-
 
 enum class OnboardingScreenTestIdentifier {
     ROOT,
