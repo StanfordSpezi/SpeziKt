@@ -8,6 +8,8 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageMetadata
 import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.StorageTask
+import com.google.firebase.storage.UploadTask
 import edu.stanford.spezi.core.testing.SpeziTestScope
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import io.mockk.Runs
@@ -36,7 +38,7 @@ class UserSessionManagerTest {
     }
 
     @Test
-    fun `it should have no user state on init if no listener callback is received`() {
+    fun `it should have not initialized user state on init if no listener callback is received`() {
         // given
         createUserSessionManager()
 
@@ -44,11 +46,11 @@ class UserSessionManagerTest {
         val state = userSessionManager.userState.value
 
         // then
-        assertThat(state).isNull()
+        assertThat(state).isEqualTo(UserState.NotInitialized)
     }
 
     @Test
-    fun `it should reflect not update user state when invoked with null user callback`() =
+    fun `it should reflect not updated user state when invoked with null user callback`() =
         runTestUnconfined {
             // given
             every { firebaseAuth.currentUser } returns null
@@ -58,7 +60,7 @@ class UserSessionManagerTest {
             authStateListener.onAuthStateChanged(firebaseAuth)
 
             // then
-            assertThat(userSessionManager.userState.value).isNull()
+            assertThat(userSessionManager.userState.value).isEqualTo(UserState.NotInitialized)
         }
 
     @Test
@@ -70,7 +72,7 @@ class UserSessionManagerTest {
             }
             every { firebaseAuth.currentUser } returns firebaseUser
             createUserSessionManager()
-            val expectedUserState = UserState(isAnonymous = true, hasConsented = false)
+            val expectedUserState = UserState.Anonymous
 
             // when
             authStateListener.onAuthStateChanged(firebaseAuth)
@@ -89,7 +91,7 @@ class UserSessionManagerTest {
             every { firebaseAuth.currentUser } returns firebaseUser
             every { firebaseAuth.uid } returns null
             createUserSessionManager()
-            val expectedUserState = UserState(isAnonymous = false, hasConsented = false)
+            val expectedUserState = UserState.Registered(hasConsented = false)
 
             // when
             authStateListener.onAuthStateChanged(firebaseAuth)
@@ -119,7 +121,7 @@ class UserSessionManagerTest {
             every { firebaseAuth.uid } returns uid
             every { firebaseStorage.getReference(location) } returns storageReference
             createUserSessionManager()
-            val expectedUserState = UserState(isAnonymous = false, hasConsented = true)
+            val expectedUserState = UserState.Registered(hasConsented = true)
 
             // when
             authStateListener.onAuthStateChanged(firebaseAuth)
@@ -127,6 +129,69 @@ class UserSessionManagerTest {
             // then
             assertThat(userSessionManager.userState.value).isEqualTo(expectedUserState)
         }
+
+    @Test
+    fun `it should not upload consent pdf if current user is not available`() = runTestUnconfined {
+        // given
+        every { firebaseAuth.currentUser } returns null
+        createUserSessionManager()
+
+        // when
+        val result = userSessionManager.uploadConsentPdf(byteArrayOf())
+
+        // then
+        assertThat(result.isFailure).isTrue()
+    }
+
+    @Test
+    fun `it should handle successful upload of consent pdf correctly`() = runTestUnconfined {
+        // given
+        setupPDFUpload(successful = true)
+        createUserSessionManager()
+
+        // when
+        val result = userSessionManager.uploadConsentPdf(byteArrayOf())
+
+        // then
+        assertThat(result.isSuccess).isTrue()
+        assertThat(userSessionManager.userState.value).isEqualTo(UserState.Registered(true))
+    }
+
+    @Test
+    fun `it should handle non successful upload consent pdf correctly`() = runTestUnconfined {
+        // given
+        setupPDFUpload(successful = false)
+        createUserSessionManager()
+
+        // when
+        val result = userSessionManager.uploadConsentPdf(byteArrayOf())
+
+        // then
+        assertThat(result.isFailure).isTrue()
+        assertThat(userSessionManager.userState.value).isEqualTo(UserState.NotInitialized)
+    }
+
+    private fun setupPDFUpload(successful: Boolean) {
+        val uid = "uid"
+        val location = "users/$uid/signature.pdf"
+        val firebaseUser: FirebaseUser = mockk()
+        every { firebaseUser.uid } returns uid
+        every { firebaseAuth.currentUser } returns firebaseUser
+
+        val taskResult: UploadTask.TaskSnapshot = mockk()
+        val storageTask: StorageTask<UploadTask.TaskSnapshot> = mockk()
+        every { storageTask.isSuccessful } returns successful
+        val uploadTask: UploadTask = mockk {
+            every { isComplete } returns true
+            every { isCanceled } returns false
+            every { exception } returns null
+            every { result } returns taskResult
+            every { result.task } returns storageTask
+        }
+        val storageReference: StorageReference = mockk()
+        every { storageReference.putStream(any()) } returns uploadTask
+        every { firebaseStorage.getReference(location) } returns storageReference
+    }
 
     private fun createUserSessionManager() {
         val slot = slot<AuthStateListener>()

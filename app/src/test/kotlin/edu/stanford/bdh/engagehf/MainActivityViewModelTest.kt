@@ -32,7 +32,7 @@ class MainActivityViewModelTest {
     private val accountEventsFlow = MutableSharedFlow<AccountEvents.Event>()
     private val accountEvents: AccountEvents = mockk(relaxed = true)
     private val navigator: Navigator = mockk(relaxed = true)
-    private val userStateFlow = MutableStateFlow<UserState?>(null)
+    private val userStateFlow = MutableStateFlow<UserState>(UserState.NotInitialized)
     private val userSessionManager: UserSessionManager = mockk()
     private lateinit var viewModel: MainActivityViewModel
 
@@ -103,13 +103,10 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `it should navigate to bluetooth screen for non anonymous user if consented`() =
+    fun `it should navigate to bluetooth screen for registered user if consented`() =
         runTestUnconfined {
             // given
-            val userState = UserState(
-                isAnonymous = false,
-                hasConsented = true,
-            )
+            val userState = UserState.Registered(hasConsented = true)
 
             // when
             userStateFlow.update { userState }
@@ -119,13 +116,10 @@ class MainActivityViewModelTest {
         }
 
     @Test
-    fun `it should navigate to consent screen for non anonymous user if consented`() =
+    fun `it should navigate to consent screen for registered user if not consented`() =
         runTestUnconfined {
             // given
-            val userState = UserState(
-                isAnonymous = false,
-                hasConsented = false,
-            )
+            val userState = UserState.Registered(hasConsented = false)
 
             // when
             userStateFlow.update { userState }
@@ -135,13 +129,23 @@ class MainActivityViewModelTest {
         }
 
     @Test
+    fun `it should not navigate for not initialized users`() =
+        runTestUnconfined {
+            // given
+            val userState = UserState.NotInitialized
+
+            // when
+            userStateFlow.update { userState }
+
+            // then
+            verify { navigator wasNot Called }
+        }
+
+    @Test
     fun `it should not navigate for anonymous users`() =
         runTestUnconfined {
             // given
-            val userState = UserState(
-                isAnonymous = true,
-                hasConsented = false,
-            )
+            val userState = UserState.Anonymous
 
             // when
             userStateFlow.update { userState }

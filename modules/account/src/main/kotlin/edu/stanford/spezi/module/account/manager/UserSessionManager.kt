@@ -27,21 +27,18 @@ class UserSessionManager @Inject constructor(
     private val logger by speziLogger()
 
     private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
-        val user = firebaseAuth.currentUser
-        user?.let {
-            val isAnonymous = user.isAnonymous
+        val user = firebaseAuth.currentUser ?: return@AuthStateListener
+        if (user.isAnonymous) {
+            _userState.update { UserState.Anonymous }
+        } else {
             coroutineScope.launch {
-                val userState = UserState(
-                    isAnonymous = isAnonymous,
-                    hasConsented = if (isAnonymous) false else hasConsented()
-                )
-                _userState.update { userState }
+                _userState.update { UserState.Registered(hasConsented = hasConsented()) }
             }
         }
     }
 
-    private val _userState = MutableStateFlow<UserState?>(value = null)
-    val userState: StateFlow<UserState?> get() = _userState.asStateFlow()
+    private val _userState = MutableStateFlow<UserState>(value = UserState.NotInitialized)
+    val userState: StateFlow<UserState> get() = _userState.asStateFlow()
 
     init {
         firebaseAuth.addAuthStateListener(authStateListener)
@@ -58,12 +55,7 @@ class UserSessionManager @Inject constructor(
                 .await().task.isSuccessful
 
             if (uploaded) {
-                _userState.update {
-                    UserState(
-                        isAnonymous = currentUser.isAnonymous,
-                        hasConsented = true,
-                    )
-                }
+                _userState.update { UserState.Registered(hasConsented = true) }
             } else {
                 error("Failed to upload signature.pdf")
             }

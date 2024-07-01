@@ -9,9 +9,10 @@ import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.manager.UserSessionManager
+import edu.stanford.spezi.module.account.manager.UserState
 import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -44,9 +45,9 @@ class MainActivityViewModel @Inject constructor(
 
         viewModelScope.launch {
             userSessionManager.userState
-                .filter { it?.isAnonymous?.not() == true }
+                .filterIsInstance<UserState.Registered>()
                 .collect { userState ->
-                    val navigationEvent = if (userState?.hasConsented == true) {
+                    val navigationEvent = if (userState.hasConsented) {
                         AppNavigationEvent.BluetoothScreen
                     } else {
                         OnboardingNavigationEvent.ConsentScreen
