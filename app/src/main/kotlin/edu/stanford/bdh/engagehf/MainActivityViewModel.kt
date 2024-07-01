@@ -43,10 +43,10 @@ class MainActivityViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            userSessionManager.observeUserState()
-                .filter { it.isAnonymous.not() }
+            userSessionManager.userState
+                .filter { it?.isAnonymous?.not() == true }
                 .collect { userState ->
-                    val navigationEvent = if (userState.hasConsented) {
+                    val navigationEvent = if (userState?.hasConsented == true) {
                         AppNavigationEvent.BluetoothScreen
                     } else {
                         OnboardingNavigationEvent.ConsentScreen

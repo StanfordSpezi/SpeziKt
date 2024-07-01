@@ -16,7 +16,9 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.update
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -30,14 +32,14 @@ class MainActivityViewModelTest {
     private val accountEventsFlow = MutableSharedFlow<AccountEvents.Event>()
     private val accountEvents: AccountEvents = mockk(relaxed = true)
     private val navigator: Navigator = mockk(relaxed = true)
-    private val userStateFlow = MutableSharedFlow<UserState>()
+    private val userStateFlow = MutableStateFlow<UserState?>(null)
     private val userSessionManager: UserSessionManager = mockk()
     private lateinit var viewModel: MainActivityViewModel
 
     @Before
     fun setUp() {
         every { accountEvents.events } returns accountEventsFlow
-        every { userSessionManager.observeUserState() } returns userStateFlow
+        every { userSessionManager.userState } returns userStateFlow
         viewModel = MainActivityViewModel(
             accountEvents = accountEvents,
             navigator = navigator,
@@ -48,7 +50,7 @@ class MainActivityViewModelTest {
     @Test
     fun `it should start observing on init`() {
         verify { accountEvents.events }
-        verify { userSessionManager.observeUserState() }
+        verify { userSessionManager.userState }
     }
 
     @Test
@@ -110,7 +112,7 @@ class MainActivityViewModelTest {
             )
 
             // when
-            userStateFlow.emit(userState)
+            userStateFlow.update { userState }
 
             // then
             verify { navigator.navigateTo(event = AppNavigationEvent.BluetoothScreen) }
@@ -126,7 +128,7 @@ class MainActivityViewModelTest {
             )
 
             // when
-            userStateFlow.emit(userState)
+            userStateFlow.update { userState }
 
             // then
             verify { navigator.navigateTo(event = OnboardingNavigationEvent.ConsentScreen) }
@@ -142,7 +144,7 @@ class MainActivityViewModelTest {
             )
 
             // when
-            userStateFlow.emit(userState)
+            userStateFlow.update { userState }
 
             // then
             verify { navigator wasNot Called }

@@ -6,9 +6,9 @@ import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -26,8 +26,6 @@ class UserSessionManager @Inject constructor(
 ) {
     private val logger by speziLogger()
 
-    private val _userState = MutableStateFlow<UserState?>(value = null)
-
     private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
         val user = firebaseAuth.currentUser
         user?.let {
@@ -41,6 +39,9 @@ class UserSessionManager @Inject constructor(
             }
         }
     }
+
+    private val _userState = MutableStateFlow<UserState?>(value = null)
+    val userState: StateFlow<UserState?> get() = _userState.asStateFlow()
 
     init {
         firebaseAuth.addAuthStateListener(authStateListener)
@@ -69,11 +70,9 @@ class UserSessionManager @Inject constructor(
         }
     }
 
-    fun observeUserState(): Flow<UserState> = _userState.filterNotNull()
-
     private suspend fun hasConsented(): Boolean = withContext(ioDispatcher) {
         runCatching {
-            val uid = firebaseAuth.uid ?: return@runCatching false
+            val uid = firebaseAuth.uid ?: error("No uid available")
             val reference = firebaseStorage.getReference("users/$uid/signature.pdf")
             reference.metadata.await()
         }.isSuccess

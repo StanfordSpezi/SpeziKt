@@ -1,11 +1,9 @@
-package edu.stanford.spezi.module.account.cred.manager
+package edu.stanford.spezi.module.account.manager
 
 import android.content.Context
 import androidx.credentials.CredentialManager
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.testing.runTestUnconfined
-import edu.stanford.spezi.module.account.manager.AuthenticationManager
-import edu.stanford.spezi.module.account.manager.CredentialRegisterManagerAuth
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Before
