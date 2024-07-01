@@ -81,5 +81,5 @@ fun VideoScreen(videoId: String?, videoTitle: String) {
 
 enum class VideoScreenTestIdentifier {
     TITLE,
-    VIDEO_PLAYER
+    VIDEO_PLAYER,
 }
