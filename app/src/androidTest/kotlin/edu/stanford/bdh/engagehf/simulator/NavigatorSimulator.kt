@@ -2,8 +2,8 @@ package edu.stanford.bdh.engagehf.simulator
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.ComposeTestRule
-import edu.stanford.bdh.engagehf.bluetooth.screen.BluetoothScreenTestIdentifier
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
+import edu.stanford.bdh.engagehf.navigation.screens.AppScreenTestIdentifier
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.onAllNodes
 import edu.stanford.spezi.core.testing.onNodeWithIdentifier
@@ -29,7 +29,7 @@ class NavigatorSimulator(
         composeTestRule.onNodeWithIdentifier(InvitationCodeScreenTestIdentifier.ROOT)
     private val sequential =
         composeTestRule.onNodeWithIdentifier(SequentialOnboardingScreenTestIdentifier.ROOT)
-    private val bluetooth = composeTestRule.onNodeWithIdentifier(BluetoothScreenTestIdentifier.ROOT)
+    private val appScreen = composeTestRule.onNodeWithIdentifier(AppScreenTestIdentifier.ROOT)
     private val consent = composeTestRule.onNodeWithIdentifier(ConsentScreenTestIdentifier.ROOT)
 
     fun assertOnboardingIsDisplayed() {
@@ -37,9 +37,9 @@ class NavigatorSimulator(
         onboarding.assertIsDisplayed()
     }
 
-    fun assertBluetoothScreenIsDisplayed() {
-        waitNode(BluetoothScreenTestIdentifier.ROOT)
-        bluetooth.assertIsDisplayed()
+    fun assertAppScreenIsDisplayed() {
+        waitNode(AppScreenTestIdentifier.ROOT)
+        appScreen.assertIsDisplayed()
     }
 
     fun assertLoginScreenIsDisplayed() {
@@ -67,8 +67,8 @@ class NavigatorSimulator(
         consent.assertIsDisplayed()
     }
 
-    fun navigateToBluetoothScreen() {
-        navigator.navigateTo(AppNavigationEvent.BluetoothScreen)
+    fun navigateToAppScreen() {
+        navigator.navigateTo(AppNavigationEvent.AppScreen)
     }
 
     fun navigateToOnboardingScreen() {

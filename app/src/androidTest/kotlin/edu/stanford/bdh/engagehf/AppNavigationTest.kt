@@ -51,10 +51,10 @@ class AppNavigationTest {
     }
 
     @Test
-    fun `test navigation to bluetooth screen`() {
+    fun `test navigation to app screen`() {
         mainActivity {
-            navigateToBluetoothScreen()
-            assertBluetoothScreenIsDisplayed()
+            navigateToAppScreen()
+            assertAppScreenIsDisplayed()
         }
     }
 

@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material3.Card
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,7 +33,7 @@ import java.util.UUID
  */
 @Composable
 fun ContactOptionCard(option: ContactOption, publisher: (OnAction) -> Unit) {
-    Card(
+    ElevatedCard(
         modifier = Modifier
             .wrapContentSize(Alignment.Center)
             .width(90.dp)

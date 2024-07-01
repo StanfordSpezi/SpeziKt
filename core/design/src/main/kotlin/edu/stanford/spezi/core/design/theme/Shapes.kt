@@ -1,0 +1,26 @@
+package edu.stanford.spezi.core.design.theme
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+
+object Shapes {
+
+    object RoundedCorners {
+        val small: Dp
+            @Composable
+            @ReadOnlyComposable
+            get() = 2.dp
+
+        val medium: Dp
+            @Composable
+            @ReadOnlyComposable
+            get() = 4.dp
+
+        val large: Dp
+            @Composable
+            @ReadOnlyComposable
+            get() = 8.dp
+    }
+}

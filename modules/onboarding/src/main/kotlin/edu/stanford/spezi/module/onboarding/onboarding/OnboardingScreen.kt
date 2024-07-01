@@ -21,10 +21,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles.bodyLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.bodyMedium
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
@@ -107,7 +111,10 @@ fun FeatureItem(area: Area) {
         Column {
             Text(
                 text = area.title,
-                modifier = Modifier.testIdentifier(OnboardingScreenTestIdentifier.AREA_TITLE, area.title),
+                modifier = Modifier.testIdentifier(
+                    OnboardingScreenTestIdentifier.AREA_TITLE,
+                    area.title
+                ),
                 style = titleSmall
             )
             Text(
@@ -115,6 +122,47 @@ fun FeatureItem(area: Area) {
                 style = bodyMedium
             )
         }
+    }
+}
+
+private class OnboardingUiStateProvider : PreviewParameterProvider<OnboardingUiState> {
+    override val values: Sequence<OnboardingUiState> = sequenceOf(
+        OnboardingUiState(
+            title = "Welcome",
+            subtitle = "Onboarding Subtitle",
+            areas = listOf(
+                Area(
+                    title = "Area 1 Title",
+                    description = "This is a description for area 1. Those descriptions are very important and can have different lengths.",
+                    iconId = edu.stanford.spezi.core.design.R.drawable.ic_assignment
+                ),
+                Area(
+                    title = "Area 2 Title",
+                    description = "Short descriptions are also possible.",
+                    iconId = edu.stanford.spezi.core.design.R.drawable.ic_bluetooth
+                ),
+                Area(
+                    title = "Area 3 title",
+                    description = "The colors on the screen are from the Spezi theme and if " +
+                        "the user has dark mode or dynamic colors enabled, the colors will change accordingly.",
+                    iconId = edu.stanford.spezi.core.design.R.drawable.ic_vital_signs
+                ),
+            ),
+            continueButtonText = "Continue"
+        ),
+    )
+}
+
+@Preview(showBackground = true, heightDp = 600, widthDp = 300)
+@Composable
+private fun OnboardingScreenPreview(
+    @PreviewParameter(OnboardingUiStateProvider::class) uiState: OnboardingUiState,
+) {
+    SpeziTheme {
+        OnboardingScreen(
+            uiState = uiState,
+            onAction = { }
+        )
     }
 }
 
