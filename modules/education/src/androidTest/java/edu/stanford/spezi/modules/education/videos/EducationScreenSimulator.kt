@@ -6,7 +6,6 @@ import edu.stanford.spezi.core.testing.onNodeWithIdentifier
 
 class EducationScreenSimulator(composeTestRule: ComposeTestRule) {
 
-
     private val videoSection =
         composeTestRule.onNodeWithIdentifier(EducationScreenTestIdentifier.VIDEO_SECTION)
 
@@ -21,6 +20,4 @@ class EducationScreenSimulator(composeTestRule: ComposeTestRule) {
     fun assertVideoSection() = this.videoSection.assertIsDisplayed()
 
     fun assertRetryButton() = this.retryButton.assertIsDisplayed()
-
 }
-
