@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.first
 import org.junit.Before
 import org.junit.Test
 
+@Suppress("DEPRECATION")
 class BLEDeviceConnectorTest {
     private val device: BluetoothDevice = mockk()
     private val measurementMapper: MeasurementMapper = mockk()

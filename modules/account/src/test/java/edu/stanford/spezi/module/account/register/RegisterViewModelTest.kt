@@ -4,7 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.module.account.AccountEvents
-import edu.stanford.spezi.module.account.cred.manager.CredentialRegisterManagerAuth
+import edu.stanford.spezi.module.account.manager.CredentialRegisterManagerAuth
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Test

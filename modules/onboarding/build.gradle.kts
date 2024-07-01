@@ -9,6 +9,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":modules:account"))
     implementation(project(":core:coroutines"))
     implementation(project(":core:navigation"))
     implementation(project(":core:utils"))
@@ -16,11 +17,6 @@ dependencies {
     implementation(libs.androidx.foundation)
     implementation(libs.accompanist.pager)
     implementation(libs.hilt.navigation.compose)
-
-    implementation(libs.firebase.auth.ktx)
-    implementation(libs.firebase.firestore.ktx)
-    implementation(libs.firebase.functions.ktx)
-    implementation(libs.firebase.storage.ktx)
 
     testImplementation(libs.bundles.unit.testing)
 

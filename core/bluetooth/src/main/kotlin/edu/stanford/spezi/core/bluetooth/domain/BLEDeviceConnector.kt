@@ -1,6 +1,5 @@
 package edu.stanford.spezi.core.bluetooth.domain
 
-import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
@@ -34,7 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  * @property scope The coroutine scope used for launching connection events and mapping measurements.
  * @property context The application context.
  */
-@SuppressLint("MissingPermission")
+@Suppress("DEPRECATION", "MissingPermission")
 internal class BLEDeviceConnector @AssistedInject constructor(
     @Assisted private val device: BluetoothDevice,
     private val measurementMapper: MeasurementMapper,

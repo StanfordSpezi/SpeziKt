@@ -1,6 +1,6 @@
 @file:Suppress("LongParameterList")
 
-package edu.stanford.spezi.module.account.cred.manager
+package edu.stanford.spezi.module.account.manager
 
 import android.content.Context
 import androidx.credentials.CredentialManager
@@ -13,8 +13,8 @@ import edu.stanford.spezi.core.logging.speziLogger
 import java.time.LocalDate
 import javax.inject.Inject
 
-class CredentialRegisterManagerAuth @Inject internal constructor(
-    private val firebaseAuthManager: FirebaseAuthManager,
+internal class CredentialRegisterManagerAuth @Inject internal constructor(
+    private val authenticationManager: AuthenticationManager,
     private val credentialManager: CredentialManager,
     @ApplicationContext private val context: Context,
 ) {
@@ -30,9 +30,9 @@ class CredentialRegisterManagerAuth @Inject internal constructor(
         dateOfBirth: LocalDate,
     ): Result<Boolean> {
         return runCatching {
-            val linkResult = firebaseAuthManager.linkUserToGoogleAccount(idToken)
+            val linkResult = authenticationManager.linkUserToGoogleAccount(idToken)
             val saveResult = if (linkResult) {
-                firebaseAuthManager.saveUserData(
+                authenticationManager.saveUserData(
                     firstName = firstName,
                     lastName = lastName,
                     selectedGender = selectedGender,
@@ -54,7 +54,7 @@ class CredentialRegisterManagerAuth @Inject internal constructor(
         selectedGender: String,
         dateOfBirth: LocalDate,
     ): Result<Boolean> {
-        return firebaseAuthManager.signUpWithEmailAndPassword(
+        return authenticationManager.signUpWithEmailAndPassword(
             email = email,
             password = password,
             firstName = firstName,

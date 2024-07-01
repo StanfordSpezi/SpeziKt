@@ -7,7 +7,7 @@ import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.AccountNavigationEvent
-import edu.stanford.spezi.module.account.cred.manager.CredentialLoginManagerAuth
+import edu.stanford.spezi.module.account.manager.CredentialLoginManagerAuth
 import io.mockk.Runs
 import io.mockk.coVerify
 import io.mockk.every

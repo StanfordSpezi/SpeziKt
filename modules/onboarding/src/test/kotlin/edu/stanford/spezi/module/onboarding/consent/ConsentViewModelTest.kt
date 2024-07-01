@@ -6,8 +6,9 @@ import edu.stanford.spezi.core.design.component.markdown.MarkdownElement
 import edu.stanford.spezi.core.design.component.markdown.MarkdownParser
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
-import edu.stanford.spezi.core.utils.MessageNotifier
+import edu.stanford.spezi.module.account.manager.UserSessionManager
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
@@ -22,12 +23,14 @@ class ConsentViewModelTest {
 
     private val consentManager: ConsentManager = mockk(relaxed = true)
     private val markdownParser: MarkdownParser = mockk(relaxed = true)
-    private val messageNotifier: MessageNotifier = mockk(relaxed = true)
+    private val pdfCreationService: PdfCreationService = mockk(relaxed = true)
+    private val userSessionManager: UserSessionManager = mockk(relaxed = true)
     private val viewModel by lazy {
         ConsentViewModel(
             consentManager = consentManager,
             markdownParser = markdownParser,
-            messageNotifier = messageNotifier
+            pdfCreationService = pdfCreationService,
+            userSessionManager = userSessionManager
         )
     }
 
@@ -90,5 +93,34 @@ class ConsentViewModelTest {
 
         // Then
         assertThat(uiState.markdownElements).isEqualTo(elements)
+    }
+
+    @Test
+    fun `it should invoke handle consent action correctly on success case`() = runTestUnconfined {
+        // given
+        val pdfBytes = byteArrayOf()
+        coEvery { pdfCreationService.createPdf(viewModel.uiState.value) } returns pdfBytes
+        coEvery { userSessionManager.uploadConsentPdf(pdfBytes) } returns Result.success(Unit)
+
+        // when
+        viewModel.onAction(action = ConsentAction.Consent)
+
+        // then
+        coVerify { consentManager.onConsented() }
+    }
+
+    @Test
+    fun `it should invoke handle consent action correctly on error case`() = runTestUnconfined {
+        // given
+        val error: Throwable = mockk()
+        val pdfBytes = byteArrayOf()
+        coEvery { pdfCreationService.createPdf(viewModel.uiState.value) } returns pdfBytes
+        coEvery { userSessionManager.uploadConsentPdf(pdfBytes) } returns Result.failure(error)
+
+        // when
+        viewModel.onAction(action = ConsentAction.Consent)
+
+        // then
+        coVerify { consentManager.onConsentFailure(error) }
     }
 }
