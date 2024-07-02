@@ -49,8 +49,13 @@ class RecordToObservationMapperTests {
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.identifier.first().id).isEqualTo("123456")
         assertThat(observation.issued.time).isAtMost(Date().time)
+
+        assertThat(observation.code.codingFirstRep.system).isEqualTo("http://loinc.org")
         assertThat(observation.code.codingFirstRep.code).isEqualTo("41981-2")
+
+        assertThat(observation.code.coding[1].system).isEqualTo("http://health.google/health-connect-android")
         assertThat(observation.code.coding[1].code).isEqualTo("ActiveCaloriesBurnedRecord")
+
         assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("activity")
         assertThat((observation.effective as Period).start).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
         assertThat((observation.effective as Period).end).isEqualTo(Date.from(Instant.parse("2023-05-18T11:15:30.00Z")))
@@ -75,8 +80,13 @@ class RecordToObservationMapperTests {
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.identifier.first().id).isEqualTo("123456")
         assertThat(observation.issued.time).isAtMost(Date().time)
+
+        assertThat(observation.code.codingFirstRep.system).isEqualTo("http://loinc.org")
         assertThat(observation.code.codingFirstRep.code).isEqualTo("85354-9")
+
+        assertThat(observation.code.coding[1].system).isEqualTo("http://health.google/health-connect-android")
         assertThat(observation.code.coding[1].code).isEqualTo("BloodPressureRecord")
+
         assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
         assertThat((observation.effective as DateTimeType).value).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
         assertThat((observation.component[0].value as Quantity).value.toDouble()).isEqualTo(120.0)
@@ -103,8 +113,13 @@ class RecordToObservationMapperTests {
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.identifier.first().id).isEqualTo("123456")
         assertThat(observation.issued.time).isAtMost(Date().time)
+
+        assertThat(observation.code.codingFirstRep.system).isEqualTo("http://loinc.org")
         assertThat(observation.code.codingFirstRep.code).isEqualTo("41653-7")
+
+        assertThat(observation.code.coding[1].system).isEqualTo("http://health.google/health-connect-android")
         assertThat(observation.code.coding[1].code).isEqualTo("BloodGlucoseRecord")
+
         assertThat((observation.effective as DateTimeType).value).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
         assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(90.0)
         assertThat((observation.value as Quantity).unit).isEqualTo("mg/dL")
@@ -126,8 +141,13 @@ class RecordToObservationMapperTests {
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.identifier.first().id).isEqualTo("123456")
         assertThat(observation.issued.time).isAtMost(Date().time)
+
+        assertThat(observation.code.codingFirstRep.system).isEqualTo("http://loinc.org")
         assertThat(observation.code.codingFirstRep.code).isEqualTo("41982-0")
+
+        assertThat(observation.code.coding[1].system).isEqualTo("http://health.google/health-connect-android")
         assertThat(observation.code.coding[1].code).isEqualTo("BodyFatRecord")
+
         assertThat((observation.effective as DateTimeType).value).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
         assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(10.0)
         assertThat((observation.value as Quantity).unit).isEqualTo("%")
@@ -149,8 +169,13 @@ class RecordToObservationMapperTests {
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.identifier.first().id).isEqualTo("123456")
         assertThat(observation.issued.time).isAtMost(Date().time)
+
+        assertThat(observation.code.codingFirstRep.system).isEqualTo("http://loinc.org")
         assertThat(observation.code.codingFirstRep.code).isEqualTo("8310-5")
+
+        assertThat(observation.code.coding[1].system).isEqualTo("http://health.google/health-connect-android")
         assertThat(observation.code.coding[1].code).isEqualTo("BodyTemperatureRecord")
+
         assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
         assertThat((observation.effective as DateTimeType).value).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
         assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(37.5)
@@ -183,8 +208,13 @@ class RecordToObservationMapperTests {
         observations.forEach { observation ->
             assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
             assertThat(observation.issued.time).isAtMost(Date().time)
+
+            assertThat(observation.code.codingFirstRep.system).isEqualTo("http://loinc.org")
             assertThat(observation.code.codingFirstRep.code).isEqualTo("8867-4")
+
+            assertThat(observation.code.coding[1].system).isEqualTo("http://health.google/health-connect-android")
             assertThat(observation.code.coding[1].code).isEqualTo("HeartRateRecord")
+
             assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
         }
 
@@ -213,8 +243,13 @@ class RecordToObservationMapperTests {
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.identifier.first().id).isEqualTo("123456")
         assertThat(observation.issued.time).isAtMost(Date().time)
+
+        assertThat(observation.code.codingFirstRep.system).isEqualTo("http://loinc.org")
         assertThat(observation.code.codingFirstRep.code).isEqualTo("8302-2")
+
+        assertThat(observation.code.coding[1].system).isEqualTo("http://health.google/health-connect-android")
         assertThat(observation.code.coding[1].code).isEqualTo("HeightRecord")
+
         assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
         assertThat((observation.effective as DateTimeType).value).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
         assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(1.5)
@@ -238,8 +273,13 @@ class RecordToObservationMapperTests {
         assertThat(observation.identifier.first().id).isEqualTo("123456")
         assertThat(observation.issued.time).isAtMost(Date().time)
         assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
+
+        assertThat(observation.code.codingFirstRep.system).isEqualTo("http://loinc.org")
         assertThat(observation.code.codingFirstRep.code).isEqualTo("59408-5")
+
+        assertThat(observation.code.coding[1].system).isEqualTo("http://health.google/health-connect-android")
         assertThat(observation.code.coding[1].code).isEqualTo("OxygenSaturationRecord")
+
         assertThat((observation.effective as DateTimeType).value).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
         assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(99.0)
         assertThat((observation.value as Quantity).unit).isEqualTo("%")
@@ -262,8 +302,13 @@ class RecordToObservationMapperTests {
         assertThat(observation.identifier.first().id).isEqualTo("123456")
         assertThat(observation.issued.time).isAtMost(Date().time)
         assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
+
+        assertThat(observation.code.codingFirstRep.system).isEqualTo("http://loinc.org")
         assertThat(observation.code.codingFirstRep.code).isEqualTo("9279-1")
+
+        assertThat(observation.code.coding[1].system).isEqualTo("http://health.google/health-connect-android")
         assertThat(observation.code.coding[1].code).isEqualTo("RespiratoryRateRecord")
+
         assertThat((observation.effective as DateTimeType).value).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
         assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(18.0)
         assertThat((observation.value as Quantity).unit).isEqualTo("breaths/minute")
@@ -287,8 +332,13 @@ class RecordToObservationMapperTests {
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.identifier.first().id).isEqualTo("123456")
         assertThat(observation.issued.time).isAtMost(Date().time)
+
+        assertThat(observation.code.codingFirstRep.system).isEqualTo("http://loinc.org")
         assertThat(observation.code.codingFirstRep.code).isEqualTo("55423-8")
+
+        assertThat(observation.code.coding[1].system).isEqualTo("http://health.google/health-connect-android")
         assertThat(observation.code.coding[1].code).isEqualTo("StepsRecord")
+
         assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("activity")
         assertThat((observation.effective as Period).start).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
         assertThat((observation.effective as Period).end).isEqualTo(Date.from(Instant.parse("2023-05-18T11:15:30.00Z")))
@@ -310,8 +360,13 @@ class RecordToObservationMapperTests {
         assertThat(observation.status).isEqualTo(Observation.ObservationStatus.FINAL)
         assertThat(observation.identifier.first().id).isEqualTo("123456")
         assertThat(observation.issued.time).isAtMost(Date().time)
+
+        assertThat(observation.code.codingFirstRep.system).isEqualTo("http://loinc.org")
         assertThat(observation.code.codingFirstRep.code).isEqualTo("29463-7")
+
+        assertThat(observation.code.coding[1].system).isEqualTo("http://health.google/health-connect-android")
         assertThat(observation.code.coding[1].code).isEqualTo("WeightRecord")
+
         assertThat(observation.categoryFirstRep.codingFirstRep.code).isEqualTo("vital-signs")
         assertThat((observation.effective as DateTimeType).value).isEqualTo(Date.from(Instant.parse("2023-05-18T10:15:30.00Z")))
         assertThat((observation.value as Quantity).value.toDouble()).isEqualTo(75.0)

@@ -67,7 +67,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setCode("41981-2")
                 .setDisplay("Calories burned"),
             Coding()
-                .setSystem("http://health.google/health-connect-android/")
+                .setSystem("http://health.google/health-connect-android")
                 .setCode("ActiveCaloriesBurnedRecord")
                 .setDisplay("Active Calories Burned Record"),
         ),
@@ -93,7 +93,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setCode("41653-7")
                 .setDisplay("Glucose Glucometer (BldC) [Mass/Vol]"),
             Coding()
-                .setSystem("http://health.google/health-connect-android/")
+                .setSystem("http://health.google/health-connect-android")
                 .setCode("BloodGlucoseRecord")
                 .setDisplay("Blood Glucose Record"),
         ),
@@ -139,7 +139,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setCode("85354-9")
                 .setDisplay("Blood pressure panel with all children optional"),
             Coding()
-                .setSystem("http://health.google/health-connect-android/")
+                .setSystem("http://health.google/health-connect-android")
                 .setCode("BloodPressureRecord")
                 .setDisplay("Blood Pressure Record"),
         )
@@ -196,7 +196,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setCode("41982-0")
                 .setDisplay("Percentage of body fat Measured"),
             Coding()
-                .setSystem("http://health.google/health-connect-android/")
+                .setSystem("http://health.google/health-connect-android")
                 .setCode("BodyFatRecord")
                 .setDisplay("Body Fat Record"),
         ),
@@ -228,7 +228,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setCode("8310-5")
                 .setDisplay("Body temperature"),
             Coding()
-                .setSystem("http://health.google/health-connect-android/")
+                .setSystem("http://health.google/health-connect-android")
                 .setCode("BodyTemperatureRecord")
                 .setDisplay("Body Temperature Record"),
         ),
@@ -269,7 +269,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                     .setCode("8867-4")
                     .setDisplay("Heart rate"),
                 Coding()
-                    .setSystem("http://health.google/health-connect-android/")
+                    .setSystem("http://health.google/health-connect-android")
                     .setCode("HeartRateRecord")
                     .setDisplay("Heart Rate Record")
             )
@@ -310,7 +310,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setCode("8302-2")
                 .setDisplay("Body height"),
             Coding()
-                .setSystem("http://health.google/health-connect-android/")
+                .setSystem("http://health.google/health-connect-android")
                 .setCode("HeightRecord")
                 .setDisplay("Height Record"),
         ),
@@ -342,7 +342,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setCode("59408-5")
                 .setDisplay("Oxygen saturation in Arterial blood by Pulse oximetry"),
             Coding()
-                .setSystem("http://health.google/health-connect-android/")
+                .setSystem("http://health.google/health-connect-android")
                 .setCode("OxygenSaturationRecord")
                 .setDisplay("Oxygen Saturation Record"),
         ),
@@ -374,7 +374,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setCode("9279-1")
                 .setDisplay("Respiratory rate"),
             Coding()
-                .setSystem("http://health.google/health-connect-android/")
+                .setSystem("http://health.google/health-connect-android")
                 .setCode("RespiratoryRateRecord")
                 .setDisplay("Respiratory Rate Record"),
         ),
@@ -406,7 +406,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setCode("55423-8")
                 .setDisplay("Number of steps"),
             Coding()
-                .setSystem("http://health.google/health-connect-android/")
+                .setSystem("http://health.google/health-connect-android")
                 .setCode("StepsRecord")
                 .setDisplay("Steps Record"),
         ),
@@ -438,7 +438,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setCode("29463-7")
                 .setDisplay("Body weight"),
             Coding()
-                .setSystem("http://health.google/health-connect-android/")
+                .setSystem("http://health.google/health-connect-android")
                 .setCode("WeightRecord")
                 .setDisplay("Weight Record"),
         ),
