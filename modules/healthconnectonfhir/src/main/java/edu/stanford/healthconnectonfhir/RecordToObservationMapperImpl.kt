@@ -60,16 +60,16 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
                 .setCode("activity")
                 .setDisplay("Activity"),
-            Coding()
-                .setSystem("http://health.google/health-connect-android/")
-                .setCode("ActiveCaloriesBurnedRecord")
-                .setDisplay("Active Calories Burned Record"),
         ),
         codings = listOf(
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("41981-2")
-                .setDisplay("Calories burned")
+                .setDisplay("Calories burned"),
+            Coding()
+                .setSystem("http://health.google/health-connect-android/")
+                .setCode("ActiveCaloriesBurnedRecord")
+                .setDisplay("Active Calories Burned Record"),
         ),
         unit = MappedUnit(
             code = "kcal",
@@ -270,8 +270,8 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                     .setDisplay("Heart rate"),
                 Coding()
                     .setSystem("http://health.google/health-connect-android/")
-                    .setCode("BloodPressureRecord")
-                    .setDisplay("Blood Pressure Record")
+                    .setCode("HeartRateRecord")
+                    .setDisplay("Heart Rate Record")
             )
 
             observation.code = CodeableConcept().apply {
