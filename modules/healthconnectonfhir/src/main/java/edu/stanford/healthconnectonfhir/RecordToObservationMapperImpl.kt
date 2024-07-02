@@ -59,13 +59,17 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
                 .setCode("activity")
-                .setDisplay("Activity")
+                .setDisplay("Activity"),
         ),
         codings = listOf(
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("41981-2")
-                .setDisplay("Calories burned")
+                .setDisplay("Calories burned"),
+            Coding()
+                .setSystem("http://health.google/health-connect-android")
+                .setCode("ActiveCaloriesBurnedRecord")
+                .setDisplay("Active Calories Burned Record"),
         ),
         unit = MappedUnit(
             code = "kcal",
@@ -87,7 +91,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("41653-7")
-                .setDisplay("Glucose Glucometer (BldC) [Mass/Vol]")
+                .setDisplay("Glucose Glucometer (BldC) [Mass/Vol]"),
+            Coding()
+                .setSystem("http://health.google/health-connect-android")
+                .setCode("BloodGlucoseRecord")
+                .setDisplay("Blood Glucose Record"),
         ),
         unit = MappedUnit(
             code = "mg/dL",
@@ -125,12 +133,20 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             )
         )
 
-        observation.code = CodeableConcept().addCoding(
+        val codings = listOf(
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("85354-9")
-                .setDisplay("Blood pressure panel with all children optional")
+                .setDisplay("Blood pressure panel with all children optional"),
+            Coding()
+                .setSystem("http://health.google/health-connect-android")
+                .setCode("BloodPressureRecord")
+                .setDisplay("Blood Pressure Record"),
         )
+
+        observation.code = CodeableConcept().apply {
+            codings.forEach { addCoding(it) }
+        }
 
         val dateTime = DateTimeType(Date.from(record.time))
         observation.effective = dateTime
@@ -178,7 +194,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("41982-0")
-                .setDisplay("Percentage of body fat Measured")
+                .setDisplay("Percentage of body fat Measured"),
+            Coding()
+                .setSystem("http://health.google/health-connect-android")
+                .setCode("BodyFatRecord")
+                .setDisplay("Body Fat Record"),
         ),
         unit = MappedUnit(
             code = "%",
@@ -206,7 +226,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("8310-5")
-                .setDisplay("Body temperature")
+                .setDisplay("Body temperature"),
+            Coding()
+                .setSystem("http://health.google/health-connect-android")
+                .setCode("BodyTemperatureRecord")
+                .setDisplay("Body Temperature Record"),
         ),
         unit = MappedUnit(
             code = "Cel",
@@ -239,12 +263,20 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 )
             )
 
-            observation.code = CodeableConcept().addCoding(
+            val codings = listOf(
                 Coding()
                     .setSystem("http://loinc.org")
                     .setCode("8867-4")
-                    .setDisplay("Heart rate")
+                    .setDisplay("Heart rate"),
+                Coding()
+                    .setSystem("http://health.google/health-connect-android")
+                    .setCode("HeartRateRecord")
+                    .setDisplay("Heart Rate Record")
             )
+
+            observation.code = CodeableConcept().apply {
+                codings.forEach { addCoding(it) }
+            }
 
             val dateTime = DateTimeType(Date.from(sample.time))
             observation.effective = dateTime
@@ -276,7 +308,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("8302-2")
-                .setDisplay("Body height")
+                .setDisplay("Body height"),
+            Coding()
+                .setSystem("http://health.google/health-connect-android")
+                .setCode("HeightRecord")
+                .setDisplay("Height Record"),
         ),
         unit = MappedUnit(
             code = "m",
@@ -304,7 +340,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("59408-5")
-                .setDisplay("Oxygen saturation in Arterial blood by Pulse oximetry")
+                .setDisplay("Oxygen saturation in Arterial blood by Pulse oximetry"),
+            Coding()
+                .setSystem("http://health.google/health-connect-android")
+                .setCode("OxygenSaturationRecord")
+                .setDisplay("Oxygen Saturation Record"),
         ),
         unit = MappedUnit(
             code = "%",
@@ -332,7 +372,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("9279-1")
-                .setDisplay("Respiratory rate")
+                .setDisplay("Respiratory rate"),
+            Coding()
+                .setSystem("http://health.google/health-connect-android")
+                .setCode("RespiratoryRateRecord")
+                .setDisplay("Respiratory Rate Record"),
         ),
         unit = MappedUnit(
             code = "/min",
@@ -360,7 +404,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("55423-8")
-                .setDisplay("Number of steps")
+                .setDisplay("Number of steps"),
+            Coding()
+                .setSystem("http://health.google/health-connect-android")
+                .setCode("StepsRecord")
+                .setDisplay("Steps Record"),
         ),
         unit = MappedUnit(
             unit = "steps",
@@ -388,7 +436,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("29463-7")
-                .setDisplay("Body weight")
+                .setDisplay("Body weight"),
+            Coding()
+                .setSystem("http://health.google/health-connect-android")
+                .setCode("WeightRecord")
+                .setDisplay("Weight Record"),
         ),
         unit = MappedUnit(
             code = "kg",
