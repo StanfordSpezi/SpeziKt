@@ -2,9 +2,11 @@ package edu.stanford.spezi.modules.education.videos
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,6 +27,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -34,7 +37,9 @@ import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import edu.stanford.spezi.core.design.component.Button
 import edu.stanford.spezi.core.design.component.VerticalSpacer
+import edu.stanford.spezi.core.design.theme.Borders
 import edu.stanford.spezi.core.design.theme.Colors
+import edu.stanford.spezi.core.design.theme.Ratios.ASPECT_16_9
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
@@ -87,11 +92,17 @@ internal fun VideoItem(video: Video, onVideoClick: () -> Unit) {
             }
 
             if (state is AsyncImagePainter.State.Success) {
-                Box(modifier = Modifier.fillMaxSize()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(ASPECT_16_9)
+                        .border(Borders.medium, Colors.primary), contentAlignment = Alignment.Center
+                ) {
                     Image(
                         modifier = Modifier.fillMaxSize(),
                         painter = painter,
                         contentDescription = "Video thumbnail",
+                        contentScale = ContentScale.Crop,
                     )
                     Box(
                         modifier = Modifier
@@ -187,11 +198,10 @@ fun EducationScreen(
                             onExpand = {
                                 videoSection.isExpanded = !videoSection.isExpanded
                             },
-                            onActionClick = { youtubeId, title ->
+                            onActionClick = { video ->
                                 onAction(
                                     Action.VideoSectionClicked(
-                                        youtubeId = youtubeId,
-                                        title = title
+                                        video = video
                                     )
                                 )
                             }
