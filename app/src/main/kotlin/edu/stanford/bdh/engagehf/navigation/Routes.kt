@@ -14,9 +14,6 @@ sealed class Routes {
     data class LoginScreen(val isAlreadyRegistered: @Serializable Boolean = true) : Routes()
 
     @Serializable
-    data class VideoDetail(val videoParams: @Serializable VideoParams) : Routes()
-
-    @Serializable
     data object AppScreen : Routes()
 
     @Serializable
@@ -34,6 +31,3 @@ sealed class Routes {
 
 @Serializable
 data class RegisterParams(val isGoogleSignUp: Boolean, val email: String, val password: String)
-
-@Serializable
-data class VideoParams(val youtubeId: String, val title: String)
