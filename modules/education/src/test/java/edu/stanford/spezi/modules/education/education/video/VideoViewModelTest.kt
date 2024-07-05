@@ -32,8 +32,6 @@ class VideoViewModelTest {
         viewModel = VideoViewModel(navigator, savedStateHandle)
     }
 
-
-
     @Test
     fun `when back pressed, navigate to pop up`() {
         // Given
