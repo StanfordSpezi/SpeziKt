@@ -62,8 +62,7 @@ internal class EducationViewModel @Inject constructor(
             is Action.VideoSectionClicked -> {
                 navigator.navigateTo(
                     EducationNavigationEvent.VideoSectionClicked(
-                        action.youtubeId,
-                        action.title
+                        action.video
                     )
                 )
             }
