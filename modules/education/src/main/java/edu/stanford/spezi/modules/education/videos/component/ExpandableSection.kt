@@ -77,7 +77,7 @@ fun ExpandableSection(
     videos: List<Video> = emptyList(),
     expandedStartValue: Boolean = false,
     onExpand: () -> Unit = {},
-    onActionClick: (String, String) -> Unit = { _, _ -> },
+    onActionClick: (Video) -> Unit = { _ -> },
 ) {
     var expanded by remember { mutableStateOf(expandedStartValue) }
 
@@ -124,7 +124,7 @@ fun ExpandableSection(
                         VideoItem(video,
                             onVideoClick = {
                                 onActionClick(
-                                    video.youtubeId!!, video.title!!
+                                    video
                                 )
                             })
                     }
