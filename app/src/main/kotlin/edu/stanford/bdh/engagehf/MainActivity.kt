@@ -16,7 +16,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.RegisterParams
 import edu.stanford.bdh.engagehf.navigation.Routes
-import edu.stanford.bdh.engagehf.navigation.VideoParams
 import edu.stanford.bdh.engagehf.navigation.screens.AppScreen
 import edu.stanford.bdh.engagehf.navigation.serializableType
 import edu.stanford.spezi.core.coroutines.di.Dispatching
@@ -30,7 +29,9 @@ import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeScreen
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingScreen
 import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreen
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
+import edu.stanford.spezi.modules.education.EducationRoutes
 import edu.stanford.spezi.modules.education.video.VideoScreen
+import edu.stanford.spezi.modules.education.videos.Video
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -85,13 +86,12 @@ class MainActivity : ComponentActivity() {
             LoginScreen(isAlreadyRegistered = args.isAlreadyRegistered)
         }
 
-        composable<Routes.VideoDetail>(
+        composable<EducationRoutes.VideoDetail>(
             typeMap = mapOf(
-                typeOf<VideoParams>() to serializableType<VideoParams>()
+                typeOf<Video>() to serializableType<Video>()
             )
         ) {
-            val args = it.toRoute<Routes.VideoDetail>()
-            VideoScreen(videoId = args.videoParams.youtubeId, videoTitle = args.videoParams.title)
+            VideoScreen()
         }
 
         composable<Routes.AppScreen> {
@@ -157,10 +157,8 @@ class MainActivity : ComponentActivity() {
                         is EducationNavigationEvent.PopUp -> navHostController.popBackStack()
 
                         is EducationNavigationEvent.VideoSectionClicked -> navHostController.navigate(
-                            Routes.VideoDetail(
-                                videoParams = VideoParams(
-                                    youtubeId = event.youtubeId, title = event.title
-                                )
+                            EducationRoutes.VideoDetail(
+                                video = event.video
                             )
                         )
                     }

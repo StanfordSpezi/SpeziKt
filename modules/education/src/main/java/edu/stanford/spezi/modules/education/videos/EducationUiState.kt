@@ -18,6 +18,7 @@ data class VideoSection(
 
 @Serializable
 data class Video(
+    val saveStateParam: String = "video",
     val title: String? = null,
     val description: String? = null,
     val orderIndex: Int = 0,

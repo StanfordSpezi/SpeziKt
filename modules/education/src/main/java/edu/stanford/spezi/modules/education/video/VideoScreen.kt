@@ -12,8 +12,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
@@ -22,14 +27,24 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.modules.education.videos.Video
+
+@Composable
+fun VideoScreen() {
+    val viewModel = hiltViewModel<VideoViewModel>()
+    val uiState by viewModel.uiState.collectAsState()
+    VideoScreen(video = uiState, onAction = viewModel::onAction)
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VideoScreen(videoId: String?, videoTitle: String) {
-    val viewModel = hiltViewModel<VideoViewModel>()
+fun VideoScreen(
+    onAction: (Action) -> Unit,
+    video: Video,
+) {
     val context = LocalContext.current
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -41,14 +56,16 @@ fun VideoScreen(videoId: String?, videoTitle: String) {
                     actionIconContentColor = onPrimary
                 ),
                 title = {
-                    Text(
-                        modifier = Modifier.testIdentifier(VideoScreenTestIdentifier.TITLE),
-                        text = videoTitle
-                    )
+                    video.title?.let {
+                        Text(
+                            modifier = Modifier.testIdentifier(VideoScreenTestIdentifier.TITLE),
+                            text = it
+                        )
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        viewModel.onAction(Action.BackPressed)
+                        onAction(Action.BackPressed)
                     }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
@@ -63,7 +80,7 @@ fun VideoScreen(videoId: String?, videoTitle: String) {
                     YouTubePlayerView(context).apply {
                         addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
                             override fun onReady(youTubePlayer: YouTubePlayer) {
-                                videoId?.let { it1 -> youTubePlayer.cueVideo(it1, 0f) }
+                                video.youtubeId?.let { it1 -> youTubePlayer.cueVideo(it1, 0f) }
                             }
                         })
                     }
@@ -74,6 +91,16 @@ fun VideoScreen(videoId: String?, videoTitle: String) {
                         .padding(Spacings.medium)
                         .testIdentifier(VideoScreenTestIdentifier.VIDEO_PLAYER)
                 )
+
+                video.description?.let {
+                    Text(
+                        text = it,
+                        style = TextStyles.bodyMedium,
+                        modifier = Modifier
+                            .padding(Spacings.medium)
+                            .testIdentifier(VideoScreenTestIdentifier.VIDEO_DESCRIPTION)
+                    )
+                }
             }
         }
     )
@@ -82,4 +109,21 @@ fun VideoScreen(videoId: String?, videoTitle: String) {
 enum class VideoScreenTestIdentifier {
     TITLE,
     VIDEO_PLAYER,
+    VIDEO_DESCRIPTION,
+}
+
+private class VideoPreviewProvider : PreviewParameterProvider<Video> {
+    override val values = sequenceOf(
+        Video(
+            title = "Title",
+            description = "Description",
+            youtubeId = "youtubeId"
+        ),
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun VideoScreenPreview(@PreviewParameter(VideoPreviewProvider::class) video: Video) {
+    VideoScreen(video = video, onAction = {})
 }
