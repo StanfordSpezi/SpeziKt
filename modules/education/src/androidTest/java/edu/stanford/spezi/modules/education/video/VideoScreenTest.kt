@@ -5,6 +5,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.spezi.core.design.component.ComposeContentActivity
 import edu.stanford.spezi.modules.education.video.VideoScreenTest.UiStateFactory.createVideoScreenState
+import edu.stanford.spezi.modules.education.videos.Video
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -24,8 +25,11 @@ class VideoScreenTest {
     fun setup() {
         composeTestRule.activity.setScreen {
             VideoScreen(
-                videoId = videoScreenState.videoId,
-                videoTitle = videoScreenState.videoTitle,
+                { },
+                Video(
+                    youtubeId = videoScreenState.videoId,
+                    title = videoScreenState.videoTitle,
+                )
             )
         }
     }
