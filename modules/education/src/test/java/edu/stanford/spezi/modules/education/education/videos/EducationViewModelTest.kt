@@ -6,6 +6,7 @@ import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.videos.Action
 import edu.stanford.spezi.modules.education.videos.EducationViewModel
+import edu.stanford.spezi.modules.education.videos.Video
 import edu.stanford.spezi.modules.education.videos.data.repository.EducationRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -51,21 +52,33 @@ class EducationViewModelTest {
         every {
             navigator.navigateTo(
                 EducationNavigationEvent.VideoSectionClicked(
-                    youtubeId,
-                    title
+                    Video(
+                        youtubeId = youtubeId,
+                        title = title
+                    )
                 )
             )
         } returns Unit
 
         // When
-        viewModel.onAction(Action.VideoSectionClicked(youtubeId, title))
+        viewModel.onAction(
+            Action.VideoSectionClicked(
+                Video(
+                    youtubeId = youtubeId,
+                    title = title
+
+                )
+            )
+        )
 
         // Then
         verify {
             navigator.navigateTo(
                 EducationNavigationEvent.VideoSectionClicked(
-                    youtubeId,
-                    title
+                    Video(
+                        youtubeId = youtubeId,
+                        title = title
+                    )
                 )
             )
         }
