@@ -1,5 +1,7 @@
 package edu.stanford.spezi.modules.education.videos
 
+import kotlinx.serialization.Serializable
+
 data class EducationUiState(
     val videoSections: List<VideoSection> = emptyList(),
     val loading: Boolean = false,
@@ -14,6 +16,7 @@ data class VideoSection(
     var isExpanded: Boolean = false,
 )
 
+@Serializable
 data class Video(
     val title: String? = null,
     val description: String? = null,
@@ -22,7 +25,7 @@ data class Video(
 )
 
 sealed interface Action {
-    data class VideoSectionClicked(val youtubeId: String, val title: String) : Action
+    data class VideoSectionClicked(val video: Video) : Action
 
     data object Retry : Action
 }
