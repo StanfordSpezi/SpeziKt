@@ -30,12 +30,12 @@ class VideoViewModelTest {
         val videoJson = Json.encodeToString(Video.serializer(), video)
         every { savedStateHandle.get<String>(video.saveStateParam) } returns videoJson
         viewModel = VideoViewModel(navigator, savedStateHandle)
+        every { navigator.navigateTo(NavigationEvent.PopBackStack) } returns Unit
     }
 
     @Test
     fun `when back pressed, navigate to pop up`() {
         // Given
-        every { navigator.navigateTo(NavigationEvent.PopBackStack) } returns Unit
 
         // When
         viewModel.onAction(Action.BackPressed)
