@@ -29,6 +29,7 @@ class VideoScreenTest {
                 Video(
                     youtubeId = videoScreenState.videoId,
                     title = videoScreenState.videoTitle,
+                    description = videoScreenState.videoDescription
                 )
             )
         }
@@ -48,15 +49,24 @@ class VideoScreenTest {
         }
     }
 
+    @Test
+    fun `video screen should display description`() {
+        videoScreen {
+            assertDescription(videoScreenState.videoDescription)
+        }
+    }
+
     object UiStateFactory {
 
         fun createVideoScreenState(
             videoId: String = "videoId",
             videoTitle: String = "videoTitle",
+            videoDescription: String = "Video Description",
         ): VideoScreenState {
             return VideoScreenState(
                 videoId = videoId,
-                videoTitle = videoTitle
+                videoTitle = videoTitle,
+                videoDescription = videoDescription,
             )
         }
     }
@@ -64,6 +74,7 @@ class VideoScreenTest {
     data class VideoScreenState(
         val videoId: String?,
         val videoTitle: String,
+        val videoDescription: String,
     )
 
     private fun videoScreen(block: VideoScreenSimulator.() -> Unit) =

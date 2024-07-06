@@ -12,7 +12,13 @@ class VideoScreenSimulator(composeTestRule: ComposeTestRule) {
     private val videoPlayer =
         composeTestRule.onNodeWithIdentifier(VideoScreenTestIdentifier.VIDEO_PLAYER)
 
+    private val description =
+        composeTestRule.onNodeWithIdentifier(VideoScreenTestIdentifier.VIDEO_DESCRIPTION)
+
     fun assertTitle(title: String) = this.title.assertIsDisplayed().assertTextEquals(title)
 
     fun assertVideoPlayer() = this.videoPlayer.assertIsDisplayed()
+
+    fun assertDescription(description: String) =
+        this.description.assertIsDisplayed().assertTextEquals(description)
 }
