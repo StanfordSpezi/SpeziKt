@@ -78,9 +78,6 @@ internal fun VideoItem(video: Video, onVideoClick: () -> Unit) {
                     CircularProgressIndicator(
                         Modifier
                             .align(Alignment.Center)
-                            .testIdentifier(
-                                EducationScreenTestIdentifier.PROGRESS_BAR
-                            )
                     )
                 }
             }
@@ -146,7 +143,11 @@ fun EducationScreen(
     when {
         uiState.loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(
+                    modifier = Modifier.testIdentifier(
+                        EducationScreenTestIdentifier.PROGRESS_BAR
+                    )
+                )
             }
         }
 
