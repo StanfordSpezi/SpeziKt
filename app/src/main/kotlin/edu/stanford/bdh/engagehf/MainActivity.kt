@@ -20,6 +20,7 @@ import edu.stanford.bdh.engagehf.navigation.screens.AppScreen
 import edu.stanford.bdh.engagehf.navigation.serializableType
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.design.theme.SpeziTheme
+import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.module.account.AccountNavigationEvent
 import edu.stanford.spezi.module.account.login.LoginScreen
 import edu.stanford.spezi.module.account.register.RegisterScreen
@@ -154,7 +155,8 @@ class MainActivity : ComponentActivity() {
                         )
 
                         is AppNavigationEvent.AppScreen -> navHostController.navigate(Routes.AppScreen)
-                        is EducationNavigationEvent.PopUp -> navHostController.popBackStack()
+                        is NavigationEvent.PopBackStack -> navHostController.popBackStack()
+                        is NavigationEvent.NavigateUp -> navHostController.navigateUp()
 
                         is EducationNavigationEvent.VideoSectionClicked -> navHostController.navigate(
                             EducationRoutes.VideoDetail(

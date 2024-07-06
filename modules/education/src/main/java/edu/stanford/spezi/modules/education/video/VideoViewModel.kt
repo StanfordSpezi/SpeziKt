@@ -3,8 +3,8 @@ package edu.stanford.spezi.modules.education.video
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.videos.Video
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +24,7 @@ internal class VideoViewModel @Inject constructor(
     fun onAction(action: Action) {
         when (action) {
             is Action.BackPressed -> {
-                navigator.navigateTo(EducationNavigationEvent.PopUp)
+                navigator.navigateTo(NavigationEvent.PopBackStack)
             }
         }
     }

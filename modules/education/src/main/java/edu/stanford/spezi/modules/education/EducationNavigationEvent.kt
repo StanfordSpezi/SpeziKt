@@ -6,6 +6,4 @@ import edu.stanford.spezi.modules.education.videos.Video
 sealed class EducationNavigationEvent : NavigationEvent {
     data class VideoSectionClicked(val video: Video) :
         EducationNavigationEvent()
-
-    data object PopUp : EducationNavigationEvent()
 }

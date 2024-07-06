@@ -1,8 +1,8 @@
 package edu.stanford.spezi.modules.education.education.video
 
 import androidx.lifecycle.SavedStateHandle
+import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.video.Action
 import edu.stanford.spezi.modules.education.video.VideoViewModel
 import edu.stanford.spezi.modules.education.videos.Video
@@ -35,12 +35,12 @@ class VideoViewModelTest {
     @Test
     fun `when back pressed, navigate to pop up`() {
         // Given
-        every { navigator.navigateTo(EducationNavigationEvent.PopUp) } returns Unit
+        every { navigator.navigateTo(NavigationEvent.PopBackStack) } returns Unit
 
         // When
         viewModel.onAction(Action.BackPressed)
 
         // Then
-        verify { navigator.navigateTo(EducationNavigationEvent.PopUp) }
+        verify { navigator.navigateTo(NavigationEvent.PopBackStack) }
     }
 }
