@@ -42,7 +42,7 @@ import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
-import edu.stanford.spezi.modules.education.videos.component.ExpandableSection
+import edu.stanford.spezi.modules.education.videos.component.ExpandableVideoSection
 
 private const val IMAGE_HEIGHT = 200
 private const val ASPECT_16_9 = 16f / 9f
@@ -190,7 +190,7 @@ fun EducationScreen(
             ) {
                 LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
                     items(uiState.videoSections) { videoSection ->
-                        ExpandableSection(
+                        ExpandableVideoSection(
                             modifier = Modifier.testIdentifier(EducationScreenTestIdentifier.VIDEO_SECTION),
                             title = videoSection.title,
                             description = videoSection.description,

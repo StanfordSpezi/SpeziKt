@@ -40,7 +40,7 @@ import edu.stanford.spezi.modules.education.videos.Video
 import edu.stanford.spezi.modules.education.videos.VideoItem
 
 @Composable
-fun SectionHeader(
+internal fun SectionHeader(
     text: String?,
     isExpanded: Boolean,
     onHeaderClicked: () -> Unit,
@@ -64,7 +64,7 @@ fun SectionHeader(
 }
 
 @Composable
-fun ExpandableSection(
+internal fun ExpandableVideoSection(
     modifier: Modifier = Modifier,
     title: String?,
     description: String?,
@@ -129,7 +129,7 @@ fun ExpandableSection(
 }
 
 @Composable
-fun ExpandIcon(expanded: Boolean) {
+internal fun ExpandIcon(expanded: Boolean) {
     val vector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
     Icon(
         imageVector = vector,
@@ -137,9 +137,10 @@ fun ExpandIcon(expanded: Boolean) {
     )
 }
 
-private class ExpandableSectionPreviewProvider : PreviewParameterProvider<ExpandableSectionParams> {
-    val factory = ExpandableSectionParamsFactory()
-    override val values: Sequence<ExpandableSectionParams> = sequenceOf(
+private class ExpandableSectionPreviewProvider :
+    PreviewParameterProvider<ExpandableVideoSectionParams> {
+    val factory = ExpandableVideoSectionParamsFactory()
+    override val values: Sequence<ExpandableVideoSectionParams> = sequenceOf(
         factory.createParams(),
         factory.createParams().copy(expandedStartValue = true),
     )
@@ -149,12 +150,12 @@ private class ExpandableSectionPreviewProvider : PreviewParameterProvider<Expand
 
 @Preview(showBackground = true)
 @Composable
-private fun ExpandableSectionPreview(
-    @PreviewParameter(ExpandableSectionPreviewProvider::class) params: ExpandableSectionParams,
+private fun ExpandableVideoSectionPreview(
+    @PreviewParameter(ExpandableSectionPreviewProvider::class) params: ExpandableVideoSectionParams,
 ) {
     SpeziTheme {
         Column {
-            ExpandableSection(
+            ExpandableVideoSection(
                 title = params.title,
                 description = params.description,
                 expandedStartValue = params.expandedStartValue
@@ -163,21 +164,21 @@ private fun ExpandableSectionPreview(
     }
 }
 
-private data class ExpandableSectionParams(
+private data class ExpandableVideoSectionParams(
     val title: String?,
     val description: String?,
     val content: @Composable () -> Unit,
     val expandedStartValue: Boolean = false,
 )
 
-private class ExpandableSectionParamsFactory {
+private class ExpandableVideoSectionParamsFactory {
     fun createParams(
         title: String? = "Title",
         description: String? = "Description",
         content: @Composable () -> Unit = { Text(text = "Content") },
         expandedStartValue: Boolean = false,
-    ): ExpandableSectionParams {
-        return ExpandableSectionParams(
+    ): ExpandableVideoSectionParams {
+        return ExpandableVideoSectionParams(
             title = title,
             description = description,
             content = content,
