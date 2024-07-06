@@ -62,17 +62,16 @@ fun VideoScreen(
             Column(
                 modifier = Modifier.padding(paddingValues)
             ) {
-                AndroidView(factory = {
-                    YouTubePlayerView(context).apply {
-                        addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
-                            override fun onReady(youTubePlayer: YouTubePlayer) {
-                                video.youtubeId.let { it1 -> youTubePlayer.cueVideo(it1, 0f) }
-                            }
-                        })
-                    }
-                }, update = {
-                    // Any updates to the player view if needed
-                },
+                AndroidView(
+                    factory = {
+                        YouTubePlayerView(context).apply {
+                            addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
+                                override fun onReady(youTubePlayer: YouTubePlayer) {
+                                    video.youtubeId.let { it1 -> youTubePlayer.cueVideo(it1, 0f) }
+                                }
+                            })
+                        }
+                    },
                     modifier = Modifier
                         .padding(Spacings.medium)
                         .testIdentifier(VideoScreenTestIdentifier.VIDEO_PLAYER)
