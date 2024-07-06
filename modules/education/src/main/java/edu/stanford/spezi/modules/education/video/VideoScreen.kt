@@ -9,8 +9,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,8 +20,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import edu.stanford.spezi.core.design.component.AppTopAppBar
 import edu.stanford.spezi.core.design.theme.Spacings
@@ -62,16 +62,10 @@ fun VideoScreen(
             Column(
                 modifier = Modifier.padding(paddingValues)
             ) {
+                val playerView =
+                    rememberYoutubePlayerView(videoId = video.youtubeId, onAction = onAction)
                 AndroidView(
-                    factory = {
-                        YouTubePlayerView(context).apply {
-                            addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
-                                override fun onReady(youTubePlayer: YouTubePlayer) {
-                                    video.youtubeId.let { it1 -> youTubePlayer.cueVideo(it1, 0f) }
-                                }
-                            })
-                        }
-                    },
+                    factory = { playerView },
                     modifier = Modifier
                         .padding(Spacings.medium)
                         .testIdentifier(VideoScreenTestIdentifier.VIDEO_PLAYER)
@@ -89,6 +83,28 @@ fun VideoScreen(
             }
         }
     )
+}
+
+@Composable
+fun rememberYoutubePlayerView(
+    videoId: String,
+    onAction: (Action) -> Unit,
+): YouTubePlayerView {
+    val context = LocalContext.current
+
+    val playerView = remember(key1 = videoId) {
+        YouTubePlayerView(context).apply {
+            onAction(Action.PlayerViewCreated(playerView = this))
+        }
+    }
+
+    DisposableEffect(playerView) {
+        onDispose {
+            onAction(Action.PlayerViewDestroyed(playerView = playerView))
+        }
+    }
+
+    return playerView
 }
 
 enum class VideoScreenTestIdentifier {
