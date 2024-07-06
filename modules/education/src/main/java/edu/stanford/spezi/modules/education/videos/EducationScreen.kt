@@ -197,7 +197,7 @@ fun EducationScreen(
                             videos = videoSection.videos,
                             expandedStartValue = videoSection.isExpanded,
                             onExpand = {
-                                videoSection.isExpanded = !videoSection.isExpanded
+                                onAction(Action.OnExpand(videoSection))
                             },
                             onActionClick = { video ->
                                 onAction(

@@ -9,6 +9,7 @@ import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.videos.data.repository.EducationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -60,6 +61,20 @@ internal class EducationViewModel @Inject constructor(
                         video = action.video
                     )
                 )
+            }
+
+            is Action.OnExpand -> {
+                _uiState.update {
+                    it.copy(
+                        videoSections = it.videoSections.map { videoSection ->
+                            if (videoSection == action.videoSection) {
+                                videoSection.copy(isExpanded = !videoSection.isExpanded)
+                            } else {
+                                videoSection
+                            }
+                        }
+                    )
+                }
             }
         }
     }
