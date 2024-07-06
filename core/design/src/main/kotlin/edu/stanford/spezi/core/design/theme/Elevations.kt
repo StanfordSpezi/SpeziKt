@@ -16,10 +16,5 @@ object Elevations {
             @Composable
             @ReadOnlyComposable
             get() = 4.dp
-
-        val large: Dp
-            @Composable
-            @ReadOnlyComposable
-            get() = 8.dp
     }
 }
