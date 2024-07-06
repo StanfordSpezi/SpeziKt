@@ -10,7 +10,6 @@ import edu.stanford.spezi.modules.education.videos.data.repository.EducationRepo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,13 +30,9 @@ internal class EducationViewModel @Inject constructor(
     }
 
     private fun loadVideoSections() {
-        val currentLocale: Locale = Locale.getDefault()
-        val languageCode: String = currentLocale.language
-        logger.i { "Loading video sections for language: $languageCode" }
-
         viewModelScope.launch {
             _uiState.value = EducationUiState(loading = true)
-            val result = educationRepository.getVideoSections(languageCode)
+            val result = educationRepository.getVideoSections()
             if (result.isSuccess) {
                 _uiState.value = EducationUiState(
                     videoSections = result.getOrNull() ?: emptyList()

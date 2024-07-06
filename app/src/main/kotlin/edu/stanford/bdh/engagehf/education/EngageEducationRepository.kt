@@ -10,10 +10,10 @@ class EngageEducationRepository @Inject constructor(
     private val firebaseFirestore: FirebaseFirestore,
     private val mapper: VideoSectionDocumentToVideoSectionMapper,
 ) : EducationRepository {
-    override suspend fun getVideoSections(language: String): Result<List<VideoSection>> {
+    override suspend fun getVideoSections(): Result<List<VideoSection>> {
         return runCatching {
             firebaseFirestore.collection("videoSections").get().await().map { document ->
-                mapper.map(document, language)
+                mapper.map(document)
             }.sortedBy { it.orderIndex }
         }
     }

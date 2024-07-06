@@ -35,13 +35,13 @@ class EducationViewModelTest {
     @Test
     fun `when retry action is performed, loadVideoSections is called`() = runTestUnconfined {
         // Given
-        coEvery { educationRepository.getVideoSections(any()) } returns Result.success(emptyList())
+        coEvery { educationRepository.getVideoSections() } returns Result.success(emptyList())
 
         // When
         viewModel.onAction(Action.Retry)
 
         // Then
-        coVerify { educationRepository.getVideoSections(any()) }
+        coVerify { educationRepository.getVideoSections() }
     }
 
     @Test

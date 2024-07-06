@@ -4,11 +4,14 @@ import com.google.firebase.firestore.DocumentSnapshot
 import edu.stanford.spezi.module.onboarding.invitation.await
 import edu.stanford.spezi.modules.education.videos.Video
 import edu.stanford.spezi.modules.education.videos.VideoSection
+import java.util.Locale
 import javax.inject.Inject
 
 class VideoSectionDocumentToVideoSectionMapper @Inject constructor() {
 
-    suspend fun map(document: DocumentSnapshot, language: String): VideoSection {
+    suspend fun map(document: DocumentSnapshot): VideoSection {
+        val currentLocale: Locale = Locale.getDefault()
+        val language: String = currentLocale.language
         val title = getLocalizedString(document, "title", language)
         val orderIndex = document.getLong("orderIndex")?.toInt() ?: 0
         val description =
