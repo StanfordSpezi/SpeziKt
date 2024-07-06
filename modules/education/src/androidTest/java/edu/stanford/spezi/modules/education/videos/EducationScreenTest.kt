@@ -67,7 +67,7 @@ class EducationScreenTest {
         description: String = "description",
         orderIndex: Int = 0,
         youtubeId: String = "id",
-    ): Video = Video("video", title, description, orderIndex, youtubeId)
+    ): Video = Video(title, description, orderIndex, youtubeId)
 
     private fun createDefaultVideoSection(
         title: String = "title",
