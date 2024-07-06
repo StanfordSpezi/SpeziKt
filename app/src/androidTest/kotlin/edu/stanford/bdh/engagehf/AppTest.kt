@@ -42,6 +42,20 @@ class AppTest {
         }
     }
 
+    @Test
+    fun `test app screen top app bar is displayed`() {
+        appScreen {
+            assertTopAppBarIsDisplayed()
+        }
+    }
+
+    @Test
+    fun `test app screen top app bar title is displayed`() {
+        appScreen {
+            assertTopAppBarTitleIsDisplayed(composeTestRule.activity.getString(BottomBarItem.entries.first().label))
+        }
+    }
+
     private fun appScreen(block: AppSimulator.() -> Unit) {
         AppSimulator(composeTestRule).apply(block)
     }
