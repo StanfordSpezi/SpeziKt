@@ -43,7 +43,7 @@ fun AppScreen(
     Scaffold(
         modifier = Modifier.testIdentifier(AppScreenTestIdentifier.ROOT),
         topBar = {
-            AppTopAppBar(title = stringResource(id = uiState.selectedItem.label))
+            AppTopAppBar(title = { Text(text = stringResource(id = uiState.selectedItem.label)) })
         },
         bottomBar = {
             Column {

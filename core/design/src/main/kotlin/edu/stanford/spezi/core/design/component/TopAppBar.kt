@@ -1,7 +1,6 @@
 package edu.stanford.spezi.core.design.component
 
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -10,7 +9,10 @@ import edu.stanford.spezi.core.design.theme.Colors.primary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppTopAppBar(title: String) {
+fun AppTopAppBar(
+    title: @Composable () -> Unit,
+    navigationIcon: @Composable () -> Unit = {},
+) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = primary,
@@ -19,6 +21,7 @@ fun AppTopAppBar(title: String) {
             titleContentColor = onPrimary,
             actionIconContentColor = onPrimary
         ),
-        title = { Text(text = title) }
+        title = title,
+        navigationIcon = navigationIcon
     )
 }
