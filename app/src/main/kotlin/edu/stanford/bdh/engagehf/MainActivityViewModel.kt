@@ -32,6 +32,7 @@ class MainActivityViewModel @Inject constructor(
             selectedItem = BottomBarItem.HOME
         )
     )
+
     val uiState = _uiState.asStateFlow()
 
     init {
