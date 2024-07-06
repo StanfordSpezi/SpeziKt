@@ -44,12 +44,10 @@ fun VideoScreen(
         topBar = {
             AppTopAppBar(
                 title = {
-                    video.title?.let {
-                        Text(
-                            modifier = Modifier.testIdentifier(VideoScreenTestIdentifier.TITLE),
-                            text = it
-                        )
-                    }
+                    Text(
+                        modifier = Modifier.testIdentifier(VideoScreenTestIdentifier.TITLE),
+                        text = video.title
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = {
@@ -68,7 +66,7 @@ fun VideoScreen(
                     YouTubePlayerView(context).apply {
                         addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
                             override fun onReady(youTubePlayer: YouTubePlayer) {
-                                video.youtubeId?.let { it1 -> youTubePlayer.cueVideo(it1, 0f) }
+                                video.youtubeId.let { it1 -> youTubePlayer.cueVideo(it1, 0f) }
                             }
                         })
                     }

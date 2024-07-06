@@ -9,8 +9,8 @@ data class EducationUiState(
 )
 
 data class VideoSection(
-    val title: String? = null,
-    val description: String? = null,
+    val title: String,
+    val description: String,
     val orderIndex: Int = 0,
     val videos: List<Video> = emptyList(),
     var isExpanded: Boolean = false,
@@ -18,12 +18,13 @@ data class VideoSection(
 
 @Serializable
 data class Video(
-    val saveStateParam: String = "video",
-    val title: String? = null,
-    val description: String? = null,
+    val title: String,
+    val description: String?,
     val orderIndex: Int = 0,
-    val youtubeId: String? = null,
+    val youtubeId: String,
 )
+
+internal const val VIDEO_SAVE_STATE_PARAM = "video"
 
 sealed interface Action {
     data class VideoSectionClicked(val video: Video) : Action

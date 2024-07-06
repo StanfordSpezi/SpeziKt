@@ -12,7 +12,7 @@ class EngageEducationRepository @Inject constructor(
 ) : EducationRepository {
     override suspend fun getVideoSections(): Result<List<VideoSection>> {
         return runCatching {
-            firebaseFirestore.collection("videoSections").get().await().map { document ->
+            firebaseFirestore.collection("videoSections").get().await().mapNotNull { document ->
                 mapper.map(document)
             }.sortedBy { it.orderIndex }
         }

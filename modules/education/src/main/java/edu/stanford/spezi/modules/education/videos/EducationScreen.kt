@@ -61,14 +61,12 @@ fun EducationScreen() {
 @Composable
 internal fun VideoItem(video: Video, onVideoClick: () -> Unit) {
     Column(modifier = Modifier.padding(Spacings.small)) {
-        video.title?.let {
-            Text(
-                text = it,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier
-                    .padding(Spacings.small)
-            )
-        }
+        Text(
+            text = video.title,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .padding(Spacings.small)
+        )
 
         VerticalSpacer(height = Spacings.small)
 

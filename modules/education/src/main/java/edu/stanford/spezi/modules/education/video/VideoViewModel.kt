@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.modules.education.videos.VIDEO_SAVE_STATE_PARAM
 import edu.stanford.spezi.modules.education.videos.Video
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +19,11 @@ internal class VideoViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val _uiState =
-        MutableStateFlow(savedStateHandle.toRoute<Video>(Video().saveStateParam))
+        MutableStateFlow(
+            savedStateHandle.toRoute<Video>(
+                VIDEO_SAVE_STATE_PARAM
+            )
+        )
     val uiState: StateFlow<Video> = _uiState.asStateFlow()
 
     fun onAction(action: Action) {

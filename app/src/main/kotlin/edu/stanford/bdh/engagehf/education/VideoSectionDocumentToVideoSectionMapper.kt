@@ -9,17 +9,17 @@ import javax.inject.Inject
 
 class VideoSectionDocumentToVideoSectionMapper @Inject constructor() {
 
-    suspend fun map(document: DocumentSnapshot): VideoSection {
+    suspend fun map(document: DocumentSnapshot): VideoSection? {
         val currentLocale: Locale = Locale.getDefault()
         val language: String = currentLocale.language
-        val title = getLocalizedString(document, "title", language)
+        val title = getLocalizedString(document, "title", language) ?: return null
         val orderIndex = document.getLong("orderIndex")?.toInt() ?: 0
         val description =
-            getLocalizedString(document, "description", language)
+            getLocalizedString(document, "description", language) ?: return null
 
         val videosResult = document.reference.collection("videos").get().await()
 
-        val videoList = videosResult.map { videoDocument ->
+        val videoList = videosResult.mapNotNull { videoDocument ->
             mapVideo(videoDocument, language)
         }.sortedBy { it.orderIndex }
 
@@ -31,15 +31,16 @@ class VideoSectionDocumentToVideoSectionMapper @Inject constructor() {
         )
     }
 
-    private fun mapVideo(document: DocumentSnapshot, language: String): Video {
-        val videoTitle = getLocalizedString(document, "title", language)
+    private fun mapVideo(document: DocumentSnapshot, language: String): Video? {
+        val videoTitle = getLocalizedString(document, "title", language) ?: return null
         val videoDescription = getLocalizedString(document, "description", language)
+        val youtubeId = document.get("youtubeId") as? String ?: return null
 
         return Video(
             title = videoTitle,
             description = videoDescription,
             orderIndex = document.get("orderIndex") as? Int ?: 0,
-            youtubeId = document.get("youtubeId") as? String
+            youtubeId = youtubeId
         )
     }
 
@@ -47,12 +48,12 @@ class VideoSectionDocumentToVideoSectionMapper @Inject constructor() {
         document: DocumentSnapshot,
         field: String,
         language: String,
-    ): String {
+    ): String? {
         val fieldContent = document.get(field)
         return if (fieldContent is Map<*, *>) {
-            fieldContent[language] as? String ?: ""
+            fieldContent[language] as? String
         } else {
-            fieldContent as? String ?: ""
+            fieldContent as? String
         }
     }
 }
