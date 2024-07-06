@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -191,7 +191,7 @@ fun EducationScreen(
                 contentAlignment = Alignment.TopStart
             ) {
                 LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
-                    itemsIndexed(uiState.videoSections) { _, videoSection ->
+                    items(uiState.videoSections) { videoSection ->
                         ExpandableSection(
                             modifier = Modifier.testIdentifier(EducationScreenTestIdentifier.VIDEO_SECTION),
                             title = videoSection.title,
