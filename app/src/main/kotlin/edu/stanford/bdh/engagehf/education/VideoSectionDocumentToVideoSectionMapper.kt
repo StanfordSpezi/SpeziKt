@@ -23,6 +23,10 @@ class VideoSectionDocumentToVideoSectionMapper @Inject constructor() {
             mapVideo(videoDocument, language)
         }.sortedBy { it.orderIndex }
 
+        if (videoList.isEmpty()) {
+            return null
+        }
+
         return VideoSection(
             title = title,
             description = description,
