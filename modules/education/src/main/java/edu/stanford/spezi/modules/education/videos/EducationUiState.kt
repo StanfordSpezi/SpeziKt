@@ -4,8 +4,6 @@ import kotlinx.serialization.Serializable
 
 data class EducationUiState(
     val videoSections: List<VideoSection> = emptyList(),
-    val loading: Boolean = false,
-    val error: String? = null,
 )
 
 data class VideoSection(

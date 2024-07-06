@@ -19,5 +19,4 @@ class AppSimulator(
             .onNodeWithIdentifier(AppScreenTestIdentifier.NAVIGATION_BAR_ITEM, text)
             .assertIsDisplayed()
     }
-
 }

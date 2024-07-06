@@ -41,6 +41,7 @@ import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
+import edu.stanford.spezi.core.utils.UiState
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.modules.education.videos.component.ExpandableVideoSection
 
@@ -137,11 +138,11 @@ internal fun VideoItem(video: Video, onVideoClick: () -> Unit) {
 
 @Composable
 fun EducationScreen(
-    uiState: EducationUiState,
+    uiState: UiState<EducationUiState>,
     onAction: (Action) -> Unit,
 ) {
-    when {
-        uiState.loading -> {
+    when (uiState) {
+        is UiState.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(
                     modifier = Modifier.testIdentifier(
@@ -151,7 +152,7 @@ fun EducationScreen(
             }
         }
 
-        uiState.error != null -> {
+        is UiState.Error -> {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -161,7 +162,7 @@ fun EducationScreen(
             ) {
                 Column {
                     Text(
-                        text = uiState.error,
+                        text = uiState.message,
                         modifier = Modifier.align(Alignment.CenterHorizontally),
                         color = Colors.error
                     )
@@ -179,7 +180,7 @@ fun EducationScreen(
             }
         }
 
-        else -> {
+        is UiState.Success -> {
             val listState = rememberLazyListState()
 
             Box(
@@ -189,7 +190,7 @@ fun EducationScreen(
                 contentAlignment = Alignment.TopStart
             ) {
                 LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
-                    items(uiState.videoSections) { videoSection ->
+                    items(uiState.data.videoSections) { videoSection ->
                         ExpandableVideoSection(
                             modifier = Modifier.testIdentifier(EducationScreenTestIdentifier.VIDEO_SECTION),
                             title = videoSection.title,
@@ -214,17 +215,28 @@ fun EducationScreen(
     }
 }
 
-private class EducationScreenPreviewProvider :
-    PreviewParameterProvider<Pair<EducationUiState, (Action) -> Unit>> {
-    val factory = EducationUiStateFactory()
-    private val errorState = factory.createErrorState("An error occurred")
-    private val loadingState = factory.createLoadingState()
-    private val successState =
-        factory.createSuccessState(listOf(getVideoSection(), getVideoSection()))
-    override val values: Sequence<Pair<EducationUiState, (Action) -> Unit>> = sequenceOf(
-        Pair(errorState) { },
-        Pair(loadingState) { },
-        Pair(successState) { }
+private class EducationUiStatePreviewProvider :
+    PreviewParameterProvider<Pair<UiState<EducationUiState>, (Action) -> Unit>> {
+    override val values: Sequence<Pair<UiState<EducationUiState>, (Action) -> Unit>> = sequenceOf(
+        Pair(UiState.Loading) {},
+        Pair(UiState.Error("An error occurred")) {},
+        Pair(
+            UiState.Success(
+                EducationUiState(
+                    videoSections = listOf(
+                        getVideoSection(),
+                        getVideoSection()
+                    )
+                )
+            )
+        ) {},
+        Pair(
+            UiState.Success(
+                EducationUiState(
+                    videoSections = emptyList()
+                )
+            )
+        ) {},
     )
 
     override val count: Int = values.count()
@@ -233,36 +245,12 @@ private class EducationScreenPreviewProvider :
 @Preview(showBackground = true)
 @Composable
 private fun EducationScreenPreview(
-    @PreviewParameter(EducationScreenPreviewProvider::class) params: Pair<EducationUiState, (Action) -> Unit>,
+    @PreviewParameter(EducationUiStatePreviewProvider::class) params: Pair<UiState<EducationUiState>, (Action) -> Unit>,
 ) {
     SpeziTheme {
         EducationScreen(
             uiState = params.first,
             onAction = params.second
-        )
-    }
-}
-
-private class EducationUiStateFactory {
-    fun createErrorState(errorMessage: String): EducationUiState {
-        return EducationUiState(
-            loading = false,
-            error = errorMessage
-        )
-    }
-
-    fun createLoadingState(): EducationUiState {
-        return EducationUiState(
-            loading = true,
-            error = null
-        )
-    }
-
-    fun createSuccessState(videoSections: List<VideoSection>): EducationUiState {
-        return EducationUiState(
-            loading = false,
-            error = null,
-            videoSections = videoSections
         )
     }
 }

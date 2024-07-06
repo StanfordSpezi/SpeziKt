@@ -4,6 +4,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.spezi.core.design.component.ComposeContentActivity
+import edu.stanford.spezi.core.utils.UiState
 import org.junit.Rule
 import org.junit.Test
 
@@ -20,7 +21,7 @@ class EducationScreenTest {
     fun `education screen should display progress bar`() {
         composeTestRule.activity.setScreen {
             EducationScreen(
-                uiState = createDefaultEducationUiState().copy(loading = true),
+                uiState = UiState.Loading,
                 onAction = {},
             )
         }
@@ -34,7 +35,7 @@ class EducationScreenTest {
     fun `education screen should display video section`() {
         composeTestRule.activity.setScreen {
             EducationScreen(
-                uiState = createDefaultEducationUiState(),
+                uiState = UiState.Success(createDefaultEducationUiState()),
                 onAction = {},
             )
         }
@@ -48,7 +49,7 @@ class EducationScreenTest {
     fun `education screen should display retry button`() {
         composeTestRule.activity.setScreen {
             EducationScreen(
-                uiState = createDefaultEducationUiState().copy(loading = false, error = "error"),
+                uiState = UiState.Error("Could not load videos"),
                 onAction = {},
             )
         }
@@ -79,7 +80,5 @@ class EducationScreenTest {
 
     private fun createDefaultEducationUiState(
         videoSections: List<VideoSection> = listOf(createDefaultVideoSection()),
-        loading: Boolean = false,
-        error: String? = null,
-    ): EducationUiState = EducationUiState(videoSections, loading, error)
+    ): EducationUiState = EducationUiState(videoSections)
 }

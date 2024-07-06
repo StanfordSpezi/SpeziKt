@@ -5,6 +5,7 @@ import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.modules.education.video.Action
 import edu.stanford.spezi.modules.education.video.VideoViewModel
+import edu.stanford.spezi.modules.education.videos.VIDEO_SAVE_STATE_PARAM
 import edu.stanford.spezi.modules.education.videos.Video
 import io.mockk.every
 import io.mockk.mockk
@@ -28,7 +29,7 @@ class VideoViewModelTest {
             youtubeId = "testId"
         )
         val videoJson = Json.encodeToString(Video.serializer(), video)
-        every { savedStateHandle.get<String>(video.saveStateParam) } returns videoJson
+        every { savedStateHandle.get<String>(VIDEO_SAVE_STATE_PARAM) } returns videoJson
         viewModel = VideoViewModel(navigator, savedStateHandle)
         every { navigator.navigateTo(NavigationEvent.PopBackStack) } returns Unit
     }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.utils.UiState
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.videos.data.repository.EducationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,11 +20,7 @@ internal class EducationViewModel @Inject constructor(
     private val navigator: Navigator,
 ) : ViewModel() {
     private val logger by speziLogger()
-    private val _uiState = MutableStateFlow(
-        EducationUiState(
-            loading = true,
-        )
-    )
+    private val _uiState = MutableStateFlow<UiState<EducationUiState>>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -32,15 +29,12 @@ internal class EducationViewModel @Inject constructor(
 
     private fun loadVideoSections() {
         viewModelScope.launch {
-            _uiState.value = EducationUiState(loading = true)
+            _uiState.value = UiState.Loading
             val result = educationRepository.getVideoSections()
-            if (result.isSuccess) {
-                _uiState.value = EducationUiState(
-                    videoSections = result.getOrNull() ?: emptyList()
-                )
+            _uiState.value = if (result.isSuccess) {
+                UiState.Success(EducationUiState(videoSections = result.getOrNull() ?: emptyList()))
             } else {
-                logger.e { result.exceptionOrNull().toString() }
-                _uiState.value = EducationUiState(error = "Failed to load video sections")
+                UiState.Error("Failed to load video sections")
             }
         }
     }
@@ -63,17 +57,21 @@ internal class EducationViewModel @Inject constructor(
                 )
             }
 
-            is Action.OnExpand -> {
-                _uiState.update {
-                    it.copy(
-                        videoSections = it.videoSections.map { videoSection ->
+            is Action.OnExpand -> _uiState.update { currentState ->
+                if (currentState is UiState.Success) {
+                    currentState.copy(data = currentState.data.copy(
+                        videoSections = currentState.data.videoSections.map { videoSection ->
                             if (videoSection == action.videoSection) {
-                                videoSection.copy(isExpanded = !videoSection.isExpanded)
+                                videoSection.copy(
+                                    isExpanded = !videoSection.isExpanded
+                                )
                             } else {
                                 videoSection
                             }
                         }
-                    )
+                    ))
+                } else {
+                    currentState
                 }
             }
         }
