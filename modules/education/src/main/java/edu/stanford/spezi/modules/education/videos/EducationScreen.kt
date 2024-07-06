@@ -37,9 +37,7 @@ import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import edu.stanford.spezi.core.design.component.Button
 import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.theme.Borders
 import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Ratios.ASPECT_16_9
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
@@ -47,6 +45,7 @@ import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.modules.education.videos.component.ExpandableSection
 
 private const val IMAGE_HEIGHT = 200
+private const val ASPECT_16_9 = 16f / 9f
 
 @Composable
 fun EducationScreen() {
@@ -103,7 +102,8 @@ internal fun VideoItem(video: Video, onVideoClick: () -> Unit) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(ASPECT_16_9)
-                        .border(Borders.medium, Colors.primary), contentAlignment = Alignment.Center
+                        .border(Sizes.Border.medium, Colors.primary),
+                    contentAlignment = Alignment.Center
                 ) {
                     Image(
                         modifier = Modifier.fillMaxSize(),

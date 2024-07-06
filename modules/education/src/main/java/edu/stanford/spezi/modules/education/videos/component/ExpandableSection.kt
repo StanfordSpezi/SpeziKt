@@ -31,8 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Elevations
-import edu.stanford.spezi.core.design.theme.Shapes
+import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
@@ -77,8 +76,8 @@ fun ExpandableSection(
     var expanded by remember { mutableStateOf(expandedStartValue) }
 
     ElevatedCard(
-        elevation = CardDefaults.cardElevation(defaultElevation = Elevations.Card.medium),
-        shape = RoundedCornerShape(Shapes.RoundedCorners.large),
+        elevation = CardDefaults.cardElevation(defaultElevation = Sizes.Elevation.medium),
+        shape = RoundedCornerShape(Sizes.RoundedCorner.large),
         colors = CardDefaults.cardColors(
             containerColor = lightenColor(Colors.surface),
         ),
