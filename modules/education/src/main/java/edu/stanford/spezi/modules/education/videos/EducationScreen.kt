@@ -49,6 +49,16 @@ import edu.stanford.spezi.modules.education.videos.component.ExpandableSection
 private const val IMAGE_HEIGHT = 200
 
 @Composable
+fun EducationScreen() {
+    val viewModel = hiltViewModel<EducationViewModel>()
+    val uiState by viewModel.uiState.collectAsState()
+    EducationScreen(
+        uiState = uiState,
+        onAction = viewModel::onAction
+    )
+}
+
+@Composable
 internal fun VideoItem(video: Video, onVideoClick: () -> Unit) {
     Column(modifier = Modifier.padding(Spacings.small)) {
         video.title?.let {
@@ -125,16 +135,6 @@ internal fun VideoItem(video: Video, onVideoClick: () -> Unit) {
             }
         }
     }
-}
-
-@Composable
-fun EducationScreen() {
-    val viewModel = hiltViewModel<EducationViewModel>()
-    val uiState by viewModel.uiState.collectAsState()
-    EducationScreen(
-        uiState = uiState,
-        onAction = viewModel::onAction
-    )
 }
 
 @Composable

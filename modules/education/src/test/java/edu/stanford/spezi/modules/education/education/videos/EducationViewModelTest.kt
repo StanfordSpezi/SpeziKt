@@ -63,10 +63,9 @@ class EducationViewModelTest {
         // When
         viewModel.onAction(
             Action.VideoSectionClicked(
-                Video(
+                video = Video(
                     youtubeId = youtubeId,
                     title = title
-
                 )
             )
         )
@@ -75,7 +74,7 @@ class EducationViewModelTest {
         verify {
             navigator.navigateTo(
                 EducationNavigationEvent.VideoSectionClicked(
-                    Video(
+                    video = Video(
                         youtubeId = youtubeId,
                         title = title
                     )
