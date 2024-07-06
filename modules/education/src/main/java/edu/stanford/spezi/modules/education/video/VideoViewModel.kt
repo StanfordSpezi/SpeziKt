@@ -5,12 +5,12 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.utils.extensions.decode
 import edu.stanford.spezi.modules.education.videos.VIDEO_SAVE_STATE_PARAM
 import edu.stanford.spezi.modules.education.videos.Video
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,7 +20,7 @@ internal class VideoViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState =
         MutableStateFlow(
-            savedStateHandle.toRoute<Video>(
+            savedStateHandle.decode<Video>(
                 VIDEO_SAVE_STATE_PARAM
             )
         )
@@ -32,12 +32,6 @@ internal class VideoViewModel @Inject constructor(
                 navigator.navigateTo(NavigationEvent.PopBackStack)
             }
         }
-    }
-
-    private inline fun <reified T> SavedStateHandle.toRoute(param: String): T {
-        val jsonString =
-            this.get<String>(param) ?: throw IllegalArgumentException("Argument not found")
-        return Json.decodeFromString(jsonString)
     }
 }
 
