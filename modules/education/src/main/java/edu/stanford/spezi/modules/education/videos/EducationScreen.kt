@@ -46,6 +46,8 @@ import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.modules.education.videos.component.ExpandableSection
 
+private const val IMAGE_HEIGHT = 200
+
 @Composable
 internal fun VideoItem(video: Video, onVideoClick: () -> Unit) {
     Column(modifier = Modifier.padding(Spacings.small)) {
@@ -65,7 +67,7 @@ internal fun VideoItem(video: Video, onVideoClick: () -> Unit) {
         SubcomposeAsyncImage(
             modifier = Modifier
                 .clickable { onVideoClick() }
-                .height(200.dp)
+                .height(IMAGE_HEIGHT.dp)
                 .fillMaxWidth(),
             model = "https://i3.ytimg.com/vi/${video.youtubeId}/hqdefault.jpg",
 
