@@ -17,8 +17,4 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     implementation(project(":core:navigation"))
-
-    testImplementation(libs.bundles.unit.testing)
-
-    androidTestImplementation(libs.bundles.compose.androidTest)
 }
