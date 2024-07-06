@@ -13,11 +13,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.Action
+import edu.stanford.bdh.engagehf.BottomBarItem
 import edu.stanford.bdh.engagehf.MainActivityViewModel
-import edu.stanford.bdh.engagehf.NavigationItemEnum
 import edu.stanford.bdh.engagehf.bluetooth.screen.BluetoothScreen
 import edu.stanford.bdh.engagehf.navigation.data.models.AppUiState
 import edu.stanford.spezi.core.design.component.AppTopAppBar
@@ -42,7 +43,7 @@ fun AppScreen(
     Scaffold(
         modifier = Modifier.testIdentifier(AppScreenTestIdentifier.ROOT),
         topBar = {
-            AppTopAppBar(title = uiState.navigationItems[uiState.selectedIndex].label)
+            AppTopAppBar(title = stringResource(id = uiState.selectedItem.label))
         },
         bottomBar = {
             Column {
@@ -52,7 +53,7 @@ fun AppScreen(
                 NavigationBar(
                     tonalElevation = (-1).dp,
                 ) {
-                    uiState.navigationItems.forEachIndexed { index, item ->
+                    uiState.items.forEach { item ->
                         NavigationBarItem(
                             icon = {
                                 Icon(
@@ -60,10 +61,10 @@ fun AppScreen(
                                     contentDescription = null
                                 )
                             },
-                            label = { Text(text = item.label) },
-                            selected = item.selected,
+                            label = { Text(text = stringResource(id = item.label)) },
+                            selected = uiState.selectedItem == item,
                             onClick = {
-                                onAction(Action.UpdateSelectedIndex(index))
+                                onAction(Action.UpdateSelectedBottomBarItem(item))
                             },
                         )
                     }
@@ -74,22 +75,11 @@ fun AppScreen(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            when (uiState.navigationItems[uiState.selectedIndex].navigationItem) {
-                NavigationItemEnum.Home -> {
-                    BluetoothScreen()
-                }
-
-                NavigationItemEnum.HeartHealth -> {
-                    BluetoothScreen()
-                }
-
-                NavigationItemEnum.Medication -> {
-                    EducationScreen()
-                }
-
-                NavigationItemEnum.Education -> {
-                    EducationScreen()
-                }
+            when (uiState.selectedItem) {
+                BottomBarItem.HOME -> BluetoothScreen()
+                BottomBarItem.HEART_HEALTH -> BluetoothScreen()
+                BottomBarItem.MEDICATION -> EducationScreen()
+                BottomBarItem.EDUCATION -> EducationScreen()
             }
         }
     }

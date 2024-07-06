@@ -1,12 +1,12 @@
 package edu.stanford.bdh.engagehf
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
-import edu.stanford.bdh.engagehf.navigation.NavigationItem
 import edu.stanford.bdh.engagehf.navigation.data.models.AppUiState
-import edu.stanford.spezi.core.design.R
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import edu.stanford.spezi.core.design.R as DesignR
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
@@ -25,7 +26,12 @@ class MainActivityViewModel @Inject constructor(
 ) : ViewModel() {
     private val logger by speziLogger()
 
-    private val _uiState = MutableStateFlow(AppUiState())
+    private val _uiState = MutableStateFlow(
+        AppUiState(
+            items = BottomBarItem.entries,
+            selectedItem = BottomBarItem.HOME
+        )
+    )
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -46,13 +52,9 @@ class MainActivityViewModel @Inject constructor(
 
     fun onAction(action: Action) {
         when (action) {
-            is Action.UpdateSelectedIndex -> {
+            is Action.UpdateSelectedBottomBarItem -> {
                 _uiState.update {
-                    it.copy(selectedIndex = action.index,
-                        navigationItems = it.navigationItems.mapIndexed { index, item ->
-                            item.copy(selected = index == action.index)
-                        }
-                    )
+                    it.copy(selectedItem = action.selectedBottomBarItem)
                 }
             }
         }
@@ -62,41 +64,33 @@ class MainActivityViewModel @Inject constructor(
 }
 
 sealed interface Action {
-    data class UpdateSelectedIndex(val index: Int) : Action
+    data class UpdateSelectedBottomBarItem(val selectedBottomBarItem: BottomBarItem) : Action
 }
 
-val home = NavigationItem(
-    icon = R.drawable.ic_home,
-    selectedIcon = R.drawable.ic_home,
-    label = "Home",
-    navigationItem = NavigationItemEnum.Home,
-    selected = true,
-)
-
-val heartHealth = NavigationItem(
-    icon = R.drawable.ic_vital_signs,
-    selectedIcon = R.drawable.ic_vital_signs,
-    label = "Heart Health",
-    navigationItem = NavigationItemEnum.HeartHealth,
-)
-
-val medication = NavigationItem(
-    icon = R.drawable.ic_medication,
-    selectedIcon = R.drawable.ic_medication,
-    label = "Medication",
-    navigationItem = NavigationItemEnum.Medication,
-)
-
-val education = NavigationItem(
-    icon = R.drawable.ic_school,
-    selectedIcon = R.drawable.ic_school,
-    label = "Education",
-    navigationItem = NavigationItemEnum.Education,
-)
-
-enum class NavigationItemEnum {
-    Home,
-    HeartHealth,
-    Medication,
-    Education,
+enum class BottomBarItem(
+    @StringRes val label: Int,
+    @DrawableRes val icon: Int,
+    @DrawableRes val selectedIcon: Int,
+) {
+    HOME(
+        label = R.string.home,
+        icon = DesignR.drawable.ic_home,
+        selectedIcon = DesignR.drawable.ic_home
+    ),
+    HEART_HEALTH
+        (
+        label = R.string.heart_health,
+        icon = DesignR.drawable.ic_vital_signs,
+        selectedIcon = DesignR.drawable.ic_vital_signs
+    ),
+    MEDICATION(
+        label = R.string.medication,
+        icon = DesignR.drawable.ic_medication,
+        selectedIcon = DesignR.drawable.ic_medication
+    ),
+    EDUCATION(
+        label = R.string.education,
+        icon = DesignR.drawable.ic_school,
+        selectedIcon = DesignR.drawable.ic_school
+    ),
 }

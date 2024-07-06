@@ -28,17 +28,16 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `given selectedIndex when onAction UpdateSelectedIndex then uiState selectedIndex should be updated`() =
+    fun `given selectedItem when onAction UpdateSelectedItem then uiState selectedItem should be updated`() =
         runTestUnconfined {
             // Given
-            val initialIndex = viewModel.uiState.value.selectedIndex
-            val newIndex = initialIndex + 1
+            val newSelectedItem = BottomBarItem.EDUCATION
 
             // When
-            viewModel.onAction(Action.UpdateSelectedIndex(newIndex))
+            viewModel.onAction(Action.UpdateSelectedBottomBarItem(newSelectedItem))
 
             // Then
-            val updatedIndex = viewModel.uiState.value.selectedIndex
-            assertThat(updatedIndex).isEqualTo(newIndex)
+            val updatedIndex = viewModel.uiState.value.selectedItem
+            assertThat(updatedIndex).isEqualTo(newSelectedItem)
         }
 }

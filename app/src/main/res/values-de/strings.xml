@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Spezi</string>
+    <string name="home">Startseite</string>
+    <string name="heart_health">Herzgesundheit</string>
+    <string name="medication">Medikation</string>
+    <string name="education">Bildung</string>
 </resources>
