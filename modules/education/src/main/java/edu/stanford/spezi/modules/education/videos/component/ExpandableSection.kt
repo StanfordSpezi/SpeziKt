@@ -27,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -61,11 +60,7 @@ fun SectionHeader(
                 style = titleLarge
             )
         }
-
-        Icon(
-            imageVector = getExpandIcon(isExpanded),
-            contentDescription = if (isExpanded) "Collapse" else "Expand"
-        )
+        ExpandIcon(isExpanded)
     }
 }
 
@@ -135,8 +130,12 @@ fun ExpandableSection(
 }
 
 @Composable
-fun getExpandIcon(expanded: Boolean): ImageVector {
-    return if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
+fun ExpandIcon(expanded: Boolean) {
+    val vector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
+    Icon(
+        imageVector = vector,
+        contentDescription = null,
+    )
 }
 
 private class ExpandableSectionPreviewProvider : PreviewParameterProvider<ExpandableSectionParams> {
