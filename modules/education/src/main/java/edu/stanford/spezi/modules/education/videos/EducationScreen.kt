@@ -70,14 +70,12 @@ internal fun VideoItem(video: Video, onVideoClick: () -> Unit) {
 
         VerticalSpacer(height = Spacings.small)
 
-        println("youtube id : " + video.youtubeId)
-
         SubcomposeAsyncImage(
             modifier = Modifier
                 .clickable { onVideoClick() }
                 .height(IMAGE_HEIGHT.dp)
                 .fillMaxWidth(),
-            model = "https://i3.ytimg.com/vi/${video.youtubeId}/hqdefault.jpg",
+            model = video.thumbnailUrl,
 
             contentDescription = "Video thumbnail",
         ) {

@@ -54,7 +54,7 @@ class EducationViewModelTest {
                 EducationNavigationEvent.VideoSectionClicked(
                     Video(
                         youtubeId = youtubeId,
-                        title = title
+                        title = title,
                     )
                 )
             )

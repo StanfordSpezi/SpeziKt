@@ -17,10 +17,13 @@ data class VideoSection(
 @Serializable
 data class Video(
     val title: String,
-    val description: String?,
+    val description: String? = null,
     val orderIndex: Int = 0,
     val youtubeId: String,
-)
+) {
+    val thumbnailUrl: String
+        get() = "https://i3.ytimg.com/vi/$youtubeId/hqdefault.jpg"
+}
 
 internal const val VIDEO_SAVE_STATE_PARAM = "video"
 
