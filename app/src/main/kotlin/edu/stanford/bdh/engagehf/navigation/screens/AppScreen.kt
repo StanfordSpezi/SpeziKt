@@ -55,6 +55,10 @@ fun AppScreen(
                 ) {
                     uiState.items.forEach { item ->
                         NavigationBarItem(
+                            modifier = Modifier.testIdentifier(
+                                identifier = AppScreenTestIdentifier.NAVIGATION_BAR_ITEM,
+                                suffix = stringResource(id = item.label)
+                            ),
                             icon = {
                                 Icon(
                                     painter = painterResource(id = item.icon),
@@ -87,4 +91,5 @@ fun AppScreen(
 
 enum class AppScreenTestIdentifier {
     ROOT,
+    NAVIGATION_BAR_ITEM,
 }

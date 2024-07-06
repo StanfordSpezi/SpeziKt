@@ -72,7 +72,7 @@ class VideoScreenTest {
     }
 
     data class VideoScreenState(
-        val videoId: String?,
+        val videoId: String,
         val videoTitle: String,
         val videoDescription: String,
     )
