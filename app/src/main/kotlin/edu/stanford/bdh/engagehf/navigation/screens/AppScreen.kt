@@ -43,7 +43,16 @@ fun AppScreen(
     Scaffold(
         modifier = Modifier.testIdentifier(AppScreenTestIdentifier.ROOT),
         topBar = {
-            AppTopAppBar(title = { Text(text = stringResource(id = uiState.selectedItem.label)) })
+            AppTopAppBar(
+                modifier = Modifier.testIdentifier(identifier = AppScreenTestIdentifier.TOP_APP_BAR),
+                title = {
+                    Text(
+                        text = stringResource(id = uiState.selectedItem.label),
+                        modifier = Modifier.testIdentifier(
+                            AppScreenTestIdentifier.TOP_APP_BAR_TITLE
+                        )
+                    )
+                })
         },
         bottomBar = {
             Column {
@@ -61,7 +70,7 @@ fun AppScreen(
                             ),
                             icon = {
                                 Icon(
-                                    painter = painterResource(id = item.icon),
+                                    painter = painterResource(id = if (uiState.selectedItem == item) item.selectedIcon else item.icon),
                                     contentDescription = null
                                 )
                             },
@@ -92,4 +101,6 @@ fun AppScreen(
 enum class AppScreenTestIdentifier {
     ROOT,
     NAVIGATION_BAR_ITEM,
+    TOP_APP_BAR,
+    TOP_APP_BAR_TITLE,
 }
