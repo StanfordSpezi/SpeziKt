@@ -26,4 +26,5 @@ sealed interface Action {
     data class ConfirmMeasurement(val measurement: Measurement) : Action
     data object DismissDialog : Action
     data class MessageItemClicked(val message: Message) : Action
+    data class ToggleExpand(val message: Message) : Action
 }
