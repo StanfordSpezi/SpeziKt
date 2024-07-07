@@ -69,7 +69,9 @@ private fun BluetoothScreen(
         )
         Row(
             horizontalArrangement = Arrangement.spacedBy(Spacings.medium),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = Spacings.medium)
         ) {
             VitalDisplay(
                 modifier = Modifier.weight(1f), vitalDisplayUiState = uiVitalDisplayUiState.weight
@@ -80,6 +82,7 @@ private fun BluetoothScreen(
             )
         }
         VitalDisplay(
+            modifier = Modifier.padding(vertical = Spacings.medium),
             vitalDisplayUiState = uiVitalDisplayUiState.bloodPressure
         )
     }

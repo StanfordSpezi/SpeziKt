@@ -38,7 +38,6 @@ fun VitalDisplay(
             defaultElevation = 4.dp,
         ),
         modifier = modifier
-            .padding(Spacings.medium)
             .height(130.dp)
             .fillMaxWidth()
             .testIdentifier(WeightDisplayTestIdentifier.ROOT)
