@@ -10,17 +10,15 @@ import javax.inject.Inject
 class VideoSectionDocumentToVideoSectionMapper @Inject constructor() {
 
     suspend fun map(document: DocumentSnapshot): VideoSection? {
-        val currentLocale: Locale = Locale.getDefault()
-        val language: String = currentLocale.language
-        val title = getLocalizedString(document, "title", language) ?: return null
+        val title = getLocalizedString(document, "title")
+        val description = getLocalizedString(document, "description")
+        if (title == null || description == null) return null
         val orderIndex = document.getLong("orderIndex")?.toInt() ?: 0
-        val description =
-            getLocalizedString(document, "description", language) ?: return null
 
         val videosResult = document.reference.collection("videos").get().await()
 
         val videoList = videosResult.mapNotNull { videoDocument ->
-            mapVideo(videoDocument, language)
+            mapVideo(videoDocument)
         }.sortedBy { it.orderIndex }
 
         if (videoList.isEmpty()) {
@@ -35,9 +33,9 @@ class VideoSectionDocumentToVideoSectionMapper @Inject constructor() {
         )
     }
 
-    private fun mapVideo(document: DocumentSnapshot, language: String): Video? {
-        val videoTitle = getLocalizedString(document, "title", language) ?: return null
-        val videoDescription = getLocalizedString(document, "description", language)
+    private fun mapVideo(document: DocumentSnapshot): Video? {
+        val videoTitle = getLocalizedString(document, "title") ?: return null
+        val videoDescription = getLocalizedString(document, "description")
         val youtubeId = document.get("youtubeId") as? String ?: return null
 
         return Video(
@@ -51,9 +49,9 @@ class VideoSectionDocumentToVideoSectionMapper @Inject constructor() {
     private fun getLocalizedString(
         document: DocumentSnapshot,
         field: String,
-        language: String,
     ): String? {
         val fieldContent = document.get(field)
+        val language: String = Locale.getDefault().language
         return if (fieldContent is Map<*, *>) {
             fieldContent[language] as? String
         } else {

@@ -1,6 +1,5 @@
 package edu.stanford.spezi.modules.education.videos
 
-
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 

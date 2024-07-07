@@ -78,8 +78,7 @@ enum class BottomBarItem(
         icon = DesignR.drawable.ic_home,
         selectedIcon = DesignR.drawable.ic_home
     ),
-    HEART_HEALTH
-        (
+    HEART_HEALTH(
         label = R.string.heart_health,
         icon = DesignR.drawable.ic_vital_signs,
         selectedIcon = DesignR.drawable.ic_vital_signs
