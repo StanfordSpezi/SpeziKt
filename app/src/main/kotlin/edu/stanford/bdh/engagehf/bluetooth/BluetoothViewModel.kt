@@ -51,7 +51,7 @@ class BluetoothViewModel @Inject internal constructor(
 
     private val dateFormatter by lazy {
         DateTimeFormatter.ofPattern(
-            "dd MMMM", Locale.getDefault()
+            "dd.MM.yyyy, HH:mm", Locale.getDefault()
         )
     }
 

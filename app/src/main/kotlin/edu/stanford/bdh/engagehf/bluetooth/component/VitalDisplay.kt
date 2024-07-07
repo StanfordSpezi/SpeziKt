@@ -62,7 +62,7 @@ fun VitalDisplay(
                             .testIdentifier(WeightDisplayTestIdentifier.VALUE),
                     )
                     Text(
-                        text = "Measured on: ${vitalDisplayUiState.date}",
+                        text = "${vitalDisplayUiState.date}",
                         style = TextStyles.bodySmall,
                         color = Colors.onBackground,
                         modifier = Modifier
