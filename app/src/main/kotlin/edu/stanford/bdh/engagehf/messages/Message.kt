@@ -13,6 +13,7 @@ data class Message(
     val title: String = "",
     val description: String? = null,
     val action: String? = null,
+    val isExpanded: Boolean = false,
 ) {
     val dueDate: ZonedDateTime?
         get() = dueDateString?.let {
