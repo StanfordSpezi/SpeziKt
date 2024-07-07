@@ -1,9 +1,9 @@
 package edu.stanford.bdh.engagehf.bluetooth.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CardDefaults
@@ -39,11 +39,14 @@ fun VitalDisplay(
         ),
         modifier = modifier
             .height(130.dp)
-            .fillMaxWidth()
+            .fillMaxSize()
             .testIdentifier(WeightDisplayTestIdentifier.ROOT)
     ) {
         Column(
-            modifier = Modifier.padding(Spacings.medium)
+            modifier = Modifier
+                .background(Colors.surface)
+                .padding(Spacings.small)
+                .fillMaxSize()
         ) {
             Text(
                 text = vitalDisplayUiState.title,
