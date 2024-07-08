@@ -1,5 +1,6 @@
 package edu.stanford.bdh.engagehf.navigation.screens
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
@@ -19,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.Action
 import edu.stanford.bdh.engagehf.BottomBarItem
-import edu.stanford.bdh.engagehf.MainActivity
 import edu.stanford.bdh.engagehf.MainActivityViewModel
 import edu.stanford.bdh.engagehf.bluetooth.screen.BluetoothScreen
 import edu.stanford.bdh.engagehf.navigation.data.models.AppUiState
@@ -30,7 +30,7 @@ import edu.stanford.spezi.modules.education.videos.EducationScreen
 @Composable
 fun AppScreen() {
     val viewModel = hiltViewModel<MainActivityViewModel>(
-        viewModelStoreOwner = LocalContext.current as MainActivity
+        viewModelStoreOwner = LocalContext.current as ComponentActivity
     )
     val uiState by viewModel.uiState.collectAsState()
     AppScreen(
