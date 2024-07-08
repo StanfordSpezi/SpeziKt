@@ -74,6 +74,7 @@ internal fun VideoItem(video: Video, onVideoClick: () -> Unit) {
             modifier = Modifier
                 .clickable { onVideoClick() }
                 .height(IMAGE_HEIGHT.dp)
+                .padding(Spacings.small)
                 .fillMaxWidth(),
             model = video.thumbnailUrl,
 
