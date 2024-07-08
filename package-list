@@ -7,7 +7,10 @@ edu.stanford.bdh.engagehf.bluetooth
 edu.stanford.bdh.engagehf.bluetooth.data.mapper
 edu.stanford.bdh.engagehf.bluetooth.data.models
 edu.stanford.bdh.engagehf.bluetooth.screen
+edu.stanford.bdh.engagehf.education
 edu.stanford.bdh.engagehf.navigation
+edu.stanford.bdh.engagehf.navigation.data.models
+edu.stanford.bdh.engagehf.navigation.screens
 edu.stanford.bdh.engagehf.onboarding
 module:bluetooth
 edu.stanford.spezi.core.bluetooth.api
@@ -46,6 +49,11 @@ edu.stanford.spezi.modules.contact
 edu.stanford.spezi.modules.contact.component
 edu.stanford.spezi.modules.contact.model
 edu.stanford.spezi.modules.contact.repository
+module:education
+edu.stanford.spezi.modules.education
+edu.stanford.spezi.modules.education.video
+edu.stanford.spezi.modules.education.videos
+edu.stanford.spezi.modules.education.videos.data.repository
 module:healthconnectonfhir
 edu.stanford.healthconnectonfhir
 edu.stanford.healthconnectonfhir.di
