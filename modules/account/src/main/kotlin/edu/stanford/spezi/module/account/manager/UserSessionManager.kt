@@ -54,11 +54,7 @@ class UserSessionManager @Inject constructor(
                 .putStream(inputStream)
                 .await().task.isSuccessful
 
-            if (uploaded) {
-                _userState.update { UserState.Registered(hasConsented = true) }
-            } else {
-                error("Failed to upload signature.pdf")
-            }
+            if (!uploaded) error("Failed to upload signature.pdf")
         }
     }
 

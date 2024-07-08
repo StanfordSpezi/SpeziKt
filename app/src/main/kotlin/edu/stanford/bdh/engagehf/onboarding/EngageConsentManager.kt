@@ -21,7 +21,7 @@ class EngageConsentManager @Inject internal constructor(
     }
 
     override suspend fun onConsented() {
-        navigator.navigateTo(AppNavigationEvent.BluetoothScreen)
+        navigator.navigateTo(AppNavigationEvent.AppScreen)
     }
 
     override suspend fun onConsentFailure(error: Throwable) {

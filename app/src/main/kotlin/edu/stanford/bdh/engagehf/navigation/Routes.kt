@@ -14,6 +14,9 @@ sealed class Routes {
     data class LoginScreen(val isAlreadyRegistered: @Serializable Boolean = true) : Routes()
 
     @Serializable
+    data object AppScreen : Routes()
+
+    @Serializable
     data object SequentialOnboardingScreen : Routes()
 
     @Serializable
@@ -24,9 +27,6 @@ sealed class Routes {
 
     @Serializable
     data object ConsentScreen : Routes()
-
-    @Serializable
-    data object BluetoothScreen : Routes()
 }
 
 @Serializable

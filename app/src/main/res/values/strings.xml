@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Spezi</string>
+    <string name="home">Home</string>
+    <string name="heart_health">Heart Health</string>
+    <string name="medication">Medication</string>
+    <string name="education">Education</string>
 </resources>

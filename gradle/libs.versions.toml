@@ -4,7 +4,9 @@ accompanistPager = "0.35.1-alpha"
 activityCompose = "1.9.0"
 agp = "8.5.0"
 androidTools = "31.5.0"
+androidyoutubeplayer-core = "12.1.0"
 appcompat = "1.7.0"
+coilCompose = "2.6.0"
 compileSdk = "34"
 composeBom = "2024.06.00"
 composeNavigation = "2.8.0-beta03"
@@ -67,6 +69,8 @@ androidx-security-crypto-ktx = { group = "androidx.security", name = "security-c
 androidx-test-core = { group = "androidx.test", name = "core", version.ref = "testCoreVersion" }
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "rulesVersion" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "runnerVersion" }
+androidyoutubeplayer-core = { module = "com.pierfrancescosoffritti.androidyoutubeplayer:core", version.ref = "androidyoutubeplayer-core" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }

@@ -13,4 +13,5 @@ dependencies {
     val composeBom = platform(libs.compose.bom)
     implementation(composeBom)
     implementation(libs.bundles.compose)
+    implementation(libs.kotlinx.serialization.json)
 }

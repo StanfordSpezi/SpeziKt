@@ -23,7 +23,7 @@ class EngageConsentManagerTest {
 
     @Before
     fun setup() {
-        every { navigator.navigateTo(AppNavigationEvent.BluetoothScreen) } just Runs
+        every { navigator.navigateTo(AppNavigationEvent.AppScreen) } just Runs
         every { messageNotifier.notify(any(), any()) } just Runs
     }
 
@@ -47,7 +47,7 @@ class EngageConsentManagerTest {
     @Test
     fun `it should navigate to bluetooth screen on consented`() = runTestUnconfined {
         // given
-        val navigationEvent = AppNavigationEvent.BluetoothScreen
+        val navigationEvent = AppNavigationEvent.AppScreen
 
         // when
         manager.onConsented()

@@ -52,7 +52,7 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `it should navigate to bluetooth screen on SignUpSuccess event`() = runTestUnconfined {
+    fun `it should navigate to app screen on SignUpSuccess event`() = runTestUnconfined {
         // given
         val event = AccountEvents.Event.SignUpSuccess
 
@@ -60,11 +60,11 @@ class MainActivityViewModelTest {
         accountEventsFlow.emit(event)
 
         // then
-        verify { navigator.navigateTo(event = AppNavigationEvent.BluetoothScreen) }
+        verify { navigator.navigateTo(event = AppNavigationEvent.AppScreen) }
     }
 
     @Test
-    fun `it should navigate to bluetooth screen on SignInSuccess event`() = runTestUnconfined {
+    fun `it should navigate to app screen on SignInSuccess event`() = runTestUnconfined {
         // given
         val event = AccountEvents.Event.SignInSuccess
 
@@ -72,7 +72,7 @@ class MainActivityViewModelTest {
         accountEventsFlow.emit(event)
 
         // then
-        verify { navigator.navigateTo(event = AppNavigationEvent.BluetoothScreen) }
+        verify { navigator.navigateTo(event = AppNavigationEvent.AppScreen) }
     }
 
     @Test
@@ -101,7 +101,7 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `it should navigate to bluetooth screen for registered user if consented`() =
+    fun `it should navigate to app screen for registered user if consented`() =
         runTestUnconfined {
             // given
             val userState = UserState.Registered(hasConsented = true)
@@ -110,7 +110,7 @@ class MainActivityViewModelTest {
             userStateFlow.update { userState }
 
             // then
-            verify { navigator.navigateTo(event = AppNavigationEvent.BluetoothScreen) }
+            verify { navigator.navigateTo(event = AppNavigationEvent.AppScreen) }
         }
 
     @Test
@@ -150,5 +150,19 @@ class MainActivityViewModelTest {
 
             // then
             verify { navigator wasNot Called }
+        }
+
+    @Test
+    fun `given selectedItem when onAction UpdateSelectedItem then uiState selectedItem should be updated`() =
+        runTestUnconfined {
+            // Given
+            val newSelectedItem = BottomBarItem.EDUCATION
+
+            // When
+            viewModel.onAction(Action.UpdateSelectedBottomBarItem(newSelectedItem))
+
+            // Then
+            val updatedIndex = viewModel.uiState.value.selectedItem
+            assertThat(updatedIndex).isEqualTo(newSelectedItem)
         }
 }

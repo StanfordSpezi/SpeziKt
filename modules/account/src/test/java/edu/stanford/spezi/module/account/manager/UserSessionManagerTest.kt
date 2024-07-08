@@ -154,7 +154,6 @@ class UserSessionManagerTest {
 
         // then
         assertThat(result.isSuccess).isTrue()
-        assertThat(userSessionManager.userState.value).isEqualTo(UserState.Registered(true))
     }
 
     @Test

@@ -42,7 +42,10 @@ dependencies {
     implementation(project(":core:coroutines"))
     implementation(project(":core:navigation"))
     implementation(project(":modules:account"))
+    implementation(project(":modules:education"))
     implementation(project(":modules:onboarding"))
+
+    implementation(libs.firebase.firestore.ktx)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
