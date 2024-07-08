@@ -39,10 +39,10 @@ edu.stanford.spezi.core.utils
 edu.stanford.spezi.core.utils.extensions
 module:account
 edu.stanford.spezi.module.account
-edu.stanford.spezi.module.account.cred.manager
 edu.stanford.spezi.module.account.di
 edu.stanford.spezi.module.account.login
 edu.stanford.spezi.module.account.login.components
+edu.stanford.spezi.module.account.manager
 edu.stanford.spezi.module.account.register
 module:contact
 edu.stanford.spezi.modules.contact
@@ -60,7 +60,6 @@ edu.stanford.healthconnectonfhir.di
 module:onboarding
 edu.stanford.spezi.module.onboarding
 edu.stanford.spezi.module.onboarding.consent
-edu.stanford.spezi.module.onboarding.di
 edu.stanford.spezi.module.onboarding.invitation
 edu.stanford.spezi.module.onboarding.onboarding
 edu.stanford.spezi.module.onboarding.sequential
