@@ -1,12 +1,10 @@
-package edu.stanford.spezi.module.onboarding.invitation
+package edu.stanford.spezi.module.account.manager
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.functions.FirebaseFunctions
 import edu.stanford.spezi.core.logging.speziLogger
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
-import kotlin.coroutines.resumeWithException
 
 internal class FirebaseInvitationAuthManager @Inject constructor(
     private val functions: FirebaseFunctions,
@@ -42,13 +40,5 @@ internal class FirebaseInvitationAuthManager @Inject constructor(
         }.getOrNull()?.let {
             Result.success(Unit)
         } ?: Result.failure(Exception("Failed to check invitation code"))
-    }
-}
-
-@OptIn(ExperimentalCoroutinesApi::class)
-suspend fun <T> com.google.android.gms.tasks.Task<T>.await(): T {
-    return suspendCancellableCoroutine { cont ->
-        addOnSuccessListener { result -> cont.resume(result) { } }
-        addOnFailureListener { exception -> cont.resumeWithException(exception) }
     }
 }

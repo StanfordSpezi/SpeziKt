@@ -1,9 +1,9 @@
 package edu.stanford.bdh.engagehf.education
 
 import com.google.firebase.firestore.FirebaseFirestore
-import edu.stanford.spezi.module.onboarding.invitation.await
 import edu.stanford.spezi.modules.education.videos.VideoSection
 import edu.stanford.spezi.modules.education.videos.data.repository.EducationRepository
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class EngageEducationRepository @Inject constructor(

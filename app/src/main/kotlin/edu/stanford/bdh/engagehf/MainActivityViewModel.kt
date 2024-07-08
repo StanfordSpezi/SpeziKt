@@ -11,9 +11,13 @@ import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.module.account.AccountEvents
+import edu.stanford.spezi.module.account.manager.UserSessionManager
+import edu.stanford.spezi.module.account.manager.UserState
+import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,6 +27,7 @@ import edu.stanford.spezi.core.design.R as DesignR
 class MainActivityViewModel @Inject constructor(
     private val accountEvents: AccountEvents,
     private val navigator: Navigator,
+    private val userSessionManager: UserSessionManager,
 ) : ViewModel() {
     private val logger by speziLogger()
 
@@ -36,6 +41,10 @@ class MainActivityViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
+        startObserving()
+    }
+
+    private fun startObserving() {
         viewModelScope.launch {
             accountEvents.events.collect { event ->
                 when (event) {
@@ -48,6 +57,19 @@ class MainActivityViewModel @Inject constructor(
                     }
                 }
             }
+        }
+
+        viewModelScope.launch {
+            userSessionManager.userState
+                .filterIsInstance<UserState.Registered>()
+                .collect { userState ->
+                    val navigationEvent = if (userState.hasConsented) {
+                        AppNavigationEvent.AppScreen
+                    } else {
+                        OnboardingNavigationEvent.ConsentScreen
+                    }
+                    navigator.navigateTo(event = navigationEvent)
+                }
         }
     }
 

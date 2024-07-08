@@ -1,9 +1,9 @@
 package edu.stanford.bdh.engagehf.education
 
 import com.google.firebase.firestore.DocumentSnapshot
-import edu.stanford.spezi.module.onboarding.invitation.await
 import edu.stanford.spezi.modules.education.videos.Video
 import edu.stanford.spezi.modules.education.videos.VideoSection
+import kotlinx.coroutines.tasks.await
 import java.util.Locale
 import javax.inject.Inject
 

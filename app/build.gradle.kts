@@ -45,6 +45,8 @@ dependencies {
     implementation(project(":modules:education"))
     implementation(project(":modules:onboarding"))
 
+    implementation(libs.firebase.firestore.ktx)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.view.model.ktx)
@@ -52,11 +54,6 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
-
-    implementation(libs.firebase.functions.ktx)
-    implementation(libs.firebase.auth.ktx)
-    implementation(libs.firebase.firestore.ktx)
-    implementation(libs.firebase.storage.ktx)
 
     androidTestImplementation(project(":core:testing"))
 }
