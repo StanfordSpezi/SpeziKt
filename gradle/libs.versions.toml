@@ -27,6 +27,7 @@ firebaseStorageKtx = "21.0.0"
 foundation = "1.6.8"
 googleGmsGoogleServices = "4.4.2"
 googleid = "1.1.0"
+gson = "2.11.0"
 healthConnectClient = "1.1.0-alpha07"
 hiltNavigation = "1.2.0"
 hiltVersion = "2.51"
@@ -92,6 +93,7 @@ firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-funct
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltVersion" }
 hilt-core = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltVersion" }
 hilt-gradle = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hiltVersion" }

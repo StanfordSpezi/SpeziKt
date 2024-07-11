@@ -2,7 +2,13 @@ package edu.stanford.bdh.engagehf.bluetooth
 
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
+import edu.stanford.bdh.engagehf.bluetooth.data.mapper.DefaultMeasurementToRecordMapper
+import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MeasurementToRecordMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
+import edu.stanford.bdh.engagehf.bluetooth.data.repository.ObservationRepository
+import edu.stanford.bdh.engagehf.messages.MessageRepository
+import edu.stanford.healthconnectonfhir.RecordToObservationMapper
+import edu.stanford.healthconnectonfhir.RecordToObservationMapperImpl
 import edu.stanford.spezi.core.bluetooth.api.BLEService
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
@@ -23,6 +29,11 @@ import org.junit.Test
 class BluetoothViewModelTest {
     private val bleService: BLEService = mockk()
     private val uiStateMapper: BluetoothUiStateMapper = mockk()
+    private val measurementToRecordMapper: MeasurementToRecordMapper =
+        DefaultMeasurementToRecordMapper()
+    private val observationRepository = mockk<ObservationRepository>(relaxed = true)
+    private val recordToObservation: RecordToObservationMapper = RecordToObservationMapperImpl()
+    private val messageRepository = mockk<MessageRepository>(relaxed = true)
 
     private val bleServiceState = MutableStateFlow<BLEServiceState>(BLEServiceState.Idle)
     private val bleServiceEvents = MutableSharedFlow<BLEServiceEvent>()
@@ -147,21 +158,21 @@ class BluetoothViewModelTest {
     }
 
     @Test
-    fun `it should do nothing on Connected, Disconnected and MeasurementReceived events`() = runTestUnconfined {
-        // given
-        val events = listOf(
-            mockk<BLEServiceEvent.Connected>(),
-            mockk<BLEServiceEvent.Disconnected>(),
-            mockk<BLEServiceEvent.MeasurementReceived>()
-        )
-        createViewModel()
+    fun `it should do nothing on Connected, Disconnected and MeasurementReceived events`() =
+        runTestUnconfined {
+            // given
+            val events = listOf(
+                mockk<BLEServiceEvent.Connected>(),
+                mockk<BLEServiceEvent.Disconnected>(),
+            )
+            createViewModel()
 
-        // when
-        events.forEach { bleServiceEvents.emit(it) }
+            // when
+            events.forEach { bleServiceEvents.emit(it) }
 
-        // then
-        assertState(state = BluetoothUiState.Idle)
-    }
+            // then
+            assertState(state = BluetoothUiState.Idle)
+        }
 
     @Test
     fun `it should stop service on cleared`() {
@@ -176,7 +187,7 @@ class BluetoothViewModelTest {
     }
 
     private fun assertState(state: BluetoothUiState) {
-        assertThat(bluetoothViewModel.uiState.value).isEqualTo(state)
+        assertThat(bluetoothViewModel.bluetoothUiState.value).isEqualTo(state)
     }
 
     private suspend fun assertEvent(event: BluetoothViewModel.Event) {
@@ -186,7 +197,11 @@ class BluetoothViewModelTest {
     private fun createViewModel() {
         bluetoothViewModel = BluetoothViewModel(
             bleService = bleService,
-            uiStateMapper = uiStateMapper
+            uiStateMapper = uiStateMapper,
+            measurementToRecordMapper = measurementToRecordMapper,
+            observationRepository = observationRepository,
+            recordToObservation = recordToObservation,
+            messageRepository = messageRepository
         )
     }
 }
