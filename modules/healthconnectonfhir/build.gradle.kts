@@ -9,5 +9,5 @@ android {
 
 dependencies {
     api(libs.androidx.health.connect.client)
-    api(libs.hapi.fhir.structures.r4)
+    api(libs.android.fhir.data.capture)
 }
