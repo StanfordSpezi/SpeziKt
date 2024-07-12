@@ -5,4 +5,6 @@ import edu.stanford.bdh.engagehf.messages.Message
 data class UiState(
     val vitalDisplay: VitalDisplayUiState = VitalDisplayUiState(),
     val messages: List<Message> = emptyList(),
+    val bluetooth: BluetoothUiState = BluetoothUiState.Idle,
+    val measurementDialog: MeasurementDialogUiState = MeasurementDialogUiState(),
 )

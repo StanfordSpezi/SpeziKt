@@ -45,13 +45,11 @@ private const val BOX_CONSTRAINT_HEIGHT = 0.35f
 @Composable
 fun BluetoothScreen() {
     val viewModel = hiltViewModel<BluetoothViewModel>()
-    val state by viewModel.bluetoothUiState.collectAsState(initial = BluetoothUiState.Idle)
-    val stateDialog by viewModel.dialogUiState.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
     BluetoothEvents(events = viewModel.events)
     BluetoothScreen(
-        bluetoothUiState = state,
-        uiStateDialog = stateDialog, uiState = uiState,
+        bluetoothUiState = uiState.bluetooth,
+        uiStateDialog = uiState.measurementDialog, uiState = uiState,
         onAction = viewModel::onAction
     )
 }

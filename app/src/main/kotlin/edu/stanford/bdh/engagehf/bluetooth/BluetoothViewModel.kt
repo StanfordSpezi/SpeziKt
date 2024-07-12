@@ -9,7 +9,6 @@ import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MeasurementToRecordMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
-import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.UiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
 import edu.stanford.bdh.engagehf.bluetooth.data.repository.ObservationRepository
@@ -43,13 +42,9 @@ class BluetoothViewModel @Inject internal constructor(
     private val logger by speziLogger()
 
     private val _events = MutableSharedFlow<Event>(replay = 1, extraBufferCapacity = 1)
-    private val _bluetoothUiState = MutableStateFlow<BluetoothUiState>(BluetoothUiState.Idle)
-    private val _dialogUiState = MutableStateFlow(MeasurementDialogUiState())
     private val _uiState = MutableStateFlow(UiState())
 
-    val bluetoothUiState = _bluetoothUiState.asStateFlow()
     val events = _events.asSharedFlow()
-    val dialogUiState = _dialogUiState.asStateFlow()
     val uiState = _uiState.asStateFlow()
 
     private val dateFormatter by lazy {
@@ -77,10 +72,16 @@ class BluetoothViewModel @Inject internal constructor(
             bleService.state.collect { state ->
                 logger.i { "Received BLEService state $state" }
                 when (state) {
-                    BLEServiceState.Idle -> _bluetoothUiState.update { BluetoothUiState.Idle }
-                    is BLEServiceState.Scanning -> _bluetoothUiState.update {
-                        uiStateMapper.map(
-                            state
+                    BLEServiceState.Idle -> _uiState.update {
+                        it.copy(bluetooth = BluetoothUiState.Idle)
+                    }
+
+                    is BLEServiceState.Scanning -> _uiState.update {
+                        it.copy(
+                            bluetooth =
+                            uiStateMapper.map(
+                                state
+                            )
                         )
                     }
                 }
@@ -97,17 +98,25 @@ class BluetoothViewModel @Inject internal constructor(
                         )
                     )
 
-                    is BLEServiceEvent.GenericError -> _bluetoothUiState.update {
-                        BluetoothUiState.Error(
-                            "Something went wrong!"
+                    is BLEServiceEvent.GenericError -> _uiState.update {
+                        it.copy(bluetooth = BluetoothUiState.Error("Something went wrong!"))
+                    }
+
+                    is BLEServiceEvent.ScanningFailed -> _uiState.update {
+                        it.copy(
+                            bluetooth = BluetoothUiState.Error(
+                                "Error while scanning for devices"
+                            )
                         )
                     }
 
-                    is BLEServiceEvent.ScanningFailed -> _bluetoothUiState.update {
-                        BluetoothUiState.Error("Error while scanning for devices")
+                    BLEServiceEvent.ScanningStarted -> _uiState.update {
+                        it.copy(
+                            bluetooth =
+                            BluetoothUiState.Scanning
+                        )
                     }
 
-                    BLEServiceEvent.ScanningStarted -> _bluetoothUiState.update { BluetoothUiState.Scanning }
                     is BLEServiceEvent.Connected, is BLEServiceEvent.Disconnected, is BLEServiceEvent.MeasurementReceived -> {
                         logger.i { "Ignoring $event as it will be handled via BLEService state" }
                         handleMeasurement(event)
@@ -355,8 +364,12 @@ class BluetoothViewModel @Inject internal constructor(
             }
 
             is Action.DismissDialog -> {
-                _dialogUiState.update {
-                    it.copy(isVisible = false)
+                _uiState.update {
+                    it.copy(
+                        measurementDialog = it.measurementDialog.copy(
+                            isVisible = false,
+                        )
+                    )
                 }
             }
 
@@ -401,8 +414,12 @@ class BluetoothViewModel @Inject internal constructor(
     }
 
     private fun handleConfirmMeasurementAction(action: Action.ConfirmMeasurement) {
-        _dialogUiState.update {
-            it.copy(isProcessing = true)
+        _uiState.update {
+            it.copy(
+                measurementDialog = it.measurementDialog.copy(
+                    isProcessing = true,
+                )
+            )
         }
         viewModelScope.launch {
             if (action.measurement is Measurement.Weight) {
@@ -423,12 +440,13 @@ class BluetoothViewModel @Inject internal constructor(
                     }
                 }
             }
-
-            _dialogUiState.update {
+            _uiState.update {
                 it.copy(
-                    isVisible = false,
-                    measurement = null,
-                    isProcessing = false,
+                    measurementDialog = it.measurementDialog.copy(
+                        isVisible = false,
+                        measurement = null,
+                        isProcessing = false,
+                    )
                 )
             }
         }
@@ -437,27 +455,34 @@ class BluetoothViewModel @Inject internal constructor(
     private fun handleMeasurement(event: BLEServiceEvent) {
         if (event is BLEServiceEvent.MeasurementReceived) {
             if (event.measurement is Measurement.Weight) {
-                _dialogUiState.update {
+                _uiState.update {
                     val weight = (event.measurement as Measurement.Weight).weight
                     val weightInPounds = weight * KG_TO_LBS_CONVERSION_FACTOR
                     it.copy(
-                        measurement = event.measurement,
-                        isVisible = true,
-                        formattedWeight = String.format(
-                            Locale.getDefault(), "%.2f", when (Locale.getDefault().country) {
-                                "US", "LR", "MM" -> weightInPounds
-                                else -> weight
+                        measurementDialog = it.measurementDialog.copy(
+                            measurement = event.measurement,
+                            isVisible = true,
+                            formattedWeight = String.format(
+                                Locale.getDefault(), "%.2f", when (Locale.getDefault().country) {
+                                    "US", "LR", "MM" -> weightInPounds
+                                    else -> weight
+                                }
+                            ) + when (Locale.getDefault().country) {
+                                "US", "LR", "MM" -> "lbs"
+                                else -> "kg"
                             }
-                        ) + when (Locale.getDefault().country) {
-                            "US", "LR", "MM" -> "lbs"
-                            else -> "kg"
-                        }
+                        )
                     )
                 }
             }
             if (event.measurement is Measurement.BloodPressure) {
-                _dialogUiState.update {
-                    it.copy(measurement = event.measurement, isVisible = true)
+                _uiState.update {
+                    it.copy(
+                        measurementDialog = it.measurementDialog.copy(
+                            measurement = event.measurement,
+                            isVisible = true
+                        )
+                    )
                 }
             }
         }
