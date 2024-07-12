@@ -1,10 +1,10 @@
 package edu.stanford.bdh.engagehf.messages
 
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.module.account.manager.UserSessionManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.time.ZonedDateTime
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 internal class MessageRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val firebaseAuth: FirebaseAuth,
+    private val userSessionManager: UserSessionManager,
     @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
 ) {
     private val logger by speziLogger()
@@ -21,7 +21,7 @@ internal class MessageRepository @Inject constructor(
     suspend fun listenForUserMessages(onMessagesUpdate: (List<Message>) -> Unit) {
         withContext(ioDispatcher) {
             runCatching {
-                val uid = firebaseAuth.currentUser?.uid
+                val uid = userSessionManager.getUserUid()
                     ?: throw IllegalStateException("User not authenticated")
                 messageListener = firestore.collection("users")
                     .document(uid)
@@ -53,7 +53,7 @@ internal class MessageRepository @Inject constructor(
     suspend fun completeMessage(messageId: String) {
         withContext(ioDispatcher) {
             runCatching {
-                val uid = firebaseAuth.currentUser?.uid
+                val uid = userSessionManager.getUserUid()
                     ?: throw IllegalStateException("User not authenticated")
                 firestore.collection("users")
                     .document(uid)

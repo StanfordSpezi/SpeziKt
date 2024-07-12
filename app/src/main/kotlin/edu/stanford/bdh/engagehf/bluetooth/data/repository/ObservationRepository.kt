@@ -5,7 +5,6 @@ import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.WeightRecord
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.FhirVersionEnum
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.gson.Gson
@@ -14,15 +13,16 @@ import edu.stanford.healthconnectonfhir.Loinc
 import edu.stanford.healthconnectonfhir.ObservationToRecordMapper
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.module.onboarding.invitation.await
+import edu.stanford.spezi.module.account.manager.UserSessionManager
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import org.hl7.fhir.r4.model.Observation
 import javax.inject.Inject
 
 internal class ObservationRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val firebaseAuth: FirebaseAuth,
+    private val userSessionManager: UserSessionManager,
     private val observationToRecordMapper: ObservationToRecordMapper,
     @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
 ) {
@@ -48,7 +48,7 @@ internal class ObservationRepository @Inject constructor(
     suspend fun saveObservations(observations: List<Observation>) {
         withContext(ioDispatcher) {
             runCatching {
-                val uid = firebaseAuth.currentUser?.uid
+                val uid = userSessionManager.getUserUid()
                     ?: throw IllegalStateException("User not authenticated")
                 val batch = firestore.batch()
                 val mapType = object : TypeToken<Map<String, Any>>() {}.type
@@ -86,7 +86,7 @@ internal class ObservationRepository @Inject constructor(
     ) {
         withContext(ioDispatcher) {
             kotlin.runCatching {
-                val uid = firebaseAuth.currentUser?.uid
+                val uid = userSessionManager.getUserUid()
                     ?: throw IllegalStateException("User not authenticated")
                 firestore.collection("users/$uid/${collection.name}")
                     .orderBy("effectiveDateTime", Query.Direction.DESCENDING)

@@ -76,12 +76,7 @@ class BluetoothViewModel @Inject internal constructor(
                     }
 
                     is BLEServiceState.Scanning -> _uiState.update {
-                        it.copy(
-                            bluetooth =
-                            uiStateMapper.map(
-                                state
-                            )
-                        )
+                        it.copy(bluetooth = uiStateMapper.map(state))
                     }
                 }
             }
@@ -92,9 +87,7 @@ class BluetoothViewModel @Inject internal constructor(
                 when (event) {
                     BLEServiceEvent.BluetoothNotEnabled -> _events.emit(Event.EnableBluetooth)
                     is BLEServiceEvent.MissingPermissions -> _events.emit(
-                        Event.RequestPermissions(
-                            event.permissions
-                        )
+                        Event.RequestPermissions(event.permissions)
                     )
 
                     is BLEServiceEvent.GenericError -> _uiState.update {
@@ -102,18 +95,11 @@ class BluetoothViewModel @Inject internal constructor(
                     }
 
                     is BLEServiceEvent.ScanningFailed -> _uiState.update {
-                        it.copy(
-                            bluetooth = BluetoothUiState.Error(
-                                "Error while scanning for devices"
-                            )
-                        )
+                        it.copy(bluetooth = BluetoothUiState.Error("Error while scanning for devices"))
                     }
 
                     BLEServiceEvent.ScanningStarted -> _uiState.update {
-                        it.copy(
-                            bluetooth =
-                            BluetoothUiState.Scanning
-                        )
+                        it.copy(bluetooth = BluetoothUiState.Scanning)
                     }
 
                     is BLEServiceEvent.Connected, is BLEServiceEvent.Disconnected -> {

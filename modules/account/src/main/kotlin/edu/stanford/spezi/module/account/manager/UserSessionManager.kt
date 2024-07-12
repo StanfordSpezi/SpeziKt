@@ -58,6 +58,8 @@ class UserSessionManager @Inject constructor(
         }
     }
 
+    fun getUserUid(): String? = firebaseAuth.currentUser?.uid
+
     private suspend fun hasConsented(): Boolean = withContext(ioDispatcher) {
         runCatching {
             val uid = firebaseAuth.uid ?: error("No uid available")
