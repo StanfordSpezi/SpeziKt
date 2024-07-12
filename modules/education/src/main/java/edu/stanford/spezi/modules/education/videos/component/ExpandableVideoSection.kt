@@ -36,7 +36,7 @@ import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.design.theme.lightenColor
+import edu.stanford.spezi.core.design.theme.lighten
 import edu.stanford.spezi.modules.education.videos.Video
 import edu.stanford.spezi.modules.education.videos.VideoItem
 
@@ -76,17 +76,11 @@ internal fun ExpandableVideoSection(
 ) {
     var expanded by remember { mutableStateOf(expandedStartValue) }
 
-    val cardColor = if (isSystemInDarkTheme()) {
-        lightenColor(Colors.surface, isDarkTheme = true)
-    } else {
-        lightenColor(Colors.surface)
-    }
-
     ElevatedCard(
         elevation = CardDefaults.cardElevation(defaultElevation = Sizes.Elevation.medium),
         shape = RoundedCornerShape(Sizes.RoundedCorner.large),
         colors = CardDefaults.cardColors(
-            containerColor = lightenColor(Colors.surface),
+            containerColor = Colors.surface.lighten(),
         ),
         modifier = modifier
             .fillMaxWidth()
@@ -94,7 +88,7 @@ internal fun ExpandableVideoSection(
             .clickable { expanded = !expanded },
     ) {
         Column(
-            modifier = Modifier.background(cardColor)
+            modifier = Modifier.background(Colors.surface.lighten(isSystemInDarkTheme()))
         ) {
             SectionHeader(
                 text = title,

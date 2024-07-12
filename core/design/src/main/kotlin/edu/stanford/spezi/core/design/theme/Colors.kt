@@ -87,10 +87,10 @@ internal val RectangleBlue = Color(0xFFEBF2FC)
 private const val darkFactor = 0.1f
 private const val lightFactor = 0.9f
 
-fun lightenColor(color: Color, isDarkTheme: Boolean = false): Color {
+fun Color.lighten(isDarkTheme: Boolean = false): Color {
     val factor = if (isDarkTheme) darkFactor else lightFactor
-    val red = (color.red + factor).coerceIn(0f, 1f)
-    val green = (color.green + factor).coerceIn(0f, 1f)
-    val blue = (color.blue + factor).coerceIn(0f, 1f)
-    return Color(red, green, blue, color.alpha)
+    val red = (this.red + factor).coerceIn(0f, 1f)
+    val green = (this.green + factor).coerceIn(0f, 1f)
+    val blue = (this.blue + factor).coerceIn(0f, 1f)
+    return Color(red, green, blue, this.alpha)
 }
