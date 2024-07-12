@@ -12,17 +12,14 @@ import javax.inject.Inject
 
 class ObservationToRecordMapperImpl @Inject constructor() : ObservationToRecordMapper {
 
-    private val codeToMappingFunction: Map<String, (Observation) -> Record> = mapOf(
-        Loinc.BloodPressure.CODE to { obs -> mapToBloodPressureRecord(obs) },
-        Loinc.Weight.CODE to { obs -> mapToWeightRecord(obs) },
-        Loinc.HeartRate.CODE to { obs -> mapToHeartRateRecord(obs) }
-    )
-
-    override fun map(observation: Observation): Record {
-        val code = observation.code.codingFirstRep.code
-        val mappingFunction = codeToMappingFunction[code]
-            ?: throw IllegalArgumentException("Unsupported observation code $code")
-        return mappingFunction(observation)
+    override fun <T : Record> map(observation: Observation): T {
+        @Suppress("UNCHECKED_CAST")
+        return when (observation.code.codingFirstRep.code) {
+            Loinc.BloodPressure.CODE -> mapToBloodPressureRecord(observation)
+            Loinc.Weight.CODE -> mapToWeightRecord(observation)
+            Loinc.HeartRate.CODE -> mapToHeartRateRecord(observation)
+            else -> error("Unsupported observation type: ${observation.code.codingFirstRep.code}")
+        } as T
     }
 
     private fun mapToHeartRateRecord(observation: Observation): Record {
