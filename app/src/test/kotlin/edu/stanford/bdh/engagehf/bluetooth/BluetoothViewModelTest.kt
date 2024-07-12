@@ -1,16 +1,12 @@
 package edu.stanford.bdh.engagehf.bluetooth
 
-import androidx.health.connect.client.records.BloodPressureRecord
-import androidx.health.connect.client.records.HeartRateRecord
-import androidx.health.connect.client.records.WeightRecord
-import androidx.health.connect.client.units.Mass
-import androidx.health.connect.client.units.Pressure
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.DefaultMeasurementToRecordMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MeasurementToRecordMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.repository.ObservationRepository
+import edu.stanford.bdh.engagehf.messages.MessageRepository
 import edu.stanford.healthconnectonfhir.RecordToObservationMapper
 import edu.stanford.healthconnectonfhir.RecordToObservationMapperImpl
 import edu.stanford.spezi.core.bluetooth.api.BLEService
@@ -19,7 +15,6 @@ import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import io.mockk.Runs
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -30,15 +25,15 @@ import kotlinx.coroutines.flow.first
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.time.ZonedDateTime
 
 class BluetoothViewModelTest {
     private val bleService: BLEService = mockk()
     private val uiStateMapper: BluetoothUiStateMapper = mockk()
     private val measurementToRecordMapper: MeasurementToRecordMapper =
         DefaultMeasurementToRecordMapper()
-    private val observationRepository = mockk<ObservationRepository>()
+    private val observationRepository = mockk<ObservationRepository>(relaxed = true)
     private val recordToObservation: RecordToObservationMapper = RecordToObservationMapperImpl()
+    private val messageRepository = mockk<MessageRepository>(relaxed = true)
 
     private val bleServiceState = MutableStateFlow<BLEServiceState>(BLEServiceState.Idle)
     private val bleServiceEvents = MutableSharedFlow<BLEServiceEvent>()
@@ -58,15 +53,6 @@ class BluetoothViewModelTest {
             every { stop() } just Runs
         }
         every { uiStateMapper.map(any()) } returns readyUiState
-        coEvery { observationRepository.getLatestBloodPressureObservation() } returns Result.success(
-            createBloodPressureRecord(120.0, 80.0)
-        )
-        coEvery { observationRepository.getLatestBodyWeightObservation() } returns Result.success(
-            createWeightRecord(70.0)
-        )
-        coEvery { observationRepository.getLatestHeartRateObservation() } returns Result.success(
-            createHeartRateRecord(60L)
-        )
     }
 
     @Test
@@ -201,7 +187,7 @@ class BluetoothViewModelTest {
     }
 
     private fun assertState(state: BluetoothUiState) {
-        assertThat(bluetoothViewModel.uiState.value).isEqualTo(state)
+        assertThat(bluetoothViewModel.bluetoothUiState.value).isEqualTo(state)
     }
 
     private suspend fun assertEvent(event: BluetoothViewModel.Event) {
@@ -215,41 +201,7 @@ class BluetoothViewModelTest {
             measurementToRecordMapper = measurementToRecordMapper,
             observationRepository = observationRepository,
             recordToObservation = recordToObservation,
-        )
-    }
-
-    private fun createBloodPressureRecord(
-        systolic: Double,
-        diastolic: Double,
-    ): BloodPressureRecord {
-        return BloodPressureRecord(
-            time = ZonedDateTime.now().toInstant(),
-            zoneOffset = ZonedDateTime.now().offset,
-            systolic = Pressure.millimetersOfMercury(systolic),
-            diastolic = Pressure.millimetersOfMercury(diastolic)
-        )
-    }
-
-    private fun createWeightRecord(weight: Double): WeightRecord {
-        return WeightRecord(
-            time = ZonedDateTime.now().toInstant(),
-            zoneOffset = ZonedDateTime.now().offset,
-            weight = Mass.kilograms(weight)
-        )
-    }
-
-    private fun createHeartRateRecord(heartRate: Long): HeartRateRecord {
-        return HeartRateRecord(
-            startTime = ZonedDateTime.now().toInstant(),
-            endTime = ZonedDateTime.now().toInstant(),
-            startZoneOffset = ZonedDateTime.now().offset,
-            endZoneOffset = ZonedDateTime.now().offset,
-            samples = listOf(
-                HeartRateRecord.Sample(
-                    time = ZonedDateTime.now().toInstant(),
-                    beatsPerMinute = heartRate
-                )
-            )
+            messageRepository = messageRepository
         )
     }
 }

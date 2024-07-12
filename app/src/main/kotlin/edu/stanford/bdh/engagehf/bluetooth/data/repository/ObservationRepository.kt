@@ -51,11 +51,10 @@ internal class ObservationRepository @Inject constructor(
                 val uid = firebaseAuth.currentUser?.uid
                     ?: throw IllegalStateException("User not authenticated")
                 val batch = firestore.batch()
-
+                val mapType = object : TypeToken<Map<String, Any>>() {}.type
                 observations.forEach { observation ->
                     val collectionName = getCollectionNameForObservation(observation)
                     val json = jsonParser.encodeResourceToString(observation)
-                    val mapType = object : TypeToken<Map<String, Any>>() {}.type
                     val data = gson.fromJson<Map<String, Any>>(json, mapType)
 
                     val docRef = firestore.collection("users/$uid/$collectionName").document()
@@ -81,45 +80,48 @@ internal class ObservationRepository @Inject constructor(
         }
     }
 
-    private suspend fun <T> getObservation(collection: ObservationCollection): Result<T?> {
-        return withContext(ioDispatcher) {
-            runCatching {
+    private suspend fun <T> listenForLatestObservation(
+        collection: ObservationCollection,
+        onResult: (Result<T?>) -> Unit,
+    ) {
+        withContext(ioDispatcher) {
+            kotlin.runCatching {
                 val uid = firebaseAuth.currentUser?.uid
                     ?: throw IllegalStateException("User not authenticated")
                 firestore.collection("users/$uid/${collection.name}")
                     .orderBy("effectiveDateTime", Query.Direction.DESCENDING)
                     .limit(1)
-                    .get()
-                    .await()
-                    .documents
-                    .firstOrNull()
-                    ?.let { document ->
-                        val json = document.data
-                        val jsonString = gson.toJson(json)
-                        jsonParser.parseResource(Observation::class.java, jsonString)
-                            .toRecord() as T
+                    .addSnapshotListener { snapshot, error ->
+                        if (error != null) {
+                            logger.e(error) { "Error listening for latest observation in collection: ${collection.name}" }
+                            onResult(Result.failure(error))
+                        } else {
+                            val document = snapshot?.documents?.firstOrNull()
+                            document?.let {
+                                val json = gson.toJson(it.data)
+                                val observation =
+                                    jsonParser.parseResource(Observation::class.java, json)
+                                onResult(Result.success(observationToRecordMapper.map(observation) as T))
+                            } ?: onResult(Result.success(null))
+                        }
                     }
             }.onFailure {
-                logger.e(it) { "Error while getting latest ${collection.name} observation" }
-                null
+                logger.e(it) { "Error while listening for latest ${collection.name} observation" }
+                onResult(Result.failure(it))
             }
         }
     }
 
-    private fun Observation.toRecord(): androidx.health.connect.client.records.Record {
-        return observationToRecordMapper.map(this)
+    suspend fun listenForLatestBloodPressureObservation(onResult: (Result<BloodPressureRecord?>) -> Unit) {
+        listenForLatestObservation(bloodPressureCollection, onResult)
     }
 
-    suspend fun getLatestBloodPressureObservation(): Result<BloodPressureRecord?> {
-        return getObservation<BloodPressureRecord>(bloodPressureCollection)
+    suspend fun listenForLatestBodyWeightObservation(onResult: (Result<WeightRecord?>) -> Unit) {
+        listenForLatestObservation(bodyWeightObservation, onResult)
     }
 
-    suspend fun getLatestBodyWeightObservation(): Result<WeightRecord?> {
-        return getObservation<WeightRecord>(bodyWeightObservation)
-    }
-
-    suspend fun getLatestHeartRateObservation(): Result<HeartRateRecord?> {
-        return getObservation<HeartRateRecord>(heartRateCollection)
+    suspend fun listenForLatestHeartRateObservation(onResult: (Result<HeartRateRecord?>) -> Unit) {
+        listenForLatestObservation(heartRateCollection, onResult)
     }
 }
 

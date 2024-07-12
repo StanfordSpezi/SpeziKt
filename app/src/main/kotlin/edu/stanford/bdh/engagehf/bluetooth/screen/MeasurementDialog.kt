@@ -1,5 +1,3 @@
-@file:Suppress("MagicNumber")
-
 package edu.stanford.bdh.engagehf.bluetooth.screen
 
 import androidx.compose.foundation.layout.Arrangement
@@ -15,10 +13,12 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
 import edu.stanford.spezi.core.bluetooth.data.model.Measurement
@@ -43,7 +43,7 @@ fun MeasurementDialog(
             },
             title = {
                 Text(
-                    text = "New Measurement",
+                    text = stringResource(R.string.new_measurement),
                     style = TextStyles.titleMedium,
                     modifier = Modifier.testIdentifier(MeasurementDialogTestIdentifier.TITLE)
                 )
@@ -56,14 +56,23 @@ fun MeasurementDialog(
                     uiState.measurement?.let {
                         if (it is Measurement.Weight) {
                             MeasurementRow(
-                                label = "Weight:",
+                                label = stringResource(R.string.weight) + ":",
                                 value = uiState.formattedWeight,
                             )
                         }
                         if (it is Measurement.BloodPressure) {
-                            MeasurementRow(label = "Systolic:", value = "${it.systolic} mmHg")
-                            MeasurementRow(label = "Diastolic:", value = "${it.diastolic} mmHg")
-                            MeasurementRow(label = "Pulse rate:", value = "${it.pulseRate} bpm")
+                            MeasurementRow(
+                                label = stringResource(R.string.systolic) + ":",
+                                value = "${it.systolic} mmHg"
+                            )
+                            MeasurementRow(
+                                label = stringResource(R.string.diastolic) + ":",
+                                value = "${it.diastolic} mmHg"
+                            )
+                            MeasurementRow(
+                                label = stringResource(R.string.pulse_rate) + ":",
+                                value = "${it.pulseRate} bpm"
+                            )
                         }
                     }
                 }
@@ -82,7 +91,7 @@ fun MeasurementDialog(
                             modifier = Modifier.size(Sizes.Icon.small)
                         )
                     } else {
-                        Text("Confirm")
+                        Text(stringResource(R.string.confirm_button_text))
                     }
                 }
             },
@@ -92,7 +101,7 @@ fun MeasurementDialog(
                         onAction(Action.DismissDialog)
                     }
                 ) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel_button_text))
                 }
             }
         )
@@ -142,6 +151,7 @@ private fun MeasurementDialogPreview(@PreviewParameter(MeasurementPreviewProvide
     )
 }
 
+@Suppress("MagicNumber")
 private object MeasurementFactory {
 
     fun createDefaultBloodPressure(): Measurement.BloodPressure {

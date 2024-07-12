@@ -3,14 +3,18 @@ package edu.stanford.bdh.engagehf.bluetooth.screen
 import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,6 +22,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.BluetoothViewModel
@@ -26,32 +31,34 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.DeviceUiModel
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
-import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayUiState
+import edu.stanford.bdh.engagehf.bluetooth.data.models.UiState
+import edu.stanford.bdh.engagehf.messages.MessageItem
+import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import kotlinx.coroutines.flow.Flow
 
+private const val BOX_CONSTRAINT_HEIGHT = 0.35f
+
 @Composable
 fun BluetoothScreen() {
     val viewModel = hiltViewModel<BluetoothViewModel>()
-    val state by viewModel.uiState.collectAsState(initial = BluetoothUiState.Idle)
-    val stateDialog by viewModel.dialogUiState.collectAsState()
-    val stateVitalDisplay by viewModel.vitalDisplayUiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     BluetoothEvents(events = viewModel.events)
     BluetoothScreen(
-        uiState = state,
-        uiStateDialog = stateDialog, uiVitalDisplayUiState = stateVitalDisplay,
+        bluetoothUiState = uiState.bluetooth,
+        uiStateDialog = uiState.measurementDialog, uiState = uiState,
         onAction = viewModel::onAction
     )
 }
 
 @Composable
 private fun BluetoothScreen(
-    uiState: BluetoothUiState,
+    bluetoothUiState: BluetoothUiState,
     uiStateDialog: MeasurementDialogUiState,
-    uiVitalDisplayUiState: VitalDisplayUiState,
+    uiState: UiState,
     onAction: (Action) -> Unit,
 ) {
     Column(
@@ -61,26 +68,60 @@ private fun BluetoothScreen(
             .padding(Spacings.medium)
     ) {
         Text(text = "Hello ENGAGE!", style = TextStyles.headlineLarge)
-        AdditionalInfo(uiState = uiState)
-        Devices(uiState as? BluetoothUiState.Ready)
+        AdditionalInfo(uiState = bluetoothUiState)
+        Devices(bluetoothUiState as? BluetoothUiState.Ready)
         MeasurementDialog(
             uiState = uiStateDialog,
             onAction = onAction,
         )
+        VerticalSpacer()
+        HorizontalDivider()
+        VerticalSpacer()
+        Text(text = "Messages", style = TextStyles.titleLarge)
+        BoxWithConstraints {
+            val maxHeight =
+                with(LocalDensity.current) { constraints.maxHeight.toDp() * BOX_CONSTRAINT_HEIGHT }
+            if (uiState.messages.isNotEmpty()) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .heightIn(max = maxHeight),
+                ) {
+                    items(uiState.messages) { message ->
+                        MessageItem(message = message, onAction = onAction)
+                    }
+                }
+            } else {
+                Text(
+                    text = "No messages",
+                    style = TextStyles.bodyMedium,
+                    modifier = Modifier.padding(Spacings.small)
+                )
+            }
+        }
+
+        VerticalSpacer()
+        HorizontalDivider()
+        VerticalSpacer()
+        Text(text = "Vitals", style = TextStyles.titleLarge)
         Row(
             horizontalArrangement = Arrangement.spacedBy(Spacings.medium),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = Spacings.medium)
         ) {
             VitalDisplay(
-                modifier = Modifier.weight(1f), vitalDisplayUiState = uiVitalDisplayUiState.weight
+                modifier = Modifier.weight(1f), vitalDisplayUiState = uiState.weight
             )
             VitalDisplay(
                 modifier = Modifier.weight(1f),
-                vitalDisplayUiState = uiVitalDisplayUiState.heartRate
+                vitalDisplayUiState = uiState.heartRate
             )
         }
         VitalDisplay(
-            vitalDisplayUiState = uiVitalDisplayUiState.bloodPressure
+            modifier = Modifier.padding(vertical = Spacings.medium),
+            vitalDisplayUiState = uiState.bloodPressure
         )
     }
 }
@@ -134,7 +175,8 @@ private fun BluetoothEvents(events: Flow<BluetoothViewModel.Event>) {
                 }
 
                 is BluetoothViewModel.Event.EnableBluetooth -> {
-                    Toast.makeText(activity, "Bluetooth is not enabled", Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity, "Bluetooth is not enabled", Toast.LENGTH_LONG)
+                        .show()
                 }
             }
         }

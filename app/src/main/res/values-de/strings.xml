@@ -5,4 +5,11 @@
     <string name="heart_health">Herzgesundheit</string>
     <string name="medication">Medikation</string>
     <string name="education">Bildung</string>
+    <string name="new_measurement">Neue Messung</string>
+    <string name="systolic">Systolisch</string>
+    <string name="confirm_button_text">Bestätigen</string>
+    <string name="cancel_button_text">Abbrechen</string>
+    <string name="diastolic">Diastolisch</string>
+    <string name="pulse_rate">Pulsfrequenz</string>
+    <string name="weight">Gewicht</string>
 </resources>

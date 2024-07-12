@@ -1,37 +1,26 @@
 package edu.stanford.bdh.engagehf.bluetooth.screen
 
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
+import androidx.compose.ui.test.junit4.createComposeRule
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
 import edu.stanford.bdh.engagehf.simulator.MeasurementDialogSimulator
 import edu.stanford.spezi.core.bluetooth.data.model.Measurement
-import edu.stanford.spezi.core.design.component.ComposeContentActivity
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.time.ZonedDateTime
 
-@HiltAndroidTest
 class MeasurementDialogTest {
-    @get:Rule
-    val hiltRule = HiltAndroidRule(this)
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<ComposeContentActivity>()
+    val composeTestRule = createComposeRule()
 
-    @Before
-    fun setup() {
-        composeTestRule.activity.setScreen {
+    @Test
+    fun `it should display the weight measurement data correctly`() {
+        composeTestRule.setContent {
             MeasurementDialog(
                 uiState = MeasurementDialogUiStateFactory.createDefaultWeightMeasurementUiState(),
                 onAction = {}
             )
         }
-    }
-
-    @Test
-    fun `it should display the weight measurement data correctly`() {
         val uiState = MeasurementDialogUiStateFactory.createDefaultWeightMeasurementUiState()
         measurementDialog {
             assertDisplayed()
@@ -43,7 +32,7 @@ class MeasurementDialogTest {
 
     @Test
     fun `it should display the blood pressure measurement data correctly`() {
-        composeTestRule.activity.setScreen {
+        composeTestRule.setContent {
             MeasurementDialog(
                 uiState = MeasurementDialogUiStateFactory.createDefaultBloodPressureMeasurementUiState(),
                 onAction = {}

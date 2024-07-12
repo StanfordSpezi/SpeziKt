@@ -4,4 +4,11 @@
     <string name="heart_health">Heart Health</string>
     <string name="medication">Medication</string>
     <string name="education">Education</string>
+    <string name="new_measurement">New Measurement</string>
+    <string name="systolic">Systolic</string>
+    <string name="confirm_button_text">Confirm</string>
+    <string name="cancel_button_text">Cancel</string>
+    <string name="diastolic">Diastolic</string>
+    <string name="pulse_rate">Pulse rate</string>
+    <string name="weight">Weight</string>
 </resources>
