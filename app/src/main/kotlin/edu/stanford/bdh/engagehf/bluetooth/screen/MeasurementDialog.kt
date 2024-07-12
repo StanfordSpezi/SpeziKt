@@ -1,5 +1,3 @@
-@file:Suppress("MagicNumber")
-
 package edu.stanford.bdh.engagehf.bluetooth.screen
 
 import androidx.compose.foundation.layout.Arrangement
@@ -153,6 +151,7 @@ private fun MeasurementDialogPreview(@PreviewParameter(MeasurementPreviewProvide
     )
 }
 
+@Suppress("MagicNumber")
 private object MeasurementFactory {
 
     fun createDefaultBloodPressure(): Measurement.BloodPressure {
