@@ -51,11 +51,10 @@ internal class ObservationRepository @Inject constructor(
                 val uid = firebaseAuth.currentUser?.uid
                     ?: throw IllegalStateException("User not authenticated")
                 val batch = firestore.batch()
-
+                val mapType = object : TypeToken<Map<String, Any>>() {}.type
                 observations.forEach { observation ->
                     val collectionName = getCollectionNameForObservation(observation)
                     val json = jsonParser.encodeResourceToString(observation)
-                    val mapType = object : TypeToken<Map<String, Any>>() {}.type
                     val data = gson.fromJson<Map<String, Any>>(json, mapType)
 
                     val docRef = firestore.collection("users/$uid/$collectionName").document()
