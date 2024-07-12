@@ -17,7 +17,7 @@ import java.io.ByteArrayOutputStream
 import java.time.LocalDate
 import javax.inject.Inject
 
-class PdfCreationService @Inject internal constructor(
+internal class PdfCreationService @Inject internal constructor(
     @Dispatching.IO private val ioCoroutineDispatcher: CoroutineDispatcher,
 ) {
 
