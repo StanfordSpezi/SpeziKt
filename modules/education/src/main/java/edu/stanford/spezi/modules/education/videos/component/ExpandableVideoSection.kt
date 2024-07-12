@@ -27,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.core.design.theme.Colors
@@ -37,6 +36,7 @@ import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.core.design.theme.lightenColor
 import edu.stanford.spezi.modules.education.videos.Video
 import edu.stanford.spezi.modules.education.videos.VideoItem
 
@@ -192,12 +192,4 @@ private class ExpandableVideoSectionParamsFactory {
             expandedStartValue = expandedStartValue
         )
     }
-}
-
-private fun lightenColor(color: Color, isDarkTheme: Boolean = false): Color {
-    val factor = if (isDarkTheme) 0.1f else 0.9f
-    val red = (color.red + factor).coerceIn(0f, 1f)
-    val green = (color.green + factor).coerceIn(0f, 1f)
-    val blue = (color.blue + factor).coerceIn(0f, 1f)
-    return Color(red, green, blue, color.alpha)
 }
