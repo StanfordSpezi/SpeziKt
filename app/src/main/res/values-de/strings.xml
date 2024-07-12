@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Spezi</string>
+    <string name="new_measurement">Neue Messung</string>
+    <string name="systolic">Systolisch</string>
+    <string name="confirm_button_text">Bestätigen</string>
+    <string name="cancel_button_text">Abbrechen</string>
+    <string name="diastolic">Diastolisch</string>
+    <string name="pulse_rate">Pulsfrequenz</string>
+    <string name="weight">Gewicht</string>
 </resources>
