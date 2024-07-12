@@ -2,6 +2,7 @@ package edu.stanford.spezi.build.logic.convention.plugins
 
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import edu.stanford.spezi.build.logic.convention.extensions.android
+import edu.stanford.spezi.build.logic.convention.extensions.findLibrary
 import edu.stanford.spezi.build.logic.convention.extensions.findVersion
 import edu.stanford.spezi.build.logic.convention.extensions.isLibrary
 import org.gradle.api.JavaVersion
@@ -54,6 +55,12 @@ class SpeziBaseConfigConventionPlugin : Plugin<Project> {
             }
         }
 
+        configurations.all {
+            resolutionStrategy {
+                force(findLibrary("guava"))
+            }
+        }
+
         /**
          * The purpose of this function is to optimize the build process.
          * If there are no Android tests for a variant, there's no need to spend time
@@ -63,7 +70,8 @@ class SpeziBaseConfigConventionPlugin : Plugin<Project> {
         if (isLibrary()) {
             extensions.configure<LibraryAndroidComponentsExtension> {
                 beforeVariants {
-                    it.androidTest.enable = it.androidTest.enable && projectDir.resolve("src/androidTest").exists()
+                    it.androidTest.enable =
+                        it.androidTest.enable && projectDir.resolve("src/androidTest").exists()
                 }
             }
         }
