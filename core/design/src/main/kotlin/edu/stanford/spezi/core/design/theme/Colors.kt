@@ -84,11 +84,11 @@ internal val Black10 = Color(0xFFEAEAEA)
 
 internal val RectangleBlue = Color(0xFFEBF2FC)
 
-private const val darkFactor = 0.1f
-private const val lightFactor = 0.9f
+private const val DARK_FACTOR = 0.1f
+private const val LIGHT_FACTOR = 0.9f
 
 fun Color.lighten(isDarkTheme: Boolean = false): Color {
-    val factor = if (isDarkTheme) darkFactor else lightFactor
+    val factor = if (isDarkTheme) DARK_FACTOR else LIGHT_FACTOR
     val red = (this.red + factor).coerceIn(0f, 1f)
     val green = (this.green + factor).coerceIn(0f, 1f)
     val blue = (this.blue + factor).coerceIn(0f, 1f)
