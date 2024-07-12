@@ -9,5 +9,11 @@ android {
 
 dependencies {
     api(libs.androidx.health.connect.client)
-    api(libs.hapi.fhir.structures.r4)
+    api(libs.android.fhir.data.capture)
+}
+
+configurations.all {
+    resolutionStrategy {
+        force("com.google.guava:guava:32.1.3-android")
+    }
 }
