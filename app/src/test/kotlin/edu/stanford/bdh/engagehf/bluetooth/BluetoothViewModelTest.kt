@@ -2,13 +2,10 @@ package edu.stanford.bdh.engagehf.bluetooth
 
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
-import edu.stanford.bdh.engagehf.bluetooth.data.mapper.DefaultMeasurementToRecordMapper
-import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MeasurementToRecordMapper
+import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MeasurementToObservationMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.repository.ObservationRepository
 import edu.stanford.bdh.engagehf.messages.MessageRepository
-import edu.stanford.healthconnectonfhir.RecordToObservationMapper
-import edu.stanford.healthconnectonfhir.RecordToObservationMapperImpl
 import edu.stanford.spezi.core.bluetooth.api.BLEService
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
@@ -29,11 +26,10 @@ import org.junit.Test
 class BluetoothViewModelTest {
     private val bleService: BLEService = mockk()
     private val uiStateMapper: BluetoothUiStateMapper = mockk()
-    private val measurementToRecordMapper: MeasurementToRecordMapper =
-        DefaultMeasurementToRecordMapper()
     private val observationRepository = mockk<ObservationRepository>(relaxed = true)
-    private val recordToObservation: RecordToObservationMapper = RecordToObservationMapperImpl()
     private val messageRepository = mockk<MessageRepository>(relaxed = true)
+    private val measurementToObservationMapper: MeasurementToObservationMapper =
+        mockk(relaxed = true)
 
     private val bleServiceState = MutableStateFlow<BLEServiceState>(BLEServiceState.Idle)
     private val bleServiceEvents = MutableSharedFlow<BLEServiceEvent>()
@@ -187,7 +183,7 @@ class BluetoothViewModelTest {
     }
 
     private fun assertState(state: BluetoothUiState) {
-        assertThat(bluetoothViewModel.bluetoothUiState.value).isEqualTo(state)
+        assertThat(bluetoothViewModel.uiState.value.bluetooth).isEqualTo(state)
     }
 
     private suspend fun assertEvent(event: BluetoothViewModel.Event) {
@@ -198,10 +194,9 @@ class BluetoothViewModelTest {
         bluetoothViewModel = BluetoothViewModel(
             bleService = bleService,
             uiStateMapper = uiStateMapper,
-            measurementToRecordMapper = measurementToRecordMapper,
             observationRepository = observationRepository,
-            recordToObservation = recordToObservation,
-            messageRepository = messageRepository
+            messageRepository = messageRepository,
+            measurementToObservationMapper = measurementToObservationMapper,
         )
     }
 }
