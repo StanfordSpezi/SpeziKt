@@ -10,7 +10,6 @@ import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MeasurementToRecordMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.UiState
-import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
 import edu.stanford.bdh.engagehf.bluetooth.data.repository.ObservationRepository
 import edu.stanford.bdh.engagehf.messages.MessageRepository
 import edu.stanford.bdh.engagehf.messages.MessageType
@@ -117,9 +116,12 @@ class BluetoothViewModel @Inject internal constructor(
                         )
                     }
 
-                    is BLEServiceEvent.Connected, is BLEServiceEvent.Disconnected, is BLEServiceEvent.MeasurementReceived -> {
+                    is BLEServiceEvent.Connected, is BLEServiceEvent.Disconnected -> {
                         logger.i { "Ignoring $event as it will be handled via BLEService state" }
-                        handleMeasurement(event)
+                    }
+
+                    is BLEServiceEvent.MeasurementReceived -> {
+                        handleMeasurementReceived(event)
                     }
                 }
             }
@@ -159,23 +161,21 @@ class BluetoothViewModel @Inject internal constructor(
                     if (record != null) {
                         _uiState.update { state ->
                             state.copy(
-                                vitalDisplay = state.vitalDisplay.copy(
-                                    heartRate = VitalDisplayData(
-                                        title = "Heart Rate",
-                                        value = "${
-                                            record.samples.stream()
-                                                .mapToLong(HeartRateRecord.Sample::beatsPerMinute)
-                                                .average()
-                                                .orElse(Double.NaN)
-                                        }",
-                                        unit = "bpm",
-                                        date = dateFormatter.format(
-                                            record.samples.first().time.atZone(
-                                                record.startZoneOffset
-                                            )
-                                        ),
-                                        status = OperationStatus.SUCCESS
-                                    )
+                                heartRate = state.heartRate.copy(
+                                    title = "Heart Rate",
+                                    value = "${
+                                        record.samples.stream()
+                                            .mapToLong(HeartRateRecord.Sample::beatsPerMinute)
+                                            .average()
+                                            .orElse(Double.NaN)
+                                    }",
+                                    unit = "bpm",
+                                    date = dateFormatter.format(
+                                        record.samples.first().time.atZone(
+                                            record.startZoneOffset
+                                        )
+                                    ),
+                                    status = OperationStatus.SUCCESS
                                 )
                             )
                         }
@@ -190,14 +190,12 @@ class BluetoothViewModel @Inject internal constructor(
     private fun loadHeartRateNoData() {
         _uiState.update { state ->
             state.copy(
-                vitalDisplay = state.vitalDisplay.copy(
-                    heartRate = VitalDisplayData(
-                        title = "Heart Rate",
-                        value = "No data available",
-                        unit = null,
-                        date = null,
-                        status = OperationStatus.NO_DATA
-                    )
+                heartRate = state.heartRate.copy(
+                    title = "Heart Rate",
+                    value = "No data available",
+                    unit = null,
+                    date = null,
+                    status = OperationStatus.NO_DATA
                 )
             )
         }
@@ -207,13 +205,11 @@ class BluetoothViewModel @Inject internal constructor(
         logger.e { "Error while getting latest heart rate observation" }
         _uiState.update { state ->
             state.copy(
-                vitalDisplay = state.vitalDisplay.copy(
-                    heartRate = state.vitalDisplay.heartRate.copy(
-                        status = OperationStatus.FAILURE,
-                        date = null,
-                        value = null,
-                        unit = null
-                    )
+                heartRate = state.heartRate.copy(
+                    status = OperationStatus.FAILURE,
+                    date = null,
+                    value = null,
+                    unit = null
                 )
             )
         }
@@ -232,15 +228,13 @@ class BluetoothViewModel @Inject internal constructor(
                     if (record != null) {
                         _uiState.update { state ->
                             state.copy(
-                                vitalDisplay = state.vitalDisplay.copy(
-                                    bloodPressure = VitalDisplayData(
-                                        title = "Blood Pressure",
-                                        value =
-                                        "${record.systolic.inMillimetersOfMercury}/${record.diastolic.inMillimetersOfMercury}",
-                                        unit = "mmHg",
-                                        date = dateFormatter.format(record.time.atZone(record.zoneOffset)),
-                                        status = OperationStatus.SUCCESS
-                                    )
+                                bloodPressure = state.bloodPressure.copy(
+                                    title = "Blood Pressure",
+                                    value =
+                                    "${record.systolic.inMillimetersOfMercury}/${record.diastolic.inMillimetersOfMercury}",
+                                    unit = "mmHg",
+                                    date = dateFormatter.format(record.time.atZone(record.zoneOffset)),
+                                    status = OperationStatus.SUCCESS
                                 )
                             )
                         }
@@ -255,14 +249,12 @@ class BluetoothViewModel @Inject internal constructor(
     private fun loadBloodPressureNoDataAvailable() {
         _uiState.update { state ->
             state.copy(
-                vitalDisplay = state.vitalDisplay.copy(
-                    bloodPressure = VitalDisplayData(
-                        title = "Blood Pressure",
-                        status = OperationStatus.NO_DATA,
-                        date = null,
-                        value = "No data available",
-                        unit = null
-                    )
+                bloodPressure = state.bloodPressure.copy(
+                    title = "Blood Pressure",
+                    status = OperationStatus.NO_DATA,
+                    date = null,
+                    value = "No data available",
+                    unit = null,
                 )
             )
         }
@@ -272,14 +264,12 @@ class BluetoothViewModel @Inject internal constructor(
         logger.e { "Error while getting latest blood pressure observation" }
         _uiState.update { state ->
             state.copy(
-                vitalDisplay = state.vitalDisplay.copy(
-                    bloodPressure = VitalDisplayData(
-                        title = "Blood Pressure",
-                        status = OperationStatus.FAILURE,
-                        date = null,
-                        value = null,
-                        unit = null
-                    )
+                bloodPressure = state.bloodPressure.copy(
+                    title = "Blood Pressure",
+                    status = OperationStatus.FAILURE,
+                    date = null,
+                    value = null,
+                    unit = null,
                 )
             )
         }
@@ -292,14 +282,12 @@ class BluetoothViewModel @Inject internal constructor(
                     logger.e { "Error while getting latest body weight observation" }
                     _uiState.update { state ->
                         state.copy(
-                            vitalDisplay = state.vitalDisplay.copy(
-                                weight = VitalDisplayData(
-                                    title = "Weight",
-                                    status = OperationStatus.FAILURE,
-                                    date = null,
-                                    value = null,
-                                    unit = null
-                                )
+                            weight = state.weight.copy(
+                                title = "Weight",
+                                status = OperationStatus.FAILURE,
+                                date = null,
+                                value = null,
+                                unit = null,
                             )
                         )
                     }
@@ -311,25 +299,23 @@ class BluetoothViewModel @Inject internal constructor(
                     if (record != null) {
                         _uiState.update { state ->
                             state.copy(
-                                vitalDisplay =
-                                state.vitalDisplay.copy(
-                                    weight = VitalDisplayData(
-                                        title = "Weight",
-                                        value = String.format(
-                                            Locale.getDefault(),
-                                            "%.2f",
-                                            when (Locale.getDefault().country) {
-                                                "US", "LR", "MM" -> record.weight.inPounds
-                                                else -> record.weight.inKilograms
-                                            }
-                                        ),
-                                        unit = when (Locale.getDefault().country) {
-                                            "US", "LR", "MM" -> "lbs"
-                                            else -> "kg"
-                                        },
-                                        date = dateFormatter.format(record.time.atZone(record.zoneOffset)),
-                                        status = OperationStatus.SUCCESS
-                                    )
+                                weight =
+                                state.weight.copy(
+                                    title = "Weight",
+                                    value = String.format(
+                                        Locale.getDefault(),
+                                        "%.2f",
+                                        when (Locale.getDefault().country) {
+                                            "US", "LR", "MM" -> record.weight.inPounds
+                                            else -> record.weight.inKilograms
+                                        }
+                                    ),
+                                    unit = when (Locale.getDefault().country) {
+                                        "US", "LR", "MM" -> "lbs"
+                                        else -> "kg"
+                                    },
+                                    date = dateFormatter.format(record.time.atZone(record.zoneOffset)),
+                                    status = OperationStatus.SUCCESS,
                                 )
                             )
                         }
@@ -344,14 +330,12 @@ class BluetoothViewModel @Inject internal constructor(
     private fun loadWeightFailure() {
         _uiState.update { state ->
             state.copy(
-                vitalDisplay = state.vitalDisplay.copy(
-                    weight = VitalDisplayData(
-                        title = "Weight",
-                        value = null,
-                        unit = null,
-                        date = null,
-                        status = OperationStatus.FAILURE
-                    )
+                weight = state.weight.copy(
+                    title = "Weight",
+                    value = null,
+                    unit = null,
+                    date = null,
+                    status = OperationStatus.FAILURE
                 )
             )
         }
@@ -452,7 +436,7 @@ class BluetoothViewModel @Inject internal constructor(
         }
     }
 
-    private fun handleMeasurement(event: BLEServiceEvent) {
+    private fun handleMeasurementReceived(event: BLEServiceEvent) {
         if (event is BLEServiceEvent.MeasurementReceived) {
             if (event.measurement is Measurement.Weight) {
                 _uiState.update {

@@ -112,16 +112,16 @@ private fun BluetoothScreen(
                 .padding(top = Spacings.medium)
         ) {
             VitalDisplay(
-                modifier = Modifier.weight(1f), vitalDisplayUiState = uiState.vitalDisplay.weight
+                modifier = Modifier.weight(1f), vitalDisplayUiState = uiState.weight
             )
             VitalDisplay(
                 modifier = Modifier.weight(1f),
-                vitalDisplayUiState = uiState.vitalDisplay.heartRate
+                vitalDisplayUiState = uiState.heartRate
             )
         }
         VitalDisplay(
             modifier = Modifier.padding(vertical = Spacings.medium),
-            vitalDisplayUiState = uiState.vitalDisplay.bloodPressure
+            vitalDisplayUiState = uiState.bloodPressure
         )
     }
 }
