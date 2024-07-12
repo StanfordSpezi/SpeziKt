@@ -6,7 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.module.account.AccountEvents
-import edu.stanford.spezi.module.account.cred.manager.CredentialRegisterManagerAuth
+import edu.stanford.spezi.module.account.manager.CredentialRegisterManagerAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
