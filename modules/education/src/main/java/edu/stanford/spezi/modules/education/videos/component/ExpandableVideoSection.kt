@@ -77,7 +77,7 @@ internal fun ExpandableVideoSection(
     var expanded by remember { mutableStateOf(expandedStartValue) }
 
     val cardColor = if (isSystemInDarkTheme()) {
-        lightenColor(Colors.surface, 0.1f)
+        lightenColor(Colors.surface, isDarkTheme = true)
     } else {
         lightenColor(Colors.surface)
     }
@@ -194,7 +194,8 @@ private class ExpandableVideoSectionParamsFactory {
     }
 }
 
-private fun lightenColor(color: Color, factor: Float = 0.95f): Color {
+private fun lightenColor(color: Color, isDarkTheme: Boolean = false): Color {
+    val factor = if (isDarkTheme) 0.1f else 0.9f
     val red = (color.red + factor).coerceIn(0f, 1f)
     val green = (color.green + factor).coerceIn(0f, 1f)
     val blue = (color.blue + factor).coerceIn(0f, 1f)
