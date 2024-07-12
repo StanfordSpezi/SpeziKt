@@ -1,7 +1,9 @@
 package edu.stanford.spezi.module.onboarding.consent
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -14,6 +16,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.core.design.component.markdown.MarkdownComponent
+import edu.stanford.spezi.core.design.component.markdown.MarkdownElement
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
@@ -36,10 +39,16 @@ private fun ConsentScreen(
     Column(
         modifier = Modifier
             .testIdentifier(ConsentScreenTestIdentifier.ROOT)
+            .fillMaxSize()
             .padding(Spacings.medium)
     ) {
         Spacer(modifier = Modifier.height(Spacings.medium))
         MarkdownComponent(markdownElements = uiState.markdownElements)
+        Spacer(
+            modifier = Modifier
+                .height(Spacings.small)
+                .weight(1f)
+        )
         SignaturePad(
             uiState = uiState,
             onAction = onAction,
@@ -47,7 +56,7 @@ private fun ConsentScreen(
     }
 }
 
-@Preview
+@Preview(uiMode = UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun ConsentScreenPreview(
     @PreviewParameter(ConsentScreenPreviewProvider::class) uiState: ConsentUiState,
@@ -64,6 +73,10 @@ private class ConsentScreenPreviewProvider : PreviewParameterProvider<ConsentUiS
             firstName = FieldState("John"),
             lastName = FieldState("Doe"),
             paths = mutableListOf(Path().apply { lineTo(100f, 100f) }),
+            markdownElements = listOf(
+                MarkdownElement.Heading(1, "Consent"),
+                MarkdownElement.Paragraph("Please sign below to indicate your consent."),
+            ),
         ), ConsentUiState(
             firstName = FieldState(""),
             lastName = FieldState(""),

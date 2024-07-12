@@ -1,4 +1,5 @@
 @file:Suppress("MagicNumber")
+
 package edu.stanford.spezi.module.onboarding.consent
 
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -29,6 +31,7 @@ internal fun SignaturePad(
     uiState: ConsentUiState,
     onAction: (ConsentAction) -> Unit,
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     Column {
         OutlinedTextField(
             value = uiState.firstName.value,
@@ -66,7 +69,10 @@ internal fun SignaturePad(
                 paths = uiState.paths.toMutableList(),
                 firstName = uiState.firstName.value,
                 lastName = uiState.lastName.value,
-                onPathAdd = { path -> onAction(ConsentAction.AddPath(path)) }
+                onPathAdd = { path ->
+                    onAction(ConsentAction.AddPath(path))
+                    keyboardController?.hide()
+                }
             )
             Spacer(modifier = Modifier.height(Spacings.medium))
             Row(modifier = Modifier.fillMaxWidth()) {

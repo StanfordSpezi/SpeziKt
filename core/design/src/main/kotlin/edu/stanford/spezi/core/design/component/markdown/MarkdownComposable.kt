@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -30,7 +30,7 @@ fun MarkdownComponent(markdownElements: List<MarkdownElement>) {
 
 @Composable
 private fun Heading(element: MarkdownElement.Heading) {
-    BasicText(
+    Text(
         text = element.text,
         style = when (element.level) {
             1 -> TextStyles.headlineLarge
@@ -43,7 +43,7 @@ private fun Heading(element: MarkdownElement.Heading) {
 
 @Composable
 private fun Paragraph(element: MarkdownElement.Paragraph) {
-    BasicText(
+    Text(
         text = element.text,
         style = TextStyles.bodyMedium,
     )
@@ -51,7 +51,7 @@ private fun Paragraph(element: MarkdownElement.Paragraph) {
 
 @Composable
 private fun BoldText(element: MarkdownElement.Bold) {
-    BasicText(
+    Text(
         text = element.text,
         style = TextStyles.bodyMedium.copy(fontWeight = FontWeight.Bold),
     )
@@ -60,11 +60,11 @@ private fun BoldText(element: MarkdownElement.Bold) {
 @Composable
 private fun ListItem(element: MarkdownElement.ListItem) {
     Row {
-        BasicText(
+        Text(
             text = "    - ",
             style = TextStyles.bodyMedium
         )
-        BasicText(
+        Text(
             text = element.text,
             style = TextStyles.bodyMedium
         )
