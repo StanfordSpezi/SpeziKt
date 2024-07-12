@@ -6,14 +6,13 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.OperationStatus
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
-import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MeasurementToRecordMapper
+import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MeasurementToObservationMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.UiState
 import edu.stanford.bdh.engagehf.bluetooth.data.repository.ObservationRepository
 import edu.stanford.bdh.engagehf.messages.MessageRepository
 import edu.stanford.bdh.engagehf.messages.MessageType
-import edu.stanford.healthconnectonfhir.RecordToObservationMapper
 import edu.stanford.spezi.core.bluetooth.api.BLEService
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
@@ -33,10 +32,9 @@ import javax.inject.Inject
 class BluetoothViewModel @Inject internal constructor(
     private val bleService: BLEService,
     private val uiStateMapper: BluetoothUiStateMapper,
-    private val recordToObservation: RecordToObservationMapper,
     private val observationRepository: ObservationRepository,
-    private val measurementToRecordMapper: MeasurementToRecordMapper,
     private val messageRepository: MessageRepository,
+    private val measurementToObservationMapper: MeasurementToObservationMapper,
 ) : ViewModel() {
     private val logger by speziLogger()
 
@@ -393,21 +391,14 @@ class BluetoothViewModel @Inject internal constructor(
         }
         viewModelScope.launch {
             if (action.measurement is Measurement.Weight) {
-                val records = measurementToRecordMapper.map(action.measurement)
-                records.forEach { record ->
-                    recordToObservation.map(record).let {
-                        observationRepository.saveObservations(it)
-                    }
+                measurementToObservationMapper.map(action.measurement).let {
+                    observationRepository.saveObservations(it)
                 }
-                loadWeight()
             }
 
             if (action.measurement is Measurement.BloodPressure) {
-                val records = measurementToRecordMapper.map(action.measurement)
-                records.forEach { record ->
-                    recordToObservation.map(record).let {
-                        observationRepository.saveObservations(it)
-                    }
+                measurementToObservationMapper.map(action.measurement).let {
+                    observationRepository.saveObservations(it)
                 }
             }
             _uiState.update {

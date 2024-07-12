@@ -5,6 +5,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,7 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.core.design.theme.Colors
@@ -36,6 +36,7 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
+import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.modules.education.videos.Video
 import edu.stanford.spezi.modules.education.videos.VideoItem
 
@@ -75,6 +76,12 @@ internal fun ExpandableVideoSection(
 ) {
     var expanded by remember { mutableStateOf(expandedStartValue) }
 
+    val cardColor = if (isSystemInDarkTheme()) {
+        lightenColor(Colors.surface, 0.1f)
+    } else {
+        lightenColor(Colors.surface)
+    }
+
     ElevatedCard(
         elevation = CardDefaults.cardElevation(defaultElevation = Sizes.Elevation.medium),
         shape = RoundedCornerShape(Sizes.RoundedCorner.large),
@@ -87,7 +94,7 @@ internal fun ExpandableVideoSection(
             .clickable { expanded = !expanded },
     ) {
         Column(
-            modifier = Modifier.background(lightenColor(Colors.surface))
+            modifier = Modifier.background(cardColor)
         ) {
             SectionHeader(
                 text = title,
@@ -148,7 +155,7 @@ private class ExpandableSectionPreviewProvider :
     override val count: Int = values.count()
 }
 
-@Preview(showBackground = true)
+@ThemePreviews
 @Composable
 private fun ExpandableVideoSectionPreview(
     @PreviewParameter(ExpandableSectionPreviewProvider::class) params: ExpandableVideoSectionParams,
@@ -187,7 +194,7 @@ private class ExpandableVideoSectionParamsFactory {
     }
 }
 
-private fun lightenColor(color: Color, factor: Float = 0.9f): Color {
+private fun lightenColor(color: Color, factor: Float = 0.95f): Color {
     val red = (color.red + factor).coerceIn(0f, 1f)
     val green = (color.green + factor).coerceIn(0f, 1f)
     val blue = (color.blue + factor).coerceIn(0f, 1f)
