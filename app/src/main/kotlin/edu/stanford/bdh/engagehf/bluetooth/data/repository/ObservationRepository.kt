@@ -102,7 +102,7 @@ internal class ObservationRepository @Inject constructor(
                                 val json = gson.toJson(it.data)
                                 val observation =
                                     jsonParser.parseResource(Observation::class.java, json)
-                                onResult(Result.success(observation.toRecord() as T))
+                                onResult(Result.success(observationToRecordMapper.map(observation) as T))
                             } ?: onResult(Result.success(null))
                         }
                     }
@@ -123,10 +123,6 @@ internal class ObservationRepository @Inject constructor(
 
     suspend fun listenForLatestHeartRateObservation(onResult: (Result<HeartRateRecord?>) -> Unit) {
         listenForLatestObservation(heartRateCollection, onResult)
-    }
-
-    private fun Observation.toRecord(): androidx.health.connect.client.records.Record {
-        return observationToRecordMapper.map(this)
     }
 }
 
