@@ -52,6 +52,7 @@ private val LightColorScheme = lightColorScheme(
 fun SpeziTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
+    isPreview: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
@@ -74,12 +75,11 @@ fun SpeziTheme(
 
     val surface: ComposableBlock = {
         Surface(
-            modifier = Modifier.fillMaxSize(),
+            modifier = if (isPreview) Modifier else Modifier.fillMaxSize(),
             color = Colors.background,
             content = content
         )
     }
-
     MaterialTheme(
         colorScheme = colorScheme,
         typography = typography,
