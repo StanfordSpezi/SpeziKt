@@ -13,6 +13,7 @@ import javax.inject.Inject
 internal class MessageRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val userSessionManager: UserSessionManager,
+    private val firestoreMessageMapper: FirestoreMessageMapper,
     @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
 ) {
     private val logger by speziLogger()
@@ -34,12 +35,8 @@ internal class MessageRepository @Inject constructor(
                         }
                         val messages = mutableListOf<Message>()
                         value?.documents?.forEach { document ->
-                            logger.i { "Received message: ${document.data}" }
-                            logger.i { "Received message id: ${document.id}" }
-                            val message = document.toObject(Message::class.java)
-                            if (message != null) {
-                                message.id = document.id
-                                messages.add(message)
+                            firestoreMessageMapper.map(document)?.let {
+                                messages.add(it)
                             }
                         }
                         onMessagesUpdate(messages)
