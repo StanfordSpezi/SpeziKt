@@ -33,7 +33,7 @@ class VideoSectionDocumentToVideoSectionMapper @Inject constructor() {
         )
     }
 
-    private fun mapVideo(document: DocumentSnapshot): Video? {
+    fun mapVideo(document: DocumentSnapshot): Video? {
         val videoTitle = getLocalizedString(document, "title") ?: return null
         val videoDescription = getLocalizedString(document, "description")
         val youtubeId = document.get("youtubeId") as? String ?: return null
