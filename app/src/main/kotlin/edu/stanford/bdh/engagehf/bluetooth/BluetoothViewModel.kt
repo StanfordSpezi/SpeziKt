@@ -346,46 +346,43 @@ class BluetoothViewModel @Inject internal constructor(
 
             is Action.MessageItemClicked -> {
                 viewModelScope.launch {
-                    action.message.action?.let {
-                        action.message.action.let {
-                            val mappingResult = messageActionMapper.map(it)
-                            if (mappingResult.isSuccess) {
-                                when (val mappedAction = mappingResult.getOrNull()!!) {
-                                    is edu.stanford.bdh.engagehf.messages.Action.HealthSummaryAction -> { /* TODO */
-                                    }
+                    action.message.action.let {
+                        val mappingResult = messageActionMapper.map(it)
+                        if (mappingResult.isSuccess) {
+                            when (val mappedAction = mappingResult.getOrNull()!!) {
+                                is edu.stanford.bdh.engagehf.messages.Action.HealthSummaryAction -> { /* TODO */
+                                }
 
-                                    is edu.stanford.bdh.engagehf.messages.Action.MeasurementsAction -> {
-                                        bottomSheetEvents.emit(BottomSheetEvents.Event.DoNewMeasurement)
-                                    }
+                                is edu.stanford.bdh.engagehf.messages.Action.MeasurementsAction -> {
+                                    bottomSheetEvents.emit(BottomSheetEvents.Event.DoNewMeasurement)
+                                }
 
-                                    is edu.stanford.bdh.engagehf.messages.Action.MedicationsAction -> { /* TODO */
-                                    }
+                                is edu.stanford.bdh.engagehf.messages.Action.MedicationsAction -> { /* TODO */
+                                }
 
-                                    is edu.stanford.bdh.engagehf.messages.Action.QuestionnaireAction -> { /* TODO */
-                                    }
+                                is edu.stanford.bdh.engagehf.messages.Action.QuestionnaireAction -> { /* TODO */
+                                }
 
-                                    is edu.stanford.bdh.engagehf.messages.Action.VideoSectionAction -> {
-                                        viewModelScope.launch {
-                                            engageEducationRepository.getVideoBySectionAndVideoId(
-                                                mappedAction.videoSectionVideo.videoSectionId,
-                                                mappedAction.videoSectionVideo.videoId
-                                            ).getOrThrow().let { video ->
-                                                navigator.navigateTo(
-                                                    EducationNavigationEvent.VideoSectionClicked(
-                                                        video = video
-                                                    )
+                                is edu.stanford.bdh.engagehf.messages.Action.VideoSectionAction -> {
+                                    viewModelScope.launch {
+                                        engageEducationRepository.getVideoBySectionAndVideoId(
+                                            mappedAction.videoSectionVideo.videoSectionId,
+                                            mappedAction.videoSectionVideo.videoId
+                                        ).getOrThrow().let { video ->
+                                            navigator.navigateTo(
+                                                EducationNavigationEvent.VideoSectionClicked(
+                                                    video = video
                                                 )
-                                            }
+                                            )
                                         }
                                     }
                                 }
-                            } else {
-                                logger.e { "Error while mapping action: ${mappingResult.exceptionOrNull()}" }
                             }
+                        } else {
+                            logger.e { "Error while mapping action: ${mappingResult.exceptionOrNull()}" }
                         }
                     }
-                    // TODO trigger firebase function action.message.id?.let { messageRepository.completeMessage(it) }
-                    _uiState.update {
+                    _uiState.update { // TODO trigger firebase function action.message.id?.let { messageRepository.completeMessage(it) }
                         it.copy(messages = it.messages.filter { message -> message.id != action.message.id })
                     }
                 }
