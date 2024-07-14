@@ -1,6 +1,12 @@
 package edu.stanford.bdh.engagehf.bluetooth
 
+import androidx.health.connect.client.records.BloodPressureRecord
+import androidx.health.connect.client.records.HeartRateRecord
+import androidx.health.connect.client.records.WeightRecord
+import androidx.health.connect.client.units.Mass
+import androidx.health.connect.client.units.Pressure
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MeasurementToObservationMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
@@ -9,12 +15,16 @@ import edu.stanford.bdh.engagehf.messages.MessageRepository
 import edu.stanford.spezi.core.bluetooth.api.BLEService
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
+import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +32,8 @@ import kotlinx.coroutines.flow.first
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.time.Instant
+import java.time.ZoneOffset
 
 class BluetoothViewModelTest {
     private val bleService: BLEService = mockk()
@@ -34,6 +46,8 @@ class BluetoothViewModelTest {
     private val bleServiceState = MutableStateFlow<BLEServiceState>(BLEServiceState.Idle)
     private val bleServiceEvents = MutableSharedFlow<BLEServiceEvent>()
     private val readyUiState: BluetoothUiState.Ready = mockk()
+    private val bottomSheetEvents = mockk<BottomSheetEvents>(relaxed = true)
+    private val navigator = mockk<Navigator>(relaxed = true)
 
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
@@ -182,6 +196,106 @@ class BluetoothViewModelTest {
         verify { bleService.stop() }
     }
 
+    @Test
+    fun `it should load weight successfully`() = runTestUnconfined {
+        // Given
+        val expectedWeight = "70,00"
+        val bodyWeightObservation = mockk<WeightRecord>().apply {
+            every { weight.inGrams } returns 70000.0
+            every { weight.inKilograms } returns 70.0
+            every { time } returns Instant.now()
+            every { zoneOffset } returns ZoneOffset.UTC
+        }
+        val resultSlot = slot<(Result<WeightRecord?>) -> Unit>()
+
+        coEvery { observationRepository.listenForLatestBodyWeightObservation(capture(resultSlot)) } answers {
+            resultSlot.captured.invoke(Result.success(bodyWeightObservation))
+        }
+        // When
+        createViewModel()
+
+        // Then
+        assertThat(bluetoothViewModel.uiState.value.weight.value).isEqualTo(expectedWeight)
+    }
+
+    @Test
+    fun `it should load blood pressure successfully`() = runTestUnconfined {
+        // Given
+        val expectedBloodPressure = "120.0/80.0"
+        val bloodPressureObservation = mockk<BloodPressureRecord>().apply {
+            every { systolic } returns Pressure.millimetersOfMercury(120.0)
+            every { diastolic } returns Pressure.millimetersOfMercury(80.0)
+            every { time } returns Instant.now()
+            every { zoneOffset } returns ZoneOffset.UTC
+        }
+        val resultSlot = slot<(Result<BloodPressureRecord?>) -> Unit>()
+
+        coEvery { observationRepository.listenForLatestBloodPressureObservation(capture(resultSlot)) } answers {
+            resultSlot.captured.invoke(Result.success(bloodPressureObservation))
+        }
+        // When
+        createViewModel()
+
+        // Then
+        assertThat(bluetoothViewModel.uiState.value.bloodPressure.value).isEqualTo(
+            expectedBloodPressure
+        )
+    }
+
+    @Test
+    fun `it should load heart frequenz successfully`() = runTestUnconfined {
+        // Given
+        val expectedHeartRate = "70.0"
+        val heartRateObservation = mockk<HeartRateRecord>().apply {
+            every { samples } returns listOf(
+                HeartRateRecord.Sample(
+                    Instant.now(),
+                    70
+                )
+            )
+            every { startTime } returns Instant.now()
+            every { endTime } returns Instant.now()
+            every { startZoneOffset } returns ZoneOffset.UTC
+            every { endZoneOffset } returns ZoneOffset.UTC
+        }
+        val resultSlot = slot<(Result<HeartRateRecord?>) -> Unit>()
+
+        coEvery { observationRepository.listenForLatestHeartRateObservation(capture(resultSlot)) } answers {
+            resultSlot.captured.invoke(Result.success(heartRateObservation))
+        }
+        // When
+        createViewModel()
+
+        // Then
+        assertThat(bluetoothViewModel.uiState.value.heartRate.value).isEqualTo(expectedHeartRate)
+    }
+
+    @Test
+    fun `it should trigger listenForLatestWeightObservation on new observation`() =
+        runTestUnconfined {
+            // Given
+            val mockWeightRecord = mockk<WeightRecord>(relaxed = true)
+            val resultSlot = slot<(Result<WeightRecord?>) -> Unit>()
+
+            val mockMass = mockk<Mass>()
+            every { mockMass.inGrams } returns 70000.0
+            every { mockMass.inKilograms } returns 70.0
+            every { mockWeightRecord.weight } returns mockMass
+            coEvery { observationRepository.listenForLatestBodyWeightObservation(capture(resultSlot)) } answers {
+                resultSlot.captured.invoke(Result.success(mockWeightRecord))
+            }
+
+            // When
+            observationRepository.listenForLatestBodyWeightObservation { result ->
+                assertThat(result.isSuccess).isTrue()
+                assertThat(result.getOrNull()).isEqualTo(mockWeightRecord)
+            }
+
+            // Then
+            coVerify(exactly = 1) { observationRepository.listenForLatestBodyWeightObservation(any()) }
+            assert(resultSlot.isCaptured)
+        }
+
     private fun assertState(state: BluetoothUiState) {
         assertThat(bluetoothViewModel.uiState.value.bluetooth).isEqualTo(state)
     }
@@ -197,6 +311,10 @@ class BluetoothViewModelTest {
             observationRepository = observationRepository,
             messageRepository = messageRepository,
             measurementToObservationMapper = measurementToObservationMapper,
+            bottomSheetEvents = bottomSheetEvents,
+            navigator = navigator,
+            engageEducationRepository = mockk(),
+            messageActionMapper = mockk(),
         )
     }
 }
