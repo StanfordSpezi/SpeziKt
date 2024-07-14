@@ -83,7 +83,7 @@ fun MessageItem(
                     color = Colors.onBackground,
                 )
             }
-            message.description?.let {
+            message.description.let {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -135,19 +135,17 @@ fun MessageItem(
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                message.action?.let {
-                    Button(
-                        modifier = Modifier.testIdentifier(MessageItemTestIdentifiers.ACTION_BUTTON),
-                        colors = ButtonDefaults.buttonColors(containerColor = primary),
-                        onClick = {
-                            onAction(Action.MessageItemClicked(message))
-                        },
-                    ) {
-                        Text(
-                            text = stringResource(R.string.message_item_button_action_text),
-                            color = Colors.onPrimary,
-                        )
-                    }
+                Button(
+                    modifier = Modifier.testIdentifier(MessageItemTestIdentifiers.ACTION_BUTTON),
+                    colors = ButtonDefaults.buttonColors(containerColor = primary),
+                    onClick = {
+                        onAction(Action.MessageItemClicked(message))
+                    },
+                ) {
+                    Text(
+                        text = stringResource(R.string.message_item_button_action_text),
+                        color = Colors.onPrimary,
+                    )
                 }
             }
         }
@@ -189,8 +187,8 @@ fun MessageListPreview() {
 private val sampleMessages = listOf(
     Message(
         id = java.util.UUID.randomUUID().toString(),
-        dueDateString = ZonedDateTime.now().plusDays(1).toString(),
-        completionDateString = null,
+        dueDate = ZonedDateTime.now().plusDays(1),
+        completionDate = null,
         type = MessageType.WeightGain,
         title = "Weight Gained",
         description = "You gained weight. Please take action.",
@@ -198,8 +196,8 @@ private val sampleMessages = listOf(
     ),
     Message(
         id = java.util.UUID.randomUUID().toString(),
-        dueDateString = ZonedDateTime.now().plusDays(2).toString(),
-        completionDateString = null,
+        dueDate = ZonedDateTime.now().plusDays(2),
+        completionDate = null,
         type = MessageType.MedicationChange,
         title = "Medication Change",
         description = "Your medication has been changed. Please take action. " +
@@ -210,9 +208,9 @@ private val sampleMessages = listOf(
     ),
     Message(
         id = java.util.UUID.randomUUID().toString(),
-        dueDateString = ZonedDateTime.now().plusDays(2).toString(),
-        completionDateString = null,
-        type = null,
+        dueDate = ZonedDateTime.now().plusDays(2),
+        completionDate = null,
+        type = MessageType.Unknown,
         title = "Medication Change",
         description = "Your medication has been changed. Please take action. " +
             "Your medication has been changed. Please take action. Your medication " +
