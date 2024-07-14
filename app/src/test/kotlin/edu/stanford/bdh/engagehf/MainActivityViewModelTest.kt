@@ -1,6 +1,7 @@
 package edu.stanford.bdh.engagehf
 
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
@@ -32,16 +33,20 @@ class MainActivityViewModelTest {
     private val navigator: Navigator = mockk(relaxed = true)
     private val userStateFlow = MutableStateFlow<UserState>(UserState.NotInitialized)
     private val userSessionManager: UserSessionManager = mockk()
+    private val bottomSheetEvents: BottomSheetEvents = mockk(relaxed = true)
+    private val bottomSheetEventsFlow = MutableSharedFlow<BottomSheetEvents.Event>()
     private lateinit var viewModel: MainActivityViewModel
 
     @Before
     fun setUp() {
         every { accountEvents.events } returns accountEventsFlow
         every { userSessionManager.userState } returns userStateFlow
+        every { bottomSheetEvents.events } returns bottomSheetEventsFlow
         viewModel = MainActivityViewModel(
             accountEvents = accountEvents,
             navigator = navigator,
             userSessionManager = userSessionManager,
+            bottomSheetEvents = bottomSheetEvents
         )
     }
 
@@ -159,10 +164,59 @@ class MainActivityViewModelTest {
             val newSelectedItem = BottomBarItem.EDUCATION
 
             // When
-            viewModel.onAction(Action.UpdateSelectedBottomBarItem(newSelectedItem))
+            viewModel.onAction(
+                Action.UpdateSelectedBottomBarItem(
+                    newSelectedItem
+                )
+            )
 
             // Then
             val updatedIndex = viewModel.uiState.value.selectedItem
             assertThat(updatedIndex).isEqualTo(newSelectedItem)
+        }
+
+    @Test
+    fun `given NewMeasurementAction when onAction then uiState should be updated`() =
+        runTestUnconfined {
+            // Given
+            val event = BottomSheetEvents.Event.NewMeasurementAction
+
+            // When
+            bottomSheetEventsFlow.emit(event)
+
+            // Then
+            val updatedUiState = viewModel.uiState.value
+            assertThat(updatedUiState.isBottomSheetExpanded).isTrue()
+            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.NEW_MEASUREMENT_RECEIVED)
+        }
+
+    @Test
+    fun `given DoNewMeasurement when onAction then uiState should be updated`() =
+        runTestUnconfined {
+            // Given
+            val event = BottomSheetEvents.Event.DoNewMeasurement
+
+            // When
+            bottomSheetEventsFlow.emit(event)
+
+            // Then
+            val updatedUiState = viewModel.uiState.value
+            assertThat(updatedUiState.isBottomSheetExpanded).isTrue()
+            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.DO_NEW_MEASUREMENT)
+        }
+
+    @Test
+    fun `given CloseBottomSheet when onAction then uiState should be updated`() =
+        runTestUnconfined {
+            // Given
+            val event = BottomSheetEvents.Event.CloseBottomSheet
+
+            // When
+            bottomSheetEventsFlow.emit(event)
+
+            // Then
+            val updatedUiState = viewModel.uiState.value
+            assertThat(updatedUiState.isBottomSheetExpanded).isFalse()
+            assertThat(updatedUiState.bottomSheetContent).isNull()
         }
 }
