@@ -9,7 +9,6 @@ import org.junit.Before
 import org.junit.Test
 import java.time.ZonedDateTime
 
-
 class FirestoreMessageMapperTest {
     private lateinit var documentSnapshot: DocumentSnapshot
     private lateinit var mapper: FirestoreMessageMapper

@@ -3,7 +3,6 @@ package edu.stanford.bdh.engagehf.messages
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-
 class MessageActionMapperKtTest {
 
     private val messageActionMapper = MessageActionMapper()
@@ -78,7 +77,6 @@ class MessageActionMapperKtTest {
         // Then
         assertThat(result.isSuccess).isTrue()
         assertThat(result.getOrNull()).isEqualTo(Action.HealthSummaryAction)
-
     }
 
     @Test
@@ -93,5 +91,4 @@ class MessageActionMapperKtTest {
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()).isInstanceOf(IllegalStateException::class.java)
     }
-
 }
