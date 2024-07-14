@@ -11,4 +11,10 @@
     <string name="diastolic">Diastolic</string>
     <string name="pulse_rate">Pulse rate</string>
     <string name="weight">Weight</string>
+    <string name="messages">Messages</string>
+    <string name="vitals">Vitals</string>
+    <string name="message_item_button_action_text">Finish</string>
+    <string name="weight_icon_content_description">Weight Icon</string>
+    <string name="blood_pressure_icon_content_description">Blood Pressure Icon</string>
+    <string name="new_measurement_text">Please make a new measurement.</string>
 </resources>
