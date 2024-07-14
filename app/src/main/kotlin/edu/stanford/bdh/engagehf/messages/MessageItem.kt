@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,9 +25,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.spezi.core.design.theme.Colors
@@ -50,7 +52,7 @@ fun MessageItem(
 ) {
     ElevatedCard(
         elevation = CardDefaults.elevatedCardElevation(
-            defaultElevation = 4.dp,
+            defaultElevation = Sizes.Elevation.medium,
         ),
         colors = CardDefaults.cardColors(
             containerColor = Colors.surface.lighten(isSystemInDarkTheme()),
@@ -64,16 +66,23 @@ fun MessageItem(
     ) {
         Column(
             modifier = Modifier
-                .background(Colors.surface.copy(alpha = 0.2f))
+                .background(Colors.surface.lighten(isSystemInDarkTheme()))
                 .padding(start = Spacings.small, end = Spacings.small)
                 .fillMaxWidth()
         ) {
-            Text(
-                modifier = Modifier.testIdentifier(MessageItemTestIdentifiers.TITLE),
-                text = message.title,
-                style = TextStyles.titleMedium,
-                color = Colors.onBackground,
-            )
+            Row(
+                modifier = Modifier.padding(top = Spacings.small),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                MessageIcon(message.icon)
+                Spacer(modifier = Modifier.width(Spacings.small))
+                Text(
+                    modifier = Modifier.testIdentifier(MessageItemTestIdentifiers.TITLE),
+                    text = message.title,
+                    style = TextStyles.titleMedium,
+                    color = Colors.onBackground,
+                )
+            }
             message.description?.let {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -112,7 +121,9 @@ fun MessageItem(
             }
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = Spacings.small),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start,
             ) {
@@ -143,6 +154,19 @@ fun MessageItem(
     }
 }
 
+@Composable
+fun MessageIcon(
+    messageTypeIcon: Int,
+    contentDescription: String? = null,
+    size: Dp = Sizes.Icon.small,
+) {
+    Icon(
+        painter = painterResource(id = messageTypeIcon),
+        contentDescription = contentDescription,
+        modifier = Modifier.size(size),
+    )
+}
+
 enum class MessageItemTestIdentifiers {
     TITLE,
     DESCRIPTION,
@@ -154,7 +178,7 @@ enum class MessageItemTestIdentifiers {
 @ThemePreviews
 fun MessageListPreview() {
     SpeziTheme(isPreview = true) {
-        LazyColumn {
+        LazyColumn(modifier = Modifier.padding(Spacings.medium)) {
             items(sampleMessages) { message ->
                 MessageItem(message = message, onAction = { })
             }
@@ -177,6 +201,18 @@ private val sampleMessages = listOf(
         dueDateString = ZonedDateTime.now().plusDays(2).toString(),
         completionDateString = null,
         type = MessageType.MedicationChange,
+        title = "Medication Change",
+        description = "Your medication has been changed. Please take action. " +
+            "Your medication has been changed. Please take action. Your medication " +
+            "has been changed. " +
+            "Please take action.",
+        action = "Go to medication",
+    ),
+    Message(
+        id = java.util.UUID.randomUUID().toString(),
+        dueDateString = ZonedDateTime.now().plusDays(2).toString(),
+        completionDateString = null,
+        type = null,
         title = "Medication Change",
         description = "Your medication has been changed. Please take action. " +
             "Your medication has been changed. Please take action. Your medication " +
