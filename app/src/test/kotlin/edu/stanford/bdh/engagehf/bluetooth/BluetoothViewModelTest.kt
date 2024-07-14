@@ -32,8 +32,10 @@ import kotlinx.coroutines.flow.first
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.text.NumberFormat
 import java.time.Instant
 import java.time.ZoneOffset
+import java.util.Locale
 
 class BluetoothViewModelTest {
     private val bleService: BLEService = mockk()
@@ -199,7 +201,7 @@ class BluetoothViewModelTest {
     @Test
     fun `it should load weight successfully`() = runTestUnconfined {
         // Given
-        val expectedWeight = "70,00"
+        val expectedWeight = getLocalizedWeight(70.0)
         val bodyWeightObservation = mockk<WeightRecord>().apply {
             every { weight.inGrams } returns 70000.0
             every { weight.inKilograms } returns 70.0
@@ -302,6 +304,13 @@ class BluetoothViewModelTest {
 
     private suspend fun assertEvent(event: BluetoothViewModel.Event) {
         assertThat(bluetoothViewModel.events.first()).isEqualTo(event)
+    }
+
+    private fun getLocalizedWeight(weightInKilograms: Double): String {
+        val formatter = NumberFormat.getNumberInstance(Locale.getDefault())
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        return formatter.format(weightInKilograms)
     }
 
     private fun createViewModel() {
