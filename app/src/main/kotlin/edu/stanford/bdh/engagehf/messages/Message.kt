@@ -33,6 +33,18 @@ data class Message(
     val dueDateFormattedString: String?
         get() = dueDate?.format(DateTimeFormatter.ofPattern("MMM dd, yyyy hh:mm a"))
 
+    val icon: Int =
+        when (type) {
+            MessageType.WeightGain -> edu.stanford.spezi.core.design.R.drawable.ic_monitor_weight
+            MessageType.MedicationChange -> edu.stanford.spezi.core.design.R.drawable.ic_medication
+            MessageType.MedicationUptitration -> edu.stanford.spezi.core.design.R.drawable.ic_medication
+            MessageType.Welcome -> edu.stanford.spezi.core.design.R.drawable.ic_assignment
+            MessageType.Vitals -> edu.stanford.spezi.core.design.R.drawable.ic_vital_signs
+            MessageType.SymptomQuestionnaire -> edu.stanford.spezi.core.design.R.drawable.ic_assignment
+            MessageType.PreVisit -> edu.stanford.spezi.core.design.R.drawable.ic_groups
+            null -> edu.stanford.spezi.core.design.R.drawable.ic_assignment
+        }
+
     constructor() : this(
         dueDateString = null,
         completionDateString = null,
