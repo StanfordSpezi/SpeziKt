@@ -1,6 +1,6 @@
 package edu.stanford.bdh.engagehf.bluetooth.component
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -22,7 +21,10 @@ import edu.stanford.bdh.engagehf.bluetooth.component.VitalDisplayDataFactory.cre
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
+import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.core.design.theme.lighten
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -37,6 +39,9 @@ fun VitalDisplay(
         elevation = CardDefaults.elevatedCardElevation(
             defaultElevation = 4.dp,
         ),
+        colors = CardDefaults.cardColors(
+            containerColor = Colors.surface.lighten(isSystemInDarkTheme()),
+        ),
         modifier = modifier
             .height(130.dp)
             .fillMaxSize()
@@ -44,7 +49,6 @@ fun VitalDisplay(
     ) {
         Column(
             modifier = Modifier
-                .background(Colors.surface)
                 .padding(Spacings.small)
                 .fillMaxSize()
         ) {
@@ -162,10 +166,13 @@ private class VitalDisplayDataProvider : PreviewParameterProvider<VitalDisplayDa
     )
 }
 
-@Preview
+@ThemePreviews
 @Composable
+@Suppress("UnusedPrivateMember")
 private fun VitalDisplayPreview(@PreviewParameter(VitalDisplayDataProvider::class) state: VitalDisplayData) {
-    VitalDisplay(
-        vitalDisplayUiState = state
-    )
+    SpeziTheme(isPreview = true) {
+        VitalDisplay(
+            vitalDisplayUiState = state
+        )
+    }
 }
