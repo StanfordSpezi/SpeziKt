@@ -4,6 +4,7 @@ import androidx.health.connect.client.records.HeartRateRecord
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
 import edu.stanford.bdh.engagehf.bluetooth.component.OperationStatus
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MeasurementToObservationMapper
@@ -11,13 +12,16 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.UiState
 import edu.stanford.bdh.engagehf.bluetooth.data.repository.ObservationRepository
+import edu.stanford.bdh.engagehf.education.EngageEducationRepository
+import edu.stanford.bdh.engagehf.messages.MessageActionMapper
 import edu.stanford.bdh.engagehf.messages.MessageRepository
-import edu.stanford.bdh.engagehf.messages.MessageType
 import edu.stanford.spezi.core.bluetooth.api.BLEService
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
 import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -29,12 +33,17 @@ import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
+@Suppress("TooManyFunctions", "LongParameterList")
 class BluetoothViewModel @Inject internal constructor(
     private val bleService: BLEService,
     private val uiStateMapper: BluetoothUiStateMapper,
     private val observationRepository: ObservationRepository,
     private val messageRepository: MessageRepository,
     private val measurementToObservationMapper: MeasurementToObservationMapper,
+    private val bottomSheetEvents: BottomSheetEvents,
+    private val navigator: Navigator,
+    private val engageEducationRepository: EngageEducationRepository,
+    private val messageActionMapper: MessageActionMapper,
 ) : ViewModel() {
     private val logger by speziLogger()
 
@@ -113,20 +122,14 @@ class BluetoothViewModel @Inject internal constructor(
 
         viewModelScope.launch {
             loadBloodPressure()
-        }
-
-        viewModelScope.launch {
             loadWeight()
-        }
-
-        viewModelScope.launch {
             loadHeartRate()
         }
 
         viewModelScope.launch {
             messageRepository.listenForUserMessages { messages ->
                 _uiState.update {
-                    it.copy(messages = messages + it.messages)
+                    it.copy(messages = messages)
                 }
             }
         }
@@ -343,18 +346,45 @@ class BluetoothViewModel @Inject internal constructor(
 
             is Action.MessageItemClicked -> {
                 viewModelScope.launch {
-                    action.message.type?.let { type ->
-                        when (type) {
-                            MessageType.MedicationChange -> {} // TODO needs to be defined
-                            MessageType.WeightGain -> {} // TODO needs to be defined
-                            MessageType.MedicationUptitration -> {} // TODO needs to be defined
-                            MessageType.Welcome -> {} // TODO needs to be defined
-                            MessageType.Vitals -> {} // TODO needs to be defined
-                            MessageType.SymptomQuestionnaire -> {} // TODO needs to be defined
-                            MessageType.PreVisit -> {} // TODO needs to be defined
+                    action.message.action?.let {
+                        action.message.action.let {
+                            val mappingResult = messageActionMapper.map(it)
+                            if (mappingResult.isSuccess) {
+                                when (val mappedAction = mappingResult.getOrNull()!!) {
+                                    is edu.stanford.bdh.engagehf.messages.Action.HealthSummaryAction -> { /* TODO */
+                                    }
+
+                                    is edu.stanford.bdh.engagehf.messages.Action.MeasurementsAction -> {
+                                        bottomSheetEvents.emit(BottomSheetEvents.Event.DoNewMeasurement)
+                                    }
+
+                                    is edu.stanford.bdh.engagehf.messages.Action.MedicationsAction -> { /* TODO */
+                                    }
+
+                                    is edu.stanford.bdh.engagehf.messages.Action.QuestionnaireAction -> { /* TODO */
+                                    }
+
+                                    is edu.stanford.bdh.engagehf.messages.Action.VideoSectionAction -> {
+                                        viewModelScope.launch {
+                                            engageEducationRepository.getVideoBySectionAndVideoId(
+                                                mappedAction.videoSectionVideo.videoSectionId,
+                                                mappedAction.videoSectionVideo.videoId
+                                            ).getOrThrow().let { video ->
+                                                navigator.navigateTo(
+                                                    EducationNavigationEvent.VideoSectionClicked(
+                                                        video = video
+                                                    )
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                logger.e { "Error while mapping action: ${mappingResult.exceptionOrNull()}" }
+                            }
                         }
                     }
-                    action.message.id?.let { messageRepository.completeMessage(it) }
+                    // TODO trigger firebase function action.message.id?.let { messageRepository.completeMessage(it) }
                     _uiState.update {
                         it.copy(messages = it.messages.filter { message -> message.id != action.message.id })
                     }
@@ -419,6 +449,7 @@ class BluetoothViewModel @Inject internal constructor(
                 _uiState.update {
                     val weight = (event.measurement as Measurement.Weight).weight
                     val weightInPounds = weight * KG_TO_LBS_CONVERSION_FACTOR
+                    bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
                     it.copy(
                         measurementDialog = it.measurementDialog.copy(
                             measurement = event.measurement,

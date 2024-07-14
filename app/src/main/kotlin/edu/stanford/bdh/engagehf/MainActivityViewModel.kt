@@ -2,9 +2,12 @@ package edu.stanford.bdh.engagehf
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.data.models.AppUiState
 import edu.stanford.spezi.core.logging.speziLogger
@@ -28,6 +31,7 @@ class MainActivityViewModel @Inject constructor(
     private val accountEvents: AccountEvents,
     private val navigator: Navigator,
     private val userSessionManager: UserSessionManager,
+    private val bottomSheetEvents: BottomSheetEvents,
 ) : ViewModel() {
     private val logger by speziLogger()
 
@@ -60,6 +64,39 @@ class MainActivityViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
+            bottomSheetEvents.events.collect { event ->
+                when (event) {
+                    BottomSheetEvents.Event.NewMeasurementAction -> {
+                        _uiState.update {
+                            it.copy(
+                                isBottomSheetExpanded = true,
+                                bottomSheetContent = BottomSheetContent.NEW_MEASUREMENT_RECEIVED
+                            )
+                        }
+                    }
+
+                    BottomSheetEvents.Event.DoNewMeasurement -> {
+                        _uiState.update {
+                            it.copy(
+                                isBottomSheetExpanded = true,
+                                bottomSheetContent = BottomSheetContent.DO_NEW_MEASUREMENT
+                            )
+                        }
+                    }
+
+                    BottomSheetEvents.Event.CloseBottomSheet -> {
+                        _uiState.update {
+                            it.copy(
+                                isBottomSheetExpanded = false,
+                                bottomSheetContent = null
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        viewModelScope.launch {
             userSessionManager.userState
                 .filterIsInstance<UserState.Registered>()
                 .collect { userState ->
@@ -73,11 +110,18 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     fun onAction(action: Action) {
         when (action) {
             is Action.UpdateSelectedBottomBarItem -> {
                 _uiState.update {
                     it.copy(selectedItem = action.selectedBottomBarItem)
+                }
+            }
+
+            is Action.UpdateBottomSheetState -> {
+                _uiState.update {
+                    it.copy(isBottomSheetExpanded = action.state == SheetValue.Expanded)
                 }
             }
         }
@@ -88,6 +132,13 @@ class MainActivityViewModel @Inject constructor(
 
 sealed interface Action {
     data class UpdateSelectedBottomBarItem(val selectedBottomBarItem: BottomBarItem) : Action
+    data class UpdateBottomSheetState @OptIn(ExperimentalMaterial3Api::class) constructor(val state: SheetValue) :
+        Action
+}
+
+enum class BottomSheetContent {
+    NEW_MEASUREMENT_RECEIVED,
+    DO_NEW_MEASUREMENT,
 }
 
 enum class BottomBarItem(
