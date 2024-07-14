@@ -12,4 +12,10 @@
     <string name="diastolic">Diastolisch</string>
     <string name="pulse_rate">Pulsfrequenz</string>
     <string name="weight">Gewicht</string>
+    <string name="messages">Nachrichten</string>
+    <string name="vitals">Vitalwerte</string>
+    <string name="message_item_button_action_text">Fertigstellen</string>
+    <string name="weight_icon_content_description">Gewicht Icon</string>
+    <string name="blood_pressure_icon_content_description">Blutdruck Icon</string>
+    <string name="new_measurement_text">Bitte nehmen Sie eine neue Messung vor.</string>
 </resources>
