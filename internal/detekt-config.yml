@@ -719,7 +719,7 @@ style:
   UnusedPrivateMember:
     active: true
     allowedNames: '(_|ignored|expected|serialVersionUID)'
-    ignoreAnnotated: ['Preview']
+    ignoreAnnotated: ['Preview', 'ThemePreviews']
   UseArrayLiteralsInAnnotations:
     active: false
   UseCheckNotNull:

@@ -205,16 +205,16 @@ class BluetoothViewModelTest {
         val bodyWeightObservation = mockk<WeightRecord>().apply {
             every { weight.inGrams } returns 70000.0
             every { weight.inKilograms } returns 70.0
+            every { weight.inPounds } returns 70.0
             every { time } returns Instant.now()
             every { zoneOffset } returns ZoneOffset.UTC
         }
         val resultSlot = slot<(Result<WeightRecord?>) -> Unit>()
-
-        coEvery { observationRepository.listenForLatestBodyWeightObservation(capture(resultSlot)) } answers {
-            resultSlot.captured.invoke(Result.success(bodyWeightObservation))
-        }
-        // When
         createViewModel()
+        coVerify { observationRepository.listenForLatestBodyWeightObservation(capture(resultSlot)) }
+
+        // When
+        resultSlot.captured.invoke(Result.success(bodyWeightObservation))
 
         // Then
         assertThat(bluetoothViewModel.uiState.value.weight.value).isEqualTo(expectedWeight)
