@@ -11,11 +11,16 @@ class EngageEducationRepository @Inject constructor(
     private val firebaseFirestore: FirebaseFirestore,
     private val mapper: VideoSectionDocumentToVideoSectionMapper,
 ) : EducationRepository {
+
     override suspend fun getVideoSections(): Result<List<VideoSection>> {
         return runCatching {
-            firebaseFirestore.collection("videoSections").get().await().mapNotNull { document ->
-                mapper.map(document)
-            }.sortedBy { it.orderIndex }
+            firebaseFirestore
+                .collection(SECTIONS_PATH)
+                .get()
+                .await()
+                .documents
+                .mapNotNull { document -> mapper.map(document) }
+                .sortedBy { it.orderIndex }
         }
     }
 
@@ -24,19 +29,18 @@ class EngageEducationRepository @Inject constructor(
         videoId: String,
     ): Result<Video> {
         return runCatching {
-            firebaseFirestore.collection("videoSections")
+            val document = firebaseFirestore.collection(SECTIONS_PATH)
                 .document(sectionId)
-                .collection("videos")
+                .collection(VIDEO_PATH)
                 .document(videoId)
                 .get()
-                .await().let { document ->
-                    if (document.exists()) {
-                        println(document.data)
-                        mapper.mapVideo(document)
-                    } else {
-                        throw IllegalStateException("Video not found")
-                    }
-                } ?: error("Video not found")
+                .await()
+            mapper.mapVideo(document = document) ?: error("Video not found")
         }
+    }
+
+    private companion object {
+        const val SECTIONS_PATH = "videoSections"
+        const val VIDEO_PATH = "videos"
     }
 }

@@ -17,7 +17,7 @@ class VideoSectionDocumentToVideoSectionMapper @Inject constructor() {
 
         val videosResult = document.reference.collection("videos").get().await()
 
-        val videoList = videosResult.mapNotNull { videoDocument ->
+        val videoList = videosResult.documents.mapNotNull { videoDocument ->
             mapVideo(videoDocument)
         }.sortedBy { it.orderIndex }
 
@@ -34,16 +34,20 @@ class VideoSectionDocumentToVideoSectionMapper @Inject constructor() {
     }
 
     fun mapVideo(document: DocumentSnapshot): Video? {
-        val videoTitle = getLocalizedString(document, "title") ?: return null
-        val videoDescription = getLocalizedString(document, "description")
-        val youtubeId = document.get("youtubeId") as? String ?: return null
+        if (document.exists().not()) return null
 
-        return Video(
-            title = videoTitle,
-            description = videoDescription,
-            orderIndex = document.get("orderIndex") as? Int ?: 0,
-            youtubeId = youtubeId
-        )
+        val videoTitle = getLocalizedString(document, "title")
+        val youtubeId = document.get("youtubeId") as? String
+        return if (videoTitle != null && youtubeId != null) {
+            Video(
+                title = videoTitle,
+                description = getLocalizedString(document, "description"),
+                orderIndex = document.get("orderIndex") as? Int ?: 0,
+                youtubeId = youtubeId
+            )
+        } else {
+            null
+        }
     }
 
     private fun getLocalizedString(
