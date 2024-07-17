@@ -4,6 +4,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.bdh.engagehf.navigation.screens.AppScreen
+import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
 import edu.stanford.bdh.engagehf.simulator.AppSimulator
 import edu.stanford.spezi.core.design.component.ComposeContentActivity
 import org.junit.Before

@@ -17,6 +17,8 @@ import dagger.hilt.components.SingletonComponent
 import edu.stanford.spezi.module.account.BuildConfig
 import edu.stanford.spezi.module.account.manager.FirebaseInvitationAuthManager
 import edu.stanford.spezi.module.account.manager.InvitationAuthManager
+import edu.stanford.spezi.module.account.manager.UserSessionManager
+import edu.stanford.spezi.module.account.manager.UserSessionManagerImpl
 import javax.inject.Singleton
 
 @Module
@@ -77,6 +79,11 @@ class AccountModule {
         internal abstract fun bindInvitationAuthManager(
             firebaseInvitationAuthManager: FirebaseInvitationAuthManager,
         ): InvitationAuthManager
+
+        @Binds
+        internal abstract fun bindUserSessionManager(
+            impl: UserSessionManagerImpl,
+        ): UserSessionManager
     }
 
     private companion object {
