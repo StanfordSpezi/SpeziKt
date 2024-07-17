@@ -25,6 +25,7 @@ import io.mockk.verify
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -203,8 +204,9 @@ class BluetoothViewModelTest {
             every { time } returns Instant.now()
             every { zoneOffset } returns ZoneOffset.UTC
         }
-        val flow = MutableStateFlow(Result.success(bodyWeightObservation))
-        coEvery { measurementsRepository.observeWeightRecord() } returns flow
+        coEvery {
+            measurementsRepository.observeWeightRecord()
+        } returns flowOf(Result.success(bodyWeightObservation))
 
         // When
         createViewModel()
@@ -223,8 +225,9 @@ class BluetoothViewModelTest {
             every { time } returns Instant.now()
             every { zoneOffset } returns ZoneOffset.UTC
         }
-        val flow = MutableStateFlow(Result.success(bloodPressureObservation))
-        coEvery { measurementsRepository.observeBloodPressureRecord() } returns flow
+        coEvery {
+            measurementsRepository.observeBloodPressureRecord()
+        } returns flowOf(Result.success(bloodPressureObservation))
 
         // When
         createViewModel()
@@ -251,8 +254,9 @@ class BluetoothViewModelTest {
             every { startZoneOffset } returns ZoneOffset.UTC
             every { endZoneOffset } returns ZoneOffset.UTC
         }
-        val flow = MutableStateFlow(Result.success(heartRateObservation))
-        coEvery { measurementsRepository.observeHeartRateRecord() } returns flow
+        coEvery {
+            measurementsRepository.observeHeartRateRecord()
+        } returns flowOf(Result.success(heartRateObservation))
 
         // When
         createViewModel()
