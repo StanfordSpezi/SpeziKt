@@ -134,7 +134,7 @@ class BluetoothViewModel @Inject internal constructor(
     }
 
     private suspend fun loadHeartRate() {
-        measurementsRepository.listenForLatestHeartRateObservation { result ->
+        measurementsRepository.observeHeartRateRecord().collect { result ->
             when (result.isFailure) {
                 true -> {
                     loadHeartRateIsFailure()
@@ -201,7 +201,7 @@ class BluetoothViewModel @Inject internal constructor(
     }
 
     private suspend fun loadBloodPressure() {
-        measurementsRepository.listenForLatestBloodPressureObservation { result ->
+        measurementsRepository.observeBloodPressureRecord().collect { result ->
             when (result.isFailure) {
                 true -> {
                     loadBloodPressureIsFailure()
@@ -261,7 +261,7 @@ class BluetoothViewModel @Inject internal constructor(
     }
 
     private suspend fun loadWeight() {
-        measurementsRepository.listenForLatestBodyWeightObservation { result ->
+        measurementsRepository.observeWeightRecord().collect { result ->
             when (result.isFailure) {
                 true -> {
                     logger.e { "Error while getting latest body weight observation" }
