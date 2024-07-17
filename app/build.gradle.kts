@@ -43,16 +43,18 @@ dependencies {
     implementation(project(":core:navigation"))
     implementation(project(":modules:account"))
     implementation(project(":modules:education"))
-    implementation(project(":modules:healthconnectonfhir"))
     implementation(project(":modules:onboarding"))
+    implementation(project(":modules:measurements")) {
+        listOf("r4", "r4b", "r5").forEach {
+            exclude(group = "ca.uhn.hapi.fhir", module = "org.hl7.fhir.$it")
+        }
+    }
 
     implementation(libs.firebase.firestore.ktx)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.view.model.ktx)
-
-    implementation(libs.gson)
 
     implementation(libs.hilt.navigation.compose)
     implementation(libs.navigation.compose)

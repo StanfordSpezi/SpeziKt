@@ -8,9 +8,7 @@ import androidx.health.connect.client.units.Pressure
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
-import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MeasurementToObservationMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
-import edu.stanford.bdh.engagehf.bluetooth.data.repository.ObservationRepository
 import edu.stanford.bdh.engagehf.messages.MessageRepository
 import edu.stanford.spezi.core.bluetooth.api.BLEService
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
@@ -18,6 +16,7 @@ import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.modules.measurements.MeasurementsRepository
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -40,10 +39,8 @@ import java.util.Locale
 class BluetoothViewModelTest {
     private val bleService: BLEService = mockk()
     private val uiStateMapper: BluetoothUiStateMapper = mockk()
-    private val observationRepository = mockk<ObservationRepository>(relaxed = true)
+    private val measurementsRepository = mockk<MeasurementsRepository>(relaxed = true)
     private val messageRepository = mockk<MessageRepository>(relaxed = true)
-    private val measurementToObservationMapper: MeasurementToObservationMapper =
-        mockk(relaxed = true)
 
     private val bleServiceState = MutableStateFlow<BLEServiceState>(BLEServiceState.Idle)
     private val bleServiceEvents = MutableSharedFlow<BLEServiceEvent>()
@@ -211,7 +208,7 @@ class BluetoothViewModelTest {
         }
         val resultSlot = slot<(Result<WeightRecord?>) -> Unit>()
         createViewModel()
-        coVerify { observationRepository.listenForLatestBodyWeightObservation(capture(resultSlot)) }
+        coVerify { measurementsRepository.listenForLatestBodyWeightObservation(capture(resultSlot)) }
 
         // When
         resultSlot.captured.invoke(Result.success(bodyWeightObservation))
@@ -232,7 +229,7 @@ class BluetoothViewModelTest {
         }
         val resultSlot = slot<(Result<BloodPressureRecord?>) -> Unit>()
 
-        coEvery { observationRepository.listenForLatestBloodPressureObservation(capture(resultSlot)) } answers {
+        coEvery { measurementsRepository.listenForLatestBloodPressureObservation(capture(resultSlot)) } answers {
             resultSlot.captured.invoke(Result.success(bloodPressureObservation))
         }
         // When
@@ -262,7 +259,7 @@ class BluetoothViewModelTest {
         }
         val resultSlot = slot<(Result<HeartRateRecord?>) -> Unit>()
 
-        coEvery { observationRepository.listenForLatestHeartRateObservation(capture(resultSlot)) } answers {
+        coEvery { measurementsRepository.listenForLatestHeartRateObservation(capture(resultSlot)) } answers {
             resultSlot.captured.invoke(Result.success(heartRateObservation))
         }
         // When
@@ -283,18 +280,18 @@ class BluetoothViewModelTest {
             every { mockMass.inGrams } returns 70000.0
             every { mockMass.inKilograms } returns 70.0
             every { mockWeightRecord.weight } returns mockMass
-            coEvery { observationRepository.listenForLatestBodyWeightObservation(capture(resultSlot)) } answers {
+            coEvery { measurementsRepository.listenForLatestBodyWeightObservation(capture(resultSlot)) } answers {
                 resultSlot.captured.invoke(Result.success(mockWeightRecord))
             }
 
             // When
-            observationRepository.listenForLatestBodyWeightObservation { result ->
+            measurementsRepository.listenForLatestBodyWeightObservation { result ->
                 assertThat(result.isSuccess).isTrue()
                 assertThat(result.getOrNull()).isEqualTo(mockWeightRecord)
             }
 
             // Then
-            coVerify(exactly = 1) { observationRepository.listenForLatestBodyWeightObservation(any()) }
+            coVerify(exactly = 1) { measurementsRepository.listenForLatestBodyWeightObservation(any()) }
             assert(resultSlot.isCaptured)
         }
 
@@ -317,9 +314,8 @@ class BluetoothViewModelTest {
         bluetoothViewModel = BluetoothViewModel(
             bleService = bleService,
             uiStateMapper = uiStateMapper,
-            observationRepository = observationRepository,
+            measurementsRepository = measurementsRepository,
             messageRepository = messageRepository,
-            measurementToObservationMapper = measurementToObservationMapper,
             bottomSheetEvents = bottomSheetEvents,
             navigator = navigator,
             engageEducationRepository = mockk(),

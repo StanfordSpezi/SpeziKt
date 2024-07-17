@@ -1,4 +1,4 @@
-package edu.stanford.bdh.engagehf.bluetooth.data.mapper
+package edu.stanford.spezi.modules.measurements
 
 import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.HeartRateRecord
@@ -6,20 +6,25 @@ import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.units.Mass
 import androidx.health.connect.client.units.Pressure
+import edu.stanford.healthconnectonfhir.RecordToObservationMapper
 import edu.stanford.spezi.core.bluetooth.data.model.Measurement
+import org.hl7.fhir.r4.model.Observation
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import javax.inject.Inject
 
-interface MeasurementToRecordMapper {
-    fun map(measurement: Measurement): List<Record>
-}
-
-internal class DefaultMeasurementToRecordMapper @Inject constructor() : MeasurementToRecordMapper {
+internal class MeasurementToObservationMapper @Inject constructor(
+    private val recordToObservationMapper: RecordToObservationMapper,
+) {
 
     private val currentZoneOffset get() = ZonedDateTime.now().offset
 
-    override fun map(measurement: Measurement): List<Record> {
+    fun map(measurement: Measurement): List<Observation> {
+        return mapToRecords(measurement)
+            .flatMap { recordToObservationMapper.map(it) }
+    }
+
+    private fun mapToRecords(measurement: Measurement): List<Record> {
         return when (measurement) {
             is Measurement.BloodPressure -> {
                 listOf(createHeartRateRecord(measurement), createBloodPressureRecord(measurement))

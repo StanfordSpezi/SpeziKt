@@ -1,7 +1,8 @@
-package edu.stanford.bdh.engagehf.bluetooth.data.repository
+package edu.stanford.spezi.modules.measurements
 
 import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.HeartRateRecord
+import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.FhirVersionEnum
@@ -11,6 +12,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import edu.stanford.healthconnectonfhir.Loinc
 import edu.stanford.healthconnectonfhir.ObservationToRecordMapper
+import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.module.account.manager.UserSessionManager
@@ -20,10 +22,11 @@ import kotlinx.coroutines.withContext
 import org.hl7.fhir.r4.model.Observation
 import javax.inject.Inject
 
-internal class ObservationRepository @Inject constructor(
+class MeasurementsRepository @Inject internal constructor(
     private val firestore: FirebaseFirestore,
     private val userSessionManager: UserSessionManager,
     private val observationToRecordMapper: ObservationToRecordMapper,
+    private val measurementToObservationMapper: MeasurementToObservationMapper,
     @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
 ) {
     private val logger by speziLogger()
@@ -45,7 +48,8 @@ internal class ObservationRepository @Inject constructor(
         Gson()
     }
 
-    suspend fun saveObservations(observations: List<Observation>) {
+    suspend fun save(measurement: Measurement) {
+        val observations = measurementToObservationMapper.map(measurement = measurement)
         withContext(ioDispatcher) {
             runCatching {
                 val uid = userSessionManager.getUserUid()
@@ -80,7 +84,7 @@ internal class ObservationRepository @Inject constructor(
         }
     }
 
-    private suspend fun <T> listenForLatestObservation(
+    private suspend fun <T : Record> listenForLatestObservation(
         collection: ObservationCollection,
         onResult: (Result<T?>) -> Unit,
     ) {
@@ -101,7 +105,7 @@ internal class ObservationRepository @Inject constructor(
                                 val json = gson.toJson(it.data)
                                 val observation =
                                     jsonParser.parseResource(Observation::class.java, json)
-                                onResult(Result.success(observationToRecordMapper.map(observation) as T))
+                                onResult(Result.success(observationToRecordMapper.map(observation)))
                             } ?: onResult(Result.success(null))
                         }
                     }
