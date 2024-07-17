@@ -18,6 +18,7 @@ import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.modules.measurements.MeasurementsRepository
 import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -71,6 +72,17 @@ class BluetoothViewModelTest {
         verify { bleService.start() }
         verify { bleService.state }
         verify { bleService.events }
+    }
+
+    @Test
+    fun `it should record observation on init`() {
+        // when
+        createViewModel()
+
+        // then
+        coVerify { measurementsRepository.observeWeightRecord() }
+        coVerify { measurementsRepository.observeHeartRateRecord() }
+        coVerify { measurementsRepository.observeBloodPressureRecord() }
     }
 
     @Test
