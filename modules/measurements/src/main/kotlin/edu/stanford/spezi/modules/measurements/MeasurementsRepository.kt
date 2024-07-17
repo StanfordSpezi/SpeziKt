@@ -94,7 +94,7 @@ internal class MeasurementsRepositoryImpl @Inject internal constructor(
     }
 
     private suspend fun <T : Record> observe(
-        collection: ObservationCollection
+        collection: ObservationCollection,
     ): Flow<Result<T?>> =
         callbackFlow {
             withContext(ioDispatcher) {
