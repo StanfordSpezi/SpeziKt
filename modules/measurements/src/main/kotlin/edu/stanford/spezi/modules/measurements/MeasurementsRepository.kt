@@ -17,6 +17,7 @@ import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.module.account.manager.UserSessionManager
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
@@ -123,6 +124,7 @@ internal class MeasurementsRepositoryImpl @Inject internal constructor(
                     trySend(Result.failure(it))
                 }
             }
+            awaitClose { channel.close() }
         }
 
     override suspend fun observeBloodPressureRecord(): Flow<Result<BloodPressureRecord?>> =
