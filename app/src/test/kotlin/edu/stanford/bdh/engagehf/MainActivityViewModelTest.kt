@@ -12,6 +12,7 @@ import edu.stanford.spezi.module.account.manager.UserSessionManager
 import edu.stanford.spezi.module.account.manager.UserState
 import io.mockk.Called
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -45,7 +46,7 @@ class MainActivityViewModelTest {
 
         // then
         verify { accountEvents.events }
-        coEvery { userSessionManager.getUserState() }
+        coVerify { userSessionManager.getUserState() }
     }
 
     @Test
