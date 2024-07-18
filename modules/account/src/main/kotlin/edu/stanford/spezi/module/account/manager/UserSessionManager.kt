@@ -61,7 +61,10 @@ internal class UserSessionManagerImpl @Inject constructor(
         }
 
         firebaseAuth.addAuthStateListener(authStateListener)
-        awaitClose { firebaseAuth.removeAuthStateListener(authStateListener) }
+        awaitClose {
+            firebaseAuth.removeAuthStateListener(authStateListener)
+            channel.close()
+        }
     }
 
     override fun getUserUid(): String? = firebaseAuth.uid
