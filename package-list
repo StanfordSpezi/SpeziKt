@@ -9,7 +9,6 @@ edu.stanford.bdh.engagehf.bluetooth.data.models
 edu.stanford.bdh.engagehf.bluetooth.screen
 edu.stanford.bdh.engagehf.education
 edu.stanford.bdh.engagehf.navigation
-edu.stanford.bdh.engagehf.navigation.data.models
 edu.stanford.bdh.engagehf.navigation.screens
 edu.stanford.bdh.engagehf.onboarding
 module:bluetooth
