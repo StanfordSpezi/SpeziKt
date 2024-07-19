@@ -63,15 +63,15 @@ fun MeasurementDialog(
                         if (it is Measurement.BloodPressure) {
                             MeasurementRow(
                                 label = stringResource(R.string.systolic) + ":",
-                                value = "${it.systolic} mmHg"
+                                value = uiState.formattedSystolic
                             )
                             MeasurementRow(
                                 label = stringResource(R.string.diastolic) + ":",
-                                value = "${it.diastolic} mmHg"
+                                value = uiState.formattedDiastolic
                             )
                             MeasurementRow(
                                 label = stringResource(R.string.pulse_rate) + ":",
-                                value = "${it.pulseRate} bpm"
+                                value = uiState.formattedHeartRate
                             )
                         }
                     }

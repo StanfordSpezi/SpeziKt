@@ -29,5 +29,34 @@ class BluetoothUiStateMapper @Inject constructor() {
         )
     }
 
+    fun formatWeightForLocale(weight: Double): String {
+        val weightInPounds = weight * KG_TO_LBS_CONVERSION_FACTOR
+        return String.format(
+            Locale.getDefault(), "%.2f", when (Locale.getDefault().country) {
+                "US", "LR", "MM" -> weightInPounds
+                else -> weight
+            }
+        ) + when (Locale.getDefault().country) {
+            "US", "LR", "MM" -> " lbs"
+            else -> " kg"
+        }
+    }
+
+    fun formatSystolicForLocale(systolic: Float): String {
+        return String.format(Locale.getDefault(), "%.0f mmHg", systolic)
+    }
+
+    fun formatDiastolicForLocale(diastolic: Float): String {
+        return String.format(Locale.getDefault(), "%.0f mmHg", diastolic)
+    }
+
+    fun formatHeartRateForLocale(heartRate: Float): String {
+        return String.format(Locale.getDefault(), "%.0f bpm", heartRate)
+    }
+
+    companion object {
+        const val KG_TO_LBS_CONVERSION_FACTOR = 2.20462
+    }
+
     private fun format(value: Number?): String = String.format(Locale.US, "%.2f", value)
 }

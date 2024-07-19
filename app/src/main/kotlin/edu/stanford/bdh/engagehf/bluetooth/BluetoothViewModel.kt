@@ -59,10 +59,6 @@ class BluetoothViewModel @Inject internal constructor(
         )
     }
 
-    companion object {
-        const val KG_TO_LBS_CONVERSION_FACTOR = 2.20462
-    }
-
     init {
         start()
     }
@@ -444,32 +440,31 @@ class BluetoothViewModel @Inject internal constructor(
         if (event is BLEServiceEvent.MeasurementReceived) {
             if (event.measurement is Measurement.Weight) {
                 _uiState.update {
-                    val weight = (event.measurement as Measurement.Weight).weight
-                    val weightInPounds = weight * KG_TO_LBS_CONVERSION_FACTOR
                     bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
                     it.copy(
                         measurementDialog = it.measurementDialog.copy(
                             measurement = event.measurement,
                             isVisible = true,
-                            formattedWeight = String.format(
-                                Locale.getDefault(), "%.2f", when (Locale.getDefault().country) {
-                                    "US", "LR", "MM" -> weightInPounds
-                                    else -> weight
-                                }
-                            ) + when (Locale.getDefault().country) {
-                                "US", "LR", "MM" -> "lbs"
-                                else -> "kg"
-                            }
+                            formattedWeight = uiStateMapper.formatWeightForLocale((event.measurement as Measurement.Weight).weight)
                         )
                     )
                 }
             }
             if (event.measurement is Measurement.BloodPressure) {
+                val bloodPressureMeasurement = event.measurement as Measurement.BloodPressure
                 _uiState.update {
                     it.copy(
                         measurementDialog = it.measurementDialog.copy(
                             measurement = event.measurement,
-                            isVisible = true
+                            isVisible = true,
+                            formattedSystolic = uiStateMapper
+                                .formatSystolicForLocale(bloodPressureMeasurement.systolic),
+                            formattedDiastolic = uiStateMapper.formatDiastolicForLocale(
+                                bloodPressureMeasurement.diastolic
+                            ),
+                            formattedHeartRate = uiStateMapper.formatHeartRateForLocale(
+                                bloodPressureMeasurement.pulseRate
+                            )
                         )
                     )
                 }

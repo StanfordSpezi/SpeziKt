@@ -7,4 +7,7 @@ data class MeasurementDialogUiState(
     val isVisible: Boolean = false,
     val isProcessing: Boolean = false,
     val formattedWeight: String = "",
+    val formattedSystolic: String = "",
+    val formattedDiastolic: String = "",
+    val formattedHeartRate: String = "",
 )
