@@ -63,7 +63,7 @@ fun BluetoothScreen() {
     BluetoothEvents(events = viewModel.events)
     BluetoothScreen(
         bluetoothUiState = uiState.bluetooth,
-        uiStateDialog = uiState.measurementDialog, uiState = uiState,
+        uiState = uiState,
         onAction = viewModel::onAction
     )
 }
@@ -71,7 +71,6 @@ fun BluetoothScreen() {
 @Composable
 private fun BluetoothScreen(
     bluetoothUiState: BluetoothUiState,
-    uiStateDialog: MeasurementDialogUiState,
     uiState: UiState,
     onAction: (Action) -> Unit,
 ) {
@@ -84,7 +83,7 @@ private fun BluetoothScreen(
         Devices(bluetoothUiState as? BluetoothUiState.Ready)
         AdditionalInfo(uiState = bluetoothUiState)
         MeasurementDialog(
-            uiState = uiStateDialog,
+            uiState = uiState.measurementDialog,
             onAction = onAction,
         )
         VerticalSpacer()
@@ -245,7 +244,6 @@ private fun BluetoothScreenPreview(@PreviewParameter(BluetoothScreenPreviewProvi
     SpeziTheme {
         BluetoothScreen(
             bluetoothUiState = uiState.bluetooth,
-            uiStateDialog = uiState.measurementDialog,
             uiState = uiState,
             onAction = mockOnAction
         )
