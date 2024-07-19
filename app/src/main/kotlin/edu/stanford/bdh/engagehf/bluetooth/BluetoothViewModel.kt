@@ -16,7 +16,6 @@ import edu.stanford.bdh.engagehf.messages.MessageRepository
 import edu.stanford.spezi.core.bluetooth.api.BLEService
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
-import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
