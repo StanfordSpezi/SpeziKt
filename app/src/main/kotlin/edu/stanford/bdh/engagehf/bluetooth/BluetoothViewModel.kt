@@ -7,11 +7,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
 import edu.stanford.bdh.engagehf.bluetooth.component.OperationStatus
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
-import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MeasurementToObservationMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.UiState
-import edu.stanford.bdh.engagehf.bluetooth.data.repository.ObservationRepository
 import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.messages.MessageActionMapper
 import edu.stanford.bdh.engagehf.messages.MessageRepository
@@ -22,6 +20,7 @@ import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
+import edu.stanford.spezi.modules.measurements.MeasurementsRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -37,9 +36,8 @@ import javax.inject.Inject
 class BluetoothViewModel @Inject internal constructor(
     private val bleService: BLEService,
     private val uiStateMapper: BluetoothUiStateMapper,
-    private val observationRepository: ObservationRepository,
+    private val measurementsRepository: MeasurementsRepository,
     private val messageRepository: MessageRepository,
-    private val measurementToObservationMapper: MeasurementToObservationMapper,
     private val bottomSheetEvents: BottomSheetEvents,
     private val navigator: Navigator,
     private val engageEducationRepository: EngageEducationRepository,
@@ -136,7 +134,7 @@ class BluetoothViewModel @Inject internal constructor(
     }
 
     private suspend fun loadHeartRate() {
-        observationRepository.listenForLatestHeartRateObservation { result ->
+        measurementsRepository.observeHeartRateRecord().collect { result ->
             when (result.isFailure) {
                 true -> {
                     loadHeartRateIsFailure()
@@ -203,7 +201,7 @@ class BluetoothViewModel @Inject internal constructor(
     }
 
     private suspend fun loadBloodPressure() {
-        observationRepository.listenForLatestBloodPressureObservation { result ->
+        measurementsRepository.observeBloodPressureRecord().collect { result ->
             when (result.isFailure) {
                 true -> {
                     loadBloodPressureIsFailure()
@@ -263,7 +261,7 @@ class BluetoothViewModel @Inject internal constructor(
     }
 
     private suspend fun loadWeight() {
-        observationRepository.listenForLatestBodyWeightObservation { result ->
+        measurementsRepository.observeWeightRecord().collect { result ->
             when (result.isFailure) {
                 true -> {
                     logger.e { "Error while getting latest body weight observation" }
@@ -417,17 +415,7 @@ class BluetoothViewModel @Inject internal constructor(
             )
         }
         viewModelScope.launch {
-            if (action.measurement is Measurement.Weight) {
-                measurementToObservationMapper.map(action.measurement).let {
-                    observationRepository.saveObservations(it)
-                }
-            }
-
-            if (action.measurement is Measurement.BloodPressure) {
-                measurementToObservationMapper.map(action.measurement).let {
-                    observationRepository.saveObservations(it)
-                }
-            }
+            measurementsRepository.save(action.measurement)
             _uiState.update {
                 it.copy(
                     measurementDialog = it.measurementDialog.copy(
