@@ -2,6 +2,7 @@ package edu.stanford.bdh.engagehf.bluetooth.data.mapper
 
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.DeviceUiModel
+import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
 import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import java.util.Locale
@@ -12,7 +13,12 @@ class BluetoothUiStateMapper @Inject constructor() {
     fun map(state: BLEServiceState.Scanning): BluetoothUiState.Ready {
         val devices = state.sessions.map {
             val summary = when (val lastMeasurement = it.measurements.lastOrNull()) {
-                is Measurement.BloodPressure -> "Blood Pressure: ${format(lastMeasurement.systolic)} / ${format(lastMeasurement.diastolic)}"
+                is Measurement.BloodPressure -> "Blood Pressure: ${format(lastMeasurement.systolic)} / ${
+                    format(
+                        lastMeasurement.diastolic
+                    )
+                }"
+
                 is Measurement.Weight -> "Weight: ${format(lastMeasurement.weight)}"
                 else -> "No measurement received yet"
             }
@@ -22,14 +28,38 @@ class BluetoothUiStateMapper @Inject constructor() {
                 summary = summary,
             )
         }
-        val header = if (devices.isEmpty()) "No devices connected yet" else "Connected devices (${devices.size})"
+        val header =
+            if (devices.isEmpty()) "No devices connected yet" else "Connected devices (${devices.size})"
         return BluetoothUiState.Ready(
             header = header,
             devices = devices
         )
     }
 
-    fun formatWeightForLocale(weight: Double): String {
+    fun mapToMeasurementDialogUiState(measurement: Measurement): MeasurementDialogUiState {
+        return when (measurement) {
+            is Measurement.Weight -> MeasurementDialogUiState(
+                measurement = measurement,
+                isVisible = true,
+                formattedWeight = formatWeightForLocale(measurement.weight)
+            )
+
+            is Measurement.BloodPressure -> MeasurementDialogUiState(
+                measurement = measurement,
+                isVisible = true,
+                formattedSystolic = formatSystolicForLocale(measurement.systolic),
+                formattedDiastolic = formatDiastolicForLocale(measurement.diastolic),
+                formattedHeartRate = formatHeartRateForLocale(measurement.pulseRate)
+            )
+
+            else -> MeasurementDialogUiState(
+                measurement = null,
+                isVisible = false,
+            )
+        }
+    }
+
+    private fun formatWeightForLocale(weight: Double): String {
         val weightInPounds = weight * KG_TO_LBS_CONVERSION_FACTOR
         return String.format(
             Locale.getDefault(), "%.2f", when (Locale.getDefault().country) {
@@ -42,15 +72,15 @@ class BluetoothUiStateMapper @Inject constructor() {
         }
     }
 
-    fun formatSystolicForLocale(systolic: Float): String {
+    private fun formatSystolicForLocale(systolic: Float): String {
         return String.format(Locale.getDefault(), "%.0f mmHg", systolic)
     }
 
-    fun formatDiastolicForLocale(diastolic: Float): String {
+    private fun formatDiastolicForLocale(diastolic: Float): String {
         return String.format(Locale.getDefault(), "%.0f mmHg", diastolic)
     }
 
-    fun formatHeartRateForLocale(heartRate: Float): String {
+    private fun formatHeartRateForLocale(heartRate: Float): String {
         return String.format(Locale.getDefault(), "%.0f bpm", heartRate)
     }
 

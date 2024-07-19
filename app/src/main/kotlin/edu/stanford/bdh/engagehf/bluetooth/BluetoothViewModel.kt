@@ -438,36 +438,9 @@ class BluetoothViewModel @Inject internal constructor(
 
     private fun handleMeasurementReceived(event: BLEServiceEvent) {
         if (event is BLEServiceEvent.MeasurementReceived) {
-            if (event.measurement is Measurement.Weight) {
-                _uiState.update {
-                    bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
-                    it.copy(
-                        measurementDialog = it.measurementDialog.copy(
-                            measurement = event.measurement,
-                            isVisible = true,
-                            formattedWeight = uiStateMapper.formatWeightForLocale((event.measurement as Measurement.Weight).weight)
-                        )
-                    )
-                }
-            }
-            if (event.measurement is Measurement.BloodPressure) {
-                val bloodPressureMeasurement = event.measurement as Measurement.BloodPressure
-                _uiState.update {
-                    it.copy(
-                        measurementDialog = it.measurementDialog.copy(
-                            measurement = event.measurement,
-                            isVisible = true,
-                            formattedSystolic = uiStateMapper
-                                .formatSystolicForLocale(bloodPressureMeasurement.systolic),
-                            formattedDiastolic = uiStateMapper.formatDiastolicForLocale(
-                                bloodPressureMeasurement.diastolic
-                            ),
-                            formattedHeartRate = uiStateMapper.formatHeartRateForLocale(
-                                bloodPressureMeasurement.pulseRate
-                            )
-                        )
-                    )
-                }
+            _uiState.update {
+                bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
+                it.copy(measurementDialog = uiStateMapper.mapToMeasurementDialogUiState(event.measurement))
             }
         }
     }
