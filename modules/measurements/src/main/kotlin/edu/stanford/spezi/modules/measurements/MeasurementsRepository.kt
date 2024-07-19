@@ -1,7 +1,8 @@
-package edu.stanford.bdh.engagehf.bluetooth.data.repository
+package edu.stanford.spezi.modules.measurements
 
 import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.HeartRateRecord
+import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.FhirVersionEnum
@@ -11,21 +12,33 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import edu.stanford.healthconnectonfhir.Loinc
 import edu.stanford.healthconnectonfhir.ObservationToRecordMapper
+import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.module.account.manager.UserSessionManager
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import org.hl7.fhir.r4.model.Observation
 import javax.inject.Inject
 
-internal class ObservationRepository @Inject constructor(
+interface MeasurementsRepository {
+    suspend fun save(measurement: Measurement)
+    suspend fun observeBloodPressureRecord(): Flow<Result<BloodPressureRecord?>>
+    suspend fun observeWeightRecord(): Flow<Result<WeightRecord?>>
+    suspend fun observeHeartRateRecord(): Flow<Result<HeartRateRecord?>>
+}
+
+internal class MeasurementsRepositoryImpl @Inject internal constructor(
     private val firestore: FirebaseFirestore,
     private val userSessionManager: UserSessionManager,
     private val observationToRecordMapper: ObservationToRecordMapper,
+    private val measurementToObservationMapper: MeasurementToObservationMapper,
     @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
-) {
+) : MeasurementsRepository {
     private val logger by speziLogger()
 
     private val heartRateCollection =
@@ -45,7 +58,8 @@ internal class ObservationRepository @Inject constructor(
         Gson()
     }
 
-    suspend fun saveObservations(observations: List<Observation>) {
+    override suspend fun save(measurement: Measurement) {
+        val observations = measurementToObservationMapper.map(measurement = measurement)
         withContext(ioDispatcher) {
             runCatching {
                 val uid = userSessionManager.getUserUid()
@@ -80,49 +94,47 @@ internal class ObservationRepository @Inject constructor(
         }
     }
 
-    private suspend fun <T> listenForLatestObservation(
+    private suspend fun <T : Record> observe(
         collection: ObservationCollection,
-        onResult: (Result<T?>) -> Unit,
-    ) {
-        withContext(ioDispatcher) {
-            kotlin.runCatching {
-                val uid = userSessionManager.getUserUid()
-                    ?: throw IllegalStateException("User not authenticated")
-                firestore.collection("users/$uid/${collection.name}")
-                    .orderBy("effectiveDateTime", Query.Direction.DESCENDING)
-                    .limit(1)
-                    .addSnapshotListener { snapshot, error ->
-                        if (error != null) {
-                            logger.e(error) { "Error listening for latest observation in collection: ${collection.name}" }
-                            onResult(Result.failure(error))
-                        } else {
-                            val document = snapshot?.documents?.firstOrNull()
-                            document?.let {
-                                val json = gson.toJson(it.data)
-                                val observation =
-                                    jsonParser.parseResource(Observation::class.java, json)
-                                onResult(Result.success(observationToRecordMapper.map(observation) as T))
-                            } ?: onResult(Result.success(null))
+    ): Flow<Result<T?>> =
+        callbackFlow {
+            withContext(ioDispatcher) {
+                kotlin.runCatching {
+                    val uid = userSessionManager.getUserUid()
+                        ?: throw IllegalStateException("User not authenticated")
+                    firestore.collection("users/$uid/${collection.name}")
+                        .orderBy("effectiveDateTime", Query.Direction.DESCENDING)
+                        .limit(1)
+                        .addSnapshotListener { snapshot, error ->
+                            if (error != null) {
+                                logger.e(error) { "Error listening for latest observation in collection: ${collection.name}" }
+                                trySend(Result.failure(error))
+                            } else {
+                                val document = snapshot?.documents?.firstOrNull()
+                                document?.let {
+                                    val json = gson.toJson(it.data)
+                                    val observation =
+                                        jsonParser.parseResource(Observation::class.java, json)
+                                    trySend(Result.success(observationToRecordMapper.map(observation)))
+                                } ?: trySend(Result.success(null))
+                            }
                         }
-                    }
-            }.onFailure {
-                logger.e(it) { "Error while listening for latest ${collection.name} observation" }
-                onResult(Result.failure(it))
+                }.onFailure {
+                    logger.e(it) { "Error while listening for latest ${collection.name} observation" }
+                    trySend(Result.failure(it))
+                }
             }
+            awaitClose { channel.close() }
         }
-    }
 
-    suspend fun listenForLatestBloodPressureObservation(onResult: (Result<BloodPressureRecord?>) -> Unit) {
-        listenForLatestObservation(bloodPressureCollection, onResult)
-    }
+    override suspend fun observeBloodPressureRecord(): Flow<Result<BloodPressureRecord?>> =
+        observe(bloodPressureCollection)
 
-    suspend fun listenForLatestBodyWeightObservation(onResult: (Result<WeightRecord?>) -> Unit) {
-        listenForLatestObservation(bodyWeightObservation, onResult)
-    }
+    override suspend fun observeWeightRecord(): Flow<Result<WeightRecord?>> =
+        observe(bodyWeightObservation)
 
-    suspend fun listenForLatestHeartRateObservation(onResult: (Result<HeartRateRecord?>) -> Unit) {
-        listenForLatestObservation(heartRateCollection, onResult)
-    }
+    override suspend fun observeHeartRateRecord(): Flow<Result<HeartRateRecord?>> =
+        observe(heartRateCollection)
+
+    private data class ObservationCollection(val name: String, val code: String)
 }
-
-data class ObservationCollection(val name: String, val code: String)
