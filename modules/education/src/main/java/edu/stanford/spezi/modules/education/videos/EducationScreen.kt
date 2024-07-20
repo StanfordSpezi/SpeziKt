@@ -28,7 +28,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -41,7 +40,7 @@ import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.utils.UiState
+import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.modules.education.videos.component.ExpandableVideoSection
 
@@ -137,7 +136,7 @@ internal fun VideoItem(video: Video, onVideoClick: () -> Unit) {
 
 @Composable
 fun EducationScreen(
-    uiState: UiState<EducationUiState>,
+    uiState: UiState,
     onAction: (Action) -> Unit,
 ) {
     when (uiState) {
@@ -215,8 +214,8 @@ fun EducationScreen(
 }
 
 private class EducationUiStatePreviewProvider :
-    PreviewParameterProvider<Pair<UiState<EducationUiState>, (Action) -> Unit>> {
-    override val values: Sequence<Pair<UiState<EducationUiState>, (Action) -> Unit>> = sequenceOf(
+    PreviewParameterProvider<Pair<UiState, (Action) -> Unit>> {
+    override val values: Sequence<Pair<UiState, (Action) -> Unit>> = sequenceOf(
         Pair(UiState.Loading) {},
         Pair(UiState.Error("An error occurred")) {},
         Pair(
@@ -241,10 +240,10 @@ private class EducationUiStatePreviewProvider :
     override val count: Int = values.count()
 }
 
-@Preview(showBackground = true)
+@ThemePreviews
 @Composable
 private fun EducationScreenPreview(
-    @PreviewParameter(EducationUiStatePreviewProvider::class) params: Pair<UiState<EducationUiState>, (Action) -> Unit>,
+    @PreviewParameter(EducationUiStatePreviewProvider::class) params: Pair<UiState, (Action) -> Unit>,
 ) {
     SpeziTheme {
         EducationScreen(

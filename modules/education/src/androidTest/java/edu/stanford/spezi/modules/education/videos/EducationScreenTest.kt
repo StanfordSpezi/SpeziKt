@@ -4,7 +4,6 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.spezi.core.design.component.ComposeContentActivity
-import edu.stanford.spezi.core.utils.UiState
 import org.junit.Rule
 import org.junit.Test
 

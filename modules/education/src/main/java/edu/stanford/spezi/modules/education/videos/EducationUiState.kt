@@ -6,6 +6,12 @@ data class EducationUiState(
     val videoSections: List<VideoSection> = emptyList(),
 )
 
+sealed interface UiState {
+    data object Loading : UiState
+    data class Success(val data: EducationUiState) : UiState
+    data class Error(val message: String) : UiState
+}
+
 data class VideoSection(
     val title: String,
     val description: String,

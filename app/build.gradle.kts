@@ -32,6 +32,8 @@ android {
             buildConfigField("boolean", "USE_FIREBASE_EMULATOR", "false")
         }
         debug {
+            // Disabling coverage due to: https://github.com/hapifhir/org.hl7.fhir.core/issues/1688
+            enableAndroidTestCoverage = false
             buildConfigField("boolean", "USE_FIREBASE_EMULATOR", "true")
         }
     }
@@ -44,6 +46,7 @@ dependencies {
     implementation(project(":modules:account"))
     implementation(project(":modules:education"))
     implementation(project(":modules:onboarding"))
+    implementation(project(":modules:measurements"))
 
     implementation(libs.firebase.firestore.ktx)
 

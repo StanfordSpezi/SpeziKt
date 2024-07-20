@@ -3,9 +3,7 @@ package edu.stanford.spezi.modules.education.videos
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.core.utils.UiState
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.videos.data.repository.EducationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,8 +17,7 @@ internal class EducationViewModel @Inject constructor(
     private val educationRepository: EducationRepository,
     private val navigator: Navigator,
 ) : ViewModel() {
-    private val logger by speziLogger()
-    private val _uiState = MutableStateFlow<UiState<EducationUiState>>(UiState.Loading)
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
     init {
