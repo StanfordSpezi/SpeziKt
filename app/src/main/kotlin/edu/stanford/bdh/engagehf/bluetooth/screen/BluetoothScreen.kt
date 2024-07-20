@@ -4,14 +4,11 @@ import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CardDefaults
@@ -23,7 +20,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -72,42 +68,35 @@ private fun BluetoothScreen(
     uiState: UiState,
     onAction: (Action) -> Unit,
 ) {
-    Column(
+    LazyColumn(
         modifier = Modifier
             .testIdentifier(BluetoothScreenTestIdentifier.ROOT)
             .fillMaxSize()
             .padding(Spacings.medium)
     ) {
-        Devices(uiState.bluetooth as? BluetoothUiState.Ready)
-        AdditionalInfo(uiState = uiState.bluetooth)
-        MeasurementDialog(
-            uiState = uiState.measurementDialog,
-            onAction = onAction,
-        )
-        VerticalSpacer()
-        Text(
-            text = stringResource(R.string.messages),
-            style = TextStyles.titleMedium,
-            modifier = Modifier.testIdentifier(BluetoothScreenTestIdentifier.MESSAGE_TITLE)
-        )
-        BoxWithConstraints {
-            val maxHeight =
-                with(LocalDensity.current) { constraints.maxHeight.toDp() * BOX_CONSTRAINT_HEIGHT }
-            if (uiState.messages.isNotEmpty()) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .heightIn(max = maxHeight),
-                ) {
-                    items(uiState.messages) { message ->
-                        MessageItem(
-                            message = message,
-                            onAction = onAction,
-                        )
-                    }
-                }
-            } else {
+        item {
+            Devices(uiState.bluetooth as? BluetoothUiState.Ready)
+            AdditionalInfo(uiState = uiState.bluetooth)
+            MeasurementDialog(
+                uiState = uiState.measurementDialog,
+                onAction = onAction,
+            )
+            VerticalSpacer()
+            Text(
+                text = stringResource(R.string.messages),
+                style = TextStyles.titleMedium,
+                modifier = Modifier.testIdentifier(BluetoothScreenTestIdentifier.MESSAGE_TITLE)
+            )
+        }
+        if (uiState.messages.isNotEmpty()) {
+            items(uiState.messages) { message ->
+                MessageItem(
+                    message = message,
+                    onAction = onAction,
+                )
+            }
+        } else {
+            item {
                 Text(
                     text = "No messages",
                     style = TextStyles.bodyMedium,
@@ -115,45 +104,48 @@ private fun BluetoothScreen(
                 )
             }
         }
-        VerticalSpacer()
-        Text(
-            text = stringResource(R.string.vitals),
-            style = TextStyles.titleMedium,
-            modifier = Modifier.testIdentifier(BluetoothScreenTestIdentifier.VITAL_TITLE)
-        )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(Spacings.medium),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = Spacings.medium)
-        ) {
-            VitalDisplay(
-                modifier = Modifier
-                    .weight(1f)
-                    .testIdentifier(
-                        identifier = BluetoothScreenTestIdentifier.VITALS,
-                        suffix = uiState.weight.title
-                    ), vitalDisplayUiState = uiState.weight
+
+        item {
+            VerticalSpacer()
+            Text(
+                text = stringResource(R.string.vitals),
+                style = TextStyles.titleMedium,
+                modifier = Modifier.testIdentifier(BluetoothScreenTestIdentifier.VITAL_TITLE)
             )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(Spacings.medium),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = Spacings.medium)
+            ) {
+                VitalDisplay(
+                    modifier = Modifier
+                        .weight(1f)
+                        .testIdentifier(
+                            identifier = BluetoothScreenTestIdentifier.VITALS,
+                            suffix = uiState.weight.title
+                        ), vitalDisplayUiState = uiState.weight
+                )
+                VitalDisplay(
+                    modifier = Modifier
+                        .weight(1f)
+                        .testIdentifier(
+                            identifier = BluetoothScreenTestIdentifier.VITALS,
+                            suffix = uiState.heartRate.title
+                        ),
+                    vitalDisplayUiState = uiState.heartRate
+                )
+            }
             VitalDisplay(
                 modifier = Modifier
-                    .weight(1f)
+                    .padding(vertical = Spacings.medium)
                     .testIdentifier(
                         identifier = BluetoothScreenTestIdentifier.VITALS,
-                        suffix = uiState.heartRate.title
+                        suffix = uiState.bloodPressure.title
                     ),
-                vitalDisplayUiState = uiState.heartRate
+                vitalDisplayUiState = uiState.bloodPressure
             )
         }
-        VitalDisplay(
-            modifier = Modifier
-                .padding(vertical = Spacings.medium)
-                .testIdentifier(
-                    identifier = BluetoothScreenTestIdentifier.VITALS,
-                    suffix = uiState.bloodPressure.title
-                ),
-            vitalDisplayUiState = uiState.bloodPressure
-        )
     }
 }
 
@@ -162,8 +154,8 @@ private fun Devices(readyState: BluetoothUiState.Ready?) {
     val devices = readyState?.devices ?: emptyList()
     val header = readyState?.header ?: "No devices connected yet"
     Text(text = header, style = TextStyles.titleMedium, color = Colors.onSurface)
-    LazyColumn(verticalArrangement = Arrangement.spacedBy(Spacings.medium)) {
-        items(devices) { device ->
+    Column(verticalArrangement = Arrangement.spacedBy(Spacings.medium)) {
+        devices.forEach { device ->
             DeviceComposable(device = device)
         }
     }
