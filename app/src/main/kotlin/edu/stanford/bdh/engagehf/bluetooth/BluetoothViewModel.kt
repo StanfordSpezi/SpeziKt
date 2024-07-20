@@ -115,8 +115,14 @@ class BluetoothViewModel @Inject internal constructor(
 
         viewModelScope.launch {
             loadBloodPressure()
-            loadWeight()
+        }
+
+        viewModelScope.launch {
             loadHeartRate()
+        }
+
+        viewModelScope.launch {
+            loadWeight()
         }
 
         viewModelScope.launch {
