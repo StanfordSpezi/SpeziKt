@@ -1,6 +1,5 @@
 package edu.stanford.bdh.engagehf.navigation.screens
 
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomSheetScaffold
@@ -10,6 +9,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -20,20 +20,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.bdh.engagehf.Action
-import edu.stanford.bdh.engagehf.BottomBarItem
-import edu.stanford.bdh.engagehf.BottomSheetContent
-import edu.stanford.bdh.engagehf.MainActivityViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.DoNewMeasurementBottomSheet
 import edu.stanford.bdh.engagehf.bluetooth.screen.BluetoothScreen
 import edu.stanford.bdh.engagehf.health.HealthScreen
 import edu.stanford.bdh.engagehf.medication.MedicationScreen
-import edu.stanford.bdh.engagehf.navigation.data.models.AppUiState
 import edu.stanford.spezi.core.design.component.AppTopAppBar
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.modules.education.videos.EducationScreen
@@ -41,9 +35,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun AppScreen() {
-    val viewModel = hiltViewModel<MainActivityViewModel>(
-        viewModelStoreOwner = LocalContext.current as ComponentActivity
-    )
+    val viewModel = hiltViewModel<AppScreenViewModel>()
     val uiState by viewModel.uiState.collectAsState()
     AppScreen(
         uiState = uiState,
@@ -75,11 +67,7 @@ fun AppScreen(
     LaunchedEffect(bottomSheetScaffoldState.bottomSheetState) {
         snapshotFlow { bottomSheetScaffoldState.bottomSheetState.currentValue }
             .collect { state ->
-                onAction(
-                    Action.UpdateBottomSheetState(
-                        state = state,
-                    )
-                )
+                onAction(Action.UpdateBottomSheetState(isExpanded = state == SheetValue.Expanded))
             }
     }
 

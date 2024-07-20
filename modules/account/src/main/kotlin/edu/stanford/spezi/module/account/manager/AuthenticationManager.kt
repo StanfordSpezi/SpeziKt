@@ -8,10 +8,9 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import edu.stanford.spezi.core.logging.speziLogger
-import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.tasks.await
 import java.time.LocalDate
 import javax.inject.Inject
-import kotlin.coroutines.resumeWithException
 
 internal class AuthenticationManager @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
@@ -113,13 +112,6 @@ internal class AuthenticationManager @Inject constructor(
             result.user != null
         }.onFailure {
             logger.e { "Error signing in with google: ${it.message}" }
-        }
-    }
-
-    private suspend fun <T> com.google.android.gms.tasks.Task<T>.await(): T {
-        return suspendCancellableCoroutine { cont ->
-            addOnSuccessListener { result -> cont.resume(result) { } }
-            addOnFailureListener { exception -> cont.resumeWithException(exception) }
         }
     }
 }

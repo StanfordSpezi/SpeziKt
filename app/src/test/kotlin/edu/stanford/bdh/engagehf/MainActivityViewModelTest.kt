@@ -1,8 +1,8 @@
 package edu.stanford.bdh.engagehf
 
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
+import edu.stanford.bdh.engagehf.navigation.Routes
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
@@ -10,15 +10,14 @@ import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.manager.UserSessionManager
 import edu.stanford.spezi.module.account.manager.UserState
-import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
 import io.mockk.Called
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.update
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -31,34 +30,29 @@ class MainActivityViewModelTest {
     private val accountEventsFlow = MutableSharedFlow<AccountEvents.Event>()
     private val accountEvents: AccountEvents = mockk(relaxed = true)
     private val navigator: Navigator = mockk(relaxed = true)
-    private val userStateFlow = MutableStateFlow<UserState>(UserState.NotInitialized)
     private val userSessionManager: UserSessionManager = mockk()
-    private val bottomSheetEvents: BottomSheetEvents = mockk(relaxed = true)
-    private val bottomSheetEventsFlow = MutableSharedFlow<BottomSheetEvents.Event>()
     private lateinit var viewModel: MainActivityViewModel
 
     @Before
     fun setUp() {
         every { accountEvents.events } returns accountEventsFlow
-        every { userSessionManager.userState } returns userStateFlow
-        every { bottomSheetEvents.events } returns bottomSheetEventsFlow
-        viewModel = MainActivityViewModel(
-            accountEvents = accountEvents,
-            navigator = navigator,
-            userSessionManager = userSessionManager,
-            bottomSheetEvents = bottomSheetEvents
-        )
+        coEvery { userSessionManager.getUserState() } returns UserState.NotInitialized
     }
 
     @Test
     fun `it should start observing on init`() {
+        // when
+        createViewModel()
+
+        // then
         verify { accountEvents.events }
-        verify { userSessionManager.userState }
+        coVerify { userSessionManager.getUserState() }
     }
 
     @Test
     fun `it should navigate to app screen on SignUpSuccess event`() = runTestUnconfined {
         // given
+        createViewModel()
         val event = AccountEvents.Event.SignUpSuccess
 
         // when
@@ -71,6 +65,7 @@ class MainActivityViewModelTest {
     @Test
     fun `it should navigate to app screen on SignInSuccess event`() = runTestUnconfined {
         // given
+        createViewModel()
         val event = AccountEvents.Event.SignInSuccess
 
         // when
@@ -83,6 +78,7 @@ class MainActivityViewModelTest {
     @Test
     fun `it should not navigate on other account events`() = runTestUnconfined {
         // given
+        createViewModel()
         val event = AccountEvents.Event.SignInFailure
 
         // when
@@ -95,6 +91,7 @@ class MainActivityViewModelTest {
     @Test
     fun `it should return navigation events`() {
         // given
+        createViewModel()
         val events: SharedFlow<NavigationEvent> = mockk()
         every { navigator.events } returns events
 
@@ -106,117 +103,71 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `it should navigate to app screen for registered user if consented`() =
+    fun `it should have app screen start destination for registered user if consented`() =
         runTestUnconfined {
             // given
             val userState = UserState.Registered(hasConsented = true)
+            coEvery { userSessionManager.getUserState() } returns userState
 
             // when
-            userStateFlow.update { userState }
+            createViewModel()
 
             // then
-            verify { navigator.navigateTo(event = AppNavigationEvent.AppScreen) }
+            assertStartDestination(startDestination = Routes.AppScreen)
         }
 
     @Test
-    fun `it should navigate to consent screen for registered user if not consented`() =
+    fun `it should have consent screen start destination for registered user if not consented`() =
         runTestUnconfined {
             // given
             val userState = UserState.Registered(hasConsented = false)
+            coEvery { userSessionManager.getUserState() } returns userState
 
             // when
-            userStateFlow.update { userState }
+            createViewModel()
 
             // then
-            verify { navigator.navigateTo(event = OnboardingNavigationEvent.ConsentScreen) }
+            assertStartDestination(startDestination = Routes.ConsentScreen)
         }
 
     @Test
-    fun `it should not navigate for not initialized users`() =
+    fun `it should have OnboardingScreen start destination for not initialized users`() =
         runTestUnconfined {
             // given
             val userState = UserState.NotInitialized
+            coEvery { userSessionManager.getUserState() } returns userState
 
             // when
-            userStateFlow.update { userState }
+            createViewModel()
 
             // then
-            verify { navigator wasNot Called }
+            assertStartDestination(startDestination = Routes.OnboardingScreen)
         }
 
     @Test
-    fun `it should not navigate for anonymous users`() =
+    fun `it should have OnboardingScreen start destination  for anonymous users`() =
         runTestUnconfined {
             // given
             val userState = UserState.Anonymous
+            coEvery { userSessionManager.getUserState() } returns userState
 
             // when
-            userStateFlow.update { userState }
+            createViewModel()
 
             // then
-            verify { navigator wasNot Called }
+            assertStartDestination(startDestination = Routes.OnboardingScreen)
         }
 
-    @Test
-    fun `given selectedItem when onAction UpdateSelectedItem then uiState selectedItem should be updated`() =
-        runTestUnconfined {
-            // Given
-            val newSelectedItem = BottomBarItem.EDUCATION
+    private fun assertStartDestination(startDestination: Routes) {
+        val content = MainUiState.Content(startDestination = startDestination)
+        assertThat(viewModel.uiState.value).isEqualTo(content)
+    }
 
-            // When
-            viewModel.onAction(
-                Action.UpdateSelectedBottomBarItem(
-                    newSelectedItem
-                )
-            )
-
-            // Then
-            val updatedIndex = viewModel.uiState.value.selectedItem
-            assertThat(updatedIndex).isEqualTo(newSelectedItem)
-        }
-
-    @Test
-    fun `given NewMeasurementAction when onAction then uiState should be updated`() =
-        runTestUnconfined {
-            // Given
-            val event = BottomSheetEvents.Event.NewMeasurementAction
-
-            // When
-            bottomSheetEventsFlow.emit(event)
-
-            // Then
-            val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.isBottomSheetExpanded).isTrue()
-            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.NEW_MEASUREMENT_RECEIVED)
-        }
-
-    @Test
-    fun `given DoNewMeasurement when onAction then uiState should be updated`() =
-        runTestUnconfined {
-            // Given
-            val event = BottomSheetEvents.Event.DoNewMeasurement
-
-            // When
-            bottomSheetEventsFlow.emit(event)
-
-            // Then
-            val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.isBottomSheetExpanded).isTrue()
-            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.DO_NEW_MEASUREMENT)
-        }
-
-    @Test
-    fun `given CloseBottomSheet when onAction then uiState should be updated`() =
-        runTestUnconfined {
-            // Given
-            val event = BottomSheetEvents.Event.CloseBottomSheet
-
-            // When
-            bottomSheetEventsFlow.emit(event)
-
-            // Then
-            val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.isBottomSheetExpanded).isFalse()
-            assertThat(updatedUiState.bottomSheetContent).isNull()
-        }
+    private fun createViewModel() {
+        viewModel = MainActivityViewModel(
+            accountEvents = accountEvents,
+            navigator = navigator,
+            userSessionManager = userSessionManager,
+        )
+    }
 }

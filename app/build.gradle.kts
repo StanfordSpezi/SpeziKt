@@ -32,6 +32,8 @@ android {
             buildConfigField("boolean", "USE_FIREBASE_EMULATOR", "false")
         }
         debug {
+            // Disabling coverage due to: https://github.com/hapifhir/org.hl7.fhir.core/issues/1688
+            enableAndroidTestCoverage = false
             buildConfigField("boolean", "USE_FIREBASE_EMULATOR", "true")
         }
     }
@@ -44,15 +46,12 @@ dependencies {
     implementation(project(":modules:account"))
     implementation(project(":modules:education"))
     implementation(project(":modules:onboarding"))
-    implementation(project(":modules:measurements")) {
-        listOf("r4", "r4b", "r5").forEach {
-            exclude(group = "ca.uhn.hapi.fhir", module = "org.hl7.fhir.$it")
-        }
-    }
+    implementation(project(":modules:measurements"))
 
     implementation(libs.firebase.firestore.ktx)
 
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.splashscreen)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.view.model.ktx)
 

@@ -53,4 +53,11 @@ object Sizes {
             @ReadOnlyComposable
             get() = 4.dp
     }
+
+    object Content {
+        val large: Dp
+            @Composable
+            @ReadOnlyComposable
+            get() = 64.dp
+    }
 }

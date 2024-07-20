@@ -21,12 +21,11 @@ class MeasurementDialogTest {
                 onAction = {}
             )
         }
-        val uiState = MeasurementDialogUiStateFactory.createDefaultWeightMeasurementUiState()
         measurementDialog {
             assertDisplayed()
             assertTitle("New Measurement")
             assertLabel("Weight:")
-            assertValue(uiState.formattedWeight)
+            assertValue("70.0 kg")
         }
     }
 
@@ -68,6 +67,9 @@ class MeasurementDialogTest {
         fun createDefaultBloodPressureMeasurementUiState(): MeasurementDialogUiState {
             return MeasurementDialogUiState(
                 isVisible = true,
+                formattedSystolic = "120.0 mmHg",
+                formattedDiastolic = "80.0 mmHg",
+                formattedHeartRate = "60.0 bpm",
                 measurement = Measurement.BloodPressure(
                     flags = Measurement.BloodPressure.Flags(
                         bloodPressureUnitsFlag = false,

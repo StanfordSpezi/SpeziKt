@@ -4,8 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -19,6 +27,7 @@ import edu.stanford.bdh.engagehf.navigation.Routes
 import edu.stanford.bdh.engagehf.navigation.screens.AppScreen
 import edu.stanford.bdh.engagehf.navigation.serializableType
 import edu.stanford.spezi.core.coroutines.di.Dispatching
+import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.module.account.AccountNavigationEvent
@@ -48,21 +57,47 @@ class MainActivity : ComponentActivity() {
     lateinit var mainDispatcher: CoroutineDispatcher
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                viewModel.uiState.value is MainUiState.SplashScreen
+            }
+        }
         super.onCreate(savedInstanceState)
         setContent {
-            val navHostController = rememberNavController()
             SpeziTheme {
-                Navigator(navHostController = navHostController)
-                AppContent(navHostController = navHostController)
+                when (val uiState = viewModel.uiState.collectAsState().value) {
+                    is MainUiState.SplashScreen -> Loading()
+                    is MainUiState.Content -> {
+                        val navHostController = rememberNavController()
+                        Navigator(navHostController = navHostController)
+                        AppContent(
+                            navHostController = navHostController,
+                            startDestination = uiState.startDestination
+                        )
+                    }
+                }
             }
         }
     }
 
     @Composable
-    private fun AppContent(navHostController: NavHostController) {
+    private fun Loading() {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            CircularProgressIndicator(modifier = Modifier.size(Sizes.Content.large))
+        }
+    }
+
+    @Composable
+    private fun AppContent(
+        navHostController: NavHostController,
+        startDestination: Routes,
+    ) {
         NavHost(
             navController = navHostController,
-            startDestination = Routes.OnboardingScreen,
+            startDestination = startDestination,
         ) {
             registerAppGraph()
         }
