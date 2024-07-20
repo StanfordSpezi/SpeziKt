@@ -4,10 +4,14 @@ $dokka.linkExtension:html
 module:app
 edu.stanford.bdh.engagehf
 edu.stanford.bdh.engagehf.bluetooth
+edu.stanford.bdh.engagehf.bluetooth.component
 edu.stanford.bdh.engagehf.bluetooth.data.mapper
 edu.stanford.bdh.engagehf.bluetooth.data.models
 edu.stanford.bdh.engagehf.bluetooth.screen
 edu.stanford.bdh.engagehf.education
+edu.stanford.bdh.engagehf.health
+edu.stanford.bdh.engagehf.medication
+edu.stanford.bdh.engagehf.messages
 edu.stanford.bdh.engagehf.navigation
 edu.stanford.bdh.engagehf.navigation.screens
 edu.stanford.bdh.engagehf.onboarding
@@ -56,6 +60,9 @@ edu.stanford.spezi.modules.education.videos.data.repository
 module:healthconnectonfhir
 edu.stanford.healthconnectonfhir
 edu.stanford.healthconnectonfhir.di
+module:measurements
+edu.stanford.spezi.modules.measurements
+edu.stanford.spezi.modules.measurements.di
 module:onboarding
 edu.stanford.spezi.module.onboarding
 edu.stanford.spezi.module.onboarding.consent
