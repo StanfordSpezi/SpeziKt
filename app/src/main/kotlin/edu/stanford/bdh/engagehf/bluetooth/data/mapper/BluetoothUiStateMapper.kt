@@ -51,11 +51,6 @@ class BluetoothUiStateMapper @Inject constructor() {
                 formattedDiastolic = formatDiastolicForLocale(measurement.diastolic),
                 formattedHeartRate = formatHeartRateForLocale(measurement.pulseRate)
             )
-
-            else -> MeasurementDialogUiState(
-                measurement = null,
-                isVisible = false,
-            )
         }
     }
 

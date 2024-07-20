@@ -62,7 +62,6 @@ fun BluetoothScreen() {
     val uiState by viewModel.uiState.collectAsState()
     BluetoothEvents(events = viewModel.events)
     BluetoothScreen(
-        bluetoothUiState = uiState.bluetooth,
         uiState = uiState,
         onAction = viewModel::onAction
     )
@@ -70,7 +69,6 @@ fun BluetoothScreen() {
 
 @Composable
 private fun BluetoothScreen(
-    bluetoothUiState: BluetoothUiState,
     uiState: UiState,
     onAction: (Action) -> Unit,
 ) {
@@ -80,8 +78,8 @@ private fun BluetoothScreen(
             .fillMaxSize()
             .padding(Spacings.medium)
     ) {
-        Devices(bluetoothUiState as? BluetoothUiState.Ready)
-        AdditionalInfo(uiState = bluetoothUiState)
+        Devices(uiState.bluetooth as? BluetoothUiState.Ready)
+        AdditionalInfo(uiState = uiState.bluetooth)
         MeasurementDialog(
             uiState = uiState.measurementDialog,
             onAction = onAction,
@@ -243,7 +241,6 @@ private fun BluetoothScreenPreview(@PreviewParameter(BluetoothScreenPreviewProvi
     val mockOnAction: (Action) -> Unit = {}
     SpeziTheme {
         BluetoothScreen(
-            bluetoothUiState = uiState.bluetooth,
             uiState = uiState,
             onAction = mockOnAction
         )

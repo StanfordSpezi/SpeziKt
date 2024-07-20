@@ -5,12 +5,12 @@ import javax.inject.Inject
 data class VideoSectionVideo(val videoSectionId: String, val videoId: String)
 data class Questionnaire(val questionnaireId: String)
 
-sealed class Action {
-    data class VideoSectionAction(val videoSectionVideo: VideoSectionVideo) : Action()
-    data object MedicationsAction : Action()
-    data object MeasurementsAction : Action()
-    data class QuestionnaireAction(val questionnaire: Questionnaire) : Action()
-    data object HealthSummaryAction : Action()
+sealed class MessagesAction {
+    data class VideoSectionAction(val videoSectionVideo: VideoSectionVideo) : MessagesAction()
+    data object MedicationsAction : MessagesAction()
+    data object MeasurementsAction : MessagesAction()
+    data class QuestionnaireAction(val questionnaire: Questionnaire) : MessagesAction()
+    data object HealthSummaryAction : MessagesAction()
 }
 
 internal class MessageActionMapper @Inject constructor() {
@@ -18,14 +18,14 @@ internal class MessageActionMapper @Inject constructor() {
     private val videoSectionRegex = Regex("/videoSections/(\\w+)/videos/(\\w+)")
     private val questionnaireRegex = Regex("/questionnaires/(\\w+)")
 
-    fun map(action: String): Result<Action> {
+    fun map(action: String): Result<MessagesAction> {
         return runCatching {
             return when {
                 videoSectionRegex.matches(action) -> {
                     val matchResult = videoSectionRegex.find(action)
                     val (videoSectionId, videoId) = matchResult!!.destructured
                     Result.success(
-                        Action.VideoSectionAction(
+                        MessagesAction.VideoSectionAction(
                             VideoSectionVideo(
                                 videoSectionId,
                                 videoId
@@ -34,15 +34,15 @@ internal class MessageActionMapper @Inject constructor() {
                     )
                 }
 
-                action == "/medications" -> Result.success(Action.MedicationsAction)
-                action == "/measurements" -> Result.success(Action.MeasurementsAction)
+                action == "/medications" -> Result.success(MessagesAction.MedicationsAction)
+                action == "/measurements" -> Result.success(MessagesAction.MeasurementsAction)
                 questionnaireRegex.matches(action) -> {
                     val matchResult = questionnaireRegex.find(action)
                     val (questionnaireId) = matchResult!!.destructured
-                    Result.success(Action.QuestionnaireAction(Questionnaire(questionnaireId)))
+                    Result.success(MessagesAction.QuestionnaireAction(Questionnaire(questionnaireId)))
                 }
 
-                action == "/healthSummary" -> Result.success(Action.HealthSummaryAction)
+                action == "/healthSummary" -> Result.success(MessagesAction.HealthSummaryAction)
                 else -> error("Unknown action type")
             }
         }

@@ -3,7 +3,7 @@ package edu.stanford.bdh.engagehf.messages
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class MessageActionMapperKtTest {
+class MessageMessagesActionMapperKtTest {
 
     private val messageActionMapper = MessageActionMapper()
 
@@ -17,9 +17,9 @@ class MessageActionMapperKtTest {
 
         // Then
         assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrNull()).isInstanceOf(Action.VideoSectionAction::class.java)
+        assertThat(result.getOrNull()).isInstanceOf(MessagesAction.VideoSectionAction::class.java)
         result.getOrNull()?.let {
-            assertThat((it as Action.VideoSectionAction).videoSectionVideo.videoSectionId).isEqualTo(
+            assertThat((it as MessagesAction.VideoSectionAction).videoSectionVideo.videoSectionId).isEqualTo(
                 "123"
             )
             assertThat(it.videoSectionVideo.videoId).isEqualTo("456")
@@ -36,7 +36,7 @@ class MessageActionMapperKtTest {
 
         // Then
         assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrNull()).isEqualTo(Action.MedicationsAction)
+        assertThat(result.getOrNull()).isEqualTo(MessagesAction.MedicationsAction)
     }
 
     @Test
@@ -49,7 +49,7 @@ class MessageActionMapperKtTest {
 
         // Then
         assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrNull()).isEqualTo(Action.MeasurementsAction)
+        assertThat(result.getOrNull()).isEqualTo(MessagesAction.MeasurementsAction)
     }
 
     @Test
@@ -62,8 +62,8 @@ class MessageActionMapperKtTest {
 
         // Then
         assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrNull()).isInstanceOf(Action.QuestionnaireAction::class.java)
-        assertThat(result.getOrNull()).isEqualTo(Action.QuestionnaireAction(Questionnaire("123")))
+        assertThat(result.getOrNull()).isInstanceOf(MessagesAction.QuestionnaireAction::class.java)
+        assertThat(result.getOrNull()).isEqualTo(MessagesAction.QuestionnaireAction(Questionnaire("123")))
     }
 
     @Test
@@ -76,7 +76,7 @@ class MessageActionMapperKtTest {
 
         // Then
         assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrNull()).isEqualTo(Action.HealthSummaryAction)
+        assertThat(result.getOrNull()).isEqualTo(MessagesAction.HealthSummaryAction)
     }
 
     @Test

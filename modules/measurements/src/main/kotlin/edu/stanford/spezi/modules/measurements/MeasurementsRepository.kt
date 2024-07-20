@@ -7,6 +7,7 @@ import androidx.health.connect.client.records.WeightRecord
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.FhirVersionEnum
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -96,36 +97,39 @@ internal class MeasurementsRepositoryImpl @Inject internal constructor(
 
     private suspend fun <T : Record> observe(
         collection: ObservationCollection,
-    ): Flow<Result<T?>> =
-        callbackFlow {
-            withContext(ioDispatcher) {
-                kotlin.runCatching {
-                    val uid = userSessionManager.getUserUid()
-                        ?: throw IllegalStateException("User not authenticated")
-                    firestore.collection("users/$uid/${collection.name}")
-                        .orderBy("effectiveDateTime", Query.Direction.DESCENDING)
-                        .limit(1)
-                        .addSnapshotListener { snapshot, error ->
-                            if (error != null) {
-                                logger.e(error) { "Error listening for latest observation in collection: ${collection.name}" }
-                                trySend(Result.failure(error))
-                            } else {
-                                val document = snapshot?.documents?.firstOrNull()
-                                document?.let {
-                                    val json = gson.toJson(it.data)
-                                    val observation =
-                                        jsonParser.parseResource(Observation::class.java, json)
-                                    trySend(Result.success(observationToRecordMapper.map(observation)))
-                                } ?: trySend(Result.success(null))
-                            }
+    ): Flow<Result<T?>> = callbackFlow {
+        var listenerRegistration: ListenerRegistration? = null
+        withContext(ioDispatcher) {
+            kotlin.runCatching {
+                val uid = userSessionManager.getUserUid()
+                    ?: throw IllegalStateException("User not authenticated")
+                listenerRegistration = firestore.collection("users/$uid/${collection.name}")
+                    .orderBy("effectiveDateTime", Query.Direction.DESCENDING)
+                    .limit(1)
+                    .addSnapshotListener { snapshot, error ->
+                        if (error != null) {
+                            logger.e(error) { "Error listening for latest observation in collection: ${collection.name}" }
+                            trySend(Result.failure(error))
+                        } else {
+                            val document = snapshot?.documents?.firstOrNull()
+                            document?.let {
+                                val json = gson.toJson(it.data)
+                                val observation =
+                                    jsonParser.parseResource(Observation::class.java, json)
+                                trySend(Result.success(observationToRecordMapper.map(observation)))
+                            } ?: trySend(Result.success(null))
                         }
-                }.onFailure {
-                    logger.e(it) { "Error while listening for latest ${collection.name} observation" }
-                    trySend(Result.failure(it))
-                }
+                    }
+            }.onFailure {
+                logger.e(it) { "Error while listening for latest ${collection.name} observation" }
+                trySend(Result.failure(it))
             }
-            awaitClose { channel.close() }
         }
+        awaitClose {
+            listenerRegistration?.remove()
+            channel.close()
+        }
+    }
 
     override suspend fun observeBloodPressureRecord(): Flow<Result<BloodPressureRecord?>> =
         observe(bloodPressureCollection)

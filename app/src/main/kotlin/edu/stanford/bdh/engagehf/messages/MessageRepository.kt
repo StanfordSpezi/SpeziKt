@@ -6,6 +6,9 @@ import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.module.account.manager.UserSessionManager
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
 import java.time.ZonedDateTime
 import javax.inject.Inject
@@ -17,14 +20,14 @@ internal class MessageRepository @Inject constructor(
     @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
 ) {
     private val logger by speziLogger()
-    private var messageListener: ListenerRegistration? = null
 
-    suspend fun listenForUserMessages(onMessagesUpdate: (List<Message>) -> Unit) {
+    suspend fun observeUserMessages(): Flow<List<Message>> = callbackFlow {
+        var listenerRegistration: ListenerRegistration? = null
         withContext(ioDispatcher) {
             runCatching {
                 val uid = userSessionManager.getUserUid()
                     ?: throw IllegalStateException("User not authenticated")
-                messageListener = firestore.collection("users")
+                listenerRegistration = firestore.collection("users")
                     .document(uid)
                     .collection("messages")
                     .whereEqualTo("completionDate", null)
@@ -33,17 +36,17 @@ internal class MessageRepository @Inject constructor(
                             logger.e(error) { "Error listening for user messages" }
                             return@addSnapshotListener
                         }
-                        val messages = mutableListOf<Message>()
-                        value?.documents?.forEach { document ->
-                            firestoreMessageMapper.map(document)?.let {
-                                messages.add(it)
-                            }
-                        }
-                        onMessagesUpdate(messages)
+                        value?.documents?.mapNotNull { document ->
+                            firestoreMessageMapper.map(document)
+                        }?.let { trySend(it) }
                     }
+            }.onFailure {
+                logger.e(it) { "Error while listening for user messages" }
             }
-        }.onFailure {
-            logger.e(it) { "Error while listening for user messages" }
+        }
+        awaitClose {
+            listenerRegistration?.remove()
+            channel.close()
         }
     }
 
@@ -62,8 +65,5 @@ internal class MessageRepository @Inject constructor(
             logger.e(it) { "Error while completing message" }
         }
     }
-
-    fun stopListeningForUserMessages() {
-        messageListener?.remove()
-    }
 }
+

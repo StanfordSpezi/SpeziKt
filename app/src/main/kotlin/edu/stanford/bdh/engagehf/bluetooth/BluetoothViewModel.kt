@@ -13,6 +13,7 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.UiState
 import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.messages.MessageActionMapper
 import edu.stanford.bdh.engagehf.messages.MessageRepository
+import edu.stanford.bdh.engagehf.messages.MessagesAction
 import edu.stanford.spezi.core.bluetooth.api.BLEService
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
@@ -126,7 +127,7 @@ class BluetoothViewModel @Inject internal constructor(
         }
 
         viewModelScope.launch {
-            messageRepository.listenForUserMessages { messages ->
+            messageRepository.observeUserMessages().collect { messages ->
                 _uiState.update {
                     it.copy(messages = messages)
                 }
@@ -349,20 +350,20 @@ class BluetoothViewModel @Inject internal constructor(
                         val mappingResult = messageActionMapper.map(it)
                         if (mappingResult.isSuccess) {
                             when (val mappedAction = mappingResult.getOrNull()!!) {
-                                is edu.stanford.bdh.engagehf.messages.Action.HealthSummaryAction -> { /* TODO */
+                                is MessagesAction.HealthSummaryAction -> { /* TODO */
                                 }
 
-                                is edu.stanford.bdh.engagehf.messages.Action.MeasurementsAction -> {
+                                is MessagesAction.MeasurementsAction -> {
                                     bottomSheetEvents.emit(BottomSheetEvents.Event.DoNewMeasurement)
                                 }
 
-                                is edu.stanford.bdh.engagehf.messages.Action.MedicationsAction -> { /* TODO */
+                                is MessagesAction.MedicationsAction -> { /* TODO */
                                 }
 
-                                is edu.stanford.bdh.engagehf.messages.Action.QuestionnaireAction -> { /* TODO */
+                                is MessagesAction.QuestionnaireAction -> { /* TODO */
                                 }
 
-                                is edu.stanford.bdh.engagehf.messages.Action.VideoSectionAction -> {
+                                is MessagesAction.VideoSectionAction -> {
                                     viewModelScope.launch {
                                         engageEducationRepository.getVideoBySectionAndVideoId(
                                             mappedAction.videoSectionVideo.videoSectionId,
@@ -429,12 +430,10 @@ class BluetoothViewModel @Inject internal constructor(
         }
     }
 
-    private fun handleMeasurementReceived(event: BLEServiceEvent) {
-        if (event is BLEServiceEvent.MeasurementReceived) {
-            _uiState.update {
-                bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
-                it.copy(measurementDialog = uiStateMapper.mapToMeasurementDialogUiState(event.measurement))
-            }
+    private fun handleMeasurementReceived(event: BLEServiceEvent.MeasurementReceived) {
+        _uiState.update {
+            bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
+            it.copy(measurementDialog = uiStateMapper.mapToMeasurementDialogUiState(event.measurement))
         }
     }
 
