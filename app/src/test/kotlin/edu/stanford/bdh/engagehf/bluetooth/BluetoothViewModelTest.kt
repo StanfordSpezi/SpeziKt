@@ -372,6 +372,22 @@ class BluetoothViewModelTest {
     }
 
     @Test
+    fun `it should complete message on non error result`() {
+        // given
+        val action = Action.MessageItemClicked(message = message)
+        every {
+            uiStateMapper.mapMessagesAction(messageAction)
+        } returns Result.success(MessagesAction.HealthSummaryAction)
+        createViewModel()
+
+        // when
+        bluetoothViewModel.onAction(action = action)
+
+        // then
+        coVerify { messageRepository.completeMessage(messageId = messageId) }
+    }
+
+    @Test
     fun `it should do nothing on MessageItemClicked with for TODO actions`() {
         // given
         val action = Action.MessageItemClicked(message = message)
