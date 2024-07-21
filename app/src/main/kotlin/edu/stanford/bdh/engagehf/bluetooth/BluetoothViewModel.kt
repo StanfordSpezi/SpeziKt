@@ -93,9 +93,13 @@ class BluetoothViewModel @Inject internal constructor(
                     }
 
                     is BLEServiceEvent.MeasurementReceived -> {
+                        bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
                         _uiState.update {
-                            bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
-                            it.copy(measurementDialog = uiStateMapper.mapToMeasurementDialogUiState(event.measurement))
+                            it.copy(
+                                measurementDialog = uiStateMapper.mapToMeasurementDialogUiState(
+                                    event.measurement
+                                )
+                            )
                         }
                     }
                 }
@@ -166,7 +170,7 @@ class BluetoothViewModel @Inject internal constructor(
                                     engageEducationRepository.getVideoBySectionAndVideoId(
                                         mappedAction.videoSectionVideo.videoSectionId,
                                         mappedAction.videoSectionVideo.videoId
-                                    ).getOrThrow().let { video ->
+                                    ).getOrNull()?.let { video ->
                                         navigator.navigateTo(
                                             EducationNavigationEvent.VideoSectionClicked(
                                                 video = video
@@ -219,7 +223,7 @@ class BluetoothViewModel @Inject internal constructor(
             )
         }
         viewModelScope.launch {
-            measurementsRepository.save(action.measurement)
+            measurementsRepository.save(measurement = action.measurement)
             _uiState.update {
                 it.copy(
                     measurementDialog = it.measurementDialog.copy(
