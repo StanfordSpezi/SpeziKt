@@ -30,7 +30,7 @@ class BluetoothUiStateMapperTest {
         val state = BLEServiceState.Scanning(sessions = emptyList())
 
         // when
-        val result = mapper.map(state)
+        val result = mapper.mapBleServiceState(state)
 
         // then
         with(result) {
@@ -51,7 +51,7 @@ class BluetoothUiStateMapperTest {
         )
 
         // when
-        val result = mapper.map(state)
+        val result = mapper.mapBleServiceState(state)
 
         // then
         with(result) {
@@ -72,7 +72,7 @@ class BluetoothUiStateMapperTest {
         )
 
         // when
-        val result = mapper.map(state)
+        val result = mapper.mapBleServiceState(state)
 
         // then
         with(result) {

@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -52,10 +51,9 @@ fun AppScreen(
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberModalBottomSheetState()
     )
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = uiState.isBottomSheetExpanded) {
-        scope.launch {
+        launch {
             if (uiState.isBottomSheetExpanded) {
                 bottomSheetScaffoldState.bottomSheetState.expand()
             } else {

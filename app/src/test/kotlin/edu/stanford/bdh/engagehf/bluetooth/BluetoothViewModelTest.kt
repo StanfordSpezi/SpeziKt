@@ -60,7 +60,7 @@ class BluetoothViewModelTest {
             every { start() } just Runs
             every { stop() } just Runs
         }
-        every { uiStateMapper.map(any()) } returns readyUiState
+        every { uiStateMapper.mapBleServiceState(any()) } returns readyUiState
     }
 
     @Test
@@ -107,7 +107,7 @@ class BluetoothViewModelTest {
         bleServiceState.emit(scanningState)
 
         // then
-        verify { uiStateMapper.map(scanningState) }
+        verify { uiStateMapper.mapBleServiceState(scanningState) }
         assertState(state = readyUiState)
     }
 
