@@ -2,6 +2,7 @@ package edu.stanford.bdh.engagehf.bluetooth.data.mapper
 
 import android.bluetooth.BluetoothDevice
 import androidx.health.connect.client.records.BloodPressureRecord
+import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.WeightRecord
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.component.OperationStatus
@@ -279,6 +280,66 @@ class BluetoothUiStateMapperTest {
         // then
         with(vitalDisplayData) {
             assertThat(title).isEqualTo("Weight")
+            assertThat(status).isEqualTo(OperationStatus.NO_DATA)
+            assertThat(value).isEqualTo("No data available")
+            assertThat(unit).isNull()
+        }
+    }
+
+    @Test
+    fun `it should map heart rate correctly for success case`() {
+        // given
+        val beatsPerMinute = 72L
+        val instant = Instant.parse("2024-01-01T15:00:00Z")
+        val heartRateRecord: HeartRateRecord = mockk {
+            every { samples } returns listOf(
+                HeartRateRecord.Sample(instant, beatsPerMinute)
+            )
+            every { startZoneOffset } returns ZoneOffset.UTC
+        }
+        val result = Result.success(heartRateRecord)
+
+        // when
+        every { localeProvider.getDefaultLocale() } returns Locale.US
+        val vitalDisplayData = mapper.mapHeartRate(result)
+
+        // then
+        with(vitalDisplayData) {
+            assertThat(title).isEqualTo("Heart Rate")
+            assertThat(value).isEqualTo("$beatsPerMinute.0")
+            assertThat(unit).isEqualTo("bpm")
+            assertThat(date).isEqualTo("01.01.2024, 15:00")
+        }
+    }
+
+    @Test
+    fun `it should map heart rate correctly on failure`() {
+        // given
+        val result: Result<HeartRateRecord?> = Result.failure(Throwable())
+
+        // when
+        val vitalDisplayData = mapper.mapHeartRate(result)
+
+        // then
+        with(vitalDisplayData) {
+            assertThat(title).isEqualTo("Heart Rate")
+            assertThat(status).isEqualTo(OperationStatus.FAILURE)
+            assertThat(value).isNull()
+            assertThat(unit).isNull()
+        }
+    }
+
+    @Test
+    fun `it should map heart rate correctly when value is null`() {
+        // given
+        val result: Result<HeartRateRecord?> = Result.success(null)
+
+        // when
+        val vitalDisplayData = mapper.mapHeartRate(result)
+
+        // then
+        with(vitalDisplayData) {
+            assertThat(title).isEqualTo("Heart Rate")
             assertThat(status).isEqualTo(OperationStatus.NO_DATA)
             assertThat(value).isEqualTo("No data available")
             assertThat(unit).isNull()

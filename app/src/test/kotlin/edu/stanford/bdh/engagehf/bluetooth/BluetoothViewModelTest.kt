@@ -390,7 +390,7 @@ class BluetoothViewModelTest {
     fun `it should do nothing on MessageItemClicked with for TODO actions`() {
         // given
         val action = Action.MessageItemClicked(message = message)
-        val todoAcions = listOf(
+        val todoActions = listOf(
             MessagesAction.HealthSummaryAction,
             MessagesAction.MedicationsAction,
             MessagesAction.QuestionnaireAction(questionnaire = mockk()),
@@ -398,7 +398,7 @@ class BluetoothViewModelTest {
         createViewModel()
         val initialState = bluetoothViewModel.uiState.value
 
-        todoAcions.forEach {
+        todoActions.forEach {
             every { uiStateMapper.mapMessagesAction(messageAction) } returns Result.success(it)
 
             // when
@@ -407,6 +407,22 @@ class BluetoothViewModelTest {
             // then
             assertThat(bluetoothViewModel.uiState.value).isEqualTo(initialState)
         }
+    }
+
+    @Test
+    fun `it should handle MeasurementsAction correctly`() {
+        // given
+        val action = Action.MessageItemClicked(message = message)
+        every {
+            uiStateMapper.mapMessagesAction(messageAction)
+        } returns Result.success(MessagesAction.MeasurementsAction)
+        createViewModel()
+
+        // when
+        bluetoothViewModel.onAction(action = action)
+
+        // then
+        verify { bottomSheetEvents.emit(BottomSheetEvents.Event.DoNewMeasurement) }
     }
 
     @Test
@@ -447,9 +463,10 @@ class BluetoothViewModelTest {
             action = "",
             type = MessageType.MedicationChange,
             isExpanded = isExpanded,
-
         )
-        coEvery { messageRepository.observeUserMessages() } returns flowOf(listOf(message))
+        every { this@BluetoothViewModelTest.message.id } returns "new-id"
+
+        coEvery { messageRepository.observeUserMessages() } returns flowOf(listOf(message, this.message))
         createViewModel()
 
         // when
