@@ -37,7 +37,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -325,7 +324,7 @@ class BluetoothViewModelTest {
     }
 
     @Test
-    fun `it should handle confirm measurement action correctly`() = runTest {
+    fun `it should handle confirm measurement action correctly`() {
         val measurement: Measurement.Weight = mockk()
         val action = Action.ConfirmMeasurement(measurement = measurement)
         coEvery { measurementsRepository.save(measurement = measurement) } just Runs
