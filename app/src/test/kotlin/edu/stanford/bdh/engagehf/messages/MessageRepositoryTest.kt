@@ -83,7 +83,6 @@ class MessageRepositoryTest {
                 .document(messageId)
         } returns documentReference
 
-
         // when
         repository.completeMessage(messageId)
 
