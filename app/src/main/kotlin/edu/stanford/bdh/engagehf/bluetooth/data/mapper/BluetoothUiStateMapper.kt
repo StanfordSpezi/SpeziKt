@@ -14,20 +14,23 @@ import edu.stanford.bdh.engagehf.messages.Questionnaire
 import edu.stanford.bdh.engagehf.messages.VideoSectionVideo
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
 import edu.stanford.spezi.core.bluetooth.data.model.Measurement
+import edu.stanford.spezi.core.utils.LocaleProvider
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import javax.inject.Inject
 
-class BluetoothUiStateMapper @Inject constructor() {
+class BluetoothUiStateMapper @Inject constructor(
+    private val localeProvider: LocaleProvider,
+) {
 
     private val dateFormatter by lazy {
         DateTimeFormatter.ofPattern(
-            "dd.MM.yyyy, HH:mm", Locale.getDefault()
+            "dd.MM.yyyy, HH:mm", localeProvider.getDefaultLocale()
         )
     }
 
-    private val videoSectionRegex = Regex("/videoSections/(\\w+)/videos/(\\w+)")
-    private val questionnaireRegex = Regex("/questionnaires/(\\w+)")
+    private val videoSectionRegex = Regex("/videoSections/(.+)/videos/(.+)")
+    private val questionnaireRegex = Regex("/questionnaires/(.+)")
 
     fun mapBleServiceState(state: BLEServiceState.Scanning): BluetoothUiState.Ready {
         val devices = state.sessions.map {
@@ -92,6 +95,7 @@ class BluetoothUiStateMapper @Inject constructor() {
 
     fun mapWeight(result: Result<WeightRecord?>): VitalDisplayData {
         val title = "Weight"
+        val locale = getDefaultLocale()
         return mapRecordResult(
             result = result,
             title = title,
@@ -99,14 +103,14 @@ class BluetoothUiStateMapper @Inject constructor() {
                 VitalDisplayData(
                     title = title,
                     value = String.format(
-                        Locale.getDefault(),
+                        locale,
                         "%.2f",
-                        when (Locale.getDefault().country) {
+                        when (locale.country) {
                             "US", "LR", "MM" -> record.weight.inPounds
                             else -> record.weight.inKilograms
                         }
                     ),
-                    unit = when (Locale.getDefault().country) {
+                    unit = when (locale.country) {
                         "US", "LR", "MM" -> "lbs"
                         else -> "kg"
                     },
@@ -196,30 +200,33 @@ class BluetoothUiStateMapper @Inject constructor() {
     }
 
     private fun formatWeightForLocale(weight: Double): String {
+        val locale = getDefaultLocale()
         return String.format(
-            Locale.getDefault(), "%.2f", when (Locale.getDefault().country) {
+            locale, "%.2f", when (locale.country) {
                 "US", "LR", "MM" -> weight * KG_TO_LBS_CONVERSION_FACTOR
                 else -> weight
             }
-        ) + when (Locale.getDefault().country) {
+        ) + when (locale.country) {
             "US", "LR", "MM" -> " lbs"
             else -> " kg"
         }
     }
 
     private fun formatSystolicForLocale(systolic: Float): String {
-        return String.format(Locale.getDefault(), "%.0f mmHg", systolic)
+        return String.format(getDefaultLocale(), "%.0f mmHg", systolic)
     }
 
     private fun formatDiastolicForLocale(diastolic: Float): String {
-        return String.format(Locale.getDefault(), "%.0f mmHg", diastolic)
+        return String.format(getDefaultLocale(), "%.0f mmHg", diastolic)
     }
 
     private fun formatHeartRateForLocale(heartRate: Float): String {
-        return String.format(Locale.getDefault(), "%.0f bpm", heartRate)
+        return String.format(getDefaultLocale(), "%.0f bpm", heartRate)
     }
 
     private fun format(value: Number?): String = String.format(Locale.US, "%.2f", value)
+
+    private fun getDefaultLocale() = localeProvider.getDefaultLocale()
 
     companion object {
         const val KG_TO_LBS_CONVERSION_FACTOR = 2.20462
