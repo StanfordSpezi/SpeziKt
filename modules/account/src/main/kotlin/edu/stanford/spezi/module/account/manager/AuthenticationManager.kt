@@ -78,7 +78,7 @@ internal class AuthenticationManager @Inject constructor(
                     "gender" to selectedGender,
                     "dateOfBirth" to dateOfBirth
                 )
-                firestore.collection("users").document(user.uid).set(userMap).await()
+                firestore.collection("patients").document(user.uid).set(userMap).await()
             }
         }.onFailure { e ->
             logger.e { "Error saving user data: ${e.message}" }
