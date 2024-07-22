@@ -39,6 +39,7 @@ module:testing
 edu.stanford.spezi.core.testing
 module:utils
 edu.stanford.spezi.core.utils
+edu.stanford.spezi.core.utils.di
 edu.stanford.spezi.core.utils.extensions
 module:account
 edu.stanford.spezi.module.account
