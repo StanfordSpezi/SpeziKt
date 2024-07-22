@@ -3,18 +3,28 @@ package edu.stanford.bdh.engagehf.bluetooth
 import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.WeightRecord
-import androidx.health.connect.client.units.Pressure
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
+import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
+import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
+import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
+import edu.stanford.bdh.engagehf.education.EngageEducationRepository
+import edu.stanford.bdh.engagehf.messages.Message
 import edu.stanford.bdh.engagehf.messages.MessageRepository
+import edu.stanford.bdh.engagehf.messages.MessageType
+import edu.stanford.bdh.engagehf.messages.MessagesAction
+import edu.stanford.bdh.engagehf.messages.VideoSectionVideo
 import edu.stanford.spezi.core.bluetooth.api.BLEService
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
+import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.modules.education.EducationNavigationEvent
+import edu.stanford.spezi.modules.education.videos.Video
 import edu.stanford.spezi.modules.measurements.MeasurementsRepository
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -30,22 +40,27 @@ import kotlinx.coroutines.flow.flowOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.text.NumberFormat
-import java.time.Instant
-import java.time.ZoneOffset
-import java.util.Locale
+import java.time.ZonedDateTime
 
 class BluetoothViewModelTest {
     private val bleService: BLEService = mockk()
     private val uiStateMapper: BluetoothUiStateMapper = mockk()
     private val measurementsRepository = mockk<MeasurementsRepository>(relaxed = true)
     private val messageRepository = mockk<MessageRepository>(relaxed = true)
+    private val engageEducationRepository = mockk<EngageEducationRepository>(relaxed = true)
 
     private val bleServiceState = MutableStateFlow<BLEServiceState>(BLEServiceState.Idle)
     private val bleServiceEvents = MutableSharedFlow<BLEServiceEvent>()
     private val readyUiState: BluetoothUiState.Ready = mockk()
     private val bottomSheetEvents = mockk<BottomSheetEvents>(relaxed = true)
     private val navigator = mockk<Navigator>(relaxed = true)
+    private val messageAction = "some-action"
+    private val messageId = "some-id"
+    private val message: Message = mockk {
+        every { action } returns messageAction
+        every { id } returns messageId
+        every { isExpanded } returns false
+    }
 
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
@@ -60,7 +75,14 @@ class BluetoothViewModelTest {
             every { start() } just Runs
             every { stop() } just Runs
         }
-        every { uiStateMapper.map(any()) } returns readyUiState
+        with(uiStateMapper) {
+            every { mapBleServiceState(any()) } returns readyUiState
+            every { mapWeight(any()) } returns mockk()
+            every { mapHeartRate(any()) } returns mockk()
+            every { mapBloodPressure(any()) } returns mockk()
+            every { mapToMeasurementDialogUiState(any()) } returns mockk()
+            every { mapMessagesAction(any()) } returns Result.failure(Throwable())
+        }
     }
 
     @Test
@@ -75,7 +97,7 @@ class BluetoothViewModelTest {
     }
 
     @Test
-    fun `it should record observation on init`() {
+    fun `it should start record observation on init`() {
         // when
         createViewModel()
 
@@ -83,6 +105,15 @@ class BluetoothViewModelTest {
         coVerify { measurementsRepository.observeWeightRecord() }
         coVerify { measurementsRepository.observeHeartRateRecord() }
         coVerify { measurementsRepository.observeBloodPressureRecord() }
+    }
+
+    @Test
+    fun `it should start messages observation on init`() {
+        // when
+        createViewModel()
+
+        // then
+        coVerify { messageRepository.observeUserMessages() }
     }
 
     @Test
@@ -94,7 +125,7 @@ class BluetoothViewModelTest {
         bleServiceState.emit(BLEServiceState.Idle)
 
         // then
-        assertState(state = BluetoothUiState.Idle)
+        assertBluetothUiState(state = BluetoothUiState.Idle)
     }
 
     @Test
@@ -107,8 +138,8 @@ class BluetoothViewModelTest {
         bleServiceState.emit(scanningState)
 
         // then
-        verify { uiStateMapper.map(scanningState) }
-        assertState(state = readyUiState)
+        verify { uiStateMapper.mapBleServiceState(scanningState) }
+        assertBluetothUiState(state = readyUiState)
     }
 
     @Test
@@ -147,7 +178,7 @@ class BluetoothViewModelTest {
         bleServiceEvents.emit(event)
 
         // then
-        assertState(state = BluetoothUiState.Error("Something went wrong!"))
+        assertBluetothUiState(state = BluetoothUiState.Error("Something went wrong!"))
     }
 
     @Test
@@ -160,7 +191,7 @@ class BluetoothViewModelTest {
         bleServiceEvents.emit(event)
 
         // then
-        assertState(state = BluetoothUiState.Error("Error while scanning for devices"))
+        assertBluetothUiState(state = BluetoothUiState.Error("Error while scanning for devices"))
     }
 
     @Test
@@ -173,7 +204,7 @@ class BluetoothViewModelTest {
         bleServiceEvents.emit(event)
 
         // then
-        assertState(state = BluetoothUiState.Scanning)
+        assertBluetothUiState(state = BluetoothUiState.Scanning)
     }
 
     @Test
@@ -190,8 +221,95 @@ class BluetoothViewModelTest {
             events.forEach { bleServiceEvents.emit(it) }
 
             // then
-            assertState(state = BluetoothUiState.Idle)
+            assertBluetothUiState(state = BluetoothUiState.Idle)
         }
+
+    @Test
+    fun `it should handle MeasurementReceived events correctly`() =
+        runTestUnconfined {
+            // given
+            val measurement: Measurement = mockk()
+            val event =
+                BLEServiceEvent.MeasurementReceived(device = mockk(), measurement = measurement)
+            val measurementDialog: MeasurementDialogUiState = mockk()
+            every { uiStateMapper.mapToMeasurementDialogUiState(measurement) } returns measurementDialog
+
+            createViewModel()
+
+            // when
+            bleServiceEvents.emit(event)
+
+            // then
+            verify { bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet) }
+            assertBluetothUiState(state = BluetoothUiState.Idle)
+            assertThat(bluetoothViewModel.uiState.value.measurementDialog).isEqualTo(
+                measurementDialog
+            )
+        }
+
+    @Test
+    fun `it should handle weight updates correctly`() = runTestUnconfined {
+        // Given
+        val result: Result<WeightRecord?> = mockk()
+        val uiState: VitalDisplayData = mockk()
+        every { uiStateMapper.mapWeight(result) } returns uiState
+        coEvery {
+            measurementsRepository.observeWeightRecord()
+        } returns flowOf(result)
+
+        // When
+        createViewModel()
+
+        // Then
+        assertThat(bluetoothViewModel.uiState.value.weight).isEqualTo(uiState)
+    }
+
+    @Test
+    fun `it should handle blood pressure updates correctly`() = runTestUnconfined {
+        // Given
+        val result: Result<BloodPressureRecord?> = mockk()
+        val uiState: VitalDisplayData = mockk()
+        every { uiStateMapper.mapBloodPressure(result) } returns uiState
+        coEvery {
+            measurementsRepository.observeBloodPressureRecord()
+        } returns flowOf(result)
+
+        // When
+        createViewModel()
+
+        // Then
+        assertThat(bluetoothViewModel.uiState.value.bloodPressure).isEqualTo(uiState)
+    }
+
+    @Test
+    fun `it should handle heart rate updates correctly`() = runTestUnconfined {
+        // Given
+        val result: Result<HeartRateRecord?> = mockk()
+        val uiState: VitalDisplayData = mockk()
+        every { uiStateMapper.mapHeartRate(result) } returns uiState
+        coEvery {
+            measurementsRepository.observeHeartRateRecord()
+        } returns flowOf(result)
+
+        // When
+        createViewModel()
+
+        // Then
+        assertThat(bluetoothViewModel.uiState.value.heartRate).isEqualTo(uiState)
+    }
+
+    @Test
+    fun `it should handle message updates correctly`() {
+        // given
+        val messages = List(10) { mockk<Message>() }
+        coEvery { messageRepository.observeUserMessages() } returns flowOf(messages)
+
+        // when
+        createViewModel()
+
+        // then
+        assertThat(bluetoothViewModel.uiState.value.messages).isEqualTo(messages)
+    }
 
     @Test
     fun `it should stop service on cleared`() {
@@ -206,90 +324,166 @@ class BluetoothViewModelTest {
     }
 
     @Test
-    fun `it should load weight successfully`() = runTestUnconfined {
-        // Given
-        val expectedWeight = getLocalizedWeight(70.0)
-        val bodyWeightObservation = mockk<WeightRecord>().apply {
-            every { weight.inGrams } returns 70000.0
-            every { weight.inKilograms } returns 70.0
-            every { weight.inPounds } returns 70.0
-            every { time } returns Instant.now()
-            every { zoneOffset } returns ZoneOffset.UTC
-        }
-        coEvery {
-            measurementsRepository.observeWeightRecord()
-        } returns flowOf(Result.success(bodyWeightObservation))
-
-        // When
+    fun `it should handle confirm measurement action correctly`() {
+        val measurement: Measurement.Weight = mockk()
+        val action = Action.ConfirmMeasurement(measurement = measurement)
+        coEvery { measurementsRepository.save(measurement = measurement) } just Runs
         createViewModel()
 
-        // Then
-        assertThat(bluetoothViewModel.uiState.value.weight.value).isEqualTo(expectedWeight)
+        // when
+        bluetoothViewModel.onAction(action)
+
+        coVerify { measurementsRepository.save(measurement = measurement) }
+        val measurementDialog = bluetoothViewModel.uiState.value.measurementDialog
+        with(measurementDialog) {
+            assertThat(isVisible).isFalse()
+            assertThat(this.measurement).isNull()
+            assertThat(this.isProcessing).isFalse()
+        }
     }
 
     @Test
-    fun `it should load blood pressure successfully`() = runTestUnconfined {
-        // Given
-        val expectedBloodPressure = "120.0/80.0"
-        val bloodPressureObservation = mockk<BloodPressureRecord>().apply {
-            every { systolic } returns Pressure.millimetersOfMercury(120.0)
-            every { diastolic } returns Pressure.millimetersOfMercury(80.0)
-            every { time } returns Instant.now()
-            every { zoneOffset } returns ZoneOffset.UTC
-        }
-        coEvery {
-            measurementsRepository.observeBloodPressureRecord()
-        } returns flowOf(Result.success(bloodPressureObservation))
-
-        // When
+    fun `it should handle dismiss dialog correctly`() {
+        // given
+        val action = Action.DismissDialog
         createViewModel()
 
-        // Then
-        assertThat(bluetoothViewModel.uiState.value.bloodPressure.value).isEqualTo(
-            expectedBloodPressure
+        // when
+        bluetoothViewModel.onAction(action)
+
+        // then
+        assertThat(bluetoothViewModel.uiState.value.measurementDialog.isVisible).isFalse()
+    }
+
+    @Test
+    fun `it should do nothing on MessageItemClicked with error result`() {
+        // given
+        val action = Action.MessageItemClicked(message = message)
+        every { uiStateMapper.mapMessagesAction(messageAction) } returns Result.failure(Throwable())
+        createViewModel()
+        val initialState = bluetoothViewModel.uiState.value
+
+        // when
+        bluetoothViewModel.onAction(action = action)
+
+        // then
+        assertThat(bluetoothViewModel.uiState.value).isEqualTo(initialState)
+    }
+
+    @Test
+    fun `it should complete message on non error result`() {
+        // given
+        val action = Action.MessageItemClicked(message = message)
+        every {
+            uiStateMapper.mapMessagesAction(messageAction)
+        } returns Result.success(MessagesAction.HealthSummaryAction)
+        createViewModel()
+
+        // when
+        bluetoothViewModel.onAction(action = action)
+
+        // then
+        coVerify { messageRepository.completeMessage(messageId = messageId) }
+    }
+
+    @Test
+    fun `it should do nothing on MessageItemClicked with for TODO actions`() {
+        // given
+        val action = Action.MessageItemClicked(message = message)
+        val todoActions = listOf(
+            MessagesAction.HealthSummaryAction,
+            MessagesAction.MedicationsAction,
+            MessagesAction.QuestionnaireAction(questionnaire = mockk()),
         )
+        createViewModel()
+        val initialState = bluetoothViewModel.uiState.value
+
+        todoActions.forEach {
+            every { uiStateMapper.mapMessagesAction(messageAction) } returns Result.success(it)
+
+            // when
+            bluetoothViewModel.onAction(action = action)
+
+            // then
+            assertThat(bluetoothViewModel.uiState.value).isEqualTo(initialState)
+        }
     }
 
     @Test
-    fun `it should load heart frequenz successfully`() = runTestUnconfined {
-        // Given
-        val expectedHeartRate = "70.0"
-        val heartRateObservation = mockk<HeartRateRecord>().apply {
-            every { samples } returns listOf(
-                HeartRateRecord.Sample(
-                    Instant.now(),
-                    70
-                )
-            )
-            every { startTime } returns Instant.now()
-            every { endTime } returns Instant.now()
-            every { startZoneOffset } returns ZoneOffset.UTC
-            every { endZoneOffset } returns ZoneOffset.UTC
-        }
-        coEvery {
-            measurementsRepository.observeHeartRateRecord()
-        } returns flowOf(Result.success(heartRateObservation))
-
-        // When
+    fun `it should handle MeasurementsAction correctly`() {
+        // given
+        val action = Action.MessageItemClicked(message = message)
+        every {
+            uiStateMapper.mapMessagesAction(messageAction)
+        } returns Result.success(MessagesAction.MeasurementsAction)
         createViewModel()
 
-        // Then
-        assertThat(bluetoothViewModel.uiState.value.heartRate.value).isEqualTo(expectedHeartRate)
+        // when
+        bluetoothViewModel.onAction(action = action)
+
+        // then
+        verify { bottomSheetEvents.emit(BottomSheetEvents.Event.DoNewMeasurement) }
     }
 
-    private fun assertState(state: BluetoothUiState) {
+    @Test
+    fun `it should handle video section action correctly`() = runTestUnconfined {
+        val videoSectionId = "some-video-section-id"
+        val videoId = "some-video-id"
+        val videoSection: VideoSectionVideo = mockk {
+            every { this@mockk.videoSectionId } returns videoSectionId
+            every { this@mockk.videoId } returns videoId
+        }
+        val video: Video = mockk()
+        val videoSectionAction = MessagesAction.VideoSectionAction(videoSectionVideo = videoSection)
+        every { uiStateMapper.mapMessagesAction(messageAction) } returns Result.success(
+            videoSectionAction
+        )
+        coEvery {
+            engageEducationRepository.getVideoBySectionAndVideoId(videoSectionId, videoId)
+        } returns Result.success(video)
+        createViewModel()
+
+        // when
+        bluetoothViewModel.onAction(Action.MessageItemClicked(message = message))
+
+        // then
+        coVerify { engageEducationRepository.getVideoBySectionAndVideoId(videoSectionId, videoId) }
+        verify { navigator.navigateTo(EducationNavigationEvent.VideoSectionClicked(video)) }
+    }
+
+    @Test
+    fun `it should handle toggle expand action correctly`() {
+        // given
+        val isExpanded = false
+        val message = Message(
+            id = messageId,
+            dueDate = ZonedDateTime.now(),
+            description = "",
+            title = "",
+            action = "",
+            type = MessageType.MedicationChange,
+            isExpanded = isExpanded,
+        )
+        every { this@BluetoothViewModelTest.message.id } returns "new-id"
+
+        coEvery { messageRepository.observeUserMessages() } returns flowOf(listOf(message, this.message))
+        createViewModel()
+
+        // when
+        bluetoothViewModel.onAction(Action.ToggleExpand(message))
+
+        // then
+        assertThat(
+            bluetoothViewModel.uiState.value.messages.first().isExpanded
+        ).isEqualTo(isExpanded.not())
+    }
+
+    private fun assertBluetothUiState(state: BluetoothUiState) {
         assertThat(bluetoothViewModel.uiState.value.bluetooth).isEqualTo(state)
     }
 
     private suspend fun assertEvent(event: BluetoothViewModel.Event) {
         assertThat(bluetoothViewModel.events.first()).isEqualTo(event)
-    }
-
-    private fun getLocalizedWeight(weightInKilograms: Double): String {
-        val formatter = NumberFormat.getNumberInstance(Locale.getDefault())
-        formatter.minimumFractionDigits = 2
-        formatter.maximumFractionDigits = 2
-        return formatter.format(weightInKilograms)
     }
 
     private fun createViewModel() {
@@ -300,8 +494,7 @@ class BluetoothViewModelTest {
             messageRepository = messageRepository,
             bottomSheetEvents = bottomSheetEvents,
             navigator = navigator,
-            engageEducationRepository = mockk(),
-            messageActionMapper = mockk(),
+            engageEducationRepository = engageEducationRepository,
         )
     }
 }
