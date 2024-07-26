@@ -2,14 +2,17 @@
 
 package edu.stanford.spezi.module.account.manager
 
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.module.account.register.GenderIdentity
 import kotlinx.coroutines.tasks.await
 import java.time.LocalDate
+import java.time.ZoneId
 import javax.inject.Inject
 
 internal class AuthenticationManager @Inject constructor(
@@ -33,11 +36,13 @@ internal class AuthenticationManager @Inject constructor(
         return firebaseAuth.currentUser
     }
 
-    private suspend fun setDisplayName(firstName: String, lastName: String) {
+    private suspend fun setUserProfile(firstName: String, lastName: String, email: String) {
         val user = firebaseAuth.currentUser
         val profileUpdates = UserProfileChangeRequest.Builder()
             .setDisplayName("$firstName $lastName")
             .build()
+
+        user?.updateEmail(email)?.await()
 
         user?.updateProfile(profileUpdates)?.await()
     }
@@ -65,18 +70,19 @@ internal class AuthenticationManager @Inject constructor(
         lastName: String,
         email: String,
         selectedGender: String,
-        dateOfBirth: LocalDate?,
+        dateOfBirth: LocalDate,
     ): Boolean {
         return runCatching {
-            setDisplayName(firstName, lastName)
+            setUserProfile(firstName, lastName, email)
             logger.i { "Signing up user" }
+            val localDateTime = dateOfBirth.atStartOfDay()
+            val instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant()
+            val birthDayTimestamp = Timestamp(instant.epochSecond, instant.nano)
+
             getUser()?.let { user ->
                 val userMap = hashMapOf(
-                    "email" to email,
-                    "firstName" to firstName,
-                    "lastName" to lastName,
-                    "gender" to selectedGender,
-                    "dateOfBirth" to dateOfBirth
+                    "GenderIdentityKey" to GenderIdentity.fromDisplayName(selectedGender).databaseName,
+                    "DateOfBirthKey" to birthDayTimestamp
                 )
                 firestore.collection("patients").document(user.uid).set(userMap).await()
             }
