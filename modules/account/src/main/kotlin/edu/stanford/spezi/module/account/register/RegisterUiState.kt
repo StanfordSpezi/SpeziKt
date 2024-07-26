@@ -14,11 +14,26 @@ data class RegisterUiState(
     val isDropdownMenuExpanded: Boolean = false,
     val isDatePickerDialogOpen: Boolean = false,
     val isFormValid: Boolean = false,
-    val genderOptions: List<String> = listOf("Male", "Female", "Other"),
+    val genderOptions: List<GenderIdentity> = GenderIdentity.entries,
     val isGoogleSignUp: Boolean = false,
     val isPasswordVisible: Boolean = false,
     val isRegisterButtonEnabled: Boolean = false,
 )
+
+enum class GenderIdentity(val displayName: String, val databaseName: String) {
+    MALE("Male", "male"),
+    FEMALE("Female", "female"),
+    TRANSGENDER("Transgender", "transgender"),
+    NON_BINARY("Non binary", "nonBinary"),
+    PREFER_NOT_TO_STATE("Prefer not to state", "preferNotToState"),
+    ;
+
+    companion object {
+        fun fromDisplayName(displayName: String): GenderIdentity {
+            return entries.first { it.displayName == displayName }
+        }
+    }
+}
 
 data class FieldState(
     val value: String = "",
