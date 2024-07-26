@@ -26,8 +26,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.DoNewMeasurementBottomSheet
 import edu.stanford.bdh.engagehf.bluetooth.screen.BluetoothScreen
 import edu.stanford.bdh.engagehf.health.HealthScreen
-import edu.stanford.bdh.engagehf.health.weight.WeightDescriptionBottomSheet
 import edu.stanford.bdh.engagehf.health.weight.bottomsheet.AddWeightBottomSheet
+import edu.stanford.bdh.engagehf.health.weight.bottomsheet.WeightDescriptionBottomSheet
 import edu.stanford.bdh.engagehf.medication.MedicationScreen
 import edu.stanford.spezi.core.design.component.AppTopAppBar
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
