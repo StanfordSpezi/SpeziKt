@@ -46,6 +46,14 @@ class AppScreenViewModel @Inject constructor(
                     BottomSheetEvents.Event.CloseBottomSheet -> {
                         false to null
                     }
+
+                    BottomSheetEvents.Event.WeightDescriptionBottomSheet -> {
+                        true to BottomSheetContent.WEIGHT_DESCRIPTION_INFO
+                    }
+
+                    BottomSheetEvents.Event.AddWeightRecord -> {
+                        true to BottomSheetContent.ADD_WEIGHT_RECORD
+                    }
                 }
                 _uiState.update {
                     it.copy(isBottomSheetExpanded = isExpanded, bottomSheetContent = content)
@@ -76,6 +84,8 @@ data class AppUiState(
 enum class BottomSheetContent {
     NEW_MEASUREMENT_RECEIVED,
     DO_NEW_MEASUREMENT,
+    WEIGHT_DESCRIPTION_INFO,
+    ADD_WEIGHT_RECORD,
 }
 
 sealed interface Action {
