@@ -50,14 +50,17 @@ dependencies {
 
     implementation(libs.firebase.firestore.ktx)
 
+    implementation(libs.androidx.core.i18n)
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.splashscreen)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.view.model.ktx)
+    implementation(libs.androidx.splashscreen)
 
+    implementation(libs.gson)
     implementation(libs.hilt.navigation.compose)
-    implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.navigation.compose)
+    implementation(libs.vico.compose.m3)
 
     androidTestImplementation(project(":core:testing"))
 }
