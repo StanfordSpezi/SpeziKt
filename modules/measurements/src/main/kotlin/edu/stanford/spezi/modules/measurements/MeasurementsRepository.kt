@@ -26,6 +26,15 @@ import kotlinx.coroutines.withContext
 import org.hl7.fhir.r4.model.Observation
 import javax.inject.Inject
 
+val heartRateCollection =
+    ObservationCollection("heartRateObservations", Loinc.HeartRate.CODE)
+
+val bodyWeightObservation =
+    ObservationCollection("bodyWeightObservations", Loinc.Weight.CODE)
+
+val bloodPressureCollection =
+    ObservationCollection("bloodPressureObservations", Loinc.BloodPressure.CODE)
+
 interface MeasurementsRepository {
     suspend fun save(measurement: Measurement)
     suspend fun observeBloodPressureRecord(): Flow<Result<BloodPressureRecord?>>
@@ -41,15 +50,6 @@ internal class MeasurementsRepositoryImpl @Inject internal constructor(
     @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
 ) : MeasurementsRepository {
     private val logger by speziLogger()
-
-    private val heartRateCollection =
-        ObservationCollection("heartRateObservations", Loinc.HeartRate.CODE)
-
-    private val bodyWeightObservation =
-        ObservationCollection("bodyWeightObservations", Loinc.Weight.CODE)
-
-    private val bloodPressureCollection =
-        ObservationCollection("bloodPressureObservations", Loinc.BloodPressure.CODE)
 
     private val jsonParser by lazy {
         FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
@@ -72,7 +72,7 @@ internal class MeasurementsRepositoryImpl @Inject internal constructor(
                     val json = jsonParser.encodeResourceToString(observation)
                     val data = gson.fromJson<Map<String, Any>>(json, mapType)
 
-                    val docRef = firestore.collection("users/$uid/$collectionName").document()
+                    val docRef = firestore.collection("patients/$uid/$collectionName").document()
                     batch.set(docRef, data)
                 }
 
@@ -103,7 +103,7 @@ internal class MeasurementsRepositoryImpl @Inject internal constructor(
             kotlin.runCatching {
                 val uid = userSessionManager.getUserUid()
                     ?: throw IllegalStateException("User not authenticated")
-                listenerRegistration = firestore.collection("users/$uid/${collection.name}")
+                listenerRegistration = firestore.collection("patients/$uid/${collection.name}")
                     .orderBy("effectiveDateTime", Query.Direction.DESCENDING)
                     .limit(1)
                     .addSnapshotListener { snapshot, error ->
@@ -116,7 +116,14 @@ internal class MeasurementsRepositoryImpl @Inject internal constructor(
                                 val json = gson.toJson(it.data)
                                 val observation =
                                     jsonParser.parseResource(Observation::class.java, json)
-                                trySend(Result.success(observationToRecordMapper.map(observation)))
+                                trySend(
+                                    Result.success(
+                                        observationToRecordMapper.map(
+                                            observation = observation,
+                                            clientRecordId = document.id
+                                        )
+                                    )
+                                )
                             } ?: trySend(Result.success(null))
                         }
                     }
@@ -139,6 +146,6 @@ internal class MeasurementsRepositoryImpl @Inject internal constructor(
 
     override suspend fun observeHeartRateRecord(): Flow<Result<HeartRateRecord?>> =
         observe(heartRateCollection)
-
-    private data class ObservationCollection(val name: String, val code: String)
 }
+
+data class ObservationCollection(val name: String, val code: String)
