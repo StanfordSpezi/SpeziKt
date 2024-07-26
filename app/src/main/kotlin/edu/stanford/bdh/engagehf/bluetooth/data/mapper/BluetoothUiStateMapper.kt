@@ -35,13 +35,17 @@ class BluetoothUiStateMapper @Inject constructor(
     fun mapBleServiceState(state: BLEServiceState.Scanning): BluetoothUiState.Ready {
         val devices = state.sessions.map {
             val summary = when (val lastMeasurement = it.measurements.lastOrNull()) {
-                is Measurement.BloodPressure -> "Blood Pressure: ${format(lastMeasurement.systolic)} / ${
-                    format(
+                is Measurement.BloodPressure -> "Blood Pressure: ${
+                    formatSystolicForLocale(
+                        lastMeasurement.systolic
+                    )
+                } / ${
+                    formatDiastolicForLocale(
                         lastMeasurement.diastolic
                     )
                 }"
 
-                is Measurement.Weight -> "Weight: ${format(lastMeasurement.weight)}"
+                is Measurement.Weight -> "Weight: ${formatWeightForLocale(lastMeasurement.weight)}"
                 else -> "No measurement received yet"
             }
             DeviceUiModel(
