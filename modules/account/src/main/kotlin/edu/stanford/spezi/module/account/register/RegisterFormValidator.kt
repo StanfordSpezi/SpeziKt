@@ -12,11 +12,7 @@ internal class RegisterFormValidator @Inject constructor() : FormValidator() {
         if (lastName.isNotEmpty()) Result.Valid else Result.Invalid("Last name cannot be empty")
 
     fun isGenderValid(gender: String): Result =
-        if (listOf(
-                "Male",
-                "Female",
-                "Other"
-            ).contains(gender)
+        if (GenderIdentity.entries.map { it.displayName }.contains(gender)
         ) {
             Result.Valid
         } else {
