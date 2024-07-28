@@ -1,6 +1,5 @@
 package edu.stanford.bdh.engagehf.bluetooth.component
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,7 +39,7 @@ fun VitalDisplay(
             defaultElevation = 4.dp,
         ),
         colors = CardDefaults.cardColors(
-            containerColor = Colors.surface.lighten(isSystemInDarkTheme()),
+            containerColor = Colors.surface.lighten(),
         ),
         modifier = modifier
             .height(130.dp)

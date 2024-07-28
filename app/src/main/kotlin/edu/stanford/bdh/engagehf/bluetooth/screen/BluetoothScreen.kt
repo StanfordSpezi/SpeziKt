@@ -2,7 +2,6 @@ package edu.stanford.bdh.engagehf.bluetooth.screen
 
 import android.app.Activity
 import android.widget.Toast
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -185,7 +184,7 @@ fun DeviceComposable(device: DeviceUiModel) {
             defaultElevation = 4.dp,
         ),
         colors = CardDefaults.cardColors(
-            containerColor = Colors.surface.lighten(isSystemInDarkTheme()),
+            containerColor = Colors.surface.lighten(),
         ),
     ) {
         Column(modifier = Modifier.padding(Spacings.medium)) {
