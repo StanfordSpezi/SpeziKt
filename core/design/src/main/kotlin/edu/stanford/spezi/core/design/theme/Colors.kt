@@ -1,5 +1,6 @@
 package edu.stanford.spezi.core.design.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
@@ -87,7 +88,9 @@ internal val RectangleBlue = Color(0xFFEBF2FC)
 private const val DARK_FACTOR = 0.1f
 private const val LIGHT_FACTOR = 0.9f
 
-fun Color.lighten(isDarkTheme: Boolean = false): Color {
+@Composable
+fun Color.lighten(): Color {
+    val isDarkTheme = isSystemInDarkTheme()
     val factor = if (isDarkTheme) DARK_FACTOR else LIGHT_FACTOR
     val red = (this.red + factor).coerceIn(0f, 1f)
     val green = (this.green + factor).coerceIn(0f, 1f)
