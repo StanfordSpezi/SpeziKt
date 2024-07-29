@@ -98,6 +98,7 @@ private fun ReviewStep(
         label = { Text("Weight") },
         modifier = Modifier.fillMaxWidth(),
         readOnly = true,
+        suffix = { Text("lbs") },
         trailingIcon = {
             IconButton(onClick = {
                 onAction(
@@ -315,8 +316,8 @@ private fun EnterWeightStep(
         },
         label = { Text("Weight") },
         modifier = Modifier.fillMaxWidth(),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        suffix = { Text("lbs") }
     )
     VerticalSpacer()
     Row(

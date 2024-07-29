@@ -50,9 +50,6 @@ fun WeightPage(
                     Text(text = "No weight data available", style = TextStyles.headlineMedium)
                 } else {
                     WeightHeader(uiState.data, onAction)
-                    /*TimeRangeSelector(selectedTimeRange = uiState.selectedTimeRange) { range ->
-                    onAction(HealthViewModel.Action.UpdateTimeRange(range))
-                }*/
                     WeightChart(uiState = uiState.data)
                     VerticalSpacer()
                     Row(
@@ -61,7 +58,7 @@ fun WeightPage(
                     ) {
                         Text(text = "Weight history", style = TextStyles.headlineMedium)
                     }
-                    WeightList(weights = uiState.data.tableWeights)
+                    WeightList(weights = uiState.data.tableWeights, onAction = onAction)
                 }
             }
         }

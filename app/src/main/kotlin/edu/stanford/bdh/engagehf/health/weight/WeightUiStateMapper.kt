@@ -1,5 +1,10 @@
+@file:Suppress("MagicNumber")
+
 package edu.stanford.bdh.engagehf.health.weight
 
+import androidx.health.connect.client.records.BloodPressureRecord
+import androidx.health.connect.client.records.HeartRateRecord
+import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
 import edu.stanford.bdh.engagehf.health.TimeRange
 import java.time.ZonedDateTime
@@ -17,13 +22,13 @@ class WeightUiStateMapper @Inject constructor() {
     }
 
     fun mapToWeightUiState(
-        weights: List<WeightRecord>,
+        records: List<Record>,
         selectedTimeRange: TimeRange,
     ): WeightUiData {
-        if (weights.isEmpty()) {
+        if (records.isEmpty()) {
             return WeightUiData(
                 selectedTimeRange = selectedTimeRange,
-                weights = weights,
+                weights = records,
                 chartWeights = emptyList(),
                 tableWeights = emptyList(),
                 newestWeight = null,
@@ -31,66 +36,85 @@ class WeightUiStateMapper @Inject constructor() {
         }
         return when (selectedTimeRange) {
             TimeRange.DAILY -> {
-                mapWeightUiStateTimeRangeDaily(weights, selectedTimeRange)
+                mapUiStateTimeRangeDaily(records, selectedTimeRange)
             }
 
             TimeRange.WEEKLY -> {
-                mapWeightUiStateTimeRangeWeekly(weights, selectedTimeRange)
+                mapUiStateTimeRangeWeekly(records, selectedTimeRange)
             }
 
             TimeRange.MONTHLY -> {
-                mapWeightUiStateTimeRangeMonthly(weights, selectedTimeRange)
+                mapUiStateTimeRangeMonthly(records, selectedTimeRange)
             }
         }
     }
 
-    private fun mapWeightUiStateTimeRangeMonthly(
-        weights: List<WeightRecord>,
+    private fun mapUiStateTimeRangeMonthly(
+        records: List<Record>,
         selectedTimeRange: TimeRange,
     ): WeightUiData {
-        val filteredWeights: List<WeightRecord> = weights.filter {
-            it.time.atZone(it.zoneOffset)
-                .isAfter(ZonedDateTime.now().minusMonths(MONTHLY_MAX_MONTHS))
+        val filteredRecords: List<Record> = records.filter {
+            when (it) {
+                is WeightRecord -> it.time.atZone(it.zoneOffset)
+                    .isAfter(ZonedDateTime.now().minusMonths(MONTHLY_MAX_MONTHS))
+
+                is BloodPressureRecord -> it.time.atZone(it.zoneOffset)
+                    .isAfter(ZonedDateTime.now().minusMonths(MONTHLY_MAX_MONTHS))
+
+                is HeartRateRecord -> it.startTime.atZone(it.startZoneOffset)
+                    .isAfter(ZonedDateTime.now().minusMonths(MONTHLY_MAX_MONTHS))
+
+                else -> false
+            }
         }
-        var aggregatedWeights: List<WeightData> = filteredWeights.groupBy {
-            Pair(it.time.atZone(it.zoneOffset).year, it.time.atZone(it.zoneOffset).month)
+        val aggregatedWeights: List<AggregatedWeightData> = filteredRecords.groupBy {
+            when (it) {
+                is WeightRecord -> it.time.atZone(it.zoneOffset)
+                    .format(DateTimeFormatter.ofPattern("MMM yy"))
+
+                is BloodPressureRecord -> it.time.atZone(it.zoneOffset)
+                    .format(DateTimeFormatter.ofPattern("MMM yy"))
+
+                is HeartRateRecord -> it.startTime.atZone(it.startZoneOffset)
+                    .format(DateTimeFormatter.ofPattern("MMM yy"))
+
+                else -> ""
+            }
+
         }.mapValues { entry ->
-            val averageWeight = entry.value.map { it.weight.inPounds }.average()
-            val firstWeight = entry.value.first()
-            WeightData(
-                id = null,
-                value = averageWeight.toFloat(),
-                date = ZonedDateTime.of(
-                    firstWeight.time.atZone(firstWeight.zoneOffset).year,
-                    firstWeight.time.atZone(firstWeight.zoneOffset).month.value,
-                    1,
-                    0,
-                    0,
-                    0,
-                    0,
-                    firstWeight.time.atZone(firstWeight.zoneOffset).zone
-                ),
-                formattedDate = firstWeight.time.atZone(firstWeight.zoneOffset)
-                    .format(DateTimeFormatter.ofPattern("MMM dd")),
-                xAxis = firstWeight.time.atZone(firstWeight.zoneOffset).toEpochSecond()
-                    .toFloat() / 60,
-                trend = 0f,
-                formattedTrend = "0.0",
-                formattedValue = "0.0" // TODO
+            val averageValue = entry.value.map { getValue(it).first }.average()
+            val xValue: Float = when (val firstRecord = entry.value.first()) {
+                is WeightRecord -> firstRecord.time.atZone(firstRecord.zoneOffset).toEpochSecond()
+                    .toFloat() / 60
+
+                is BloodPressureRecord -> firstRecord.time.atZone(firstRecord.zoneOffset)
+                    .toEpochSecond()
+                    .toFloat() / 60
+
+                is HeartRateRecord -> firstRecord.startTime.atZone(firstRecord.startZoneOffset)
+                    .toEpochSecond()
+                    .toFloat() / 60
+
+                else -> 0.0F
+            }
+
+            AggregatedWeightData(
+                yValue = averageValue.toFloat(),
+                xValue = xValue,
             )
         }.values.toList()
 
-        aggregatedWeights = calculateTrend(aggregatedWeights)
+        val newestWeight: NewestWeightData? = getNewestRecord(filteredRecords)
 
-        val newestWeight: WeightData? = getNewestWeight(filteredWeights)
-
-        val tableWeights: List<WeightData> = mapTableWeights(filteredWeights)
+        var tableWeights: List<WeightData> = mapTableWeights(filteredRecords)
+        tableWeights = calculateTrend(tableWeights)
         return WeightUiData(
             selectedTimeRange = selectedTimeRange,
-            weights = weights,
+            weights = records,
             chartWeights = aggregatedWeights,
             tableWeights = tableWeights,
-            newestWeight = newestWeight
+            newestWeight = newestWeight,
+            averageWeight = getAverageWeight(tableWeights)
         )
     }
 
@@ -113,127 +137,240 @@ class WeightUiStateMapper @Inject constructor() {
         }
     }
 
-    private fun mapWeightUiStateTimeRangeWeekly(
-        weights: List<WeightRecord>,
+    private fun mapUiStateTimeRangeWeekly(
+        records: List<Record>,
         selectedTimeRange: TimeRange,
     ): WeightUiData {
-        val filteredWeights: List<WeightRecord> = weights.filter {
-            it.time.atZone(it.zoneOffset)
-                .isAfter(ZonedDateTime.now().minusMonths(WEEKLY_MAX_MONTHS))
+        val filteredRecords: List<Record> = records.filter {
+            when (it) {
+                is WeightRecord -> it.time.atZone(it.zoneOffset)
+                    .isAfter(ZonedDateTime.now().minusMonths(WEEKLY_MAX_MONTHS))
+
+                is BloodPressureRecord -> it.time.atZone(it.zoneOffset)
+                    .isAfter(ZonedDateTime.now().minusMonths(WEEKLY_MAX_MONTHS))
+
+                is HeartRateRecord -> it.startTime.atZone(it.startZoneOffset)
+                    .isAfter(ZonedDateTime.now().minusMonths(WEEKLY_MAX_MONTHS))
+
+                else -> false
+            }
         }
-        var aggregatedWeights: List<WeightData> = filteredWeights.groupBy {
-            it.time.atZone(it.zoneOffset).toLocalDate().with(
-                ChronoField.ALIGNED_WEEK_OF_YEAR,
-                it.time.atZone(it.zoneOffset).get(ChronoField.ALIGNED_WEEK_OF_YEAR).toLong()
-            )
+        val aggregatedWeights: List<AggregatedWeightData> = filteredRecords.groupBy {
+            when (it) {
+                is WeightRecord -> it.time.atZone(it.zoneOffset).toLocalDate().with(
+                    ChronoField.ALIGNED_WEEK_OF_YEAR,
+                    it.time.atZone(it.zoneOffset).get(ChronoField.ALIGNED_WEEK_OF_YEAR).toLong()
+                )
+
+                is BloodPressureRecord -> it.time.atZone(it.zoneOffset).toLocalDate().with(
+                    ChronoField.ALIGNED_WEEK_OF_YEAR,
+                    it.time.atZone(it.zoneOffset).get(ChronoField.ALIGNED_WEEK_OF_YEAR).toLong()
+                )
+
+                is HeartRateRecord -> it.startTime.atZone(it.startZoneOffset).toLocalDate().with(
+                    ChronoField.ALIGNED_WEEK_OF_YEAR,
+                    it.startTime.atZone(it.startZoneOffset).get(ChronoField.ALIGNED_WEEK_OF_YEAR)
+                        .toLong()
+                )
+
+                else -> false
+            }
         }.mapValues { entry ->
-            val averageWeight = entry.value.map { it.weight.inPounds }.average()
-            val firstWeight = entry.value.first()
-            WeightData(
-                id = null,
-                value = averageWeight.toFloat(),
-                date = firstWeight.time.atZone(firstWeight.zoneOffset),
-                formattedDate = firstWeight.time.atZone(firstWeight.zoneOffset)
-                    .format(DateTimeFormatter.ofPattern("MMM dd")),
-                xAxis = firstWeight.time.atZone(firstWeight.zoneOffset).toEpochSecond()
-                    .toFloat() / 60,
-                trend = 0f,
-                formattedTrend = "0.0",
-                formattedValue = "0.0" // TODO
+            val averageValue = entry.value.map { getValue(it).first }.average()
+            val xValue: Float = when (val firstRecord = entry.value.first()) {
+                is WeightRecord -> firstRecord.time.atZone(firstRecord.zoneOffset).toEpochSecond()
+                    .toFloat() / 60
+
+                is BloodPressureRecord -> firstRecord.time.atZone(firstRecord.zoneOffset)
+                    .toEpochSecond()
+                    .toFloat() / 60
+
+                is HeartRateRecord -> firstRecord.startTime.atZone(firstRecord.startZoneOffset)
+                    .toEpochSecond()
+                    .toFloat() / 60
+
+                else -> 0.0F
+            }
+            AggregatedWeightData(
+                yValue = averageValue.toFloat(),
+                xValue = xValue,
             )
         }.values.toList()
 
-        aggregatedWeights = calculateTrend(aggregatedWeights)
+        val newestWeight: NewestWeightData? = getNewestRecord(filteredRecords)
 
-        val newestWeight: WeightData? = getNewestWeight(filteredWeights)
-
-        val tableWeights: List<WeightData> = mapTableWeights(filteredWeights)
+        var tableWeights: List<WeightData> = mapTableWeights(filteredRecords)
+        tableWeights = calculateTrend(tableWeights)
 
         return WeightUiData(
             selectedTimeRange = selectedTimeRange,
-            weights = weights,
+            weights = records,
             chartWeights = aggregatedWeights,
             tableWeights = tableWeights,
-            newestWeight = newestWeight
+            newestWeight = newestWeight,
+            averageWeight = getAverageWeight(tableWeights)
         )
     }
 
-    private fun getNewestWeight(filteredWeights: List<WeightRecord>): WeightData? {
-        val newestWeight: WeightData? = filteredWeights.maxByOrNull {
-            it.time.atZone(it.zoneOffset)
-        }?.let {
-            WeightData(
-                id = it.metadata.clientRecordId,
-                value = it.weight.inPounds.toFloat(),
-                date = it.time.atZone(it.zoneOffset),
-                formattedDate = it.time.atZone(it.zoneOffset)
-                    .format(DateTimeFormatter.ofPattern("MMM dd")),
-                xAxis = it.time.atZone(it.zoneOffset).toEpochSecond().toFloat() / 60 / 60,
-                trend = 0f,
-                formattedTrend = "0.0",
-                formattedValue = formatValue(it.weight.inPounds)
+    private fun getAverageWeight(aggregatedWeights: List<WeightData>) =
+        AverageWeightData(
+            value = aggregatedWeights.map { it.value }.average().toFloat(),
+            formattedValue = "Average " + formatValue(aggregatedWeights.map { it.value }.average()),
+        )
+
+    private fun getNewestRecord(filteredRecords: List<Record>): NewestWeightData? {
+        val newestRecord = filteredRecords.maxByOrNull {
+            when (it) {
+                is WeightRecord -> it.time.atZone(it.zoneOffset).toEpochSecond()
+                is BloodPressureRecord -> it.time.atZone(it.zoneOffset).toEpochSecond()
+                is HeartRateRecord -> it.startTime.atZone(it.startZoneOffset).toEpochSecond()
+                else -> Long.MIN_VALUE
+            }
+        }
+
+        return newestRecord?.let {
+            NewestWeightData(
+                formattedDate = when (it) {
+                    is WeightRecord -> it.time.atZone(it.zoneOffset)
+                    is BloodPressureRecord -> it.time.atZone(it.zoneOffset)
+                    is HeartRateRecord -> it.startTime.atZone(it.startZoneOffset)
+                    else -> null
+                }?.format(DateTimeFormatter.ofPattern("MMM dd HH:mm")) ?: "",
+                formattedValue = formatValue(getValue(it).first, getValue(it).second)
             )
         }
-        return newestWeight
     }
 
-    private fun mapTableWeights(filteredWeights: List<WeightRecord>): List<WeightData> {
-        val tableWeights: List<WeightData> = filteredWeights.map {
-            WeightData(
-                id = it.metadata.clientRecordId,
-                value = it.weight.inPounds.toFloat(),
-                date = it.time.atZone(it.zoneOffset),
-                formattedDate = it.time.atZone(it.zoneOffset)
-                    .format(DateTimeFormatter.ofPattern("MMM dd")),
-                xAxis = it.time.atZone(it.zoneOffset).toEpochSecond().toFloat() / 60 / 60,
-                trend = 0f,
-                formattedTrend = "0.0",
-                formattedValue = formatValue(it.weight.inPounds)
+    private fun mapTableWeights(filteredRecords: List<Record>): List<WeightData> {
+        if (filteredRecords.isEmpty()) return emptyList()
+
+        val tableWeights = mutableListOf<WeightData>()
+        var previousRecord: Record? = null
+
+        filteredRecords.forEach { currentRecord ->
+            val trend = previousRecord?.let {
+                getValue(currentRecord).first - getValue(it).first
+            } ?: 0.0
+
+            val formattedTrend = when {
+                trend > 0 -> "▲${String.format("%.1f", trend)}"
+                trend < 0 -> "▼${String.format("%.1f", trend)}"
+                else -> "▶${String.format("%.1f", trend)}"
+            }
+
+            val weightData = WeightData(
+                id = currentRecord.metadata.clientRecordId,
+                value = getValue(currentRecord).first.toFloat(),
+                date = when (currentRecord) {
+                    is WeightRecord -> currentRecord.time.atZone(currentRecord.zoneOffset)
+                    is BloodPressureRecord -> currentRecord.time.atZone(currentRecord.zoneOffset)
+                    is HeartRateRecord -> currentRecord.startTime.atZone(currentRecord.startZoneOffset)
+                    else -> ZonedDateTime.now() // Default value, should not happen
+                },
+                formattedDate = when (currentRecord) {
+                    is WeightRecord -> currentRecord.time.atZone(currentRecord.zoneOffset)
+                    is BloodPressureRecord -> currentRecord.time.atZone(currentRecord.zoneOffset)
+                    is HeartRateRecord -> currentRecord.startTime.atZone(currentRecord.startZoneOffset)
+                    else -> ZonedDateTime.now() // Default value, should not happen
+                }.format(DateTimeFormatter.ofPattern("MMM dd HH:mm")),
+                xAxis = when (currentRecord) {
+                    is WeightRecord -> currentRecord.time.atZone(currentRecord.zoneOffset)
+                        .toEpochSecond().toFloat() / 60
+
+                    is BloodPressureRecord -> currentRecord.time.atZone(currentRecord.zoneOffset)
+                        .toEpochSecond().toFloat() / 60
+
+                    is HeartRateRecord -> currentRecord.startTime.atZone(currentRecord.startZoneOffset)
+                        .toEpochSecond().toFloat() / 60
+
+                    else -> 0.0F // Default value, should not happen
+                },
+                trend = trend.toFloat(),
+                formattedTrend = formattedTrend,
+                formattedValue = formatValue(
+                    getValue(currentRecord).first,
+                    getValue(currentRecord).second
+                ),
             )
+
+            tableWeights.add(weightData)
+            previousRecord = currentRecord
         }
+
         return tableWeights
     }
 
-    private fun mapWeightUiStateTimeRangeDaily(
-        weights: List<WeightRecord>,
+    private fun mapUiStateTimeRangeDaily(
+        records: List<Record>,
         selectedTimeRange: TimeRange,
     ): WeightUiData {
-        val filteredWeights: List<WeightRecord> = weights.filter {
-            it.time.atZone(it.zoneOffset).isAfter(ZonedDateTime.now().minusDays(DAILY_MAX_DAYS))
+        val filteredRecords: List<Record> = records.filter { record ->
+            when (record) {
+                is WeightRecord -> record.time.atZone(record.zoneOffset)
+                    .isAfter(ZonedDateTime.now().minusDays(DAILY_MAX_DAYS))
+
+                is BloodPressureRecord -> record.time.atZone(record.zoneOffset)
+                    .isAfter(ZonedDateTime.now().minusDays(DAILY_MAX_DAYS))
+
+                is HeartRateRecord -> record.startTime.atZone(record.startZoneOffset)
+                    .isAfter(ZonedDateTime.now().minusDays(DAILY_MAX_DAYS))
+
+                else -> false
+            }
         }
-        var aggregatedWeights: List<WeightData> = filteredWeights.groupBy {
-            it.time.atZone(it.zoneOffset).toLocalDate()
+
+        val aggregatedWeights: List<AggregatedWeightData> = filteredRecords.groupBy {
+            when (it) {
+                is WeightRecord -> it.time.atZone(it.zoneOffset).toLocalDate()
+                is BloodPressureRecord -> it.time.atZone(it.zoneOffset).toLocalDate()
+                is HeartRateRecord -> it.startTime.atZone(it.startZoneOffset).toLocalDate()
+                else -> null
+            }
         }.mapValues { entry ->
-            val averageWeight = entry.value.map { it.weight.inPounds }.average()
-            val firstWeight = entry.value.first()
-            WeightData(
-                id = null,
-                value = averageWeight.toFloat(),
-                date = firstWeight.time.atZone(firstWeight.zoneOffset),
-                formattedDate = firstWeight.time.atZone(firstWeight.zoneOffset)
-                    .format(DateTimeFormatter.ofPattern("MMM dd")),
-                xAxis = firstWeight.time.atZone(firstWeight.zoneOffset).toEpochSecond()
-                    .toFloat(),
-                trend = 0f,
-                formattedTrend = "gets calculated in next step",
-                formattedValue = formatValue(averageWeight)
+            val averageValue = entry.value.map { getValue(it).first }.average()
+            val xValue: Float = when (val firstRecord = entry.value.first()) {
+                is WeightRecord -> firstRecord.time.atZone(firstRecord.zoneOffset).toEpochSecond()
+                    .toFloat() / 60
+
+                is BloodPressureRecord -> firstRecord.time.atZone(firstRecord.zoneOffset)
+                    .toEpochSecond().toFloat() / 60
+
+                is HeartRateRecord -> firstRecord.startTime.atZone(firstRecord.startZoneOffset)
+                    .toEpochSecond().toFloat() / 60
+
+                else -> 0.0F
+            }
+            AggregatedWeightData(
+                yValue = averageValue.toFloat(),
+                xValue = xValue,
             )
         }.values.toList()
 
-        aggregatedWeights = calculateTrend(aggregatedWeights)
+        val newestWeight: NewestWeightData? = getNewestRecord(filteredRecords)
 
-        val newestWeight: WeightData? = getNewestWeight(filteredWeights)
-
-        val tableWeights: List<WeightData> = mapTableWeights(filteredWeights)
+        var tableWeights: List<WeightData> = mapTableWeights(filteredRecords)
+        tableWeights = calculateTrend(tableWeights)
 
         return WeightUiData(
             selectedTimeRange = selectedTimeRange,
-            weights = weights,
+            weights = records,
             chartWeights = aggregatedWeights,
             tableWeights = tableWeights,
-            newestWeight = newestWeight
+            newestWeight = newestWeight,
+            averageWeight = getAverageWeight(tableWeights)
         )
     }
 
-    private fun formatValue(averageWeight: Double) = String.format("%.1f", averageWeight) + "lbs"
+    private fun getValue(record: Record): Pair<Double, String> {
+        return when (record) {
+            is WeightRecord -> Pair(record.weight.inPounds, "lbs")
+            is BloodPressureRecord -> Pair(record.systolic.inMillimetersOfMercury, "mmHg")
+            is HeartRateRecord -> Pair(record.samples.first().beatsPerMinute.toDouble(), "bpm")
+            else -> Pair(0.0, "")
+        }
+    }
+
+    private fun formatValue(value: Double, unit: String = ""): String {
+        return String.format("%.1f", value) + " " + unit
+    }
 }

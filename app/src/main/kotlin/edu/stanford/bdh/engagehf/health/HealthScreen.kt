@@ -181,13 +181,16 @@ fun WeightHeader(uiState: WeightUiData, onAction: (WeightViewModel.Action) -> Un
 }
 
 @Composable
-fun WeightList(weights: List<WeightData>) {
+fun WeightList(weights: List<WeightData>, onAction: (WeightViewModel.Action) -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         weights.forEach { entry ->
             SwipeBox(onDelete = {
-                println("onStart")
+                println("delete")
+                entry.id?.let {
+                    onAction(WeightViewModel.Action.DeleteWeightRecord(it))
+                }
             }, content = {
                 WeightListItem(entry)
             })
@@ -212,8 +215,13 @@ fun WeightListItem(entry: WeightData) {
         )
         Text(
             text = entry.formattedTrend,
-            color = if (entry.isTrendPositive) primary else secondary,
-            style = TextStyles.bodySmall,
+            style = if (entry.isTrendPositive) {
+                TextStyles.bodySmall.copy(color = primary)
+            } else {
+                TextStyles.bodySmall.copy(
+                    color = secondary
+                )
+            },
             modifier = Modifier
                 .width(60.dp)
                 .padding(start = Spacings.small)

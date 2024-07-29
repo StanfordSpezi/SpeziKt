@@ -34,53 +34,34 @@ fun TimeRangeDropdown(
         TextButton(onClick = {
             onAction(WeightViewModel.Action.ToggleTimeRangeDropdown(true))
         }) {
-            Text("Daily")
-            Icon(Icons.Default.ArrowDropDown, contentDescription = "Localized description")
+            Text(
+                text = when (uiState.selectedTimeRange) {
+                    TimeRange.DAILY -> "Daily"
+                    TimeRange.WEEKLY -> "Weekly"
+                    TimeRange.MONTHLY -> "Monthly"
+                }
+            )
+            Icon(Icons.Default.ArrowDropDown, contentDescription = "ArrowDropDown")
         }
         DropdownMenu(expanded = uiState.isSelectedTimeRangeDropdownExpanded, onDismissRequest = {
             onAction(WeightViewModel.Action.ToggleTimeRangeDropdown(false))
         }) {
-            TimeRange.entries.forEach {
-                when (it) {
-                    TimeRange.DAILY -> DropdownMenuItem(
-                        text = { Text(it.name) },
-                        onClick = {
-                            onAction(WeightViewModel.Action.ToggleTimeRangeDropdown(false))
-                            onAction(WeightViewModel.Action.UpdateTimeRange(TimeRange.DAILY))
-                        },
-                        leadingIcon = { Icon(Icons.Outlined.Check, contentDescription = null) }
-                    )
-
-                    TimeRange.WEEKLY -> DropdownMenuItem(
-                        text = { Text(it.name) },
-                        onClick = {
-                            onAction(WeightViewModel.Action.ToggleTimeRangeDropdown(false))
-                            onAction(WeightViewModel.Action.UpdateTimeRange(TimeRange.WEEKLY))
-                        },
-                        leadingIcon = {
-                            Icon(
-                                Icons.Outlined.Check,
-                                contentDescription = null,
-                                tint = Color.Transparent
-                            )
-                        }
-                    )
-
-                    TimeRange.MONTHLY -> DropdownMenuItem(
-                        text = { Text(it.name) },
-                        onClick = {
-                            onAction(WeightViewModel.Action.ToggleTimeRangeDropdown(false))
-                            onAction(WeightViewModel.Action.UpdateTimeRange(TimeRange.MONTHLY))
-                        },
-                        leadingIcon = {
-                            Icon(
-                                Icons.Outlined.Check,
-                                contentDescription = null,
-                                tint = Color.Transparent
-                            )
-                        }
-                    )
-                }
+            TimeRange.entries.forEach { timeRange ->
+                val isSelected = uiState.selectedTimeRange == timeRange
+                DropdownMenuItem(
+                    text = { Text(timeRange.name) },
+                    onClick = {
+                        onAction(WeightViewModel.Action.ToggleTimeRangeDropdown(false))
+                        onAction(WeightViewModel.Action.UpdateTimeRange(timeRange))
+                    },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Outlined.Check,
+                            contentDescription = null,
+                            tint = if (isSelected) Color.Black else Color.Transparent
+                        )
+                    }
+                )
             }
         }
     }

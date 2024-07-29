@@ -14,34 +14,42 @@ import com.patrykandpatrick.vico.compose.cartesian.decoration.rememberHorizontal
 import com.patrykandpatrick.vico.compose.cartesian.fullWidth
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberPoint
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
 import com.patrykandpatrick.vico.compose.common.of
 import com.patrykandpatrick.vico.compose.common.shader.color
-import com.patrykandpatrick.vico.core.cartesian.CartesianChart
 import com.patrykandpatrick.vico.core.cartesian.HorizontalLayout
+import com.patrykandpatrick.vico.core.cartesian.Scroll
+import com.patrykandpatrick.vico.core.cartesian.Zoom
+import com.patrykandpatrick.vico.core.cartesian.axis.AxisPosition
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
+import com.patrykandpatrick.vico.core.cartesian.data.AxisValueOverrider
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
+import com.patrykandpatrick.vico.core.cartesian.data.ChartValues
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.decoration.HorizontalLine
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
+import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer.PointProvider.Companion.single
 import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
 import com.patrykandpatrick.vico.core.common.Dimensions
 import com.patrykandpatrick.vico.core.common.component.TextComponent
-import com.patrykandpatrick.vico.core.common.data.ExtraStore
 import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shape.Shape
+import edu.stanford.bdh.engagehf.health.TimeRange
 import edu.stanford.spezi.core.design.theme.Colors.primary
+import edu.stanford.spezi.core.design.theme.Colors.secondary
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.text.DateFormatSymbols
+import java.time.Instant
+import java.time.ZoneOffset
 import java.time.ZonedDateTime
-import java.util.Locale
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun WeightChart(
@@ -54,135 +62,131 @@ fun WeightChart(
         withContext(Dispatchers.Default) {
             if (uiState.chartWeights.isEmpty()) return@withContext
             modelProducer.runTransaction {
-                val xValue = uiState.chartWeights.map { it.xAxis }
-                val yValue =
-                    uiState.chartWeights.map { it.value }
-                lineSeries { series(x = xValue, y = yValue) }
+                lineSeries {
+                    series(x = uiState.xValues, y = uiState.yValues)
+                }
             }
         }
     }
+    val shapeComponent = rememberShapeComponent(
+        shape = Shape.Pill,
+    )
+
+    val valueFormatter: (Float, ChartValues, AxisPosition.Vertical?) -> CharSequence =
+        { index, _, _ ->
+            val epochSecond = (index * 60).toLong()
+            val dateTime =
+                ZonedDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZoneOffset.UTC)
+            when (uiState.selectedTimeRange) {
+                TimeRange.WEEKLY -> {
+                    dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("MMM dd"))
+                }
+
+                TimeRange.MONTHLY -> {
+                    dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("MMM yy"))
+                }
+
+                TimeRange.DAILY -> {
+                    dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("MMM dd"))
+                }
+            }
+        }
 
     val marker = remember {
         DefaultCartesianMarker(
             label = TextComponent(),
-            indicatorSizeDp = 20F,
+            labelPosition = DefaultCartesianMarker.LabelPosition.AroundPoint,
+            indicator = shapeComponent,
+            indicatorSizeDp = 5f,
         )
     }
-
-    /*    val valueFormatter: (Float, ChartValues, AxisPosition.Vertical?) -> CharSequence =
-            { index, _, _ ->
-                if (uiState.selectedTimeRange == TimeRange.MONTHLY) {
-                    uiState.healthRecords.sortedBy { it.zonedDateTime }.reversed()
-                        .getOrNull(index.toInt())
-                        ?.formattedDate
-                        ?: ""
-                } else {
-                    uiState.healthRecords.sortedBy { it.zonedDateTime }.reversed()
-                        .getOrNull(index.toInt())
-                        ?.formattedDateAndTime
-                        ?: ""
-                }
-            }
-        val xValues = uiState.filteredRecords.map { it.zonedDateTime.monthValue.toFloat() }*/
 
     CartesianChartHost(
         chart =
         rememberCartesianChart(
             rememberLineCartesianLayer(
                 LineCartesianLayer.LineProvider.series(
-                    rememberLine(DynamicShader.color(primary)),
+                    rememberLine(
+                        shader = DynamicShader.color(primary),
+                        backgroundShader = DynamicShader.color(Color.Transparent),
+                        pointProvider = single(
+                            rememberPoint(
+                                shapeComponent,
+                                5.dp,
+                            )
+                        ),
+                    ),
+                ),
+                axisValueOverrider = AxisValueOverrider.fixed(
+                    maxY = ((uiState.chartWeights.maxOfOrNull { it.yValue } ?: 100f).let {
+                        it + (5 - it % 5)
+                    }) * 1.1f,
+                    minY = (uiState.chartWeights.minOfOrNull { it.yValue } ?: 0f).let {
+                        it - (it % 5)
+                    } * 0.9f,
+                    minX = uiState.chartWeights.minOfOrNull { it.xValue } ?: 0f,
+                    maxX = uiState.chartWeights.maxOfOrNull { it.xValue } ?: 0f,
                 )
             ),
             startAxis = rememberStartAxis(
-                title = "Weight in kg",
+                title = "Weight in lbs",
+                titleComponent = rememberTextComponent(),
                 label = rememberAxisLabelComponent(),
+                guideline = null,
             ),
             bottomAxis = rememberBottomAxis(
                 guideline = null,
-                valueFormatter = bottomAxisValueFormatter,
-                title = "Date",
+                valueFormatter = valueFormatter,
                 itemPlacer = remember {
-                    HorizontalAxis.ItemPlacer.default(spacing = 3, addExtremeLabelPadding = true)
-                }
+                    HorizontalAxis.ItemPlacer.default(
+                        spacing = 2,
+                        offset = 0,
+                        addExtremeLabelPadding = false
+                    )
+                },
             ),
             marker = marker,
-            decorations = listOf(rememberComposeHorizontalLine()),
+            decorations = uiState.averageWeight?.let { averageWeight ->
+                listOf(rememberComposeHorizontalLine(averageWeight))
+            }
+                ?: emptyList(),
             horizontalLayout = HorizontalLayout.fullWidth(),
-            // persistentMarkers = createPersistentMarkerLambda(xValues, marker),
         ),
         modelProducer = modelProducer,
         modifier = modifier,
-        zoomState = rememberVicoZoomState(zoomEnabled = false),
+        zoomState = rememberVicoZoomState(
+            zoomEnabled = false,
+            initialZoom = remember { Zoom.max(Zoom.static(), Zoom.Content) },
+        ),
+        scrollState = rememberVicoScrollState(
+            initialScroll = Scroll.Absolute.End,
+        ),
     )
 }
 
 @Composable
-private fun rememberComposeHorizontalLine(): HorizontalLine {
-    val color = Color(HORIZONTAL_LINE_COLOR)
+private fun rememberComposeHorizontalLine(averageWeight: AverageWeightData): HorizontalLine {
     return rememberHorizontalLine(
-        y = { HORIZONTAL_LINE_Y.toFloat() },
-        line = rememberLineComponent(color, HORIZONTAL_LINE_THICKNESS_DP.dp),
+        y = { averageWeight.value },
+        line = rememberLineComponent(secondary, 2.dp),
         labelComponent =
         rememberTextComponent(
-            margins = Dimensions.of(HORIZONTAL_LINE_LABEL_MARGIN_DP.dp),
+            margins = Dimensions.of(4.dp),
             padding =
             Dimensions.of(
-                HORIZONTAL_LINE_LABEL_HORIZONTAL_PADDING_DP.dp,
-                HORIZONTAL_LINE_LABEL_VERTICAL_PADDING_DP.dp,
+                8.dp,
+                2.dp,
             ),
-            background = rememberShapeComponent(color, Shape.Pill),
+            background = rememberShapeComponent(secondary, Shape.Pill),
         ),
-        label = { "Average 83" }
+        label = { averageWeight.formattedValue },
     )
-}
-
-private const val HORIZONTAL_LINE_Y = 83.0
-private const val HORIZONTAL_LINE_COLOR = -2893786
-private const val HORIZONTAL_LINE_THICKNESS_DP = 2f
-private const val HORIZONTAL_LINE_LABEL_HORIZONTAL_PADDING_DP = 8f
-private const val HORIZONTAL_LINE_LABEL_VERTICAL_PADDING_DP = 2f
-private const val HORIZONTAL_LINE_LABEL_MARGIN_DP = 4f
-
-private const val PERSISTENT_MARKER_X = 7f
-
-private val monthNames = DateFormatSymbols.getInstance(Locale.US).shortMonths
-
-private val baseYear = 2024
-private val bottomAxisValueFormatter = CartesianValueFormatter { x, _, _ ->
-    val yearOffset = x.toInt() / 12
-    val year = baseYear + yearOffset
-    val monthIndex = x.toInt() % 12
-    "${monthNames[monthIndex]} ’${year.toString().substring(2)}"
-}
-
-fun createPersistentMarkerLambda(
-    xValues: List<Float>,
-    marker: DefaultCartesianMarker,
-): (CartesianChart.PersistentMarkerScope.(ExtraStore) -> Unit) {
-    return {
-        xValues.forEach { x ->
-            marker at x
-        }
-    }
 }
 
 @ThemePreviews
 @Composable
 fun WeightChartPreview() {
     WeightChart(
-        uiState = WeightUiData(
-            chartWeights = listOf(
-                WeightData(
-                    id = "1",
-                    value = 80f,
-                    formattedValue = "80",
-                    date = ZonedDateTime.now(),
-                    formattedDate = "2024-01-01",
-                    xAxis = 0f,
-                    trend = 0f,
-                    formattedTrend = "0",
-                ),
-            )
-        )
+        uiState = WeightUiData()
     )
 }

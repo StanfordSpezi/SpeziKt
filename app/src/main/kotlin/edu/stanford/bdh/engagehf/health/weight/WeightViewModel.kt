@@ -1,6 +1,7 @@
 package edu.stanford.bdh.engagehf.health.weight
 
 import androidx.health.connect.client.records.WeightRecord
+import androidx.health.connect.client.records.metadata.Metadata
 import androidx.health.connect.client.units.Mass
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -54,22 +55,75 @@ class WeightViewModel @Inject internal constructor(
                                 time = ZonedDateTime.now().toInstant(),
                                 zoneOffset = ZonedDateTime.now().offset,
                                 weight = Mass.kilograms(80.0),
+                                metadata = Metadata(clientRecordId = "1")
                             ),
                             WeightRecord(
                                 time = ZonedDateTime.now().minusDays(1).toInstant(),
                                 zoneOffset = ZonedDateTime.now().offset,
                                 weight = Mass.kilograms(79.0),
+                                metadata = Metadata(clientRecordId = "1")
                             ),
                             WeightRecord(
                                 time = ZonedDateTime.now().minusDays(5).toInstant(),
                                 zoneOffset = ZonedDateTime.now().offset,
                                 weight = Mass.kilograms(78.0),
+                                metadata = Metadata(clientRecordId = "1")
                             ),
-
+                            WeightRecord(
+                                time = ZonedDateTime.now().minusDays(10).toInstant(),
+                                zoneOffset = ZonedDateTime.now().offset,
+                                weight = Mass.kilograms(77.0),
+                                metadata = Metadata(clientRecordId = "1")
+                            ),
+                            WeightRecord(
+                                time = ZonedDateTime.now().minusDays(15).toInstant(),
+                                zoneOffset = ZonedDateTime.now().offset,
+                                weight = Mass.kilograms(76.0),
+                                metadata = Metadata(clientRecordId = "1")
+                            ),
+                            WeightRecord(
+                                time = ZonedDateTime.now().minusDays(20).toInstant(),
+                                zoneOffset = ZonedDateTime.now().offset,
+                                weight = Mass.kilograms(75.0),
+                                metadata = Metadata(clientRecordId = "1")
+                            ),
+                            WeightRecord(
+                                time = ZonedDateTime.now().minusDays(25).toInstant(),
+                                zoneOffset = ZonedDateTime.now().offset,
+                                weight = Mass.kilograms(74.0),
+                                metadata = Metadata(clientRecordId = "1")
+                            ),
+                            WeightRecord(
+                                time = ZonedDateTime.now().minusDays(30).toInstant(),
+                                zoneOffset = ZonedDateTime.now().offset,
+                                weight = Mass.kilograms(73.0),
+                                metadata = Metadata(clientRecordId = "1")
+                            ),
+                            WeightRecord(
+                                time = ZonedDateTime.now().minusDays(35).toInstant(),
+                                zoneOffset = ZonedDateTime.now().offset,
+                                weight = Mass.kilograms(72.0),
+                                metadata = Metadata(clientRecordId = "1")
+                            ),
+                            WeightRecord(
+                                time = ZonedDateTime.now().minusDays(40).toInstant(),
+                                zoneOffset = ZonedDateTime.now().offset,
+                                weight = Mass.kilograms(71.0),
+                                metadata = Metadata(clientRecordId = "1")
+                            ),
+                            WeightRecord(
+                                time = ZonedDateTime.now().minusDays(45).toInstant(),
+                                zoneOffset = ZonedDateTime.now().offset,
+                                weight = Mass.kilograms(70.0),
+                                metadata = Metadata(clientRecordId = "1")
+                            ),
                             )
                         _uiState.update {
                             WeightUiState.Success(
-                                uiStateMapper.mapToWeightUiState(weights, TimeRange.DAILY)
+                                uiStateMapper.mapToWeightUiState(
+                                    records = weights,
+                                    selectedTimeRange = TimeRange.DAILY
+                                )
                             )
                         }
                     }
@@ -86,7 +140,7 @@ class WeightViewModel @Inject internal constructor(
 
             is Action.DeleteWeightRecord -> {
                 healthRepository.deleteWeight(action.weightId)
-                // TODO update ui state
+                logger.i { "WeightViewModel.onAction Delete Weight Record: ${action.weightId}" }
             }
 
             is Action.UpdateTimeRange -> {
@@ -98,7 +152,7 @@ class WeightViewModel @Inject internal constructor(
                             WeightUiState.Success(
                                 uiStateMapper.mapToWeightUiState(
                                     uiState.data.weights,
-                                    action.timeRange
+                                    selectedTimeRange = action.timeRange
                                 )
                             )
                         }
