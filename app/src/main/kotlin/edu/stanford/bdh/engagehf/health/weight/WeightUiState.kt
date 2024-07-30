@@ -7,15 +7,15 @@ import java.time.ZonedDateTime
 data class WeightUiData(
     val selectedTimeRange: TimeRange = TimeRange.DAILY,
     val isSelectedTimeRangeDropdownExpanded: Boolean = false,
-    val weights: List<Record> = emptyList(),
-    val chartWeights: List<AggregatedWeightData> = emptyList(),
-    val tableWeights: List<WeightData> = emptyList(),
-    val newestWeight: NewestWeightData? = null,
-    val averageWeight: AverageWeightData? = null,
+    val records: List<Record> = emptyList(),
+    val chartData: List<AggregatedWeightData> = emptyList(),
+    val tableData: List<WeightData> = emptyList(),
+    val newestData: NewestWeightData? = null,
+    val averageData: AverageWeightData? = null,
 ) {
-    val xValues = chartWeights.map { it.xValue }
+    val xValues = chartData.map { it.xValue }
 
-    val yValues = chartWeights.map { it.yValue }
+    val yValues = chartData.map { it.yValue }
 }
 
 sealed interface WeightUiState {

@@ -1,16 +1,24 @@
-package edu.stanford.bdh.engagehf.health.weight
+package edu.stanford.bdh.engagehf.health.symptoms
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelComponent
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
-import com.patrykandpatrick.vico.compose.cartesian.decoration.rememberHorizontalLine
 import com.patrykandpatrick.vico.compose.cartesian.fullWidth
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
@@ -18,11 +26,15 @@ import com.patrykandpatrick.vico.compose.cartesian.layer.rememberPoint
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
-import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
 import com.patrykandpatrick.vico.compose.common.of
+import com.patrykandpatrick.vico.compose.common.rememberLegendItem
+import com.patrykandpatrick.vico.compose.common.rememberVerticalLegend
 import com.patrykandpatrick.vico.compose.common.shader.color
+import com.patrykandpatrick.vico.compose.common.vicoTheme
+import com.patrykandpatrick.vico.core.cartesian.CartesianDrawContext
+import com.patrykandpatrick.vico.core.cartesian.CartesianMeasureContext
 import com.patrykandpatrick.vico.core.cartesian.HorizontalLayout
 import com.patrykandpatrick.vico.core.cartesian.Scroll
 import com.patrykandpatrick.vico.core.cartesian.Zoom
@@ -32,7 +44,6 @@ import com.patrykandpatrick.vico.core.cartesian.data.AxisValueOverrider
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.ChartValues
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
-import com.patrykandpatrick.vico.core.cartesian.decoration.HorizontalLine
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer.PointProvider.Companion.single
 import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
@@ -41,9 +52,10 @@ import com.patrykandpatrick.vico.core.common.component.TextComponent
 import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shape.Shape
 import edu.stanford.bdh.engagehf.health.TimeRange
+import edu.stanford.bdh.engagehf.health.components.SymptomsHeader
+import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Colors.primary
-import edu.stanford.spezi.core.design.theme.Colors.secondary
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.core.design.theme.TextStyles
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.Instant
@@ -52,18 +64,58 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun WeightChart(
-    uiState: WeightUiData,
-    modifier: Modifier = Modifier,
+fun SymptomsPage() {
+    val viewModel = hiltViewModel<SymptomsViewModel>()
+    val uiState by viewModel.uiState.collectAsState()
+    SymptomsPage(
+        uiState = uiState,
+        onAction = viewModel::onAction,
+    )
+}
+
+@Composable
+fun SymptomsPage(
+    uiState: SymptomsUiState,
+    onAction: (SymptomsViewModel.Action) -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
+        when (uiState) {
+            is SymptomsUiState.Error -> {
+                Text(
+                    text = uiState.message,
+                    style = TextStyles.headlineMedium
+                )
+            }
+
+            SymptomsUiState.Loading -> {
+                CircularProgressIndicator(color = primary)
+            }
+
+            is SymptomsUiState.Success -> {
+                SymptomsHeader(uiState.data, onAction)
+                SymptomsChart(uiState.data)
+            }
+        }
+    }
+}
+
+@Composable
+fun SymptomsChart(
+    uiState: SymptomsUiData,
 ) {
     val modelProducer = remember { CartesianChartModelProducer() }
-
     LaunchedEffect(uiState.chartData.hashCode()) {
         withContext(Dispatchers.Default) {
             if (uiState.chartData.isEmpty()) return@withContext
             modelProducer.runTransaction {
                 lineSeries {
-                    series(x = uiState.xValues, y = uiState.yValues)
+                    uiState.chartData.forEach {
+                        series(x = it.xValues, y = it.yValues)
+                    }
                 }
             }
         }
@@ -106,30 +158,27 @@ fun WeightChart(
         rememberCartesianChart(
             rememberLineCartesianLayer(
                 LineCartesianLayer.LineProvider.series(
-                    rememberLine(
-                        shader = DynamicShader.color(primary),
-                        backgroundShader = DynamicShader.color(Color.Transparent),
-                        pointProvider = single(
-                            rememberPoint(
-                                shapeComponent,
-                                5.dp,
-                            )
-                        ),
-                    ),
+                    chartColors().map { color ->
+                        rememberLine(
+                            shader = DynamicShader.color(color),
+                            backgroundShader = DynamicShader.color(Color.Transparent),
+                            pointProvider = single(
+                                rememberPoint(
+                                    shapeComponent,
+                                    5.dp,
+                                )
+                            ),
+                        )
+                    }
                 ),
                 axisValueOverrider = AxisValueOverrider.fixed(
-                    maxY = ((uiState.chartData.maxOfOrNull { it.yValue } ?: 100f).let {
-                        it + (5 - it % 5)
-                    }) * 1.1f,
-                    minY = (uiState.chartData.minOfOrNull { it.yValue } ?: 0f).let {
-                        it - (it % 5)
-                    } * 0.9f,
-                    minX = uiState.chartData.minOfOrNull { it.xValue } ?: 0f,
-                    maxX = uiState.chartData.maxOfOrNull { it.xValue } ?: 0f,
+                    maxY = 100f,
+                    minY = 0f,
+                    minX = uiState.chartData.first().xValues.minOrNull() ?: 0f,
+                    maxX = uiState.chartData.first().xValues.maxOrNull() ?: 0f,
                 )
             ),
             startAxis = rememberStartAxis(
-                title = "Weight in lbs",
                 titleComponent = rememberTextComponent(),
                 label = rememberAxisLabelComponent(),
                 guideline = null,
@@ -146,14 +195,11 @@ fun WeightChart(
                 },
             ),
             marker = marker,
-            decorations = uiState.averageData?.let { averageWeight ->
-                listOf(rememberComposeHorizontalLine(averageWeight))
-            }
-                ?: emptyList(),
+            decorations = emptyList(),
             horizontalLayout = HorizontalLayout.fullWidth(),
+            legend = rememberLegend(),
         ),
         modelProducer = modelProducer,
-        modifier = modifier,
         zoomState = rememberVicoZoomState(
             zoomEnabled = false,
             initialZoom = remember { Zoom.max(Zoom.static(), Zoom.Content) },
@@ -165,28 +211,25 @@ fun WeightChart(
 }
 
 @Composable
-private fun rememberComposeHorizontalLine(averageWeight: AverageWeightData): HorizontalLine {
-    return rememberHorizontalLine(
-        y = { averageWeight.value },
-        line = rememberLineComponent(secondary, 2.dp),
-        labelComponent =
-        rememberTextComponent(
-            margins = Dimensions.of(4.dp),
-            padding =
-            Dimensions.of(
-                8.dp,
-                2.dp,
-            ),
-            background = rememberShapeComponent(secondary, Shape.Pill),
-        ),
-        label = { averageWeight.formattedValue },
+private fun rememberLegend() =
+    rememberVerticalLegend<CartesianMeasureContext, CartesianDrawContext>(
+        items =
+        chartColors().mapIndexed { index, chartColor ->
+            rememberLegendItem(
+                icon = rememberShapeComponent(chartColor, Shape.Pill),
+                labelComponent = rememberTextComponent(vicoTheme.textColor),
+                label = "stringResource(R.string.series_x, index + 1)",
+            )
+        },
+        iconSize = 8.dp,
+        iconPadding = 8.dp,
+        spacing = 4.dp,
+        padding = Dimensions.of(top = 8.dp),
     )
-}
 
-@ThemePreviews
 @Composable
-fun WeightChartPreview() {
-    WeightChart(
-        uiState = WeightUiData()
-    )
-}
+private fun chartColors() = listOf(
+    primary,
+    Colors.secondary.copy(alpha = 0.2f),
+    Colors.tertiary.copy(alpha = 0.2f),
+)

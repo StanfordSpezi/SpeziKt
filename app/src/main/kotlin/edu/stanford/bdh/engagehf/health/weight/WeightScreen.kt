@@ -14,8 +14,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.bdh.engagehf.health.WeightHeader
 import edu.stanford.bdh.engagehf.health.WeightList
+import edu.stanford.bdh.engagehf.health.components.WeightHeader
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
@@ -31,7 +31,7 @@ fun WeightPage() {
 @Composable
 fun WeightPage(
     uiState: WeightUiState,
-    onAction: (WeightViewModel.Action) -> Unit,
+    onAction: (Action) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -46,7 +46,7 @@ fun WeightPage(
 
             WeightUiState.Loading -> CircularProgressIndicator(color = Colors.primary)
             is WeightUiState.Success -> {
-                if (uiState.data.weights.isEmpty()) {
+                if (uiState.data.records.isEmpty()) {
                     Text(text = "No weight data available", style = TextStyles.headlineMedium)
                 } else {
                     WeightHeader(uiState.data, onAction)
@@ -58,7 +58,7 @@ fun WeightPage(
                     ) {
                         Text(text = "Weight history", style = TextStyles.headlineMedium)
                     }
-                    WeightList(weights = uiState.data.tableWeights, onAction = onAction)
+                    WeightList(weights = uiState.data.tableData, onAction = onAction)
                 }
             }
         }

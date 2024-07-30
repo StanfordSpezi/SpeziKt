@@ -9,5 +9,4 @@ class BloodPressureViewModel @Inject internal constructor() : ViewModel() {
     init {
         println()
     }
-
 }

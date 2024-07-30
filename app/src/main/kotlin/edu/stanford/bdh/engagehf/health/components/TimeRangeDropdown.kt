@@ -16,15 +16,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import edu.stanford.bdh.engagehf.health.TimeRange
-import edu.stanford.bdh.engagehf.health.weight.WeightUiData
-import edu.stanford.bdh.engagehf.health.weight.WeightViewModel
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 
 @Composable
 fun TimeRangeDropdown(
-    uiState: WeightUiData,
-    onAction: (WeightViewModel.Action) -> Unit,
+    isSelectedTimeRangeDropdownExpanded: Boolean,
+    selectedTimeRange: TimeRange,
+    onToggleExpanded: (Boolean) -> Unit,
+    updateTimeRange: (TimeRange) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -32,10 +32,10 @@ fun TimeRangeDropdown(
             .wrapContentSize(Alignment.TopStart)
     ) {
         TextButton(onClick = {
-            onAction(WeightViewModel.Action.ToggleTimeRangeDropdown(true))
+            onToggleExpanded(true)
         }) {
             Text(
-                text = when (uiState.selectedTimeRange) {
+                text = when (selectedTimeRange) {
                     TimeRange.DAILY -> "Daily"
                     TimeRange.WEEKLY -> "Weekly"
                     TimeRange.MONTHLY -> "Monthly"
@@ -43,16 +43,16 @@ fun TimeRangeDropdown(
             )
             Icon(Icons.Default.ArrowDropDown, contentDescription = "ArrowDropDown")
         }
-        DropdownMenu(expanded = uiState.isSelectedTimeRangeDropdownExpanded, onDismissRequest = {
-            onAction(WeightViewModel.Action.ToggleTimeRangeDropdown(false))
+        DropdownMenu(expanded = isSelectedTimeRangeDropdownExpanded, onDismissRequest = {
+            onToggleExpanded(false)
         }) {
             TimeRange.entries.forEach { timeRange ->
-                val isSelected = uiState.selectedTimeRange == timeRange
+                val isSelected = selectedTimeRange == timeRange
                 DropdownMenuItem(
                     text = { Text(timeRange.name) },
                     onClick = {
-                        onAction(WeightViewModel.Action.ToggleTimeRangeDropdown(false))
-                        onAction(WeightViewModel.Action.UpdateTimeRange(timeRange))
+                        onToggleExpanded(false)
+                        updateTimeRange(timeRange)
                     },
                     leadingIcon = {
                         Icon(
@@ -73,12 +73,10 @@ fun MenuSamplePreview() {
     SpeziTheme(isPreview = true) {
         TimeRangeDropdown(
             modifier = Modifier.fillMaxWidth(),
-            uiState = WeightUiData(
-                isSelectedTimeRangeDropdownExpanded = true,
-                weights = emptyList(),
-                newestWeight = null
-            ),
-            onAction = {}
+            isSelectedTimeRangeDropdownExpanded = true,
+            selectedTimeRange = TimeRange.DAILY,
+            onToggleExpanded = {},
+            updateTimeRange = {}
         )
     }
 }

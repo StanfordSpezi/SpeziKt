@@ -1,8 +1,13 @@
+@file:Suppress("MagicNumber")
+
 package edu.stanford.bdh.engagehf.health.weight
 
+import androidx.health.connect.client.records.BloodPressureRecord
+import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.records.metadata.Metadata
 import androidx.health.connect.client.units.Mass
+import androidx.health.connect.client.units.Pressure
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -117,7 +122,18 @@ class WeightViewModel @Inject internal constructor(
                                 weight = Mass.kilograms(70.0),
                                 metadata = Metadata(clientRecordId = "1")
                             ),
-                            )
+                        )
+
+                        val bloodPressure: List<Record> = listOf(
+                            BloodPressureRecord(
+                                time = ZonedDateTime.now().toInstant(),
+                                zoneOffset = ZonedDateTime.now().offset,
+                                systolic = Pressure.millimetersOfMercury(120.0),
+                                diastolic = Pressure.millimetersOfMercury(80.0),
+                                metadata = Metadata(clientRecordId = "1")
+                            ),
+                        )
+
                         _uiState.update {
                             WeightUiState.Success(
                                 uiStateMapper.mapToWeightUiState(
@@ -134,13 +150,13 @@ class WeightViewModel @Inject internal constructor(
 
     fun onAction(action: Action) {
         when (action) {
-            Action.AddWeightRecord -> {
+            Action.AddRecord -> {
                 bottomSheetEvents.emit(BottomSheetEvents.Event.AddWeightRecord)
             }
 
-            is Action.DeleteWeightRecord -> {
-                healthRepository.deleteWeight(action.weightId)
-                logger.i { "WeightViewModel.onAction Delete Weight Record: ${action.weightId}" }
+            is Action.DeleteRecord -> {
+                healthRepository.deleteWeight(action.recordId)
+                logger.i { "WeightViewModel.onAction Delete Weight Record: ${action.recordId}" }
             }
 
             is Action.UpdateTimeRange -> {
@@ -151,7 +167,7 @@ class WeightViewModel @Inject internal constructor(
                         _uiState.update {
                             WeightUiState.Success(
                                 uiStateMapper.mapToWeightUiState(
-                                    uiState.data.weights,
+                                    uiState.data.records,
                                     selectedTimeRange = action.timeRange
                                 )
                             )
@@ -160,7 +176,7 @@ class WeightViewModel @Inject internal constructor(
                 }
             }
 
-            Action.WeightDescriptionBottomSheet -> {
+            Action.DescriptionBottomSheet -> {
                 bottomSheetEvents.emit(BottomSheetEvents.Event.WeightDescriptionBottomSheet)
             }
 
@@ -180,13 +196,5 @@ class WeightViewModel @Inject internal constructor(
                 }
             }
         }
-    }
-
-    sealed interface Action {
-        data object WeightDescriptionBottomSheet : Action
-        data object AddWeightRecord : Action
-        data class DeleteWeightRecord(val weightId: String) : Action
-        data class UpdateTimeRange(val timeRange: TimeRange) : Action
-        data class ToggleTimeRangeDropdown(val expanded: Boolean) : Action
     }
 }

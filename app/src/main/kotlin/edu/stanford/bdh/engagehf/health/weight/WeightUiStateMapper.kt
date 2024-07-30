@@ -28,10 +28,10 @@ class WeightUiStateMapper @Inject constructor() {
         if (records.isEmpty()) {
             return WeightUiData(
                 selectedTimeRange = selectedTimeRange,
-                weights = records,
-                chartWeights = emptyList(),
-                tableWeights = emptyList(),
-                newestWeight = null,
+                records = records,
+                chartData = emptyList(),
+                tableData = emptyList(),
+                newestData = null,
             )
         }
         return when (selectedTimeRange) {
@@ -80,7 +80,6 @@ class WeightUiStateMapper @Inject constructor() {
 
                 else -> ""
             }
-
         }.mapValues { entry ->
             val averageValue = entry.value.map { getValue(it).first }.average()
             val xValue: Float = when (val firstRecord = entry.value.first()) {
@@ -110,11 +109,11 @@ class WeightUiStateMapper @Inject constructor() {
         tableWeights = calculateTrend(tableWeights)
         return WeightUiData(
             selectedTimeRange = selectedTimeRange,
-            weights = records,
-            chartWeights = aggregatedWeights,
-            tableWeights = tableWeights,
-            newestWeight = newestWeight,
-            averageWeight = getAverageWeight(tableWeights)
+            records = records,
+            chartData = aggregatedWeights,
+            tableData = tableWeights,
+            newestData = newestWeight,
+            averageData = getAverageWeight(tableWeights)
         )
     }
 
@@ -204,11 +203,11 @@ class WeightUiStateMapper @Inject constructor() {
 
         return WeightUiData(
             selectedTimeRange = selectedTimeRange,
-            weights = records,
-            chartWeights = aggregatedWeights,
-            tableWeights = tableWeights,
-            newestWeight = newestWeight,
-            averageWeight = getAverageWeight(tableWeights)
+            records = records,
+            chartData = aggregatedWeights,
+            tableData = tableWeights,
+            newestData = newestWeight,
+            averageData = getAverageWeight(tableWeights)
         )
     }
 
@@ -236,7 +235,14 @@ class WeightUiStateMapper @Inject constructor() {
                     is HeartRateRecord -> it.startTime.atZone(it.startZoneOffset)
                     else -> null
                 }?.format(DateTimeFormatter.ofPattern("MMM dd HH:mm")) ?: "",
-                formattedValue = formatValue(getValue(it).first, getValue(it).second)
+                formattedValue = if (it is BloodPressureRecord) {
+                    getBloodPressureFormatRecord(it)
+                } else {
+                    formatValue(
+                        getValue(it).first,
+                        getValue(it).second
+                    )
+                }
             )
         }
     }
@@ -253,9 +259,9 @@ class WeightUiStateMapper @Inject constructor() {
             } ?: 0.0
 
             val formattedTrend = when {
-                trend > 0 -> "▲${String.format("%.1f", trend)}"
-                trend < 0 -> "▼${String.format("%.1f", trend)}"
-                else -> "▶${String.format("%.1f", trend)}"
+                trend > 0 -> "▲${String.format(Locale.US, "%.1f", trend)}"
+                trend < 0 -> "▼${String.format(Locale.US, "%.1f", trend)}"
+                else -> "▶${String.format(Locale.US, "%.1f", trend)}"
             }
 
             val weightData = WeightData(
@@ -287,10 +293,16 @@ class WeightUiStateMapper @Inject constructor() {
                 },
                 trend = trend.toFloat(),
                 formattedTrend = formattedTrend,
-                formattedValue = formatValue(
-                    getValue(currentRecord).first,
-                    getValue(currentRecord).second
-                ),
+                formattedValue = if (currentRecord is BloodPressureRecord) {
+                    getBloodPressureFormatRecord(
+                        currentRecord
+                    )
+                } else {
+                    formatValue(
+                        getValue(currentRecord).first,
+                        getValue(currentRecord).second
+                    )
+                },
             )
 
             tableWeights.add(weightData)
@@ -353,11 +365,11 @@ class WeightUiStateMapper @Inject constructor() {
 
         return WeightUiData(
             selectedTimeRange = selectedTimeRange,
-            weights = records,
-            chartWeights = aggregatedWeights,
-            tableWeights = tableWeights,
-            newestWeight = newestWeight,
-            averageWeight = getAverageWeight(tableWeights)
+            records = records,
+            chartData = aggregatedWeights,
+            tableData = tableWeights,
+            newestData = newestWeight,
+            averageData = getAverageWeight(tableWeights)
         )
     }
 
@@ -370,7 +382,19 @@ class WeightUiStateMapper @Inject constructor() {
         }
     }
 
+    private fun getBloodPressureFormatRecord(record: BloodPressureRecord): String {
+        return String.format(
+            Locale.US,
+            "%.0f",
+            record.systolic.inMillimetersOfMercury
+        ) + "/" + String.format(
+            Locale.US,
+            "%.0f",
+            record.diastolic.inMillimetersOfMercury
+        ) + " mmHg"
+    }
+
     private fun formatValue(value: Double, unit: String = ""): String {
-        return String.format("%.1f", value) + " " + unit
+        return String.format(Locale.US, "%.1f", value) + " " + unit
     }
 }

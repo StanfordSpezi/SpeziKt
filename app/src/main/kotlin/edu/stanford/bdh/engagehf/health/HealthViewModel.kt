@@ -66,38 +66,23 @@ class HealthViewModel @Inject internal constructor(
 
     fun onAction(action: Action) {
         when (action) {
-            is Action.HealthDescriptionBottomSheet -> {
-                bottomSheetEvents.emit(BottomSheetEvents.Event.WeightDescriptionBottomSheet)
-            }
-
-            Action.AddHealthRecord -> {
+            Action.AddWeightRecord -> {
                 bottomSheetEvents.emit(BottomSheetEvents.Event.AddWeightRecord)
             }
 
-            is Action.DeleteWeight -> {
-                healthRepository.deleteWeight(action.weightId)
-                _uiState.update {
-                    it.copy(
-                        healthRecords = it.healthRecords.filter { weight -> weight.id != action.weightId }
-                    )
-                }
+            Action.AddBloodPressureRecord -> {
+                bottomSheetEvents.emit(BottomSheetEvents.Event.AddBloodPressureRecord)
             }
 
-            is Action.UpdateTimeRange -> {
-                _uiState.update {
-                    healthUiStateMapper.mapToHealthScreenState(
-                        weights = it.healthRecords,
-                        selectedTimeRange = action.timeRange
-                    )
-                }
+            Action.HeartRateRecord -> {
+                bottomSheetEvents.emit(BottomSheetEvents.Event.AddHeartRateRecord)
             }
         }
     }
 
     sealed interface Action {
-        data object HealthDescriptionBottomSheet : Action
-        data object AddHealthRecord : Action
-        data class DeleteWeight(val weightId: String) : Action
-        data class UpdateTimeRange(val timeRange: TimeRange) : Action
+        data object AddWeightRecord : Action
+        data object AddBloodPressureRecord : Action
+        data object HeartRateRecord : Action
     }
 }

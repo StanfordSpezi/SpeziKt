@@ -40,10 +40,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.components.SwipeBox
 import edu.stanford.bdh.engagehf.health.components.TimeRangeDropdown
+import edu.stanford.bdh.engagehf.health.symptoms.SymptomsPage
+import edu.stanford.bdh.engagehf.health.weight.Action
 import edu.stanford.bdh.engagehf.health.weight.WeightData
 import edu.stanford.bdh.engagehf.health.weight.WeightPage
 import edu.stanford.bdh.engagehf.health.weight.WeightUiData
-import edu.stanford.bdh.engagehf.health.weight.WeightViewModel
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Colors.secondary
@@ -124,50 +125,76 @@ fun HealthScreen(
                     .padding(Spacings.medium)
             ) { page ->
                 when (tabs[page]) {
-                    HealthTab.Symptoms -> Text("Symptoms")
+                    HealthTab.Symptoms -> SymptomsPage()
                     HealthTab.Weight -> WeightPage()
                     HealthTab.BloodPressure -> Text("Blood Pressure")
                     HealthTab.HeartRate -> Text(text = "Heart Rate")
                 }
             }
         }
-        FloatingActionButton(
-            onClick = { onAction(HealthViewModel.Action.AddHealthRecord) },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(Spacings.medium)
-        ) {
-            Icon(Icons.Filled.Add, contentDescription = "Add Health Record")
+        if (tabs[pagerState.currentPage] != HealthTab.Symptoms) {
+            FloatingActionButton(
+                onClick = {
+                    when (tabs[pagerState.currentPage]) {
+                        HealthTab.Weight -> onAction(HealthViewModel.Action.AddWeightRecord)
+                        HealthTab.BloodPressure -> {
+
+                        }
+
+                        HealthTab.HeartRate -> {
+
+                        }
+
+                        else -> {
+                            // do nothing
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(Spacings.medium)
+            ) {
+                Icon(Icons.Filled.Add, contentDescription = "Add Health Record")
+            }
         }
     }
 }
 
 @Composable
-fun WeightHeader(uiState: WeightUiData, onAction: (WeightViewModel.Action) -> Unit) {
-    if (uiState.newestWeight != null) {
+private fun WeightHeader(uiState: WeightUiData, onAction: (Action) -> Unit) {
+    if (uiState.newestData != null) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(vertical = Spacings.medium)
         ) {
             Column {
                 Text(
-                    text = uiState.newestWeight.formattedValue,
+                    text = uiState.newestData.formattedValue,
                     style = TextStyles.headlineLarge.copy(color = primary),
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
                 Text(
-                    text = uiState.newestWeight.formattedDate,
+                    text = uiState.newestData.formattedDate,
                     style = TextStyles.bodyMedium
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
-            TimeRangeDropdown(uiState, onAction)
+            TimeRangeDropdown(
+                isSelectedTimeRangeDropdownExpanded = uiState.isSelectedTimeRangeDropdownExpanded,
+                selectedTimeRange = uiState.selectedTimeRange,
+                onToggleExpanded = { expanded ->
+                    onAction(Action.ToggleTimeRangeDropdown(expanded))
+                },
+                updateTimeRange = { timeRange ->
+                    onAction(Action.UpdateTimeRange(timeRange))
+                }
+            )
             IconButton(
                 modifier = Modifier.size(Sizes.Icon.large),
-                onClick = { onAction(WeightViewModel.Action.WeightDescriptionBottomSheet) }) {
+                onClick = { onAction(Action.DescriptionBottomSheet) }) {
                 Icon(
                     painter = painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_info),
-                    contentDescription = stringResource(R.string.weight_icon_content_description),
+                    contentDescription = stringResource(R.string.info_icon_content_description),
                     modifier = Modifier
                         .size(Sizes.Icon.medium)
                         .background(primary, shape = CircleShape)
@@ -181,7 +208,7 @@ fun WeightHeader(uiState: WeightUiData, onAction: (WeightViewModel.Action) -> Un
 }
 
 @Composable
-fun WeightList(weights: List<WeightData>, onAction: (WeightViewModel.Action) -> Unit) {
+fun WeightList(weights: List<WeightData>, onAction: (Action) -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -189,7 +216,7 @@ fun WeightList(weights: List<WeightData>, onAction: (WeightViewModel.Action) -> 
             SwipeBox(onDelete = {
                 println("delete")
                 entry.id?.let {
-                    onAction(WeightViewModel.Action.DeleteWeightRecord(it))
+                    onAction(Action.DeleteRecord(it))
                 }
             }, content = {
                 WeightListItem(entry)
