@@ -52,7 +52,7 @@ class HealthRepository @Inject constructor(
                 kotlin.runCatching {
                     val uid = userSessionManager.getUserUid()
                         ?: throw IllegalStateException("User not authenticated")
-                    listenerRegistration = firestore.collection("patients/$uid/${collection.name}")
+                    listenerRegistration = firestore.collection("users/$uid/${collection.name}")
                         .whereGreaterThanOrEqualTo("effectiveDateTime", startDateTime)
                         .whereLessThanOrEqualTo("effectiveDateTime", endDateTime)
                         .orderBy("effectiveDateTime", Query.Direction.DESCENDING)

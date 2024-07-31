@@ -52,8 +52,8 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun WeightChart(
-    uiState: WeightUiData,
+fun HealthChart(
+    uiState: HealthUiData,
     modifier: Modifier = Modifier,
 ) {
     val modelProducer = remember { CartesianChartModelProducer() }
@@ -63,7 +63,9 @@ fun WeightChart(
             if (uiState.chartData.isEmpty()) return@withContext
             modelProducer.runTransaction {
                 lineSeries {
-                    series(x = uiState.xValues, y = uiState.yValues)
+                    uiState.chartData.forEach {
+                        series(x = it.xValues, y = it.yValues)
+                    }
                 }
             }
         }
@@ -117,16 +119,7 @@ fun WeightChart(
                         ),
                     ),
                 ),
-                axisValueOverrider = AxisValueOverrider.fixed(
-                    maxY = ((uiState.chartData.maxOfOrNull { it.yValue } ?: 100f).let {
-                        it + (5 - it % 5)
-                    }) * 1.1f,
-                    minY = (uiState.chartData.minOfOrNull { it.yValue } ?: 0f).let {
-                        it - (it % 5)
-                    } * 0.9f,
-                    minX = uiState.chartData.minOfOrNull { it.xValue } ?: 0f,
-                    maxX = uiState.chartData.maxOfOrNull { it.xValue } ?: 0f,
-                )
+                axisValueOverrider = AxisValueOverrider.adaptiveYValues(1.05f, true),
             ),
             startAxis = rememberStartAxis(
                 title = "Weight in lbs",
@@ -165,7 +158,7 @@ fun WeightChart(
 }
 
 @Composable
-private fun rememberComposeHorizontalLine(averageWeight: AverageWeightData): HorizontalLine {
+private fun rememberComposeHorizontalLine(averageWeight: AverageHealthData): HorizontalLine {
     return rememberHorizontalLine(
         y = { averageWeight.value },
         line = rememberLineComponent(secondary, 2.dp),
@@ -186,7 +179,4 @@ private fun rememberComposeHorizontalLine(averageWeight: AverageWeightData): Hor
 @ThemePreviews
 @Composable
 fun WeightChartPreview() {
-    WeightChart(
-        uiState = WeightUiData()
-    )
 }

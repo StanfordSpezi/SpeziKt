@@ -42,6 +42,7 @@ import com.patrykandpatrick.vico.core.cartesian.axis.AxisPosition
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.AxisValueOverrider
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.ChartValues
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
@@ -51,8 +52,8 @@ import com.patrykandpatrick.vico.core.common.Dimensions
 import com.patrykandpatrick.vico.core.common.component.TextComponent
 import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shape.Shape
+import edu.stanford.bdh.engagehf.health.HealthTable
 import edu.stanford.bdh.engagehf.health.TimeRange
-import edu.stanford.bdh.engagehf.health.components.SymptomsHeader
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.TextStyles
@@ -96,8 +97,9 @@ fun SymptomsPage(
             }
 
             is SymptomsUiState.Success -> {
-                SymptomsHeader(uiState.data, onAction)
+                //HealthHeader(uiState.data.headerData, onAction)
                 SymptomsChart(uiState.data)
+                HealthTable(uiState.data.tableEntries, { })
             }
         }
     }
@@ -182,6 +184,7 @@ fun SymptomsChart(
                 titleComponent = rememberTextComponent(),
                 label = rememberAxisLabelComponent(),
                 guideline = null,
+                valueFormatter = CartesianValueFormatter.yPercent(),
             ),
             bottomAxis = rememberBottomAxis(
                 guideline = null,

@@ -19,22 +19,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.TimeRange
-import edu.stanford.bdh.engagehf.health.symptoms.SymptomsUiData
-import edu.stanford.bdh.engagehf.health.symptoms.SymptomsViewModel
-import edu.stanford.bdh.engagehf.health.weight.Action
-import edu.stanford.bdh.engagehf.health.weight.WeightUiData
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
 
+data class HealthHeaderData(
+    val formattedValue: String,
+    val formattedDate: String,
+    val isSelectedTimeRangeDropdownExpanded: Boolean,
+    val selectedTimeRange: TimeRange = TimeRange.DAILY,
+)
+
 @Composable
 fun HealthHeader(
-    formattedValue: String,
-    formattedDate: String,
-    isSelectedTimeRangeDropdownExpanded: Boolean,
-    selectedTimeRange: TimeRange,
+    headerData: HealthHeaderData,
     onTimeRangeDropdownAction: (Boolean) -> Unit,
     updateTimeRange: (TimeRange) -> Unit,
     onInfoAction: () -> Unit,
@@ -45,19 +45,19 @@ fun HealthHeader(
     ) {
         Column {
             Text(
-                text = formattedValue,
+                text = headerData.formattedValue,
                 style = TextStyles.headlineLarge.copy(color = primary),
                 modifier = Modifier.padding(vertical = 4.dp)
             )
             Text(
-                text = formattedDate,
+                text = headerData.formattedDate,
                 style = TextStyles.bodyMedium
             )
         }
         Spacer(modifier = Modifier.weight(1f))
         TimeRangeDropdown(
-            isSelectedTimeRangeDropdownExpanded = isSelectedTimeRangeDropdownExpanded,
-            selectedTimeRange = selectedTimeRange,
+            isSelectedTimeRangeDropdownExpanded = headerData.isSelectedTimeRangeDropdownExpanded,
+            selectedTimeRange = headerData.selectedTimeRange,
             onToggleExpanded = onTimeRangeDropdownAction,
             updateTimeRange = updateTimeRange
         )
@@ -76,45 +76,5 @@ fun HealthHeader(
                 tint = onPrimary
             )
         }
-    }
-}
-
-@Composable
-fun SymptomsHeader(uiState: SymptomsUiData, onAction: (SymptomsViewModel.Action) -> Unit) {
-    HealthHeader(
-        formattedValue = uiState.headerData.formattedValue,
-        formattedDate = uiState.headerData.formattedDate,
-        isSelectedTimeRangeDropdownExpanded = uiState.headerData.isSelectedTimeRangeDropdownExpanded,
-        onTimeRangeDropdownAction = { expanded ->
-            onAction(SymptomsViewModel.Action.ToggleTimeRangeDropdown(expanded))
-        },
-        onInfoAction = {
-            onAction(SymptomsViewModel.Action.Info)
-        },
-        selectedTimeRange = uiState.selectedTimeRange,
-        updateTimeRange = {
-            onAction(SymptomsViewModel.Action.SelectTimeRange(it))
-        }
-    )
-}
-
-@Composable
-fun WeightHeader(uiState: WeightUiData, onAction: (Action) -> Unit) {
-    uiState.newestData?.let { newestData ->
-        HealthHeader(
-            formattedValue = newestData.formattedValue,
-            formattedDate = newestData.formattedDate,
-            isSelectedTimeRangeDropdownExpanded = uiState.isSelectedTimeRangeDropdownExpanded,
-            onTimeRangeDropdownAction = { expanded ->
-                onAction(Action.ToggleTimeRangeDropdown(expanded))
-            },
-            onInfoAction = {
-                onAction(Action.DescriptionBottomSheet)
-            },
-            selectedTimeRange = uiState.selectedTimeRange,
-            updateTimeRange = {
-                onAction(Action.UpdateTimeRange(it))
-            }
-        )
     }
 }

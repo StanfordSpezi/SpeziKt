@@ -10,17 +10,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -31,24 +28,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.bdh.engagehf.R
+import edu.stanford.bdh.engagehf.health.bloodpressure.BloodPressurePage
 import edu.stanford.bdh.engagehf.health.components.SwipeBox
-import edu.stanford.bdh.engagehf.health.components.TimeRangeDropdown
+import edu.stanford.bdh.engagehf.health.heartrate.HeartRatePage
 import edu.stanford.bdh.engagehf.health.symptoms.SymptomsPage
 import edu.stanford.bdh.engagehf.health.weight.Action
-import edu.stanford.bdh.engagehf.health.weight.WeightData
-import edu.stanford.bdh.engagehf.health.weight.WeightPage
-import edu.stanford.bdh.engagehf.health.weight.WeightUiData
+import edu.stanford.bdh.engagehf.health.weight.TableEntryData
+import edu.stanford.bdh.engagehf.health.weight.WeighPage
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Colors.secondary
-import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
@@ -126,9 +118,9 @@ fun HealthScreen(
             ) { page ->
                 when (tabs[page]) {
                     HealthTab.Symptoms -> SymptomsPage()
-                    HealthTab.Weight -> WeightPage()
-                    HealthTab.BloodPressure -> Text("Blood Pressure")
-                    HealthTab.HeartRate -> Text(text = "Heart Rate")
+                    HealthTab.Weight -> WeighPage()
+                    HealthTab.BloodPressure -> BloodPressurePage()
+                    HealthTab.HeartRate -> HeartRatePage()
                 }
             }
         }
@@ -138,11 +130,9 @@ fun HealthScreen(
                     when (tabs[pagerState.currentPage]) {
                         HealthTab.Weight -> onAction(HealthViewModel.Action.AddWeightRecord)
                         HealthTab.BloodPressure -> {
-
                         }
 
                         HealthTab.HeartRate -> {
-
                         }
 
                         else -> {
@@ -161,75 +151,24 @@ fun HealthScreen(
 }
 
 @Composable
-private fun WeightHeader(uiState: WeightUiData, onAction: (Action) -> Unit) {
-    if (uiState.newestData != null) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(vertical = Spacings.medium)
-        ) {
-            Column {
-                Text(
-                    text = uiState.newestData.formattedValue,
-                    style = TextStyles.headlineLarge.copy(color = primary),
-                    modifier = Modifier.padding(vertical = 4.dp)
-                )
-                Text(
-                    text = uiState.newestData.formattedDate,
-                    style = TextStyles.bodyMedium
-                )
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            TimeRangeDropdown(
-                isSelectedTimeRangeDropdownExpanded = uiState.isSelectedTimeRangeDropdownExpanded,
-                selectedTimeRange = uiState.selectedTimeRange,
-                onToggleExpanded = { expanded ->
-                    onAction(Action.ToggleTimeRangeDropdown(expanded))
-                },
-                updateTimeRange = { timeRange ->
-                    onAction(Action.UpdateTimeRange(timeRange))
-                }
-            )
-            IconButton(
-                modifier = Modifier.size(Sizes.Icon.large),
-                onClick = { onAction(Action.DescriptionBottomSheet) }) {
-                Icon(
-                    painter = painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_info),
-                    contentDescription = stringResource(R.string.info_icon_content_description),
-                    modifier = Modifier
-                        .size(Sizes.Icon.medium)
-                        .background(primary, shape = CircleShape)
-                        .shadow(Spacings.small, CircleShape)
-                        .padding(Spacings.small),
-                    tint = onPrimary
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun WeightList(weights: List<WeightData>, onAction: (Action) -> Unit) {
+fun HealthTable(weights: List<TableEntryData>, onAction: (Action) -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         weights.forEach { entry ->
             SwipeBox(onDelete = {
-                println("delete")
                 entry.id?.let {
                     onAction(Action.DeleteRecord(it))
                 }
             }, content = {
-                WeightListItem(entry)
+                HealthTableItem(entry)
             })
         }
     }
 }
 
-// TODO elemente löschen
-// TODO trend mit datum wechseln
-
 @Composable
-fun WeightListItem(entry: WeightData) {
+fun HealthTableItem(entry: TableEntryData) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,

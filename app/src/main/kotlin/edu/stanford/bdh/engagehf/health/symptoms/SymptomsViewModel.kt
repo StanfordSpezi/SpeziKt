@@ -5,6 +5,7 @@ package edu.stanford.bdh.engagehf.health.symptoms
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.health.TimeRange
+import edu.stanford.bdh.engagehf.health.weight.TableEntryData
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -81,6 +82,7 @@ class SymptomsViewModel @Inject internal constructor() : ViewModel() {
                         .format(DateTimeFormatter.ofPattern("MMM dd")),
                     isSelectedTimeRangeDropdownExpanded = false
                 ),
+                tableEntries = emptyList()
             )
         )
     )
@@ -146,6 +148,7 @@ data class SymptomsUiData(
     val chartData: List<SeriesData>,
     val selectedTimeRange: TimeRange,
     val headerData: HeaderData,
+    val tableEntries: List<TableEntryData>,
 )
 
 data class HeaderData(

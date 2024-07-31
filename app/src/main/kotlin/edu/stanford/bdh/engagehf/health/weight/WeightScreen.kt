@@ -14,23 +14,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.bdh.engagehf.health.WeightList
-import edu.stanford.bdh.engagehf.health.components.WeightHeader
+import edu.stanford.bdh.engagehf.health.HealthTable
+import edu.stanford.bdh.engagehf.health.components.HealthHeader
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
 
 @Composable
-fun WeightPage() {
+fun WeighPage() {
     val viewModel = hiltViewModel<WeightViewModel>()
     val uiState by viewModel.uiState.collectAsState()
-    WeightPage(uiState = uiState, onAction = viewModel::onAction)
+    HealthPage(uiState = uiState, onAction = viewModel::onAction)
 }
 
 @Composable
-fun WeightPage(
-    uiState: WeightUiState,
+fun HealthPage(
+    uiState: HealthUiState,
     onAction: (Action) -> Unit,
 ) {
     Column(
@@ -39,18 +39,22 @@ fun WeightPage(
             .verticalScroll(rememberScrollState())
     ) {
         when (uiState) {
-            is WeightUiState.Error -> Text(
+            is HealthUiState.Error -> Text(
                 text = uiState.message,
                 style = TextStyles.headlineMedium
             )
 
-            WeightUiState.Loading -> CircularProgressIndicator(color = Colors.primary)
-            is WeightUiState.Success -> {
+            HealthUiState.Loading -> CircularProgressIndicator(color = Colors.primary)
+            is HealthUiState.Success -> {
                 if (uiState.data.records.isEmpty()) {
                     Text(text = "No weight data available", style = TextStyles.headlineMedium)
                 } else {
-                    WeightHeader(uiState.data, onAction)
-                    WeightChart(uiState = uiState.data)
+                    HealthHeader(uiState.data.headerData,
+                        onTimeRangeDropdownAction = { onAction(Action.ToggleTimeRangeDropdown(it)) },
+                        updateTimeRange = { onAction(Action.UpdateTimeRange(it)) },
+                        onInfoAction = { onAction(Action.DescriptionBottomSheet) }
+                    )
+                    HealthChart(uiState = uiState.data)
                     VerticalSpacer()
                     Row(
                         modifier = Modifier.padding(horizontal = Spacings.medium),
@@ -58,7 +62,7 @@ fun WeightPage(
                     ) {
                         Text(text = "Weight history", style = TextStyles.headlineMedium)
                     }
-                    WeightList(weights = uiState.data.tableData, onAction = onAction)
+                    HealthTable(weights = uiState.data.tableData, onAction = onAction)
                 }
             }
         }

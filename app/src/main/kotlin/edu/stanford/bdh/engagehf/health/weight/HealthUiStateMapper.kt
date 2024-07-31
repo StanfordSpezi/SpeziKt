@@ -7,13 +7,14 @@ import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
 import edu.stanford.bdh.engagehf.health.TimeRange
+import edu.stanford.bdh.engagehf.health.components.HealthHeaderData
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoField
 import java.util.Locale
 import javax.inject.Inject
 
-class WeightUiStateMapper @Inject constructor() {
+class HealthUiStateMapper @Inject constructor() {
 
     companion object {
         private const val DAILY_MAX_DAYS = 30L
@@ -21,17 +22,22 @@ class WeightUiStateMapper @Inject constructor() {
         private const val MONTHLY_MAX_MONTHS = 6L
     }
 
-    fun mapToWeightUiState(
+    fun mapToHealthData(
         records: List<Record>,
         selectedTimeRange: TimeRange,
-    ): WeightUiData {
+    ): HealthUiData {
         if (records.isEmpty()) {
-            return WeightUiData(
-                selectedTimeRange = selectedTimeRange,
+            return HealthUiData(
                 records = records,
                 chartData = emptyList(),
                 tableData = emptyList(),
                 newestData = null,
+                headerData = HealthHeaderData(
+                    selectedTimeRange = selectedTimeRange,
+                    formattedValue = "",
+                    formattedDate = "",
+                    isSelectedTimeRangeDropdownExpanded = false
+                )
             )
         }
         return when (selectedTimeRange) {
@@ -52,7 +58,7 @@ class WeightUiStateMapper @Inject constructor() {
     private fun mapUiStateTimeRangeMonthly(
         records: List<Record>,
         selectedTimeRange: TimeRange,
-    ): WeightUiData {
+    ): HealthUiData {
         val filteredRecords: List<Record> = records.filter {
             when (it) {
                 is WeightRecord -> it.time.atZone(it.zoneOffset)
@@ -67,7 +73,7 @@ class WeightUiStateMapper @Inject constructor() {
                 else -> false
             }
         }
-        val aggregatedWeights: List<AggregatedWeightData> = filteredRecords.groupBy {
+        val pairs: List<Pair<Float, Float>> = filteredRecords.groupBy {
             when (it) {
                 is WeightRecord -> it.time.atZone(it.zoneOffset)
                     .format(DateTimeFormatter.ofPattern("MMM yy"))
@@ -96,28 +102,35 @@ class WeightUiStateMapper @Inject constructor() {
 
                 else -> 0.0F
             }
-
-            AggregatedWeightData(
-                yValue = averageValue.toFloat(),
-                xValue = xValue,
-            )
+            Pair(averageValue.toFloat(), xValue)
         }.values.toList()
+        val aggregatedWeights = AggregatedHealthData(
+            yValues = pairs.map { pair -> pair.first }.toList(),
+            xValues = pairs.map { pair -> pair.second }.toList(),
+            seriesName = "" // TODO
+        )
 
-        val newestWeight: NewestWeightData? = getNewestRecord(filteredRecords)
+        val newestWeight: NewestHealthData? = getNewestRecord(filteredRecords)
 
-        var tableWeights: List<WeightData> = mapTableWeights(filteredRecords)
+        var tableWeights: List<TableEntryData> = mapTableWeights(filteredRecords)
         tableWeights = calculateTrend(tableWeights)
-        return WeightUiData(
-            selectedTimeRange = selectedTimeRange,
+        return HealthUiData(
             records = records,
-            chartData = aggregatedWeights,
+            chartData = listOf(aggregatedWeights), // TODO in case of blood pressure 2
             tableData = tableWeights,
             newestData = newestWeight,
-            averageData = getAverageWeight(tableWeights)
+            averageData = getAverageWeight(tableWeights),
+            headerData = HealthHeaderData(
+                selectedTimeRange = selectedTimeRange,
+                formattedValue = "",
+                formattedDate = "",
+                isSelectedTimeRangeDropdownExpanded = false
+            )
         )
     }
 
-    private fun calculateTrend(aggregatedWeights: List<WeightData>): List<WeightData> {
+    private fun calculateTrend(aggregatedWeights: List<TableEntryData>): List<TableEntryData> {
+        // TODO we need to know which kind of record we work with!
         return aggregatedWeights.mapIndexed { index, weightData ->
             if (index > 0) {
                 val previousWeight = aggregatedWeights[index - 1]
@@ -139,7 +152,7 @@ class WeightUiStateMapper @Inject constructor() {
     private fun mapUiStateTimeRangeWeekly(
         records: List<Record>,
         selectedTimeRange: TimeRange,
-    ): WeightUiData {
+    ): HealthUiData {
         val filteredRecords: List<Record> = records.filter {
             when (it) {
                 is WeightRecord -> it.time.atZone(it.zoneOffset)
@@ -154,7 +167,7 @@ class WeightUiStateMapper @Inject constructor() {
                 else -> false
             }
         }
-        val aggregatedWeights: List<AggregatedWeightData> = filteredRecords.groupBy {
+        val pairs: List<Pair<Float, Float>> = filteredRecords.groupBy {
             when (it) {
                 is WeightRecord -> it.time.atZone(it.zoneOffset).toLocalDate().with(
                     ChronoField.ALIGNED_WEEK_OF_YEAR,
@@ -190,34 +203,41 @@ class WeightUiStateMapper @Inject constructor() {
 
                 else -> 0.0F
             }
-            AggregatedWeightData(
-                yValue = averageValue.toFloat(),
-                xValue = xValue,
-            )
+            Pair(averageValue.toFloat(), xValue)
         }.values.toList()
+        val aggregatedWeights = AggregatedHealthData(
+            yValues = pairs.map { pair -> pair.first }.toList(),
+            xValues = pairs.map { pair -> pair.second }.toList(),
+            seriesName = "" // TODO
+        )
 
-        val newestWeight: NewestWeightData? = getNewestRecord(filteredRecords)
+        val newestWeight: NewestHealthData? = getNewestRecord(filteredRecords)
 
-        var tableWeights: List<WeightData> = mapTableWeights(filteredRecords)
+        var tableWeights: List<TableEntryData> = mapTableWeights(filteredRecords)
         tableWeights = calculateTrend(tableWeights)
 
-        return WeightUiData(
-            selectedTimeRange = selectedTimeRange,
+        return HealthUiData(
             records = records,
-            chartData = aggregatedWeights,
+            chartData = listOf(aggregatedWeights),
             tableData = tableWeights,
             newestData = newestWeight,
-            averageData = getAverageWeight(tableWeights)
+            averageData = getAverageWeight(tableWeights),
+            headerData = HealthHeaderData(
+                selectedTimeRange = selectedTimeRange,
+                formattedValue = "",
+                formattedDate = "",
+                isSelectedTimeRangeDropdownExpanded = false
+            )
         )
     }
 
-    private fun getAverageWeight(aggregatedWeights: List<WeightData>) =
-        AverageWeightData(
+    private fun getAverageWeight(aggregatedWeights: List<TableEntryData>) =
+        AverageHealthData(
             value = aggregatedWeights.map { it.value }.average().toFloat(),
             formattedValue = "Average " + formatValue(aggregatedWeights.map { it.value }.average()),
         )
 
-    private fun getNewestRecord(filteredRecords: List<Record>): NewestWeightData? {
+    private fun getNewestRecord(filteredRecords: List<Record>): NewestHealthData? {
         val newestRecord = filteredRecords.maxByOrNull {
             when (it) {
                 is WeightRecord -> it.time.atZone(it.zoneOffset).toEpochSecond()
@@ -228,7 +248,7 @@ class WeightUiStateMapper @Inject constructor() {
         }
 
         return newestRecord?.let {
-            NewestWeightData(
+            NewestHealthData(
                 formattedDate = when (it) {
                     is WeightRecord -> it.time.atZone(it.zoneOffset)
                     is BloodPressureRecord -> it.time.atZone(it.zoneOffset)
@@ -247,10 +267,10 @@ class WeightUiStateMapper @Inject constructor() {
         }
     }
 
-    private fun mapTableWeights(filteredRecords: List<Record>): List<WeightData> {
+    private fun mapTableWeights(filteredRecords: List<Record>): List<TableEntryData> {
         if (filteredRecords.isEmpty()) return emptyList()
 
-        val tableWeights = mutableListOf<WeightData>()
+        val tableWeights = mutableListOf<TableEntryData>()
         var previousRecord: Record? = null
 
         filteredRecords.forEach { currentRecord ->
@@ -264,7 +284,7 @@ class WeightUiStateMapper @Inject constructor() {
                 else -> "▶${String.format(Locale.US, "%.1f", trend)}"
             }
 
-            val weightData = WeightData(
+            val tableEntryData = TableEntryData(
                 id = currentRecord.metadata.clientRecordId,
                 value = getValue(currentRecord).first.toFloat(),
                 date = when (currentRecord) {
@@ -305,7 +325,7 @@ class WeightUiStateMapper @Inject constructor() {
                 },
             )
 
-            tableWeights.add(weightData)
+            tableWeights.add(tableEntryData)
             previousRecord = currentRecord
         }
 
@@ -315,7 +335,7 @@ class WeightUiStateMapper @Inject constructor() {
     private fun mapUiStateTimeRangeDaily(
         records: List<Record>,
         selectedTimeRange: TimeRange,
-    ): WeightUiData {
+    ): HealthUiData {
         val filteredRecords: List<Record> = records.filter { record ->
             when (record) {
                 is WeightRecord -> record.time.atZone(record.zoneOffset)
@@ -331,7 +351,7 @@ class WeightUiStateMapper @Inject constructor() {
             }
         }
 
-        val aggregatedWeights: List<AggregatedWeightData> = filteredRecords.groupBy {
+        val pairs: List<Pair<Float, Float>> = filteredRecords.groupBy {
             when (it) {
                 is WeightRecord -> it.time.atZone(it.zoneOffset).toLocalDate()
                 is BloodPressureRecord -> it.time.atZone(it.zoneOffset).toLocalDate()
@@ -352,24 +372,33 @@ class WeightUiStateMapper @Inject constructor() {
 
                 else -> 0.0F
             }
-            AggregatedWeightData(
-                yValue = averageValue.toFloat(),
-                xValue = xValue,
-            )
+            Pair(averageValue.toFloat(), xValue)
         }.values.toList()
 
-        val newestWeight: NewestWeightData? = getNewestRecord(filteredRecords)
+        println("Size of Pairs: ${pairs.size}")
+        val aggregatedWeights = AggregatedHealthData(
+            yValues = pairs.map { pair -> pair.first }.toList(),
+            xValues = pairs.map { pair -> pair.second }.toList(),
+            seriesName = "" // TODO
+        )
 
-        var tableWeights: List<WeightData> = mapTableWeights(filteredRecords)
+        val newestWeight: NewestHealthData? = getNewestRecord(filteredRecords)
+
+        var tableWeights: List<TableEntryData> = mapTableWeights(filteredRecords)
         tableWeights = calculateTrend(tableWeights)
 
-        return WeightUiData(
-            selectedTimeRange = selectedTimeRange,
+        return HealthUiData(
             records = records,
-            chartData = aggregatedWeights,
+            chartData = listOf(aggregatedWeights),
             tableData = tableWeights,
             newestData = newestWeight,
-            averageData = getAverageWeight(tableWeights)
+            averageData = getAverageWeight(tableWeights),
+            headerData = HealthHeaderData(
+                selectedTimeRange = selectedTimeRange,
+                formattedValue = "",
+                formattedDate = "",
+                isSelectedTimeRangeDropdownExpanded = false
+            )
         )
     }
 

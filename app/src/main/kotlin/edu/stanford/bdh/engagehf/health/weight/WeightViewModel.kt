@@ -2,12 +2,9 @@
 
 package edu.stanford.bdh.engagehf.health.weight
 
-import androidx.health.connect.client.records.BloodPressureRecord
-import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.records.metadata.Metadata
 import androidx.health.connect.client.units.Mass
-import androidx.health.connect.client.units.Pressure
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,12 +22,12 @@ import javax.inject.Inject
 @HiltViewModel
 class WeightViewModel @Inject internal constructor(
     private val bottomSheetEvents: BottomSheetEvents,
-    private val uiStateMapper: WeightUiStateMapper,
+    private val uiStateMapper: HealthUiStateMapper,
     private val healthRepository: HealthRepository,
 ) : ViewModel() {
     private val logger by speziLogger()
 
-    private val _uiState = MutableStateFlow<WeightUiState>(WeightUiState.Loading)
+    private val _uiState = MutableStateFlow<HealthUiState>(HealthUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -39,7 +36,7 @@ class WeightViewModel @Inject internal constructor(
     }
 
     companion object {
-        private const val DEFAULT_MAX_MONTHS = 6L
+        const val DEFAULT_MAX_MONTHS = 6L
     }
 
     private fun setup() {
@@ -50,7 +47,7 @@ class WeightViewModel @Inject internal constructor(
                 when (result.isFailure) {
                     true -> {
                         _uiState.update {
-                            WeightUiState.Error("Failed to observe weight records")
+                            HealthUiState.Error("Failed to observe weight records")
                         }
                     }
 
@@ -124,19 +121,9 @@ class WeightViewModel @Inject internal constructor(
                             ),
                         )
 
-                        val bloodPressure: List<Record> = listOf(
-                            BloodPressureRecord(
-                                time = ZonedDateTime.now().toInstant(),
-                                zoneOffset = ZonedDateTime.now().offset,
-                                systolic = Pressure.millimetersOfMercury(120.0),
-                                diastolic = Pressure.millimetersOfMercury(80.0),
-                                metadata = Metadata(clientRecordId = "1")
-                            ),
-                        )
-
                         _uiState.update {
-                            WeightUiState.Success(
-                                uiStateMapper.mapToWeightUiState(
+                            HealthUiState.Success(
+                                uiStateMapper.mapToHealthData(
                                     records = weights,
                                     selectedTimeRange = TimeRange.DAILY
                                 )
@@ -161,12 +148,12 @@ class WeightViewModel @Inject internal constructor(
 
             is Action.UpdateTimeRange -> {
                 when (val uiState = _uiState.value) {
-                    is WeightUiState.Loading -> return
-                    is WeightUiState.Error -> return
-                    is WeightUiState.Success -> {
+                    is HealthUiState.Loading -> return
+                    is HealthUiState.Error -> return
+                    is HealthUiState.Success -> {
                         _uiState.update {
-                            WeightUiState.Success(
-                                uiStateMapper.mapToWeightUiState(
+                            HealthUiState.Success(
+                                uiStateMapper.mapToHealthData(
                                     uiState.data.records,
                                     selectedTimeRange = action.timeRange
                                 )
@@ -183,12 +170,14 @@ class WeightViewModel @Inject internal constructor(
             is Action.ToggleTimeRangeDropdown -> {
                 _uiState.update {
                     when (val uiState = _uiState.value) {
-                        is WeightUiState.Loading -> uiState
-                        is WeightUiState.Error -> uiState
-                        is WeightUiState.Success -> {
+                        is HealthUiState.Loading -> uiState
+                        is HealthUiState.Error -> uiState
+                        is HealthUiState.Success -> {
                             uiState.copy(
                                 data = uiState.data.copy(
-                                    isSelectedTimeRangeDropdownExpanded = action.expanded
+                                    headerData = uiState.data.headerData.copy(
+                                        isSelectedTimeRangeDropdownExpanded = action.expanded
+                                    )
                                 )
                             )
                         }
