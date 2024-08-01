@@ -9,7 +9,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.health.HealthAction
 import edu.stanford.bdh.engagehf.health.HealthRepository
+import edu.stanford.bdh.engagehf.health.HealthUiState
+import edu.stanford.bdh.engagehf.health.HealthUiStateMapper
 import edu.stanford.bdh.engagehf.health.TimeRange
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WeightViewModel @Inject internal constructor(
     private val bottomSheetEvents: BottomSheetEvents,
-    private val uiStateMapper: HealthUiStateMapper,
+    private val uiStateMapper: HealthUiStateMapper<WeightRecord>,
     private val healthRepository: HealthRepository,
 ) : ViewModel() {
     private val logger by speziLogger()
@@ -135,18 +138,18 @@ class WeightViewModel @Inject internal constructor(
         }
     }
 
-    fun onAction(action: Action) {
-        when (action) {
-            Action.AddRecord -> {
+    fun onAction(healthAction: HealthAction) {
+        when (healthAction) {
+            HealthAction.AddRecord -> {
                 bottomSheetEvents.emit(BottomSheetEvents.Event.AddWeightRecord)
             }
 
-            is Action.DeleteRecord -> {
-                healthRepository.deleteWeight(action.recordId)
-                logger.i { "WeightViewModel.onAction Delete Weight Record: ${action.recordId}" }
+            is HealthAction.DeleteRecord -> {
+                // healthRepository.deleteWeight(healthAction.recordId)
+                logger.i { "WeightViewModel.onAction Delete Weight Record: ${healthAction.recordId}" }
             }
 
-            is Action.UpdateTimeRange -> {
+            is HealthAction.UpdateTimeRange -> {
                 when (val uiState = _uiState.value) {
                     is HealthUiState.Loading -> return
                     is HealthUiState.Error -> return
@@ -154,8 +157,8 @@ class WeightViewModel @Inject internal constructor(
                         _uiState.update {
                             HealthUiState.Success(
                                 uiStateMapper.mapToHealthData(
-                                    uiState.data.records,
-                                    selectedTimeRange = action.timeRange
+                                    uiState.data.records as List<WeightRecord>,
+                                    selectedTimeRange = healthAction.timeRange
                                 )
                             )
                         }
@@ -163,11 +166,11 @@ class WeightViewModel @Inject internal constructor(
                 }
             }
 
-            Action.DescriptionBottomSheet -> {
+            HealthAction.DescriptionBottomSheet -> {
                 bottomSheetEvents.emit(BottomSheetEvents.Event.WeightDescriptionBottomSheet)
             }
 
-            is Action.ToggleTimeRangeDropdown -> {
+            is HealthAction.ToggleTimeRangeDropdown -> {
                 _uiState.update {
                     when (val uiState = _uiState.value) {
                         is HealthUiState.Loading -> uiState
@@ -176,7 +179,7 @@ class WeightViewModel @Inject internal constructor(
                             uiState.copy(
                                 data = uiState.data.copy(
                                     headerData = uiState.data.headerData.copy(
-                                        isSelectedTimeRangeDropdownExpanded = action.expanded
+                                        isSelectedTimeRangeDropdownExpanded = healthAction.expanded
                                     )
                                 )
                             )
