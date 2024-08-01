@@ -23,8 +23,6 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,8 +33,6 @@ import edu.stanford.bdh.engagehf.health.bloodpressure.BloodPressurePage
 import edu.stanford.bdh.engagehf.health.components.SwipeBox
 import edu.stanford.bdh.engagehf.health.heartrate.HeartRatePage
 import edu.stanford.bdh.engagehf.health.symptoms.SymptomsPage
-import edu.stanford.bdh.engagehf.health.weight.Action
-import edu.stanford.bdh.engagehf.health.weight.TableEntryData
 import edu.stanford.bdh.engagehf.health.weight.WeighPage
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
@@ -50,17 +46,14 @@ import kotlinx.coroutines.launch
 @Composable
 fun HealthScreen() {
     val viewModel = hiltViewModel<HealthViewModel>()
-    val uiState by viewModel.uiState.collectAsState()
     HealthScreen(
         onAction = viewModel::onAction,
-        uiState = uiState
     )
 }
 
 @Composable
 fun HealthScreen(
     onAction: (HealthViewModel.Action) -> Unit,
-    uiState: HealthUiState,
 ) {
     val tabs = HealthTab.entries.toTypedArray()
     val pagerState = rememberPagerState(pageCount = { tabs.size })
@@ -151,14 +144,18 @@ fun HealthScreen(
 }
 
 @Composable
-fun HealthTable(weights: List<TableEntryData>, onAction: (Action) -> Unit) {
+fun HealthTable(
+    modifier: Modifier = Modifier,
+    healthEntries: List<TableEntryData>,
+    onAction: (HealthAction) -> Unit,
+) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
-        weights.forEach { entry ->
+        healthEntries.forEach { entry ->
             SwipeBox(onDelete = {
                 entry.id?.let {
-                    onAction(Action.DeleteRecord(it))
+                    onAction(HealthAction.DeleteRecord(it))
                 }
             }, content = {
                 HealthTableItem(entry)
@@ -175,7 +172,7 @@ fun HealthTableItem(entry: TableEntryData) {
     ) {
         Spacer(modifier = Modifier.padding(start = Spacings.medium))
         Text(
-            text = entry.formattedValue,
+            text = entry.formattedValues,
             style = TextStyles.headlineMedium.copy(color = primary),
             modifier = Modifier.padding(vertical = 4.dp)
         )
@@ -204,10 +201,8 @@ fun HealthTableItem(entry: TableEntryData) {
 @Composable
 fun HealthScreenPreview() {
     SpeziTheme {
-        val healthUiState = HealthUiState()
         HealthScreen(
             onAction = {},
-            uiState = healthUiState,
         )
     }
 }

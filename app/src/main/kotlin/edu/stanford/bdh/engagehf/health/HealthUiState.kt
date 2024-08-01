@@ -1,52 +1,53 @@
 package edu.stanford.bdh.engagehf.health
 
+import androidx.health.connect.client.records.Record
+import edu.stanford.bdh.engagehf.health.components.HealthHeaderData
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
-data class HealthUiState(
-    val selectedTimeRange: TimeRange = TimeRange.DAILY,
-    val healthRecords: List<HealthRecord> = emptyList(),
-    val filteredRecords: List<HealthRecord> = emptyList(),
-    val aggregatedRecord: List<FilteredHealthData> = emptyList(),
+data class HealthUiData(
+    val records: List<Record> = emptyList(),
+    val chartData: List<AggregatedHealthData> = emptyList(),
+    val tableData: List<TableEntryData> = emptyList(),
+    val newestData: NewestHealthData? = null,
+    val averageData: AverageHealthData? = null,
+    val headerData: HealthHeaderData,
 ) {
-    val averageValue: Float
-        get() = healthRecords.map { it.value }.average().toFloat()
+    val selectedTimeRange = headerData.selectedTimeRange
 }
 
-enum class TimeRange {
-    DAILY, WEEKLY, MONTHLY
+sealed interface HealthUiState {
+    data object Loading : HealthUiState
+    data class Success(val data: HealthUiData) : HealthUiState
+    data class Error(val message: String) : HealthUiState
 }
 
-data class HealthRecord(
-    val id: String = java.util.UUID.randomUUID().toString(),
+data class AverageHealthData(
     val value: Float,
-    val zonedDateTime: ZonedDateTime,
-    val trend: Float?,
+    val formattedValue: String,
+)
+
+data class AggregatedHealthData(
+    val yValues: List<Float>,
+    val xValues: List<Float>,
+    val seriesName: String,
+)
+
+data class NewestHealthData(
+    val formattedValue: String,
+    val formattedDate: String,
+)
+
+data class TableEntryData(
+    val id: String?,
+    val value: Float,
+    val secondValue: Float?,
+    val formattedValues: String,
+    val date: ZonedDateTime,
+    val formattedDate: String,
+    val xAxis: Float,
+    val trend: Float,
+    val formattedTrend: String,
 ) {
     val isTrendPositive: Boolean
-        get() = trend != null && trend > 0
-
-    val formattedDateAndTime: String
-        get() = zonedDateTime.format(DateTimeFormatter.ofPattern("MMM dd, HH:mm"))
-
-    val formattedDate: String
-        get() = zonedDateTime.format(DateTimeFormatter.ofPattern("MMM"))
-
-    val formattedValue: String
-        get() = "$value lbs"
-
-    val formattedTrend: String
-        get() = if (trend != null) {
-            if (trend > 0) {
-                "▲$trend"
-            } else {
-                "▼$trend"
-            }
-        } else {
-            ""
-        }
-
-    companion object {
-        const val KG_TO_LBS_CONVERSION_FACTOR = 2.20462
-    }
+        get() = trend > 0
 }

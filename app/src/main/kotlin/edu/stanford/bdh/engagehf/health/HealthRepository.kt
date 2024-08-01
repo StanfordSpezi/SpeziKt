@@ -13,7 +13,9 @@ import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.module.account.manager.UserSessionManager
 import edu.stanford.spezi.modules.measurements.ObservationCollection
+import edu.stanford.spezi.modules.measurements.bloodPressureCollection
 import edu.stanford.spezi.modules.measurements.bodyWeightObservation
+import edu.stanford.spezi.modules.measurements.heartRateCollection
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -92,56 +94,15 @@ class HealthRepository @Inject constructor(
     ): Flow<Result<List<WeightRecord>>> =
         observe(bodyWeightObservation, startDateTime, endDateTime)
 
-    private var weights = listOf(
-        HealthRecord(
-            value = 80.0f,
-            zonedDateTime = ZonedDateTime.now().minusDays(1),
-            trend = 1.0f
-        ),
-        HealthRecord(
-            value = 81.0f,
-            zonedDateTime = ZonedDateTime.now().minusDays(5),
-            trend = -1.0f
-        ),
-        HealthRecord(
-            value = 82.0f,
-            zonedDateTime = ZonedDateTime.now().minusDays(7),
-            trend = 2.0f
-        ),
-        HealthRecord(
-            value = 83.0f,
-            zonedDateTime = ZonedDateTime.now().minusDays(14),
-            trend = -2.0f
-        ),
+    suspend fun observeBloodPressureRecords(
+        startDateTime: ZonedDateTime,
+        endDateTime: ZonedDateTime,
+    ): Flow<Result<List<Record>>> =
+        observe(bloodPressureCollection, startDateTime, endDateTime)
 
-        HealthRecord(
-            value = 84.0f,
-            zonedDateTime = ZonedDateTime.now().minusDays(30),
-            trend = 3.0f
-        ),
-
-        HealthRecord(
-            value = 85.0f,
-            zonedDateTime = ZonedDateTime.now().minusDays(60),
-            trend = -3.0f
-        ),
-        HealthRecord(
-            value = 86.0f,
-            zonedDateTime = ZonedDateTime.now().minusDays(90),
-            trend = 4.0f
-        ),
-        HealthRecord(
-            value = 87.0f,
-            zonedDateTime = ZonedDateTime.now().minusDays(180),
-            trend = -4.0f
-        ),
-    ).sortedBy { it.zonedDateTime }
-
-    fun getWeights(): List<HealthRecord> {
-        return weights
-    }
-
-    fun deleteWeight(weightId: String) {
-        weights = weights.filter { it.id != weightId }
-    }
+    suspend fun observeHeartRateRecords(
+        startDateTime: ZonedDateTime,
+        endDateTime: ZonedDateTime,
+    ): Flow<Result<List<Record>>> =
+        observe(heartRateCollection, startDateTime, endDateTime)
 }
