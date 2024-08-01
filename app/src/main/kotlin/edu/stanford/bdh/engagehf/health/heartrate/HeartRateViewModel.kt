@@ -7,11 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.health.HealthAction
 import edu.stanford.bdh.engagehf.health.HealthRepository
+import edu.stanford.bdh.engagehf.health.HealthUiState
+import edu.stanford.bdh.engagehf.health.HealthUiStateMapper
 import edu.stanford.bdh.engagehf.health.TimeRange
-import edu.stanford.bdh.engagehf.health.weight.Action
-import edu.stanford.bdh.engagehf.health.weight.HealthUiState
-import edu.stanford.bdh.engagehf.health.weight.HealthUiStateMapper
 import edu.stanford.bdh.engagehf.health.weight.WeightViewModel
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HeartRateViewModel @Inject internal constructor(
     private val bottomSheetEvents: BottomSheetEvents,
-    private val uiStateMapper: HealthUiStateMapper,
+    private val uiStateMapper: HealthUiStateMapper<HeartRateRecord>,
     private val healthRepository: HealthRepository,
 ) : ViewModel() {
     private val logger by speziLogger()
@@ -38,7 +38,7 @@ class HeartRateViewModel @Inject internal constructor(
 
     fun setup() {
         viewModelScope.launch {
-            healthRepository.observeWeightRecords(
+            healthRepository.observeHeartRateRecords(
                 ZonedDateTime.now(),
                 ZonedDateTime.now().minusMonths(WeightViewModel.DEFAULT_MAX_MONTHS)
             ).collect { result ->
@@ -50,7 +50,6 @@ class HeartRateViewModel @Inject internal constructor(
                     }
 
                     false -> {
-
                         val heartRateRecords: List<Record> = listOf(
                             HeartRateRecord(
                                 startTime = ZonedDateTime.now().toInstant(),
@@ -72,7 +71,7 @@ class HeartRateViewModel @Inject internal constructor(
                         _uiState.update {
                             HealthUiState.Success(
                                 uiStateMapper.mapToHealthData(
-                                    records = heartRateRecords,
+                                    records = heartRateRecords as List<HeartRateRecord>,
                                     selectedTimeRange = TimeRange.DAILY
                                 )
                             )
@@ -87,14 +86,22 @@ class HeartRateViewModel @Inject internal constructor(
         private const val DEFAULT_MAX_MONTHS = 6L
     }
 
-    fun onAction(action: Action) {
+    fun onAction(healthAction: HealthAction) {
         logger.i { "HeartRateViewModel action" }
-        when (action) {
-            is Action.AddRecord -> TODO()
-            is Action.DeleteRecord -> TODO()
-            is Action.DescriptionBottomSheet -> TODO()
-            is Action.ToggleTimeRangeDropdown -> TODO()
-            is Action.UpdateTimeRange -> TODO()
+        when (healthAction) {
+            is HealthAction.AddRecord -> TODO()
+            is HealthAction.DeleteRecord -> TODO()
+            is HealthAction.DescriptionBottomSheet -> TODO()
+            is HealthAction.ToggleTimeRangeDropdown -> TODO()
+            is HealthAction.UpdateTimeRange -> when (val uiState = _uiState.value) {
+                is HealthUiState.Loading -> return
+                is HealthUiState.Error -> return
+                is HealthUiState.Success -> {
+                    _uiState.update {
+                        uiStateMapper.updateTimeRange(uiState, healthAction.timeRange)
+                    }
+                }
+            }
         }
     }
 }
