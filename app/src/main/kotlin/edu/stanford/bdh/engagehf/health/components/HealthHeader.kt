@@ -38,10 +38,11 @@ fun HealthHeader(
     onTimeRangeDropdownAction: (Boolean) -> Unit,
     updateTimeRange: (TimeRange) -> Unit,
     onInfoAction: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(vertical = Spacings.medium)
+        modifier = modifier.padding(vertical = Spacings.medium)
     ) {
         Column {
             Text(

@@ -8,11 +8,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.health.HealthAction
 import edu.stanford.bdh.engagehf.health.HealthRepository
+import edu.stanford.bdh.engagehf.health.HealthUiState
+import edu.stanford.bdh.engagehf.health.HealthUiStateMapper
 import edu.stanford.bdh.engagehf.health.TimeRange
-import edu.stanford.bdh.engagehf.health.weight.Action
-import edu.stanford.bdh.engagehf.health.weight.HealthUiState
-import edu.stanford.bdh.engagehf.health.weight.HealthUiStateMapper
 import edu.stanford.bdh.engagehf.health.weight.WeightViewModel.Companion.DEFAULT_MAX_MONTHS
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BloodPressureViewModel @Inject internal constructor(
     private val bottomSheetEvents: BottomSheetEvents,
-    private val uiStateMapper: HealthUiStateMapper,
+    private val uiStateMapper: HealthUiStateMapper<BloodPressureRecord>,
     private val healthRepository: HealthRepository,
 ) : ViewModel() {
     private val logger by speziLogger()
@@ -40,7 +40,7 @@ class BloodPressureViewModel @Inject internal constructor(
 
     private fun setup() {
         viewModelScope.launch {
-            healthRepository.observeWeightRecords(
+            healthRepository.observeBloodPressureRecords(
                 ZonedDateTime.now(), ZonedDateTime.now().minusMonths(DEFAULT_MAX_MONTHS)
             ).collect { result ->
                 when (result.isFailure) {
@@ -60,6 +60,13 @@ class BloodPressureViewModel @Inject internal constructor(
                                 metadata = Metadata(clientRecordId = "1")
                             ),
                             BloodPressureRecord(
+                                time = ZonedDateTime.now().minusHours(1).toInstant(),
+                                zoneOffset = ZonedDateTime.now().offset,
+                                systolic = Pressure.millimetersOfMercury(120.0),
+                                diastolic = Pressure.millimetersOfMercury(80.0),
+                                metadata = Metadata(clientRecordId = "1")
+                            ),
+                            BloodPressureRecord(
                                 time = ZonedDateTime.now().minusDays(1).toInstant(),
                                 zoneOffset = ZonedDateTime.now().offset,
                                 systolic = Pressure.millimetersOfMercury(130.0),
@@ -67,7 +74,7 @@ class BloodPressureViewModel @Inject internal constructor(
                                 metadata = Metadata(clientRecordId = "2")
                             ),
                             BloodPressureRecord(
-                                time = ZonedDateTime.now().minusDays(5).toInstant(),
+                                time = ZonedDateTime.now().minusDays(8).toInstant(),
                                 zoneOffset = ZonedDateTime.now().offset,
                                 systolic = Pressure.millimetersOfMercury(140.0),
                                 diastolic = Pressure.millimetersOfMercury(100.0),
@@ -78,7 +85,7 @@ class BloodPressureViewModel @Inject internal constructor(
                         _uiState.update {
                             HealthUiState.Success(
                                 uiStateMapper.mapToHealthData(
-                                    records = bloodPressure,
+                                    records = bloodPressure as List<BloodPressureRecord>,
                                     selectedTimeRange = TimeRange.DAILY
                                 )
                             )
@@ -89,7 +96,38 @@ class BloodPressureViewModel @Inject internal constructor(
         }
     }
 
-    fun onAction(action: Action) {
-        println()
+    fun onAction(healthAction: HealthAction) {
+        when (healthAction) {
+            HealthAction.AddRecord -> logger.i { "AddRecord" }
+            is HealthAction.DeleteRecord -> logger.i { "DeleteRecord" }
+            HealthAction.DescriptionBottomSheet -> logger.i { "DescriptionBottomSheet" }
+            is HealthAction.ToggleTimeRangeDropdown -> {
+                _uiState.update {
+                    when (val uiState = _uiState.value) {
+                        is HealthUiState.Loading -> uiState
+                        is HealthUiState.Error -> uiState
+                        is HealthUiState.Success -> {
+                            uiState.copy(
+                                data = uiState.data.copy(
+                                    headerData = uiState.data.headerData.copy(
+                                        isSelectedTimeRangeDropdownExpanded = healthAction.expanded
+                                    )
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+
+            is HealthAction.UpdateTimeRange -> when (val uiState = _uiState.value) {
+                is HealthUiState.Loading -> return
+                is HealthUiState.Error -> return
+                is HealthUiState.Success -> {
+                    _uiState.update {
+                        uiStateMapper.updateTimeRange(uiState, healthAction.timeRange)
+                    }
+                }
+            }
+        }
     }
 }

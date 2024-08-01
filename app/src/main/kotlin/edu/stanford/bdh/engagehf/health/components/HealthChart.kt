@@ -1,4 +1,4 @@
-package edu.stanford.bdh.engagehf.health.weight
+package edu.stanford.bdh.engagehf.health.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,6 +40,8 @@ import com.patrykandpatrick.vico.core.common.Dimensions
 import com.patrykandpatrick.vico.core.common.component.TextComponent
 import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shape.Shape
+import edu.stanford.bdh.engagehf.health.AverageHealthData
+import edu.stanford.bdh.engagehf.health.HealthUiData
 import edu.stanford.bdh.engagehf.health.TimeRange
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Colors.secondary
@@ -122,8 +124,6 @@ fun HealthChart(
                 axisValueOverrider = AxisValueOverrider.adaptiveYValues(1.05f, true),
             ),
             startAxis = rememberStartAxis(
-                title = "Weight in lbs",
-                titleComponent = rememberTextComponent(),
                 label = rememberAxisLabelComponent(),
                 guideline = null,
             ),

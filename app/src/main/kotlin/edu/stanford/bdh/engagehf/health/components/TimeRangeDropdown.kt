@@ -43,9 +43,10 @@ fun TimeRangeDropdown(
             )
             Icon(Icons.Default.ArrowDropDown, contentDescription = "ArrowDropDown")
         }
-        DropdownMenu(expanded = isSelectedTimeRangeDropdownExpanded, onDismissRequest = {
-            onToggleExpanded(false)
-        }) {
+        DropdownMenu(expanded = isSelectedTimeRangeDropdownExpanded,
+            onDismissRequest = {
+                onToggleExpanded(false)
+            }) {
             TimeRange.entries.forEach { timeRange ->
                 val isSelected = selectedTimeRange == timeRange
                 DropdownMenuItem(
