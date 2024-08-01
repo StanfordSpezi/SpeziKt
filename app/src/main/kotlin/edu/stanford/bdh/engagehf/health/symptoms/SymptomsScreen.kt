@@ -1,18 +1,38 @@
 package edu.stanford.bdh.engagehf.health.symptoms
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
@@ -52,11 +72,17 @@ import com.patrykandpatrick.vico.core.common.Dimensions
 import com.patrykandpatrick.vico.core.common.component.TextComponent
 import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shape.Shape
-import edu.stanford.bdh.engagehf.health.HealthTable
-import edu.stanford.bdh.engagehf.health.TimeRange
+import edu.stanford.bdh.engagehf.R
+import edu.stanford.bdh.engagehf.health.HealthPageTestIdentifier
+import edu.stanford.bdh.engagehf.health.HealthTableItem
+import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
+import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
+import edu.stanford.spezi.core.design.theme.Sizes
+import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.Instant
@@ -97,9 +123,54 @@ fun SymptomsPage(
             }
 
             is SymptomsUiState.Success -> {
-                //HealthHeader(uiState.data.headerData, onAction)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = Spacings.medium)
+                ) {
+                    Column {
+                        Text(
+                            text = uiState.data.headerData.formattedValue,
+                            style = TextStyles.headlineLarge.copy(color = primary),
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+                        Text(
+                            text = uiState.data.headerData.formattedDate,
+                            style = TextStyles.bodyMedium
+                        )
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                    SymptomsDropdown(uiState.data.headerData, onAction)
+                    IconButton(
+                        modifier = Modifier.size(Sizes.Icon.large),
+                        onClick = { onAction(SymptomsViewModel.Action.Info) }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_info),
+                            contentDescription = stringResource(R.string.info_icon_content_description),
+                            modifier = Modifier
+                                .size(Sizes.Icon.medium)
+                                .background(primary, shape = CircleShape)
+                                .shadow(Spacings.small, CircleShape)
+                                .padding(Spacings.small),
+                            tint = onPrimary
+                        )
+                    }
+                }
                 SymptomsChart(uiState.data)
-                HealthTable(uiState.data.tableEntries, { })
+                VerticalSpacer()
+                Row(
+                    modifier = Modifier.padding(horizontal = Spacings.medium),
+                    verticalAlignment = Alignment.Bottom,
+                ) {
+                    Text(
+                        text = "History",
+                        style = TextStyles.headlineMedium,
+                        modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_HISTORY_TEXT)
+                    )
+                }
+                uiState.data.tableData.forEach {
+                    HealthTableItem(entry = it)
+                }
             }
         }
     }
@@ -131,19 +202,7 @@ fun SymptomsChart(
             val epochSecond = (index * 60).toLong()
             val dateTime =
                 ZonedDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZoneOffset.UTC)
-            when (uiState.selectedTimeRange) {
-                TimeRange.WEEKLY -> {
-                    dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("MMM dd"))
-                }
-
-                TimeRange.MONTHLY -> {
-                    dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("MMM yy"))
-                }
-
-                TimeRange.DAILY -> {
-                    dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("MMM dd"))
-                }
-            }
+            dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("MMM yy"))
         }
 
     val marker = remember {
@@ -211,6 +270,63 @@ fun SymptomsChart(
             initialScroll = Scroll.Absolute.End,
         ),
     )
+}
+
+@Composable
+fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewModel.Action) -> Unit) {
+    Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
+        TextButton(onClick = {
+            onAction(SymptomsViewModel.Action.ToggleSymptomTypeDropdown(true))
+        }) {
+            Text(
+                text =
+                when (headerData.selectedSymptomType) {
+                    SymptomType.OVERALL -> "Overall"
+                    SymptomType.PHYSICAL_LIMITS -> "Physical Limits"
+                    SymptomType.SOCIAL_LIMITS -> "Social Limits"
+                    SymptomType.QUALITY_OF_LIFE -> "Quality of Life"
+                    SymptomType.SPECIFIC_SYMPTOMS -> "Specific Symptoms"
+                    SymptomType.DIZZINESS -> "Dizziness"
+                }
+            )
+            Icon(Icons.Default.ArrowDropDown, contentDescription = "ArrowDropDown")
+        }
+        DropdownMenu(
+            expanded = headerData.isSelectedSymptomTypeDropdownExpanded,
+            onDismissRequest = {
+                onAction(SymptomsViewModel.Action.ToggleSymptomTypeDropdown(false))
+            }) {
+            SymptomType.entries.forEach { symptomType ->
+                val isSelected = headerData.selectedSymptomType == symptomType
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text =
+                            when (symptomType) {
+                                SymptomType.OVERALL -> "Overall"
+                                SymptomType.PHYSICAL_LIMITS -> "Physical Limits"
+                                SymptomType.SOCIAL_LIMITS -> "Social Limits"
+                                SymptomType.QUALITY_OF_LIFE -> "Quality of Life"
+                                SymptomType.SPECIFIC_SYMPTOMS -> "Specific Symptoms"
+                                SymptomType.DIZZINESS -> "Dizziness"
+                            }
+                        )
+                    },
+                    onClick = {
+                        onAction(SymptomsViewModel.Action.ToggleSymptomTypeDropdown(false))
+                        onAction(SymptomsViewModel.Action.SelectSymptomType(symptomType))
+                    },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Outlined.Check,
+                            contentDescription = null,
+                            tint = if (isSelected) Color.Black else Color.Transparent
+                        )
+                    }
+                )
+            }
+        }
+    }
 }
 
 @Composable
