@@ -225,7 +225,7 @@ class UserSessionManagerTest {
 
     private fun setupConsented() {
         val uid = "uid"
-        val location = "patients/$uid/consent.pdf"
+        val location = "users/$uid/consent.pdf"
         val firebaseUser: FirebaseUser = mockk {
             every { isAnonymous } returns false
         }
@@ -244,7 +244,7 @@ class UserSessionManagerTest {
 
     private fun setupPDFUpload(successful: Boolean) {
         val uid = "uid"
-        val location = "patients/$uid/consent.pdf"
+        val location = "users/$uid/consent.pdf"
         val firebaseUser: FirebaseUser = mockk()
         every { firebaseUser.uid } returns uid
         every { firebaseAuth.currentUser } returns firebaseUser

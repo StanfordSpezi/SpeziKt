@@ -84,7 +84,7 @@ internal class AuthenticationManager @Inject constructor(
                     "GenderIdentityKey" to GenderIdentity.fromDisplayName(selectedGender).databaseName,
                     "DateOfBirthKey" to birthDayTimestamp
                 )
-                firestore.collection("patients").document(user.uid).set(userMap).await()
+                firestore.collection("users").document(user.uid).set(userMap).await()
             }
         }.onFailure { e ->
             logger.e { "Error saving user data: ${e.message}" }

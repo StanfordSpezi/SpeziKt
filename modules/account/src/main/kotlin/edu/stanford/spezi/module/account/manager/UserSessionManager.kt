@@ -39,7 +39,7 @@ internal class UserSessionManagerImpl @Inject constructor(
                 val inputStream = ByteArrayInputStream(pdfBytes)
                 logger.i { "Uploading file to Firebase Storage" }
                 val uploaded = firebaseStorage
-                    .getReference("patients/${currentUser.uid}/consent.pdf")
+                    .getReference("users/${currentUser.uid}/consent.pdf")
                     .putStream(inputStream)
                     .await().task.isSuccessful
 
@@ -73,7 +73,7 @@ internal class UserSessionManagerImpl @Inject constructor(
     private suspend fun hasConsented(): Boolean = withContext(ioDispatcher) {
         runCatching {
             val uid = getUserUid() ?: error("No uid available")
-            val reference = firebaseStorage.getReference("patients/$uid/consent.pdf")
+            val reference = firebaseStorage.getReference("users/$uid/consent.pdf")
             reference.metadata.await()
         }.isSuccess
     }
