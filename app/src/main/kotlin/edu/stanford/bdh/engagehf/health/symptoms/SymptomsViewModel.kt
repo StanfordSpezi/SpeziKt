@@ -104,7 +104,6 @@ data class SymptomsUiData(
     val headerData: HeaderData,
 )
 
-
 data class HeaderData(
     val formattedValue: String,
     val formattedDate: String,

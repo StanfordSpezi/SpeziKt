@@ -315,14 +315,38 @@ class HealthUiStateMapper<T : Record> @Inject constructor(
     }
 
     fun updateTimeRange(
-        currentUiState: HealthUiState.Success,
+        currentUiState: HealthUiState,
         newTimeRange: TimeRange,
-    ): HealthUiState.Success {
-        return HealthUiState.Success(
-            mapToHealthData(
-                records = currentUiState.data.records as List<T>,
-                selectedTimeRange = newTimeRange
-            )
-        )
+    ): HealthUiState {
+        return when (currentUiState) {
+            is HealthUiState.Loading -> currentUiState
+            is HealthUiState.Error -> currentUiState
+            is HealthUiState.Success -> {
+                HealthUiState.Success(
+                    mapToHealthData(
+                        records = currentUiState.data.records as List<T>,
+                        selectedTimeRange = newTimeRange
+                    )
+                )
+            }
+        }
     }
+
+    fun mapToggleTimeRange(
+        healthAction: HealthAction.ToggleTimeRangeDropdown,
+        uiState: HealthUiState,
+    ) =
+        when (uiState) {
+            is HealthUiState.Loading -> uiState
+            is HealthUiState.Error -> uiState
+            is HealthUiState.Success -> {
+                uiState.copy(
+                    data = uiState.data.copy(
+                        headerData = uiState.data.headerData.copy(
+                            isSelectedTimeRangeDropdownExpanded = healthAction.expanded
+                        )
+                    )
+                )
+            }
+        }
 }

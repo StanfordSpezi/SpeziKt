@@ -41,6 +41,10 @@ class HealthRepository @Inject constructor(
         Gson()
     }
 
+    companion object {
+        const val DEFAULT_MAX_MONTHS = 6L
+    }
+
     private suspend fun <T : Record> observe(
         collection: ObservationCollection,
         startDateTime: ZonedDateTime,

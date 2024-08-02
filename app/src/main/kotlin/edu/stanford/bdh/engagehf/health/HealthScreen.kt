@@ -26,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.health.bloodpressure.BloodPressurePage
@@ -38,7 +37,6 @@ import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Colors.secondary
 import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.lighten
 import kotlinx.coroutines.launch
@@ -117,7 +115,7 @@ fun HealthScreen(
                 }
             }
         }
-        if (tabs[pagerState.currentPage] != HealthTab.Symptoms) {
+        if (tabs[pagerState.currentPage] == HealthTab.Weight) { // TODO add functionality for other tabs
             FloatingActionButton(
                 onClick = {
                     when (tabs[pagerState.currentPage]) {
@@ -195,16 +193,6 @@ fun HealthTableItem(entry: TableEntryData) {
         Text(
             text = entry.formattedDate,
             style = TextStyles.bodyLarge
-        )
-    }
-}
-
-@Preview
-@Composable
-fun HealthScreenPreview() {
-    SpeziTheme {
-        HealthScreen(
-            onAction = {},
         )
     }
 }
