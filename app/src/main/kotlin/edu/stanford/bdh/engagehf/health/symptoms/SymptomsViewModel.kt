@@ -5,16 +5,12 @@ package edu.stanford.bdh.engagehf.health.symptoms
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.health.AggregatedHealthData
-import edu.stanford.bdh.engagehf.health.AverageHealthData
-import edu.stanford.bdh.engagehf.health.NewestHealthData
 import edu.stanford.bdh.engagehf.health.TableEntryData
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,65 +23,29 @@ class SymptomsViewModel @Inject internal constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
-        println()
+        logger.i { "SymptomsViewModel created" }
         _uiState.update {
-            SymptomsUiState.Success(
-                SymptomsUiData(
-                    symptomScores = emptyList(), chartData = listOf(
-                        AggregatedHealthData(
-                            xValues = listOf(
-                                ZonedDateTime.now().toEpochSecond() / 60f,
-                                ZonedDateTime.now().minusDays(27).toEpochSecond() / 60f,
-                                ZonedDateTime.now().minusDays(20).toEpochSecond() / 60f,
-                                ZonedDateTime.now().minusDays(12).toEpochSecond() / 60f,
-                                ZonedDateTime.now().minusDays(6).toEpochSecond() / 60f
-                            ),
-                            yValues = listOf(
-                                80f, 70f, 60f, 50f, 40f
-                            ),
-                            seriesName = "Series 1",
-                        ), AggregatedHealthData(
-                            xValues = listOf(
-                                ZonedDateTime.now().toEpochSecond() / 60f,
-                                ZonedDateTime.now().minusDays(27).toEpochSecond() / 60f,
-                                ZonedDateTime.now().minusDays(20).toEpochSecond() / 60f,
-                                ZonedDateTime.now().minusDays(12).toEpochSecond() / 60f,
-                                ZonedDateTime.now().minusDays(6).toEpochSecond() / 60f
-                            ),
-                            yValues = listOf(20f, 30f, 40f, 50f, 60f),
-                            seriesName = "Series 2",
-                        ), AggregatedHealthData(
-                            xValues = listOf(
-                                ZonedDateTime.now().toEpochSecond() / 60f,
-                                ZonedDateTime.now().minusDays(27).toEpochSecond() / 60f,
-                                ZonedDateTime.now().minusDays(20).toEpochSecond() / 60f,
-                                ZonedDateTime.now().minusDays(12).toEpochSecond() / 60f,
-                                ZonedDateTime.now().minusDays(6).toEpochSecond() / 60f
-                            ),
-                            yValues = listOf(
-                                50f, 60f, 40f, 30f, 20f
-                            ),
-                            seriesName = "Series 3",
-                        ), AggregatedHealthData(
-                            xValues = listOf(
-                                ZonedDateTime.now().toEpochSecond() / 60f,
-                                ZonedDateTime.now().minusDays(27).toEpochSecond() / 60f,
-                                ZonedDateTime.now().minusDays(20).toEpochSecond() / 60f,
-                                ZonedDateTime.now().minusDays(12).toEpochSecond() / 60f,
-                                ZonedDateTime.now().minusDays(6).toEpochSecond() / 60f
-                            ),
-                            yValues = listOf(
-                                60f, 50f, 40f, 30f, 20f
-                            ),
-                            seriesName = "Series 4",
-                        )
+            symptomsUiStateMapper.mapSymptomsUiState(
+                selectedSymptomType = SymptomType.OVERALL,
+                symptomScores = listOf(
+                    SymptomScore(
+                        overallScore = 80,
+                        physicalLimitsScore = 70,
+                        socialLimitsScore = 60,
+                        qualityOfLifeScore = 50,
+                        specificSymptomsScore = 40,
+                        dizzinessScore = 30,
+                        date = ZonedDateTime.now().minusDays(4)
                     ),
-                    headerData = HeaderData(
-                        formattedValue = "Symptoms",
-                        formattedDate = ZonedDateTime.now()
-                            .format(DateTimeFormatter.ofPattern("MMM dd")),
-                        selectedSymptomType = SymptomType.OVERALL
-                    )
+                    SymptomScore(
+                        overallScore = 70,
+                        physicalLimitsScore = 60,
+                        socialLimitsScore = 50,
+                        qualityOfLifeScore = 40,
+                        specificSymptomsScore = 30,
+                        dizzinessScore = 20,
+                        date = ZonedDateTime.now()
+                    ),
                 )
             )
         }
@@ -97,12 +57,9 @@ class SymptomsViewModel @Inject internal constructor(
             is Action.SelectSymptomType -> {
                 _uiState.update {
                     (it as? SymptomsUiState.Success)?.let { success ->
-                        SymptomsUiState.Success(
-                            success.data.copy(
-                                headerData = success.data.headerData.copy(
-                                    selectedSymptomType = action.symptomType
-                                )
-                            )
+                        symptomsUiStateMapper.mapSymptomsUiState(
+                            selectedSymptomType = action.symptomType,
+                            symptomScores = success.data.symptomScores
                         )
                     } ?: it
                 }
@@ -144,12 +101,9 @@ data class SymptomsUiData(
     val symptomScores: List<SymptomScore> = emptyList(),
     val chartData: List<AggregatedHealthData>,
     val tableData: List<TableEntryData> = emptyList(),
-    val newestData: NewestHealthData? = null,
-    val averageData: AverageHealthData? = null,
     val headerData: HeaderData,
-) {
-    val selectedSymptomType = headerData.selectedSymptomType
-}
+)
+
 
 data class HeaderData(
     val formattedValue: String,
@@ -165,7 +119,7 @@ data class SymptomScore(
     val qualityOfLifeScore: Int,
     val specificSymptomsScore: Int,
     val dizzinessScore: Int,
-    val date: Date,
+    val date: ZonedDateTime,
 )
 
 enum class SymptomType {

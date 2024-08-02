@@ -44,7 +44,6 @@ data class TableEntryData(
     val formattedValues: String,
     val date: ZonedDateTime,
     val formattedDate: String,
-    val xAxis: Float,
     val trend: Float,
     val formattedTrend: String,
 ) {

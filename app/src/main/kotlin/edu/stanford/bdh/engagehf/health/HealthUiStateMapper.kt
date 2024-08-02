@@ -256,7 +256,6 @@ class HealthUiStateMapper<T : Record> @Inject constructor(
                 },
                 date = getDate(currentRecord),
                 formattedDate = getDate(currentRecord).format(DateTimeFormatter.ofPattern("MMM dd HH:mm")),
-                xAxis = getXValue(currentRecord),
                 trend = trend.toFloat(),
                 formattedTrend = formattedTrend,
                 formattedValues = if (currentRecord is BloodPressureRecord) {

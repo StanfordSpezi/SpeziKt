@@ -170,7 +170,6 @@ private class HealthPagePreviewProvider : PreviewParameterProvider<HealthUiState
                             formattedValues = "70.0 kg",
                             date = ZonedDateTime.now(),
                             formattedDate = "Jan 2022",
-                            xAxis = 0f,
                             trend = 0f,
                             formattedTrend = "0.0 kg",
                             secondValue = null,
