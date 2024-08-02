@@ -21,7 +21,17 @@ class HealthUiStateMapper<T : Record> @Inject constructor(
         private const val DAILY_MAX_DAYS = 30L
         private const val WEEKLY_MAX_MONTHS = 3L
         private const val MONTHLY_MAX_MONTHS = 6L
+
+        const val EPOCH_SECONDS_DIVISOR = 60.0f
+        const val ADAPTIVE_Y_VALUES_FRACTION = 1.05f
+
+        private const val MONTH_DAY_TIME_PATTERN = "MMM dd HH:mm"
+        private const val MONTH_YEAR_PATTERN = "MMM yy"
     }
+
+    private val monthDayTimeFormatter = DateTimeFormatter.ofPattern(MONTH_DAY_TIME_PATTERN)
+
+    private val monthYearFormatter = DateTimeFormatter.ofPattern(MONTH_YEAR_PATTERN)
 
     fun mapToHealthData(
         records: List<T>,
@@ -90,58 +100,64 @@ class HealthUiStateMapper<T : Record> @Inject constructor(
         selectedTimeRange: TimeRange,
         diastolic: Boolean = false,
     ): List<Pair<Float, Float>> {
-        return records.groupBy { it ->
-            when (selectedTimeRange) {
-                TimeRange.DAILY -> when (it) {
-                    is WeightRecord -> it.time.atZone(it.zoneOffset).toLocalDate()
-                    is BloodPressureRecord -> it.time.atZone(it.zoneOffset).toLocalDate()
-                    is HeartRateRecord -> it.startTime.atZone(it.startZoneOffset).toLocalDate()
-                    else -> ""
-                }
-
-                TimeRange.WEEKLY -> when (it) {
-                    is WeightRecord -> {
-                        val with = it.time.atZone(it.zoneOffset).toLocalDate().with(
-                            TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)
-                        )
-                        with
-                    }
-
-                    is BloodPressureRecord -> {
-                        val with = it.time.atZone(it.zoneOffset).toLocalDate().with(
-                            TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)
-                        )
-                        with
-                    }
-
-                    is HeartRateRecord -> {
-                        val with = it.startTime.atZone(it.startZoneOffset).toLocalDate().with(
-                            TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)
-                        )
-                        with
-                    }
-
-                    else -> ""
-                }
-
-                TimeRange.MONTHLY -> when (it) {
-                    is WeightRecord -> it.time.atZone(it.zoneOffset)
-                        .format(DateTimeFormatter.ofPattern("MMM yy"))
-
-                    is BloodPressureRecord -> it.time.atZone(it.zoneOffset)
-                        .format(DateTimeFormatter.ofPattern("MMM yy"))
-
-                    is HeartRateRecord -> it.startTime.atZone(it.startZoneOffset)
-                        .format(DateTimeFormatter.ofPattern("MMM yy"))
-
-                    else -> ""
-                }
-            }
-        }.mapValues { entry ->
+        val groupedRecords = groupRecordsByTimeRange(records, selectedTimeRange)
+        return groupedRecords.mapValues { entry ->
             val averageValue = entry.value.map { getValue(it, diastolic).first }.average()
             val xValue: Float = getXValue(entry.value.first())
             Pair(averageValue.toFloat(), xValue)
         }.values.toList()
+    }
+
+    private fun groupRecordsByTimeRange(
+        records: List<T>,
+        selectedTimeRange: TimeRange,
+    ): Map<Any, List<T>> {
+        return records.groupBy {
+            when (selectedTimeRange) {
+                TimeRange.DAILY -> getDailyGroupKey(it)
+                TimeRange.WEEKLY -> getWeeklyGroupKey(it)
+                TimeRange.MONTHLY -> getMonthlyGroupKey(it)
+            }
+        }
+    }
+
+    private fun getDailyGroupKey(record: T): Any {
+        return when (record) {
+            is WeightRecord -> record.time.atZone(record.zoneOffset).toLocalDate()
+            is BloodPressureRecord -> record.time.atZone(record.zoneOffset).toLocalDate()
+            is HeartRateRecord -> record.startTime.atZone(record.startZoneOffset).toLocalDate()
+            else -> ""
+        }
+    }
+
+    private fun getWeeklyGroupKey(record: T): Any {
+        return when (record) {
+            is WeightRecord -> record.time.atZone(record.zoneOffset).toLocalDate()
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+
+            is BloodPressureRecord -> record.time.atZone(record.zoneOffset).toLocalDate()
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+
+            is HeartRateRecord -> record.startTime.atZone(record.startZoneOffset).toLocalDate()
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+
+            else -> ""
+        }
+    }
+
+    private fun getMonthlyGroupKey(record: T): Any {
+        return when (record) {
+            is WeightRecord -> record.time.atZone(record.zoneOffset)
+                .format(monthYearFormatter)
+
+            is BloodPressureRecord -> record.time.atZone(record.zoneOffset)
+                .format(monthYearFormatter)
+
+            is HeartRateRecord -> record.startTime.atZone(record.startZoneOffset)
+                .format(monthYearFormatter)
+
+            else -> ""
+        }
     }
 
     private fun getValue(record: Record, diastolic: Boolean = false): Pair<Double, String> {
@@ -218,12 +234,14 @@ class HealthUiStateMapper<T : Record> @Inject constructor(
 
     private fun getXValue(record: T): Float {
         return when (record) {
-            is WeightRecord -> record.time.atZone(record.zoneOffset).toEpochSecond().toFloat() / 60
+            is WeightRecord -> record.time.atZone(record.zoneOffset).toEpochSecond()
+                .toFloat() / EPOCH_SECONDS_DIVISOR
+
             is BloodPressureRecord -> record.time.atZone(record.zoneOffset).toEpochSecond()
-                .toFloat() / 60
+                .toFloat() / EPOCH_SECONDS_DIVISOR
 
             is HeartRateRecord -> record.startTime.atZone(record.startZoneOffset).toEpochSecond()
-                .toFloat() / 60
+                .toFloat() / EPOCH_SECONDS_DIVISOR
 
             else -> 0.0F
         }
@@ -255,7 +273,7 @@ class HealthUiStateMapper<T : Record> @Inject constructor(
                     null
                 },
                 date = getDate(currentRecord),
-                formattedDate = getDate(currentRecord).format(DateTimeFormatter.ofPattern("MMM dd HH:mm")),
+                formattedDate = getDate(currentRecord).format(monthDayTimeFormatter),
                 trend = trend.toFloat(),
                 formattedTrend = formattedTrend,
                 formattedValues = if (currentRecord is BloodPressureRecord) {
@@ -295,7 +313,7 @@ class HealthUiStateMapper<T : Record> @Inject constructor(
                     is BloodPressureRecord -> it.time.atZone(it.zoneOffset)
                     is HeartRateRecord -> it.startTime.atZone(it.startZoneOffset)
                     else -> null
-                }?.format(DateTimeFormatter.ofPattern("MMM dd HH:mm")) ?: "",
+                }?.format(monthDayTimeFormatter) ?: "",
                 formattedValue = if (it is BloodPressureRecord) {
                     getBloodPressureFormatRecord(it)
                 } else {
