@@ -15,14 +15,17 @@ class HealthViewModel @Inject internal constructor(
     fun onAction(action: Action) {
         when (action) {
             Action.AddWeightRecord -> {
+                logger.i { "Add weight record" }
                 bottomSheetEvents.emit(BottomSheetEvents.Event.AddWeightRecord)
             }
 
             Action.AddBloodPressureRecord -> {
+                logger.i { "Add blood pressure record" }
                 bottomSheetEvents.emit(BottomSheetEvents.Event.AddBloodPressureRecord)
             }
 
             Action.HeartRateRecord -> {
+                logger.i { "Add heart rate record" }
                 bottomSheetEvents.emit(BottomSheetEvents.Event.AddHeartRateRecord)
             }
         }

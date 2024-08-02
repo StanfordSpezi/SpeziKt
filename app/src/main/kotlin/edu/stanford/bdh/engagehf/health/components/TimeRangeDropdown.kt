@@ -15,6 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.TimeRange
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
@@ -36,9 +38,9 @@ fun TimeRangeDropdown(
         }) {
             Text(
                 text = when (selectedTimeRange) {
-                    TimeRange.DAILY -> "Daily"
-                    TimeRange.WEEKLY -> "Weekly"
-                    TimeRange.MONTHLY -> "Monthly"
+                    TimeRange.DAILY -> stringResource(R.string.time_range_daily)
+                    TimeRange.WEEKLY -> stringResource(R.string.time_range_weekly)
+                    TimeRange.MONTHLY -> stringResource(R.string.time_range_monthly)
                 }
             )
             Icon(Icons.Default.ArrowDropDown, contentDescription = "ArrowDropDown")

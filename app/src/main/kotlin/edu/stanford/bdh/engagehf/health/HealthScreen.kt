@@ -123,9 +123,11 @@ fun HealthScreen(
                     when (tabs[pagerState.currentPage]) {
                         HealthTab.Weight -> onAction(HealthViewModel.Action.AddWeightRecord)
                         HealthTab.BloodPressure -> {
+                            onAction(HealthViewModel.Action.AddBloodPressureRecord)
                         }
 
                         HealthTab.HeartRate -> {
+                            onAction(HealthViewModel.Action.HeartRateRecord)
                         }
 
                         else -> {

@@ -131,7 +131,7 @@ fun SymptomsPage(
                         Text(
                             text = uiState.data.headerData.formattedValue,
                             style = TextStyles.headlineLarge.copy(color = primary),
-                            modifier = Modifier.padding(vertical = 4.dp)
+                            modifier = Modifier.padding(vertical = Spacings.small)
                         )
                         Text(
                             text = uiState.data.headerData.formattedDate,
@@ -163,7 +163,7 @@ fun SymptomsPage(
                     verticalAlignment = Alignment.Bottom,
                 ) {
                     Text(
-                        text = "History",
+                        text = stringResource(R.string.health_history),
                         style = TextStyles.headlineMedium,
                         modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_HISTORY_TEXT)
                     )
@@ -278,17 +278,7 @@ fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewModel.Action
         TextButton(onClick = {
             onAction(SymptomsViewModel.Action.ToggleSymptomTypeDropdown(true))
         }) {
-            Text(
-                text =
-                when (headerData.selectedSymptomType) {
-                    SymptomType.OVERALL -> "Overall"
-                    SymptomType.PHYSICAL_LIMITS -> "Physical Limits"
-                    SymptomType.SOCIAL_LIMITS -> "Social Limits"
-                    SymptomType.QUALITY_OF_LIFE -> "Quality of Life"
-                    SymptomType.SPECIFIC_SYMPTOMS -> "Specific Symptoms"
-                    SymptomType.DIZZINESS -> "Dizziness"
-                }
-            )
+            SymptomTypeText(headerData.selectedSymptomType)
             Icon(Icons.Default.ArrowDropDown, contentDescription = "ArrowDropDown")
         }
         DropdownMenu(
@@ -300,17 +290,7 @@ fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewModel.Action
                 val isSelected = headerData.selectedSymptomType == symptomType
                 DropdownMenuItem(
                     text = {
-                        Text(
-                            text =
-                            when (symptomType) {
-                                SymptomType.OVERALL -> "Overall"
-                                SymptomType.PHYSICAL_LIMITS -> "Physical Limits"
-                                SymptomType.SOCIAL_LIMITS -> "Social Limits"
-                                SymptomType.QUALITY_OF_LIFE -> "Quality of Life"
-                                SymptomType.SPECIFIC_SYMPTOMS -> "Specific Symptoms"
-                                SymptomType.DIZZINESS -> "Dizziness"
-                            }
-                        )
+                        SymptomTypeText(symptomType)
                     },
                     onClick = {
                         onAction(SymptomsViewModel.Action.ToggleSymptomTypeDropdown(false))
@@ -352,3 +332,18 @@ private fun chartColors() = listOf(
     Colors.secondary.copy(alpha = 0.2f),
     Colors.tertiary.copy(alpha = 0.2f),
 )
+
+@Composable
+fun SymptomTypeText(symptomType: SymptomType) {
+    Text(
+        text =
+        when (symptomType) {
+            SymptomType.OVERALL -> stringResource(R.string.symptom_type_overall)
+            SymptomType.PHYSICAL_LIMITS -> stringResource(R.string.symptom_type_physical)
+            SymptomType.SOCIAL_LIMITS -> stringResource(R.string.symptom_type_social)
+            SymptomType.QUALITY_OF_LIFE -> stringResource(R.string.symptom_type_quality)
+            SymptomType.SPECIFIC_SYMPTOMS -> stringResource(R.string.symptom_type_specific)
+            SymptomType.DIZZINESS -> stringResource(R.string.symptom_type_dizziness)
+        }
+    )
+}

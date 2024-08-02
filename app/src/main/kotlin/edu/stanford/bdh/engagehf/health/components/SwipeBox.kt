@@ -8,7 +8,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.minimumInteractiveComponentSize
@@ -19,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import edu.stanford.spezi.core.design.theme.Colors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,7 +38,7 @@ fun SwipeBox(
         SwipeToDismissBoxValue.EndToStart -> {
             icon = Icons.Outlined.Delete
             alignment = Alignment.CenterEnd
-            color = MaterialTheme.colorScheme.errorContainer
+            color = Colors.error
             iconVisible = true
         }
 

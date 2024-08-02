@@ -10,10 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.TimeRange
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
+import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 
 @Composable
@@ -26,9 +28,9 @@ fun TimeRangeSelector(
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = when (range) {
-                    TimeRange.DAILY -> "Daily"
-                    TimeRange.WEEKLY -> "Weekly"
-                    TimeRange.MONTHLY -> "Monthly"
+                    TimeRange.DAILY -> stringResource(R.string.time_range_daily)
+                    TimeRange.WEEKLY -> stringResource(R.string.time_range_weekly)
+                    TimeRange.MONTHLY -> stringResource(R.string.time_range_monthly)
                 },
                 modifier = Modifier
                     .clickable { onTimeRangeSelected(range) }
@@ -36,7 +38,7 @@ fun TimeRangeSelector(
                         if (selectedTimeRange == range) primary else Color.Transparent,
                         shape = CircleShape
                     )
-                    .padding(8.dp),
+                    .padding(Spacings.small),
                 color = if (selectedTimeRange == range) onPrimary else primary
             )
             Spacer(modifier = Modifier.weight(1f))

@@ -45,7 +45,6 @@ import edu.stanford.bdh.engagehf.health.HealthUiData
 import edu.stanford.bdh.engagehf.health.TimeRange
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Colors.secondary
-import edu.stanford.spezi.core.design.theme.ThemePreviews
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.Instant
@@ -174,9 +173,4 @@ private fun rememberComposeHorizontalLine(averageWeight: AverageHealthData): Hor
         ),
         label = { averageWeight.formattedValue },
     )
-}
-
-@ThemePreviews
-@Composable
-fun WeightChartPreview() {
 }

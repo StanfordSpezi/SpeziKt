@@ -14,10 +14,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.units.Mass
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.components.HealthChart
 import edu.stanford.bdh.engagehf.health.components.HealthHeader
 import edu.stanford.bdh.engagehf.health.components.HealthHeaderData
@@ -118,7 +120,7 @@ fun HealthPage(
                         verticalAlignment = Alignment.Bottom,
                     ) {
                         Text(
-                            text = "History",
+                            text = stringResource(id = R.string.health_history),
                             style = TextStyles.headlineMedium,
                             modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_HISTORY_TEXT)
                         )

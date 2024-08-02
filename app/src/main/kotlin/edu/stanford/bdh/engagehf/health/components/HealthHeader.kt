@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.TimeRange
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
@@ -48,7 +47,7 @@ fun HealthHeader(
             Text(
                 text = headerData.formattedValue,
                 style = TextStyles.headlineLarge.copy(color = primary),
-                modifier = Modifier.padding(vertical = 4.dp)
+                modifier = Modifier.padding(vertical = Spacings.small)
             )
             Text(
                 text = headerData.formattedDate,

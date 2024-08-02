@@ -145,7 +145,7 @@ class WeightViewModel @Inject internal constructor(
             }
 
             is HealthAction.DeleteRecord -> {
-                // healthRepository.deleteWeight(healthAction.recordId)
+                // TODO
                 logger.i { "WeightViewModel.onAction Delete Weight Record: ${healthAction.recordId}" }
             }
 

@@ -31,8 +31,6 @@ class HealthRepository @Inject constructor(
     private val observationToRecordMapper: ObservationToRecordMapper,
     @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
 ) {
-    @Suppress("MagicNumber")
-
     private val logger by speziLogger()
 
     private val jsonParser by lazy {
