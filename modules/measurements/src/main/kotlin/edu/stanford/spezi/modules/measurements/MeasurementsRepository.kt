@@ -72,7 +72,7 @@ internal class MeasurementsRepositoryImpl @Inject internal constructor(
                     val json = jsonParser.encodeResourceToString(observation)
                     val data = gson.fromJson<Map<String, Any>>(json, mapType)
 
-                    val docRef = firestore.collection("patients/$uid/$collectionName").document()
+                    val docRef = firestore.collection("users/$uid/$collectionName").document()
                     batch.set(docRef, data)
                 }
 
@@ -103,7 +103,7 @@ internal class MeasurementsRepositoryImpl @Inject internal constructor(
             kotlin.runCatching {
                 val uid = userSessionManager.getUserUid()
                     ?: throw IllegalStateException("User not authenticated")
-                listenerRegistration = firestore.collection("patients/$uid/${collection.name}")
+                listenerRegistration = firestore.collection("users/$uid/${collection.name}")
                     .orderBy("effectiveDateTime", Query.Direction.DESCENDING)
                     .limit(1)
                     .addSnapshotListener { snapshot, error ->
