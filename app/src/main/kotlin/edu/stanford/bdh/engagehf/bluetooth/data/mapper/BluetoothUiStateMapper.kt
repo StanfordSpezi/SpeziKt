@@ -16,7 +16,6 @@ import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
 import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import edu.stanford.spezi.core.utils.LocaleProvider
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 import javax.inject.Inject
 
 class BluetoothUiStateMapper @Inject constructor(
@@ -227,8 +226,6 @@ class BluetoothUiStateMapper @Inject constructor(
     private fun formatHeartRateForLocale(heartRate: Float): String {
         return String.format(getDefaultLocale(), "%.0f bpm", heartRate)
     }
-
-    private fun format(value: Number?): String = String.format(Locale.US, "%.2f", value)
 
     private fun getDefaultLocale() = localeProvider.getDefaultLocale()
 

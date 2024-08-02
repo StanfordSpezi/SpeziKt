@@ -26,8 +26,8 @@ class BluetoothUiStateMapperTest {
 
     private val mapper = BluetoothUiStateMapper(localeProvider = localeProvider)
     private val bloodPressure: Measurement.BloodPressure = mockk {
-        every { systolic } returns SYSTOLIC
-        every { diastolic } returns DIASTOLIC
+        every { systolic } returns SYSTOLIC.toFloat()
+        every { diastolic } returns DIASTOLIC.toFloat()
         every { pulseRate } returns PULSE_RATE
     }
     private val weight: Measurement.Weight = mockk {
@@ -61,7 +61,7 @@ class BluetoothUiStateMapperTest {
         val expectedDevice = DeviceUiModel(
             address = ADDRESS,
             measurementsCount = session.measurements.size,
-            summary = "Blood Pressure: $SYSTOLIC / $DIASTOLIC"
+            summary = "Blood Pressure: $SYSTOLIC mmHg / $DIASTOLIC mmHg"
         )
 
         // when
@@ -82,7 +82,7 @@ class BluetoothUiStateMapperTest {
         val expectedDevice = DeviceUiModel(
             address = ADDRESS,
             measurementsCount = session.measurements.size,
-            summary = "Weight: $WEIGHT"
+            summary = "Weight: $WEIGHT lbs"
         )
 
         // when
@@ -432,8 +432,8 @@ class BluetoothUiStateMapperTest {
     }
 
     private companion object {
-        const val SYSTOLIC = 1.23f
-        const val DIASTOLIC = 3.21f
+        const val SYSTOLIC = 1
+        const val DIASTOLIC = 3
         const val PULSE_RATE = 4.32f
         const val WEIGHT = 4.56
         const val ADDRESS = "some device address"
