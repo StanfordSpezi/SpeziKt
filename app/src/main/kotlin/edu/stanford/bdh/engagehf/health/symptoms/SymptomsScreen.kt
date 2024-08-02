@@ -68,6 +68,7 @@ import com.patrykandpatrick.vico.core.common.shape.Shape
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.HealthPageTestIdentifier
 import edu.stanford.bdh.engagehf.health.HealthTableItem
+import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.EPOCH_SECONDS_DIVISOR
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
@@ -191,7 +192,7 @@ fun SymptomsChart(
 
     val valueFormatter: (Float, ChartValues, AxisPosition.Vertical?) -> CharSequence =
         { index, _, _ ->
-            val epochSecond = (index * 60).toLong()
+            val epochSecond = (index * EPOCH_SECONDS_DIVISOR).toLong()
             val dateTime =
                 ZonedDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZoneOffset.UTC)
             dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("MMM yy"))

@@ -163,7 +163,7 @@ private class HealthPagePreviewProvider : PreviewParameterProvider<HealthUiState
                         WeightRecord(
                             time = ZonedDateTime.now().toInstant(),
                             zoneOffset = ZonedDateTime.now().offset,
-                            weight = Mass.pounds(154.0)
+                            weight = @Suppress("MagicNumber") Mass.pounds(154.0)
                         )
                     ),
                     tableData = listOf(
