@@ -72,7 +72,11 @@ class AddWeightBottomSheetViewModel @Inject internal constructor(
 
     data class UiState(
         val weight: Double? = null,
-        val selectedDateMillis: Long = ZonedDateTime.now().toInstant().toEpochMilli(),
+        val selectedDateMillis: Long = ZonedDateTime.now()
+            .toLocalDate()
+            .atStartOfDay(ZonedDateTime.now().zone)
+            .toInstant()
+            .toEpochMilli(),
         val hour: Int = ZonedDateTime.now().hour,
         val minute: Int = ZonedDateTime.now().minute,
         val currentStep: Step = Step.WEIGHT,
