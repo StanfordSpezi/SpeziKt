@@ -31,7 +31,6 @@ class BloodPressureViewModel @Inject internal constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
-        println()
         setup()
     }
 
