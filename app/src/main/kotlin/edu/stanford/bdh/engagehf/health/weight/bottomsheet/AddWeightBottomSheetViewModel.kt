@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -82,6 +83,12 @@ class AddWeightBottomSheetViewModel @Inject internal constructor(
                     Instant.ofEpochMilli(selectedDateMillis),
                     ZonedDateTime.now().zone
                 ).plusHours(hour.toLong()).plusMinutes(minute.toLong())
+
+        val formattedDate: String
+            get() = date.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
+
+        val formattedTime: String
+            get() = date.format(DateTimeFormatter.ofPattern("HH:mm"))
     }
 
     enum class Step {

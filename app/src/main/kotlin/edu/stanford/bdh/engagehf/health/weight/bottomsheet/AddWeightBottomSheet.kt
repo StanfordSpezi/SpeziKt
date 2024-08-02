@@ -38,7 +38,6 @@ import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun AddWeightBottomSheet() {
@@ -111,7 +110,8 @@ private fun ReviewStep(
             }
         })
 
-    OutlinedTextField(value = uiState.date.format(DateTimeFormatter.ofPattern("yyyy.MM.dd")),
+    OutlinedTextField(
+        value = uiState.formattedDate,
         onValueChange = {},
         label = { Text("Date") },
         modifier = Modifier.fillMaxWidth(),
@@ -128,7 +128,8 @@ private fun ReviewStep(
             }
         })
 
-    OutlinedTextField(value = uiState.date.format(DateTimeFormatter.ofPattern("HH:mm")),
+    OutlinedTextField(
+        value = uiState.formattedTime,
         onValueChange = {},
         label = { Text("Time") },
         modifier = Modifier.fillMaxWidth(),
