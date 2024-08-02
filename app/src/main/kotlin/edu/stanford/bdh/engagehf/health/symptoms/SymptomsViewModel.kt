@@ -16,6 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SymptomsViewModel @Inject internal constructor(
     private val symptomsUiStateMapper: SymptomsUiStateMapper,
+    // TODO symptoms repository
 ) : ViewModel() {
     private val logger by speziLogger()
 
@@ -35,7 +36,7 @@ class SymptomsViewModel @Inject internal constructor(
                         qualityOfLifeScore = 50,
                         specificSymptomsScore = 40,
                         dizzinessScore = 30,
-                        date = ZonedDateTime.now().minusDays(4)
+                        date = ZonedDateTime.now()
                     ),
                     SymptomScore(
                         overallScore = 70,
@@ -44,7 +45,7 @@ class SymptomsViewModel @Inject internal constructor(
                         qualityOfLifeScore = 40,
                         specificSymptomsScore = 30,
                         dizzinessScore = 20,
-                        date = ZonedDateTime.now()
+                        date = ZonedDateTime.now().minusDays(4)
                     ),
                 )
             )

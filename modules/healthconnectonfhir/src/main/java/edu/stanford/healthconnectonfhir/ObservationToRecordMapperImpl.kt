@@ -31,7 +31,6 @@ class ObservationToRecordMapperImpl @Inject constructor() : ObservationToRecordM
         val zoneOffset =
             ZoneOffset.ofTotalSeconds(observation.effectiveDateTimeType.value.timezoneOffset)
 
-
         return HeartRateRecord(
             startTime = time,
             startZoneOffset = zoneOffset,
@@ -82,7 +81,7 @@ class ObservationToRecordMapperImpl @Inject constructor() : ObservationToRecordM
 
         val weight = observation.valueQuantity.value.toDouble()
         val unit =
-            observation.valueQuantity.unit // TODO right now we always store in kg; but gotta implement this properly
+            observation.valueQuantity.unit
 
         val metadata = androidx.health.connect.client.records.metadata.Metadata(
             clientRecordId = clientRecordId
@@ -91,7 +90,19 @@ class ObservationToRecordMapperImpl @Inject constructor() : ObservationToRecordM
         return WeightRecord(
             time = time,
             zoneOffset = zoneOffset,
-            weight = Mass.kilograms(weight),
+            weight = if (unit.equals(
+                    "kg",
+                    ignoreCase = true
+                )
+            ) {
+                Mass.kilograms(weight)
+            } else if (unit.equals("lbs", ignoreCase = true)) {
+                Mass.pounds(
+                    weight
+                )
+            } else {
+                Mass.ounces(weight)
+            },
             metadata = metadata
         )
     }

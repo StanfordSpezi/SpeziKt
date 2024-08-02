@@ -48,13 +48,7 @@ import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
-import com.patrykandpatrick.vico.compose.common.of
-import com.patrykandpatrick.vico.compose.common.rememberLegendItem
-import com.patrykandpatrick.vico.compose.common.rememberVerticalLegend
 import com.patrykandpatrick.vico.compose.common.shader.color
-import com.patrykandpatrick.vico.compose.common.vicoTheme
-import com.patrykandpatrick.vico.core.cartesian.CartesianDrawContext
-import com.patrykandpatrick.vico.core.cartesian.CartesianMeasureContext
 import com.patrykandpatrick.vico.core.cartesian.HorizontalLayout
 import com.patrykandpatrick.vico.core.cartesian.Scroll
 import com.patrykandpatrick.vico.core.cartesian.Zoom
@@ -68,7 +62,6 @@ import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer.PointProvider.Companion.single
 import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
-import com.patrykandpatrick.vico.core.common.Dimensions
 import com.patrykandpatrick.vico.core.common.component.TextComponent
 import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shape.Shape
@@ -76,7 +69,6 @@ import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.HealthPageTestIdentifier
 import edu.stanford.bdh.engagehf.health.HealthTableItem
 import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Sizes
@@ -219,18 +211,16 @@ fun SymptomsChart(
         rememberCartesianChart(
             rememberLineCartesianLayer(
                 LineCartesianLayer.LineProvider.series(
-                    chartColors().map { color ->
-                        rememberLine(
-                            shader = DynamicShader.color(color),
-                            backgroundShader = DynamicShader.color(Color.Transparent),
-                            pointProvider = single(
-                                rememberPoint(
-                                    shapeComponent,
-                                    5.dp,
-                                )
-                            ),
-                        )
-                    }
+                    rememberLine(
+                        shader = DynamicShader.color(primary),
+                        backgroundShader = DynamicShader.color(Color.Transparent),
+                        pointProvider = single(
+                            rememberPoint(
+                                shapeComponent,
+                                5.dp,
+                            )
+                        ),
+                    )
                 ),
                 axisValueOverrider = AxisValueOverrider.fixed(
                     maxY = 100f,
@@ -250,16 +240,15 @@ fun SymptomsChart(
                 valueFormatter = valueFormatter,
                 itemPlacer = remember {
                     HorizontalAxis.ItemPlacer.default(
-                        spacing = 2,
+                        spacing = 1,
                         offset = 0,
-                        addExtremeLabelPadding = false
+                        addExtremeLabelPadding = true
                     )
                 },
             ),
             marker = marker,
             decorations = emptyList(),
             horizontalLayout = HorizontalLayout.fullWidth(),
-            legend = rememberLegend(),
         ),
         modelProducer = modelProducer,
         zoomState = rememberVicoZoomState(
@@ -308,30 +297,6 @@ fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewModel.Action
         }
     }
 }
-
-@Composable
-private fun rememberLegend() =
-    rememberVerticalLegend<CartesianMeasureContext, CartesianDrawContext>(
-        items =
-        chartColors().mapIndexed { index, chartColor ->
-            rememberLegendItem(
-                icon = rememberShapeComponent(chartColor, Shape.Pill),
-                labelComponent = rememberTextComponent(vicoTheme.textColor),
-                label = "stringResource(R.string.series_x, index + 1)",
-            )
-        },
-        iconSize = 8.dp,
-        iconPadding = 8.dp,
-        spacing = 4.dp,
-        padding = Dimensions.of(top = 8.dp),
-    )
-
-@Composable
-private fun chartColors() = listOf(
-    primary,
-    Colors.secondary.copy(alpha = 0.2f),
-    Colors.tertiary.copy(alpha = 0.2f),
-)
 
 @Composable
 fun SymptomTypeText(symptomType: SymptomType) {

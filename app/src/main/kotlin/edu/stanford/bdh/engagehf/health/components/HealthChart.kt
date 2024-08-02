@@ -22,7 +22,12 @@ import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
 import com.patrykandpatrick.vico.compose.common.of
+import com.patrykandpatrick.vico.compose.common.rememberLegendItem
+import com.patrykandpatrick.vico.compose.common.rememberVerticalLegend
 import com.patrykandpatrick.vico.compose.common.shader.color
+import com.patrykandpatrick.vico.compose.common.vicoTheme
+import com.patrykandpatrick.vico.core.cartesian.CartesianDrawContext
+import com.patrykandpatrick.vico.core.cartesian.CartesianMeasureContext
 import com.patrykandpatrick.vico.core.cartesian.HorizontalLayout
 import com.patrykandpatrick.vico.core.cartesian.Scroll
 import com.patrykandpatrick.vico.core.cartesian.Zoom
@@ -40,11 +45,16 @@ import com.patrykandpatrick.vico.core.common.Dimensions
 import com.patrykandpatrick.vico.core.common.component.TextComponent
 import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shape.Shape
+import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.AverageHealthData
 import edu.stanford.bdh.engagehf.health.HealthUiData
+import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.ADAPTIVE_Y_VALUES_FRACTION
+import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.EPOCH_SECONDS_DIVISOR
 import edu.stanford.bdh.engagehf.health.TimeRange
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Colors.secondary
+import edu.stanford.spezi.core.design.theme.Colors.tertiary
+import edu.stanford.spezi.core.design.theme.Spacings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.Instant
@@ -77,7 +87,7 @@ fun HealthChart(
 
     val valueFormatter: (Float, ChartValues, AxisPosition.Vertical?) -> CharSequence =
         { index, _, _ ->
-            val epochSecond = (index * 60).toLong()
+            val epochSecond = (index * EPOCH_SECONDS_DIVISOR).toLong()
             val dateTime =
                 ZonedDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZoneOffset.UTC)
             when (uiState.selectedTimeRange) {
@@ -109,18 +119,23 @@ fun HealthChart(
         rememberCartesianChart(
             rememberLineCartesianLayer(
                 LineCartesianLayer.LineProvider.series(
-                    rememberLine(
-                        shader = DynamicShader.color(primary),
-                        backgroundShader = DynamicShader.color(Color.Transparent),
-                        pointProvider = single(
-                            rememberPoint(
-                                shapeComponent,
-                                5.dp,
-                            )
-                        ),
-                    ),
+                    chartColors().map { color ->
+                        rememberLine(
+                            shader = DynamicShader.color(color),
+                            backgroundShader = DynamicShader.color(Color.Transparent),
+                            pointProvider = single(
+                                rememberPoint(
+                                    shapeComponent,
+                                    5.dp,
+                                )
+                            ),
+                        )
+                    }
                 ),
-                axisValueOverrider = AxisValueOverrider.adaptiveYValues(1.05f, true),
+                axisValueOverrider = AxisValueOverrider.adaptiveYValues(
+                    ADAPTIVE_Y_VALUES_FRACTION,
+                    true
+                ),
             ),
             startAxis = rememberStartAxis(
                 label = rememberAxisLabelComponent(),
@@ -143,6 +158,7 @@ fun HealthChart(
             }
                 ?: emptyList(),
             horizontalLayout = HorizontalLayout.fullWidth(),
+            legend = rememberLegend(uiState.chartData),
         ),
         modelProducer = modelProducer,
         modifier = modifier,
@@ -155,6 +171,30 @@ fun HealthChart(
         ),
     )
 }
+
+@Composable
+private fun rememberLegend(chartData: List<AggregatedHealthData>) =
+    rememberVerticalLegend<CartesianMeasureContext, CartesianDrawContext>(
+        items =
+        chartColors().mapIndexed { index, chartColor ->
+            rememberLegendItem(
+                icon = rememberShapeComponent(chartColor, Shape.Pill),
+                labelComponent = rememberTextComponent(vicoTheme.textColor),
+                label = chartData[index].seriesName,
+            )
+        },
+        iconSize = Spacings.small,
+        iconPadding = Spacings.small,
+        spacing = 4.dp,
+        padding = Dimensions.of(top = Spacings.small),
+    )
+
+@Composable
+private fun chartColors() = listOf(
+    primary,
+    secondary,
+    tertiary,
+)
 
 @Composable
 private fun rememberComposeHorizontalLine(averageWeight: AverageHealthData): HorizontalLine {

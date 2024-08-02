@@ -1,13 +1,18 @@
 package edu.stanford.bdh.engagehf.health.symptoms
 
 import edu.stanford.bdh.engagehf.health.AggregatedHealthData
+import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.EPOCH_SECONDS_DIVISOR
 import edu.stanford.bdh.engagehf.health.NewestHealthData
 import edu.stanford.bdh.engagehf.health.TableEntryData
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 import javax.inject.Inject
 
 class SymptomsUiStateMapper @Inject constructor() {
+
+    private val dateTimeFormatter = DateTimeFormatter.ofPattern("MMM yyyy HH:mm")
 
     fun mapSymptomsUiState(
         selectedSymptomType: SymptomType,
@@ -29,58 +34,9 @@ class SymptomsUiStateMapper @Inject constructor() {
             )
         }
 
-        val symptomScoresByDay = symptomScores.groupBy { it.date }
-        val yValues = mutableListOf<Float>()
-        val xValues = mutableListOf<Float>()
-
-        symptomScoresByDay.forEach { (date, scores) ->
-            val averageScore = scores.map { score ->
-                when (selectedSymptomType) {
-                    SymptomType.OVERALL -> score.overallScore
-                    SymptomType.PHYSICAL_LIMITS -> score.physicalLimitsScore
-                    SymptomType.SOCIAL_LIMITS -> score.socialLimitsScore
-                    SymptomType.QUALITY_OF_LIFE -> score.qualityOfLifeScore
-                    SymptomType.SPECIFIC_SYMPTOMS -> score.specificSymptomsScore
-                    SymptomType.DIZZINESS -> score.dizzinessScore
-                }
-            }.average().toFloat()
-
-            yValues.add(averageScore)
-            xValues.add(date.toInstant().epochSecond / 60.0f)
-        }
-
-        val chartData = AggregatedHealthData(
-            yValues = yValues,
-            xValues = xValues,
-            seriesName = selectedSymptomType.name
-        )
-
-        val tableData = symptomScores.map { score ->
-            TableEntryData(
-                id = null,
-                value = when (selectedSymptomType) {
-                    SymptomType.OVERALL -> score.overallScore.toFloat()
-                    SymptomType.PHYSICAL_LIMITS -> score.physicalLimitsScore.toFloat()
-                    SymptomType.SOCIAL_LIMITS -> score.socialLimitsScore.toFloat()
-                    SymptomType.QUALITY_OF_LIFE -> score.qualityOfLifeScore.toFloat()
-                    SymptomType.SPECIFIC_SYMPTOMS -> score.specificSymptomsScore.toFloat()
-                    SymptomType.DIZZINESS -> score.dizzinessScore.toFloat()
-                },
-                secondValue = null,
-                formattedValues = when (selectedSymptomType) {
-                    SymptomType.OVERALL -> score.overallScore.toFloat()
-                    SymptomType.PHYSICAL_LIMITS -> score.physicalLimitsScore.toFloat()
-                    SymptomType.SOCIAL_LIMITS -> score.socialLimitsScore.toFloat()
-                    SymptomType.QUALITY_OF_LIFE -> score.qualityOfLifeScore.toFloat()
-                    SymptomType.SPECIFIC_SYMPTOMS -> score.specificSymptomsScore.toFloat()
-                    SymptomType.DIZZINESS -> score.dizzinessScore.toFloat()
-                }.toString() + "%",
-                date = score.date.toInstant().atZone(ZoneId.systemDefault()),
-                formattedDate = score.date.format(DateTimeFormatter.ofPattern("MMM yyyy HH:mm")),
-                trend = 0f,
-                formattedTrend = ""
-            )
-        }
+        val symptomScoresByDay = groupScoresByDay(symptomScores)
+        val chartData = calculateChartData(symptomScoresByDay, selectedSymptomType)
+        val tableData = mapTableData(symptomScores, selectedSymptomType)
 
         val newestData = symptomScores.maxByOrNull { it.date }
         val newestHealthData = NewestHealthData(
@@ -92,7 +48,7 @@ class SymptomsUiStateMapper @Inject constructor() {
                 SymptomType.SPECIFIC_SYMPTOMS -> newestData?.specificSymptomsScore.toString()
                 SymptomType.DIZZINESS -> newestData?.dizzinessScore.toString()
             } + "%",
-            formattedDate = newestData?.date?.format(DateTimeFormatter.ofPattern("MMM yyyy HH:mm"))
+            formattedDate = newestData?.date?.format(dateTimeFormatter)
                 ?: ""
         )
 
@@ -109,5 +65,80 @@ class SymptomsUiStateMapper @Inject constructor() {
                 )
             )
         )
+    }
+
+    private fun mapTableData(
+        symptomScores: List<SymptomScore>,
+        selectedSymptomType: SymptomType,
+    ): List<TableEntryData> {
+        return symptomScores.mapIndexed { index, score ->
+            val previousScore = if (index > 0) symptomScores[index - 1] else null
+            val currentValue = getScoreForSelectedSymptomType(selectedSymptomType, score).toFloat()
+            val previousValue = previousScore?.let {
+                getScoreForSelectedSymptomType(selectedSymptomType, it).toFloat()
+            }
+            val trend = previousValue?.let { currentValue - it } ?: 0f
+            val formattedTrend = if (index > 0 && previousValue != null) {
+                @Suppress("MagicNumber")
+                val trendPercentage = (trend / previousValue) * 100.0f
+                String.format(Locale.getDefault(), PERCENT_FORMAT, trendPercentage)
+            } else {
+                ""
+            }
+
+            TableEntryData(
+                id = null,
+                value = currentValue,
+                secondValue = null,
+                formattedValues = "$currentValue%",
+                date = score.date.toInstant().atZone(ZoneId.systemDefault()),
+                formattedDate = score.date.format(dateTimeFormatter),
+                trend = trend,
+                formattedTrend = formattedTrend
+            )
+        }
+    }
+
+    private fun groupScoresByDay(symptomScores: List<SymptomScore>): Map<ZonedDateTime, List<SymptomScore>> {
+        return symptomScores.groupBy { it.date }
+    }
+
+    private fun calculateChartData(
+        symptomScoresByDay: Map<ZonedDateTime, List<SymptomScore>>,
+        selectedSymptomType: SymptomType,
+    ): AggregatedHealthData {
+        val yValues = mutableListOf<Float>()
+        val xValues = mutableListOf<Float>()
+
+        symptomScoresByDay.forEach { (date, scores) ->
+            val averageScore = scores.map { score ->
+                getScoreForSelectedSymptomType(selectedSymptomType, score)
+            }.average().toFloat()
+
+            yValues.add(averageScore)
+            xValues.add(date.toInstant().epochSecond / EPOCH_SECONDS_DIVISOR)
+        }
+
+        return AggregatedHealthData(
+            yValues = yValues,
+            xValues = xValues,
+            seriesName = selectedSymptomType.name
+        )
+    }
+
+    private fun getScoreForSelectedSymptomType(
+        selectedSymptomType: SymptomType,
+        score: SymptomScore,
+    ) = when (selectedSymptomType) {
+        SymptomType.OVERALL -> score.overallScore
+        SymptomType.PHYSICAL_LIMITS -> score.physicalLimitsScore
+        SymptomType.SOCIAL_LIMITS -> score.socialLimitsScore
+        SymptomType.QUALITY_OF_LIFE -> score.qualityOfLifeScore
+        SymptomType.SPECIFIC_SYMPTOMS -> score.specificSymptomsScore
+        SymptomType.DIZZINESS -> score.dizzinessScore
+    }
+
+    companion object {
+        private const val PERCENT_FORMAT = "%+.1f%%"
     }
 }
