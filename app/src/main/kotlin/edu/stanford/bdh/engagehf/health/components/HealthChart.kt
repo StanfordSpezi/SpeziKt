@@ -176,12 +176,14 @@ fun HealthChart(
 private fun rememberLegend(chartData: List<AggregatedHealthData>) =
     rememberVerticalLegend<CartesianMeasureContext, CartesianDrawContext>(
         items =
-        chartColors().mapIndexed { index, chartColor ->
-            rememberLegendItem(
-                icon = rememberShapeComponent(chartColor, Shape.Pill),
-                labelComponent = rememberTextComponent(vicoTheme.textColor),
-                label = chartData[index].seriesName,
-            )
+        chartColors().mapIndexedNotNull { index, chartColor ->
+            chartData.getOrNull(index)?.let { data ->
+                rememberLegendItem(
+                    icon = rememberShapeComponent(chartColor, Shape.Pill),
+                    labelComponent = rememberTextComponent(vicoTheme.textColor),
+                    label = data.seriesName,
+                )
+            }
         },
         iconSize = Spacings.small,
         iconPadding = Spacings.small,

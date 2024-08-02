@@ -32,7 +32,7 @@ import edu.stanford.bdh.engagehf.health.bloodpressure.BloodPressurePage
 import edu.stanford.bdh.engagehf.health.components.SwipeBox
 import edu.stanford.bdh.engagehf.health.heartrate.HeartRatePage
 import edu.stanford.bdh.engagehf.health.symptoms.SymptomsPage
-import edu.stanford.bdh.engagehf.health.weight.WeighPage
+import edu.stanford.bdh.engagehf.health.weight.WeightPage
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Colors.secondary
@@ -109,7 +109,7 @@ fun HealthScreen(
             ) { page ->
                 when (tabs[page]) {
                     HealthTab.Symptoms -> SymptomsPage()
-                    HealthTab.Weight -> WeighPage()
+                    HealthTab.Weight -> WeightPage()
                     HealthTab.BloodPressure -> BloodPressurePage()
                     HealthTab.HeartRate -> HeartRatePage()
                 }

@@ -7,7 +7,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.health.HealthPage
 
 @Composable
-fun WeighPage() {
+fun WeightPage() {
     val viewModel = hiltViewModel<WeightViewModel>()
     val uiState by viewModel.uiState.collectAsState()
     HealthPage(uiState = uiState, onAction = viewModel::onAction)
