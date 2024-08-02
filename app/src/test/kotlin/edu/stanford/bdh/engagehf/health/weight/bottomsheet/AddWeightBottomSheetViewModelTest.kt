@@ -89,4 +89,18 @@ class AddWeightBottomSheetViewModelTest {
             // Then
             coVerify { bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet) }
         }
+
+    @Test
+    fun `given UpdateCurrentStep action, when dispatched, then current step is updated`() =
+        runTestUnconfined {
+            // Given
+            val step = AddWeightBottomSheetViewModel.Step.DATE
+
+            // When
+            viewModel.onAction(AddWeightBottomSheetViewModel.Action.UpdateCurrentStep(step))
+            val updatedState = viewModel.uiState.first()
+
+            // Then
+            assertThat(updatedState.currentStep).isEqualTo(step)
+        }
 }
