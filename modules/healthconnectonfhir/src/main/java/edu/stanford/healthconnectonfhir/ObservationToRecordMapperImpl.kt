@@ -91,17 +91,13 @@ class ObservationToRecordMapperImpl @Inject constructor() : ObservationToRecordM
             time = time,
             zoneOffset = zoneOffset,
             weight = if (unit.equals(
-                    "kg",
+                    "lbs",
                     ignoreCase = true
                 )
             ) {
-                Mass.kilograms(weight)
-            } else if (unit.equals("lbs", ignoreCase = true)) {
-                Mass.pounds(
-                    weight
-                )
+                Mass.pounds(weight)
             } else {
-                Mass.ounces(weight)
+                Mass.kilograms(weight)
             },
             metadata = metadata
         )
