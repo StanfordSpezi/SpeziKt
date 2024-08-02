@@ -82,7 +82,7 @@ class BluetoothUiStateMapperTest {
         val expectedDevice = DeviceUiModel(
             address = ADDRESS,
             measurementsCount = session.measurements.size,
-            summary = "Weight: $WEIGHT lbs"
+            summary = "Weight: 10.05 lbs"
         )
 
         // when
