@@ -96,4 +96,34 @@ class AppScreenViewModelTest {
             assertThat(updatedUiState.isBottomSheetExpanded).isFalse()
             assertThat(updatedUiState.bottomSheetContent).isNull()
         }
+
+    @Test
+    fun `given WeightDescriptionBottomSheet is received then uiState should be updated`() =
+        runTestUnconfined {
+            // Given
+            val event = BottomSheetEvents.Event.WeightDescriptionBottomSheet
+
+            // When
+            bottomSheetEventsFlow.emit(event)
+
+            // Then
+            val updatedUiState = viewModel.uiState.value
+            assertThat(updatedUiState.isBottomSheetExpanded).isTrue()
+            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.WEIGHT_DESCRIPTION_INFO)
+        }
+
+    @Test
+    fun `given AddWeightRecord is received then uiState should be updated`() =
+        runTestUnconfined {
+            // Given
+            val event = BottomSheetEvents.Event.AddWeightRecord
+
+            // When
+            bottomSheetEventsFlow.emit(event)
+
+            // Then
+            val updatedUiState = viewModel.uiState.value
+            assertThat(updatedUiState.isBottomSheetExpanded).isTrue()
+            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.ADD_WEIGHT_RECORD)
+        }
 }
