@@ -32,19 +32,20 @@ internal class UserSessionManagerImpl @Inject constructor(
 ) : UserSessionManager {
     private val logger by speziLogger()
 
-    override suspend fun uploadConsentPdf(pdfBytes: ByteArray): Result<Unit> = withContext(ioDispatcher) {
-        runCatching {
-            val currentUser = firebaseAuth.currentUser ?: error("User not available")
-            val inputStream = ByteArrayInputStream(pdfBytes)
-            logger.i { "Uploading file to Firebase Storage" }
-            val uploaded = firebaseStorage
-                .getReference("users/${currentUser.uid}/signature.pdf")
-                .putStream(inputStream)
-                .await().task.isSuccessful
+    override suspend fun uploadConsentPdf(pdfBytes: ByteArray): Result<Unit> =
+        withContext(ioDispatcher) {
+            runCatching {
+                val currentUser = firebaseAuth.currentUser ?: error("User not available")
+                val inputStream = ByteArrayInputStream(pdfBytes)
+                logger.i { "Uploading file to Firebase Storage" }
+                val uploaded = firebaseStorage
+                    .getReference("users/${currentUser.uid}/consent.pdf")
+                    .putStream(inputStream)
+                    .await().task.isSuccessful
 
-            if (!uploaded) error("Failed to upload signature.pdf")
+                if (!uploaded) error("Failed to upload signature.pdf")
+            }
         }
-    }
 
     override suspend fun getUserState(): UserState {
         val user = firebaseAuth.currentUser
@@ -72,7 +73,7 @@ internal class UserSessionManagerImpl @Inject constructor(
     private suspend fun hasConsented(): Boolean = withContext(ioDispatcher) {
         runCatching {
             val uid = getUserUid() ?: error("No uid available")
-            val reference = firebaseStorage.getReference("users/$uid/signature.pdf")
+            val reference = firebaseStorage.getReference("users/$uid/consent.pdf")
             reference.metadata.await()
         }.isSuccess
     }
