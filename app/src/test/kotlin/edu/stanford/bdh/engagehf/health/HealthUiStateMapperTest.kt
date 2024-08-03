@@ -5,6 +5,7 @@ import androidx.health.connect.client.units.Mass
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class HealthUiStateMapperTest {
@@ -38,16 +39,12 @@ class HealthUiStateMapperTest {
     fun `mapToHealthData with non-empty records returns correct HealthUiData`() {
         // Given
         val records = listOf(
-            WeightRecord(
-                time = ZonedDateTime.now().minusDays(1).toInstant(),
-                zoneOffset = ZonedDateTime.now().offset,
-                weight = Mass.kilograms(70.0)
+            createWeightRecord(
+                day = 1,
             ),
-            WeightRecord(
-                time = ZonedDateTime.now().toInstant(),
-                zoneOffset = ZonedDateTime.now().offset,
-                weight = Mass.kilograms(72.0)
-            )
+            createWeightRecord(
+                day = 2,
+            ),
         )
         val selectedTimeRange = TimeRange.DAILY
 
@@ -61,5 +58,93 @@ class HealthUiStateMapperTest {
         assertThat(result.newestData).isNotNull()
         assertThat(result.headerData.formattedValue).isNotEmpty()
         assertThat(result.headerData.formattedDate).isNotEmpty()
+    }
+
+    @Test
+    fun `mapToHealthData with non-empty records and selectedTimeRange WEEKLY returns correct HealthUiData`() {
+        // Given
+        val records = listOf(
+            createWeightRecord(
+                year = 2024,
+                day = 1,
+            ),
+            createWeightRecord(
+                year = 2024,
+                day = 1,
+            ),
+        )
+        val selectedTimeRange = TimeRange.WEEKLY
+
+        // When
+        val result = healthUiStateMapper.mapToHealthData(records, selectedTimeRange)
+
+        // Then
+        assertThat(result.records).isNotEmpty()
+        assertThat(result.chartData).isNotEmpty()
+        assertThat(result.chartData.size).isEqualTo(1)
+        assertThat(result.tableData).isNotEmpty()
+        assertThat(result.tableData.size).isEqualTo(2)
+        assertThat(result.newestData).isNotNull()
+        assertThat(result.headerData.formattedValue).isNotEmpty()
+        assertThat(result.headerData.formattedDate).isNotEmpty()
+    }
+
+    @Test
+    fun `mapToHealthData with non-empty records and selectedTimeRange MONTHLY returns correct HealthUiData`() {
+        // Given
+        val records = listOf(
+            createWeightRecord(
+                day = 3,
+            ),
+            createWeightRecord(
+                day = 4,
+            ),
+            createWeightRecord(
+                month = 9,
+                day = 5,
+            ),
+        )
+        val selectedTimeRange = TimeRange.MONTHLY
+
+        // When
+        val result = healthUiStateMapper.mapToHealthData(records, selectedTimeRange)
+
+        // Then
+        assertThat(result.records).isNotEmpty()
+        assertThat(result.chartData).isNotEmpty()
+        assertThat(result.tableData).isNotEmpty()
+        assertThat(result.tableData.size).isEqualTo(3)
+        assertThat(result.chartData.size).isEqualTo(1)
+        assertThat(result.chartData[0].xValues.size).isEqualTo(2)
+        assertThat(result.chartData[0].yValues.size).isEqualTo(2)
+        assertThat(result.newestData).isNotNull()
+        assertThat(result.headerData.formattedValue).isNotEmpty()
+        assertThat(result.headerData.formattedDate).isNotEmpty()
+    }
+
+    private fun createWeightRecord(
+        year: Int = 2024,
+        month: Int = 8,
+        day: Int = 1,
+        hour: Int = 5,
+        minute: Int = 4,
+        second: Int = 0,
+        nanoOfSecond: Int = 0,
+        weightInKg: Double = 70.0,
+    ): WeightRecord {
+        return WeightRecord(
+            time = ZonedDateTime.of(
+                year,
+                month,
+                day,
+                hour,
+                minute,
+                second,
+                nanoOfSecond,
+                ZoneId.systemDefault()
+            ).toInstant(),
+            zoneOffset = ZonedDateTime.now().offset,
+            weight = Mass.kilograms(weightInKg)
+        )
     }
 }
