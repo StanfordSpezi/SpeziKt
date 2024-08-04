@@ -58,7 +58,9 @@ private class MedicationDetailsProvider : PreviewParameterProvider<MedicationDet
 
 @ThemePreviews
 @Composable
-private fun MedicationStatusIconPreview(@PreviewParameter(MedicationDetailsProvider::class) medicationDetails: MedicationDetails) {
+private fun MedicationStatusIconPreview(
+    @PreviewParameter(MedicationDetailsProvider::class) medicationDetails: MedicationDetails,
+) {
     SpeziTheme(isPreview = true) {
         MedicationStatusIcon(medicationDetails = medicationDetails)
     }
