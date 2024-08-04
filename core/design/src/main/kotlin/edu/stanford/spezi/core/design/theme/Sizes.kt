@@ -59,5 +59,10 @@ object Sizes {
             @Composable
             @ReadOnlyComposable
             get() = 64.dp
+
+        val small: Dp
+            @Composable
+            @ReadOnlyComposable
+            get() = 20.dp
     }
 }
