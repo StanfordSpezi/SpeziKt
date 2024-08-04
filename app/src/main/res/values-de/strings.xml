@@ -18,4 +18,6 @@
     <string name="weight_icon_content_description">Gewicht Icon</string>
     <string name="blood_pressure_icon_content_description">Blutdruck Icon</string>
     <string name="new_measurement_text">Bitte nehmen Sie eine neue Messung vor.</string>
+    <string name="dosage_information_dose_row_current_dose">Aktuelle Dosis:</string>
+    <string name="dosage_information_dose_row_target_dose">Ziel Dosis:</string>
 </resources>
