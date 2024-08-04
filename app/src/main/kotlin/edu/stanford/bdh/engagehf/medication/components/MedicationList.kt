@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import edu.stanford.bdh.engagehf.medication.MedicationCard
 import edu.stanford.bdh.engagehf.medication.MedicationDetails
 import edu.stanford.bdh.engagehf.medication.MedicationRecommendationType
 import edu.stanford.bdh.engagehf.medication.MedicationUiState
@@ -20,11 +19,12 @@ import edu.stanford.spezi.core.design.theme.ThemePreviews
 
 @Composable
 fun MedicationList(
+    modifier: Modifier = Modifier,
     uiState: MedicationUiState.Success,
     onAction: (MedicationViewModel.Action) -> Unit,
 ) {
     LazyColumn(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(Spacings.medium)
     ) {
