@@ -51,10 +51,19 @@ fun MedicationCard(
         colors = CardDefaults.cardColors(
             containerColor = Colors.surface.lighten(isSystemInDarkTheme()),
         ),
-        modifier = modifier.testIdentifier(
-            identifier = MedicationScreenTestIdentifier.SUCCESS_MEDICATION_CARD_ROOT,
-            suffix = medicationDetails.id
-        ),
+        modifier = modifier
+            .testIdentifier(
+                identifier = MedicationScreenTestIdentifier.SUCCESS_MEDICATION_CARD_ROOT,
+                suffix = medicationDetails.id
+            )
+            .clickable {
+                onAction(
+                    MedicationViewModel.Action.ExpandMedication(
+                        medicationId = medicationDetails.id,
+                        isExpanded = !medicationDetails.isExpanded,
+                    )
+                )
+            },
     ) {
         Column(
             modifier = Modifier
@@ -62,14 +71,7 @@ fun MedicationCard(
                 .padding(Spacings.medium)
                 .animateContentSize()
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
-                onAction(
-                    MedicationViewModel.Action.ExpandMedication(
-                        medicationId = medicationDetails.id,
-                        isExpanded = !medicationDetails.isExpanded,
-                    )
-                )
-            }) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 MedicationStatusIcon(medicationDetails = medicationDetails)
                 Spacer(modifier = Modifier.width(Spacings.small))
                 Column {
