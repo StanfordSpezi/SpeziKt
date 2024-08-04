@@ -13,8 +13,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.medication.MedicationViewModel.Companion.CoolGrey
 import edu.stanford.bdh.engagehf.medication.MedicationViewModel.Companion.GreenProgress
 import edu.stanford.spezi.core.design.component.VerticalSpacer
@@ -46,8 +48,14 @@ fun MedicationProgressBar(currentProgress: Float, targetProgress: Float) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "Current", color = GreenProgress)
-            Text(text = "Target", color = CoolGrey)
+            Text(
+                text = stringResource(R.string.medication_progress_bar_current),
+                color = GreenProgress,
+            )
+            Text(
+                text = stringResource(R.string.medication_progress_bar_target),
+                color = CoolGrey,
+            )
         }
     }
 }

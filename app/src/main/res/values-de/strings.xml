@@ -20,4 +20,6 @@
     <string name="new_measurement_text">Bitte nehmen Sie eine neue Messung vor.</string>
     <string name="dosage_information_dose_row_current_dose">Aktuelle Dosis:</string>
     <string name="dosage_information_dose_row_target_dose">Ziel Dosis:</string>
+    <string name="medication_progress_bar_current">Aktuell</string>
+    <string name="medication_progress_bar_target">Ziel</string>
 </resources>

@@ -19,4 +19,6 @@
     <string name="new_measurement_text">Please make a new measurement.</string>
     <string name="dosage_information_dose_row_current_dose">Current Dose:</string>
     <string name="dosage_information_dose_row_target_dose">Target Dose:</string>
+    <string name="medication_progress_bar_current">Current</string>
+    <string name="medication_progress_bar_target">Target</string>
 </resources>
