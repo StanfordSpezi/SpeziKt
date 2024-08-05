@@ -1,7 +1,6 @@
 package edu.stanford.bdh.engagehf.messages
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,7 +54,7 @@ fun MessageItem(
             defaultElevation = Sizes.Elevation.medium,
         ),
         colors = CardDefaults.cardColors(
-            containerColor = Colors.surface.lighten(isSystemInDarkTheme()),
+            containerColor = Colors.surface.lighten(),
         ),
         modifier = modifier
             .padding(
@@ -66,7 +65,7 @@ fun MessageItem(
     ) {
         Column(
             modifier = Modifier
-                .background(Colors.surface.lighten(isSystemInDarkTheme()))
+                .background(Colors.surface.lighten())
                 .padding(start = Spacings.small, end = Spacings.small)
                 .fillMaxWidth()
         ) {
