@@ -1,6 +1,5 @@
 package edu.stanford.bdh.engagehf.medication
 
-
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
