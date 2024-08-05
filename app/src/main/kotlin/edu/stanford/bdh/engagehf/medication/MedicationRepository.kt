@@ -19,7 +19,7 @@ internal class MedicationRepository @Inject constructor(
 ) {
     private val logger by speziLogger()
 
-    fun getMedicationDetails(): List<MedicationDetails> {
+    private fun getMedicationDetails(): List<MedicationDetails> {
         return medicationDetails
     }
 
@@ -35,13 +35,12 @@ internal class MedicationRepository @Inject constructor(
                                 logger.e(error) { "Error observing medication details" }
                                 trySend(Result.failure(error))
                             } else {
-                                val documents = snapshot?.documents?.firstOrNull()
-                                documents?.let {
-                                    val medicationDetails =
-                                        it.toObject(MedicationDetails::class.java)
-                                    // TODO: possible to use a custom deserializer here; wait for the implementation of firestore seeding
-                                    trySend(Result.success(listOf(medicationDetails!!)))
-                                } ?: trySend(Result.success(emptyList()))
+                                val documents =
+                                    snapshot?.documents?.mapNotNull { it.toObject(MedicationDetails::class.java) }
+                                        // TODO Check mapping once firestore seeding is implemented
+                                        // TODO Remove custom Seeding Data as well
+                                        ?.toList()
+                                trySend(Result.success(getMedicationDetails() ?: emptyList()))
                             }
                         }
             }.onFailure {
@@ -60,8 +59,8 @@ internal class MedicationRepository @Inject constructor(
 private val medicationDetails = listOf(
     MedicationDetails(
         id = "1",
-        title = "Medication 1",
-        subtitle = "Subtitle 1",
+        title = "Sacubitril/Valsartan",
+        subtitle = "ARNI",
         description = "Description 1",
         type = MedicationRecommendationType.NO_ACTION_REQUIRED,
         dosageInformation = DosageInformation(
@@ -88,10 +87,10 @@ private val medicationDetails = listOf(
     ),
     MedicationDetails(
         id = "2",
-        title = "Medication 2",
-        subtitle = "Subtitle 2",
+        title = "Empagliflozin",
+        subtitle = "SGLT2i",
         description = "Description 2",
-        type = MedicationRecommendationType.IMPROVEMENT_AVAILABLE,
+        type = MedicationRecommendationType.NOT_STARTED,
         dosageInformation = DosageInformation(
             currentSchedule = listOf(
                 DoseSchedule(
@@ -120,6 +119,106 @@ private val medicationDetails = listOf(
         subtitle = "Subtitle 3",
         description = "Description 3",
         type = MedicationRecommendationType.MORE_LAB_OBSERVATIONS_REQUIRED,
+        dosageInformation = DosageInformation(
+            currentSchedule = listOf(
+                DoseSchedule(
+                    frequency = 1.0,
+                    dosage = listOf(1.0),
+                ),
+            ),
+            minimumSchedule = listOf(
+                DoseSchedule(
+                    frequency = 1.0,
+                    dosage = listOf(1.0),
+                ),
+            ),
+            targetSchedule = listOf(
+                DoseSchedule(
+                    frequency = 1.0,
+                    dosage = listOf(1.0),
+                ),
+            ),
+            unit = "mg",
+        )
+    ),
+    MedicationDetails(
+        id = "4",
+        title = "Medication 4",
+        subtitle = "Subtitle 4",
+        description = "Description 4",
+        type = MedicationRecommendationType.MORE_PATIENT_OBSERVATIONS_REQUIRED,
+        dosageInformation = null
+    ),
+    MedicationDetails(
+        id = "5",
+        title = "Medication 5",
+        subtitle = "Subtitle 5",
+        description = "Description 5",
+        type = MedicationRecommendationType.IMPROVEMENT_AVAILABLE,
+        dosageInformation = DosageInformation(
+            currentSchedule = listOf(
+                DoseSchedule(
+                    frequency = 1.0,
+                    dosage = listOf(1.0),
+                ),
+            ),
+            minimumSchedule = listOf(
+                DoseSchedule(
+                    frequency = 1.0,
+                    dosage = listOf(1.0),
+                ),
+            ),
+            targetSchedule = listOf(
+                DoseSchedule(
+                    frequency = 1.0,
+                    dosage = listOf(1.0),
+                ),
+            ),
+            unit = "mg",
+        )
+    ),
+    MedicationDetails(
+        id = "6",
+        title = "Medication 6",
+        subtitle = "Subtitle 6",
+        description = "Description 6",
+        type = MedicationRecommendationType.PERSONAL_TARGET_DOSE_REACHED,
+        dosageInformation = DosageInformation(
+            currentSchedule = listOf(
+                DoseSchedule(
+                    frequency = 1.0,
+                    dosage = listOf(1.0),
+                ),
+                DoseSchedule(
+                    frequency = 2.0,
+                    dosage = listOf(2.0)
+                )
+            ),
+            minimumSchedule = listOf(
+                DoseSchedule(
+                    frequency = 1.0,
+                    dosage = listOf(1.0),
+                ),
+            ),
+            targetSchedule = listOf(
+                DoseSchedule(
+                    frequency = 1.0,
+                    dosage = listOf(1.0),
+                ),
+                DoseSchedule(
+                    frequency = 1.0,
+                    dosage = listOf(1.0),
+                )
+            ),
+            unit = "mg",
+        )
+    ),
+    MedicationDetails(
+        id = "7",
+        title = "Carvedilol",
+        subtitle = "Beta Blocker",
+        description = "Description 7",
+        type = MedicationRecommendationType.TARGET_DOSE_REACHED,
         dosageInformation = DosageInformation(
             currentSchedule = listOf(
                 DoseSchedule(
