@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.utils.ComposableBlock
 import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.AccountNavigationEvent
@@ -153,7 +154,7 @@ internal class LoginViewModel @Inject constructor(
     }
 
     private fun sendForgotPasswordEmail() {
-        viewModelScope.launch {
+        asyncOperation {
             if (authenticationManager.sendForgotPasswordEmail(email).isSuccess) {
                 messageNotifier.notify("Email sent")
             } else {
@@ -162,8 +163,16 @@ internal class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun passwordSignIn() {
+    private fun asyncOperation(block: suspend () -> Unit) {
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            block()
+            _uiState.update { it.copy(isLoading = false) }
+        }
+    }
+
+    private fun passwordSignIn() {
+        asyncOperation {
             authenticationManager.signIn(
                 email = email,
                 password = password,
@@ -177,7 +186,7 @@ internal class LoginViewModel @Inject constructor(
     }
 
     private fun googleSignIn() {
-        viewModelScope.launch {
+        asyncOperation {
             authenticationManager.signInWithGoogle()
                 .onSuccess {
                     accountEvents.emit(event = AccountEvents.Event.SignInSuccess)

@@ -11,6 +11,7 @@ data class UiState(
     val isFormValid: Boolean = false,
     val isAlreadyRegistered: Boolean = false,
     val isPasswordSignInEnabled: Boolean = false,
+    val isLoading: Boolean = false,
 )
 
 enum class TextFieldType {

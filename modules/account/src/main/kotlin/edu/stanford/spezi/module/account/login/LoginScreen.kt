@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import edu.stanford.spezi.core.design.component.LoadingIndicator
 import edu.stanford.spezi.core.design.component.validated.outlinedtextfield.ValidatedOutlinedTextField
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
@@ -196,6 +197,10 @@ You may login to your existing account or create a new one if you don't have one
             },
             isAlreadyRegistered = uiState.isAlreadyRegistered,
         )
+    }
+
+    if (uiState.isLoading) {
+        LoadingIndicator()
     }
 }
 

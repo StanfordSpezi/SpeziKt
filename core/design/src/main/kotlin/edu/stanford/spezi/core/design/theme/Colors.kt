@@ -66,6 +66,17 @@ object Colors {
         @Composable
         @ReadOnlyComposable
         get() = scheme.error
+
+    val black
+        @Composable
+        @ReadOnlyComposable
+        get() = Black
+
+    val transparent
+        @Composable
+        @ReadOnlyComposable
+        get() = Color.Transparent
+
 }
 
 @Suppress("unused")
@@ -97,3 +108,6 @@ fun Color.lighten(): Color {
     val blue = (this.blue + factor).coerceIn(0f, 1f)
     return Color(red, green, blue, this.alpha)
 }
+
+@Composable
+fun Color.alpha(value: Float): Color = copy(alpha = value)

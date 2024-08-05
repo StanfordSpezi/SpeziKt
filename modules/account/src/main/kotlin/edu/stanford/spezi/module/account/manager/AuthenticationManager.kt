@@ -110,6 +110,7 @@ internal class AuthenticationManager @Inject constructor(
         return runCatching {
             val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
             if (result.user == null) error("Failed to sign in, returned null user")
+            logger.i { "Successfully logged in with $email and $password" }
         }.onFailure { e ->
             logger.e { "Error signing in with email and password: ${e.message}" }
         }

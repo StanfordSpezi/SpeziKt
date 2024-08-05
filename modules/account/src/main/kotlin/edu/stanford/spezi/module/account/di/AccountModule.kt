@@ -24,7 +24,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class AccountModule {
-    private val userFirebaseEmulator by lazy { BuildConfig.DEBUG }
+    private val userFirebaseEmulator by lazy { false }
 
     @Singleton
     @Provides
