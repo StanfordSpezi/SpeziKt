@@ -1,5 +1,7 @@
 package edu.stanford.bdh.engagehf.health
 
+import androidx.health.connect.client.records.BloodPressureRecord
+import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
 import ca.uhn.fhir.context.FhirContext
@@ -23,6 +25,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
 import org.hl7.fhir.r4.model.Observation
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class HealthRepository @Inject constructor(
@@ -41,14 +44,8 @@ class HealthRepository @Inject constructor(
         Gson()
     }
 
-    companion object {
-        const val DEFAULT_MAX_MONTHS = 6L
-    }
-
     private suspend fun <T : Record> observe(
         collection: ObservationCollection,
-        startDateTime: ZonedDateTime,
-        endDateTime: ZonedDateTime,
     ): Flow<Result<List<T>>> =
         callbackFlow {
             var listenerRegistration: ListenerRegistration? = null
@@ -56,27 +53,25 @@ class HealthRepository @Inject constructor(
                 kotlin.runCatching {
                     val uid = userSessionManager.getUserUid()
                         ?: throw IllegalStateException("User not authenticated")
+                    val fromDateString = ZonedDateTime
+                        .now()
+                        .minusMonths(DEFAULT_MAX_MONTHS)
+                        .format(DateTimeFormatter.ISO_DATE_TIME)
                     listenerRegistration = firestore.collection("users/$uid/${collection.name}")
-                        .whereGreaterThanOrEqualTo("effectiveDateTime", startDateTime)
-                        .whereLessThanOrEqualTo("effectiveDateTime", endDateTime)
-                        .orderBy("effectiveDateTime", Query.Direction.DESCENDING)
+                        .whereGreaterThanOrEqualTo(DATE_TIME_FIELD, fromDateString)
+                        .orderBy(DATE_TIME_FIELD, Query.Direction.DESCENDING)
                         .addSnapshotListener { snapshot, error ->
                             if (error != null) {
                                 logger.e(error) { "Error listening for latest observation in collection: ${collection.name}" }
                                 trySend(Result.failure(error))
                             } else {
                                 val documents = snapshot?.documents
-                                val records = documents?.mapNotNull { document ->
+                                val records: List<T> = documents?.mapNotNull { document ->
                                     val json = gson.toJson(document.data)
-                                    val observation =
-                                        jsonParser.parseResource(Observation::class.java, json)
-                                    val record = observationToRecordMapper.map(observation) as T
-                                    record
-                                }
-                                records?.let {
-                                    trySend(Result.success(records))
-                                }
-                                trySend(Result.success(emptyList()))
+                                    val observation = jsonParser.parseResource(Observation::class.java, json)
+                                    observationToRecordMapper.map(observation)
+                                } ?: emptyList()
+                                trySend(Result.success(records))
                             }
                         }
                 }.onFailure {
@@ -90,21 +85,17 @@ class HealthRepository @Inject constructor(
             }
         }
 
-    suspend fun observeWeightRecords(
-        startDateTime: ZonedDateTime,
-        endDateTime: ZonedDateTime,
-    ): Flow<Result<List<WeightRecord>>> =
-        observe(bodyWeightObservation, startDateTime, endDateTime)
+    suspend fun observeWeightRecords(): Flow<Result<List<WeightRecord>>> =
+        observe(bodyWeightObservation)
 
-    suspend fun observeBloodPressureRecords(
-        startDateTime: ZonedDateTime,
-        endDateTime: ZonedDateTime,
-    ): Flow<Result<List<Record>>> =
-        observe(bloodPressureCollection, startDateTime, endDateTime)
+    suspend fun observeBloodPressureRecords(): Flow<Result<List<BloodPressureRecord>>> =
+        observe(bloodPressureCollection)
 
-    suspend fun observeHeartRateRecords(
-        startDateTime: ZonedDateTime,
-        endDateTime: ZonedDateTime,
-    ): Flow<Result<List<Record>>> =
-        observe(heartRateCollection, startDateTime, endDateTime)
+    suspend fun observeHeartRateRecords(): Flow<Result<List<HeartRateRecord>>> =
+        observe(heartRateCollection)
+
+    companion object {
+        const val DEFAULT_MAX_MONTHS = 6L
+        const val DATE_TIME_FIELD = "effectiveDateTime"
+    }
 }

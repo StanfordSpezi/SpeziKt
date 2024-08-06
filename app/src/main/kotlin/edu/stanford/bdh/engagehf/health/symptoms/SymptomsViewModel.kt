@@ -54,7 +54,7 @@ class SymptomsViewModel @Inject internal constructor(
 
     fun onAction(action: Action) {
         when (action) {
-            Action.Info -> TODO()
+            Action.Info -> {}
             is Action.SelectSymptomType -> {
                 _uiState.update {
                     (it as? SymptomsUiState.Success)?.let { success ->

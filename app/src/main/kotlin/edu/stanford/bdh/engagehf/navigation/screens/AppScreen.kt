@@ -21,6 +21,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.DoNewMeasurementBottomSheet
@@ -122,7 +123,7 @@ fun AppScreen(
                                         contentDescription = null
                                     )
                                 },
-                                label = { Text(text = stringResource(id = item.label)) },
+                                label = { Text(text = stringResource(id = item.label), textAlign = TextAlign.Center) },
                                 selected = uiState.selectedItem == item,
                                 onClick = {
                                     onAction(Action.UpdateSelectedBottomBarItem(item))

@@ -9,7 +9,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
 import edu.stanford.bdh.engagehf.health.HealthAction
 import edu.stanford.bdh.engagehf.health.HealthRepository
-import edu.stanford.bdh.engagehf.health.HealthRepository.Companion.DEFAULT_MAX_MONTHS
 import edu.stanford.bdh.engagehf.health.HealthUiState
 import edu.stanford.bdh.engagehf.health.HealthUiStateMapper
 import edu.stanford.bdh.engagehf.health.TimeRange
@@ -18,7 +17,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.ZonedDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,9 +37,7 @@ class WeightViewModel @Inject internal constructor(
 
     private fun setup() {
         viewModelScope.launch {
-            healthRepository.observeWeightRecords(
-                ZonedDateTime.now(), ZonedDateTime.now().minusMonths(DEFAULT_MAX_MONTHS)
-            ).collect { result ->
+            healthRepository.observeWeightRecords().collect { result ->
                 when (result.isFailure) {
                     true -> {
                         _uiState.update {
