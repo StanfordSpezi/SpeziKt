@@ -5,7 +5,6 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -85,10 +84,10 @@ internal fun ExpandableVideoSection(
         modifier = modifier
             .fillMaxWidth()
             .padding(Spacings.small)
-            .clickable { expanded = !expanded },
+            .clickable { expanded = !expanded }
     ) {
         Column(
-            modifier = Modifier.background(Colors.surface.lighten(isSystemInDarkTheme()))
+            modifier = Modifier.background(Colors.surface.lighten())
         ) {
             SectionHeader(
                 text = title,

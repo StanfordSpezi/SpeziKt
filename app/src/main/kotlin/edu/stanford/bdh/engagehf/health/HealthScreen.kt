@@ -1,7 +1,6 @@
 package edu.stanford.bdh.engagehf.health
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -96,7 +95,7 @@ fun HealthScreen(
                             }
                         },
                         selectedContentColor = onPrimary,
-                        unselectedContentColor = onPrimary.lighten(isSystemInDarkTheme())
+                        unselectedContentColor = onPrimary.lighten()
                     )
                 }
             }

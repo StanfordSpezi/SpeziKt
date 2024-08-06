@@ -214,9 +214,10 @@ fun RegisterScreen(
             }
         ) {
             uiState.genderOptions.forEach { gender ->
-                DropdownMenuItem(text = { Text(text = gender) },
+                DropdownMenuItem(
+                    text = { Text(text = gender.displayName) },
                     onClick = {
-                        onAction(Action.TextFieldUpdate(gender, TextFieldType.GENDER))
+                        onAction(Action.TextFieldUpdate(gender.displayName, TextFieldType.GENDER))
                         onAction(Action.DropdownMenuExpandedUpdate(false))
                         dateOfBirthFocus.requestFocus()
                     })

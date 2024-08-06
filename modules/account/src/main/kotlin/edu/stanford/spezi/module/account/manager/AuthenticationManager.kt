@@ -1,45 +1,56 @@
-@file:Suppress("LongParameterList")
-
 package edu.stanford.spezi.module.account.manager
 
+import android.content.Context
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.module.account.register.GenderIdentity
 import kotlinx.coroutines.tasks.await
 import java.time.LocalDate
+import java.time.ZoneId
 import javax.inject.Inject
 
 internal class AuthenticationManager @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
+    private val credentialManager: CredentialManager,
+    @ApplicationContext private val context: Context,
 ) {
     private val logger by speziLogger()
 
-    suspend fun linkUserToGoogleAccount(googleIdToken: String): Boolean {
+    suspend fun linkUserToGoogleAccount(
+        googleIdToken: String,
+        firstName: String,
+        lastName: String,
+        email: String,
+        selectedGender: String,
+        dateOfBirth: LocalDate,
+    ): Result<Unit> {
         return runCatching {
             val credential = GoogleAuthProvider.getCredential(googleIdToken, null)
             firebaseAuth.signInAnonymously().await()
-            val result = firebaseAuth.currentUser?.linkWithCredential(credential)?.await()
-            result?.user != null
+            val result = getUser().linkWithCredential(credential).await()
+            if (result?.user == null) error("Failed to link to google account")
+            saveUserData(
+                firstName = firstName,
+                lastName = lastName,
+                email = email,
+                selectedGender = selectedGender,
+                dateOfBirth = dateOfBirth
+            ).getOrThrow()
         }.onFailure { e ->
             logger.e { "Error linking user to google account: ${e.message}" }
-        }.getOrDefault(false)
-    }
-
-    private fun getUser(): FirebaseUser? {
-        return firebaseAuth.currentUser
-    }
-
-    private suspend fun setDisplayName(firstName: String, lastName: String) {
-        val user = firebaseAuth.currentUser
-        val profileUpdates = UserProfileChangeRequest.Builder()
-            .setDisplayName("$firstName $lastName")
-            .build()
-
-        user?.updateProfile(profileUpdates)?.await()
+        }
     }
 
     suspend fun signUpWithEmailAndPassword(
@@ -49,69 +60,106 @@ internal class AuthenticationManager @Inject constructor(
         lastName: String,
         selectedGender: String,
         dateOfBirth: LocalDate,
-    ): Result<Boolean> {
+    ): Result<Unit> {
         return runCatching {
-            firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-            // TODO check if we can use credential here
-            //  val credential = EmailAuthProvider.getCredential(email, password)
-            //  firebaseAuth.currentUser?.linkWithCredential(credential)?.await()
-            saveUserData(firstName, lastName, email, selectedGender, dateOfBirth)
-            true
+            val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+            if (result?.user == null) error("Failed sign up with email and password")
+            saveUserData(firstName, lastName, email, selectedGender, dateOfBirth).getOrThrow()
+        }.onFailure {
+            logger.e(it) { "Error signing up with email and password" }
         }
     }
 
-    suspend fun saveUserData(
+    private suspend fun saveUserData(
         firstName: String,
         lastName: String,
         email: String,
         selectedGender: String,
-        dateOfBirth: LocalDate?,
-    ): Boolean {
+        dateOfBirth: LocalDate,
+    ): Result<Unit> {
         return runCatching {
-            setDisplayName(firstName, lastName)
             logger.i { "Signing up user" }
-            getUser()?.let { user ->
-                val userMap = hashMapOf(
-                    "email" to email,
-                    "firstName" to firstName,
-                    "lastName" to lastName,
-                    "gender" to selectedGender,
-                    "dateOfBirth" to dateOfBirth
-                )
-                firestore.collection("users").document(user.uid).set(userMap).await()
-            }
+            val user = getUser()
+            val profileUpdates = UserProfileChangeRequest.Builder()
+                .setDisplayName("$firstName $lastName")
+                .build()
+            user.updateProfile(profileUpdates).await()
+            user.updateEmail(email).await()
+            val localDateTime = dateOfBirth.atStartOfDay()
+            val instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant()
+            val birthDayTimestamp = Timestamp(instant.epochSecond, instant.nano)
+            val userMap = hashMapOf(
+                "GenderIdentityKey" to GenderIdentity.fromDisplayName(selectedGender).databaseName,
+                "DateOfBirthKey" to birthDayTimestamp
+            )
+            firestore
+                .collection("users")
+                .document(user.uid)
+                .set(userMap)
+                .await().let { }
         }.onFailure { e ->
             logger.e { "Error saving user data: ${e.message}" }
-        }.isSuccess
+        }
     }
 
     suspend fun sendForgotPasswordEmail(email: String): Result<Unit> {
         return runCatching {
-            firebaseAuth.sendPasswordResetEmail(email).await()
-            Unit
+            firebaseAuth.sendPasswordResetEmail(email).await().let { }
         }.onFailure { e ->
             logger.e { "Error sending forgot password email: ${e.message}" }
         }
     }
 
-    suspend fun signInWithEmailAndPassword(email: String, password: String): Boolean {
+    suspend fun signIn(email: String, password: String): Result<Unit> {
         return runCatching {
             val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
-            result.user != null
+            if (result.user == null) error("Failed to sign in, returned null user")
         }.onFailure { e ->
             logger.e { "Error signing in with email and password: ${e.message}" }
-        }.getOrDefault(false)
+        }
     }
 
-    suspend fun signInWithGoogle(idToken: String): Result<Boolean> {
+    suspend fun signInWithGoogle(): Result<Unit> {
         return runCatching {
-            val credential = GoogleAuthProvider.getCredential(idToken, null)
+            val googleIdTokenCredential = getCredential(filterByAuthorizedAccounts = true) ?: error("Failed to get credential")
+            val credential = GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
             logger.i { "Credential: $credential" }
             val result = firebaseAuth.signInWithCredential(credential).await()
             logger.i { "Result: $result" }
-            result.user != null
+            if (result.user == null) error("Failed to sign in, returned null user")
         }.onFailure {
             logger.e { "Error signing in with google: ${it.message}" }
         }
+    }
+
+    suspend fun getCredential(filterByAuthorizedAccounts: Boolean): GoogleIdTokenCredential? {
+        return runCatching {
+            val googleIdOption = GetGoogleIdOption.Builder()
+                .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
+                .setAutoSelectEnabled(true)
+                // TODO: Uncomment once secrets xml has been added in CI secrets
+                // .setServerClientId(context.getString(R.string.serverClientId))
+                .build()
+
+            val request = GetCredentialRequest.Builder()
+                .addCredentialOption(googleIdOption)
+                .build()
+
+            val credential = credentialManager.getCredential(
+                request = request,
+                context = context
+            ).credential
+            if (credential is CustomCredential && credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                GoogleIdTokenCredential.createFrom(credential.data)
+            } else {
+                null
+            }
+        }.onFailure { e ->
+            logger.e { "Error getting credential: ${e.message}" }
+        }.getOrNull()
+    }
+
+    private fun getUser(): FirebaseUser {
+        return firebaseAuth.currentUser ?: error("Not authenticated")
     }
 }
