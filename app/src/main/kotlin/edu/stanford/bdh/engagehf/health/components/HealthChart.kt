@@ -51,6 +51,7 @@ import edu.stanford.bdh.engagehf.health.HealthUiData
 import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.ADAPTIVE_Y_VALUES_FRACTION
 import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.EPOCH_SECONDS_DIVISOR
 import edu.stanford.bdh.engagehf.health.TimeRange
+import edu.stanford.spezi.core.design.theme.Colors.onTertiary
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Colors.secondary
 import edu.stanford.spezi.core.design.theme.Colors.tertiary
@@ -85,25 +86,7 @@ fun HealthChart(
         shape = Shape.Pill,
     )
 
-    val valueFormatter: (Float, ChartValues, AxisPosition.Vertical?) -> CharSequence =
-        { index, _, _ ->
-            val epochSecond = (index * EPOCH_SECONDS_DIVISOR).toLong()
-            val dateTime =
-                ZonedDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZoneOffset.UTC)
-            when (uiState.selectedTimeRange) {
-                TimeRange.WEEKLY -> {
-                    dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("MMM dd"))
-                }
-
-                TimeRange.MONTHLY -> {
-                    dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("MMM yy"))
-                }
-
-                TimeRange.DAILY -> {
-                    dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("MMM dd"))
-                }
-            }
-        }
+    val valueFormatter = rememberValueFormater(uiState = uiState)
 
     val marker = remember {
         DefaultCartesianMarker(
@@ -115,8 +98,7 @@ fun HealthChart(
     }
 
     CartesianChartHost(
-        chart =
-        rememberCartesianChart(
+        chart = rememberCartesianChart(
             rememberLineCartesianLayer(
                 LineCartesianLayer.LineProvider.series(
                     chartColors().map { color ->
@@ -155,8 +137,7 @@ fun HealthChart(
             marker = marker,
             decorations = uiState.averageData?.let { averageWeight ->
                 listOf(rememberComposeHorizontalLine(averageWeight))
-            }
-                ?: emptyList(),
+            } ?: emptyList(),
             horizontalLayout = HorizontalLayout.fullWidth(),
             legend = rememberLegend(uiState.chartData),
         ),
@@ -171,6 +152,24 @@ fun HealthChart(
         ),
     )
 }
+
+@Composable
+private fun rememberValueFormater(
+    uiState: HealthUiData,
+): (Float, ChartValues, AxisPosition.Vertical?) -> CharSequence =
+    remember(uiState.selectedTimeRange) {
+        { index, _, _ ->
+            val epochSecond = (index * EPOCH_SECONDS_DIVISOR).toLong()
+            val dateTime =
+                ZonedDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZoneOffset.UTC)
+            val pattern = when (uiState.selectedTimeRange) {
+                TimeRange.WEEKLY -> "MMM dd"
+                TimeRange.MONTHLY -> "MMM yy"
+                TimeRange.DAILY -> "MMM dd"
+            }
+            dateTime.format(DateTimeFormatter.ofPattern(pattern))
+        }
+    }
 
 @Composable
 private fun rememberLegend(chartData: List<AggregatedHealthData>) =
@@ -203,15 +202,14 @@ private fun rememberComposeHorizontalLine(averageWeight: AverageHealthData): Hor
     return rememberHorizontalLine(
         y = { averageWeight.value },
         line = rememberLineComponent(secondary, 2.dp),
-        labelComponent =
-        rememberTextComponent(
+        labelComponent = rememberTextComponent(
+            color = onTertiary,
             margins = Dimensions.of(4.dp),
-            padding =
-            Dimensions.of(
+            padding = Dimensions.of(
                 8.dp,
                 2.dp,
             ),
-            background = rememberShapeComponent(secondary, Shape.Pill),
+            background = rememberShapeComponent(tertiary, Shape.Pill),
         ),
         label = { averageWeight.formattedValue },
     )

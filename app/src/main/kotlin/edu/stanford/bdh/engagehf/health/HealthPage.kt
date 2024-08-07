@@ -76,7 +76,7 @@ fun HealthPage(
 
             is HealthUiState.Success -> {
                 HealthHeader(
-                    uiState.data.headerData,
+                    headerData = uiState.data.headerData,
                     onTimeRangeDropdownAction = {
                         onAction(
                             HealthAction.ToggleTimeRangeDropdown(
@@ -140,6 +140,7 @@ private class HealthPagePreviewProvider : PreviewParameterProvider<HealthUiState
         get() = sequenceOf(
             HealthUiState.Loading,
             HealthUiState.Error("An error occurred"),
+            HealthUiState.NoData("No data available"),
             HealthUiState.Success(
                 data = HealthUiData(
                     headerData = HealthHeaderData(
