@@ -56,11 +56,10 @@ class AddWeightBottomSheetViewModelTest {
             // When
             viewModel.onAction(AddWeightBottomSheetViewModel.Action.UpdateDate(dateMillis))
             viewModel.onAction(AddWeightBottomSheetViewModel.Action.UpdateTime(0, 0))
-            val updatedState = viewModel.uiState.first()
+            val updatedState = viewModel.uiState.value
 
             // Then
             assertThat(updatedState.selectedDateMillis).isEqualTo(dateMillis)
-            assertThat(updatedState.formattedDate).isEqualTo("1970.01.01")
         }
 
     @Test

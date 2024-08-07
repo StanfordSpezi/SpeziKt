@@ -1,7 +1,6 @@
 package edu.stanford.bdh.engagehf.health.components
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
@@ -14,10 +13,9 @@ import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import edu.stanford.spezi.core.design.theme.Colors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,26 +27,8 @@ fun SwipeBox(
 ) {
     val swipeState = rememberSwipeToDismissBoxState()
 
-    lateinit var icon: ImageVector
-    lateinit var alignment: Alignment
-    var color: Color = Color.Transparent
-    var iconVisible = false
-
-    when (swipeState.dismissDirection) {
-        SwipeToDismissBoxValue.EndToStart -> {
-            icon = Icons.Outlined.Delete
-            alignment = Alignment.CenterEnd
-            color = Colors.error
-            iconVisible = true
-        }
-
-        SwipeToDismissBoxValue.StartToEnd -> {
-            iconVisible = false
-        }
-
-        SwipeToDismissBoxValue.Settled -> {
-            iconVisible = false
-        }
+    val iconVisible = remember(swipeState.dismissDirection) {
+        swipeState.dismissDirection == SwipeToDismissBoxValue.EndToStart
     }
 
     SwipeToDismissBox(
@@ -57,14 +37,14 @@ fun SwipeBox(
         backgroundContent = {
             if (iconVisible) {
                 Box(
-                    contentAlignment = alignment,
+                    contentAlignment = Alignment.CenterEnd,
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(color)
                 ) {
                     Icon(
                         modifier = Modifier.minimumInteractiveComponentSize(),
-                        imageVector = icon,
+                        tint = Colors.error,
+                        imageVector = Icons.Outlined.Delete,
                         contentDescription = null
                     )
                 }
@@ -75,18 +55,10 @@ fun SwipeBox(
         content()
     }
 
-    when (swipeState.currentValue) {
-        SwipeToDismissBoxValue.EndToStart -> {
-            LaunchedEffect(swipeState) {
-                onDelete()
-                swipeState.snapTo(SwipeToDismissBoxValue.Settled)
-            }
-        }
-
-        SwipeToDismissBoxValue.StartToEnd -> {
-        }
-
-        SwipeToDismissBoxValue.Settled -> {
+    if (swipeState.currentValue == SwipeToDismissBoxValue.EndToStart) {
+        LaunchedEffect(swipeState) {
+            onDelete()
+            swipeState.snapTo(SwipeToDismissBoxValue.Settled)
         }
     }
 }

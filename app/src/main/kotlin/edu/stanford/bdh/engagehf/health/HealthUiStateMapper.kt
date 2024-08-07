@@ -6,7 +6,6 @@ import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
-import edu.stanford.bdh.engagehf.health.components.HealthHeaderData
 import edu.stanford.spezi.core.utils.LocaleProvider
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -68,15 +67,15 @@ class HealthUiStateMapper @Inject constructor(
             tableData = tableData,
             newestData = newestData,
             averageData = getAverageData(tableData),
-            headerData = generateHealthHeaderData(selectedTimeRange, newestData)
+            infoRowData = generateHealthHeaderData(selectedTimeRange, newestData)
         )
     }
 
     private fun generateHealthHeaderData(
         selectedTimeRange: TimeRange,
         newestData: NewestHealthData?,
-    ): HealthHeaderData {
-        return HealthHeaderData(
+    ): InfoRowData {
+        return InfoRowData(
             selectedTimeRange = selectedTimeRange,
             formattedValue = newestData?.formattedValue ?: "",
             formattedDate = newestData?.formattedDate ?: "",
@@ -90,11 +89,11 @@ class HealthUiStateMapper @Inject constructor(
         diastolic: Boolean = false,
     ): List<Pair<Float, Float>> {
         val groupedRecords = groupRecordsByTimeRange(records, selectedTimeRange)
-        return groupedRecords.mapValues { entry ->
-            val averageValue = entry.value.map { getValue(it, diastolic).value }.average()
-            val xValue: Float = getXValue(entry.value.first())
+        return groupedRecords.values.map { entries ->
+            val averageValue = entries.map { getValue(it, diastolic).value }.average()
+            val xValue = entries.first().zonedDateTime.toEpochSecond().toFloat() / EPOCH_SECONDS_DIVISOR
             Pair(averageValue.toFloat(), xValue)
-        }.values.toList()
+        }
     }
 
     private fun groupRecordsByTimeRange(
@@ -196,10 +195,6 @@ class HealthUiStateMapper @Inject constructor(
         )
     }
 
-    private fun getXValue(record: EngageRecord): Float {
-        return record.zonedDateTime.toEpochSecond().toFloat() / EPOCH_SECONDS_DIVISOR
-    }
-
     private fun mapTableData(records: List<EngageRecord>): List<TableEntryData> {
         if (records.isEmpty()) return emptyList()
 
@@ -292,7 +287,7 @@ class HealthUiStateMapper @Inject constructor(
     ) = if (uiState is HealthUiState.Success) {
         uiState.copy(
             data = uiState.data.copy(
-                headerData = uiState.data.headerData.copy(
+                infoRowData = uiState.data.infoRowData.copy(
                     isSelectedTimeRangeDropdownExpanded = healthAction.expanded
                 )
             )

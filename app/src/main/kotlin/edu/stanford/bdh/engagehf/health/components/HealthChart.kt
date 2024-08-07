@@ -31,11 +31,10 @@ import com.patrykandpatrick.vico.core.cartesian.CartesianMeasureContext
 import com.patrykandpatrick.vico.core.cartesian.HorizontalLayout
 import com.patrykandpatrick.vico.core.cartesian.Scroll
 import com.patrykandpatrick.vico.core.cartesian.Zoom
-import com.patrykandpatrick.vico.core.cartesian.axis.AxisPosition
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.AxisValueOverrider
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.ChartValues
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.decoration.HorizontalLine
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
@@ -156,10 +155,10 @@ fun HealthChart(
 @Composable
 private fun rememberValueFormater(
     uiState: HealthUiData,
-): (Float, ChartValues, AxisPosition.Vertical?) -> CharSequence =
+): CartesianValueFormatter =
     remember(uiState.selectedTimeRange) {
-        { index, _, _ ->
-            val epochSecond = (index * EPOCH_SECONDS_DIVISOR).toLong()
+        CartesianValueFormatter { value, _, _ ->
+            val epochSecond = (value * EPOCH_SECONDS_DIVISOR).toLong()
             val dateTime =
                 ZonedDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZoneOffset.UTC)
             val pattern = when (uiState.selectedTimeRange) {
@@ -174,8 +173,7 @@ private fun rememberValueFormater(
 @Composable
 private fun rememberLegend(chartData: List<AggregatedHealthData>) =
     rememberVerticalLegend<CartesianMeasureContext, CartesianDrawContext>(
-        items =
-        chartColors().mapIndexedNotNull { index, chartColor ->
+        items = chartColors().mapIndexedNotNull { index, chartColor ->
             chartData.getOrNull(index)?.let { data ->
                 rememberLegendItem(
                     icon = rememberShapeComponent(chartColor, Shape.Pill),

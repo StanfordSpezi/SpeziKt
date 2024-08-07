@@ -3,7 +3,6 @@ package edu.stanford.bdh.engagehf.health
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.units.Mass
-import edu.stanford.bdh.engagehf.health.components.HealthHeaderData
 import edu.stanford.bdh.engagehf.simulator.HealthPageSimulator
 import org.junit.Rule
 import org.junit.Test
@@ -134,7 +133,7 @@ class HealthPageTest {
     private fun getSuccessState(entryId: String? = null): HealthUiState {
         return HealthUiState.Success(
             data = HealthUiData(
-                headerData = HealthHeaderData(
+                infoRowData = InfoRowData(
                     selectedTimeRange = TimeRange.MONTHLY,
                     formattedValue = "70.0 kg",
                     formattedDate = "Jan 2022",

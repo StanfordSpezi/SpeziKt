@@ -56,8 +56,8 @@ class HealthUiStateMapperTest {
         assertThat(result.chartData).isNotEmpty()
         assertThat(result.tableData).isNotEmpty()
         assertThat(result.newestData).isNotNull()
-        assertThat(result.headerData.formattedValue).isNotEmpty()
-        assertThat(result.headerData.formattedDate).isNotEmpty()
+        assertThat(result.infoRowData.formattedValue).isNotEmpty()
+        assertThat(result.infoRowData.formattedDate).isNotEmpty()
     }
 
     @Test
@@ -84,8 +84,8 @@ class HealthUiStateMapperTest {
         assertThat(result.tableData).isNotEmpty()
         assertThat(result.tableData.size).isEqualTo(2)
         assertThat(result.newestData).isNotNull()
-        assertThat(result.headerData.formattedValue).isNotEmpty()
-        assertThat(result.headerData.formattedDate).isNotEmpty()
+        assertThat(result.infoRowData.formattedValue).isNotEmpty()
+        assertThat(result.infoRowData.formattedDate).isNotEmpty()
     }
 
     @Test
@@ -116,8 +116,8 @@ class HealthUiStateMapperTest {
         assertThat(result.chartData[0].xValues.size).isEqualTo(2)
         assertThat(result.chartData[0].yValues.size).isEqualTo(2)
         assertThat(result.newestData).isNotNull()
-        assertThat(result.headerData.formattedValue).isNotEmpty()
-        assertThat(result.headerData.formattedDate).isNotEmpty()
+        assertThat(result.infoRowData.formattedValue).isNotEmpty()
+        assertThat(result.infoRowData.formattedDate).isNotEmpty()
     }
 
     private fun createWeightRecord(

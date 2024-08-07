@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -104,7 +103,7 @@ fun HealthScreen(
                 state = pagerState,
                 modifier = Modifier
                     .weight(1f)
-                    .padding(Spacings.medium)
+                    .padding(horizontal = Spacings.medium)
             ) { page ->
                 when (tabs[page]) {
                     HealthTab.Symptoms -> SymptomsPage()
@@ -146,6 +145,7 @@ fun HealthScreen(
 fun HealthTableItem(entry: TableEntryData) {
     Row(
         modifier = Modifier
+            .padding(vertical = Spacings.extraSmall)
             .testIdentifier(
                 identifier = HealthPageTestIdentifier.HEALTH_HISTORY_TABLE_ITEM,
                 suffix = entry.id
@@ -153,11 +153,10 @@ fun HealthTableItem(entry: TableEntryData) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Spacer(modifier = Modifier.padding(start = Spacings.medium))
         Text(
             text = entry.formattedValues,
-            style = TextStyles.headlineMedium.copy(color = primary),
-            modifier = Modifier.padding(vertical = 4.dp)
+            style = TextStyles.headlineSmall.copy(color = primary),
+            modifier = Modifier.padding(vertical = Spacings.extraSmall)
         )
         Text(
             text = entry.formattedTrend,
@@ -168,9 +167,7 @@ fun HealthTableItem(entry: TableEntryData) {
                     color = secondary
                 )
             },
-            modifier = Modifier
-                .width(60.dp)
-                .padding(start = Spacings.small)
+            modifier = Modifier.padding(start = Spacings.small)
         )
         Spacer(modifier = Modifier.weight(1f))
         Text(

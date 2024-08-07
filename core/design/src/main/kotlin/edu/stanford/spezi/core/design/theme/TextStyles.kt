@@ -15,8 +15,10 @@ import androidx.compose.ui.unit.sp
 import edu.stanford.spezi.core.design.theme.TextStyles.bodyLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.bodyMedium
 import edu.stanford.spezi.core.design.theme.TextStyles.bodySmall
+import edu.stanford.spezi.core.design.theme.TextStyles.headlineLarge
+import edu.stanford.spezi.core.design.theme.TextStyles.headlineMedium
+import edu.stanford.spezi.core.design.theme.TextStyles.headlineSmall
 import edu.stanford.spezi.core.design.theme.TextStyles.labelSmall
-import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.titleMedium
 
 object TextStyles {
@@ -64,6 +66,11 @@ object TextStyles {
         @Composable
         @ReadOnlyComposable
         get() = typography.labelLarge
+
+    val headlineSmall
+        @Composable
+        @ReadOnlyComposable
+        get() = typography.headlineSmall
 
     val headlineMedium
         @Composable
@@ -127,31 +134,35 @@ private fun TypographyPreview() {
     SpeziTheme {
         Column(verticalArrangement = Arrangement.spacedBy(Spacings.small)) {
             Text(
-                text = "TextStyles.headlineLarge",
-                style = titleLarge
+                text = "headlineLarge",
+                style = headlineLarge
             )
             Text(
-                text = "TextStyles.headlineMedium",
-                style = titleMedium
+                text = "headlineMedium",
+                style = headlineMedium
+            )
+            Text(
+                text = "headlineSmall",
+                style = headlineSmall
             )
             Text(
                 text = "titleMedium",
                 style = titleMedium
             )
             Text(
-                text = "TextStyles.bodyLarge",
+                text = "bodyLarge",
                 style = bodyLarge
             )
             Text(
-                text = "TextStyles.bodyMedium",
+                text = "bodyMedium",
                 style = bodyMedium
             )
             Text(
-                text = "TextStyles.bodySmall",
+                text = "bodySmall",
                 style = bodySmall
             )
             Text(
-                text = "TextStyles.labelSmall",
+                text = "labelSmall",
                 style = labelSmall
             )
         }

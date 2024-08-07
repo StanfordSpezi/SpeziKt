@@ -1,17 +1,27 @@
 package edu.stanford.bdh.engagehf.health
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -20,11 +30,11 @@ import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.units.Mass
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.components.HealthChart
-import edu.stanford.bdh.engagehf.health.components.HealthHeader
-import edu.stanford.bdh.engagehf.health.components.HealthHeaderData
 import edu.stanford.bdh.engagehf.health.components.SwipeBox
-import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.theme.Colors
+import edu.stanford.bdh.engagehf.health.components.TimeRangeDropdown
+import edu.stanford.spezi.core.design.theme.Colors.onPrimary
+import edu.stanford.spezi.core.design.theme.Colors.primary
+import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
@@ -52,7 +62,7 @@ fun HealthPage(
         HealthUiState.Loading -> {
             CenteredContent {
                 CircularProgressIndicator(
-                    color = Colors.primary,
+                    color = primary,
                     modifier = Modifier.testIdentifier(HealthPageTestIdentifier.PROGRESS_INDICATOR)
                 )
             }
@@ -77,7 +87,15 @@ fun HealthPage(
             ) {
                 listHeader(uiState = uiState, onAction = onAction)
 
-                items(uiState.data.tableData) { entry ->
+                item {
+                    Text(
+                        text = stringResource(id = R.string.health_history),
+                        style = TextStyles.headlineSmall,
+                        modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_HISTORY_TEXT)
+                    )
+                }
+                val data = uiState.data.tableData
+                itemsIndexed(data) { index, entry ->
                     SwipeBox(
                         onDelete = {
                             entry.id?.let { onAction(HealthAction.DeleteRecord(it)) }
@@ -85,6 +103,7 @@ fun HealthPage(
                         content = {
                             HealthTableItem(entry)
                         })
+                    if (index != data.size - 1) HorizontalDivider()
                 }
             }
         }
@@ -96,8 +115,8 @@ private fun LazyListScope.listHeader(
     onAction: (HealthAction) -> Unit,
 ) {
     item {
-        HealthHeader(
-            headerData = uiState.data.headerData,
+        InfoRow(
+            infoRowData = uiState.data.infoRowData,
             onTimeRangeDropdownAction = {
                 onAction(
                     HealthAction.ToggleTimeRangeDropdown(
@@ -111,29 +130,70 @@ private fun LazyListScope.listHeader(
         )
         HealthChart(
             uiState = uiState.data,
-            modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_CHART)
+            modifier = Modifier
+                .padding(bottom = Spacings.medium)
+                .testIdentifier(HealthPageTestIdentifier.HEALTH_CHART)
         )
-        VerticalSpacer()
-        Row(
-            modifier = Modifier.padding(horizontal = Spacings.medium),
-            verticalAlignment = Alignment.Bottom,
-        ) {
-            Text(
-                text = stringResource(id = R.string.health_history),
-                style = TextStyles.headlineMedium,
-                modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_HISTORY_TEXT)
-            )
-        }
     }
 }
 
 @Composable
 private fun CenteredContent(content: ComposableBlock) {
     Box(
-        modifier = Modifier.fillMaxSize().testIdentifier(HealthPageTestIdentifier.CENTERED_CONTENT),
+        modifier = Modifier
+            .fillMaxSize()
+            .testIdentifier(HealthPageTestIdentifier.CENTERED_CONTENT),
         contentAlignment = Alignment.Center,
     ) {
         content()
+    }
+}
+
+@Composable
+private fun InfoRow(
+    infoRowData: InfoRowData,
+    onTimeRangeDropdownAction: (Boolean) -> Unit,
+    updateTimeRange: (TimeRange) -> Unit,
+    onInfoAction: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.padding(vertical = Spacings.medium)
+    ) {
+        Column {
+            Text(
+                text = infoRowData.formattedValue,
+                style = TextStyles.headlineLarge.copy(color = primary),
+                modifier = Modifier.padding(vertical = Spacings.small)
+            )
+            Text(
+                text = infoRowData.formattedDate,
+                style = TextStyles.bodyMedium
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        TimeRangeDropdown(
+            isSelectedTimeRangeDropdownExpanded = infoRowData.isSelectedTimeRangeDropdownExpanded,
+            selectedTimeRange = infoRowData.selectedTimeRange,
+            onToggleExpanded = onTimeRangeDropdownAction,
+            updateTimeRange = updateTimeRange
+        )
+        IconButton(
+            modifier = Modifier.size(Sizes.Icon.large),
+            onClick = onInfoAction
+        ) {
+            Icon(
+                painter = painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_info),
+                contentDescription = stringResource(R.string.info_icon_content_description),
+                modifier = Modifier
+                    .size(Sizes.Icon.medium)
+                    .background(primary, shape = CircleShape)
+                    .shadow(Spacings.small, CircleShape)
+                    .padding(Spacings.small),
+                tint = onPrimary
+            )
+        }
     }
 }
 
@@ -157,7 +217,7 @@ private class HealthPagePreviewProvider : PreviewParameterProvider<HealthUiState
             HealthUiState.NoData("No data available"),
             HealthUiState.Success(
                 data = HealthUiData(
-                    headerData = HealthHeaderData(
+                    infoRowData = InfoRowData(
                         selectedTimeRange = TimeRange.MONTHLY,
                         formattedValue = "70.0 kg",
                         formattedDate = "Jan 2022",

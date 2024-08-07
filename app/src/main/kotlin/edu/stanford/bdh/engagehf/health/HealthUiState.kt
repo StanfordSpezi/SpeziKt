@@ -1,7 +1,6 @@
 package edu.stanford.bdh.engagehf.health
 
 import androidx.health.connect.client.records.Record
-import edu.stanford.bdh.engagehf.health.components.HealthHeaderData
 import java.time.ZonedDateTime
 
 data class HealthUiData(
@@ -10,9 +9,9 @@ data class HealthUiData(
     val tableData: List<TableEntryData> = emptyList(),
     val newestData: NewestHealthData? = null,
     val averageData: AverageHealthData? = null,
-    val headerData: HealthHeaderData,
+    val infoRowData: InfoRowData,
 ) {
-    val selectedTimeRange = headerData.selectedTimeRange
+    val selectedTimeRange = infoRowData.selectedTimeRange
 }
 
 sealed interface HealthUiState {
@@ -51,3 +50,10 @@ data class TableEntryData(
     val isTrendPositive: Boolean
         get() = trend > 0
 }
+
+data class InfoRowData(
+    val formattedValue: String,
+    val formattedDate: String,
+    val isSelectedTimeRangeDropdownExpanded: Boolean,
+    val selectedTimeRange: TimeRange = TimeRange.DAILY,
+)
