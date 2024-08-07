@@ -206,10 +206,12 @@ class HealthUiStateMapper @Inject constructor(
         val tableData = mutableListOf<TableEntryData>()
         var previousRecord: EngageRecord? = null
 
-        records.forEach { currentRecord ->
+        // reversing to calculate the trend starting from the first (oldest) record, and inserting
+        // at 0-th index in tableData list
+        records.reversed().forEach { currentRecord ->
             val currentRecordValue = getValue(currentRecord)
             val trend = previousRecord?.let {
-                getValue(it).value - currentRecordValue.value
+                currentRecordValue.value - getValue(it).value
             } ?: 0.0
             val trendSign = when {
                 trend > 0 -> "▲"
@@ -241,7 +243,7 @@ class HealthUiStateMapper @Inject constructor(
                 },
             )
 
-            tableData.add(tableEntryData)
+            tableData.add(0, tableEntryData)
             previousRecord = currentRecord
         }
 

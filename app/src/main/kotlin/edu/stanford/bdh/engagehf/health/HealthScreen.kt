@@ -191,7 +191,7 @@ fun HealthTableItem(entry: TableEntryData) {
         Spacer(modifier = Modifier.weight(1f))
         Text(
             text = entry.formattedDate,
-            style = TextStyles.bodyLarge
+            style = TextStyles.bodyMedium.copy(color = secondary)
         )
     }
 }
