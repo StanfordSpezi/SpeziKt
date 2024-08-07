@@ -61,7 +61,7 @@ class BloodPressureViewModel @Inject internal constructor(
 
             is HealthAction.UpdateTimeRange -> {
                 _uiState.update {
-                    uiStateMapper.updateTimeRange(uiState.value, healthAction.timeRange)
+                    uiStateMapper.updateTimeRange(it, healthAction.timeRange)
                 }
             }
         }

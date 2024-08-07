@@ -3,37 +3,43 @@ package edu.stanford.bdh.engagehf.health
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
-import edu.stanford.spezi.core.logging.speziLogger
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class HealthViewModel @Inject internal constructor(
+class HealthViewModel @Inject constructor(
     private val bottomSheetEvents: BottomSheetEvents,
 ) : ViewModel() {
-    private val logger by speziLogger()
+    private val _uiState = MutableStateFlow(UiState())
+    val uiState = _uiState.asStateFlow()
 
     fun onAction(action: Action) {
         when (action) {
-            Action.AddWeightRecord -> {
-                logger.i { "Add weight record" }
-                bottomSheetEvents.emit(BottomSheetEvents.Event.AddWeightRecord)
+            is Action.AddRecord -> {
+                val event = when (action.tab) {
+                    HealthTab.Weight -> BottomSheetEvents.Event.AddWeightRecord
+                    HealthTab.BloodPressure -> BottomSheetEvents.Event.AddBloodPressureRecord
+                    HealthTab.HeartRate -> BottomSheetEvents.Event.AddHeartRateRecord
+                    else -> return
+                }
+                bottomSheetEvents.emit(event)
             }
 
-            Action.AddBloodPressureRecord -> {
-                logger.i { "Add blood pressure record" }
-                bottomSheetEvents.emit(BottomSheetEvents.Event.AddBloodPressureRecord)
-            }
-
-            Action.HeartRateRecord -> {
-                logger.i { "Add heart rate record" }
-                bottomSheetEvents.emit(BottomSheetEvents.Event.AddHeartRateRecord)
+            is Action.UpdateTab -> {
+                _uiState.update { it.copy(selectedTab = action.tab) }
             }
         }
     }
 
+    data class UiState(
+        val tabs: List<HealthTab> = HealthTab.entries,
+        val selectedTab: HealthTab = HealthTab.Symptoms,
+    )
+
     sealed interface Action {
-        data object AddWeightRecord : Action
-        data object AddBloodPressureRecord : Action
-        data object HeartRateRecord : Action
+        data class UpdateTab(val tab: HealthTab) : Action
+        data class AddRecord(val tab: HealthTab) : Action
     }
 }

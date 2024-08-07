@@ -3,6 +3,7 @@ package edu.stanford.bdh.engagehf.health
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,7 +22,9 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -37,75 +40,42 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.lighten
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
-import kotlinx.coroutines.launch
 
 @Composable
 fun HealthScreen() {
     val viewModel = hiltViewModel<HealthViewModel>()
+    val uiState by viewModel.uiState.collectAsState()
     HealthScreen(
+        uiState = uiState,
         onAction = viewModel::onAction,
     )
 }
 
 @Composable
 fun HealthScreen(
+    uiState: HealthViewModel.UiState,
     onAction: (HealthViewModel.Action) -> Unit,
 ) {
-    val tabs = HealthTab.entries.toTypedArray()
+    val tabs = uiState.tabs
     val pagerState = rememberPagerState(pageCount = { tabs.size })
-    val coroutineScope = rememberCoroutineScope()
+    val selectedTab = uiState.selectedTab
+
+    LaunchedEffect(key1 = selectedTab) {
+        pagerState.animateScrollToPage(selectedTab.ordinal)
+    }
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            TabRow(
-                selectedTabIndex = pagerState.currentPage,
-                contentColor = onPrimary,
-                containerColor = primary,
-                indicator = { tabPositions ->
-                    Box(
-                        modifier = Modifier
-                            .tabIndicatorOffset(tabPositions[pagerState.currentPage])
-                            .height(3.dp)
-                            .background(
-                                onPrimary,
-                                shape = RoundedCornerShape(topStart = 3.dp, topEnd = 3.dp)
-                            )
-                    )
-                },
-            ) {
-                tabs.forEachIndexed { index, tab ->
-                    Tab(
-                        text = {
-                            Text(
-                                text = when (tab) {
-                                    HealthTab.Symptoms -> "Symptoms"
-                                    HealthTab.Weight -> "Weight"
-                                    HealthTab.BloodPressure -> "Blood Pressure"
-                                    HealthTab.HeartRate -> "Heart Rate"
-                                },
-                            )
-                        },
-                        selected = pagerState.currentPage == index,
-                        onClick = {
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(index)
-                            }
-                        },
-                        selectedContentColor = onPrimary,
-                        unselectedContentColor = onPrimary.lighten()
-                    )
-                }
-            }
-
+            HealthTabRow(uiState = uiState, onAction = onAction)
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = Spacings.medium)
-            ) { page ->
-                when (tabs[page]) {
+            ) { _ ->
+                when (selectedTab) {
                     HealthTab.Symptoms -> SymptomsPage()
                     HealthTab.Weight -> WeightPage()
                     HealthTab.BloodPressure -> BloodPressurePage()
@@ -113,31 +83,70 @@ fun HealthScreen(
                 }
             }
         }
-        if (tabs[pagerState.currentPage] == HealthTab.Weight) { // TODO add functionality for other tabs
-            FloatingActionButton(
-                onClick = {
-                    when (tabs[pagerState.currentPage]) {
-                        HealthTab.Weight -> onAction(HealthViewModel.Action.AddWeightRecord)
-                        HealthTab.BloodPressure -> {
-                            onAction(HealthViewModel.Action.AddBloodPressureRecord)
-                        }
+        AddRecordFloatingIcon(tab = selectedTab, onAction = onAction)
+    }
+}
 
-                        HealthTab.HeartRate -> {
-                            onAction(HealthViewModel.Action.HeartRateRecord)
-                        }
-
-                        else -> {
-                            // do nothing
-                        }
-                    }
-                },
+@Composable
+private fun HealthTabRow(
+    uiState: HealthViewModel.UiState,
+    onAction: (HealthViewModel.Action) -> Unit,
+) {
+    val selectedTab = uiState.selectedTab
+    TabRow(
+        selectedTabIndex = selectedTab.ordinal,
+        contentColor = onPrimary,
+        containerColor = primary,
+        indicator = { tabPositions ->
+            Box(
                 modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(Spacings.medium)
-            ) {
-                Icon(Icons.Filled.Add, contentDescription = "Add Health Record")
-            }
+                    .tabIndicatorOffset(tabPositions[selectedTab.ordinal])
+                    .height(3.dp)
+                    .background(
+                        color = onPrimary,
+                        shape = RoundedCornerShape(topStart = 3.dp, topEnd = 3.dp)
+                    )
+            )
+        },
+    ) {
+        uiState.tabs.forEach { tab ->
+            Tab(
+                text = {
+                    Text(
+                        text = when (tab) {
+                            HealthTab.Symptoms -> "Symptoms"
+                            HealthTab.Weight -> "Weight"
+                            HealthTab.BloodPressure -> "Blood Pressure"
+                            HealthTab.HeartRate -> "Heart Rate"
+                        },
+                    )
+                },
+                selected = uiState.selectedTab == tab,
+                onClick = {
+                    onAction(HealthViewModel.Action.UpdateTab(tab = tab))
+                },
+                selectedContentColor = onPrimary,
+                unselectedContentColor = onPrimary.lighten()
+            )
         }
+    }
+}
+
+@Composable
+private fun BoxScope.AddRecordFloatingIcon(
+    tab: HealthTab,
+    onAction: (HealthViewModel.Action) -> Unit,
+) {
+    if (tab != HealthTab.Weight) return // TODO add functionality for other tabs
+    FloatingActionButton(
+        onClick = {
+            onAction(HealthViewModel.Action.AddRecord(tab = tab))
+        },
+        modifier = Modifier
+            .align(Alignment.BottomEnd)
+            .padding(Spacings.medium)
+    ) {
+        Icon(Icons.Filled.Add, contentDescription = "Add $tab Record")
     }
 }
 
