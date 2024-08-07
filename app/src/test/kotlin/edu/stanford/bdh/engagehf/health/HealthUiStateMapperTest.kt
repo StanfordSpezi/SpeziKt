@@ -1,5 +1,6 @@
 package edu.stanford.bdh.engagehf.health
 
+import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.units.Mass
 import com.google.common.truth.Truth.assertThat
@@ -32,12 +33,7 @@ class HealthUiStateMapperTest {
         val result = healthUiStateMapper.mapToHealthData(records, selectedTimeRange)
 
         // Then
-        assertThat(result.records).isEmpty()
-        assertThat(result.chartData).isEmpty()
-        assertThat(result.tableData).isEmpty()
-        assertThat(result.newestData).isNull()
-        assertThat(result.headerData.formattedValue).isEmpty()
-        assertThat(result.headerData.formattedDate).isEmpty()
+        assertThat(result).isInstanceOf(HealthUiState.NoData::class.java)
     }
 
     @Test
@@ -51,10 +47,9 @@ class HealthUiStateMapperTest {
                 day = 2,
             ),
         )
-        val selectedTimeRange = TimeRange.DAILY
 
         // When
-        val result = healthUiStateMapper.mapToHealthData(records, selectedTimeRange)
+        val result = healthUiStateMapper.map(records)
 
         // Then
         assertThat(result.records).isNotEmpty()
@@ -78,10 +73,9 @@ class HealthUiStateMapperTest {
                 day = 1,
             ),
         )
-        val selectedTimeRange = TimeRange.WEEKLY
 
         // When
-        val result = healthUiStateMapper.mapToHealthData(records, selectedTimeRange)
+        val result = healthUiStateMapper.map(records)
 
         // Then
         assertThat(result.records).isNotEmpty()
@@ -109,10 +103,9 @@ class HealthUiStateMapperTest {
                 day = 5,
             ),
         )
-        val selectedTimeRange = TimeRange.MONTHLY
 
         // When
-        val result = healthUiStateMapper.mapToHealthData(records, selectedTimeRange)
+        val result = healthUiStateMapper.map(records, TimeRange.MONTHLY)
 
         // Then
         assertThat(result.records).isNotEmpty()
@@ -152,4 +145,7 @@ class HealthUiStateMapperTest {
             weight = Mass.kilograms(weightInKg)
         )
     }
+
+    private fun HealthUiStateMapper.map(records: List<Record>, timeRange: TimeRange = TimeRange.DAILY) =
+        (mapToHealthData(records, timeRange) as HealthUiState.Success).data
 }

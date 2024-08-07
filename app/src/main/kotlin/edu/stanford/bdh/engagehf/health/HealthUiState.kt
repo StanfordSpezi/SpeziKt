@@ -17,6 +17,7 @@ data class HealthUiData(
 
 sealed interface HealthUiState {
     data object Loading : HealthUiState
+    data class NoData(val message: String) : HealthUiState
     data class Success(val data: HealthUiData) : HealthUiState
     data class Error(val message: String) : HealthUiState
 }

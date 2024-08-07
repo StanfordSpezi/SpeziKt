@@ -2,7 +2,6 @@
 
 package edu.stanford.bdh.engagehf.health.weight
 
-import androidx.health.connect.client.records.WeightRecord
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,22 +37,16 @@ class WeightViewModel @Inject internal constructor(
     private fun setup() {
         viewModelScope.launch {
             healthRepository.observeWeightRecords().collect { result ->
-                when (result.isFailure) {
-                    true -> {
-                        _uiState.update {
-                            HealthUiState.Error("Failed to observe weight records")
-                        }
+                result.onFailure {
+                    _uiState.update {
+                        HealthUiState.Error("Failed to observe weight records")
                     }
-
-                    false -> {
-                        _uiState.update {
-                            HealthUiState.Success(
-                                uiStateMapper.mapToHealthData(
-                                    records = result.getOrNull() as List<WeightRecord>,
-                                    selectedTimeRange = TimeRange.DAILY
-                                )
-                            )
-                        }
+                }.onSuccess { successResult ->
+                    _uiState.update {
+                        uiStateMapper.mapToHealthData(
+                            records = successResult,
+                            selectedTimeRange = TimeRange.DAILY
+                        )
                     }
                 }
             }

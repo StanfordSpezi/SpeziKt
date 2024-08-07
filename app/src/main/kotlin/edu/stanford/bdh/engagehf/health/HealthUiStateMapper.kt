@@ -26,23 +26,15 @@ class HealthUiStateMapper @Inject constructor(
     fun mapToHealthData(
         records: List<Record>,
         selectedTimeRange: TimeRange,
-    ): HealthUiData {
+    ): HealthUiState {
         val engageRecords = records.map { EngageRecord.from(it) }
-        if (engageRecords.isEmpty()) {
-            return HealthUiData(
-                records = emptyList(),
-                chartData = emptyList(),
-                tableData = emptyList(),
-                newestData = null,
-                headerData = HealthHeaderData(
-                    selectedTimeRange = selectedTimeRange,
-                    formattedValue = "",
-                    formattedDate = "",
-                    isSelectedTimeRangeDropdownExpanded = false
-                )
+        return if (engageRecords.isEmpty()) {
+            HealthUiState.NoData(message = "No data available")
+        } else {
+            HealthUiState.Success(
+                data = mapUiStateTimeRange(engageRecords, selectedTimeRange)
             )
         }
-        return mapUiStateTimeRange(engageRecords, selectedTimeRange)
     }
 
     private fun mapUiStateTimeRange(
@@ -282,37 +274,30 @@ class HealthUiStateMapper @Inject constructor(
         currentUiState: HealthUiState,
         newTimeRange: TimeRange,
     ): HealthUiState {
-        return when (currentUiState) {
-            is HealthUiState.Loading -> currentUiState
-            is HealthUiState.Error -> currentUiState
-            is HealthUiState.Success -> {
-                HealthUiState.Success(
-                    mapToHealthData(
-                        records = currentUiState.data.records,
-                        selectedTimeRange = newTimeRange
-                    )
-                )
-            }
+        return if (currentUiState is HealthUiState.Success) {
+            mapToHealthData(
+                records = currentUiState.data.records,
+                selectedTimeRange = newTimeRange
+            )
+        } else {
+            currentUiState
         }
     }
 
     fun mapToggleTimeRange(
         healthAction: HealthAction.ToggleTimeRangeDropdown,
         uiState: HealthUiState,
-    ) =
-        when (uiState) {
-            is HealthUiState.Loading -> uiState
-            is HealthUiState.Error -> uiState
-            is HealthUiState.Success -> {
-                uiState.copy(
-                    data = uiState.data.copy(
-                        headerData = uiState.data.headerData.copy(
-                            isSelectedTimeRangeDropdownExpanded = healthAction.expanded
-                        )
-                    )
+    ) = if (uiState is HealthUiState.Success) {
+        uiState.copy(
+            data = uiState.data.copy(
+                headerData = uiState.data.headerData.copy(
+                    isSelectedTimeRangeDropdownExpanded = healthAction.expanded
                 )
-            }
-        }
+            )
+        )
+    } else {
+        uiState
+    }
 
     private fun getDefaultLocale() = localeProvider.getDefaultLocale()
 

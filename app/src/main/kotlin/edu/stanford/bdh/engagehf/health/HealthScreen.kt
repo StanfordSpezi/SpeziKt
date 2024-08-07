@@ -148,7 +148,7 @@ fun HealthTable(
     healthEntries: List<TableEntryData>,
     onAction: (HealthAction) -> Unit,
 ) {
-    Column(
+    Column( // TODO -> Should be adapted to lazy column; requires adjustment of the whole header and chart on top of the table
         modifier = modifier.fillMaxSize()
     ) {
         healthEntries.forEach { entry ->

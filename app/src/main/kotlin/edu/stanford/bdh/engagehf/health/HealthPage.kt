@@ -1,11 +1,10 @@
 package edu.stanford.bdh.engagehf.health
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -15,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.health.connect.client.records.WeightRecord
@@ -28,6 +28,7 @@ import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.core.utils.ComposableBlock
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import java.time.ZonedDateTime
 
@@ -44,95 +45,83 @@ fun HealthPage(
     ) {
         when (uiState) {
             is HealthUiState.Error -> {
-                Spacer(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                )
-                Text(
-                    text = uiState.message,
-                    style = TextStyles.headlineMedium,
-                    modifier = Modifier.testIdentifier(HealthPageTestIdentifier.ERROR_MESSAGE)
-                )
-                Spacer(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                )
+                CenteredContent {
+                    Text(
+                        text = uiState.message,
+                        style = TextStyles.headlineMedium,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.testIdentifier(HealthPageTestIdentifier.ERROR_MESSAGE)
+                    )
+                }
             }
 
             HealthUiState.Loading -> {
-                Spacer(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                )
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Spacer(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth()
-                    )
+                CenteredContent {
                     CircularProgressIndicator(
                         color = Colors.primary,
                         modifier = Modifier.testIdentifier(HealthPageTestIdentifier.PROGRESS_INDICATOR)
                     )
-                    Spacer(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth()
+                }
+            }
+
+            is HealthUiState.NoData -> {
+                CenteredContent {
+                    Text(
+                        text = uiState.message,
+                        textAlign = TextAlign.Center,
+                        style = TextStyles.headlineMedium
                     )
                 }
-                Spacer(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                )
             }
 
             is HealthUiState.Success -> {
-                if (uiState.data.records.isEmpty()) {
-                    Text(
-                        text = "No data available",
-                        style = TextStyles.headlineMedium
-                    )
-                } else {
-                    HealthHeader(
-                        uiState.data.headerData,
-                        onTimeRangeDropdownAction = {
-                            onAction(
-                                HealthAction.ToggleTimeRangeDropdown(
-                                    it
-                                )
+                HealthHeader(
+                    uiState.data.headerData,
+                    onTimeRangeDropdownAction = {
+                        onAction(
+                            HealthAction.ToggleTimeRangeDropdown(
+                                it
                             )
-                        },
-                        updateTimeRange = { onAction(HealthAction.UpdateTimeRange(it)) },
-                        onInfoAction = { onAction(HealthAction.DescriptionBottomSheet) },
-                        modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_HEADER)
-                    )
-                    HealthChart(
-                        uiState = uiState.data,
-                        modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_CHART)
-                    )
-                    VerticalSpacer()
-                    Row(
-                        modifier = Modifier.padding(horizontal = Spacings.medium),
-                        verticalAlignment = Alignment.Bottom,
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.health_history),
-                            style = TextStyles.headlineMedium,
-                            modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_HISTORY_TEXT)
                         )
-                    }
-                    HealthTable(
-                        healthEntries = uiState.data.tableData,
-                        onAction = onAction,
-                        modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_HISTORY_TABLE)
+                    },
+                    updateTimeRange = { onAction(HealthAction.UpdateTimeRange(it)) },
+                    onInfoAction = { onAction(HealthAction.DescriptionBottomSheet) },
+                    modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_HEADER)
+                )
+                HealthChart(
+                    uiState = uiState.data,
+                    modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_CHART)
+                )
+                VerticalSpacer()
+                Row(
+                    modifier = Modifier.padding(horizontal = Spacings.medium),
+                    verticalAlignment = Alignment.Bottom,
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.health_history),
+                        style = TextStyles.headlineMedium,
+                        modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_HISTORY_TEXT)
                     )
                 }
+                HealthTable(
+                    healthEntries = uiState.data.tableData,
+                    onAction = onAction,
+                    modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_HISTORY_TABLE)
+                )
             }
         }
+    }
+}
+
+@Composable
+private fun ColumnScope.CenteredContent(content: ComposableBlock) {
+    Box(
+        modifier = Modifier
+            .weight(weight = 1f, fill = true)
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        content()
     }
 }
 

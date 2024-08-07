@@ -1,6 +1,5 @@
 package edu.stanford.bdh.engagehf.health.bloodpressure
 
-import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,22 +32,16 @@ class BloodPressureViewModel @Inject internal constructor(
     private fun setup() {
         viewModelScope.launch {
             healthRepository.observeBloodPressureRecords().collect { result ->
-                when (result.isFailure) {
-                    true -> {
-                        _uiState.update {
-                            HealthUiState.Error("Failed to observe records")
-                        }
+                result.onFailure {
+                    _uiState.update {
+                        HealthUiState.Error("Failed to observe records")
                     }
-
-                    false -> {
-                        _uiState.update {
-                            HealthUiState.Success(
-                                uiStateMapper.mapToHealthData(
-                                    records = result.getOrNull() as List<BloodPressureRecord>,
-                                    selectedTimeRange = TimeRange.DAILY
-                                )
-                            )
-                        }
+                }.onSuccess { records ->
+                    _uiState.update {
+                        uiStateMapper.mapToHealthData(
+                            records = records,
+                            selectedTimeRange = TimeRange.DAILY
+                        )
                     }
                 }
             }
@@ -66,13 +59,9 @@ class BloodPressureViewModel @Inject internal constructor(
                 }
             }
 
-            is HealthAction.UpdateTimeRange -> when (val uiState = _uiState.value) {
-                is HealthUiState.Loading -> return
-                is HealthUiState.Error -> return
-                is HealthUiState.Success -> {
-                    _uiState.update {
-                        uiStateMapper.updateTimeRange(uiState, healthAction.timeRange)
-                    }
+            is HealthAction.UpdateTimeRange -> {
+                _uiState.update {
+                    uiStateMapper.updateTimeRange(uiState.value, healthAction.timeRange)
                 }
             }
         }
