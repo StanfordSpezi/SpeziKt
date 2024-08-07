@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.health.bloodpressure.BloodPressurePage
-import edu.stanford.bdh.engagehf.health.components.SwipeBox
 import edu.stanford.bdh.engagehf.health.heartrate.HeartRatePage
 import edu.stanford.bdh.engagehf.health.symptoms.SymptomsPage
 import edu.stanford.bdh.engagehf.health.weight.WeightPage
@@ -38,6 +37,7 @@ import edu.stanford.spezi.core.design.theme.Colors.secondary
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.lighten
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import kotlinx.coroutines.launch
 
 @Composable
@@ -143,29 +143,13 @@ fun HealthScreen(
 }
 
 @Composable
-fun HealthTable(
-    modifier: Modifier = Modifier,
-    healthEntries: List<TableEntryData>,
-    onAction: (HealthAction) -> Unit,
-) {
-    Column( // TODO -> Should be adapted to lazy column; requires adjustment of the whole header and chart on top of the table
-        modifier = modifier.fillMaxSize()
-    ) {
-        healthEntries.forEach { entry ->
-            SwipeBox(onDelete = {
-                entry.id?.let {
-                    onAction(HealthAction.DeleteRecord(it))
-                }
-            }, content = {
-                HealthTableItem(entry)
-            })
-        }
-    }
-}
-
-@Composable
 fun HealthTableItem(entry: TableEntryData) {
     Row(
+        modifier = Modifier
+            .testIdentifier(
+                identifier = HealthPageTestIdentifier.HEALTH_HISTORY_TABLE_ITEM,
+                suffix = entry.id
+            ),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {

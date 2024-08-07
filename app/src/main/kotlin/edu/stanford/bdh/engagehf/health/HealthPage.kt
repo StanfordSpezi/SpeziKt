@@ -1,13 +1,12 @@
 package edu.stanford.bdh.engagehf.health
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +22,7 @@ import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.components.HealthChart
 import edu.stanford.bdh.engagehf.health.components.HealthHeader
 import edu.stanford.bdh.engagehf.health.components.HealthHeaderData
+import edu.stanford.bdh.engagehf.health.components.SwipeBox
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
@@ -37,88 +37,100 @@ fun HealthPage(
     uiState: HealthUiState,
     onAction: (HealthAction) -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .testIdentifier(HealthPageTestIdentifier.ROOT)
-    ) {
-        when (uiState) {
-            is HealthUiState.Error -> {
-                CenteredContent {
-                    Text(
-                        text = uiState.message,
-                        style = TextStyles.headlineMedium,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.testIdentifier(HealthPageTestIdentifier.ERROR_MESSAGE)
-                    )
-                }
-            }
-
-            HealthUiState.Loading -> {
-                CenteredContent {
-                    CircularProgressIndicator(
-                        color = Colors.primary,
-                        modifier = Modifier.testIdentifier(HealthPageTestIdentifier.PROGRESS_INDICATOR)
-                    )
-                }
-            }
-
-            is HealthUiState.NoData -> {
-                CenteredContent {
-                    Text(
-                        text = uiState.message,
-                        textAlign = TextAlign.Center,
-                        style = TextStyles.headlineMedium
-                    )
-                }
-            }
-
-            is HealthUiState.Success -> {
-                HealthHeader(
-                    headerData = uiState.data.headerData,
-                    onTimeRangeDropdownAction = {
-                        onAction(
-                            HealthAction.ToggleTimeRangeDropdown(
-                                it
-                            )
-                        )
-                    },
-                    updateTimeRange = { onAction(HealthAction.UpdateTimeRange(it)) },
-                    onInfoAction = { onAction(HealthAction.DescriptionBottomSheet) },
-                    modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_HEADER)
+    when (uiState) {
+        is HealthUiState.Error -> {
+            CenteredContent {
+                Text(
+                    text = uiState.message,
+                    style = TextStyles.headlineMedium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.testIdentifier(HealthPageTestIdentifier.ERROR_MESSAGE)
                 )
-                HealthChart(
-                    uiState = uiState.data,
-                    modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_CHART)
+            }
+        }
+
+        HealthUiState.Loading -> {
+            CenteredContent {
+                CircularProgressIndicator(
+                    color = Colors.primary,
+                    modifier = Modifier.testIdentifier(HealthPageTestIdentifier.PROGRESS_INDICATOR)
                 )
-                VerticalSpacer()
-                Row(
-                    modifier = Modifier.padding(horizontal = Spacings.medium),
-                    verticalAlignment = Alignment.Bottom,
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.health_history),
-                        style = TextStyles.headlineMedium,
-                        modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_HISTORY_TEXT)
-                    )
+            }
+        }
+
+        is HealthUiState.NoData -> {
+            CenteredContent {
+                Text(
+                    text = uiState.message,
+                    textAlign = TextAlign.Center,
+                    style = TextStyles.headlineMedium,
+                    modifier = Modifier.testIdentifier(HealthPageTestIdentifier.NO_DATA_MESSAGE)
+                )
+            }
+        }
+
+        is HealthUiState.Success -> {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .testIdentifier(HealthPageTestIdentifier.ROOT)
+            ) {
+                listHeader(uiState = uiState, onAction = onAction)
+
+                items(uiState.data.tableData) { entry ->
+                    SwipeBox(
+                        onDelete = {
+                            entry.id?.let { onAction(HealthAction.DeleteRecord(it)) }
+                        },
+                        content = {
+                            HealthTableItem(entry)
+                        })
                 }
-                HealthTable(
-                    healthEntries = uiState.data.tableData,
-                    onAction = onAction,
-                    modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_HISTORY_TABLE)
-                )
             }
         }
     }
 }
 
+private fun LazyListScope.listHeader(
+    uiState: HealthUiState.Success,
+    onAction: (HealthAction) -> Unit,
+) {
+    item {
+        HealthHeader(
+            headerData = uiState.data.headerData,
+            onTimeRangeDropdownAction = {
+                onAction(
+                    HealthAction.ToggleTimeRangeDropdown(
+                        it
+                    )
+                )
+            },
+            updateTimeRange = { onAction(HealthAction.UpdateTimeRange(it)) },
+            onInfoAction = { onAction(HealthAction.DescriptionBottomSheet) },
+            modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_HEADER)
+        )
+        HealthChart(
+            uiState = uiState.data,
+            modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_CHART)
+        )
+        VerticalSpacer()
+        Row(
+            modifier = Modifier.padding(horizontal = Spacings.medium),
+            verticalAlignment = Alignment.Bottom,
+        ) {
+            Text(
+                text = stringResource(id = R.string.health_history),
+                style = TextStyles.headlineMedium,
+                modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_HISTORY_TEXT)
+            )
+        }
+    }
+}
+
 @Composable
-private fun ColumnScope.CenteredContent(content: ComposableBlock) {
+private fun CenteredContent(content: ComposableBlock) {
     Box(
-        modifier = Modifier
-            .weight(weight = 1f, fill = true)
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize().testIdentifier(HealthPageTestIdentifier.CENTERED_CONTENT),
         contentAlignment = Alignment.Center,
     ) {
         content()
@@ -127,11 +139,13 @@ private fun ColumnScope.CenteredContent(content: ComposableBlock) {
 
 enum class HealthPageTestIdentifier {
     ROOT,
+    CENTERED_CONTENT,
     ERROR_MESSAGE,
+    NO_DATA_MESSAGE,
     PROGRESS_INDICATOR,
     HEALTH_HEADER,
     HEALTH_CHART,
-    HEALTH_HISTORY_TABLE,
+    HEALTH_HISTORY_TABLE_ITEM,
     HEALTH_HISTORY_TEXT,
 }
 

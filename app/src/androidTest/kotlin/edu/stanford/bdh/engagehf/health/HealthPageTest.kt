@@ -17,7 +17,7 @@ class HealthPageTest {
     @Test
     fun `test health page root is displayed`() {
         // given
-        setState(state = HealthUiState.Loading)
+        setState(state = getSuccessState())
 
         // then
         healthPage {
@@ -28,10 +28,30 @@ class HealthPageTest {
     @Test
     fun `test health page error message is displayed`() {
         // given
-        setState(state = HealthUiState.Error("Error message"))
+        val message = "Error message"
+
+        // when
+        setState(state = HealthUiState.Error(message))
+
         // then
         healthPage {
-            assertErrorMessage("Error message")
+            assertErrorMessage(message)
+            assertCenteredContent()
+        }
+    }
+
+    @Test
+    fun `test health page no data message is displayed`() {
+        // given
+        val message = "No data available"
+
+        // when
+        setState(state = HealthUiState.NoData(message))
+
+        // then
+        healthPage {
+            assertNoDataMessage(message)
+            assertCenteredContent()
         }
     }
 
@@ -39,6 +59,7 @@ class HealthPageTest {
     fun `test health page health chart is displayed`() {
         // given
         setState(state = getSuccessState())
+
         // then
         healthPage {
             assertHealthChartIsDisplayed()
@@ -62,16 +83,21 @@ class HealthPageTest {
         // then
         healthPage {
             assertHealthProgressIndicatorIsDisplayed()
+            assertCenteredContent()
         }
     }
 
     @Test
     fun `test health page health history table is displayed`() {
         // given
-        setState(state = getSuccessState())
+        val entryId = "entry-id"
+
+        // when
+        setState(state = getSuccessState(entryId = entryId))
+
         // then
         healthPage {
-            assertHealthHistoryTableIsDisplayed()
+            assertHistoryTableItemDisplayed(id = entryId)
         }
     }
 
@@ -105,7 +131,7 @@ class HealthPageTest {
         HealthPageSimulator(composeTestRule).apply(block)
     }
 
-    private fun getSuccessState(): HealthUiState {
+    private fun getSuccessState(entryId: String? = null): HealthUiState {
         return HealthUiState.Success(
             data = HealthUiData(
                 headerData = HealthHeaderData(
@@ -130,7 +156,7 @@ class HealthPageTest {
                         trend = 0f,
                         formattedTrend = "0.0 kg",
                         secondValue = null,
-                        id = null
+                        id = entryId
                     )
                 )
             )

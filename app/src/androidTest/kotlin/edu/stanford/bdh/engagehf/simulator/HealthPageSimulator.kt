@@ -7,12 +7,18 @@ import edu.stanford.bdh.engagehf.health.HealthPageTestIdentifier
 import edu.stanford.spezi.core.testing.onNodeWithIdentifier
 
 class HealthPageSimulator(
-    composeTestRule: ComposeTestRule,
+    private val composeTestRule: ComposeTestRule,
 ) {
     private val root = composeTestRule.onNodeWithIdentifier(HealthPageTestIdentifier.ROOT)
 
+    private val centeredContent =
+        composeTestRule.onNodeWithIdentifier(HealthPageTestIdentifier.CENTERED_CONTENT)
+
     private val errorMessage =
         composeTestRule.onNodeWithIdentifier(HealthPageTestIdentifier.ERROR_MESSAGE)
+
+    private val noDataMessage =
+        composeTestRule.onNodeWithIdentifier(HealthPageTestIdentifier.NO_DATA_MESSAGE)
 
     private val healthChart =
         composeTestRule.onNodeWithIdentifier(HealthPageTestIdentifier.HEALTH_CHART)
@@ -23,9 +29,6 @@ class HealthPageSimulator(
     private val healthProgressIndicator =
         composeTestRule.onNodeWithIdentifier(HealthPageTestIdentifier.PROGRESS_INDICATOR)
 
-    private val healthHistoryTable =
-        composeTestRule.onNodeWithIdentifier(HealthPageTestIdentifier.HEALTH_HISTORY_TABLE)
-
     private val healthHistoryText =
         composeTestRule.onNodeWithIdentifier(HealthPageTestIdentifier.HEALTH_HISTORY_TEXT)
 
@@ -35,6 +38,14 @@ class HealthPageSimulator(
 
     fun assertErrorMessage(text: String) {
         errorMessage.assertIsDisplayed().assertTextEquals(text)
+    }
+
+    fun assertNoDataMessage(text: String) {
+        noDataMessage.assertIsDisplayed().assertTextEquals(text)
+    }
+
+    fun assertCenteredContent() {
+        centeredContent.assertIsDisplayed()
     }
 
     fun assertHealthChartIsDisplayed() {
@@ -49,8 +60,10 @@ class HealthPageSimulator(
         healthProgressIndicator.assertIsDisplayed()
     }
 
-    fun assertHealthHistoryTableIsDisplayed() {
-        healthHistoryTable.assertIsDisplayed()
+    fun assertHistoryTableItemDisplayed(id: String) {
+        composeTestRule.onNodeWithIdentifier(
+            HealthPageTestIdentifier.HEALTH_HISTORY_TABLE_ITEM, id)
+            .assertIsDisplayed()
     }
 
     fun assertHealthHistoryTextIsDisplayed() {
