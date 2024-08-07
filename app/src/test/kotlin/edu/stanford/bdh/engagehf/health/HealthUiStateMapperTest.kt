@@ -3,18 +3,23 @@ package edu.stanford.bdh.engagehf.health
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.units.Mass
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.spezi.core.utils.LocaleProvider
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.Before
 import org.junit.Test
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.util.Locale
 
 class HealthUiStateMapperTest {
 
-    private lateinit var healthUiStateMapper: HealthUiStateMapper<WeightRecord>
+    private val localeProvider: LocaleProvider = mockk()
+    private val healthUiStateMapper = HealthUiStateMapper(localeProvider = localeProvider)
 
     @Before
     fun setup() {
-        healthUiStateMapper = HealthUiStateMapper(WeightRecord::class.java)
+        every { localeProvider.getDefaultLocale() } returns Locale.US
     }
 
     @Test

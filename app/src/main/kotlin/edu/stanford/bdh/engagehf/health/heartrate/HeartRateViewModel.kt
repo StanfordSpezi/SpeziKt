@@ -20,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HeartRateViewModel @Inject internal constructor(
     private val bottomSheetEvents: BottomSheetEvents,
-    private val uiStateMapper: HealthUiStateMapper<HeartRateRecord>,
+    private val uiStateMapper: HealthUiStateMapper,
     private val healthRepository: HealthRepository,
 ) : ViewModel() {
     private val logger by speziLogger()

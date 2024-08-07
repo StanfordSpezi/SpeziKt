@@ -22,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WeightViewModel @Inject internal constructor(
     private val bottomSheetEvents: BottomSheetEvents,
-    private val uiStateMapper: HealthUiStateMapper<WeightRecord>,
+    private val uiStateMapper: HealthUiStateMapper,
     private val healthRepository: HealthRepository,
 ) : ViewModel() {
     private val logger by speziLogger()

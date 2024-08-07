@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BloodPressureViewModel @Inject internal constructor(
-    private val uiStateMapper: HealthUiStateMapper<BloodPressureRecord>,
+    private val uiStateMapper: HealthUiStateMapper,
     private val healthRepository: HealthRepository,
 ) : ViewModel() {
     private val logger by speziLogger()
