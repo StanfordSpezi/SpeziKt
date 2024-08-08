@@ -1,25 +1,38 @@
 package edu.stanford.healthconnectonfhir.di
 
-import dagger.Binds
+import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.context.FhirVersionEnum
+import ca.uhn.fhir.parser.IParser
+import com.google.gson.Gson
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import edu.stanford.healthconnectonfhir.ObservationToRecordMapper
-import edu.stanford.healthconnectonfhir.ObservationToRecordMapperImpl
+import edu.stanford.healthconnectonfhir.ObservationsDocumentMapper
+import edu.stanford.healthconnectonfhir.ObservationsDocumentMapperImpl
 import edu.stanford.healthconnectonfhir.RecordToObservationMapper
 import edu.stanford.healthconnectonfhir.RecordToObservationMapperImpl
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class HealthConnectOnFhirModule {
+class HealthConnectOnFhirModule {
 
-    @Binds
-    abstract fun bindRecordToObservationMapper(
+    @Provides
+    fun provideRecordToObservationMapper(
         impl: RecordToObservationMapperImpl,
-    ): RecordToObservationMapper
+    ): RecordToObservationMapper = impl
 
-    @Binds
-    abstract fun bindObservationToRecordMapper(
-        impl: ObservationToRecordMapperImpl,
-    ): ObservationToRecordMapper
+    @Provides
+    fun provideObservationsDocumentMapper(
+        impl: ObservationsDocumentMapperImpl,
+    ): ObservationsDocumentMapper = impl
+
+    @Provides
+    @Singleton
+    internal fun provideGson() = Gson()
+
+    @Provides
+    @Singleton
+    internal fun provideIParser(): IParser = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
 }

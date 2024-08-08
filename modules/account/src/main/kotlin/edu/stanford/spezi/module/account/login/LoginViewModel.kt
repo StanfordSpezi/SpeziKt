@@ -7,7 +7,7 @@ import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.AccountNavigationEvent
-import edu.stanford.spezi.module.account.manager.CredentialLoginManagerAuth
+import edu.stanford.spezi.module.account.manager.AuthenticationManager
 import edu.stanford.spezi.module.account.register.FieldState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,21 +18,25 @@ import javax.inject.Inject
 @HiltViewModel
 internal class LoginViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val credentialLoginManagerAuth: CredentialLoginManagerAuth,
+    private val authenticationManager: AuthenticationManager,
     private val accountEvents: AccountEvents,
     private val messageNotifier: MessageNotifier,
     private val validator: LoginFormValidator,
 ) : ViewModel() {
+    private var hasAttemptedSubmit: Boolean = false
+    private val email: String
+        get() = _uiState.value.email.value
+    private val password: String
+        get() = _uiState.value.password.value
+
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
-
-    private var hasAttemptedSubmit: Boolean = false
 
     fun onAction(action: Action) {
         when (action) {
             is Action.TextFieldUpdate -> {
                 _uiState.update {
-                    updateTextField(action, it)
+                    updateTextField(action)
                 }
             }
 
@@ -56,7 +60,7 @@ internal class LoginViewModel @Inject constructor(
 
             is Action.SetIsAlreadyRegistered -> {
                 _uiState.update {
-                    handleIsAlreadyRegistered(action, it)
+                    it.copy(isAlreadyRegistered = action.isAlreadyRegistered)
                 }
             }
 
@@ -94,34 +98,20 @@ internal class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun handleIsAlreadyRegistered(
-        action: Action.SetIsAlreadyRegistered,
-        it: UiState,
-    ): UiState {
-        viewModelScope.launch {
-            if (action.isAlreadyRegistered) {
-                // launch credential manger with authorized accounts
-            } else {
-                // launch credential manager without authorized accounts
-            }
-        }
-        return it.copy(isAlreadyRegistered = action.isAlreadyRegistered)
-    }
-
     private fun navigateToRegister() {
         navigator.navigateTo(
             AccountNavigationEvent.RegisterScreen(
                 isGoogleSignUp = false,
-                email = uiState.value.email.value,
-                password = uiState.value.password.value,
+                email = email,
+                password = password,
             )
         )
     }
 
     private fun updateTextField(
         action: Action.TextFieldUpdate,
-        uiState: UiState,
     ): UiState {
+        val uiState = _uiState.value
         val newValue = FieldState(action.newValue)
         val result = when (action.type) {
             TextFieldType.PASSWORD -> validator.isValidPassword(action.newValue)
@@ -145,8 +135,8 @@ internal class LoginViewModel @Inject constructor(
     }
 
     private fun forgotPassword() {
-        if (validator.isValidEmail(uiState.value.email.value).isValid) {
-            sendForgotPasswordEmail(uiState.value.email.value)
+        if (validator.isValidEmail(email).isValid) {
+            sendForgotPasswordEmail()
         } else {
             messageNotifier.notify("Please enter a valid email")
         }
@@ -162,9 +152,9 @@ internal class LoginViewModel @Inject constructor(
         )
     }
 
-    private fun sendForgotPasswordEmail(email: String) {
+    private fun sendForgotPasswordEmail() {
         viewModelScope.launch {
-            if (credentialLoginManagerAuth.sendForgotPasswordEmail(email).isSuccess) {
+            if (authenticationManager.sendForgotPasswordEmail(email).isSuccess) {
                 messageNotifier.notify("Email sent")
             } else {
                 messageNotifier.notify("Failed to send email")
@@ -174,13 +164,12 @@ internal class LoginViewModel @Inject constructor(
 
     private fun passwordSignIn() {
         viewModelScope.launch {
-            val result = credentialLoginManagerAuth.handlePasswordSignIn(
-                _uiState.value.email.value,
-                _uiState.value.password.value,
-            )
-            if (result.isSuccess) {
+            authenticationManager.signIn(
+                email = email,
+                password = password,
+            ).onSuccess {
                 accountEvents.emit(event = AccountEvents.Event.SignInSuccess)
-            } else {
+            }.onFailure {
                 accountEvents.emit(event = AccountEvents.Event.SignInFailure)
                 messageNotifier.notify("Failed to sign in")
             }
@@ -189,14 +178,9 @@ internal class LoginViewModel @Inject constructor(
 
     private fun googleSignIn() {
         viewModelScope.launch {
-            credentialLoginManagerAuth.handleGoogleSignIn()
-                .onSuccess { success ->
-                    if (success) {
-                        accountEvents.emit(event = AccountEvents.Event.SignInSuccess)
-                    } else {
-                        accountEvents.emit(event = AccountEvents.Event.SignInFailure)
-                        messageNotifier.notify("Failed to sign in")
-                    }
+            authenticationManager.signInWithGoogle()
+                .onSuccess {
+                    accountEvents.emit(event = AccountEvents.Event.SignInSuccess)
                 }.onFailure {
                     accountEvents.emit(event = AccountEvents.Event.SignInFailure)
                     messageNotifier.notify("Failed to sign in")

@@ -24,5 +24,9 @@ class BottomSheetEvents @Inject constructor(
         data object NewMeasurementAction : Event
         data object DoNewMeasurement : Event
         data object CloseBottomSheet : Event
+        data object WeightDescriptionBottomSheet : Event
+        data object AddWeightRecord : Event
+        data object AddBloodPressureRecord : Event
+        data object AddHeartRateRecord : Event
     }
 }

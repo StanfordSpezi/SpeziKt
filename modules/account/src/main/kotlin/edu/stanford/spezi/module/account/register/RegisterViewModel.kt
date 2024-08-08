@@ -2,11 +2,12 @@ package edu.stanford.spezi.module.account.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.module.account.AccountEvents
-import edu.stanford.spezi.module.account.manager.CredentialRegisterManagerAuth
+import edu.stanford.spezi.module.account.manager.AuthenticationManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -17,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject internal constructor(
-    private val credentialRegisterManagerAuth: CredentialRegisterManagerAuth,
+    private val authenticationManager: AuthenticationManager,
     private val messageNotifier: MessageNotifier,
     private val accountEvents: AccountEvents,
     private val validator: RegisterFormValidator,
@@ -94,8 +95,7 @@ class RegisterViewModel @Inject internal constructor(
 
     private fun initializeGoogleSignUp() {
         viewModelScope.launch {
-            val credential = credentialRegisterManagerAuth.getGoogleSignUpCredential()
-            credential?.let {
+            getGoogleSignUpCredential()?.let {
                 onAction(
                     Action.TextFieldUpdate(
                         it.displayName.toString().split(" ")[0],
@@ -121,12 +121,13 @@ class RegisterViewModel @Inject internal constructor(
 
     private fun onRegisteredPressed(): RegisterUiState {
         val uiState = _uiState.value
+        val googleIdToken = googleCredential
         return if (validator.isFormValid(uiState)) {
             viewModelScope.launch {
-                if (uiState.isGoogleSignUp) {
-                    logger.i { "Google sign up: $googleCredential" }
-                    credentialRegisterManagerAuth.googleSignUp(
-                        idToken = googleCredential!!,
+                if (uiState.isGoogleSignUp && googleIdToken != null) {
+                    logger.i { "Google sign up: $googleIdToken" }
+                    authenticationManager.linkUserToGoogleAccount(
+                        googleIdToken = googleIdToken,
                         firstName = uiState.firstName.value,
                         lastName = uiState.lastName.value,
                         selectedGender = uiState.selectedGender.value,
@@ -134,7 +135,7 @@ class RegisterViewModel @Inject internal constructor(
                         email = uiState.email.value,
                     )
                 } else {
-                    credentialRegisterManagerAuth.passwordAndEmailSignUp(
+                    authenticationManager.signUpWithEmailAndPassword(
                         email = uiState.email.value,
                         password = uiState.password.value,
                         firstName = uiState.firstName.value,
@@ -181,5 +182,11 @@ class RegisterViewModel @Inject internal constructor(
             uiState.lastName.value.isNotEmpty() &&
             uiState.selectedGender.value.isNotEmpty() &&
             uiState.dateOfBirth != null
+    }
+
+    private suspend fun getGoogleSignUpCredential(): GoogleIdTokenCredential? {
+        val result = authenticationManager.getCredential(filterByAuthorizedAccounts = true)
+        if (result == null) logger.i { "No authorized accounts found" }
+        return result ?: authenticationManager.getCredential(filterByAuthorizedAccounts = false)
     }
 }

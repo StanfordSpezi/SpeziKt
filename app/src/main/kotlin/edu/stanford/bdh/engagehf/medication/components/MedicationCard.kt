@@ -2,7 +2,6 @@ package edu.stanford.bdh.engagehf.medication.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,7 +48,7 @@ fun MedicationCard(
             defaultElevation = Sizes.Elevation.medium,
         ),
         colors = CardDefaults.cardColors(
-            containerColor = Colors.surface.lighten(isSystemInDarkTheme()),
+            containerColor = Colors.surface.lighten(),
         ),
         modifier = modifier
             .testIdentifier(
