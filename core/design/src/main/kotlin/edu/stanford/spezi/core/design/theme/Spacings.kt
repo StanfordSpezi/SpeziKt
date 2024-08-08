@@ -6,6 +6,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 object Spacings {
+    val extraSmall: Dp
+        @Composable
+        @ReadOnlyComposable
+        get() = 4.dp
+
     val small: Dp
         @Composable
         @ReadOnlyComposable

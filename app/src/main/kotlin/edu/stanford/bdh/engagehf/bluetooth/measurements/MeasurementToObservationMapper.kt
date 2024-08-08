@@ -1,4 +1,4 @@
-package edu.stanford.spezi.modules.measurements
+package edu.stanford.bdh.engagehf.bluetooth.measurements
 
 import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.HeartRateRecord

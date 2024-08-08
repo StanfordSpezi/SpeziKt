@@ -21,11 +21,14 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.DoNewMeasurementBottomSheet
 import edu.stanford.bdh.engagehf.bluetooth.screen.BluetoothScreen
 import edu.stanford.bdh.engagehf.health.HealthScreen
+import edu.stanford.bdh.engagehf.health.weight.bottomsheet.AddWeightBottomSheet
+import edu.stanford.bdh.engagehf.health.weight.bottomsheet.WeightDescriptionBottomSheet
 import edu.stanford.bdh.engagehf.medication.MedicationScreen
 import edu.stanford.spezi.core.design.component.AppTopAppBar
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
@@ -73,12 +76,10 @@ fun AppScreen(
         scaffoldState = bottomSheetScaffoldState,
         sheetContent = {
             when (uiState.bottomSheetContent) {
-                BottomSheetContent.NEW_MEASUREMENT_RECEIVED -> {
-                }
-
                 BottomSheetContent.DO_NEW_MEASUREMENT -> DoNewMeasurementBottomSheet()
-                null -> {
-                }
+                BottomSheetContent.WEIGHT_DESCRIPTION_INFO -> WeightDescriptionBottomSheet()
+                BottomSheetContent.ADD_WEIGHT_RECORD -> AddWeightBottomSheet()
+                BottomSheetContent.NEW_MEASUREMENT_RECEIVED, null -> {}
             }
         },
         sheetPeekHeight = 0.dp
@@ -117,7 +118,7 @@ fun AppScreen(
                                         contentDescription = null
                                     )
                                 },
-                                label = { Text(text = stringResource(id = item.label)) },
+                                label = { Text(text = stringResource(id = item.label), textAlign = TextAlign.Center) },
                                 selected = uiState.selectedItem == item,
                                 onClick = {
                                     onAction(Action.UpdateSelectedBottomBarItem(item))
