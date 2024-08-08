@@ -76,15 +76,10 @@ fun AppScreen(
         scaffoldState = bottomSheetScaffoldState,
         sheetContent = {
             when (uiState.bottomSheetContent) {
-                BottomSheetContent.NEW_MEASUREMENT_RECEIVED -> {
-                }
-
                 BottomSheetContent.DO_NEW_MEASUREMENT -> DoNewMeasurementBottomSheet()
-                null -> {
-                }
-
                 BottomSheetContent.WEIGHT_DESCRIPTION_INFO -> WeightDescriptionBottomSheet()
                 BottomSheetContent.ADD_WEIGHT_RECORD -> AddWeightBottomSheet()
+                BottomSheetContent.NEW_MEASUREMENT_RECEIVED, null -> {}
             }
         },
         sheetPeekHeight = 0.dp

@@ -55,8 +55,12 @@ class AppScreenViewModel @Inject constructor(
                         true to BottomSheetContent.ADD_WEIGHT_RECORD
                     }
 
-                    BottomSheetEvents.Event.AddBloodPressureRecord -> TODO()
-                    BottomSheetEvents.Event.AddHeartRateRecord -> TODO()
+                    BottomSheetEvents.Event.AddBloodPressureRecord -> {
+                        false to null
+                    }
+                    BottomSheetEvents.Event.AddHeartRateRecord -> {
+                        false to null
+                    }
                 }
                 _uiState.update {
                     it.copy(isBottomSheetExpanded = isExpanded, bottomSheetContent = content)

@@ -11,22 +11,25 @@ class HealthViewModelTest {
 
     private val bottomSheetEvents: BottomSheetEvents = mockk(relaxed = true)
 
+    private val tabs = HealthTab.entries.filter { it != HealthTab.Symptoms }
     private val viewModel: HealthViewModel = HealthViewModel(bottomSheetEvents)
 
     @Test
     fun `it should have the correct initial state`() {
         // given
+        val expectedSelectedIndex = 0
         val uiState = viewModel.uiState.value
 
         // then
-        assertThat(uiState.tabs).isEqualTo(HealthTab.entries)
-        assertThat(uiState.selectedTab).isEqualTo(HealthTab.Symptoms)
+        assertThat(uiState.tabs).isEqualTo(tabs)
+        assertThat(uiState.selectedTab).isEqualTo(tabs[expectedSelectedIndex])
+        assertThat(uiState.selectedTabIndex).isEqualTo(expectedSelectedIndex)
     }
 
     @Test
     fun `it should update selected tab correctly`() {
         // given
-        HealthTab.entries.forEach { tab ->
+        tabs.forEach { tab ->
             val action = HealthViewModel.Action.UpdateTab(tab = tab)
 
             // when
@@ -34,6 +37,7 @@ class HealthViewModelTest {
 
             // then
             assertThat(viewModel.uiState.value.selectedTab).isEqualTo(tab)
+            assertThat(viewModel.uiState.value.selectedTabIndex).isEqualTo(tabs.indexOf(tab))
         }
     }
 

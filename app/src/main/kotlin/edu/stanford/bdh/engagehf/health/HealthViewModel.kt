@@ -34,9 +34,11 @@ class HealthViewModel @Inject constructor(
     }
 
     data class UiState(
-        val tabs: List<HealthTab> = HealthTab.entries,
-        val selectedTab: HealthTab = HealthTab.Symptoms,
-    )
+        val tabs: List<HealthTab> = HealthTab.entries.filter { it != HealthTab.Symptoms },
+        val selectedTab: HealthTab = tabs.first(),
+    ) {
+        val selectedTabIndex = tabs.indexOf(selectedTab)
+    }
 
     sealed interface Action {
         data class UpdateTab(val tab: HealthTab) : Action

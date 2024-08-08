@@ -16,7 +16,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SymptomsViewModel @Inject internal constructor(
     private val symptomsUiStateMapper: SymptomsUiStateMapper,
-    // TODO symptoms repository
 ) : ViewModel() {
     private val logger by speziLogger()
 

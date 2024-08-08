@@ -61,7 +61,7 @@ fun HealthScreen(
     val selectedTab = uiState.selectedTab
 
     LaunchedEffect(key1 = selectedTab) {
-        pagerState.animateScrollToPage(selectedTab.ordinal)
+        pagerState.animateScrollToPage(uiState.selectedTabIndex)
     }
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -92,15 +92,15 @@ private fun HealthTabRow(
     uiState: HealthViewModel.UiState,
     onAction: (HealthViewModel.Action) -> Unit,
 ) {
-    val selectedTab = uiState.selectedTab
+    val selectedTabIndex = uiState.selectedTabIndex
     TabRow(
-        selectedTabIndex = selectedTab.ordinal,
+        selectedTabIndex = selectedTabIndex,
         contentColor = onPrimary,
         containerColor = primary,
         indicator = { tabPositions ->
             Box(
                 modifier = Modifier
-                    .tabIndicatorOffset(tabPositions[selectedTab.ordinal])
+                    .tabIndicatorOffset(tabPositions[selectedTabIndex])
                     .height(3.dp)
                     .background(
                         color = onPrimary,
@@ -137,7 +137,7 @@ private fun BoxScope.AddRecordFloatingIcon(
     tab: HealthTab,
     onAction: (HealthViewModel.Action) -> Unit,
 ) {
-    if (tab != HealthTab.Weight) return // TODO add functionality for other tabs
+    if (tab != HealthTab.Weight) return
     FloatingActionButton(
         onClick = {
             onAction(HealthViewModel.Action.AddRecord(tab = tab))
