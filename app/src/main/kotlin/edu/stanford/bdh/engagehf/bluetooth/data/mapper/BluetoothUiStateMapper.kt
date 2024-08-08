@@ -16,7 +16,6 @@ import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
 import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import edu.stanford.spezi.core.utils.LocaleProvider
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 import javax.inject.Inject
 
 class BluetoothUiStateMapper @Inject constructor(
@@ -35,13 +34,17 @@ class BluetoothUiStateMapper @Inject constructor(
     fun mapBleServiceState(state: BLEServiceState.Scanning): BluetoothUiState.Ready {
         val devices = state.sessions.map {
             val summary = when (val lastMeasurement = it.measurements.lastOrNull()) {
-                is Measurement.BloodPressure -> "Blood Pressure: ${format(lastMeasurement.systolic)} / ${
-                    format(
+                is Measurement.BloodPressure -> "Blood Pressure: ${
+                    formatSystolicForLocale(
+                        lastMeasurement.systolic
+                    )
+                } / ${
+                    formatDiastolicForLocale(
                         lastMeasurement.diastolic
                     )
                 }"
 
-                is Measurement.Weight -> "Weight: ${format(lastMeasurement.weight)}"
+                is Measurement.Weight -> "Weight: ${formatWeightForLocale(lastMeasurement.weight)}"
                 else -> "No measurement received yet"
             }
             DeviceUiModel(
@@ -223,8 +226,6 @@ class BluetoothUiStateMapper @Inject constructor(
     private fun formatHeartRateForLocale(heartRate: Float): String {
         return String.format(getDefaultLocale(), "%.0f bpm", heartRate)
     }
-
-    private fun format(value: Number?): String = String.format(Locale.US, "%.2f", value)
 
     private fun getDefaultLocale() = localeProvider.getDefaultLocale()
 

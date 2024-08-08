@@ -81,7 +81,7 @@ fun DoNewMeasurementBottomSheet() {
             Spacer(modifier = Modifier.width(Spacings.medium))
             Icon(
                 painter = painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_monitor_weight),
-                contentDescription = stringResource(R.string.weight_icon_content_description),
+                contentDescription = stringResource(R.string.info_icon_content_description),
                 modifier = Modifier
                     .size(Sizes.Icon.large)
                     .testIdentifier(DoNewMeasurementBottomSheetTestIdentifier.WEIGHT_ICON),

@@ -10,6 +10,7 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
+import edu.stanford.bdh.engagehf.bluetooth.measurements.MeasurementsRepository
 import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.messages.Message
 import edu.stanford.bdh.engagehf.messages.MessageRepository
@@ -25,7 +26,6 @@ import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.videos.Video
-import edu.stanford.spezi.modules.measurements.MeasurementsRepository
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
