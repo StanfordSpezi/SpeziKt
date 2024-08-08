@@ -1,0 +1,253 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>edu.stanford.bdh.engagehf.health.symptoms</title>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../index.html">
+                            Spezi Documentation
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":app:dokkaHtmlPartial/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="package" id="content" pageids="app::edu.stanford.bdh.engagehf.health.symptoms////PointingToDeclaration//1711373860">
+  <div class="breadcrumbs"><a href="../index.html">app</a><span class="delimiter">/</span><span class="current">edu.stanford.bdh.engagehf.health.symptoms</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button><button class="section-tab" data-togglable="FUNCTION,EXTENSION_FUNCTION">Functions</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="668934541%2FClasslikes%2F1711373860" anchor-label="HeaderData" id="668934541%2FClasslikes%2F1711373860" data-filterable-set=":app:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtmlPartial/release" data-filterable-set=":app:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-header-data/index.html"><span>Header</span><wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="668934541%2FClasslikes%2F1711373860"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-header-data/index.html">HeaderData</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>formattedValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>formattedDate<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>selectedSymptomType<span class="token operator">: </span><a href="-symptom-type/index.html">SymptomType</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>isSelectedSymptomTypeDropdownExpanded<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-544745733%2FClasslikes%2F1711373860" anchor-label="SymptomScore" id="-544745733%2FClasslikes%2F1711373860" data-filterable-set=":app:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtmlPartial/release" data-filterable-set=":app:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-symptom-score/index.html"><span>Symptom</span><wbr><span><span>Score</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-544745733%2FClasslikes%2F1711373860"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-symptom-score/index.html">SymptomScore</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>overallScore<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>physicalLimitsScore<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>socialLimitsScore<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>qualityOfLifeScore<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>specificSymptomsScore<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>dizzinessScore<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>date<span class="token operator">: </span><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/ZonedDateTime.html">ZonedDateTime</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1205909660%2FClasslikes%2F1711373860" anchor-label="SymptomsUiData" id="1205909660%2FClasslikes%2F1711373860" data-filterable-set=":app:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtmlPartial/release" data-filterable-set=":app:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-symptoms-ui-data/index.html"><span>Symptoms</span><wbr><span>Ui</span><wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1205909660%2FClasslikes%2F1711373860"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-symptoms-ui-data/index.html">SymptomsUiData</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>symptomScores<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-symptom-score/index.html">SymptomScore</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>chartData<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../edu.stanford.bdh.engagehf.health/-aggregated-health-data/index.html">AggregatedHealthData</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>tableData<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../edu.stanford.bdh.engagehf.health/-table-entry-data/index.html">TableEntryData</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>headerData<span class="token operator">: </span><a href="-header-data/index.html">HeaderData</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="302695051%2FClasslikes%2F1711373860" anchor-label="SymptomsUiState" id="302695051%2FClasslikes%2F1711373860" data-filterable-set=":app:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtmlPartial/release" data-filterable-set=":app:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-symptoms-ui-state/index.html"><span>Symptoms</span><wbr><span>Ui</span><wbr><span><span>State</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="302695051%2FClasslikes%2F1711373860"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">interface </span><a href="-symptoms-ui-state/index.html">SymptomsUiState</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1651135542%2FClasslikes%2F1711373860" anchor-label="SymptomsUiStateMapper" id="-1651135542%2FClasslikes%2F1711373860" data-filterable-set=":app:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtmlPartial/release" data-filterable-set=":app:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-symptoms-ui-state-mapper/index.html"><span>Symptoms</span><wbr><span>Ui</span><wbr><span>State</span><wbr><span><span>Mapper</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1651135542%2FClasslikes%2F1711373860"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">class </span><a href="-symptoms-ui-state-mapper/index.html">SymptomsUiStateMapper</a>&nbsp;<span><span class="token annotation builtin">@</span><span data-unresolved-link="javax.inject/Inject///PointingToDeclaration/"><span class="token annotation builtin">Inject</span></span>&nbsp;</span><span class="token keyword">constructor</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="850163076%2FClasslikes%2F1711373860" anchor-label="SymptomsViewModel" id="850163076%2FClasslikes%2F1711373860" data-filterable-set=":app:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtmlPartial/release" data-filterable-set=":app:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-symptoms-view-model/index.html"><span>Symptoms</span><wbr><span>View</span><wbr><span><span>Model</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="850163076%2FClasslikes%2F1711373860"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">class </span><a href="-symptoms-view-model/index.html">SymptomsViewModel</a> : <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewModel.html">ViewModel</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1326748059%2FClasslikes%2F1711373860" anchor-label="SymptomType" id="1326748059%2FClasslikes%2F1711373860" data-filterable-set=":app:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtmlPartial/release" data-filterable-set=":app:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-symptom-type/index.html"><span>Symptom</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1326748059%2FClasslikes%2F1711373860"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-symptom-type/index.html">SymptomType</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><a href="-symptom-type/index.html">SymptomType</a><span class="token operator">&gt; </span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1228015927%2FFunctions%2F1711373860" anchor-label="SymptomsChart" id="1228015927%2FFunctions%2F1711373860" data-filterable-set=":app:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtmlPartial/release" data-filterable-set=":app:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-symptoms-chart.html"><span>Symptoms</span><wbr><span><span>Chart</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1228015927%2FFunctions%2F1711373860"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">fun </span><a href="-symptoms-chart.html"><span class="token function">SymptomsChart</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">uiState<span class="token operator">: </span><a href="-symptoms-ui-data/index.html">SymptomsUiData</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="146091535%2FFunctions%2F1711373860" anchor-label="SymptomsDropdown" id="146091535%2FFunctions%2F1711373860" data-filterable-set=":app:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtmlPartial/release" data-filterable-set=":app:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-symptoms-dropdown.html"><span>Symptoms</span><wbr><span><span>Dropdown</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="146091535%2FFunctions%2F1711373860"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">fun </span><a href="-symptoms-dropdown.html"><span class="token function">SymptomsDropdown</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">headerData<span class="token operator">: </span><a href="-header-data/index.html">HeaderData</a><span class="token punctuation">, </span></span><span class="parameter ">onAction<span class="token operator">: </span><span class="token punctuation">(</span><a href="-symptoms-view-model/-action/index.html">SymptomsViewModel.Action</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="121813545%2FFunctions%2F1711373860" anchor-label="SymptomsPage" id="121813545%2FFunctions%2F1711373860" data-filterable-set=":app:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtmlPartial/release" data-filterable-set=":app:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-symptoms-page.html"><span>Symptoms</span><wbr><span><span>Page</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="121813545%2FFunctions%2F1711373860"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">fun </span><a href="-symptoms-page.html"><span class="token function">SymptomsPage</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">fun </span><a href="-symptoms-page.html"><span class="token function">SymptomsPage</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">uiState<span class="token operator">: </span><a href="-symptoms-ui-state/index.html">SymptomsUiState</a><span class="token punctuation">, </span></span><span class="parameter ">onAction<span class="token operator">: </span><span class="token punctuation">(</span><a href="-symptoms-view-model/-action/index.html">SymptomsViewModel.Action</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1839755676%2FFunctions%2F1711373860" anchor-label="SymptomTypeText" id="1839755676%2FFunctions%2F1711373860" data-filterable-set=":app:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtmlPartial/release" data-filterable-set=":app:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-symptom-type-text.html"><span>Symptom</span><wbr><span>Type</span><wbr><span><span>Text</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1839755676%2FFunctions%2F1711373860"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">fun </span><a href="-symptom-type-text.html"><span class="token function">SymptomTypeText</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">symptomType<span class="token operator">: </span><a href="-symptom-type/index.html">SymptomType</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
