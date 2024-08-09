@@ -31,3 +31,8 @@ typealias ComposableBlock = @Composable () -> Unit
  * ensure uniqueness of the tags, see [tag]
  */
 typealias TestIdentifier = Enum<*>
+
+/**
+ * A typealias for kotlin.Map with String keys and any values
+ */
+typealias JsonMap = Map<String, *>

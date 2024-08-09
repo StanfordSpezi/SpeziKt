@@ -1,17 +1,20 @@
 package edu.stanford.bdh.engagehf.education
 
 import com.google.firebase.firestore.DocumentSnapshot
+import edu.stanford.bdh.engagehf.localization.LocalizedMapReader
 import edu.stanford.spezi.modules.education.videos.Video
 import edu.stanford.spezi.modules.education.videos.VideoSection
 import kotlinx.coroutines.tasks.await
-import java.util.Locale
 import javax.inject.Inject
 
-class VideoSectionDocumentToVideoSectionMapper @Inject constructor() {
+class VideoSectionDocumentToVideoSectionMapper @Inject constructor(
+    private val localizedMapReader: LocalizedMapReader,
+) {
 
     suspend fun map(document: DocumentSnapshot): VideoSection? {
-        val title = getLocalizedString(document, "title")
-        val description = getLocalizedString(document, "description")
+        val jsonMap = document.data
+        val title = localizedMapReader.get(key = "title", jsonMap = jsonMap)
+        val description = localizedMapReader.get(key = "description", jsonMap = jsonMap)
         if (title == null || description == null) return null
         val orderIndex = document.getLong("orderIndex")?.toInt() ?: 0
 
@@ -35,31 +38,19 @@ class VideoSectionDocumentToVideoSectionMapper @Inject constructor() {
 
     fun mapVideo(document: DocumentSnapshot): Video? {
         if (document.exists().not()) return null
+        val jsonMap = document.data
 
-        val videoTitle = getLocalizedString(document, "title")
+        val videoTitle = localizedMapReader.get(key = "title", jsonMap = jsonMap)
         val youtubeId = document.get("youtubeId") as? String
         return if (videoTitle != null && youtubeId != null) {
             Video(
                 title = videoTitle,
-                description = getLocalizedString(document, "description"),
+                description = localizedMapReader.get(key = "description", jsonMap = jsonMap),
                 orderIndex = document.get("orderIndex") as? Int ?: 0,
                 youtubeId = youtubeId
             )
         } else {
             null
-        }
-    }
-
-    private fun getLocalizedString(
-        document: DocumentSnapshot,
-        field: String,
-    ): String? {
-        val fieldContent = document.get(field)
-        val language: String = Locale.getDefault().language
-        return if (fieldContent is Map<*, *>) {
-            fieldContent[language] as? String
-        } else {
-            fieldContent as? String
         }
     }
 }
