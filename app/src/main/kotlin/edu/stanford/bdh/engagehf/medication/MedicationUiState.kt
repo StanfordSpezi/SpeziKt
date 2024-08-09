@@ -44,21 +44,23 @@ data class DoseSchedule(
 }
 
 @Suppress("MagicNumber")
-enum class MedicationRecommendationType(private val priority: Int) :
-    Comparable<MedicationRecommendationType> {
-    TARGET_DOSE_REACHED(3),
-    PERSONAL_TARGET_DOSE_REACHED(4),
-    IMPROVEMENT_AVAILABLE(7),
-    MORE_PATIENT_OBSERVATIONS_REQUIRED(6),
-    MORE_LAB_OBSERVATIONS_REQUIRED(5),
-    NOT_STARTED(2),
-    NO_ACTION_REQUIRED(1),
+enum class MedicationRecommendationType(
+    val priority: Int,
+    private val serialName: String,
+) {
+    TARGET_DOSE_REACHED(3, "targetDoseReached"),
+    PERSONAL_TARGET_DOSE_REACHED(4, "personalTargetDoseReached"),
+    IMPROVEMENT_AVAILABLE(7, "improvementAvailable"),
+    MORE_PATIENT_OBSERVATIONS_REQUIRED(6, "morePatientObservationsRequired"),
+    MORE_LAB_OBSERVATIONS_REQUIRED(5, "moreLabObservationsRequired"),
+    NOT_STARTED(2, "notStarted"),
+    NO_ACTION_REQUIRED(1, "noActionRequired"),
     ;
 
-    val medicationRecommendationTypeComparator =
-        Comparator<MedicationRecommendationType> { o1, o2 ->
-            o2.priority.compareTo(o1.priority)
-        }
+    companion object {
+        fun from(serialName: String?) =
+            entries.find { it.serialName == serialName } ?: NO_ACTION_REQUIRED
+    }
 }
 
 /**
@@ -75,7 +77,7 @@ data class MedicationDetails(
     val isExpanded: Boolean = false,
 ) : Comparable<MedicationDetails> {
     override fun compareTo(other: MedicationDetails): Int {
-        return this.type.medicationRecommendationTypeComparator.compare(this.type, other.type)
+        return type.priority.compareTo(other.type.priority)
     }
 
     val statusIconAndColor: Pair<Int?, Color> =
