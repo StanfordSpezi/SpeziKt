@@ -38,15 +38,13 @@ class MedicationViewModel @Inject internal constructor(
     private fun observeMedicationDetails() {
         viewModelScope.launch {
             medicationRepository.observeMedicationDetails().collect { result ->
-                result.onSuccess {
+                result.onSuccess { details ->
                     _uiState.update {
                         medicationUiStateMapper.mapMedicationUiState(
-                            medicationDetails = result.getOrNull() ?: emptyList()
+                            medicationDetails = details
                         )
                     }
-                }
-                result.onFailure {
-                    logger.e(it) { "Error observing medication details" }
+                }.onFailure {
                     _uiState.value =
                         MedicationUiState.Error(it.message ?: "Error observing medication details")
                 }

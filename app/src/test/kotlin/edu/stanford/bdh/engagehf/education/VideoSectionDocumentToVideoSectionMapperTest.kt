@@ -3,24 +3,32 @@ package edu.stanford.bdh.engagehf.education
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
+import edu.stanford.bdh.engagehf.localization.DocumentLocalizedFieldReader
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Test
 
 class VideoSectionDocumentToVideoSectionMapperTest {
+    private val documentFieldReaderFactory: DocumentLocalizedFieldReader.Factory = mockk()
+    private val documentFieldReader: DocumentLocalizedFieldReader = mockk()
 
-    private val mapper = VideoSectionDocumentToVideoSectionMapper()
+    private val mapper = VideoSectionDocumentToVideoSectionMapper(documentFieldReaderFactory)
+
+    @Before
+    fun setup() {
+        every { documentFieldReaderFactory.create(any()) } returns documentFieldReader
+    }
 
     @Test
     fun `it should return null if title or description is missing`() = runTest {
         // given
-        val document: DocumentSnapshot = mockk()
-        every { document.get("title") } returns null
-        every { document.get("description") } returns null
+        every { documentFieldReader.get("title") } returns null
+        every { documentFieldReader.get("description") } returns null
 
         // when
-        val result = mapper.map(document)
+        val result = mapper.map(mockk())
 
         // then
         assertThat(result).isNull()
@@ -30,8 +38,8 @@ class VideoSectionDocumentToVideoSectionMapperTest {
     fun `it should return null if no videos found`() = runTest {
         // given
         val document: DocumentSnapshot = mockk {
-            every { this@mockk.get("title") } returns "Test Title"
-            every { this@mockk.get("description") } returns "Test Description"
+            every { documentFieldReader.get("title") } returns "Test Title"
+            every { documentFieldReader.get("description") } returns "Test Description"
             every { getLong("orderIndex") } returns 1L
             val collectionReference: CollectionReference = mockk {
                 every { get() } returns mockk {
@@ -63,14 +71,18 @@ class VideoSectionDocumentToVideoSectionMapperTest {
         // given
         val videoDocument: DocumentSnapshot = mockk {
             every { exists() } returns true
-            every { this@mockk.get("title") } returns "Video Title"
             every { this@mockk.get("youtubeId") } returns "youtube123"
-            every { this@mockk.get("description") } returns "Video Description"
+
             every { this@mockk.get("orderIndex") } returns 1
         }
+        val videoDocumentFieldReader: DocumentLocalizedFieldReader = mockk()
+        every { documentFieldReaderFactory.create(videoDocument) } returns videoDocumentFieldReader
+        every { videoDocumentFieldReader.get("title") } returns "Video Title"
+        every { videoDocumentFieldReader.get("description") } returns "Video Description"
+
         val document: DocumentSnapshot = mockk {
-            every { this@mockk.get("title") } returns "Test Title"
-            every { this@mockk.get("description") } returns "Test Description"
+            every { documentFieldReader.get("title") } returns "Test Title"
+            every { documentFieldReader.get("description") } returns "Test Description"
             every { getLong("orderIndex") } returns 1L
 
             val collectionReference: CollectionReference = mockk {
@@ -114,9 +126,9 @@ class VideoSectionDocumentToVideoSectionMapperTest {
         // given
         val document: DocumentSnapshot = mockk {
             every { exists() } returns true
-            every { this@mockk.get("title") } returns "Video Title"
+            every { documentFieldReader.get("title") } returns "Video Title"
             every { this@mockk.get("youtubeId") } returns "youtube123"
-            every { this@mockk.get("description") } returns "Video Description"
+            every { documentFieldReader.get("description") } returns "Video Description"
             every { this@mockk.get("orderIndex") } returns 1
         }
 
