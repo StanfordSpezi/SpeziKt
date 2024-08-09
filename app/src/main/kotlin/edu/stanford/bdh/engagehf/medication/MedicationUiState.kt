@@ -77,7 +77,7 @@ data class MedicationDetails(
     val isExpanded: Boolean = false,
 ) : Comparable<MedicationDetails> {
     override fun compareTo(other: MedicationDetails): Int {
-        return type.priority.compareTo(other.type.priority)
+        return other.type.priority.compareTo(type.priority)
     }
 
     val statusIconAndColor: Pair<Int?, Color> =
