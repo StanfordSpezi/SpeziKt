@@ -80,6 +80,27 @@ class SymptomsUiStateMapperTest {
     }
 
     @Test
+    fun `mapSymptomsUiState returns correct formatted trend`() {
+        // Given
+        val symptomScores = listOf(
+            createSymptomScore(day = 1, overallScore = 50.0),
+            createSymptomScore(day = 2, overallScore = 55.0)
+        )
+
+        // When
+        val resultOverall =
+            symptomsUiStateMapper.mapSymptomsUiState(SymptomType.OVERALL, symptomScores)
+
+        // Then
+        assertThat(resultOverall).isInstanceOf(SymptomsUiState.Success::class.java)
+
+        val successStateOverall = resultOverall as SymptomsUiState.Success
+
+        assertThat(successStateOverall.data.tableData.first().formattedTrend).isEqualTo("+10.0%")
+        assertThat(successStateOverall.data.tableData.last().formattedTrend).isEqualTo("N/A")
+    }
+
+    @Test
     fun `mapSymptomsUiState when different symptom types are null returns correct UIState`() {
         // Given
         val symptomScores = listOf(
