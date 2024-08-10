@@ -1,5 +1,6 @@
 package edu.stanford.bdh.engagehf.health.symptoms
 
+import com.google.firebase.Timestamp
 import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.EPOCH_SECONDS_DIVISOR
 import edu.stanford.bdh.engagehf.health.NewestHealthData
@@ -15,6 +16,8 @@ class SymptomsUiStateMapper @Inject constructor(
 ) {
 
     private val dateTimeFormatter = DateTimeFormatter.ofPattern(MONTH_DAY_TIME_PATTERN)
+
+    private val monthYearFormatter = DateTimeFormatter.ofPattern(MONTH_YEAR_PATTERN)
 
     fun mapSymptomsUiState(
         selectedSymptomType: SymptomType,
@@ -51,7 +54,7 @@ class SymptomsUiStateMapper @Inject constructor(
         val newestData = symptomScores.maxByOrNull { it.date }
         return NewestHealthData(
             formattedValue = formatValue(newestData, selectedSymptomType),
-            formattedDate = formatDate(newestData)
+            formattedDate = formatHeaderDate(newestData?.date)
         )
     }
 
@@ -90,55 +93,59 @@ class SymptomsUiStateMapper @Inject constructor(
         return newestData?.dizzinessScore?.toString() ?: NOT_AVAILABLE
     }
 
-    private fun formatDate(newestData: SymptomScore?): String {
-        return newestData?.date?.toInstant()?.atZone(ZoneId.systemDefault())
-            ?.format(dateTimeFormatter) ?: ""
+    private fun formatHeaderDate(timestamp: Timestamp?): String {
+        val date = timestamp?.toInstant()?.atZone(ZoneId.systemDefault())
+        return date?.format(monthYearFormatter) ?: ""
     }
 
     private fun mapTableData(
         symptomScores: List<SymptomScore>,
         selectedSymptomType: SymptomType,
     ): List<TableEntryData> {
-        return symptomScores.sortedBy { it.date }.asReversed().mapIndexed { index, score ->
-            val previousScore =
-                symptomScores.getOrNull(index - 1)
-            val currentValue = getScoreForSelectedSymptomType(selectedSymptomType, score)?.toFloat()
+        val sortedScores = symptomScores.sortedBy { it.date }
+        return sortedScores
+            .mapIndexed { index, score ->
+                val previousScore =
+                    sortedScores.getOrNull(index - 1)
+                val currentValue =
+                    getScoreForSelectedSymptomType(selectedSymptomType, score)?.toFloat()
 
-            val previousValue = previousScore?.let {
-                getScoreForSelectedSymptomType(selectedSymptomType, it)?.toFloat()
-            }
-
-            val formattedValue = currentValue?.let {
-                if (selectedSymptomType == SymptomType.DIZZINESS) {
-                    it.toString()
-                } else {
-                    "$it%"
+                val previousValue = previousScore?.let {
+                    getScoreForSelectedSymptomType(selectedSymptomType, it)?.toFloat()
                 }
-            } ?: NOT_AVAILABLE
 
-            val trend = if (previousValue != null && currentValue != null && previousValue != 0f) {
-                @Suppress("MagicNumber")
-                ((currentValue - previousValue) / previousValue) * 100
-            } else {
-                null
-            }
+                val formattedValue = currentValue?.let {
+                    if (selectedSymptomType == SymptomType.DIZZINESS) {
+                        it.toString()
+                    } else {
+                        "$it%"
+                    }
+                } ?: NOT_AVAILABLE
 
-            val formattedTrend = trend?.let {
-                String.format(localeProvider.getDefaultLocale(), PERCENT_FORMAT, it)
-            } ?: NOT_AVAILABLE
+                val trend =
+                    if (previousValue != null && currentValue != null && previousValue != 0f) {
+                        @Suppress("MagicNumber")
+                        ((currentValue - previousValue) / previousValue) * 100
+                    } else {
+                        null
+                    }
 
-            TableEntryData(
-                id = null,
-                value = currentValue,
-                secondValue = null,
-                formattedValues = formattedValue,
-                date = score.date.toInstant().atZone(ZoneId.systemDefault()),
-                formattedDate = score.date.toInstant().atZone(ZoneId.systemDefault())
-                    .format(dateTimeFormatter) ?: "",
-                trend = trend,
-                formattedTrend = formattedTrend
-            )
-        }.reversed()
+                val formattedTrend = trend?.let {
+                    String.format(localeProvider.getDefaultLocale(), PERCENT_FORMAT, it)
+                } ?: NOT_AVAILABLE
+
+                TableEntryData(
+                    id = null,
+                    value = currentValue,
+                    secondValue = null,
+                    formattedValues = formattedValue,
+                    date = score.date.toInstant().atZone(ZoneId.systemDefault()),
+                    formattedDate = score.date.toInstant().atZone(ZoneId.systemDefault())
+                        .format(dateTimeFormatter) ?: "",
+                    trend = trend,
+                    formattedTrend = formattedTrend
+                )
+            }.reversed()
     }
 
     private fun groupScoresByDay(symptomScores: List<SymptomScore>): Map<ZonedDateTime, List<SymptomScore>> {
@@ -192,5 +199,6 @@ class SymptomsUiStateMapper @Inject constructor(
         private const val PERCENT_FORMAT = "%+.1f%%"
         private const val NOT_AVAILABLE = "N/A"
         private const val MONTH_DAY_TIME_PATTERN = "MMM dd HH:mm"
+        private const val MONTH_YEAR_PATTERN = "MMM yy"
     }
 }

@@ -9,9 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.outlined.Check
@@ -100,88 +100,87 @@ fun SymptomsPage(
     uiState: SymptomsUiState,
     onAction: (SymptomsViewModel.Action) -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        when (uiState) {
-            is SymptomsUiState.Error -> {
-                CenteredContent {
-                    Text(
-                        text = uiState.message,
-                        style = TextStyles.headlineMedium,
-                        textAlign = TextAlign.Center,
-                    )
-                }
+    when (uiState) {
+        is SymptomsUiState.Error -> {
+            CenteredContent {
+                Text(
+                    text = uiState.message,
+                    style = TextStyles.headlineMedium,
+                    textAlign = TextAlign.Center,
+                )
             }
+        }
 
-            SymptomsUiState.Loading -> {
-                CenteredContent {
-                    CircularProgressIndicator(color = primary)
-                }
+        SymptomsUiState.Loading -> {
+            CenteredContent {
+                CircularProgressIndicator(color = primary)
             }
+        }
 
-            is SymptomsUiState.Success -> {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = Spacings.medium)
-                ) {
-                    Column {
-                        Text(
-                            text = uiState.data.headerData.formattedValue,
-                            style = TextStyles.headlineLarge.copy(color = primary),
-                            modifier = Modifier.padding(vertical = Spacings.small)
-                        )
-                        Text(
-                            text = uiState.data.headerData.formattedDate,
-                            style = TextStyles.bodyMedium.copy(color = secondary)
-                        )
-                    }
-                    Spacer(modifier = Modifier.weight(1f))
-                    SymptomsDropdown(uiState.data.headerData, onAction)
-                    IconButton(
-                        modifier = Modifier.size(Sizes.Icon.large),
-                        onClick = { onAction(SymptomsViewModel.Action.Info) }
+        is SymptomsUiState.Success -> {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                item {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(vertical = Spacings.medium)
                     ) {
-                        Icon(
-                            painter = painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_info),
-                            contentDescription = stringResource(R.string.info_icon_content_description),
-                            modifier = Modifier
-                                .size(Sizes.Icon.medium)
-                                .background(primary, shape = CircleShape)
-                                .shadow(Spacings.small, CircleShape)
-                                .padding(Spacings.small),
-                            tint = onPrimary
+                        Column {
+                            Text(
+                                text = uiState.data.headerData.formattedValue,
+                                style = TextStyles.headlineLarge.copy(color = primary),
+                                modifier = Modifier.padding(vertical = Spacings.small)
+                            )
+                            Text(
+                                text = uiState.data.headerData.formattedDate,
+                                style = TextStyles.bodyMedium.copy(color = secondary)
+                            )
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                        SymptomsDropdown(uiState.data.headerData, onAction)
+                        IconButton(
+                            modifier = Modifier.size(Sizes.Icon.large),
+                            onClick = { onAction(SymptomsViewModel.Action.Info) }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_info),
+                                contentDescription = stringResource(R.string.info_icon_content_description),
+                                modifier = Modifier
+                                    .size(Sizes.Icon.medium)
+                                    .background(primary, shape = CircleShape)
+                                    .shadow(Spacings.small, CircleShape)
+                                    .padding(Spacings.small),
+                                tint = onPrimary
+                            )
+                        }
+                    }
+                    SymptomsChart(uiState.data)
+                    VerticalSpacer()
+                    Row(
+                        modifier = Modifier.padding(horizontal = Spacings.medium),
+                        verticalAlignment = Alignment.Bottom,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.health_history),
+                            style = TextStyles.headlineMedium,
                         )
                     }
                 }
-                SymptomsChart(uiState.data)
-                VerticalSpacer()
-                Row(
-                    modifier = Modifier.padding(horizontal = Spacings.medium),
-                    verticalAlignment = Alignment.Bottom,
-                ) {
-                    Text(
-                        text = stringResource(R.string.health_history),
-                        style = TextStyles.headlineMedium,
-                    )
-                }
-                val data = uiState.data.tableData
-                data.forEachIndexed { index, tableEntryData ->
+                itemsIndexed(uiState.data.tableData) { index, tableEntryData ->
                     HealthTableItem(tableEntryData)
-                    if (index != data.size - 1) HorizontalDivider()
+                    if (index != uiState.data.tableData.size - 1) HorizontalDivider()
                 }
             }
+        }
 
-            is SymptomsUiState.NoData -> {
-                CenteredContent {
-                    Text(
-                        text = uiState.message,
-                        textAlign = TextAlign.Center,
-                        style = TextStyles.headlineMedium,
-                    )
-                }
+        is SymptomsUiState.NoData -> {
+            CenteredContent {
+                Text(
+                    text = uiState.message,
+                    textAlign = TextAlign.Center,
+                    style = TextStyles.headlineMedium,
+                )
             }
         }
     }
