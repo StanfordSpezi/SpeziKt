@@ -169,7 +169,7 @@ fun HealthTableItem(entry: TableEntryData) {
         )
         Text(
             text = entry.formattedTrend,
-            style = if (entry.isTrendPositive) {
+            style = if (entry.isTrendPositive != false) {
                 TextStyles.bodySmall.copy(color = primary)
             } else {
                 TextStyles.bodySmall.copy(
