@@ -138,7 +138,7 @@ private fun LazyListScope.listHeader(
 }
 
 @Composable
-private fun CenteredContent(content: ComposableBlock) {
+fun CenteredContent(content: ComposableBlock) {
     Box(
         modifier = Modifier
             .fillMaxSize()
