@@ -74,6 +74,7 @@ import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.EPOCH_SECO
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
+import edu.stanford.spezi.core.design.theme.Colors.secondary
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
@@ -134,7 +135,7 @@ fun SymptomsPage(
                         )
                         Text(
                             text = uiState.data.headerData.formattedDate,
-                            style = TextStyles.bodyMedium
+                            style = TextStyles.bodyMedium.copy(color = secondary)
                         )
                     }
                     Spacer(modifier = Modifier.weight(1f))

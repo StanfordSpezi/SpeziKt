@@ -247,8 +247,8 @@ class HealthUiStateMapper @Inject constructor(
 
     private fun getAverageData(tableData: List<TableEntryData>) =
         AverageHealthData(
-            value = tableData.map { it.value }.average().toFloat(),
-            formattedValue = "Average " + formatValue(tableData.map { it.value }.average()),
+            value = tableData.mapNotNull { it.value }.average().toFloat(),
+            formattedValue = "Average " + formatValue(tableData.mapNotNull { it.value }.average()),
         )
 
     private fun getNewestRecord(records: List<EngageRecord>): NewestHealthData? {
