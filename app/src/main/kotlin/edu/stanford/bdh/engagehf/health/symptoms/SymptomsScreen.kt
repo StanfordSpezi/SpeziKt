@@ -18,6 +18,7 @@ import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -33,6 +34,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
@@ -66,7 +68,7 @@ import com.patrykandpatrick.vico.core.common.component.TextComponent
 import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shape.Shape
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.bdh.engagehf.health.HealthPageTestIdentifier
+import edu.stanford.bdh.engagehf.health.CenteredContent
 import edu.stanford.bdh.engagehf.health.HealthTableItem
 import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.EPOCH_SECONDS_DIVISOR
 import edu.stanford.spezi.core.design.component.VerticalSpacer
@@ -75,7 +77,6 @@ import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.Instant
@@ -105,14 +106,19 @@ fun SymptomsPage(
     ) {
         when (uiState) {
             is SymptomsUiState.Error -> {
-                Text(
-                    text = uiState.message,
-                    style = TextStyles.headlineMedium
-                )
+                CenteredContent {
+                    Text(
+                        text = uiState.message,
+                        style = TextStyles.headlineMedium,
+                        textAlign = TextAlign.Center,
+                    )
+                }
             }
 
             SymptomsUiState.Loading -> {
-                CircularProgressIndicator(color = primary)
+                CenteredContent {
+                    CircularProgressIndicator(color = primary)
+                }
             }
 
             is SymptomsUiState.Success -> {
@@ -158,11 +164,22 @@ fun SymptomsPage(
                     Text(
                         text = stringResource(R.string.health_history),
                         style = TextStyles.headlineMedium,
-                        modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_HISTORY_TEXT)
                     )
                 }
-                uiState.data.tableData.forEach {
-                    HealthTableItem(entry = it)
+                val data = uiState.data.tableData
+                data.forEachIndexed { index, tableEntryData ->
+                    HealthTableItem(tableEntryData)
+                    if (index != data.size - 1) HorizontalDivider()
+                }
+            }
+
+            is SymptomsUiState.NoData -> {
+                CenteredContent {
+                    Text(
+                        text = uiState.message,
+                        textAlign = TextAlign.Center,
+                        style = TextStyles.headlineMedium,
+                    )
                 }
             }
         }
@@ -224,7 +241,7 @@ fun SymptomsChart(
                     )
                 ),
                 axisValueOverrider = AxisValueOverrider.fixed(
-                    maxY = 100f,
+                    maxY = if (uiState.headerData.selectedSymptomType == SymptomType.DIZZINESS) 5f else 100f,
                     minY = 0f,
                     minX = uiState.chartData.first().xValues.minOrNull() ?: 0f,
                     maxX = uiState.chartData.first().xValues.maxOrNull() ?: 0f,
