@@ -17,8 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.bdh.engagehf.medication.MedicationViewModel.Companion.CoolGrey
-import edu.stanford.bdh.engagehf.medication.MedicationViewModel.Companion.GreenProgress
+import edu.stanford.bdh.engagehf.medication.ui.MedicationColor
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
@@ -26,9 +25,7 @@ import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 
 @Composable
-fun MedicationProgressBar(currentProgress: Float, targetProgress: Float) {
-    val progress = (currentProgress / targetProgress).coerceIn(0f, 1f)
-
+fun MedicationProgressBar(progress: Float) {
     Column {
         Box(
             modifier = Modifier
@@ -40,7 +37,7 @@ fun MedicationProgressBar(currentProgress: Float, targetProgress: Float) {
                 modifier = Modifier
                     .fillMaxHeight()
                     .fillMaxWidth(progress)
-                    .background(GreenProgress, RoundedCornerShape(Sizes.RoundedCorner.large))
+                    .background(MedicationColor.GREEN_PROGRESS.value, RoundedCornerShape(Sizes.RoundedCorner.large))
             )
         }
         VerticalSpacer(height = Spacings.extraSmall)
@@ -50,35 +47,32 @@ fun MedicationProgressBar(currentProgress: Float, targetProgress: Float) {
         ) {
             Text(
                 text = stringResource(R.string.medication_progress_bar_current),
-                color = GreenProgress,
+                color = MedicationColor.GREEN_PROGRESS.value,
             )
             Text(
                 text = stringResource(R.string.medication_progress_bar_target),
-                color = CoolGrey,
+                color = MedicationColor.GREY.value,
             )
         }
     }
 }
 
 @Suppress("MagicNumber")
-private class MedicationProgressBarProvider : PreviewParameterProvider<Pair<Float, Float>> {
-    override val values: Sequence<Pair<Float, Float>> = sequenceOf(
-        Pair(0f, 100f),
-        Pair(50f, 100f),
-        Pair(75f, 100f),
-        Pair(100f, 100f)
+private class MedicationProgressBarProvider : PreviewParameterProvider<Float> {
+    override val values: Sequence<Float> = sequenceOf(
+        0f,
+        0.5f,
+        0.75f,
+        1f,
     )
 }
 
 @ThemePreviews
 @Composable
 private fun MedicationProgressBarPreview(
-    @PreviewParameter(MedicationProgressBarProvider::class) progress: Pair<Float, Float>,
+    @PreviewParameter(MedicationProgressBarProvider::class) progress: Float,
 ) {
     SpeziTheme(isPreview = true) {
-        MedicationProgressBar(
-            currentProgress = progress.first,
-            targetProgress = progress.second
-        )
+        MedicationProgressBar(progress = progress)
     }
 }

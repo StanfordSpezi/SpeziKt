@@ -7,45 +7,45 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import edu.stanford.bdh.engagehf.medication.MedicationDetails
+import edu.stanford.bdh.engagehf.medication.ui.MedicationCardUiModel
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 
 @Composable
-fun MedicationStatusIcon(medicationDetails: MedicationDetails) {
-    val (iconRes, color) = medicationDetails.statusIconAndColor
-
-    iconRes?.let {
-        Icon(
-            painter = painterResource(id = iconRes),
-            contentDescription = null,
-            tint = color,
-            modifier = Modifier
-                .size(Sizes.Icon.medium)
-                .background(color.copy(alpha = 0.1f), shape = CircleShape)
-                .padding(Spacings.small)
-        )
-    } ?: run {
-        Box(
-            modifier = Modifier
-                .size(Sizes.Icon.medium)
-                .background(color.copy(alpha = 0.1f), shape = CircleShape)
-                .padding(Spacings.small)
-        )
+fun MedicationStatusIcon(model: MedicationCardUiModel) {
+    val backgroundColor = model.statusColor.value
+    Box(
+        modifier = Modifier
+            .size(Sizes.Icon.medium)
+            .background(backgroundColor.copy(alpha = 0.1f), shape = CircleShape)
+            .padding(Spacings.small),
+        contentAlignment = Alignment.Center
+    ) {
+        model.statusIconResId?.let {
+            Icon(
+                painter = painterResource(id = it),
+                contentDescription = null,
+                tint = backgroundColor,
+                modifier = Modifier
+                    .size(Sizes.Icon.medium)
+                    .padding(Spacings.small)
+            )
+        }
     }
 }
 
 @ThemePreviews
 @Composable
 private fun MedicationStatusIconPreview(
-    @PreviewParameter(MedicationDetailsProvider::class) medicationDetails: MedicationDetails,
+    @PreviewParameter(MedicationCardModelsProvider::class) model: MedicationCardUiModel,
 ) {
     SpeziTheme(isPreview = true) {
-        MedicationStatusIcon(medicationDetails = medicationDetails)
+        MedicationStatusIcon(model = model)
     }
 }

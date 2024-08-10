@@ -24,9 +24,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import edu.stanford.bdh.engagehf.medication.MedicationDetails
-import edu.stanford.bdh.engagehf.medication.MedicationScreenTestIdentifier
-import edu.stanford.bdh.engagehf.medication.MedicationViewModel
+import edu.stanford.bdh.engagehf.medication.ui.MedicationCardUiModel
+import edu.stanford.bdh.engagehf.medication.ui.MedicationScreenTestIdentifier
+import edu.stanford.bdh.engagehf.medication.ui.MedicationViewModel
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Sizes
@@ -40,7 +40,7 @@ import edu.stanford.spezi.core.utils.extensions.testIdentifier
 @Composable
 fun MedicationCard(
     modifier: Modifier = Modifier,
-    medicationDetails: MedicationDetails,
+    model: MedicationCardUiModel,
     onAction: (MedicationViewModel.Action) -> Unit,
 ) {
     ElevatedCard(
@@ -53,13 +53,12 @@ fun MedicationCard(
         modifier = modifier
             .testIdentifier(
                 identifier = MedicationScreenTestIdentifier.SUCCESS_MEDICATION_CARD_ROOT,
-                suffix = medicationDetails.id
+                suffix = model.id
             )
             .clickable {
                 onAction(
-                    MedicationViewModel.Action.ExpandMedication(
-                        medicationId = medicationDetails.id,
-                        isExpanded = !medicationDetails.isExpanded,
+                    MedicationViewModel.Action.ToggleExpand(
+                        medicationId = model.id
                     )
                 )
             },
@@ -71,32 +70,31 @@ fun MedicationCard(
                 .animateContentSize()
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                MedicationStatusIcon(medicationDetails = medicationDetails)
+                MedicationStatusIcon(model = model)
                 Spacer(modifier = Modifier.width(Spacings.small))
                 Column {
                     Text(
-                        text = medicationDetails.title,
+                        text = model.title,
                         style = TextStyles.titleLarge,
                         modifier = Modifier.testIdentifier(
                             identifier = MedicationScreenTestIdentifier.SUCCESS_MEDICATION_CARD_TITLE,
-                            suffix = medicationDetails.id
+                            suffix = model.id
                         )
                     )
                     Text(
-                        text = medicationDetails.subtitle,
+                        text = model.subtitle,
                         style = TextStyles.titleSmall,
                         modifier = Modifier.testIdentifier(
                             identifier = MedicationScreenTestIdentifier.SUCCESS_MEDICATION_CARD_SUBTITLE,
-                            suffix = medicationDetails.id,
+                            suffix = model.id,
                         )
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 IconButton(onClick = {
                     onAction(
-                        MedicationViewModel.Action.ExpandMedication(
-                            medicationDetails.id,
-                            !medicationDetails.isExpanded
+                        MedicationViewModel.Action.ToggleExpand(
+                            medicationId = model.id,
                         )
                     )
                 }) {
@@ -106,8 +104,8 @@ fun MedicationCard(
                     )
                 }
             }
-            if (medicationDetails.isExpanded) {
-                if (medicationDetails.description.isNotEmpty()) {
+            if (model.isExpanded) {
+                if (model.description.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(Spacings.small))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -115,34 +113,33 @@ fun MedicationCard(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            text = medicationDetails.description,
+                            text = model.description,
                             maxLines = Int.MAX_VALUE,
                             overflow = TextOverflow.Clip,
                             modifier = Modifier
                                 .weight(1f)
                                 .testIdentifier(
                                     identifier = MedicationScreenTestIdentifier.SUCCESS_MEDICATION_CARD_DESCRIPTION,
-                                    suffix = medicationDetails.id
+                                    suffix = model.id
                                 )
                         )
-                        IconButton(onClick = { /*TODO*/ }) {
+                        IconButton(onClick = {
+                            onAction(MedicationViewModel.Action.InfoClicked(medicationId = model.id))
+                        }) {
                             Icon(Icons.Filled.Info, contentDescription = "Information Icon")
                         }
                     }
                 }
-                if (medicationDetails.dosageInformation != null) {
+                if (model.dosageInformation != null) {
                     HorizontalDivider(
                         modifier = Modifier.padding(
                             top = Spacings.small,
                             bottom = Spacings.small
                         )
                     )
-                    DosageInformation(dosageInformation = medicationDetails.dosageInformation)
+                    DosageInformation(dosageInformationUiModel = model.dosageInformation)
                     VerticalSpacer()
-                    MedicationProgressBar(
-                        currentProgress = medicationDetails.dosageInformation.currentDailyIntake.toFloat(),
-                        targetProgress = medicationDetails.dosageInformation.targetDailyIntake.toFloat()
-                    )
+                    MedicationProgressBar(progress = model.dosageInformation.progress)
                 }
             }
         }
@@ -152,11 +149,11 @@ fun MedicationCard(
 @ThemePreviews
 @Composable
 fun MedicationCardPreview(
-    @PreviewParameter(MedicationDetailsProvider::class) medicationDetails: MedicationDetails,
+    @PreviewParameter(MedicationCardModelsProvider::class) model: MedicationCardUiModel,
 ) {
     SpeziTheme(isPreview = true) {
         MedicationCard(
-            medicationDetails = medicationDetails,
+            model = model,
             onAction = {}
         )
     }
