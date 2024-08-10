@@ -11,7 +11,7 @@ class HealthViewModelTest {
 
     private val bottomSheetEvents: BottomSheetEvents = mockk(relaxed = true)
 
-    private val tabs = HealthTab.entries.filter { it != HealthTab.Symptoms }
+    private val tabs = HealthTab.entries
     private val viewModel: HealthViewModel = HealthViewModel(bottomSheetEvents)
 
     @Test
