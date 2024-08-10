@@ -325,7 +325,7 @@ fun SymptomTypeText(symptomType: SymptomType) {
             SymptomType.PHYSICAL_LIMITS -> stringResource(R.string.symptom_type_physical)
             SymptomType.SOCIAL_LIMITS -> stringResource(R.string.symptom_type_social)
             SymptomType.QUALITY_OF_LIFE -> stringResource(R.string.symptom_type_quality)
-            SymptomType.SPECIFIC_SYMPTOMS -> stringResource(R.string.symptom_type_specific)
+            SymptomType.SYMPTOMS_FREQUENCY -> stringResource(R.string.symptom_type_specific)
             SymptomType.DIZZINESS -> stringResource(R.string.symptom_type_dizziness)
         }
     )
