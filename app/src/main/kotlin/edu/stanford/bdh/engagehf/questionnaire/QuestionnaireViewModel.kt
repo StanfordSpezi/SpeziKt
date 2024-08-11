@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.hl7.fhir.r4.model.QuestionnaireResponse
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -54,7 +55,11 @@ class QuestionnaireViewModel @Inject internal constructor(
         when (action) {
             is Action.SaveQuestionnaireResponse -> {
                 val response = action.response
-                println("Response: ${fhirContext.newJsonParser().encodeResourceToString(response)}")
+                response.setAuthored(Date())
+                logger.i { "Save questionnaire response: $response" }
+                viewModelScope.launch {
+                    questionnaireRepository.save(response)
+                }
             }
 
             Action.Cancel -> {

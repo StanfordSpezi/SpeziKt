@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
 import org.hl7.fhir.r4.model.Questionnaire
+import org.hl7.fhir.r4.model.QuestionnaireResponse
 import javax.inject.Inject
 
 class QuestionnaireRepository @Inject constructor(
@@ -26,7 +27,6 @@ class QuestionnaireRepository @Inject constructor(
         val listenerRegistration: ListenerRegistration? = null
         withContext(ioDispatcher) {
             kotlin.runCatching {
-                val uid = userSessionManager.getUserUid() ?: error("User not authenticated")
                 firestore.collection("questionnaires")
                     .document(id)
                     .addSnapshotListener { snapshot, error ->
@@ -49,6 +49,23 @@ class QuestionnaireRepository @Inject constructor(
         awaitClose {
             listenerRegistration?.remove()
             channel.close()
+        }
+    }
+
+    suspend fun save(questionnaireResponse: QuestionnaireResponse) {
+        withContext(ioDispatcher) {
+            val uid = userSessionManager.getUserUid() ?: error("User not authenticated")
+            val document = questionnaireDocumentMapper.map(questionnaireResponse)
+            firestore.collection("users")
+                .document(uid)
+                .collection("questionnaireResponses")
+                .add(document)
+                .addOnSuccessListener {
+                    logger.i { "Questionnaire saved" }
+                }
+                .addOnFailureListener { e ->
+                    logger.e(e) { "Error saving questionnaire" }
+                }
         }
     }
 }
