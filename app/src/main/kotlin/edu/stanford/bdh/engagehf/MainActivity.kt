@@ -74,6 +74,7 @@ class MainActivity : FragmentActivity() {
                             navHostController = navHostController,
                             startDestination = uiState.startDestination
                         )
+                        setTheme(R.style.Theme_Spezi_Content)
                     }
                 }
             }
