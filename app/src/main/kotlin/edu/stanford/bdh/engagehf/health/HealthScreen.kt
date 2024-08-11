@@ -27,8 +27,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.bloodpressure.BloodPressurePage
 import edu.stanford.bdh.engagehf.health.heartrate.HeartRatePage
 import edu.stanford.bdh.engagehf.health.symptoms.SymptomsPage
@@ -114,10 +116,10 @@ private fun HealthTabRow(
                 text = {
                     Text(
                         text = when (tab) {
-                            HealthTab.Symptoms -> "Symptoms"
-                            HealthTab.Weight -> "Weight"
-                            HealthTab.BloodPressure -> "Blood Pressure"
-                            HealthTab.HeartRate -> "Heart Rate"
+                            HealthTab.Symptoms -> stringResource(R.string.health_tab_title_symptoms)
+                            HealthTab.Weight -> stringResource(R.string.health_tab_title_weight)
+                            HealthTab.BloodPressure -> stringResource(R.string.health_tab_title_blood_pressure)
+                            HealthTab.HeartRate -> stringResource(R.string.health_tab_title_heart_rate)
                         },
                     )
                 },

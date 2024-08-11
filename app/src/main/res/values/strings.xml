@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Spezi</string>
     <string name="home">Home</string>
-    <string name="heart_health">Heart Health</string>
+    <string name="heart_health">Health</string>
     <string name="medication">Medication</string>
     <string name="education">Education</string>
     <string name="new_measurement">New Measurement</string>
@@ -27,4 +27,8 @@
     <string name="symptom_type_quality">Quality</string>
     <string name="symptom_type_specific">Specific</string>
     <string name="symptom_type_dizziness">Dizziness</string>
+    <string name="health_tab_title_symptoms">Symptoms</string>
+    <string name="health_tab_title_weight">Weight</string>
+    <string name="health_tab_title_blood_pressure">BP</string>
+    <string name="health_tab_title_heart_rate">Heart Rate</string>
 </resources>
