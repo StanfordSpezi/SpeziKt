@@ -9,7 +9,7 @@
 
     <style name="Theme.Spezi" parent="android:Theme.Material.Light.NoActionBar" />
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Theme.Spezi.Content" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorSurface">@color/white</item>
     </style>
 </resources>
