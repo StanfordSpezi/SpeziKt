@@ -4,8 +4,8 @@ import ca.uhn.fhir.parser.IParser
 import com.google.common.reflect.TypeToken
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.gson.Gson
-import org.hl7.fhir.r4.model.Observation
 import org.hl7.fhir.r4.model.Questionnaire
+import org.hl7.fhir.r4.model.QuestionnaireResponse
 import javax.inject.Inject
 
 class QuestionnaireDocumentMapper @Inject constructor(
@@ -14,8 +14,8 @@ class QuestionnaireDocumentMapper @Inject constructor(
 ) {
     private val mapType by lazy { object : TypeToken<Map<String, Any>>() {}.type }
 
-    fun map(observation: Observation): Map<String, Any> {
-        val json = jsonParser.encodeResourceToString(observation)
+    fun map(questionnaireResponse: QuestionnaireResponse): Map<String, Any> {
+        val json = jsonParser.encodeResourceToString(questionnaireResponse)
         return gson.fromJson(json, mapType)
     }
 
