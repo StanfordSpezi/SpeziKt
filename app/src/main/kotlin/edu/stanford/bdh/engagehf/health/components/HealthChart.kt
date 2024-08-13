@@ -48,7 +48,6 @@ import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.AverageHealthData
 import edu.stanford.bdh.engagehf.health.HealthUiData
 import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.ADAPTIVE_Y_VALUES_FRACTION
-import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.EPOCH_SECONDS_DIVISOR
 import edu.stanford.bdh.engagehf.health.TimeRange
 import edu.stanford.spezi.core.design.theme.Colors.onTertiary
 import edu.stanford.spezi.core.design.theme.Colors.primary
@@ -58,7 +57,7 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.Instant
-import java.time.ZoneOffset
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -152,21 +151,40 @@ fun HealthChart(
     )
 }
 
+@Suppress("MagicNumber")
 @Composable
 private fun rememberValueFormater(
     uiState: HealthUiData,
 ): CartesianValueFormatter =
     remember(uiState.selectedTimeRange) {
         CartesianValueFormatter { value, _, _ ->
-            val epochSecond = (value * EPOCH_SECONDS_DIVISOR).toLong()
-            val dateTime =
-                ZonedDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZoneOffset.UTC)
+            val date = when (uiState.selectedTimeRange) {
+                TimeRange.DAILY -> {
+                    val year = value.toInt()
+                    val dayOfYearFraction = value - year
+                    val dayOfYear = (dayOfYearFraction * 365).toInt() + 1
+                    ZonedDateTime.of(year, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault())
+                        .plusDays((dayOfYear - 1).toLong())
+                }
+
+                TimeRange.WEEKLY -> ZonedDateTime.ofInstant(
+                    Instant.ofEpochSecond(
+                        value.toLong() * 7 * 24 * 60 * 60
+                    ), ZoneId.systemDefault()
+                )
+
+                TimeRange.MONTHLY -> {
+                    val year = value.toInt()
+                    val month = ((value - year) * 12).toInt() + 1
+                    ZonedDateTime.of(year, month, 1, 0, 0, 0, 0, ZoneId.systemDefault())
+                }
+            }
             val pattern = when (uiState.selectedTimeRange) {
                 TimeRange.WEEKLY -> "MMM dd"
                 TimeRange.MONTHLY -> "MMM yy"
                 TimeRange.DAILY -> "MMM dd"
             }
-            dateTime.format(DateTimeFormatter.ofPattern(pattern))
+            date.format(DateTimeFormatter.ofPattern(pattern))
         }
     }
 
