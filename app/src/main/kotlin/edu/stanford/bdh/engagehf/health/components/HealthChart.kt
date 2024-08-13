@@ -48,7 +48,6 @@ import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.AverageHealthData
 import edu.stanford.bdh.engagehf.health.HealthUiData
 import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.ADAPTIVE_Y_VALUES_FRACTION
-import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.EPOCH_SECONDS_DIVISOR
 import edu.stanford.bdh.engagehf.health.TimeRange
 import edu.stanford.spezi.core.design.theme.Colors.onTertiary
 import edu.stanford.spezi.core.design.theme.Colors.primary
@@ -57,8 +56,7 @@ import edu.stanford.spezi.core.design.theme.Colors.tertiary
 import edu.stanford.spezi.core.design.theme.Spacings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.time.Instant
-import java.time.ZoneOffset
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -158,15 +156,19 @@ private fun rememberValueFormater(
 ): CartesianValueFormatter =
     remember(uiState.selectedTimeRange) {
         CartesianValueFormatter { value, _, _ ->
-            val epochSecond = (value * EPOCH_SECONDS_DIVISOR).toLong()
-            val dateTime =
-                ZonedDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZoneOffset.UTC)
+            val beginOfYear =
+                ZonedDateTime.of(ZonedDateTime.now().year, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault())
+            val date = when (uiState.selectedTimeRange) {
+                TimeRange.DAILY -> beginOfYear.plusDays(value.toLong())
+                TimeRange.WEEKLY -> @Suppress("MagicNumbers") beginOfYear.plusDays(value.toLong() * 7)
+                TimeRange.MONTHLY -> beginOfYear.plusMonths(value.toLong())
+            }
             val pattern = when (uiState.selectedTimeRange) {
                 TimeRange.WEEKLY -> "MMM dd"
                 TimeRange.MONTHLY -> "MMM yy"
                 TimeRange.DAILY -> "MMM dd"
             }
-            dateTime.format(DateTimeFormatter.ofPattern(pattern))
+            date.format(DateTimeFormatter.ofPattern(pattern))
         }
     }
 

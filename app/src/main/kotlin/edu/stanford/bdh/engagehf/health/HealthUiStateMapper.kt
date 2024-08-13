@@ -91,9 +91,18 @@ class HealthUiStateMapper @Inject constructor(
         val groupedRecords = groupRecordsByTimeRange(records, selectedTimeRange)
         return groupedRecords.values.map { entries ->
             val averageValue = entries.map { getValue(it, diastolic).value }.average()
-            val xValue =
-                entries.first().zonedDateTime.toEpochSecond().toFloat() / EPOCH_SECONDS_DIVISOR
-            Pair(averageValue.toFloat(), xValue)
+            Pair(
+                averageValue.toFloat(),
+                mapXValue(selectedTimeRange, entries.first().zonedDateTime)
+            )
+        }
+    }
+
+    private fun mapXValue(selectedTimeRange: TimeRange, zonedDateTime: ZonedDateTime): Float {
+        return when (selectedTimeRange) {
+            TimeRange.DAILY -> zonedDateTime.dayOfYear.toFloat()
+            TimeRange.WEEKLY -> (zonedDateTime.dayOfYear / 7).toFloat()
+            TimeRange.MONTHLY -> zonedDateTime.monthValue.toFloat()
         }
     }
 
