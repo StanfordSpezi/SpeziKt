@@ -18,6 +18,10 @@
     <string name="info_icon_content_description">Info Icon</string>
     <string name="blood_pressure_icon_content_description">Blutdruck Icon</string>
     <string name="new_measurement_text">Bitte nehmen Sie eine neue Messung vor.</string>
+    <string name="dosage_information_dose_row_current_dose">Aktuelle Dosis:</string>
+    <string name="dosage_information_dose_row_target_dose">Ziel Dosis:</string>
+    <string name="medication_progress_bar_current">Aktuell</string>
+    <string name="medication_progress_bar_target">Ziel</string>
     <string name="time_range_daily">Täglich</string>
     <string name="time_range_weekly">Wöchentlich</string>
     <string name="time_range_monthly">Monatlich</string>
