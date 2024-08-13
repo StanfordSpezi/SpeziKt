@@ -160,7 +160,7 @@ private fun rememberValueFormater(
                 ZonedDateTime.of(ZonedDateTime.now().year, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault())
             val date = when (uiState.selectedTimeRange) {
                 TimeRange.DAILY -> beginOfYear.plusDays(value.toLong())
-                TimeRange.WEEKLY -> @Suppress("MagicNumbers") beginOfYear.plusDays(value.toLong() * 7)
+                TimeRange.WEEKLY -> @Suppress("MagicNumber") beginOfYear.plusDays(value.toLong() * 7)
                 TimeRange.MONTHLY -> beginOfYear.plusMonths(value.toLong())
             }
             val pattern = when (uiState.selectedTimeRange) {
