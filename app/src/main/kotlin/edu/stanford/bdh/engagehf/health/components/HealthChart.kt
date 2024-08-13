@@ -56,6 +56,7 @@ import edu.stanford.spezi.core.design.theme.Colors.tertiary
 import edu.stanford.spezi.core.design.theme.Spacings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -150,18 +151,33 @@ fun HealthChart(
     )
 }
 
+@Suppress("MagicNumber")
 @Composable
 private fun rememberValueFormater(
     uiState: HealthUiData,
 ): CartesianValueFormatter =
     remember(uiState.selectedTimeRange) {
         CartesianValueFormatter { value, _, _ ->
-            val beginOfYear =
-                ZonedDateTime.of(ZonedDateTime.now().year, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault())
             val date = when (uiState.selectedTimeRange) {
-                TimeRange.DAILY -> beginOfYear.plusDays(value.toLong())
-                TimeRange.WEEKLY -> @Suppress("MagicNumber") beginOfYear.plusDays(value.toLong() * 7)
-                TimeRange.MONTHLY -> beginOfYear.plusMonths(value.toLong())
+                TimeRange.DAILY -> {
+                    val year = value.toInt()
+                    val dayOfYearFraction = value - year
+                    val dayOfYear = (dayOfYearFraction * 365).toInt() + 1
+                    ZonedDateTime.of(year, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault())
+                        .plusDays((dayOfYear - 1).toLong())
+                }
+
+                TimeRange.WEEKLY -> ZonedDateTime.ofInstant(
+                    Instant.ofEpochSecond(
+                        value.toLong() * 7 * 24 * 60 * 60
+                    ), ZoneId.systemDefault()
+                )
+
+                TimeRange.MONTHLY -> {
+                    val year = value.toInt()
+                    val month = ((value - year) * 12).toInt() + 1
+                    ZonedDateTime.of(year, month, 1, 0, 0, 0, 0, ZoneId.systemDefault())
+                }
             }
             val pattern = when (uiState.selectedTimeRange) {
                 TimeRange.WEEKLY -> "MMM dd"
