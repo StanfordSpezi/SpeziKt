@@ -73,6 +73,7 @@ fun HealthScreen(
             HealthTabRow(uiState = uiState, onAction = onAction)
             HorizontalPager(
                 state = pagerState,
+                userScrollEnabled = false,
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = Spacings.medium)
