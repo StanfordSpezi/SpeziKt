@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -137,14 +138,19 @@ fun MessageItem(
                 Button(
                     modifier = Modifier.testIdentifier(MessageItemTestIdentifiers.ACTION_BUTTON),
                     colors = ButtonDefaults.buttonColors(containerColor = primary),
+                    enabled = !message.isLoading,
                     onClick = {
                         onAction(Action.MessageItemClicked(message))
                     },
                 ) {
-                    Text(
-                        text = stringResource(R.string.message_item_button_action_text),
-                        color = Colors.onPrimary,
-                    )
+                    if (message.isLoading) {
+                        CircularProgressIndicator(modifier = Modifier.size(Sizes.Content.small))
+                    } else {
+                        Text(
+                            text = stringResource(R.string.message_item_button_action_text),
+                            color = Colors.onPrimary,
+                        )
+                    }
                 }
             }
         }

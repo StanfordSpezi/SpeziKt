@@ -158,9 +158,10 @@ class BluetoothViewModel @Inject internal constructor(
                 viewModelScope.launch {
                     val mappingResult = uiStateMapper.mapMessagesAction(action.message.action)
                     if (mappingResult.isSuccess) {
+                        val messageId = action.message.id
                         when (val mappedAction = mappingResult.getOrNull()!!) {
                             is MessagesAction.HealthSummaryAction -> {
-                                handleHealthSummaryAction()
+                                handleHealthSummaryAction(messageId)
                             }
 
                             is MessagesAction.MeasurementsAction -> {
@@ -184,11 +185,7 @@ class BluetoothViewModel @Inject internal constructor(
                                 }
                             }
                         }
-                        val messageId = action.message.id
                         messageRepository.completeMessage(messageId = messageId)
-                        _uiState.update {
-                            it.copy(messages = it.messages.filter { message -> message.id != messageId })
-                        }
                     } else {
                         logger.e { "Error while mapping action: ${mappingResult.exceptionOrNull()}" }
                     }
@@ -214,9 +211,31 @@ class BluetoothViewModel @Inject internal constructor(
         }
     }
 
-    private fun handleHealthSummaryAction() {
+    private fun handleHealthSummaryAction(messageId: String) {
         viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    messages = it.messages.map { message ->
+                        if (message.id == messageId) {
+                            message.copy(isLoading = true)
+                        } else {
+                            message
+                        }
+                    }
+                )
+            }
             healthSummaryService.generateHealthSummaryPdf()
+            _uiState.update {
+                it.copy(
+                    messages = it.messages.map { message ->
+                        if (message.id == messageId) {
+                            message.copy(isLoading = false)
+                        } else {
+                            message
+                        }
+                    }
+                )
+            }
         }
     }
 
