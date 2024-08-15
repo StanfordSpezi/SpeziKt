@@ -4,7 +4,7 @@ import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.WeightRecord
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
@@ -12,11 +12,13 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
 import edu.stanford.bdh.engagehf.bluetooth.measurements.MeasurementsRepository
 import edu.stanford.bdh.engagehf.education.EngageEducationRepository
+import edu.stanford.bdh.engagehf.messages.HealthSummaryService
 import edu.stanford.bdh.engagehf.messages.Message
 import edu.stanford.bdh.engagehf.messages.MessageRepository
 import edu.stanford.bdh.engagehf.messages.MessageType
 import edu.stanford.bdh.engagehf.messages.MessagesAction
 import edu.stanford.bdh.engagehf.messages.VideoSectionVideo
+import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
 import edu.stanford.spezi.core.bluetooth.api.BLEService
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
@@ -48,11 +50,12 @@ class BluetoothViewModelTest {
     private val measurementsRepository = mockk<MeasurementsRepository>(relaxed = true)
     private val messageRepository = mockk<MessageRepository>(relaxed = true)
     private val engageEducationRepository = mockk<EngageEducationRepository>(relaxed = true)
+    private val healthSummaryService = mockk<HealthSummaryService>(relaxed = true)
 
     private val bleServiceState = MutableStateFlow<BLEServiceState>(BLEServiceState.Idle)
     private val bleServiceEvents = MutableSharedFlow<BLEServiceEvent>()
     private val readyUiState: BluetoothUiState.Ready = mockk()
-    private val bottomSheetEvents = mockk<BottomSheetEvents>(relaxed = true)
+    private val appScreenEvents = mockk<AppScreenEvents>(relaxed = true)
     private val navigator = mockk<Navigator>(relaxed = true)
     private val messageAction = "some-action"
     private val messageId = "some-id"
@@ -240,7 +243,7 @@ class BluetoothViewModelTest {
             bleServiceEvents.emit(event)
 
             // then
-            verify { bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet) }
+            verify { appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet) }
             assertBluetothUiState(state = BluetoothUiState.Idle)
             assertThat(bluetoothViewModel.uiState.value.measurementDialog).isEqualTo(
                 measurementDialog
@@ -391,8 +394,6 @@ class BluetoothViewModelTest {
         // given
         val action = Action.MessageItemClicked(message = message)
         val todoActions = listOf(
-            MessagesAction.HealthSummaryAction,
-            MessagesAction.MedicationsAction,
             MessagesAction.QuestionnaireAction(questionnaire = mockk()),
         )
         createViewModel()
@@ -422,7 +423,7 @@ class BluetoothViewModelTest {
         bluetoothViewModel.onAction(action = action)
 
         // then
-        verify { bottomSheetEvents.emit(BottomSheetEvents.Event.DoNewMeasurement) }
+        verify { appScreenEvents.emit(AppScreenEvents.Event.DoNewMeasurement) }
     }
 
     @Test
@@ -452,6 +453,38 @@ class BluetoothViewModelTest {
     }
 
     @Test
+    fun `it should handle health summary action correctly`() = runTestUnconfined {
+        // given
+        val action = Action.MessageItemClicked(message = message)
+        every {
+            uiStateMapper.mapMessagesAction(messageAction)
+        } returns Result.success(MessagesAction.HealthSummaryAction)
+        createViewModel()
+
+        // when
+        bluetoothViewModel.onAction(action = action)
+
+        // then
+        coVerify { healthSummaryService.generateHealthSummaryPdf() }
+    }
+
+    @Test
+    fun `it should handle medication change action correctly`() {
+        // given
+        val action = Action.MessageItemClicked(message = message)
+        every {
+            uiStateMapper.mapMessagesAction(messageAction)
+        } returns Result.success(MessagesAction.MedicationsAction)
+        createViewModel()
+
+        // when
+        bluetoothViewModel.onAction(action = action)
+
+        // then
+        verify { appScreenEvents.emit(AppScreenEvents.Event.NavigateToTab(BottomBarItem.MEDICATION)) }
+    }
+
+    @Test
     fun `it should handle toggle expand action correctly`() {
         // given
         val isExpanded = false
@@ -466,7 +499,12 @@ class BluetoothViewModelTest {
         )
         every { this@BluetoothViewModelTest.message.id } returns "new-id"
 
-        coEvery { messageRepository.observeUserMessages() } returns flowOf(listOf(message, this.message))
+        coEvery { messageRepository.observeUserMessages() } returns flowOf(
+            listOf(
+                message,
+                this.message
+            )
+        )
         createViewModel()
 
         // when
@@ -492,9 +530,10 @@ class BluetoothViewModelTest {
             uiStateMapper = uiStateMapper,
             measurementsRepository = measurementsRepository,
             messageRepository = messageRepository,
-            bottomSheetEvents = bottomSheetEvents,
+            appScreenEvents = appScreenEvents,
             navigator = navigator,
             engageEducationRepository = engageEducationRepository,
+            healthSummaryService = healthSummaryService
         )
     }
 }
