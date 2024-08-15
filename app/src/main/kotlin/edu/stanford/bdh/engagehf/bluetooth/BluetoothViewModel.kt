@@ -3,15 +3,17 @@ package edu.stanford.bdh.engagehf.bluetooth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.UiState
 import edu.stanford.bdh.engagehf.bluetooth.measurements.MeasurementsRepository
 import edu.stanford.bdh.engagehf.education.EngageEducationRepository
+import edu.stanford.bdh.engagehf.messages.HealthSummaryService
 import edu.stanford.bdh.engagehf.messages.MessageRepository
 import edu.stanford.bdh.engagehf.messages.MessagesAction
+import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
 import edu.stanford.spezi.core.bluetooth.api.BLEService
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
@@ -33,9 +35,10 @@ class BluetoothViewModel @Inject internal constructor(
     private val uiStateMapper: BluetoothUiStateMapper,
     private val measurementsRepository: MeasurementsRepository,
     private val messageRepository: MessageRepository,
-    private val bottomSheetEvents: BottomSheetEvents,
+    private val appScreenEvents: AppScreenEvents,
     private val navigator: Navigator,
     private val engageEducationRepository: EngageEducationRepository,
+    private val healthSummaryService: HealthSummaryService,
 ) : ViewModel() {
     private val logger by speziLogger()
 
@@ -93,7 +96,7 @@ class BluetoothViewModel @Inject internal constructor(
                     }
 
                     is BLEServiceEvent.MeasurementReceived -> {
-                        bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
+                        appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet)
                         _uiState.update {
                             it.copy(
                                 measurementDialog = uiStateMapper.mapToMeasurementDialogUiState(
@@ -130,7 +133,11 @@ class BluetoothViewModel @Inject internal constructor(
     private fun observeMessages() {
         viewModelScope.launch {
             messageRepository.observeUserMessages().collect { messages ->
-                _uiState.update { it.copy(messages = messages) }
+                _uiState.update {
+                    it.copy(
+                        messages = messages
+                    )
+                }
             }
         }
     }
@@ -152,14 +159,20 @@ class BluetoothViewModel @Inject internal constructor(
                     val mappingResult = uiStateMapper.mapMessagesAction(action.message.action)
                     if (mappingResult.isSuccess) {
                         when (val mappedAction = mappingResult.getOrNull()!!) {
-                            is MessagesAction.HealthSummaryAction -> { /* TODO */
+                            is MessagesAction.HealthSummaryAction -> {
+                                handleHealthSummaryAction()
                             }
 
                             is MessagesAction.MeasurementsAction -> {
-                                bottomSheetEvents.emit(BottomSheetEvents.Event.DoNewMeasurement)
+                                appScreenEvents.emit(AppScreenEvents.Event.DoNewMeasurement)
                             }
 
-                            is MessagesAction.MedicationsAction -> { /* TODO */
+                            is MessagesAction.MedicationsAction -> {
+                                appScreenEvents.emit(
+                                    AppScreenEvents.Event.NavigateToTab(
+                                        BottomBarItem.MEDICATION
+                                    )
+                                )
                             }
 
                             is MessagesAction.QuestionnaireAction -> { /* TODO */
@@ -167,16 +180,7 @@ class BluetoothViewModel @Inject internal constructor(
 
                             is MessagesAction.VideoSectionAction -> {
                                 viewModelScope.launch {
-                                    engageEducationRepository.getVideoBySectionAndVideoId(
-                                        mappedAction.videoSectionVideo.videoSectionId,
-                                        mappedAction.videoSectionVideo.videoId
-                                    ).getOrNull()?.let { video ->
-                                        navigator.navigateTo(
-                                            EducationNavigationEvent.VideoSectionClicked(
-                                                video = video
-                                            )
-                                        )
-                                    }
+                                    handleVideoSectionAction(mappedAction)
                                 }
                             }
                         }
@@ -194,6 +198,25 @@ class BluetoothViewModel @Inject internal constructor(
             is Action.ToggleExpand -> {
                 handleToggleExpandAction(action)
             }
+        }
+    }
+
+    private suspend fun handleVideoSectionAction(mappedAction: MessagesAction.VideoSectionAction) {
+        engageEducationRepository.getVideoBySectionAndVideoId(
+            mappedAction.videoSectionVideo.videoSectionId,
+            mappedAction.videoSectionVideo.videoId
+        ).getOrNull()?.let { video ->
+            navigator.navigateTo(
+                EducationNavigationEvent.VideoSectionClicked(
+                    video = video
+                )
+            )
+        }
+    }
+
+    private fun handleHealthSummaryAction() {
+        viewModelScope.launch {
+            healthSummaryService.generateHealthSummaryPdf()
         }
     }
 
