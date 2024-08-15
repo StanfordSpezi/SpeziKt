@@ -2,7 +2,7 @@ package edu.stanford.bdh.engagehf.health.weight.bottomsheet
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddWeightBottomSheetViewModel @Inject internal constructor(
-    private val bottomSheetEvents: BottomSheetEvents,
+    private val appScreenEvents: AppScreenEvents,
     private val uiStateMapper: AddWeightBottomSheetUiStateMapper,
 ) : ViewModel() {
     private val logger by speziLogger()
@@ -33,7 +33,7 @@ class AddWeightBottomSheetViewModel @Inject internal constructor(
             }
 
             Action.SaveWeight -> {
-                bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
+                appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet)
                 _uiState.update { uiStateMapper.mapSaveWeightActionToUiState(_uiState.value) }
                 logger.i { "Save weight: ${uiState.value}" }
             }

@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -16,7 +16,7 @@ import edu.stanford.spezi.core.design.R.drawable as DesignR
 
 @HiltViewModel
 class AppScreenViewModel @Inject constructor(
-    private val bottomSheetEvents: BottomSheetEvents,
+    private val appScreenEvents: AppScreenEvents,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
         AppUiState(
@@ -33,32 +33,40 @@ class AppScreenViewModel @Inject constructor(
 
     private fun setup() {
         viewModelScope.launch {
-            bottomSheetEvents.events.collect { event ->
+            appScreenEvents.events.collect { event ->
                 val (isExpanded, content) = when (event) {
-                    BottomSheetEvents.Event.NewMeasurementAction -> {
+                    is AppScreenEvents.Event.NavigateToTab -> {
+                        _uiState.update {
+                            it.copy(selectedItem = event.bottomBarItem)
+                        }
+                        return@collect
+                    }
+
+                    AppScreenEvents.Event.NewMeasurementAction -> {
                         true to BottomSheetContent.NEW_MEASUREMENT_RECEIVED
                     }
 
-                    BottomSheetEvents.Event.DoNewMeasurement -> {
+                    AppScreenEvents.Event.DoNewMeasurement -> {
                         true to BottomSheetContent.DO_NEW_MEASUREMENT
                     }
 
-                    BottomSheetEvents.Event.CloseBottomSheet -> {
+                    AppScreenEvents.Event.CloseBottomSheet -> {
                         false to null
                     }
 
-                    BottomSheetEvents.Event.WeightDescriptionBottomSheet -> {
+                    AppScreenEvents.Event.WeightDescriptionBottomSheet -> {
                         true to BottomSheetContent.WEIGHT_DESCRIPTION_INFO
                     }
 
-                    BottomSheetEvents.Event.AddWeightRecord -> {
+                    AppScreenEvents.Event.AddWeightRecord -> {
                         true to BottomSheetContent.ADD_WEIGHT_RECORD
                     }
 
-                    BottomSheetEvents.Event.AddBloodPressureRecord -> {
+                    AppScreenEvents.Event.AddBloodPressureRecord -> {
                         false to null
                     }
-                    BottomSheetEvents.Event.AddHeartRateRecord -> {
+
+                    AppScreenEvents.Event.AddHeartRateRecord -> {
                         false to null
                     }
                 }
@@ -74,6 +82,7 @@ class AppScreenViewModel @Inject constructor(
             is Action.UpdateSelectedBottomBarItem -> {
                 _uiState.update { it.copy(selectedItem = action.selectedBottomBarItem) }
             }
+
             is Action.UpdateBottomSheetState -> {
                 _uiState.update { it.copy(isBottomSheetExpanded = action.isExpanded) }
             }

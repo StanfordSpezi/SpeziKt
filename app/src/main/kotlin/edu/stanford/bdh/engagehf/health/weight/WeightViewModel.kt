@@ -5,7 +5,7 @@ package edu.stanford.bdh.engagehf.health.weight
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthAction
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.HealthUiState
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WeightViewModel @Inject internal constructor(
-    private val bottomSheetEvents: BottomSheetEvents,
+    private val appScreenEvents: AppScreenEvents,
     private val uiStateMapper: HealthUiStateMapper,
     private val healthRepository: HealthRepository,
 ) : ViewModel() {
@@ -56,7 +56,7 @@ class WeightViewModel @Inject internal constructor(
     fun onAction(healthAction: HealthAction) {
         when (healthAction) {
             HealthAction.AddRecord -> {
-                bottomSheetEvents.emit(BottomSheetEvents.Event.AddWeightRecord)
+                appScreenEvents.emit(AppScreenEvents.Event.AddWeightRecord)
             }
 
             is HealthAction.DeleteRecord -> {
@@ -70,7 +70,7 @@ class WeightViewModel @Inject internal constructor(
             }
 
             HealthAction.DescriptionBottomSheet -> {
-                bottomSheetEvents.emit(BottomSheetEvents.Event.WeightDescriptionBottomSheet)
+                appScreenEvents.emit(AppScreenEvents.Event.WeightDescriptionBottomSheet)
             }
 
             is HealthAction.ToggleTimeRangeDropdown -> {
