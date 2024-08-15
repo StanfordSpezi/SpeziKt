@@ -1,7 +1,7 @@
 package edu.stanford.bdh.engagehf.navigation.screens
 
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import io.mockk.every
@@ -16,16 +16,16 @@ class AppScreenViewModelTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
-    private val bottomSheetEvents: BottomSheetEvents = mockk(relaxed = true)
-    private val bottomSheetEventsFlow = MutableSharedFlow<BottomSheetEvents.Event>()
+    private val appScreenEvents: AppScreenEvents = mockk(relaxed = true)
+    private val appScreenEventsFlow = MutableSharedFlow<AppScreenEvents.Event>()
 
     private lateinit var viewModel: AppScreenViewModel
 
     @Before
     fun setup() {
-        every { bottomSheetEvents.events } returns bottomSheetEventsFlow
+        every { appScreenEvents.events } returns appScreenEventsFlow
         viewModel = AppScreenViewModel(
-            bottomSheetEvents = bottomSheetEvents
+            appScreenEvents = appScreenEvents
         )
     }
 
@@ -56,10 +56,10 @@ class AppScreenViewModelTest {
     fun `given NewMeasurementAction is received then uiState should be updated`() =
         runTestUnconfined {
             // Given
-            val event = BottomSheetEvents.Event.NewMeasurementAction
+            val event = AppScreenEvents.Event.NewMeasurementAction
 
             // When
-            bottomSheetEventsFlow.emit(event)
+            appScreenEventsFlow.emit(event)
 
             // Then
             val updatedUiState = viewModel.uiState.value
@@ -71,10 +71,10 @@ class AppScreenViewModelTest {
     fun `given DoNewMeasurement is received then uiState should be updated`() =
         runTestUnconfined {
             // Given
-            val event = BottomSheetEvents.Event.DoNewMeasurement
+            val event = AppScreenEvents.Event.DoNewMeasurement
 
             // When
-            bottomSheetEventsFlow.emit(event)
+            appScreenEventsFlow.emit(event)
 
             // Then
             val updatedUiState = viewModel.uiState.value
@@ -86,10 +86,10 @@ class AppScreenViewModelTest {
     fun `given CloseBottomSheet is received then uiState should be updated`() =
         runTestUnconfined {
             // Given
-            val event = BottomSheetEvents.Event.CloseBottomSheet
+            val event = AppScreenEvents.Event.CloseBottomSheet
 
             // When
-            bottomSheetEventsFlow.emit(event)
+            appScreenEventsFlow.emit(event)
 
             // Then
             val updatedUiState = viewModel.uiState.value
@@ -101,10 +101,10 @@ class AppScreenViewModelTest {
     fun `given WeightDescriptionBottomSheet is received then uiState should be updated`() =
         runTestUnconfined {
             // Given
-            val event = BottomSheetEvents.Event.WeightDescriptionBottomSheet
+            val event = AppScreenEvents.Event.WeightDescriptionBottomSheet
 
             // When
-            bottomSheetEventsFlow.emit(event)
+            appScreenEventsFlow.emit(event)
 
             // Then
             val updatedUiState = viewModel.uiState.value
@@ -116,10 +116,10 @@ class AppScreenViewModelTest {
     fun `given AddWeightRecord is received then uiState should be updated`() =
         runTestUnconfined {
             // Given
-            val event = BottomSheetEvents.Event.AddWeightRecord
+            val event = AppScreenEvents.Event.AddWeightRecord
 
             // When
-            bottomSheetEventsFlow.emit(event)
+            appScreenEventsFlow.emit(event)
 
             // Then
             val updatedUiState = viewModel.uiState.value
