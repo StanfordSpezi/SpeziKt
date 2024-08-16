@@ -2,8 +2,10 @@ package edu.stanford.bdh.engagehf.navigation.screens
 
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
+import edu.stanford.bdh.engagehf.messages.HealthSummaryService
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.module.account.manager.UserSessionManager
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,6 +19,8 @@ class AppScreenViewModelTest {
     val coroutineTestRule = CoroutineTestRule()
 
     private val appScreenEvents: AppScreenEvents = mockk(relaxed = true)
+    private val userSessionManager: UserSessionManager = mockk(relaxed = true)
+    private val healthSummaryService: HealthSummaryService = mockk(relaxed = true)
     private val appScreenEventsFlow = MutableSharedFlow<AppScreenEvents.Event>()
 
     private lateinit var viewModel: AppScreenViewModel
@@ -25,7 +29,9 @@ class AppScreenViewModelTest {
     fun setup() {
         every { appScreenEvents.events } returns appScreenEventsFlow
         viewModel = AppScreenViewModel(
-            appScreenEvents = appScreenEvents
+            appScreenEvents = appScreenEvents,
+            userSessionManager = userSessionManager,
+            healthSummaryService = healthSummaryService
         )
     }
 
