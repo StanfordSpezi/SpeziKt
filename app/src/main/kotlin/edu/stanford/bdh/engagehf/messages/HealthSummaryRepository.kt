@@ -9,7 +9,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-internal class HealthSummaryRepository @Inject constructor(
+class HealthSummaryRepository @Inject constructor(
     private val userSessionManager: UserSessionManager,
     private val firebaseFunctions: FirebaseFunctions,
     @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,

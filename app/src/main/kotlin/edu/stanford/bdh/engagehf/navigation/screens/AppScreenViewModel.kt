@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
+import edu.stanford.bdh.engagehf.messages.HealthSummaryService
+import edu.stanford.spezi.module.account.manager.UserSessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -17,6 +19,8 @@ import edu.stanford.spezi.core.design.R.drawable as DesignR
 @HiltViewModel
 class AppScreenViewModel @Inject constructor(
     private val appScreenEvents: AppScreenEvents,
+    private val userSessionManager: UserSessionManager,
+    private val healthSummaryService: HealthSummaryService,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
         AppUiState(
@@ -33,6 +37,13 @@ class AppScreenViewModel @Inject constructor(
 
     private fun setup() {
         viewModelScope.launch {
+            _uiState.update { it ->
+                val userName = userSessionManager.getUserName()?.takeIf { it.isNotBlank() }
+                it.copy(appTopBar = it.appTopBar.copy(userName = userName))
+            }
+            userSessionManager.getUserEmail()?.let { email ->
+                _uiState.update { it.copy(appTopBar = it.appTopBar.copy(email = email)) }
+            }
             appScreenEvents.events.collect { event ->
                 val (isExpanded, content) = when (event) {
                     is AppScreenEvents.Event.NavigateToTab -> {
@@ -86,6 +97,30 @@ class AppScreenViewModel @Inject constructor(
             is Action.UpdateBottomSheetState -> {
                 _uiState.update { it.copy(isBottomSheetExpanded = action.isExpanded) }
             }
+
+            is Action.ShowDialog -> {
+                _uiState.update { it.copy(appTopBar = it.appTopBar.copy(showDialog = action.showDialog)) }
+            }
+
+            Action.ShowHealthSummary -> {
+                viewModelScope.launch {
+                    _uiState.update { it.copy(appTopBar = it.appTopBar.copy(isHealthSummaryLoading = true)) }
+                    healthSummaryService.generateHealthSummaryPdf()
+                    _uiState.update {
+                        it.copy(
+                            appTopBar = it.appTopBar.copy(
+                                isHealthSummaryLoading = false,
+                                showDialog = false
+                            )
+                        )
+                    }
+                }
+            }
+
+            Action.SignOut -> {
+                _uiState.update { it.copy(appTopBar = it.appTopBar.copy(showDialog = false)) }
+                /* TODO: Implement sign out */
+            }
         }
     }
 }
@@ -95,6 +130,15 @@ data class AppUiState(
     val selectedItem: BottomBarItem,
     val isBottomSheetExpanded: Boolean = false,
     val bottomSheetContent: BottomSheetContent? = null,
+    val appTopBar: AppTopBar = AppTopBar(),
+)
+
+data class AppTopBar(
+    val showDialog: Boolean = false,
+    val userName: String? = null,
+    val initials: String? = null,
+    val email: String = "",
+    val isHealthSummaryLoading: Boolean = false,
 )
 
 enum class BottomSheetContent {
@@ -107,6 +151,9 @@ enum class BottomSheetContent {
 sealed interface Action {
     data class UpdateSelectedBottomBarItem(val selectedBottomBarItem: BottomBarItem) : Action
     data class UpdateBottomSheetState(val isExpanded: Boolean) : Action
+    data object ShowHealthSummary : Action
+    data object SignOut : Action
+    data class ShowDialog(val showDialog: Boolean) : Action
 }
 
 enum class BottomBarItem(

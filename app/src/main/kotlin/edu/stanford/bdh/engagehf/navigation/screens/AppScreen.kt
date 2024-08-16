@@ -1,6 +1,9 @@
 package edu.stanford.bdh.engagehf.navigation.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -30,7 +34,9 @@ import edu.stanford.bdh.engagehf.health.HealthScreen
 import edu.stanford.bdh.engagehf.health.weight.bottomsheet.AddWeightBottomSheet
 import edu.stanford.bdh.engagehf.health.weight.bottomsheet.WeightDescriptionBottomSheet
 import edu.stanford.bdh.engagehf.medication.ui.MedicationScreen
+import edu.stanford.bdh.engagehf.navigation.components.AccountTopAppBarButton
 import edu.stanford.spezi.core.design.component.AppTopAppBar
+import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.modules.education.videos.EducationScreen
 import kotlinx.coroutines.launch
@@ -71,7 +77,6 @@ fun AppScreen(
                 onAction(Action.UpdateBottomSheetState(isExpanded = state == SheetValue.Expanded))
             }
     }
-
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
         sheetContent = {
@@ -90,12 +95,21 @@ fun AppScreen(
                 AppTopAppBar(
                     modifier = Modifier.testIdentifier(identifier = AppScreenTestIdentifier.TOP_APP_BAR),
                     title = {
-                        Text(
-                            text = stringResource(id = uiState.selectedItem.label),
-                            modifier = Modifier.testIdentifier(
-                                AppScreenTestIdentifier.TOP_APP_BAR_TITLE
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(end = Spacings.small),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = stringResource(id = uiState.selectedItem.label),
+                                modifier = Modifier.testIdentifier(
+                                    AppScreenTestIdentifier.TOP_APP_BAR_TITLE
+                                )
                             )
-                        )
+                            Spacer(modifier = Modifier.weight(1f))
+                            AccountTopAppBarButton(uiState.appTopBar, onAction = onAction)
+                        }
                     })
             },
             bottomBar = {
@@ -114,11 +128,22 @@ fun AppScreen(
                                 ),
                                 icon = {
                                     Icon(
-                                        painter = painterResource(id = if (uiState.selectedItem == item) item.selectedIcon else item.icon),
+                                        painter = painterResource(
+                                            id = if (uiState.selectedItem == item) {
+                                                item.selectedIcon
+                                            } else {
+                                                item.icon
+                                            }
+                                        ),
                                         contentDescription = null
                                     )
                                 },
-                                label = { Text(text = stringResource(id = item.label), textAlign = TextAlign.Center) },
+                                label = {
+                                    Text(
+                                        text = stringResource(id = item.label),
+                                        textAlign = TextAlign.Center
+                                    )
+                                },
                                 selected = uiState.selectedItem == item,
                                 onClick = {
                                     onAction(Action.UpdateSelectedBottomBarItem(item))

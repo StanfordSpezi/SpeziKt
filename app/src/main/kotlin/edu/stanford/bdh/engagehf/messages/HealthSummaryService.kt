@@ -11,7 +11,7 @@ import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 
-internal class HealthSummaryService @Inject constructor(
+class HealthSummaryService @Inject constructor(
     private val healthSummaryRepository: HealthSummaryRepository,
     private val messageNotifier: MessageNotifier,
     @ApplicationContext private val context: Context,
