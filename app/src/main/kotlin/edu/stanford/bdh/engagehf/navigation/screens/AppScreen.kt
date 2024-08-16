@@ -2,7 +2,6 @@ package edu.stanford.bdh.engagehf.navigation.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomSheetScaffold
@@ -107,10 +106,12 @@ fun AppScreen(
                                     AppScreenTestIdentifier.TOP_APP_BAR_TITLE
                                 )
                             )
-                            Spacer(modifier = Modifier.weight(1f))
-                            AccountTopAppBarButton(uiState.appTopBar, onAction = onAction)
                         }
-                    })
+                    },
+                    actions = {
+                        AccountTopAppBarButton(uiState.appTopBar, onAction = onAction)
+                    }
+                )
             },
             bottomBar = {
                 Column {
