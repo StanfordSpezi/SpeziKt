@@ -1,9 +1,9 @@
 package edu.stanford.bdh.engagehf.medication
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import edu.stanford.bdh.engagehf.questionnaire.QuestionnaireScreen
 
 @Composable
 fun MedicationScreen() {
-    Text(text = "Medication Screen")
+    QuestionnaireScreen() // TODO when we merge we will replace with actual Medication Screen from main
 }
