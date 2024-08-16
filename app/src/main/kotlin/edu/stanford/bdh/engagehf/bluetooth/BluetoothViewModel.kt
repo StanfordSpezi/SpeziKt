@@ -162,7 +162,8 @@ class BluetoothViewModel @Inject internal constructor(
                             is MessagesAction.MedicationsAction -> { /* TODO */
                             }
 
-                            is MessagesAction.QuestionnaireAction -> { /* TODO */
+                            is MessagesAction.QuestionnaireAction -> {
+                                bottomSheetEvents.emit(BottomSheetEvents.Event.QuestionnaireBottomSheet)
                             }
 
                             is MessagesAction.VideoSectionAction -> {
