@@ -27,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.DoNewMeasurementBottomSheet
 import edu.stanford.bdh.engagehf.bluetooth.screen.BluetoothScreen
 import edu.stanford.bdh.engagehf.health.HealthScreen
+import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.AddBloodPressureBottomSheet
 import edu.stanford.bdh.engagehf.health.weight.bottomsheet.AddWeightBottomSheet
 import edu.stanford.bdh.engagehf.health.weight.bottomsheet.WeightDescriptionBottomSheet
 import edu.stanford.bdh.engagehf.medication.ui.MedicationScreen
@@ -80,6 +81,10 @@ fun AppScreen(
                 BottomSheetContent.WEIGHT_DESCRIPTION_INFO -> WeightDescriptionBottomSheet()
                 BottomSheetContent.ADD_WEIGHT_RECORD -> AddWeightBottomSheet()
                 BottomSheetContent.NEW_MEASUREMENT_RECEIVED, null -> {}
+                BottomSheetContent.ADD_BLOOD_PRESSURE_RECORD -> AddBloodPressureBottomSheet()
+                BottomSheetContent.ADD_HEART_RATE_RECORD -> {
+                    /* TODO */
+                }
             }
         },
         sheetPeekHeight = 0.dp
@@ -118,7 +123,12 @@ fun AppScreen(
                                         contentDescription = null
                                     )
                                 },
-                                label = { Text(text = stringResource(id = item.label), textAlign = TextAlign.Center) },
+                                label = {
+                                    Text(
+                                        text = stringResource(id = item.label),
+                                        textAlign = TextAlign.Center
+                                    )
+                                },
                                 selected = uiState.selectedItem == item,
                                 onClick = {
                                     onAction(Action.UpdateSelectedBottomBarItem(item))

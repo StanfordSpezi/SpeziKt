@@ -56,7 +56,7 @@ class AppScreenViewModel @Inject constructor(
                     }
 
                     BottomSheetEvents.Event.AddBloodPressureRecord -> {
-                        false to null
+                        true to BottomSheetContent.ADD_BLOOD_PRESSURE_RECORD
                     }
                     BottomSheetEvents.Event.AddHeartRateRecord -> {
                         false to null
@@ -93,6 +93,8 @@ enum class BottomSheetContent {
     DO_NEW_MEASUREMENT,
     WEIGHT_DESCRIPTION_INFO,
     ADD_WEIGHT_RECORD,
+    ADD_BLOOD_PRESSURE_RECORD,
+    ADD_HEART_RATE_RECORD,
 }
 
 sealed interface Action {
