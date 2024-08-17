@@ -183,9 +183,6 @@ class BluetoothViewModel @Inject internal constructor(
                         }
                         val messageId = action.message.id
                         messageRepository.completeMessage(messageId = messageId)
-                        _uiState.update {
-                            it.copy(messages = it.messages.filter { message -> message.id != messageId })
-                        }
                     } else {
                         logger.e { "Error while mapping action: ${mappingResult.exceptionOrNull()}" }
                     }
