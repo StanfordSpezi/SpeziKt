@@ -2,7 +2,6 @@ package edu.stanford.bdh.engagehf.health.symptoms
 
 import com.google.firebase.Timestamp
 import edu.stanford.bdh.engagehf.health.AggregatedHealthData
-import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.EPOCH_SECONDS_DIVISOR
 import edu.stanford.bdh.engagehf.health.NewestHealthData
 import edu.stanford.bdh.engagehf.health.TableEntryData
 import edu.stanford.spezi.core.utils.LocaleProvider
@@ -172,7 +171,8 @@ class SymptomsUiStateMapper @Inject constructor(
             if (filteredScores.isNotEmpty()) {
                 val averageScore = filteredScores.average().toFloat()
                 yValues.add(averageScore)
-                xValues.add(date.toInstant().epochSecond / EPOCH_SECONDS_DIVISOR)
+                @Suppress("MagicNumber")
+                xValues.add(date.year.toFloat() + (date.dayOfYear - 1) / 365f)
             }
         }
 

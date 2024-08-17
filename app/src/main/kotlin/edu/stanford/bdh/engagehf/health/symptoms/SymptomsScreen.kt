@@ -71,7 +71,6 @@ import com.patrykandpatrick.vico.core.common.shape.Shape
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.CenteredContent
 import edu.stanford.bdh.engagehf.health.HealthTableItem
-import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.EPOCH_SECONDS_DIVISOR
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
@@ -81,8 +80,7 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.time.Instant
-import java.time.ZoneOffset
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -215,12 +213,15 @@ fun SymptomsChart(
         shape = Shape.Pill,
     )
 
+    @Suppress("MagicNumber")
     val valueFormatter: (Float, ChartValues, AxisPosition.Vertical?) -> CharSequence =
-        { index, _, _ ->
-            val epochSecond = (index * EPOCH_SECONDS_DIVISOR).toLong()
-            val dateTime =
-                ZonedDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZoneOffset.UTC)
-            dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("MMM yy"))
+        { value, _, _ ->
+            val year = value.toInt()
+            val dayOfYearFraction = value - year
+            val dayOfYear = (dayOfYearFraction * 365).toInt() + 1
+            val date = ZonedDateTime.of(year, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault())
+                .plusDays((dayOfYear - 1).toLong())
+            date.format(DateTimeFormatter.ofPattern("MMM dd"))
         }
 
     val marker = remember {
@@ -259,7 +260,11 @@ fun SymptomsChart(
                 titleComponent = rememberTextComponent(),
                 label = rememberAxisLabelComponent(),
                 guideline = null,
-                valueFormatter = CartesianValueFormatter.yPercent(),
+                valueFormatter = if (uiState.headerData.selectedSymptomType == SymptomType.DIZZINESS) {
+                    CartesianValueFormatter.decimal()
+                } else {
+                    CartesianValueFormatter.yPercent()
+                },
             ),
             bottomAxis = rememberBottomAxis(
                 guideline = null,
