@@ -21,6 +21,7 @@ import androidx.fragment.compose.rememberFragmentState
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import edu.stanford.spezi.core.design.component.VerticalSpacer
+import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import org.hl7.fhir.r4.model.QuestionnaireResponse
 
@@ -38,11 +39,11 @@ fun QuestionnaireScreen(
 ) {
     when (uiState) {
         is QuestionnaireViewModel.State.Loading -> {
-            CircularProgressIndicator()
+            CircularProgressIndicator(color = primary) // TODO use centered content from main once merged
         }
 
         is QuestionnaireViewModel.State.Error -> {
-            Text(text = uiState.message)
+            Text(text = uiState.message) // TODO use centered content from main
         }
 
         is QuestionnaireViewModel.State.QuestionnaireLoaded -> {
