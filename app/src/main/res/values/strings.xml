@@ -27,4 +27,14 @@
     <string name="symptom_type_quality">Quality</string>
     <string name="symptom_type_specific">Specific</string>
     <string name="symptom_type_dizziness">Dizziness</string>
+    <string name="medications_no_recommendations">No medication recommendations</string>
+    <string name="dosage_information_dose_row_current_dose">Current Dose:</string>
+    <string name="dosage_information_dose_row_target_dose">Target Dose:</string>
+    <string name="dosage_information_not_available">N/A</string>
+    <string name="medication_progress_bar_current">Current</string>
+    <string name="medication_progress_bar_target">Target</string>
+    <string name="health_tab_title_symptoms">Symptoms</string>
+    <string name="health_tab_title_weight">Weight</string>
+    <string name="health_tab_title_blood_pressure">BP</string>
+    <string name="health_tab_title_heart_rate">Heart Rate</string>
 </resources>
