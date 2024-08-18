@@ -67,7 +67,7 @@ fun NumberPicker(
         if (!lazyListState.isScrollInProgress) {
             val selectedIndex = lazyListState.firstVisibleItemIndex
             onValueChange(selectedIndex + 1)
-            coroutineScope.launch {
+            launch {
                 lazyListState.scrollToItem(selectedIndex)
             }
         }
