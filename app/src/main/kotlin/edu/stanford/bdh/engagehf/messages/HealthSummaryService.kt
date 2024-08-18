@@ -27,26 +27,24 @@ class HealthSummaryService @Inject constructor(
         const val MIME_TYPE_PDF = "application/pdf"
     }
 
-    suspend fun generateHealthSummaryPdf() {
-        withContext(ioDispatcher) {
-            val pdfByteArrayResult =
-                healthSummaryRepository.findHealthSummaryByUserId()
-            pdfByteArrayResult.onSuccess {
+    suspend fun generateHealthSummaryPdf(): Result<Unit> = withContext(ioDispatcher) {
+        healthSummaryRepository.findHealthSummaryByUserId()
+            .mapCatching {
                 val savePdfToFile = savePdfToFile(it)
                 val pdfUri = FileProvider.getUriForFile(
                     context,
                     "${context.packageName}.provider",
                     savePdfToFile
                 )
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                intent.setDataAndType(pdfUri, MIME_TYPE_PDF)
-                context.startActivity(intent)
+                Intent(Intent.ACTION_VIEW).run {
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    setDataAndType(pdfUri, MIME_TYPE_PDF)
+                    context.startActivity(this)
+                }
             }.onFailure {
                 messageNotifier.notify("Failed to generate Health Summary")
             }
-        }
     }
 
     private fun savePdfToFile(pdfBytes: ByteArray): File {
