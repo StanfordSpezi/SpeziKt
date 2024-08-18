@@ -4,25 +4,31 @@ import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import edu.stanford.bdh.engagehf.observations.ObservationCollection
 import edu.stanford.bdh.engagehf.observations.ObservationCollectionProvider
 import edu.stanford.healthconnectonfhir.ObservationsDocumentMapper
+import edu.stanford.healthconnectonfhir.RecordToObservationMapper
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class HealthRepository @Inject constructor(
+    private val firestore: FirebaseFirestore,
     private val observationCollectionProvider: ObservationCollectionProvider,
     private val observationsDocumentMapper: ObservationsDocumentMapper,
+    private val observationMapper: ObservationsDocumentMapper,
+    private val recordToObservationMapper: RecordToObservationMapper,
     @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
 ) {
     private val logger by speziLogger()
@@ -76,5 +82,29 @@ class HealthRepository @Inject constructor(
     companion object {
         const val DEFAULT_MAX_MONTHS = 6L
         const val DATE_TIME_FIELD = "effectiveDateTime"
+    }
+
+    suspend fun saveRecord(record: Record) {
+        val observations = recordToObservationMapper.map(record)
+        withContext(ioDispatcher) {
+            runCatching {
+                val batch = firestore.batch()
+                observations.forEach { observation ->
+                    val collection = ObservationCollection.entries.find { collection ->
+                        observation.code.coding.any { it.code == collection.loinc.code }
+                    }
+                    val data = observationMapper.map(observation = observation)
+                    collection?.let { observationCollectionProvider.getCollection(it).document() }
+                        ?.let { docRef ->
+                            batch.set(docRef, data)
+                        }
+                }
+                batch.commit().await()
+            }.onFailure {
+                logger.e(it) {
+                    "Error while saving observations"
+                }
+            }
+        }
     }
 }
