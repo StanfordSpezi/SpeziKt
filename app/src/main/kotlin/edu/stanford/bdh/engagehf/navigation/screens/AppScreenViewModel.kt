@@ -59,7 +59,7 @@ class AppScreenViewModel @Inject constructor(
                         true to BottomSheetContent.ADD_BLOOD_PRESSURE_RECORD
                     }
                     BottomSheetEvents.Event.AddHeartRateRecord -> {
-                        false to null
+                        true to BottomSheetContent.ADD_HEART_RATE_RECORD
                     }
                 }
                 _uiState.update {
