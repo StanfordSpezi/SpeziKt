@@ -34,6 +34,7 @@ import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
+import edu.stanford.spezi.core.design.theme.Colors.surface
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
@@ -54,7 +55,7 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
     ) {
         Surface(
             shape = MaterialTheme.shapes.medium,
-            color = MaterialTheme.colorScheme.surface.lighten(),
+            color = surface.lighten(),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(Spacings.medium)
