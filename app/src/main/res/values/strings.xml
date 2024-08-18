@@ -37,4 +37,24 @@
     <string name="health_tab_title_weight">Weight</string>
     <string name="health_tab_title_blood_pressure">BP</string>
     <string name="health_tab_title_heart_rate">Heart Rate</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="time">Time</string>
+    <string name="not_set">Not set</string>
+    <string name="left_wrist">Left Wrist</string>
+    <string name="right_wrist">Right Wrist</string>
+    <string name="left_upper_arm">Left Upper Arm</string>
+    <string name="right_upper_arm">Right Upper Arm</string>
+    <string name="measurement_location">Measurement Location</string>
+    <string name="standing_up">Standing Up</string>
+    <string name="sitting_down">Sitting Down</string>
+    <string name="lying_down">Lying Down</string>
+    <string name="reclining">Reclining</string>
+    <string name="body_position">Body Position</string>
+    <string name="add_data">Add Data</string>
+    <string name="save">Save</string>
+    <string name="close_dialog_icon">Close dialog icon</string>
+    <string name="blood_pressure">Blood pressure</string>
+    <string name="mmhg" translatable="false">mmHg</string>
+    <string name="measurement_details">MEASUREMENT DETAILS</string>
 </resources>
