@@ -3,6 +3,7 @@ package edu.stanford.bdh.engagehf.messages
 import com.google.firebase.functions.FirebaseFunctions
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.core.utils.JsonMap
 import edu.stanford.spezi.module.account.manager.UserSessionManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.tasks.await
@@ -23,7 +24,7 @@ class HealthSummaryRepository @Inject constructor(
             val result = firebaseFunctions.getHttpsCallable("exportHealthSummary")
                 .call(mapOf("userId" to uid))
                 .await()
-            val resultData = result.data as? Map<*, *>
+            val resultData = result.data as? JsonMap
                 ?: throw IllegalStateException("Invalid function response")
             val pdfBase64 = resultData["content"] as? String
                 ?: throw IllegalStateException("No content found in function response")
