@@ -212,30 +212,23 @@ class BluetoothViewModel @Inject internal constructor(
     }
 
     private fun handleHealthSummaryAction(messageId: String) {
+        val setLoading = { loading: Boolean ->
+            _uiState.update {
+                it.copy(
+                    messages = it.messages.map { message ->
+                        if (message.id == messageId) {
+                            message.copy(isLoading = loading)
+                        } else {
+                            message
+                        }
+                    }
+                )
+            }
+        }
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    messages = it.messages.map { message ->
-                        if (message.id == messageId) {
-                            message.copy(isLoading = true)
-                        } else {
-                            message
-                        }
-                    }
-                )
-            }
+            setLoading(true)
             healthSummaryService.generateHealthSummaryPdf()
-            _uiState.update {
-                it.copy(
-                    messages = it.messages.map { message ->
-                        if (message.id == messageId) {
-                            message.copy(isLoading = false)
-                        } else {
-                            message
-                        }
-                    }
-                )
-            }
+            setLoading(false)
         }
     }
 
