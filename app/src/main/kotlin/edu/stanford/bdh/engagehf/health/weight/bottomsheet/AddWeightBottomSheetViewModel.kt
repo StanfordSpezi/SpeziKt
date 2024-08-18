@@ -1,12 +1,17 @@
 package edu.stanford.bdh.engagehf.health.weight.bottomsheet
 
+import androidx.health.connect.client.records.WeightRecord
+import androidx.health.connect.client.units.Mass
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -16,6 +21,7 @@ import javax.inject.Inject
 class AddWeightBottomSheetViewModel @Inject internal constructor(
     private val bottomSheetEvents: BottomSheetEvents,
     private val uiStateMapper: AddWeightBottomSheetUiStateMapper,
+    private val healthRepository: HealthRepository,
 ) : ViewModel() {
     private val logger by speziLogger()
 
@@ -35,7 +41,16 @@ class AddWeightBottomSheetViewModel @Inject internal constructor(
             Action.SaveWeight -> {
                 bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
                 _uiState.update { uiStateMapper.mapSaveWeightActionToUiState(_uiState.value) }
-                logger.i { "Save weight: ${uiState.value}" }
+                WeightRecord(
+                    weight = Mass.pounds(uiState.value.weight!!),
+                    time = uiState.value.date.plusHours(uiState.value.hour.toLong())
+                        .plusMinutes(uiState.value.minute.toLong()).toInstant(),
+                    zoneOffset = null,
+                ).let {
+                    viewModelScope.launch {
+                        healthRepository.saveRecord(it)
+                    }
+                }
             }
 
             is Action.UpdateDate -> {
