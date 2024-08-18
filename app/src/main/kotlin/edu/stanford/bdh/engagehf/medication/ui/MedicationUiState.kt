@@ -19,6 +19,7 @@ data class MedicationCardUiModel(
     val id: String,
     val title: String,
     val subtitle: String,
+    val videoPath: String,
     val description: String,
     val isExpanded: Boolean,
     val statusIconResId: Int?,

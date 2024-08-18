@@ -36,6 +36,7 @@ class MedicationUiStateMapper @Inject constructor(
             statusIconResId = iconId(recommendation.type),
             statusColor = statusColor(recommendation.type),
             isExpanded = false,
+            videoPath = recommendation.videoPath,
             dosageInformation = mapDosageInformation(recommendation.dosageInformation),
         )
     }

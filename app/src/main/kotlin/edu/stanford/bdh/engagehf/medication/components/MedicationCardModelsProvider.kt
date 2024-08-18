@@ -43,5 +43,6 @@ internal fun getMedicationCardUiModel(
     ),
     isExpanded = isExpanded,
     statusColor = color,
+    videoPath = "/videoSections/1/videos/1",
     statusIconResId = R.drawable.ic_check,
 )
