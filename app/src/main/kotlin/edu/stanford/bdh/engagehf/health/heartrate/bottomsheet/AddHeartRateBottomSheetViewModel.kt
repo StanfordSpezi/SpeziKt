@@ -79,6 +79,7 @@ internal class AddHeartRateBottomSheetViewModel @Inject constructor(
         ).also { heartRate ->
             viewModelScope.launch {
                 healthRepository.saveRecord(heartRate)
+                bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
             }
         }
     }
