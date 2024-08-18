@@ -72,10 +72,10 @@ internal class UserSessionManagerImpl @Inject constructor(
     override fun getUserUid(): String? = firebaseAuth.uid
 
     override fun getUserInfo(): UserInfo {
-        val user = firebaseAuth.currentUser ?: error("User not available")
+        val user = firebaseAuth.currentUser
         return UserInfo(
-            email = user.email ?: "",
-            name = user.displayName?.takeIf { it.isNotBlank() },
+            email = user?.email ?: "",
+            name = user?.displayName?.takeIf { it.isNotBlank() },
         )
     }
 
