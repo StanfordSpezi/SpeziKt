@@ -22,14 +22,14 @@ fun AddDataHeader(
     onSave: () -> Unit,
 ) {
     Row {
-        IconButton(onClick = { onClose() }) {
+        IconButton(onClick = onClose) {
             Icon(
                 imageVector = Icons.Filled.Close,
                 contentDescription = stringResource(R.string.close_dialog_icon)
             )
         }
         Spacer(modifier = Modifier.weight(1f))
-        TextButton(onClick = { onSave() }) {
+        TextButton(onClick = onSave) {
             Text(text = stringResource(R.string.save))
         }
     }
