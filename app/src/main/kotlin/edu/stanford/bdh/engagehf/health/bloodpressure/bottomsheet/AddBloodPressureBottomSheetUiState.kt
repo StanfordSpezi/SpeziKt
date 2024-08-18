@@ -10,10 +10,6 @@ data class AddBloodPressureBottomSheetUiState(
     val timePickerState: TimePickerState = TimePickerState(),
     val systolic: Int = 120,
     val diastolic: Int = 80,
-    val minValueSystolic: Int = 0,
-    val maxValueSystolic: Int = 200, // 200 is the maximum value for systolic blood pressure record
-    val minValueDiastolic: Int = 0,
-    val maxValueDiastolic: Int = 180, // 180 is the maximum value for diastolic blood pressure record
     val isUpdateDateExpanded: Boolean = false,
     val isUpdateTimeExpanded: Boolean = false,
     val bodyPosition: BodyPositions = BodyPositions.BODY_POSITION_UNKNOWN,
@@ -22,7 +18,13 @@ data class AddBloodPressureBottomSheetUiState(
     val measurementLocation: MeasurementLocations = MeasurementLocations.MEASUREMENT_LOCATION_UNKNOWN,
     val measurementLocations: List<MeasurementLocations> = MeasurementLocations.entries,
     val isMeasurementLocationsDialogShown: Boolean = false,
-)
+) {
+    @Suppress("MagicNumber")
+    val systolicRange = 0..200 // 200 is the maximum value for systolic blood pressure record
+
+    @Suppress("MagicNumber")
+    val diastolicRange = 0..180 // 180 is the maximum value for diastolic blood pressure record
+}
 
 enum class BodyPositions(val value: Int) {
     BODY_POSITION_UNKNOWN(BloodPressureRecord.BODY_POSITION_UNKNOWN),

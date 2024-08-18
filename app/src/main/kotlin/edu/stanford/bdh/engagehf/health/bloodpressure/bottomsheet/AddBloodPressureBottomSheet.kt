@@ -77,7 +77,7 @@ private fun AddBloodPressureBottomSheet(
                 onValueChange = {
                     onAction(AddBloodPressureBottomSheetViewModel.Action.UpdateSystolic(it))
                 },
-                range = uiState.minValueSystolic..uiState.maxValueSystolic
+                range = uiState.systolicRange
             )
             Text(text = " / ", style = TextStyles.bodyLarge)
             NumberPicker(
@@ -86,7 +86,7 @@ private fun AddBloodPressureBottomSheet(
                 onValueChange = {
                     onAction(AddBloodPressureBottomSheetViewModel.Action.UpdateDiastolic(it))
                 },
-                range = uiState.minValueDiastolic..uiState.maxValueDiastolic
+                range = uiState.diastolicRange
             )
         }
         VerticalSpacer()

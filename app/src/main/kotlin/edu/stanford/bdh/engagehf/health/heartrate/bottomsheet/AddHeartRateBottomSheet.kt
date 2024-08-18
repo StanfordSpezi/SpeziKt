@@ -79,7 +79,7 @@ private fun AddHeartRateBottomSheet(
                 onValueChange = {
                     onAction(AddHeartRateBottomSheetViewModel.Action.UpdateHeartRate(it))
                 },
-                range = uiState.minHeartRate..uiState.maxHeartRate
+                range = uiState.heartRateRange
             )
         }
         VerticalSpacer()
