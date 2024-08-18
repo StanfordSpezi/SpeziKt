@@ -28,6 +28,5 @@ class BottomSheetEvents @Inject constructor(
         data object AddWeightRecord : Event
         data object AddBloodPressureRecord : Event
         data object AddHeartRateRecord : Event
-        data object QuestionnaireBottomSheet : Event
     }
 }

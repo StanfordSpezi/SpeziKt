@@ -17,6 +17,9 @@ sealed class Routes {
     data object AppScreen : Routes()
 
     @Serializable
+    data object QuestionnaireScreen : Routes()
+
+    @Serializable
     data object SequentialOnboardingScreen : Routes()
 
     @Serializable

@@ -26,6 +26,7 @@ import edu.stanford.bdh.engagehf.navigation.RegisterParams
 import edu.stanford.bdh.engagehf.navigation.Routes
 import edu.stanford.bdh.engagehf.navigation.screens.AppScreen
 import edu.stanford.bdh.engagehf.navigation.serializableType
+import edu.stanford.bdh.engagehf.questionnaire.QuestionnaireScreen
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.SpeziTheme
@@ -135,6 +136,10 @@ class MainActivity : FragmentActivity() {
             AppScreen()
         }
 
+        composable<Routes.QuestionnaireScreen> {
+            QuestionnaireScreen()
+        }
+
         composable<Routes.InvitationCodeScreen> {
             InvitationCodeScreen()
         }
@@ -167,6 +172,8 @@ class MainActivity : FragmentActivity() {
                                 ),
                             )
                         )
+
+                        is AppNavigationEvent.QuestionnaireScreen -> navHostController.navigate(Routes.QuestionnaireScreen)
 
                         is AccountNavigationEvent.LoginScreen -> navHostController.navigate(
                             Routes.LoginScreen(

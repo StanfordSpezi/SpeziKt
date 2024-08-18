@@ -62,10 +62,6 @@ class AppScreenViewModel @Inject constructor(
                     BottomSheetEvents.Event.AddHeartRateRecord -> {
                         false to null
                     }
-
-                    BottomSheetEvents.Event.QuestionnaireBottomSheet -> {
-                        true to BottomSheetContent.QUESTIONNAIRE
-                    }
                 }
                 _uiState.update {
                     it.copy(isBottomSheetExpanded = isExpanded, bottomSheetContent = content)
@@ -99,7 +95,6 @@ enum class BottomSheetContent {
     DO_NEW_MEASUREMENT,
     WEIGHT_DESCRIPTION_INFO,
     ADD_WEIGHT_RECORD,
-    QUESTIONNAIRE,
 }
 
 sealed interface Action {

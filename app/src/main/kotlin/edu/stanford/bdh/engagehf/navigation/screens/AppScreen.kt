@@ -30,7 +30,6 @@ import edu.stanford.bdh.engagehf.health.HealthScreen
 import edu.stanford.bdh.engagehf.health.weight.bottomsheet.AddWeightBottomSheet
 import edu.stanford.bdh.engagehf.health.weight.bottomsheet.WeightDescriptionBottomSheet
 import edu.stanford.bdh.engagehf.medication.MedicationScreen
-import edu.stanford.bdh.engagehf.questionnaire.QuestionnaireScreen
 import edu.stanford.spezi.core.design.component.AppTopAppBar
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.modules.education.videos.EducationScreen
@@ -81,7 +80,6 @@ fun AppScreen(
                 BottomSheetContent.WEIGHT_DESCRIPTION_INFO -> WeightDescriptionBottomSheet()
                 BottomSheetContent.ADD_WEIGHT_RECORD -> AddWeightBottomSheet()
                 BottomSheetContent.NEW_MEASUREMENT_RECEIVED, null -> {}
-                BottomSheetContent.QUESTIONNAIRE -> QuestionnaireScreen()
             }
         },
         sheetPeekHeight = 0.dp

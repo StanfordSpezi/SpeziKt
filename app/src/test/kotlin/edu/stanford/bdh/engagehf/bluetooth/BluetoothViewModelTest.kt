@@ -17,6 +17,7 @@ import edu.stanford.bdh.engagehf.messages.MessageRepository
 import edu.stanford.bdh.engagehf.messages.MessageType
 import edu.stanford.bdh.engagehf.messages.MessagesAction
 import edu.stanford.bdh.engagehf.messages.VideoSectionVideo
+import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.spezi.core.bluetooth.api.BLEService
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
@@ -423,6 +424,22 @@ class BluetoothViewModelTest {
 
         // then
         verify { bottomSheetEvents.emit(BottomSheetEvents.Event.DoNewMeasurement) }
+    }
+
+    @Test
+    fun `it should navigate to questionnaire screen on QuestionnaireAction`() {
+        // given
+        val action = Action.MessageItemClicked(message = message)
+        every {
+            uiStateMapper.mapMessagesAction(messageAction)
+        } returns Result.success(MessagesAction.QuestionnaireAction(mockk()))
+        createViewModel()
+
+        // when
+        bluetoothViewModel.onAction(action = action)
+
+        // then
+        verify { navigator.navigateTo(AppNavigationEvent.QuestionnaireScreen) }
     }
 
     @Test
