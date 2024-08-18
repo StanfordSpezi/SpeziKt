@@ -69,7 +69,6 @@ class AppScreenViewModelTest {
 
             // Then
             val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.isBottomSheetExpanded).isTrue()
             assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.NEW_MEASUREMENT_RECEIVED)
         }
 
@@ -84,7 +83,6 @@ class AppScreenViewModelTest {
 
             // Then
             val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.isBottomSheetExpanded).isTrue()
             assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.DO_NEW_MEASUREMENT)
         }
 
@@ -99,7 +97,6 @@ class AppScreenViewModelTest {
 
             // Then
             val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.isBottomSheetExpanded).isFalse()
             assertThat(updatedUiState.bottomSheetContent).isNull()
         }
 
@@ -114,7 +111,6 @@ class AppScreenViewModelTest {
 
             // Then
             val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.isBottomSheetExpanded).isTrue()
             assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.WEIGHT_DESCRIPTION_INFO)
         }
 
@@ -129,7 +125,6 @@ class AppScreenViewModelTest {
 
             // Then
             val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.isBottomSheetExpanded).isTrue()
             assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.ADD_WEIGHT_RECORD)
         }
 }
