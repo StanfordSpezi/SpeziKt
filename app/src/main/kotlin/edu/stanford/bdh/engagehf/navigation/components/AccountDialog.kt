@@ -4,9 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -38,6 +40,7 @@ import edu.stanford.spezi.core.design.theme.Colors.surface
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
+import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.TextStyles.bodyMedium
 import edu.stanford.spezi.core.design.theme.TextStyles.headlineMedium
 import edu.stanford.spezi.core.design.theme.ThemePreviews
@@ -64,27 +67,39 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
                 modifier = Modifier.padding(Spacings.medium),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.TopStart
-                ) {
-                    IconButton(
-                        enabled = !accountUiState.isHealthSummaryLoading,
-                        onClick = { onAction(Action.ShowAccountDialog(false)) },
-                        modifier = Modifier.align(Alignment.CenterStart)
+                Row {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.TopStart
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = stringResource(R.string.close_dialog_content_description),
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(Sizes.Icon.small)
+                        IconButton(
+                            enabled = !accountUiState.isHealthSummaryLoading,
+                            onClick = { onAction(Action.ShowAccountDialog(false)) },
+                            modifier = Modifier.align(Alignment.CenterStart)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = stringResource(R.string.close_dialog_content_description),
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(Sizes.Icon.small)
+                            )
+                        }
+                        Text(
+                            text = stringResource(R.string.account), style = TextStyles.titleMedium,
+                            modifier = Modifier.align(
+                                Alignment.Center
+                            )
                         )
                     }
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     accountUiState.initials?.let {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
-                                .align(Alignment.Center)
                                 .size(Sizes.Icon.large)
                                 .background(primary, shape = CircleShape)
                         ) {
@@ -101,19 +116,22 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
                             imageVector = Icons.Default.AccountCircle,
                             contentDescription = null,
                             modifier = Modifier
-                                .align(Alignment.Center)
                                 .size(Sizes.Icon.large),
                             tint = primary
                         )
                     }
+                    Spacer(modifier = Modifier.width(Spacings.medium))
+                    Column {
+                        VerticalSpacer()
+                        accountUiState.userName?.let {
+                            Text(text = accountUiState.userName, style = headlineMedium)
+                            VerticalSpacer(height = Spacings.small)
+                        }
+                        Text(text = accountUiState.email, style = bodyMedium)
+                        VerticalSpacer()
+                    }
                 }
-                VerticalSpacer()
-                accountUiState.userName?.let {
-                    Text(text = accountUiState.userName, style = headlineMedium)
-                    VerticalSpacer(height = Spacings.small)
-                }
-                Text(text = accountUiState.email, style = bodyMedium)
-                VerticalSpacer()
+
                 HorizontalDivider()
                 TextButton(
                     onClick = {

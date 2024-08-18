@@ -41,4 +41,5 @@
     <string name="close_dialog_content_description">Dialog schließen</string>
     <string name="sign_out">Ausloggen</string>
     <string name="health_summary">Gesundheitszusammenfassung</string>
+    <string name="account">Account</string>
 </resources>
