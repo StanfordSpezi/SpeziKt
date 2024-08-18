@@ -2,9 +2,8 @@ package edu.stanford.bdh.engagehf.health.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -13,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -33,7 +31,6 @@ fun NumberPicker(
     range: IntRange,
     modifier: Modifier = Modifier,
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState(initialFirstVisibleItemIndex = value - 1)
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
@@ -82,9 +79,7 @@ fun NumberPickerPreview() {
             value = 5,
             onValueChange = {},
             range = 0..10,
-            modifier = Modifier
-                .height(110.dp)
-                .width(70.dp),
+            modifier = Modifier.size(height = 110.dp, width = 70.dp),
         )
     }
 }
