@@ -21,8 +21,7 @@ interface UserSessionManager {
     suspend fun getUserState(): UserState
     fun observeUserState(): Flow<UserState>
     fun getUserUid(): String?
-    fun getUserName(): String?
-    fun getUserEmail(): String?
+    fun getUserInfo(): UserInfo
 }
 
 @Singleton
@@ -72,9 +71,13 @@ internal class UserSessionManagerImpl @Inject constructor(
 
     override fun getUserUid(): String? = firebaseAuth.uid
 
-    override fun getUserName(): String? = firebaseAuth.currentUser?.displayName
-
-    override fun getUserEmail(): String? = firebaseAuth.currentUser?.email
+    override fun getUserInfo(): UserInfo {
+        val user = firebaseAuth.currentUser ?: error("User not available")
+        return UserInfo(
+            email = user.email ?: "",
+            name = user.displayName?.takeIf { it.isNotBlank() },
+        )
+    }
 
     private suspend fun hasConsented(): Boolean = withContext(ioDispatcher) {
         runCatching {

@@ -45,6 +45,7 @@ import edu.stanford.spezi.core.design.theme.TextStyles.bodyMedium
 import edu.stanford.spezi.core.design.theme.TextStyles.headlineMedium
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.design.theme.lighten
+import edu.stanford.spezi.module.account.manager.UserInfo
 
 @Composable
 fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
@@ -123,11 +124,11 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
                     Spacer(modifier = Modifier.width(Spacings.medium))
                     Column {
                         VerticalSpacer()
-                        accountUiState.userName?.let {
-                            Text(text = accountUiState.userName, style = headlineMedium)
+                        accountUiState.userInfo.name?.let {
+                            Text(text = it, style = headlineMedium)
                             VerticalSpacer(height = Spacings.small)
                         }
-                        Text(text = accountUiState.email, style = bodyMedium)
+                        Text(text = accountUiState.userInfo.email, style = bodyMedium)
                         VerticalSpacer()
                     }
                 }
@@ -179,19 +180,25 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
 class AppTopBarProvider : PreviewParameterProvider<AccountUiState> {
     override val values: Sequence<AccountUiState> = sequenceOf(
         AccountUiState(
-            userName = "John Doe",
             initials = "JD",
-            email = "john@doe.de",
-            isHealthSummaryLoading = false
+            isHealthSummaryLoading = false,
+            userInfo = UserInfo(
+                name = "John Doe",
+                email = "john@doe.de"
+            ),
         ),
         AccountUiState(
-            userName = "Jane Smith",
-            email = "jane@smith.com",
+            userInfo = UserInfo(
+                name = "John Doe",
+                email = ""
+            ),
             isHealthSummaryLoading = true
         ),
         AccountUiState(
-            userName = null,
-            email = "john@doe.de",
+            userInfo = UserInfo(
+                name = null,
+                email = "john@doe.de"
+            )
         )
     )
 }

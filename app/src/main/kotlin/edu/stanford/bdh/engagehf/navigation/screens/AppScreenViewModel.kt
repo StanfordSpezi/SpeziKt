@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.messages.HealthSummaryService
+import edu.stanford.spezi.module.account.manager.UserInfo
 import edu.stanford.spezi.module.account.manager.UserSessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,12 +38,12 @@ class AppScreenViewModel @Inject constructor(
 
     private fun setup() {
         viewModelScope.launch {
-            _uiState.update { it ->
-                val userName = userSessionManager.getUserName()?.takeIf { it.isNotBlank() }
-                it.copy(accountUiState = it.accountUiState.copy(userName = userName))
-            }
-            userSessionManager.getUserEmail()?.let { email ->
-                _uiState.update { it.copy(accountUiState = it.accountUiState.copy(email = email)) }
+            userSessionManager.getUserInfo().let { userInfo ->
+                _uiState.update {
+                    it.copy(
+                        accountUiState = it.accountUiState.copy(userInfo = userInfo)
+                    )
+                }
             }
             appScreenEvents.events.collect { event ->
                 val (isExpanded, content) = when (event) {
@@ -141,9 +142,8 @@ data class AppUiState(
 
 data class AccountUiState(
     val showDialog: Boolean = false,
-    val userName: String? = null,
+    val userInfo: UserInfo = UserInfo("", null),
     val initials: String? = null,
-    val email: String = "",
     val isHealthSummaryLoading: Boolean = false,
 )
 
