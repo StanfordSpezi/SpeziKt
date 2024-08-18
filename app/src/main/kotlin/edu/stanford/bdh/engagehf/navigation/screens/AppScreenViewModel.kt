@@ -39,10 +39,10 @@ class AppScreenViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it ->
                 val userName = userSessionManager.getUserName()?.takeIf { it.isNotBlank() }
-                it.copy(appTopBar = it.appTopBar.copy(userName = userName))
+                it.copy(accountUiState = it.accountUiState.copy(userName = userName))
             }
             userSessionManager.getUserEmail()?.let { email ->
-                _uiState.update { it.copy(appTopBar = it.appTopBar.copy(email = email)) }
+                _uiState.update { it.copy(accountUiState = it.accountUiState.copy(email = email)) }
             }
             appScreenEvents.events.collect { event ->
                 val (isExpanded, content) = when (event) {
@@ -99,16 +99,22 @@ class AppScreenViewModel @Inject constructor(
             }
 
             is Action.ShowAccountDialog -> {
-                _uiState.update { it.copy(appTopBar = it.appTopBar.copy(showDialog = action.showDialog)) }
+                _uiState.update { it.copy(accountUiState = it.accountUiState.copy(showDialog = action.showDialog)) }
             }
 
             Action.ShowHealthSummary -> {
                 viewModelScope.launch {
-                    _uiState.update { it.copy(appTopBar = it.appTopBar.copy(isHealthSummaryLoading = true)) }
+                    _uiState.update {
+                        it.copy(
+                            accountUiState = it.accountUiState.copy(
+                                isHealthSummaryLoading = true
+                            )
+                        )
+                    }
                     healthSummaryService.generateHealthSummaryPdf()
                     _uiState.update {
                         it.copy(
-                            appTopBar = it.appTopBar.copy(
+                            accountUiState = it.accountUiState.copy(
                                 isHealthSummaryLoading = false,
                                 showDialog = false
                             )
@@ -118,7 +124,7 @@ class AppScreenViewModel @Inject constructor(
             }
 
             Action.SignOut -> {
-                _uiState.update { it.copy(appTopBar = it.appTopBar.copy(showDialog = false)) }
+                _uiState.update { it.copy(accountUiState = it.accountUiState.copy(showDialog = false)) }
                 /* TODO: Implement sign out */
             }
         }
@@ -130,10 +136,10 @@ data class AppUiState(
     val selectedItem: BottomBarItem,
     val isBottomSheetExpanded: Boolean = false,
     val bottomSheetContent: BottomSheetContent? = null,
-    val appTopBar: AppTopBar = AppTopBar(),
+    val accountUiState: AccountUiState = AccountUiState(),
 )
 
-data class AppTopBar(
+data class AccountUiState(
     val showDialog: Boolean = false,
     val userName: String? = null,
     val initials: String? = null,

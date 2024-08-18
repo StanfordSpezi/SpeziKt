@@ -10,13 +10,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import edu.stanford.bdh.engagehf.navigation.screens.AccountUiState
 import edu.stanford.bdh.engagehf.navigation.screens.Action
-import edu.stanford.bdh.engagehf.navigation.screens.AppTopBar
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Sizes
 
 @Composable
-fun AccountTopAppBarButton(appTopBar: AppTopBar, onAction: (Action) -> Unit) {
+fun AccountTopAppBarButton(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
     IconButton(onClick = {
         onAction(Action.ShowAccountDialog(true))
     }) {
@@ -28,10 +28,10 @@ fun AccountTopAppBarButton(appTopBar: AppTopBar, onAction: (Action) -> Unit) {
         )
     }
     AnimatedVisibility(
-        visible = appTopBar.showDialog,
+        visible = accountUiState.showDialog,
         enter = fadeIn(),
         exit = fadeOut()
     ) {
-        AccountDialog(appTopBar = appTopBar, onAction = onAction)
+        AccountDialog(accountUiState = accountUiState, onAction = onAction)
     }
 }

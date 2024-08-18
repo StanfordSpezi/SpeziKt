@@ -109,7 +109,7 @@ fun AppScreen(
                         }
                     },
                     actions = {
-                        AccountTopAppBarButton(uiState.appTopBar, onAction = onAction)
+                        AccountTopAppBarButton(uiState.accountUiState, onAction = onAction)
                     }
                 )
             },

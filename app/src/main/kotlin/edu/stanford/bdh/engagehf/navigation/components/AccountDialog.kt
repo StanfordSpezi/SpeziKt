@@ -28,8 +28,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import edu.stanford.bdh.engagehf.R
+import edu.stanford.bdh.engagehf.navigation.screens.AccountUiState
 import edu.stanford.bdh.engagehf.navigation.screens.Action
-import edu.stanford.bdh.engagehf.navigation.screens.AppTopBar
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
@@ -43,10 +43,10 @@ import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.design.theme.lighten
 
 @Composable
-fun AccountDialog(appTopBar: AppTopBar, onAction: (Action) -> Unit) {
+fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
     Dialog(
         onDismissRequest = {
-            if (!appTopBar.isHealthSummaryLoading) {
+            if (!accountUiState.isHealthSummaryLoading) {
                 onAction(Action.ShowAccountDialog(false))
             }
         },
@@ -68,7 +68,7 @@ fun AccountDialog(appTopBar: AppTopBar, onAction: (Action) -> Unit) {
                     contentAlignment = Alignment.TopStart
                 ) {
                     IconButton(
-                        enabled = !appTopBar.isHealthSummaryLoading,
+                        enabled = !accountUiState.isHealthSummaryLoading,
                         onClick = { onAction(Action.ShowAccountDialog(false)) },
                         modifier = Modifier.align(Alignment.CenterStart)
                     ) {
@@ -79,7 +79,7 @@ fun AccountDialog(appTopBar: AppTopBar, onAction: (Action) -> Unit) {
                             modifier = Modifier.size(Sizes.Icon.small)
                         )
                     }
-                    appTopBar.initials?.let {
+                    accountUiState.initials?.let {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
@@ -88,14 +88,14 @@ fun AccountDialog(appTopBar: AppTopBar, onAction: (Action) -> Unit) {
                                 .background(primary, shape = CircleShape)
                         ) {
                             Text(
-                                text = appTopBar.initials,
+                                text = accountUiState.initials,
                                 style = headlineMedium,
                                 color = onPrimary,
                             )
                         }
                     }
 
-                    if (appTopBar.initials == null) {
+                    if (accountUiState.initials == null) {
                         Icon(
                             imageVector = Icons.Default.AccountCircle,
                             contentDescription = null,
@@ -107,11 +107,11 @@ fun AccountDialog(appTopBar: AppTopBar, onAction: (Action) -> Unit) {
                     }
                 }
                 VerticalSpacer()
-                appTopBar.userName?.let {
-                    Text(text = appTopBar.userName, style = headlineMedium)
+                accountUiState.userName?.let {
+                    Text(text = accountUiState.userName, style = headlineMedium)
                     VerticalSpacer(height = Spacings.small)
                 }
-                Text(text = appTopBar.email, style = bodyMedium)
+                Text(text = accountUiState.email, style = bodyMedium)
                 VerticalSpacer()
                 HorizontalDivider()
                 TextButton(
@@ -130,7 +130,7 @@ fun AccountDialog(appTopBar: AppTopBar, onAction: (Action) -> Unit) {
                             style = bodyMedium,
                             modifier = Modifier.weight(1f)
                         )
-                        if (appTopBar.isHealthSummaryLoading) {
+                        if (accountUiState.isHealthSummaryLoading) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(Sizes.Icon.small),
                                 color = primary
@@ -157,20 +157,20 @@ fun AccountDialog(appTopBar: AppTopBar, onAction: (Action) -> Unit) {
     }
 }
 
-class AppTopBarProvider : PreviewParameterProvider<AppTopBar> {
-    override val values: Sequence<AppTopBar> = sequenceOf(
-        AppTopBar(
+class AppTopBarProvider : PreviewParameterProvider<AccountUiState> {
+    override val values: Sequence<AccountUiState> = sequenceOf(
+        AccountUiState(
             userName = "John Doe",
             initials = "JD",
             email = "john@doe.de",
             isHealthSummaryLoading = false
         ),
-        AppTopBar(
+        AccountUiState(
             userName = "Jane Smith",
             email = "jane@smith.com",
             isHealthSummaryLoading = true
         ),
-        AppTopBar(
+        AccountUiState(
             userName = null,
             email = "john@doe.de",
         )
@@ -180,11 +180,11 @@ class AppTopBarProvider : PreviewParameterProvider<AppTopBar> {
 @ThemePreviews
 @Composable
 fun AccountDialogPreview(
-    @PreviewParameter(AppTopBarProvider::class) appTopBar: AppTopBar,
+    @PreviewParameter(AppTopBarProvider::class) accountUiState: AccountUiState,
 ) {
     SpeziTheme {
         AccountDialog(
-            appTopBar = appTopBar,
+            accountUiState = accountUiState,
             onAction = {}
         )
     }
