@@ -100,9 +100,9 @@ class HealthUiStateMapper @Inject constructor(
 
     private fun mapXValue(selectedTimeRange: TimeRange, zonedDateTime: ZonedDateTime): Float {
         return when (selectedTimeRange) {
-            TimeRange.DAILY -> zonedDateTime.year.toFloat() + (zonedDateTime.dayOfYear - 1) / 365f
-            TimeRange.WEEKLY -> (zonedDateTime.toEpochSecond() / (7 * 24 * 60 * 60)).toFloat()
-            TimeRange.MONTHLY -> zonedDateTime.year.toFloat() + (zonedDateTime.monthValue - 1) / 12f
+            TimeRange.DAILY -> (zonedDateTime.year.toFloat() + (zonedDateTime.dayOfYear - 1) / 365f).roundToTwoDecimalPlaces()
+            TimeRange.WEEKLY -> ((zonedDateTime.toEpochSecond() / (7 * 24 * 60 * 60)).toFloat()).roundToTwoDecimalPlaces()
+            TimeRange.MONTHLY -> (zonedDateTime.year.toFloat() + (zonedDateTime.monthValue - 1) / 12f).roundToTwoDecimalPlaces()
         }
     }
 
@@ -347,4 +347,9 @@ class HealthUiStateMapper @Inject constructor(
             }
         }
     }
+}
+
+@Suppress("MagicNumber")
+private fun Float.roundToTwoDecimalPlaces(): Float {
+    return Math.round(this * 100) / 100.0f
 }
