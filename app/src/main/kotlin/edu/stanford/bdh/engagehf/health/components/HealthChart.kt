@@ -160,8 +160,8 @@ private fun rememberValueFormater(
         CartesianValueFormatter { value, _, _ ->
             val date = when (uiState.selectedTimeRange) {
                 TimeRange.DAILY -> {
-                    val year = value.toInt()
-                    val dayOfYearFraction = value - year
+                    val year = (value * 10).toInt()
+                    val dayOfYearFraction = (value * 10) - year
                     val dayOfYear = (dayOfYearFraction * 365).toInt() + 1
                     ZonedDateTime.of(year, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault())
                         .plusDays((dayOfYear - 1).toLong())
