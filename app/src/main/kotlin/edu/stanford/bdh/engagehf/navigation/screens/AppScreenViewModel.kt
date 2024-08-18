@@ -46,44 +46,29 @@ class AppScreenViewModel @Inject constructor(
                 }
             }
             appScreenEvents.events.collect { event ->
-                val (isExpanded, content) = when (event) {
-                    is AppScreenEvents.Event.NavigateToTab -> {
-                        _uiState.update {
-                            it.copy(selectedItem = event.bottomBarItem)
-                        }
-                        return@collect
+                if (event is AppScreenEvents.Event.NavigateToTab) {
+                    _uiState.update {
+                        it.copy(selectedItem = event.bottomBarItem)
                     }
+                } else {
+                    val bottomSheetContent = when (event) {
+                        AppScreenEvents.Event.NewMeasurementAction ->
+                            BottomSheetContent.NEW_MEASUREMENT_RECEIVED
 
-                    AppScreenEvents.Event.NewMeasurementAction -> {
-                        true to BottomSheetContent.NEW_MEASUREMENT_RECEIVED
-                    }
+                        AppScreenEvents.Event.DoNewMeasurement ->
+                            BottomSheetContent.DO_NEW_MEASUREMENT
 
-                    AppScreenEvents.Event.DoNewMeasurement -> {
-                        true to BottomSheetContent.DO_NEW_MEASUREMENT
-                    }
+                        AppScreenEvents.Event.WeightDescriptionBottomSheet ->
+                            BottomSheetContent.WEIGHT_DESCRIPTION_INFO
 
-                    AppScreenEvents.Event.CloseBottomSheet -> {
-                        false to null
-                    }
+                        AppScreenEvents.Event.AddWeightRecord ->
+                            BottomSheetContent.ADD_WEIGHT_RECORD
 
-                    AppScreenEvents.Event.WeightDescriptionBottomSheet -> {
-                        true to BottomSheetContent.WEIGHT_DESCRIPTION_INFO
+                        else -> null
                     }
-
-                    AppScreenEvents.Event.AddWeightRecord -> {
-                        true to BottomSheetContent.ADD_WEIGHT_RECORD
+                    _uiState.update {
+                        it.copy(bottomSheetContent = bottomSheetContent)
                     }
-
-                    AppScreenEvents.Event.AddBloodPressureRecord -> {
-                        false to null
-                    }
-
-                    AppScreenEvents.Event.AddHeartRateRecord -> {
-                        false to null
-                    }
-                }
-                _uiState.update {
-                    it.copy(isBottomSheetExpanded = isExpanded, bottomSheetContent = content)
                 }
             }
         }
@@ -93,10 +78,6 @@ class AppScreenViewModel @Inject constructor(
         when (action) {
             is Action.UpdateSelectedBottomBarItem -> {
                 _uiState.update { it.copy(selectedItem = action.selectedBottomBarItem) }
-            }
-
-            is Action.UpdateBottomSheetState -> {
-                _uiState.update { it.copy(isBottomSheetExpanded = action.isExpanded) }
             }
 
             is Action.ShowAccountDialog -> {
@@ -128,6 +109,10 @@ class AppScreenViewModel @Inject constructor(
                 _uiState.update { it.copy(accountUiState = it.accountUiState.copy(showDialog = false)) }
                 /* TODO: Implement sign out */
             }
+
+            Action.DismissBottomSheet -> {
+                _uiState.update { it.copy(bottomSheetContent = null) }
+            }
         }
     }
 }
@@ -135,7 +120,6 @@ class AppScreenViewModel @Inject constructor(
 data class AppUiState(
     val items: List<BottomBarItem>,
     val selectedItem: BottomBarItem,
-    val isBottomSheetExpanded: Boolean = false,
     val bottomSheetContent: BottomSheetContent? = null,
     val accountUiState: AccountUiState = AccountUiState(),
 )
@@ -156,10 +140,10 @@ enum class BottomSheetContent {
 
 sealed interface Action {
     data class UpdateSelectedBottomBarItem(val selectedBottomBarItem: BottomBarItem) : Action
-    data class UpdateBottomSheetState(val isExpanded: Boolean) : Action
     data object ShowHealthSummary : Action
     data object SignOut : Action
     data class ShowAccountDialog(val showDialog: Boolean) : Action
+    data object DismissBottomSheet : Action
 }
 
 enum class BottomBarItem(

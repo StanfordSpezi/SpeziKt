@@ -38,6 +38,8 @@ import edu.stanford.spezi.core.design.component.AppTopAppBar
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.modules.education.videos.EducationScreen
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @Composable
@@ -60,20 +62,21 @@ fun AppScreen(
         bottomSheetState = rememberModalBottomSheetState()
     )
 
-    LaunchedEffect(key1 = uiState.isBottomSheetExpanded) {
+    LaunchedEffect(key1 = uiState.bottomSheetContent) {
         launch {
-            if (uiState.isBottomSheetExpanded) {
+            if (uiState.bottomSheetContent != null) {
                 bottomSheetScaffoldState.bottomSheetState.expand()
             } else {
                 bottomSheetScaffoldState.bottomSheetState.hide()
             }
         }
     }
-
     LaunchedEffect(bottomSheetScaffoldState.bottomSheetState) {
         snapshotFlow { bottomSheetScaffoldState.bottomSheetState.currentValue }
-            .collect { state ->
-                onAction(Action.UpdateBottomSheetState(isExpanded = state == SheetValue.Expanded))
+            .filter { it == SheetValue.Hidden }
+            .distinctUntilChanged()
+            .collect {
+                onAction(Action.DismissBottomSheet)
             }
     }
     BottomSheetScaffold(
