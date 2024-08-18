@@ -44,6 +44,5 @@ class MessageActionMapper @Inject constructor() {
                 )
             )
         }
-
     }
 }
