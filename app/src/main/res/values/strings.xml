@@ -57,4 +57,6 @@
     <string name="blood_pressure">Blood pressure</string>
     <string name="mmhg" translatable="false">mmHg</string>
     <string name="measurement_details">MEASUREMENT DETAILS</string>
+    <string name="heart_rate">Heart rate</string>
+    <string name="bpm" translatable="false">bpm</string>
 </resources>
