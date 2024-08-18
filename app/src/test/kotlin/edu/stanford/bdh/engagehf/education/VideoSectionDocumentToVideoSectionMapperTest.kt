@@ -35,7 +35,7 @@ class VideoSectionDocumentToVideoSectionMapperTest {
         // given
         val jsonMap: JsonMap = mockk()
         val document: DocumentSnapshot = mockk {
-            every { data } returns jsonMap
+            every { data } returns jsonMap as Map<String, Any>
             every { getLong("orderIndex") } returns 1L
             val collectionReference: CollectionReference = mockk {
                 every { get() } returns mockk {
@@ -69,7 +69,7 @@ class VideoSectionDocumentToVideoSectionMapperTest {
         // given
         val videoJsonMap: JsonMap = mockk()
         val videoDocument: DocumentSnapshot = mockk {
-            every { data } returns videoJsonMap
+            every { data } returns videoJsonMap as Map<String, Any>?
             every { exists() } returns true
             every { this@mockk.get("youtubeId") } returns "youtube123"
 
@@ -80,7 +80,7 @@ class VideoSectionDocumentToVideoSectionMapperTest {
 
         val videoSectionJsonMap: JsonMap = mockk()
         val document: DocumentSnapshot = mockk {
-            every { data } returns videoSectionJsonMap
+            every { data } returns videoSectionJsonMap as Map<String, Any>?
             every { getLong("orderIndex") } returns 1L
 
             val collectionReference: CollectionReference = mockk {
