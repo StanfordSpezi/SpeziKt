@@ -9,9 +9,9 @@ data class AddBloodPressureBottomSheetUiState(
     val timePickerState: TimePickerState = TimePickerState(),
     val systolic: Int = 120,
     val diastolic: Int = 80,
-    val minValueSystolic: Int = 20, // 20 is the minimum value for systolic blood pressure record
+    val minValueSystolic: Int = 0,
     val maxValueSystolic: Int = 200, // 200 is the maximum value for systolic blood pressure record
-    val minValueDiastolic: Int = 10, // 10 is the minimum value for diastolic blood pressure record
+    val minValueDiastolic: Int = 0,
     val maxValueDiastolic: Int = 180, // 180 is the maximum value for diastolic blood pressure record
     val isUpdateDateExpanded: Boolean = false,
     val isUpdateTimeExpanded: Boolean = false,
