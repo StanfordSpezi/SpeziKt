@@ -47,7 +47,7 @@ fun AccountDialog(appTopBar: AppTopBar, onAction: (Action) -> Unit) {
     Dialog(
         onDismissRequest = {
             if (!appTopBar.isHealthSummaryLoading) {
-                onAction(Action.ShowDialog(false))
+                onAction(Action.ShowAccountDialog(false))
             }
         },
         properties = DialogProperties()
@@ -69,7 +69,7 @@ fun AccountDialog(appTopBar: AppTopBar, onAction: (Action) -> Unit) {
                 ) {
                     IconButton(
                         enabled = !appTopBar.isHealthSummaryLoading,
-                        onClick = { onAction(Action.ShowDialog(false)) },
+                        onClick = { onAction(Action.ShowAccountDialog(false)) },
                         modifier = Modifier.align(Alignment.CenterStart)
                     ) {
                         Icon(

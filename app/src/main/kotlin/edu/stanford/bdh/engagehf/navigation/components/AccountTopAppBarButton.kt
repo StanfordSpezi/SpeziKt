@@ -18,7 +18,7 @@ import edu.stanford.spezi.core.design.theme.Sizes
 @Composable
 fun AccountTopAppBarButton(appTopBar: AppTopBar, onAction: (Action) -> Unit) {
     IconButton(onClick = {
-        onAction(Action.ShowDialog(true))
+        onAction(Action.ShowAccountDialog(true))
     }) {
         Icon(
             imageVector = Icons.Default.AccountCircle,

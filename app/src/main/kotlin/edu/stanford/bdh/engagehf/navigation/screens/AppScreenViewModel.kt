@@ -98,7 +98,7 @@ class AppScreenViewModel @Inject constructor(
                 _uiState.update { it.copy(isBottomSheetExpanded = action.isExpanded) }
             }
 
-            is Action.ShowDialog -> {
+            is Action.ShowAccountDialog -> {
                 _uiState.update { it.copy(appTopBar = it.appTopBar.copy(showDialog = action.showDialog)) }
             }
 
@@ -153,7 +153,7 @@ sealed interface Action {
     data class UpdateBottomSheetState(val isExpanded: Boolean) : Action
     data object ShowHealthSummary : Action
     data object SignOut : Action
-    data class ShowDialog(val showDialog: Boolean) : Action
+    data class ShowAccountDialog(val showDialog: Boolean) : Action
 }
 
 enum class BottomBarItem(
