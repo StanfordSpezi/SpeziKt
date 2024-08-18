@@ -2,6 +2,7 @@ package edu.stanford.bdh.engagehf.health.weight.bottomsheet
 
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import io.mockk.coVerify
@@ -16,10 +17,12 @@ class AddWeightBottomSheetViewModelTest {
     val coroutineTestRule = CoroutineTestRule()
 
     private var bottomSheetEvents: BottomSheetEvents = mockk(relaxed = true)
+    private var healthRepository: HealthRepository = mockk(relaxed = true)
 
     private var viewModel: AddWeightBottomSheetViewModel = AddWeightBottomSheetViewModel(
-        bottomSheetEvents,
-        AddWeightBottomSheetUiStateMapper()
+        bottomSheetEvents = bottomSheetEvents,
+        uiStateMapper = AddWeightBottomSheetUiStateMapper(),
+        healthRepository = healthRepository
     )
 
     @Test

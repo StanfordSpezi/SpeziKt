@@ -41,6 +41,7 @@ class AddWeightBottomSheetViewModel @Inject internal constructor(
             Action.SaveWeight -> {
                 bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
                 _uiState.update { uiStateMapper.mapSaveWeightActionToUiState(_uiState.value) }
+                uiState.value.weight ?: return
                 WeightRecord(
                     weight = Mass.pounds(uiState.value.weight!!),
                     time = uiState.value.date.plusHours(uiState.value.hour.toLong())
