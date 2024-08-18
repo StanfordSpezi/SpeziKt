@@ -5,8 +5,11 @@ import android.content.Intent
 import android.os.Environment
 import androidx.core.content.FileProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
+import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.utils.MessageNotifier
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
@@ -14,6 +17,7 @@ import javax.inject.Inject
 class HealthSummaryService @Inject constructor(
     private val healthSummaryRepository: HealthSummaryRepository,
     private val messageNotifier: MessageNotifier,
+    @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
     @ApplicationContext private val context: Context,
 ) {
     private val logger by speziLogger()
@@ -24,22 +28,24 @@ class HealthSummaryService @Inject constructor(
     }
 
     suspend fun generateHealthSummaryPdf() {
-        val pdfByteArrayResult =
-            healthSummaryRepository.findHealthSummaryByUserId()
-        pdfByteArrayResult.onSuccess {
-            val savePdfToFile = savePdfToFile(it)
-            val pdfUri = FileProvider.getUriForFile(
-                context,
-                "${context.packageName}.provider",
-                savePdfToFile
-            )
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.setDataAndType(pdfUri, MIME_TYPE_PDF)
-            context.startActivity(intent)
-        }.onFailure {
-            messageNotifier.notify("Failed to generate Health Summary")
+        withContext(ioDispatcher) {
+            val pdfByteArrayResult =
+                healthSummaryRepository.findHealthSummaryByUserId()
+            pdfByteArrayResult.onSuccess {
+                val savePdfToFile = savePdfToFile(it)
+                val pdfUri = FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.provider",
+                    savePdfToFile
+                )
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.setDataAndType(pdfUri, MIME_TYPE_PDF)
+                context.startActivity(intent)
+            }.onFailure {
+                messageNotifier.notify("Failed to generate Health Summary")
+            }
         }
     }
 
