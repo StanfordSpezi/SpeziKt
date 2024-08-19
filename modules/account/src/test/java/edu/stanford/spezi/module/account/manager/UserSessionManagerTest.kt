@@ -207,6 +207,26 @@ class UserSessionManagerTest {
         assertThat(result).isEqualTo(uid)
     }
 
+    @Test
+    fun `it should return the correct user info`() {
+        // given
+        val eMail = "test@test.de"
+        val name = "Test User"
+        val firebaseUser: FirebaseUser = mockk {
+            every { email } returns eMail
+            every { displayName } returns name
+        }
+        every { firebaseAuth.currentUser } returns firebaseUser
+        createUserSessionManager()
+
+        // when
+        val result = userSessionManager.getUserInfo()
+
+        // then
+        assertThat(result.email).isEqualTo(eMail)
+        assertThat(result.name).isEqualTo(name)
+    }
+
     private suspend fun assertObservedState(userState: UserState, scope: TestScope) {
         val slot = slot<FirebaseAuth.AuthStateListener>()
         var capturedState: UserState? = null
