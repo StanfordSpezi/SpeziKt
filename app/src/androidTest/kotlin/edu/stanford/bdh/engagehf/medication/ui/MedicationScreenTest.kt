@@ -84,6 +84,7 @@ class MedicationScreenTest {
             isExpanded = true,
             statusColor = MedicationColor.GREY,
             statusIconResId = R.drawable.ic_check,
+            videoPath = "/videoSections/1/videos/1"
         )
     )
 }
