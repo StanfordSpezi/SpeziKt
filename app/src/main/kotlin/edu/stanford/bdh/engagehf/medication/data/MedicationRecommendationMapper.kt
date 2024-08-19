@@ -11,11 +11,14 @@ class MedicationRecommendationMapper @Inject constructor(
 ) {
 
     fun map(documentSnapshot: DocumentSnapshot): MedicationRecommendation? {
-        val displayInformation = documentSnapshot.data?.get("displayInformation") as? JsonMap ?: return null
+        val displayInformation =
+            documentSnapshot.data?.get("displayInformation") as? JsonMap ?: return null
         val title = localizedMapReader.get("title", displayInformation)
         val description = localizedMapReader.get("description", displayInformation)
         val subtitle = localizedMapReader.get("subtitle", displayInformation)
-        val type = MedicationRecommendationType.from(localizedMapReader.get("type", displayInformation))
+        val videoPath = localizedMapReader.get("videoPath", displayInformation)
+        val type =
+            MedicationRecommendationType.from(localizedMapReader.get("type", displayInformation))
         return if (title != null && description != null && subtitle != null) {
             MedicationRecommendation(
                 id = documentSnapshot.id,
@@ -23,6 +26,7 @@ class MedicationRecommendationMapper @Inject constructor(
                 description = description,
                 subtitle = subtitle,
                 type = type,
+                videoPath = videoPath,
                 dosageInformation = getDosageInformation(displayInformation),
             )
         } else {

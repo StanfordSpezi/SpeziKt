@@ -1,11 +1,15 @@
 package edu.stanford.bdh.engagehf.medication.ui
 
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MessageActionMapper
+import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendation
 import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendationType
 import edu.stanford.bdh.engagehf.medication.data.MedicationRepository
+import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.core.utils.MessageNotifier
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -23,6 +27,10 @@ class MedicationViewModelTest {
     private val medicationUiStateMapper: MedicationUiStateMapper = mockk()
     private val recommendations = getMedicationRecommendations()
     private val uiModels: List<MedicationCardUiModel> = mockk()
+    private val navigator: Navigator = mockk()
+    private val engageEducationRepository: EngageEducationRepository = mockk()
+    private val messageActionMapper: MessageActionMapper = mockk()
+    private val messageNotifier: MessageNotifier = mockk()
 
     private lateinit var viewModel: MedicationViewModel
 
@@ -34,7 +42,14 @@ class MedicationViewModelTest {
         every {
             medicationUiStateMapper.mapMedicationUiState(recommendations)
         } returns MedicationUiState.Success(uiModels)
-        viewModel = MedicationViewModel(medicationRepository, medicationUiStateMapper)
+        viewModel = MedicationViewModel(
+            medicationRepository,
+            medicationUiStateMapper,
+            navigator = navigator,
+            engageEducationRepository = engageEducationRepository,
+            messageActionMapper = messageActionMapper,
+            messageNotifier = messageNotifier
+        )
     }
 
     @Test
@@ -80,6 +95,7 @@ class MedicationViewModelTest {
             description = "Description A",
             type = MedicationRecommendationType.TARGET_DOSE_REACHED,
             dosageInformation = null,
+            videoPath = null
         ),
         MedicationRecommendation(
             id = "2",
@@ -88,6 +104,7 @@ class MedicationViewModelTest {
             description = "Description B",
             type = MedicationRecommendationType.NOT_STARTED,
             dosageInformation = null,
+            videoPath = null
         )
     )
 }
