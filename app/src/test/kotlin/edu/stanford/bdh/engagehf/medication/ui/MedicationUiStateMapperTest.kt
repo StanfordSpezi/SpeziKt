@@ -76,6 +76,7 @@ class MedicationUiStateMapperTest {
         statusIconResId: Int? = null,
         statusColor: MedicationColor = MedicationColor.GREY,
         dosageInformation: DosageInformationUiModel? = null,
+        videoPath: String = "",
     ) = MedicationCardUiModel(
         id = id,
         title = title,
@@ -85,6 +86,7 @@ class MedicationUiStateMapperTest {
         statusIconResId = statusIconResId,
         statusColor = statusColor,
         dosageInformation = dosageInformation,
+        videoPath = videoPath
     )
 
     private fun getRecommendations() = listOf(
@@ -94,7 +96,8 @@ class MedicationUiStateMapperTest {
             subtitle = "Subtitle B",
             description = "Description B",
             type = MedicationRecommendationType.NOT_STARTED,
-            dosageInformation = null
+            dosageInformation = null,
+            videoPath = null
         ),
         MedicationRecommendation(
             id = "1",
@@ -102,7 +105,8 @@ class MedicationUiStateMapperTest {
             subtitle = "Subtitle A",
             description = "Description A",
             type = MedicationRecommendationType.TARGET_DOSE_REACHED, // higher priority than NOT_STARTED
-            dosageInformation = null
+            dosageInformation = null,
+            videoPath = "/videoSections/1/videos/1"
         )
     )
 }
