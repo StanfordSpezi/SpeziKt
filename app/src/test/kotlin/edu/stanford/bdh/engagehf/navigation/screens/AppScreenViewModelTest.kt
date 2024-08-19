@@ -6,6 +6,7 @@ import edu.stanford.bdh.engagehf.messages.HealthSummaryService
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.module.account.manager.UserSessionManager
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -126,5 +127,46 @@ class AppScreenViewModelTest {
             // Then
             val updatedUiState = viewModel.uiState.value
             assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.ADD_WEIGHT_RECORD)
+        }
+
+    @Test
+    fun `given ShowAccountDialog is received then uiState should be updated`() =
+        runTestUnconfined {
+            // Given
+            val event = Action.ShowAccountDialog(showDialog = true)
+
+            // When
+            viewModel.onAction(event)
+
+            // Then
+            val updatedUiState = viewModel.uiState.value
+            assertThat(updatedUiState.accountUiState.showDialog).isTrue()
+        }
+
+    @Test
+    fun `given SignOut is received then uiState should be updated`() =
+        runTestUnconfined {
+            // Given
+            val event = Action.SignOut
+
+            // When
+            viewModel.onAction(event)
+
+            // Then
+            val updatedUiState = viewModel.uiState.value
+            assertThat(updatedUiState.accountUiState.showDialog).isFalse()
+        }
+
+    @Test
+    fun `given ShowHealthSummary is received then healthSummaryService should be called`() =
+        runTestUnconfined {
+            // Given
+            val event = Action.ShowHealthSummary
+
+            // When
+            viewModel.onAction(event)
+
+            // Then
+            coVerify { healthSummaryService.generateHealthSummaryPdf() }
         }
 }
