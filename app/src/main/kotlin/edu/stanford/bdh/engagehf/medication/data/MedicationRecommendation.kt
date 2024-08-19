@@ -9,6 +9,7 @@ data class MedicationRecommendation(
     val subtitle: String,
     val description: String,
     val type: MedicationRecommendationType,
+    val videoPath: String?,
     val dosageInformation: DosageInformation?,
 )
 
@@ -20,7 +21,10 @@ enum class MedicationRecommendationType(
     TARGET_DOSE_REACHED(priority = 3, serializedName = "targetDoseReached"),
     PERSONAL_TARGET_DOSE_REACHED(priority = 4, serializedName = "personalTargetDoseReached"),
     IMPROVEMENT_AVAILABLE(priority = 7, serializedName = "improvementAvailable"),
-    MORE_PATIENT_OBSERVATIONS_REQUIRED(priority = 6, serializedName = "morePatientObservationsRequired"),
+    MORE_PATIENT_OBSERVATIONS_REQUIRED(
+        priority = 6,
+        serializedName = "morePatientObservationsRequired"
+    ),
     MORE_LAB_OBSERVATIONS_REQUIRED(priority = 5, serializedName = "moreLabObservationsRequired"),
     NOT_STARTED(priority = 2, serializedName = "notStarted"),
     NO_ACTION_REQUIRED(priority = 1, serializedName = "noActionRequired"),
