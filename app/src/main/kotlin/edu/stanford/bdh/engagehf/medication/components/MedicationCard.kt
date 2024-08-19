@@ -123,10 +123,12 @@ fun MedicationCard(
                                     suffix = model.id
                                 )
                         )
-                        IconButton(onClick = {
-                            onAction(MedicationViewModel.Action.InfoClicked(videoPath = model.videoPath))
-                        }) {
-                            Icon(Icons.Filled.Info, contentDescription = "Information Icon")
+                        model.videoPath?.let {
+                            IconButton(onClick = {
+                                onAction(MedicationViewModel.Action.InfoClicked(videoPath = it))
+                            }) {
+                                Icon(Icons.Filled.Info, contentDescription = "Information Icon")
+                            }
                         }
                     }
                 }

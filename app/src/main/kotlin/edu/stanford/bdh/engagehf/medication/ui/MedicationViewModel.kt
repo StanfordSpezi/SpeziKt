@@ -67,10 +67,7 @@ class MedicationViewModel @Inject internal constructor(
 
             is Action.InfoClicked -> {
                 viewModelScope.launch {
-                    // it seems that this is not entirely consistent, so if action.videoPath starts without "/", it will be added
-                    val correctedPath =
-                        if (action.videoPath.startsWith("/")) action.videoPath else "/${action.videoPath}"
-                    messageActionMapper.mapVideoSectionAction(correctedPath).let { result ->
+                    messageActionMapper.mapVideoSectionAction(action.videoPath).let { result ->
                         result.onSuccess { mappedAction ->
                             engageEducationRepository.getVideoBySectionAndVideoId(
                                 mappedAction.videoSectionVideo.videoSectionId,

@@ -9,7 +9,7 @@ data class MedicationRecommendation(
     val subtitle: String,
     val description: String,
     val type: MedicationRecommendationType,
-    val videoPath: String,
+    val videoPath: String?,
     val dosageInformation: DosageInformation?,
 )
 

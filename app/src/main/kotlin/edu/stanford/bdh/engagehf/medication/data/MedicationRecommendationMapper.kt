@@ -19,8 +19,7 @@ class MedicationRecommendationMapper @Inject constructor(
         val videoPath = localizedMapReader.get("videoPath", displayInformation)
         val type =
             MedicationRecommendationType.from(localizedMapReader.get("type", displayInformation))
-        @Suppress("ComplexCondition")
-        return if (title != null && description != null && subtitle != null && videoPath != null) {
+        return if (title != null && description != null && subtitle != null) {
             MedicationRecommendation(
                 id = documentSnapshot.id,
                 title = title,
