@@ -8,8 +8,8 @@ import javax.inject.Inject
 class MessageActionMapper @Inject constructor() {
 
     companion object {
-        private val videoSectionRegex = Regex("/videoSections/(.+)/videos/(.+)")
-        private val questionnaireRegex = Regex("/questionnaires/(.+)")
+        private val videoSectionRegex = Regex("/?videoSections/(.+)/videos/(.+)")
+        private val questionnaireRegex = Regex("/?questionnaires/(.+)")
     }
 
     fun map(action: String): Result<MessagesAction> {
