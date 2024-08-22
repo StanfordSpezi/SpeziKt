@@ -91,8 +91,18 @@ class HealthUiStateMapper @Inject constructor(
         val groupedRecords = groupRecordsByTimeRange(records, selectedTimeRange)
         return groupedRecords.values.map { entries ->
             val averageValue = entries.map { getValue(it, diastolic).value }.average()
-            val xValue = entries.first().zonedDateTime.toEpochSecond().toFloat() / EPOCH_SECONDS_DIVISOR
-            Pair(averageValue.toFloat(), xValue)
+            Pair(
+                averageValue.toFloat(),
+                mapXValue(selectedTimeRange, entries.first().zonedDateTime)
+            )
+        }
+    }
+
+    private fun mapXValue(selectedTimeRange: TimeRange, zonedDateTime: ZonedDateTime): Float {
+        return when (selectedTimeRange) {
+            TimeRange.DAILY -> zonedDateTime.year.toFloat() + (zonedDateTime.dayOfYear - 1) / 365f
+            TimeRange.WEEKLY -> (zonedDateTime.toEpochSecond() / (7 * 24 * 60 * 60)).toFloat()
+            TimeRange.MONTHLY -> zonedDateTime.year.toFloat() + (zonedDateTime.monthValue - 1) / 12f
         }
     }
 
@@ -178,7 +188,7 @@ class HealthUiStateMapper @Inject constructor(
 
     private fun getMaxMonths(selectedTimeRange: TimeRange): Long {
         return when (selectedTimeRange) {
-            TimeRange.DAILY -> DAILY_MAX_DAYS
+            TimeRange.DAILY -> DAILY_MAX_MONTHS
             TimeRange.WEEKLY -> WEEKLY_MAX_MONTHS
             TimeRange.MONTHLY -> MONTHLY_MAX_MONTHS
         }
@@ -299,7 +309,7 @@ class HealthUiStateMapper @Inject constructor(
     private fun getDefaultLocale() = localeProvider.getDefaultLocale()
 
     companion object {
-        private const val DAILY_MAX_DAYS = 30L
+        private const val DAILY_MAX_MONTHS = 1L
         private const val WEEKLY_MAX_MONTHS = 3L
         private const val MONTHLY_MAX_MONTHS = 6L
 

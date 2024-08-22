@@ -7,7 +7,6 @@ import androidx.health.connect.client.records.WeightRecord
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.component.OperationStatus
 import edu.stanford.bdh.engagehf.bluetooth.data.models.DeviceUiModel
-import edu.stanford.bdh.engagehf.messages.MessagesAction
 import edu.stanford.spezi.core.bluetooth.data.model.BLEDeviceSession
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
 import edu.stanford.spezi.core.bluetooth.data.model.Measurement
@@ -24,7 +23,12 @@ class BluetoothUiStateMapperTest {
         every { getDefaultLocale() } returns Locale.US
     }
 
-    private val mapper = BluetoothUiStateMapper(localeProvider = localeProvider)
+    private val messageActionMapper = mockk<MessageActionMapper>()
+
+    private val mapper = BluetoothUiStateMapper(
+        localeProvider = localeProvider,
+        messageActionMapper = messageActionMapper
+    )
     private val bloodPressure: Measurement.BloodPressure = mockk {
         every { systolic } returns SYSTOLIC.toFloat()
         every { diastolic } returns DIASTOLIC.toFloat()
@@ -344,91 +348,6 @@ class BluetoothUiStateMapperTest {
             assertThat(value).isEqualTo("No data available")
             assertThat(unit).isNull()
         }
-    }
-
-    @Test
-    fun `it should map video section action correctly`() {
-        // given
-        val sectionId = "some-section-id-12-34."
-        val videoId = "some.video.id-12"
-        val action = "/videoSections/$sectionId/videos/$videoId"
-
-        // when
-        val result = mapper.mapMessagesAction(action)
-
-        // then
-        val messagesAction = result.getOrThrow() as MessagesAction.VideoSectionAction
-        with(messagesAction) {
-            assertThat(videoSectionVideo.videoSectionId).isEqualTo(sectionId)
-            assertThat(videoSectionVideo.videoId).isEqualTo(videoId)
-        }
-    }
-
-    @Test
-    fun `it should map medications action correctly`() {
-        // given
-        val action = "/medications"
-
-        // when
-        val result = mapper.mapMessagesAction(action)
-
-        // then
-        assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrThrow()).isEqualTo(MessagesAction.MedicationsAction)
-    }
-
-    @Test
-    fun `it should map measurements action correctly`() {
-        // given
-        val action = "/measurements"
-
-        // when
-        val result = mapper.mapMessagesAction(action)
-
-        // then
-        assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrThrow()).isEqualTo(MessagesAction.MeasurementsAction)
-    }
-
-    @Test
-    fun `it should map questionnaire action correctly`() {
-        // given
-        val questionnaireId = "some-questionnaire-id-1234"
-        val action = "/questionnaires/$questionnaireId"
-
-        // when
-        val result = mapper.mapMessagesAction(action)
-
-        // then
-        val messagesAction = result.getOrThrow() as MessagesAction.QuestionnaireAction
-        assertThat(messagesAction.questionnaire.questionnaireId).isEqualTo(questionnaireId)
-    }
-
-    @Test
-    fun `it should map health summary action correctly`() {
-        // given
-        val action = "/healthSummary"
-
-        // when
-        val result = mapper.mapMessagesAction(action)
-
-        // then
-        assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrThrow()).isEqualTo(MessagesAction.HealthSummaryAction)
-    }
-
-    @Test
-    fun `it should throw error for unknown action`() {
-        // given
-        val action = "/unknownAction"
-
-        // when
-        val result = mapper.mapMessagesAction(action)
-
-        // then
-        assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(IllegalStateException::class.java)
-        assertThat(result.exceptionOrNull()?.message).isEqualTo("Unknown action type")
     }
 
     private companion object {

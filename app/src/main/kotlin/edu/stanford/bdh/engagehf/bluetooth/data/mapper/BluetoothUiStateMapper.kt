@@ -10,8 +10,6 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.DeviceUiModel
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
 import edu.stanford.bdh.engagehf.messages.MessagesAction
-import edu.stanford.bdh.engagehf.messages.Questionnaire
-import edu.stanford.bdh.engagehf.messages.VideoSectionVideo
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
 import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import edu.stanford.spezi.core.utils.LocaleProvider
@@ -20,6 +18,7 @@ import javax.inject.Inject
 
 class BluetoothUiStateMapper @Inject constructor(
     private val localeProvider: LocaleProvider,
+    private val messageActionMapper: MessageActionMapper,
 ) {
 
     private val dateFormatter by lazy {
@@ -27,9 +26,6 @@ class BluetoothUiStateMapper @Inject constructor(
             "dd.MM.yyyy, HH:mm", localeProvider.getDefaultLocale()
         )
     }
-
-    private val videoSectionRegex = Regex("/videoSections/(.+)/videos/(.+)")
-    private val questionnaireRegex = Regex("/questionnaires/(.+)")
 
     fun mapBleServiceState(state: BLEServiceState.Scanning): BluetoothUiState.Ready {
         val devices = state.sessions.map {
@@ -149,31 +145,7 @@ class BluetoothUiStateMapper @Inject constructor(
     }
 
     fun mapMessagesAction(action: String): Result<MessagesAction> {
-        return runCatching {
-            when {
-                videoSectionRegex.matches(action) -> {
-                    val matchResult = videoSectionRegex.find(action)
-                    val (videoSectionId, videoId) = matchResult!!.destructured
-                    MessagesAction.VideoSectionAction(
-                        VideoSectionVideo(
-                            videoSectionId,
-                            videoId
-                        )
-                    )
-                }
-
-                action == "/medications" -> MessagesAction.MedicationsAction
-                action == "/measurements" -> MessagesAction.MeasurementsAction
-                questionnaireRegex.matches(action) -> {
-                    val matchResult = questionnaireRegex.find(action)
-                    val (questionnaireId) = matchResult!!.destructured
-                    MessagesAction.QuestionnaireAction(Questionnaire(questionnaireId))
-                }
-
-                action == "/healthSummary" -> MessagesAction.HealthSummaryAction
-                else -> error("Unknown action type")
-            }
-        }
+        return messageActionMapper.map(action)
     }
 
     private fun <T : Record> mapRecordResult(
