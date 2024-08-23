@@ -41,19 +41,15 @@ fun NumberPicker(
         ) {
             itemsIndexed(range.toList()) { index, item ->
                 @Suppress("MagicNumber")
+                val isFocusedItem =
+                    index == remember { derivedStateOf { lazyListState.firstVisibleItemIndex + 1 } }.value
                 Text(
                     text = item.toString(),
                     style = TextStyles.bodyLarge,
-                    color = if (index ==
-                        remember { derivedStateOf { lazyListState.firstVisibleItemIndex + 1 } }.value
-                    ) {
-                        Colors.onSurface
-                    } else {
-                        Colors.onSurface.copy(alpha = 0.6f)
-                    },
+                    color = Colors.onSurface.copy(alpha = if (isFocusedItem) 1f else 0.6f),
                     modifier = Modifier
                         .padding(vertical = Spacings.small)
-                        .alpha(if (index == remember { derivedStateOf { lazyListState.firstVisibleItemIndex + 1 } }.value) 1f else 0.3f),
+                        .alpha(if (isFocusedItem) 1f else 0.3f),
                     textAlign = TextAlign.Center
                 )
             }
