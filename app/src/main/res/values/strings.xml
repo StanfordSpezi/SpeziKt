@@ -59,4 +59,6 @@
     <string name="measurement_details">MEASUREMENT DETAILS</string>
     <string name="heart_rate">Heart rate</string>
     <string name="bpm" translatable="false">bpm</string>
+    <string name="kg" translatable="false">kg</string>
+    <string name="lbs" translatable="false">lbs</string>
 </resources>
