@@ -40,9 +40,9 @@ fun NumberPicker(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             itemsIndexed(range.toList()) { index, item ->
-                @Suppress("MagicNumber")
                 val isFocusedItem =
                     index == remember { derivedStateOf { lazyListState.firstVisibleItemIndex + 1 } }.value
+                @Suppress("MagicNumber")
                 Text(
                     text = item.toString(),
                     style = TextStyles.bodyLarge,
