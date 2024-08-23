@@ -136,7 +136,11 @@ class MainActivity : FragmentActivity() {
             AppScreen()
         }
 
-        composable<Routes.QuestionnaireScreen> {
+        composable<Routes.QuestionnaireScreen>(
+            typeMap = mapOf(
+                typeOf<String>() to serializableType<String>()
+            )
+        ) {
             QuestionnaireScreen()
         }
 
@@ -173,7 +177,9 @@ class MainActivity : FragmentActivity() {
                             )
                         )
 
-                        is AppNavigationEvent.QuestionnaireScreen -> navHostController.navigate(Routes.QuestionnaireScreen)
+                        is AppNavigationEvent.QuestionnaireScreen -> navHostController.navigate(
+                            Routes.QuestionnaireScreen(event.questionnaireId)
+                        )
 
                         is AccountNavigationEvent.LoginScreen -> navHostController.navigate(
                             Routes.LoginScreen(
