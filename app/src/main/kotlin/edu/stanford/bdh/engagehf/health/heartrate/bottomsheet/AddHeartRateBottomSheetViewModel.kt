@@ -65,17 +65,16 @@ internal class AddHeartRateBottomSheetViewModel @Inject constructor(
 
     private fun handleSaveHeartRateAction() {
         with(uiState.value) {
+            val dateTime = timePickerState.selectedDate.atTime(timePickerState.selectedTime)
+                .atZone(ZoneId.systemDefault()).toInstant()
             HeartRateRecord(
-                startTime = time.atDate(date)
-                    .atZone(ZoneId.systemDefault()).toInstant(),
+                startTime = dateTime,
                 startZoneOffset = null,
-                endTime = time.atDate(date)
-                    .atZone(ZoneId.systemDefault()).toInstant(),
+                endTime = dateTime,
                 endZoneOffset = null,
                 samples = listOf(
                     HeartRateRecord.Sample(
-                        time.atDate(date)
-                            .atZone(ZoneId.systemDefault()).toInstant(),
+                        dateTime,
                         heartRate.toLong()
                     )
                 )
