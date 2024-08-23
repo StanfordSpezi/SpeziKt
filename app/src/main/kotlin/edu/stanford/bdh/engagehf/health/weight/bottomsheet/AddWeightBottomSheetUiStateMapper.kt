@@ -1,14 +1,14 @@
 package edu.stanford.bdh.engagehf.health.weight.bottomsheet
 
-import edu.stanford.bdh.engagehf.health.DateTimeMapper
 import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.TimePickerState
+import edu.stanford.spezi.core.utils.DateTimeMapperFormatter
 import edu.stanford.spezi.core.utils.LocaleProvider
 import java.time.LocalDate
 import java.time.LocalTime
 import javax.inject.Inject
 
 class AddWeightBottomSheetUiStateMapper @Inject constructor(
-    private val dateTimeMapper: DateTimeMapper,
+    private val dateTimeMapperFormatter: DateTimeMapperFormatter,
     private val localeProvider: LocaleProvider,
 ) {
 
@@ -21,8 +21,8 @@ class AddWeightBottomSheetUiStateMapper @Inject constructor(
                 selectedTime = localTime,
                 initialHour = localTime.hour,
                 initialMinute = localTime.minute,
-                selectedDateFormatted = dateTimeMapper.formatDate(localDate),
-                selectedTimeFormatted = dateTimeMapper.formatTime(localTime)
+                selectedDateFormatted = dateTimeMapperFormatter.format(localDate),
+                selectedTimeFormatted = dateTimeMapperFormatter.format(localTime)
             ),
             weightUnit = when (localeProvider.getDefaultLocale().country) {
                 "US", "LR", "MM" -> WeightUnit.LBS
@@ -38,7 +38,7 @@ class AddWeightBottomSheetUiStateMapper @Inject constructor(
         return uiState.copy(
             timePickerState = uiState.timePickerState.copy(
                 selectedDate = date,
-                selectedDateFormatted = dateTimeMapper.formatDate(date)
+                selectedDateFormatted = dateTimeMapperFormatter.format(date)
             )
         )
     }
@@ -50,7 +50,7 @@ class AddWeightBottomSheetUiStateMapper @Inject constructor(
         return uiState.copy(
             timePickerState = uiState.timePickerState.copy(
                 selectedTime = time,
-                selectedTimeFormatted = dateTimeMapper.formatTime(time)
+                selectedTimeFormatted = dateTimeMapperFormatter.format(time)
             )
         )
     }
