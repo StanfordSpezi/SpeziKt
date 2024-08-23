@@ -12,17 +12,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.compose.AndroidFragment
 import androidx.fragment.compose.rememberFragmentState
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import edu.stanford.spezi.core.design.component.VerticalSpacer
+import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.SpeziTheme
+import edu.stanford.spezi.core.design.theme.ThemePreviews
 import org.hl7.fhir.r4.model.QuestionnaireResponse
 
 @Composable
@@ -39,11 +43,25 @@ fun QuestionnaireScreen(
 ) {
     when (uiState) {
         is QuestionnaireViewModel.State.Loading -> {
-            CircularProgressIndicator(color = primary) // TODO use centered content from main once merged
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = primary) // TODO use centered content from main once merged
+            }
         }
 
         is QuestionnaireViewModel.State.Error -> {
-            Text(text = uiState.message) // TODO use centered content from main
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = uiState.message,
+                    textAlign = TextAlign.Center,
+                    color = Colors.error
+                )
+            } // TODO use centered content from main
         }
 
         is QuestionnaireViewModel.State.QuestionnaireLoaded -> {
@@ -119,12 +137,22 @@ private fun QuestionnaireLoaded(
     }
 }
 
-@Preview(showBackground = true)
+private class QuestionnaireScreenPreviewProvider :
+    PreviewParameterProvider<QuestionnaireViewModel.State> {
+    override val values = sequenceOf(
+        QuestionnaireViewModel.State.Loading("1"),
+        QuestionnaireViewModel.State.Error("Error message"),
+    )
+}
+
+@ThemePreviews
 @Composable
-fun PreviewQuestionnaireScreen() {
+private fun PreviewQuestionnaireScreen(
+    @PreviewParameter(QuestionnaireScreenPreviewProvider::class) uiState: QuestionnaireViewModel.State,
+) {
     SpeziTheme {
         QuestionnaireScreen(
-            uiState = QuestionnaireViewModel.State.Loading("1"),
+            uiState = uiState,
             onAction = {}
         )
     }
