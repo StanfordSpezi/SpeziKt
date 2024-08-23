@@ -9,9 +9,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -27,7 +24,7 @@ import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
-import org.hl7.fhir.r4.model.QuestionnaireResponse
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 
 @Composable
 fun QuestionnaireScreen() {
@@ -44,7 +41,9 @@ fun QuestionnaireScreen(
     when (uiState) {
         is QuestionnaireViewModel.State.Loading -> {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .testIdentifier(QuestionnaireScreenTestIdentifier.LOADING),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(color = primary) // TODO use centered content from main once merged
@@ -53,7 +52,9 @@ fun QuestionnaireScreen(
 
         is QuestionnaireViewModel.State.Error -> {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .testIdentifier(QuestionnaireScreenTestIdentifier.ERROR),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -78,6 +79,7 @@ private fun QuestionnaireLoaded(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .testIdentifier(QuestionnaireScreenTestIdentifier.QUESTIONNAIRE_LOADED)
     ) {
         VerticalSpacer()
         Text(
@@ -92,7 +94,6 @@ private fun QuestionnaireLoaded(
                 .weight(1f)
         ) {
             val fragmentState = rememberFragmentState()
-            var questionnaireResponse by remember { mutableStateOf<QuestionnaireResponse?>(null) }
             AndroidFragment<QuestionnaireFragment>(
                 fragmentState = fragmentState,
                 modifier = Modifier
@@ -115,26 +116,15 @@ private fun QuestionnaireLoaded(
                         QuestionnaireViewModel.Action.Cancel
                     )
                 }
-                fragment.getQuestionnaireResponse().let {
-                    questionnaireResponse = it
-                    questionnaireResponse?.status?.let { status ->
-                        if (status == QuestionnaireResponse.QuestionnaireResponseStatus.COMPLETED) {
-                            onAction(
-                                QuestionnaireViewModel.Action.SaveQuestionnaireResponse(
-                                    it
-                                )
-                            )
-                        }
-                    }
-                    onAction(
-                        QuestionnaireViewModel.Action.SaveQuestionnaireResponse(
-                            it
-                        )
-                    )
-                }
             }
         }
     }
+}
+
+enum class QuestionnaireScreenTestIdentifier {
+    LOADING,
+    ERROR,
+    QUESTIONNAIRE_LOADED,
 }
 
 private class QuestionnaireScreenPreviewProvider :
