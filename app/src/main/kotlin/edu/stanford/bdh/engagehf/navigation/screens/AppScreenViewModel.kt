@@ -58,8 +58,17 @@ class AppScreenViewModel @Inject constructor(
                     BottomSheetEvents.Event.AddBloodPressureRecord -> {
                         true to BottomSheetContent.ADD_BLOOD_PRESSURE_RECORD
                     }
+
                     BottomSheetEvents.Event.AddHeartRateRecord -> {
                         true to BottomSheetContent.ADD_HEART_RATE_RECORD
+                    }
+
+                    BottomSheetEvents.Event.BloodPressureDescriptionBottomSheet -> {
+                        true to BottomSheetContent.BLOOD_PRESSURE_DESCRIPTION_INFO
+                    }
+
+                    BottomSheetEvents.Event.HeartRateDescriptionBottomSheet -> {
+                        true to BottomSheetContent.HEART_RATE_DESCRIPTION_INFO
                     }
                 }
                 _uiState.update {
@@ -74,6 +83,7 @@ class AppScreenViewModel @Inject constructor(
             is Action.UpdateSelectedBottomBarItem -> {
                 _uiState.update { it.copy(selectedItem = action.selectedBottomBarItem) }
             }
+
             is Action.UpdateBottomSheetState -> {
                 _uiState.update { it.copy(isBottomSheetExpanded = action.isExpanded) }
             }
@@ -92,6 +102,8 @@ enum class BottomSheetContent {
     NEW_MEASUREMENT_RECEIVED,
     DO_NEW_MEASUREMENT,
     WEIGHT_DESCRIPTION_INFO,
+    BLOOD_PRESSURE_DESCRIPTION_INFO,
+    HEART_RATE_DESCRIPTION_INFO,
     ADD_WEIGHT_RECORD,
     ADD_BLOOD_PRESSURE_RECORD,
     ADD_HEART_RATE_RECORD,
