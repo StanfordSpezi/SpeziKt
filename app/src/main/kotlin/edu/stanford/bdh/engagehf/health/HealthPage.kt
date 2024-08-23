@@ -209,6 +209,7 @@ private class HealthPagePreviewProvider : PreviewParameterProvider<HealthUiState
             HealthUiState.NoData("No data available"),
             HealthUiState.Success(
                 data = HealthUiData(
+                    valueFormatter = { _, _ -> "Jan 24" },
                     infoRowData = InfoRowData(
                         selectedTimeRange = TimeRange.MONTHLY,
                         formattedValue = "70.0 kg",

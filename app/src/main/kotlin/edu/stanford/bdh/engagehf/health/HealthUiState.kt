@@ -10,6 +10,7 @@ data class HealthUiData(
     val newestData: NewestHealthData? = null,
     val averageData: AverageHealthData? = null,
     val infoRowData: InfoRowData,
+    val valueFormatter: (Float, TimeRange) -> String,
 ) {
     val selectedTimeRange = infoRowData.selectedTimeRange
 }
