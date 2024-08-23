@@ -164,7 +164,11 @@ class BluetoothViewModel @Inject internal constructor(
                             }
 
                             is MessagesAction.QuestionnaireAction -> {
-                                navigator.navigateTo(AppNavigationEvent.QuestionnaireScreen)
+                                navigator.navigateTo(
+                                    AppNavigationEvent.QuestionnaireScreen(
+                                        mappedAction.questionnaire.questionnaireId
+                                    )
+                                )
                             }
 
                             is MessagesAction.VideoSectionAction -> {
