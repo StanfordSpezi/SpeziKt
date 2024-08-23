@@ -2,14 +2,16 @@ package edu.stanford.bdh.engagehf.questionnaire
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import edu.stanford.bdh.engagehf.observations.ObservationCollection
+import edu.stanford.bdh.engagehf.observations.ObservationCollectionProvider
 import edu.stanford.healthconnectonfhir.QuestionnaireDocumentMapper
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.module.account.manager.UserSessionManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import org.hl7.fhir.r4.model.Questionnaire
 import org.hl7.fhir.r4.model.QuestionnaireResponse
@@ -18,7 +20,7 @@ import javax.inject.Inject
 class QuestionnaireRepository @Inject constructor(
     @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
     private val questionnaireDocumentMapper: QuestionnaireDocumentMapper,
-    private val userSessionManager: UserSessionManager,
+    private val observationCollectionProvider: ObservationCollectionProvider,
     private val firestore: FirebaseFirestore,
 ) {
     private val logger by speziLogger()
@@ -27,7 +29,7 @@ class QuestionnaireRepository @Inject constructor(
         val listenerRegistration: ListenerRegistration? = null
         withContext(ioDispatcher) {
             kotlin.runCatching {
-                firestore.collection("questionnaires")
+                firestore.collection(QUESTIONNAIRE_COLLECTION)
                     .document(id)
                     .addSnapshotListener { snapshot, error ->
                         if (error != null) {
@@ -52,20 +54,22 @@ class QuestionnaireRepository @Inject constructor(
         }
     }
 
-    suspend fun save(questionnaireResponse: QuestionnaireResponse) {
-        withContext(ioDispatcher) {
-            val uid = userSessionManager.getUserUid() ?: error("User not authenticated")
-            val document = questionnaireDocumentMapper.map(questionnaireResponse)
-            firestore.collection("users")
-                .document(uid)
-                .collection("questionnaireResponses")
-                .add(document)
-                .addOnSuccessListener {
-                    logger.i { "Questionnaire saved" }
-                }
-                .addOnFailureListener { e ->
-                    logger.e(e) { "Error saving questionnaire" }
-                }
+    suspend fun save(questionnaireResponse: QuestionnaireResponse): Result<Unit> {
+        return withContext(ioDispatcher) {
+            kotlin.runCatching {
+                val document = questionnaireDocumentMapper.map(questionnaireResponse)
+                observationCollectionProvider.getCollection(ObservationCollection.QUESTIONNAIRE)
+                    .add(document)
+                    .await()
+                Result.success(Unit)
+            }.getOrElse { exception ->
+                logger.e(exception) { "Error saving questionnaire" }
+                Result.failure(exception)
+            }
         }
+    }
+
+    companion object {
+        private const val QUESTIONNAIRE_COLLECTION = "questionnaires"
     }
 }
