@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
+import edu.stanford.spezi.core.utils.MessageNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -21,9 +22,11 @@ internal class AddBloodPressureBottomSheetViewModel @Inject constructor(
     private val bottomSheetEvents: BottomSheetEvents,
     private val addBloodPressureBottomSheetUiStateMapper: AddBloodPressureBottomSheetUiStateMapper,
     private val healthRepository: HealthRepository,
+    private val notifier: MessageNotifier,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(AddBloodPressureBottomSheetUiState())
+    private val _uiState =
+        MutableStateFlow(addBloodPressureBottomSheetUiStateMapper.initialUiState())
     val uiState = _uiState.asStateFlow()
 
     fun onAction(action: Action) {
@@ -95,20 +98,23 @@ internal class AddBloodPressureBottomSheetViewModel @Inject constructor(
     }
 
     private fun handleSaveBloodPressureAction() {
-        val bloodPressureRecord = BloodPressureRecord(
-            systolic = Pressure.millimetersOfMercury(uiState.value.systolic.toDouble()),
-            diastolic = Pressure.millimetersOfMercury(uiState.value.diastolic.toDouble()),
-            time = uiState.value.timePickerState.selectedDate.atTime(uiState.value.timePickerState.selectedTime)
-                .atZone(
-                    ZoneId.systemDefault()
-                ).toInstant(),
-            zoneOffset = null,
-            bodyPosition = uiState.value.bodyPosition.value,
-            measurementLocation = uiState.value.measurementLocation.value
-        )
-        viewModelScope.launch {
-            healthRepository.saveRecord(bloodPressureRecord)
-            bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
+        with(uiState.value) {
+            val bloodPressureRecord = BloodPressureRecord(
+                systolic = Pressure.millimetersOfMercury(systolic.toDouble()),
+                diastolic = Pressure.millimetersOfMercury(diastolic.toDouble()),
+                time = timePickerState.selectedDate.atTime(timePickerState.selectedTime)
+                    .atZone(ZoneId.systemDefault()).toInstant(),
+                zoneOffset = null,
+                bodyPosition = bodyPosition.value,
+                measurementLocation = measurementLocation.value
+            )
+            viewModelScope.launch {
+                healthRepository.saveRecord(bloodPressureRecord).onFailure {
+                    notifier.notify("Failed to save blood pressure record")
+                }.onSuccess {
+                    bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
+                }
+            }
         }
     }
 

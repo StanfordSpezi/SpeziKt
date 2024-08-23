@@ -84,9 +84,9 @@ class HealthRepository @Inject constructor(
         const val DATE_TIME_FIELD = "effectiveDateTime"
     }
 
-    suspend fun saveRecord(record: Record) {
+    suspend fun saveRecord(record: Record): Result<Unit> {
         val observations = recordToObservationMapper.map(record)
-        withContext(ioDispatcher) {
+        return withContext(ioDispatcher) {
             runCatching {
                 val batch = firestore.batch()
                 observations.forEach { observation ->
@@ -100,10 +100,10 @@ class HealthRepository @Inject constructor(
                         }
                 }
                 batch.commit().await()
-            }.onFailure {
-                logger.e(it) {
-                    "Error while saving observations"
-                }
+            }.map {
+                Result.success(Unit)
+            }.getOrElse {
+                Result.failure(it)
             }
         }
     }

@@ -58,8 +58,7 @@ fun ItemsDialog(
 
 @ThemePreviews
 @Composable
-private fun BodyPositionsDialogPreview(
-) {
+private fun BodyPositionsDialogPreview() {
     SpeziTheme(isPreview = true) {
         ItemsDialog(
             title = "Title",

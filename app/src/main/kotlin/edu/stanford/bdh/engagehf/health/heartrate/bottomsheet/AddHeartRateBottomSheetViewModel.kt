@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
+import edu.stanford.spezi.core.utils.MessageNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -20,9 +21,10 @@ internal class AddHeartRateBottomSheetViewModel @Inject constructor(
     private val bottomSheetEvents: BottomSheetEvents,
     private val healthRepository: HealthRepository,
     private val addHeartRateBottomSheetUiStateMapper: AddHeartRateBottomSheetUiStateMapper,
+    private val notifier: MessageNotifier,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(AddHeartRateBottomSheetUiState())
+    private val _uiState = MutableStateFlow(addHeartRateBottomSheetUiStateMapper.initialUiState())
     val uiState = _uiState.asStateFlow()
 
     fun onAction(action: Action) {
@@ -62,24 +64,29 @@ internal class AddHeartRateBottomSheetViewModel @Inject constructor(
     }
 
     private fun handleSaveHeartRateAction() {
-        HeartRateRecord(
-            startTime = uiState.value.time.atDate(uiState.value.date)
-                .atZone(ZoneId.systemDefault()).toInstant(),
-            startZoneOffset = null,
-            endTime = uiState.value.time.atDate(uiState.value.date)
-                .atZone(ZoneId.systemDefault()).toInstant(),
-            endZoneOffset = null,
-            samples = listOf(
-                HeartRateRecord.Sample(
-                    uiState.value.time.atDate(uiState.value.date)
-                        .atZone(ZoneId.systemDefault()).toInstant(),
-                    uiState.value.heartRate.toLong()
+        with(uiState.value) {
+            HeartRateRecord(
+                startTime = time.atDate(date)
+                    .atZone(ZoneId.systemDefault()).toInstant(),
+                startZoneOffset = null,
+                endTime = time.atDate(date)
+                    .atZone(ZoneId.systemDefault()).toInstant(),
+                endZoneOffset = null,
+                samples = listOf(
+                    HeartRateRecord.Sample(
+                        time.atDate(date)
+                            .atZone(ZoneId.systemDefault()).toInstant(),
+                        heartRate.toLong()
+                    )
                 )
-            )
-        ).also { heartRate ->
-            viewModelScope.launch {
-                healthRepository.saveRecord(heartRate)
-                bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
+            ).also { heartRate ->
+                viewModelScope.launch {
+                    healthRepository.saveRecord(heartRate).onFailure {
+                        notifier.notify("Failed to save heart rate record")
+                    }.onSuccess {
+                        bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
+                    }
+                }
             }
         }
     }
