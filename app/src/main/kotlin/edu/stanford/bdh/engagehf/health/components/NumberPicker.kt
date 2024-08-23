@@ -62,10 +62,10 @@ fun NumberPicker(
 
     LaunchedEffect(lazyListState.isScrollInProgress) {
         if (!lazyListState.isScrollInProgress) {
-            val selectedIndex = lazyListState.firstVisibleItemIndex
-            onValueChange(selectedIndex + 1)
+            val firstVisibleItemIndex = lazyListState.firstVisibleItemIndex
+            onValueChange(firstVisibleItemIndex + 1)
             launch {
-                lazyListState.scrollToItem(selectedIndex)
+                lazyListState.scrollToItem(firstVisibleItemIndex)
             }
         }
     }
