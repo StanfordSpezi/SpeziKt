@@ -107,4 +107,32 @@ class HealthRepository @Inject constructor(
             }
         }
     }
+
+    private suspend fun deleteRecord(
+        recordId: String,
+        observationCollection: ObservationCollection,
+    ): Result<Unit> {
+        return withContext(ioDispatcher) {
+            runCatching {
+                observationCollectionProvider.getCollection(observationCollection)
+                    .document(recordId).delete().await()
+            }.map {
+                Result.success(Unit)
+            }.getOrElse {
+                Result.failure(it)
+            }
+        }
+    }
+
+    suspend fun deleteWeightRecord(recordId: String): Result<Unit> {
+        return deleteRecord(recordId, ObservationCollection.BODY_WEIGHT)
+    }
+
+    suspend fun deleteBloodPressureRecord(recordId: String): Result<Unit> {
+        return deleteRecord(recordId, ObservationCollection.BLOOD_PRESSURE)
+    }
+
+    suspend fun deleteHeartRateRecord(recordId: String): Result<Unit> {
+        return deleteRecord(recordId, ObservationCollection.HEART_RATE)
+    }
 }

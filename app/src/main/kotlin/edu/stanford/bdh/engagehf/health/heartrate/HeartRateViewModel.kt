@@ -3,6 +3,7 @@ package edu.stanford.bdh.engagehf.health.heartrate
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
 import edu.stanford.bdh.engagehf.health.HealthAction
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.HealthUiState
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class HeartRateViewModel @Inject internal constructor(
     private val uiStateMapper: HealthUiStateMapper,
     private val healthRepository: HealthRepository,
+    private val bottomSheetEvents: BottomSheetEvents,
 ) : ViewModel() {
     private val logger by speziLogger()
 
@@ -51,9 +53,16 @@ class HeartRateViewModel @Inject internal constructor(
     fun onAction(healthAction: HealthAction) {
         logger.i { "HeartRateViewModel action" }
         when (healthAction) {
-            is HealthAction.AddRecord -> logger.i { "AddRecord" }
-            is HealthAction.DeleteRecord -> logger.i { "DeleteRecord" }
-            is HealthAction.DescriptionBottomSheet -> logger.i { "DescriptionBottomSheet" }
+            is HealthAction.DeleteRecord -> {
+                viewModelScope.launch {
+                    healthRepository.deleteHeartRateRecord(healthAction.recordId)
+                }
+            }
+
+            is HealthAction.DescriptionBottomSheet -> {
+                bottomSheetEvents.emit(BottomSheetEvents.Event.HeartRateDescriptionBottomSheet)
+            }
+
             is HealthAction.ToggleTimeRangeDropdown -> {
                 _uiState.update {
                     uiStateMapper.mapToggleTimeRange(healthAction, it)

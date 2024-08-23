@@ -29,7 +29,13 @@ class HealthUiStateMapper @Inject constructor(
         selectedTimeRange: TimeRange,
     ): HealthUiState {
         val engageRecords = records.map { EngageRecord.from(it) }
-        return if (engageRecords.isEmpty()) {
+        val filteredRecords = engageRecords
+            .filter {
+                it.zonedDateTime.isAfter(
+                    ZonedDateTime.now().minusMonths(getMaxMonths(selectedTimeRange))
+                )
+            }
+        return if (filteredRecords.isEmpty()) {
             HealthUiState.NoData(message = "No data available")
         } else {
             HealthUiState.Success(
