@@ -1,13 +1,13 @@
 package edu.stanford.bdh.engagehf.health.heartrate.bottomsheet
 
 import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.TimePickerState
-import edu.stanford.spezi.core.utils.DateTimeMapperFormatter
+import edu.stanford.spezi.core.utils.DateTimeFormatter
 import java.time.LocalDate
 import java.time.LocalTime
 import javax.inject.Inject
 
 class AddHeartRateBottomSheetUiStateMapper @Inject constructor(
-    private val dateTimeMapperFormatter: DateTimeMapperFormatter,
+    private val dateTimeFormatter: DateTimeFormatter,
 ) {
 
     fun initialUiState(): AddHeartRateBottomSheetUiState {
@@ -19,8 +19,8 @@ class AddHeartRateBottomSheetUiStateMapper @Inject constructor(
                 selectedTime = localTime,
                 initialHour = localTime.hour,
                 initialMinute = localTime.minute,
-                selectedDateFormatted = dateTimeMapperFormatter.format(localDate),
-                selectedTimeFormatted = dateTimeMapperFormatter.format(localTime)
+                selectedDateFormatted = dateTimeFormatter.format(localDate),
+                selectedTimeFormatted = dateTimeFormatter.format(localTime)
             )
         )
     }
@@ -32,7 +32,7 @@ class AddHeartRateBottomSheetUiStateMapper @Inject constructor(
         return uiState.copy(
             timePickerState = uiState.timePickerState.copy(
                 selectedDate = date,
-                selectedDateFormatted = dateTimeMapperFormatter.format(date)
+                selectedDateFormatted = dateTimeFormatter.format(date)
             )
         )
     }
@@ -44,7 +44,7 @@ class AddHeartRateBottomSheetUiStateMapper @Inject constructor(
         return uiState.copy(
             timePickerState = uiState.timePickerState.copy(
                 selectedTime = time,
-                selectedTimeFormatted = dateTimeMapperFormatter.format(time)
+                selectedTimeFormatted = dateTimeFormatter.format(time)
             )
         )
     }

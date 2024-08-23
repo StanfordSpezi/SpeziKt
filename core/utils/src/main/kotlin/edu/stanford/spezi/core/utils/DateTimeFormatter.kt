@@ -9,7 +9,7 @@ import java.time.temporal.TemporalAccessor
 import java.util.Date
 import javax.inject.Inject
 
-class DateTimeMapperFormatter @Inject constructor(
+class DateTimeFormatter @Inject constructor(
     private val formatter: DateFormatter,
 ) {
     fun format(time: LocalTime) = formatter.format(time, DateFormat.HH_MM)
