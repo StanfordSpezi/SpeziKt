@@ -2,11 +2,16 @@ package edu.stanford.bdh.engagehf.questionnaire
 
 import android.os.Bundle
 import androidx.core.os.bundleOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.parser.IParser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.core.navigation.NavigationEvent
+import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.utils.MessageNotifier
+import edu.stanford.spezi.core.utils.extensions.decode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
@@ -19,34 +24,41 @@ import javax.inject.Inject
 @HiltViewModel
 class QuestionnaireViewModel @Inject internal constructor(
     private val questionnaireRepository: QuestionnaireRepository,
+    private val navigator: Navigator,
+    savedStateHandle: SavedStateHandle,
+    private val notifier: MessageNotifier,
+    private val jsonParser: IParser,
 ) : ViewModel() {
     private val logger by speziLogger()
 
-    private val _uiState = MutableStateFlow<State>(State.Loading)
+    private val _uiState = MutableStateFlow<State>(
+        State.Loading(
+            savedStateHandle.decode(QUESTIONNAIRE_SAVE_STATE_PARAM)
+        )
+    )
     val uiState = _uiState.asStateFlow()
 
-    private val fhirContext = FhirContext.forR4()
-
     init {
-        logger.i { "QuestionnaireViewModel created" }
         loadQuestionnaire()
     }
 
     private fun loadQuestionnaire() {
         viewModelScope.launch {
-            val questionnaire =
-                questionnaireRepository.observe("0").first()
-                    .getOrNull() // TODO adjust to get it by Message Action
-                    ?: error("Error loading questionnaire")
-            val questionnaireString =
-                fhirContext.newJsonParser().encodeResourceToString((questionnaire))
-            _uiState.update {
-                State.QuestionnaireLoaded(
-                    args = bundleOf(
-                        "questionnaire" to questionnaireString,
-                        "show-cancel-button" to false
+            val questionnaireId = (_uiState.value as? State.Loading)?.questionnaireId
+            questionnaireId?.let {
+                val questionnaire =
+                    questionnaireRepository.observe(it).first()
+                        .getOrNull() ?: error("Error loading questionnaire")
+                val questionnaireString =
+                    jsonParser.encodeResourceToString((questionnaire))
+                _uiState.update {
+                    State.QuestionnaireLoaded(
+                        args = bundleOf(
+                            "questionnaire" to questionnaireString,
+                            "show-cancel-button" to true
+                        )
                     )
-                )
+                }
             }
         }
     }
@@ -58,12 +70,24 @@ class QuestionnaireViewModel @Inject internal constructor(
                 response.setAuthored(Date())
                 logger.i { "Save questionnaire response: $response" }
                 viewModelScope.launch {
-                    questionnaireRepository.save(response)
+                    val questionnaire = _uiState.value as? State.QuestionnaireLoaded
+                        ?: error("Invalid state")
+                    _uiState.update {
+                        State.Loading(null)
+                    }
+                    questionnaireRepository.save(response).onFailure {
+                        notifier.notify("Failed to save questionnaire response")
+                        _uiState.update {
+                            State.QuestionnaireLoaded(questionnaire.args)
+                        }
+                    }.onSuccess {
+                        navigator.navigateTo(NavigationEvent.PopBackStack)
+                    }
                 }
             }
 
             Action.Cancel -> {
-                // TODO check if we want to allow this anyway
+                navigator.navigateTo(NavigationEvent.PopBackStack)
             }
         }
     }
@@ -74,8 +98,12 @@ class QuestionnaireViewModel @Inject internal constructor(
     }
 
     sealed interface State {
-        data object Loading : State
+        data class Loading(val questionnaireId: String?) : State
         data class QuestionnaireLoaded(val args: Bundle) : State
         data class Error(val message: String) : State
+    }
+
+    companion object {
+        private const val QUESTIONNAIRE_SAVE_STATE_PARAM = "questionnaireId"
     }
 }
