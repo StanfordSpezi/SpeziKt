@@ -2,12 +2,10 @@ package edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet
 
 import androidx.health.connect.client.records.BloodPressureRecord
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 data class AddBloodPressureBottomSheetUiState(
-    val timePickerState: TimePickerState = TimePickerState(),
+    val timePickerState: TimePickerState,
     val systolic: Int = 120,
     val diastolic: Int = 80,
     val isUpdateDateExpanded: Boolean = false,
@@ -43,12 +41,10 @@ enum class MeasurementLocations(val value: Int) {
 }
 
 data class TimePickerState(
-    val selectedDate: LocalDate = LocalDate.now(),
-    val selectedTime: LocalTime = LocalTime.now(),
-    val initialHour: Int = LocalTime.now().hour,
-    val initialMinute: Int = LocalTime.now().minute,
-    val selectedDateFormatted: String = LocalDateTime.now()
-        .format(DateTimeFormatter.ofPattern("MM/dd/yyyy")),
-    val selectedTimeFormatted: String = LocalTime.now()
-        .format(DateTimeFormatter.ofPattern("hh:mm")),
+    val selectedDate: LocalDate,
+    val selectedTime: LocalTime,
+    val initialHour: Int,
+    val initialMinute: Int,
+    val selectedDateFormatted: String,
+    val selectedTimeFormatted: String,
 )

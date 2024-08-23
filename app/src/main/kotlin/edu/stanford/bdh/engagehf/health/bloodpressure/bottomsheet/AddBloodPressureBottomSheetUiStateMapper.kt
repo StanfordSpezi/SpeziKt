@@ -9,6 +9,19 @@ class AddBloodPressureBottomSheetUiStateMapper @Inject constructor(
     private val dateTimeMapper: DateTimeMapper,
 ) {
 
+    fun initialUiState(): AddBloodPressureBottomSheetUiState {
+        return AddBloodPressureBottomSheetUiState(
+            timePickerState = TimePickerState(
+                selectedDate = LocalDate.now(),
+                selectedTime = LocalTime.now(),
+                initialHour = LocalTime.now().hour,
+                initialMinute = LocalTime.now().minute,
+                selectedDateFormatted = dateTimeMapper.formatDate(LocalDate.now()),
+                selectedTimeFormatted = dateTimeMapper.formatTime(LocalTime.now())
+            )
+        )
+    }
+
     fun mapUpdateDateAction(
         date: LocalDate,
         uiState: AddBloodPressureBottomSheetUiState,

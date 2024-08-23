@@ -28,6 +28,8 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
+import java.time.LocalDate
+import java.time.LocalTime
 
 @Composable
 fun AddBloodPressureBottomSheet() {
@@ -187,7 +189,16 @@ fun BodyPositionText(bodyPosition: BodyPositions) {
 private fun AddDataViewPreview() {
     SpeziTheme {
         AddBloodPressureBottomSheet(
-            uiState = AddBloodPressureBottomSheetUiState(),
+            uiState = AddBloodPressureBottomSheetUiState(
+                timePickerState = TimePickerState(
+                    selectedDate = LocalDate.now(),
+                    selectedTime = LocalTime.now(),
+                    initialHour = 12,
+                    initialMinute = 0,
+                    selectedDateFormatted = "Today",
+                    selectedTimeFormatted = "12:00 PM"
+                ),
+            ),
             onAction = {}
         )
     }

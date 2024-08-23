@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.R
+import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.TimePickerState
 import edu.stanford.bdh.engagehf.health.components.AddDataHeader
 import edu.stanford.bdh.engagehf.health.components.NumberPicker
 import edu.stanford.bdh.engagehf.health.components.TimePicker
@@ -29,6 +30,8 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
+import java.time.LocalDate
+import java.time.LocalTime
 
 @Composable
 fun AddHeartRateBottomSheet() {
@@ -91,9 +94,25 @@ private class AddHeartRateBottomSheetUiStateProvider :
     PreviewParameterProvider<AddHeartRateBottomSheetUiState> {
     override val values = sequenceOf(
         AddHeartRateBottomSheetUiState(
+            timePickerState = TimePickerState(
+                selectedDate = LocalDate.now(),
+                selectedTime = LocalTime.now(),
+                initialHour = 12,
+                initialMinute = 0,
+                selectedDateFormatted = "Today",
+                selectedTimeFormatted = "12:00 PM"
+            ),
             heartRate = 60,
         ),
         AddHeartRateBottomSheetUiState(
+            timePickerState = TimePickerState(
+                selectedDate = LocalDate.now(),
+                selectedTime = LocalTime.now(),
+                initialHour = 12,
+                initialMinute = 0,
+                selectedDateFormatted = "Today",
+                selectedTimeFormatted = "12:00 PM"
+            ),
             heartRate = 80,
         )
     )
