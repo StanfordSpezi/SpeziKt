@@ -17,7 +17,7 @@ sealed class Routes {
     data object AppScreen : Routes()
 
     @Serializable
-    data object QuestionnaireScreen : Routes()
+    data class QuestionnaireScreen(val questionnaireId: @Serializable String) : Routes()
 
     @Serializable
     data object SequentialOnboardingScreen : Routes()

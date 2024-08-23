@@ -124,7 +124,7 @@ private fun QuestionnaireLoaded(
 fun PreviewQuestionnaireScreen() {
     SpeziTheme {
         QuestionnaireScreen(
-            uiState = QuestionnaireViewModel.State.Loading,
+            uiState = QuestionnaireViewModel.State.Loading("1"),
             onAction = {}
         )
     }
