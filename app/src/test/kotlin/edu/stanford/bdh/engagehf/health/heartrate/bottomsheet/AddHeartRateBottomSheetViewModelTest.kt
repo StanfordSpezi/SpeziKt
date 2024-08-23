@@ -1,6 +1,5 @@
 package edu.stanford.bdh.engagehf.health.heartrate.bottomsheet
 
-
 import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.TimePickerState
