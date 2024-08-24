@@ -14,7 +14,6 @@ import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.core.utils.extensions.decode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.hl7.fhir.r4.model.QuestionnaireResponse
@@ -46,18 +45,19 @@ class QuestionnaireViewModel @Inject internal constructor(
         viewModelScope.launch {
             val questionnaireId = (_uiState.value as? State.Loading)?.questionnaireId
             questionnaireId?.let {
-                val questionnaire =
-                    questionnaireRepository.observe(it).first()
-                        .getOrNull() ?: error("Error loading questionnaire")
-                val questionnaireString =
-                    jsonParser.encodeResourceToString((questionnaire))
-                _uiState.update {
-                    State.QuestionnaireLoaded(
-                        args = bundleOf(
-                            "questionnaire" to questionnaireString,
-                            "show-cancel-button" to true
+                questionnaireRepository.byId(it).onFailure {
+                    notifier.notify("Failed to load questionnaire")
+                }.onSuccess { questionnaire ->
+                    val questionnaireString =
+                        jsonParser.encodeResourceToString((questionnaire))
+                    _uiState.update {
+                        State.QuestionnaireLoaded(
+                            args = bundleOf(
+                                "questionnaire" to questionnaireString,
+                                "show-cancel-button" to true
+                            )
                         )
-                    )
+                    }
                 }
             }
         }

@@ -1,16 +1,12 @@
 package edu.stanford.bdh.engagehf.questionnaire
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
 import edu.stanford.bdh.engagehf.observations.ObservationCollection
 import edu.stanford.bdh.engagehf.observations.ObservationCollectionProvider
 import edu.stanford.healthconnectonfhir.QuestionnaireDocumentMapper
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import org.hl7.fhir.r4.model.Questionnaire
@@ -25,32 +21,19 @@ class QuestionnaireRepository @Inject constructor(
 ) {
     private val logger by speziLogger()
 
-    suspend fun observe(id: String): Flow<Result<Questionnaire>> = callbackFlow {
-        val listenerRegistration: ListenerRegistration? = null
-        withContext(ioDispatcher) {
+    suspend fun byId(id: String): Result<Questionnaire> {
+        return withContext(ioDispatcher) {
             kotlin.runCatching {
-                firestore.collection(QUESTIONNAIRE_COLLECTION)
+                val document = firestore.collection(QUESTIONNAIRE_COLLECTION)
                     .document(id)
-                    .addSnapshotListener { snapshot, error ->
-                        if (error != null) {
-                            logger.e(error) { "Error listening for latest questionnaire" }
-                            trySend(Result.failure(error))
-                        } else {
-                            val questionnaire =
-                                snapshot?.let { questionnaireDocumentMapper.map(it) }
-                            if (questionnaire != null) {
-                                trySend(Result.success(questionnaire))
-                            }
-                        }
-                    }
-            }.onFailure {
-                logger.e(it) { "Error while listening for questionnaire" }
-                trySend(Result.failure(it))
+                    .get()
+                    .await()
+                val questionnaire = questionnaireDocumentMapper.map(document)
+                Result.success(questionnaire)
+            }.getOrElse { exception ->
+                logger.e(exception) { "Error fetching questionnaire" }
+                Result.failure(exception)
             }
-        }
-        awaitClose {
-            listenerRegistration?.remove()
-            channel.close()
         }
     }
 
