@@ -130,7 +130,7 @@ enum class QuestionnaireScreenTestIdentifier {
 private class QuestionnaireScreenPreviewProvider :
     PreviewParameterProvider<QuestionnaireViewModel.State> {
     override val values = sequenceOf(
-        QuestionnaireViewModel.State.Loading("1"),
+        QuestionnaireViewModel.State.Loading,
         QuestionnaireViewModel.State.Error("Error message"),
     )
 }

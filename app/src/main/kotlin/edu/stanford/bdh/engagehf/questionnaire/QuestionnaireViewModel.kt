@@ -31,11 +31,11 @@ class QuestionnaireViewModel @Inject internal constructor(
     private val logger by speziLogger()
 
     private val _uiState = MutableStateFlow<State>(
-        State.Loading(
-            savedStateHandle.decode(QUESTIONNAIRE_SAVE_STATE_PARAM)
-        )
+        State.Loading
     )
     val uiState = _uiState.asStateFlow()
+
+    private val questionnaireId: String? = savedStateHandle.decode(QUESTIONNAIRE_SAVE_STATE_PARAM)
 
     init {
         loadQuestionnaire()
@@ -43,7 +43,6 @@ class QuestionnaireViewModel @Inject internal constructor(
 
     private fun loadQuestionnaire() {
         viewModelScope.launch {
-            val questionnaireId = (_uiState.value as? State.Loading)?.questionnaireId
             questionnaireId?.let {
                 questionnaireRepository.byId(it).onFailure {
                     notifier.notify("Failed to load questionnaire")
@@ -73,7 +72,7 @@ class QuestionnaireViewModel @Inject internal constructor(
                     val questionnaire = _uiState.value as? State.QuestionnaireLoaded
                         ?: error("Invalid state")
                     _uiState.update {
-                        State.Loading(null)
+                        State.Loading
                     }
                     questionnaireRepository.save(response).onFailure {
                         notifier.notify("Failed to save questionnaire response")
@@ -98,7 +97,7 @@ class QuestionnaireViewModel @Inject internal constructor(
     }
 
     sealed interface State {
-        data class Loading(val questionnaireId: String?) : State
+        data object Loading : State
         data class QuestionnaireLoaded(val args: Bundle) : State
         data class Error(val message: String) : State
     }
