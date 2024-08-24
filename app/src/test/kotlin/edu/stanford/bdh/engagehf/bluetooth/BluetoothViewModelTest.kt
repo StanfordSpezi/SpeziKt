@@ -16,7 +16,6 @@ import edu.stanford.bdh.engagehf.messages.Message
 import edu.stanford.bdh.engagehf.messages.MessageRepository
 import edu.stanford.bdh.engagehf.messages.MessageType
 import edu.stanford.bdh.engagehf.messages.MessagesAction
-import edu.stanford.bdh.engagehf.messages.Questionnaire
 import edu.stanford.bdh.engagehf.messages.VideoSectionVideo
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.spezi.core.bluetooth.api.BLEService
@@ -433,7 +432,7 @@ class BluetoothViewModelTest {
         val action = Action.MessageItemClicked(message = message)
         every {
             uiStateMapper.mapMessagesAction(messageAction)
-        } returns Result.success(MessagesAction.QuestionnaireAction(Questionnaire(questionnaireId)))
+        } returns Result.success(MessagesAction.QuestionnaireAction(questionnaireId))
         createViewModel()
 
         // when
