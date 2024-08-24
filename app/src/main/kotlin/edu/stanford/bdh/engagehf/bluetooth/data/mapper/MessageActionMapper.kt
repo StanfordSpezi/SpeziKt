@@ -1,7 +1,6 @@
 package edu.stanford.bdh.engagehf.bluetooth.data.mapper
 
 import edu.stanford.bdh.engagehf.messages.MessagesAction
-import edu.stanford.bdh.engagehf.messages.Questionnaire
 import edu.stanford.bdh.engagehf.messages.VideoSectionVideo
 import javax.inject.Inject
 
@@ -24,7 +23,7 @@ class MessageActionMapper @Inject constructor() {
                 questionnaireRegex.matches(action) -> {
                     val matchResult = questionnaireRegex.find(action)
                     val (questionnaireId) = matchResult!!.destructured
-                    MessagesAction.QuestionnaireAction(Questionnaire(questionnaireId))
+                    MessagesAction.QuestionnaireAction(questionnaireId)
                 }
 
                 action == "/healthSummary" -> MessagesAction.HealthSummaryAction
