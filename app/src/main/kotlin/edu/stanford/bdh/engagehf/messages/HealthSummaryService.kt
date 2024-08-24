@@ -23,7 +23,7 @@ class HealthSummaryService @Inject constructor(
     private val logger by speziLogger()
 
     companion object {
-        const val FILE_NAME = "health_summary.pdf"
+        const val FILE_NAME = "engage_hf_health_summary.pdf"
         const val MIME_TYPE_PDF = "application/pdf"
     }
 
@@ -60,5 +60,18 @@ class HealthSummaryService @Inject constructor(
         }
         logger.i { "PDF saved to file: ${pdfFile.absolutePath}" }
         return pdfFile
+    }
+
+    fun deletePdfFile(): Result<Unit> {
+        return runCatching {
+            logger.i { "Deleting PDF file" }
+            val storageDir =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val pdfFile = File(storageDir, FILE_NAME)
+            if (pdfFile.exists()) {
+                pdfFile.delete()
+                logger.i { "PDF file deleted: ${pdfFile.absolutePath}" }
+            }
+        }
     }
 }
