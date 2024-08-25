@@ -146,18 +146,7 @@ class SymptomsUiStateMapperTest {
             qualityOfLifeScore = qualityOfLifeScore,
             symptomFrequencyScore = specificSymptomsScore,
             dizzinessScore = dizzinessScore,
-            date = Timestamp(
-                ZonedDateTime.of(
-                    year,
-                    month,
-                    day,
-                    0,
-                    0,
-                    0,
-                    0,
-                    ZonedDateTime.now().zone
-                ).toInstant()
-            )
+            date = "$year-$month-${day}T00:55:55.114Z"
         )
     }
 }

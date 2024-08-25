@@ -1,7 +1,6 @@
 package edu.stanford.bdh.engagehf.health.symptoms
 
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.Timestamp
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import io.mockk.coEvery
@@ -108,7 +107,7 @@ class SymptomsViewModelTest {
             qualityOfLifeScore = 90.0,
             symptomFrequencyScore = 50.0,
             dizzinessScore = 40.0,
-            date = Timestamp.now()
+            date = null
         )
     )
 

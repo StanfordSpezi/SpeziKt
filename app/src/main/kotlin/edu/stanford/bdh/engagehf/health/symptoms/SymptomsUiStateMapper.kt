@@ -1,6 +1,5 @@
 package edu.stanford.bdh.engagehf.health.symptoms
 
-import com.google.firebase.Timestamp
 import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.NewestHealthData
 import edu.stanford.bdh.engagehf.health.TableEntryData
@@ -17,7 +16,6 @@ class SymptomsUiStateMapper @Inject constructor(
 ) {
 
     private val dateTimeFormatter = DateTimeFormatter.ofPattern(MONTH_DAY_TIME_PATTERN)
-
     private val monthYearFormatter = DateTimeFormatter.ofPattern(MONTH_YEAR_PATTERN)
 
     fun mapSymptomsUiState(
@@ -62,10 +60,10 @@ class SymptomsUiStateMapper @Inject constructor(
         symptomScores: List<SymptomScore>,
         selectedSymptomType: SymptomType,
     ): NewestHealthData {
-        val newestData = symptomScores.maxBy { it.date }
+        val newestData = symptomScores.maxBy { it.zonedDateTime }
         return NewestHealthData(
             formattedValue = formatValue(newestData, selectedSymptomType),
-            formattedDate = formatHeaderDate(newestData.date)
+            formattedDate = newestData.zonedDateTime.format(monthYearFormatter)
         )
     }
 
@@ -80,12 +78,9 @@ class SymptomsUiStateMapper @Inject constructor(
         }
     }
 
-    private fun Double?.asPercent(): String = this?.let { "$it%" } ?: NOT_AVAILABLE
-
-    private fun formatHeaderDate(timestamp: Timestamp?): String {
-        val date = timestamp?.toInstant()?.atZone(ZoneId.systemDefault())
-        return date?.format(monthYearFormatter) ?: ""
-    }
+    private fun Double?.asPercent(): String = this?.let {
+        "${it.toFloat().roundToDecimalPlaces(places = 2)}%"
+    } ?: NOT_AVAILABLE
 
     private fun mapTableData(
         symptomScores: List<SymptomScore>,
@@ -97,10 +92,10 @@ class SymptomsUiStateMapper @Inject constructor(
                 val previousScore =
                     sortedScores.getOrNull(index - 1)
                 val currentValue =
-                    getScoreForSelectedSymptomType(selectedSymptomType, score)?.toFloat()
+                    getScoreForSelectedSymptomType(selectedSymptomType, score)
 
                 val previousValue = previousScore?.let {
-                    getScoreForSelectedSymptomType(selectedSymptomType, it)?.toFloat()
+                    getScoreForSelectedSymptomType(selectedSymptomType, it)
                 }
 
                 val formattedValue = currentValue?.let {
@@ -127,9 +122,8 @@ class SymptomsUiStateMapper @Inject constructor(
                     value = currentValue,
                     secondValue = null,
                     formattedValues = formattedValue,
-                    date = score.date.toInstant().atZone(ZoneId.systemDefault()),
-                    formattedDate = score.date.toInstant().atZone(ZoneId.systemDefault())
-                        .format(dateTimeFormatter) ?: "",
+                    date = score.zonedDateTime,
+                    formattedDate = score.zonedDateTime.format(dateTimeFormatter),
                     trend = trend,
                     formattedTrend = formattedTrend
                 )
@@ -137,12 +131,7 @@ class SymptomsUiStateMapper @Inject constructor(
     }
 
     private fun groupScoresByDay(symptomScores: List<SymptomScore>): Map<ZonedDateTime, List<SymptomScore>> {
-        return symptomScores.groupBy {
-            ZonedDateTime.ofInstant(
-                it.date.toInstant(),
-                ZoneId.systemDefault()
-            )
-        }
+        return symptomScores.groupBy { it.zonedDateTime }
     }
 
     private fun calculateChartData(
@@ -182,7 +171,7 @@ class SymptomsUiStateMapper @Inject constructor(
         SymptomType.QUALITY_OF_LIFE -> score.qualityOfLifeScore
         SymptomType.SYMPTOMS_FREQUENCY -> score.symptomFrequencyScore
         SymptomType.DIZZINESS -> score.dizzinessScore
-    }
+    }?.toFloat()?.roundToDecimalPlaces(places = 2)
 
     companion object {
         private const val PERCENT_FORMAT = "%+.1f%%"

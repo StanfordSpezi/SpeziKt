@@ -208,6 +208,7 @@ fun SymptomsChart(
     }
     val shapeComponent = rememberShapeComponent(
         shape = Shape.Pill,
+        color = primary
     )
 
     val valueFormatter: (Float, ChartValues, AxisPosition.Vertical?) -> CharSequence =

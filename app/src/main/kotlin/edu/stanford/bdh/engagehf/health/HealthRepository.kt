@@ -4,7 +4,6 @@ import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
@@ -52,21 +51,18 @@ class HealthRepository @Inject constructor(
             runCatching {
                 listenerRegistration =
                     observationCollectionProvider.getCollection(collection).let { query ->
-                        if (collection == ObservationCollection.SYMPTOMS) {
-                            query.whereGreaterThanOrEqualTo(
-                                SYMPTOMS_DATE_FIELD,
-                                getDefaultMaxMonthsSymptoms()
-                            ).orderBy(
-                                SYMPTOMS_DATE_FIELD,
-                                Query.Direction.DESCENDING
-                            )
+                        val dateFieldName = if (collection == ObservationCollection.SYMPTOMS) {
+                            SYMPTOMS_DATE_FIELD
                         } else {
-                            query.whereGreaterThanOrEqualTo(
-                                DATE_TIME_FIELD,
-                                getFormattedDate(maxMonths)
-                            )
-                                .orderBy(DATE_TIME_FIELD, Query.Direction.DESCENDING)
+                            DATE_TIME_FIELD
                         }
+                        query.whereGreaterThanOrEqualTo(
+                            dateFieldName,
+                            getFormattedDate(maxMonths)
+                        ).orderBy(
+                            dateFieldName,
+                            Query.Direction.DESCENDING
+                        )
                     }.addSnapshotListener { snapshot, error ->
                         if (error != null) {
                             logger.e(error) { "Error listening for latest observation in collection: ${collection.name}" }
@@ -108,14 +104,6 @@ class HealthRepository @Inject constructor(
             .now()
             .minusMonths(monthsAgo)
             .format(DateTimeFormatter.ISO_DATE_TIME)
-    }
-
-    private fun getDefaultMaxMonthsSymptoms(): Timestamp {
-        val dateAsInstant = ZonedDateTime
-            .now()
-            .minusMonths(DEFAULT_MAX_MONTHS_SYMPTOMS)
-            .toInstant()
-        return Timestamp(dateAsInstant)
     }
 
     suspend fun saveRecord(record: Record): Result<Unit> {

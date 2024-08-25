@@ -4,7 +4,6 @@ package edu.stanford.bdh.engagehf.health.symptoms
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.HealthRepository
@@ -14,6 +13,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.OffsetDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -120,9 +123,18 @@ data class SymptomScore(
     val qualityOfLifeScore: Double? = null,
     val symptomFrequencyScore: Double? = null,
     val dizzinessScore: Double? = null,
-    val date: Timestamp = Timestamp.now(),
+    val date: String? = null,
     val formattedDate: String = "",
-)
+) {
+    val zonedDateTime: ZonedDateTime by lazy {
+        runCatching {
+            OffsetDateTime
+                .parse(date, DateTimeFormatter.ISO_DATE_TIME)
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+        }.getOrDefault(ZonedDateTime.now())
+    }
+}
 
 enum class SymptomType {
     OVERALL, PHYSICAL_LIMITS, SOCIAL_LIMITS, QUALITY_OF_LIFE, SYMPTOMS_FREQUENCY, DIZZINESS
