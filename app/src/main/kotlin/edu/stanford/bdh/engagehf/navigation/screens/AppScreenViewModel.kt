@@ -58,6 +58,7 @@ class AppScreenViewModel @Inject constructor(
                     BottomSheetEvents.Event.AddBloodPressureRecord -> {
                         false to null
                     }
+
                     BottomSheetEvents.Event.AddHeartRateRecord -> {
                         false to null
                     }
@@ -74,6 +75,7 @@ class AppScreenViewModel @Inject constructor(
             is Action.UpdateSelectedBottomBarItem -> {
                 _uiState.update { it.copy(selectedItem = action.selectedBottomBarItem) }
             }
+
             is Action.UpdateBottomSheetState -> {
                 _uiState.update { it.copy(isBottomSheetExpanded = action.isExpanded) }
             }

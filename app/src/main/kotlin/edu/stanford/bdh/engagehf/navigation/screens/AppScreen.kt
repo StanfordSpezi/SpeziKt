@@ -118,7 +118,12 @@ fun AppScreen(
                                         contentDescription = null
                                     )
                                 },
-                                label = { Text(text = stringResource(id = item.label), textAlign = TextAlign.Center) },
+                                label = {
+                                    Text(
+                                        text = stringResource(id = item.label),
+                                        textAlign = TextAlign.Center
+                                    )
+                                },
                                 selected = uiState.selectedItem == item,
                                 onClick = {
                                     onAction(Action.UpdateSelectedBottomBarItem(item))
