@@ -109,7 +109,7 @@ class HealthUiStateMapper @Inject constructor(
 
     private fun mapXValue(selectedTimeRange: TimeRange, zonedDateTime: ZonedDateTime): Float {
         return when (selectedTimeRange) {
-            TimeRange.DAILY -> ((zonedDateTime.year.toFloat() + (zonedDateTime.dayOfYear - 1) / 365f) * 10)
+            TimeRange.DAILY -> (zonedDateTime.year.toFloat() + (zonedDateTime.dayOfYear - 1) / 365f) * 10
             TimeRange.WEEKLY -> (zonedDateTime.toEpochSecond() / (7 * 24 * 60 * 60)).toFloat()
             TimeRange.MONTHLY -> zonedDateTime.year.toFloat() + (zonedDateTime.monthValue - 1) / 12f
         }.roundToDecimalPlaces(places = 2)
