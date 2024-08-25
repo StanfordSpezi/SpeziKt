@@ -21,33 +21,26 @@ class QuestionnaireRepository @Inject constructor(
 ) {
     private val logger by speziLogger()
 
-    suspend fun byId(id: String): Result<Questionnaire> {
+    suspend fun getQuestionnaire(id: String): Result<Questionnaire> {
         return withContext(ioDispatcher) {
-            kotlin.runCatching {
+            runCatching {
                 val document = firestore.collection(QUESTIONNAIRE_COLLECTION)
                     .document(id)
                     .get()
                     .await()
-                val questionnaire = questionnaireDocumentMapper.map(document)
-                Result.success(questionnaire)
-            }.getOrElse { exception ->
+                questionnaireDocumentMapper.map(document)
+            }.onFailure { exception ->
                 logger.e(exception) { "Error fetching questionnaire" }
-                Result.failure(exception)
             }
         }
     }
 
     suspend fun save(questionnaireResponse: QuestionnaireResponse): Result<Unit> {
         return withContext(ioDispatcher) {
-            kotlin.runCatching {
+            runCatching {
                 val document = questionnaireDocumentMapper.map(questionnaireResponse)
                 observationCollectionProvider.getCollection(ObservationCollection.QUESTIONNAIRE)
-                    .add(document)
-                    .await()
-                Result.success(Unit)
-            }.getOrElse { exception ->
-                logger.e(exception) { "Error saving questionnaire" }
-                Result.failure(exception)
+                    .add(document).await().let { }
             }
         }
     }

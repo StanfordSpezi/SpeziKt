@@ -30,12 +30,10 @@ class QuestionnaireViewModel @Inject internal constructor(
 ) : ViewModel() {
     private val logger by speziLogger()
 
-    private val _uiState = MutableStateFlow<State>(
-        State.Loading
-    )
+    private val _uiState = MutableStateFlow<State>(State.Loading)
     val uiState = _uiState.asStateFlow()
 
-    private val questionnaireId: String? = savedStateHandle.decode(QUESTIONNAIRE_SAVE_STATE_PARAM)
+    private val questionnaireId: String = savedStateHandle.decode(QUESTIONNAIRE_SAVE_STATE_PARAM)
 
     init {
         loadQuestionnaire()
@@ -43,44 +41,41 @@ class QuestionnaireViewModel @Inject internal constructor(
 
     private fun loadQuestionnaire() {
         viewModelScope.launch {
-            questionnaireId?.let {
-                questionnaireRepository.byId(it).onFailure {
-                    notifier.notify("Failed to load questionnaire")
-                }.onSuccess { questionnaire ->
-                    val questionnaireString =
-                        jsonParser.encodeResourceToString((questionnaire))
+            questionnaireRepository.getQuestionnaire(questionnaireId)
+                .mapCatching { questionnaire ->
+                    jsonParser.encodeResourceToString((questionnaire))
+                }
+                .onSuccess { questionnaireString ->
                     _uiState.update {
                         State.QuestionnaireLoaded(
                             args = bundleOf(
                                 "questionnaire" to questionnaireString,
                                 "show-cancel-button" to true
-                            )
+                            ),
+                            isSaving = false,
                         )
                     }
+                }.onFailure {
+                    _uiState.update { State.Error(message = "Failed to load questionnaire") }
                 }
-            }
         }
     }
 
     fun onAction(action: Action) {
         when (action) {
             is Action.SaveQuestionnaireResponse -> {
+                val loadedState = _uiState.value as? State.QuestionnaireLoaded ?: return
                 val response = action.response
                 response.setAuthored(Date())
                 logger.i { "Save questionnaire response: $response" }
                 viewModelScope.launch {
-                    val questionnaire = _uiState.value as? State.QuestionnaireLoaded
-                        ?: error("Invalid state")
-                    _uiState.update {
-                        State.Loading
-                    }
-                    questionnaireRepository.save(response).onFailure {
-                        notifier.notify("Failed to save questionnaire response")
-                        _uiState.update {
-                            State.QuestionnaireLoaded(questionnaire.args)
-                        }
-                    }.onSuccess {
+                    _uiState.update { loadedState.copy(isSaving = true) }
+                    val result = questionnaireRepository.save(response)
+                    _uiState.update { loadedState.copy(isSaving = false) }
+                    result.onSuccess {
                         navigator.navigateTo(NavigationEvent.PopBackStack)
+                    }.onFailure {
+                        notifier.notify("Failed to save questionnaire response")
                     }
                 }
             }
@@ -98,7 +93,7 @@ class QuestionnaireViewModel @Inject internal constructor(
 
     sealed interface State {
         data object Loading : State
-        data class QuestionnaireLoaded(val args: Bundle) : State
+        data class QuestionnaireLoaded(val args: Bundle, val isSaving: Boolean) : State
         data class Error(val message: String) : State
     }
 

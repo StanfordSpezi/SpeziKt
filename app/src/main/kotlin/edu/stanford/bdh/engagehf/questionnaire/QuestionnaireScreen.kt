@@ -40,14 +40,7 @@ fun QuestionnaireScreen(
 ) {
     when (uiState) {
         is QuestionnaireViewModel.State.Loading -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .testIdentifier(QuestionnaireScreenTestIdentifier.LOADING),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(color = primary) // TODO use centered content from main once merged
-            }
+            LoadingIndicator()
         }
 
         is QuestionnaireViewModel.State.Error -> {
@@ -68,6 +61,18 @@ fun QuestionnaireScreen(
         is QuestionnaireViewModel.State.QuestionnaireLoaded -> {
             QuestionnaireLoaded(uiState, onAction)
         }
+    }
+}
+
+@Composable
+private fun LoadingIndicator() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .testIdentifier(QuestionnaireScreenTestIdentifier.LOADING),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(color = primary) // TODO use centered content from main once merged
     }
 }
 
@@ -117,6 +122,7 @@ private fun QuestionnaireLoaded(
                     )
                 }
             }
+            if (uiState.isSaving) LoadingIndicator()
         }
     }
 }

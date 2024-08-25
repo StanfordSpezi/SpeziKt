@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
 import androidx.credentials.CredentialManager
-import com.google.android.gms.tasks.Task
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.auth.AuthCredential
@@ -15,6 +14,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import edu.stanford.spezi.core.testing.mockTask
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.module.account.register.GenderIdentity
 import io.mockk.coEvery
@@ -87,14 +87,14 @@ class AuthenticationManagerTest {
     @Test
     fun `linkUserToGoogleAccount should link user and save user data`() = runTestUnconfined {
         // given
-        coEvery { firebaseAuth.signInAnonymously() } returns task(authResult)
+        coEvery { firebaseAuth.signInAnonymously() } returns mockTask(authResult)
         every { firebaseAuth.currentUser } returns firebaseUser
         every { GoogleAuthProvider.getCredential(googleIdToken, null) } returns credential
-        coEvery { firebaseUser.linkWithCredential(credential) } returns task(authResult)
-        coEvery { firebaseUser.updateProfile(any<UserProfileChangeRequest>()) } returns task(mockk())
-        coEvery { firebaseUser.updateEmail(email) } returns task(mockk())
+        coEvery { firebaseUser.linkWithCredential(credential) } returns mockTask(authResult)
+        coEvery { firebaseUser.updateProfile(any<UserProfileChangeRequest>()) } returns mockTask(mockk())
+        coEvery { firebaseUser.updateEmail(email) } returns mockTask(mockk())
         val mapCaptor = slot<Map<String, Any>>()
-        every { documentReference.set(capture(mapCaptor)) } returns task(mockk())
+        every { documentReference.set(capture(mapCaptor)) } returns mockTask(mockk())
 
         // when
         val result = authenticationManager.linkUserToGoogleAccount(
@@ -125,10 +125,10 @@ class AuthenticationManagerTest {
     fun `linkUserToGoogleAccount should return error if linking fails to return user`() =
         runTestUnconfined {
             // given
-            coEvery { firebaseAuth.signInAnonymously() } returns task(authResult)
+            coEvery { firebaseAuth.signInAnonymously() } returns mockTask(authResult)
             every { firebaseAuth.currentUser } returns firebaseUser
             every { GoogleAuthProvider.getCredential(googleIdToken, null) } returns credential
-            coEvery { firebaseUser.linkWithCredential(credential) } returns task(noUserAuthResult)
+            coEvery { firebaseUser.linkWithCredential(credential) } returns mockTask(noUserAuthResult)
 
             // when
             val result = authenticationManager.linkUserToGoogleAccount(
@@ -151,7 +151,7 @@ class AuthenticationManagerTest {
     @Test
     fun `linkUserToGoogleAccount should return error if linking fails`() = runTestUnconfined {
         // given
-        coEvery { firebaseAuth.signInAnonymously() } returns task(authResult)
+        coEvery { firebaseAuth.signInAnonymously() } returns mockTask(authResult)
         every { firebaseAuth.currentUser } returns firebaseUser
         every { GoogleAuthProvider.getCredential(googleIdToken, null) } returns credential
         coEvery { firebaseUser.linkWithCredential(credential) } throws Exception("Failed to link")
@@ -175,12 +175,12 @@ class AuthenticationManagerTest {
         // given
         coEvery {
             firebaseAuth.createUserWithEmailAndPassword(email, password)
-        } returns task(authResult)
+        } returns mockTask(authResult)
         every { firebaseAuth.currentUser } returns firebaseUser
-        coEvery { firebaseUser.updateProfile(any<UserProfileChangeRequest>()) } returns task(mockk())
-        coEvery { firebaseUser.updateEmail(email) } returns task(mockk())
+        coEvery { firebaseUser.updateProfile(any<UserProfileChangeRequest>()) } returns mockTask(mockk())
+        coEvery { firebaseUser.updateEmail(email) } returns mockTask(mockk())
         val mapCaptor = slot<Map<String, Any>>()
-        every { documentReference.set(capture(mapCaptor)) } returns task(mockk())
+        every { documentReference.set(capture(mapCaptor)) } returns mockTask(mockk())
 
         // when
         val result = authenticationManager.signUpWithEmailAndPassword(
@@ -211,7 +211,7 @@ class AuthenticationManagerTest {
         // given
         coEvery {
             firebaseAuth.createUserWithEmailAndPassword(email, password)
-        } returns task(noUserAuthResult)
+        } returns mockTask(noUserAuthResult)
 
         // when
         val result = authenticationManager.signUpWithEmailAndPassword(
@@ -258,7 +258,7 @@ class AuthenticationManagerTest {
     @Test
     fun `it should handle successful send and forget password correctly`() = runTestUnconfined {
         // given
-        coEvery { firebaseAuth.sendPasswordResetEmail(email) } returns task(mockk<Void>())
+        coEvery { firebaseAuth.sendPasswordResetEmail(email) } returns mockTask(mockk<Void>())
 
         // when
         val result = authenticationManager.sendForgotPasswordEmail(email)
@@ -289,7 +289,7 @@ class AuthenticationManagerTest {
                 email,
                 password
             )
-        } returns task(authResult)
+        } returns mockTask(authResult)
 
         // when
         val result = authenticationManager.signIn(
@@ -325,7 +325,7 @@ class AuthenticationManagerTest {
         // given
         coEvery {
             firebaseAuth.signInWithEmailAndPassword(email, password)
-        } returns task(noUserAuthResult)
+        } returns mockTask(noUserAuthResult)
 
         // when
         val result = authenticationManager.signIn(
@@ -347,7 +347,7 @@ class AuthenticationManagerTest {
         }
         coEvery { manager.getCredential(filterByAuthorizedAccounts = true) } returns googleIdTokenCredential
         every { GoogleAuthProvider.getCredential(googleIdToken, null) } returns credential
-        coEvery { firebaseAuth.signInWithCredential(credential) } returns task(authResult)
+        coEvery { firebaseAuth.signInWithCredential(credential) } returns mockTask(authResult)
 
         // when
         val result = manager.signInWithGoogle()
@@ -367,7 +367,7 @@ class AuthenticationManagerTest {
 
         coEvery { manager.getCredential(filterByAuthorizedAccounts = true) } returns googleIdTokenCredential
         every { GoogleAuthProvider.getCredential(googleIdToken, null) } returns credential
-        coEvery { firebaseAuth.signInWithCredential(credential) } returns task(noUserAuthResult)
+        coEvery { firebaseAuth.signInWithCredential(credential) } returns mockTask(noUserAuthResult)
 
         // when
         val result = manager.signInWithGoogle()
@@ -389,12 +389,5 @@ class AuthenticationManagerTest {
         // then
         coVerify { manager.getCredential(filterByAuthorizedAccounts = true) }
         assertThat(result.isFailure).isTrue()
-    }
-
-    private fun <T> task(result: T): Task<T> = mockk {
-        every { isComplete } returns true
-        every { exception } returns null
-        every { isCanceled } returns false
-        every { this@mockk.result } returns result
     }
 }
