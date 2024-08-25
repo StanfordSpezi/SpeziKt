@@ -1,52 +1,58 @@
 package edu.stanford.bdh.engagehf.health.weight.bottomsheet
 
+import androidx.health.connect.client.records.WeightRecord
+import androidx.health.connect.client.units.Mass
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
-import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.bdh.engagehf.health.HealthRepository
+import edu.stanford.spezi.core.utils.MessageNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import java.time.Instant
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
 class AddWeightBottomSheetViewModel @Inject internal constructor(
     private val bottomSheetEvents: BottomSheetEvents,
     private val uiStateMapper: AddWeightBottomSheetUiStateMapper,
+    private val healthRepository: HealthRepository,
+    private val notifier: MessageNotifier,
 ) : ViewModel() {
-    private val logger by speziLogger()
-
-    private val _uiState = MutableStateFlow(UiState())
+    private val _uiState = MutableStateFlow(uiStateMapper.mapInitialUiState())
 
     val uiState = _uiState.asStateFlow()
 
     fun onAction(action: Action) {
         when (action) {
-            is Action.UpdateCurrentStep,
-            -> {
-                _uiState.update {
-                    it.copy(currentStep = action.step)
-                }
+            is Action.SaveWeight -> {
+                handleSaveWeightAction()
             }
 
-            Action.SaveWeight -> {
+            Action.CloseSheet -> {
                 bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
-                _uiState.update { uiStateMapper.mapSaveWeightActionToUiState(_uiState.value) }
-                logger.i { "Save weight: ${uiState.value}" }
             }
 
             is Action.UpdateDate -> {
                 _uiState.update {
-                    it.copy(selectedDateMillis = action.date)
+                    uiStateMapper.mapUpdateDateAction(
+                        date = action.date,
+                        uiState = it
+                    )
                 }
             }
 
             is Action.UpdateTime -> {
                 _uiState.update {
-                    it.copy(hour = action.hour, minute = action.minute)
+                    uiStateMapper.mapUpdateTimeAction(
+                        time = action.time,
+                        uiState = it
+                    )
                 }
             }
 
@@ -58,43 +64,33 @@ class AddWeightBottomSheetViewModel @Inject internal constructor(
         }
     }
 
+    private fun handleSaveWeightAction() {
+        with(uiState.value) {
+            WeightRecord(
+                weight = when (weightUnit) {
+                    WeightUnit.KG -> Mass.kilograms(weight)
+                    WeightUnit.LBS -> Mass.pounds(weight)
+                },
+                time = timePickerState.selectedDate.atTime(timePickerState.selectedTime)
+                    .atZone(ZoneId.systemDefault()).toInstant(),
+                zoneOffset = null,
+            ).let {
+                viewModelScope.launch {
+                    healthRepository.saveRecord(it).onFailure {
+                        notifier.notify("Failed to save weight record")
+                    }.onSuccess {
+                        bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
+                    }
+                }
+            }
+        }
+    }
+
     sealed interface Action {
-        data class UpdateCurrentStep(val step: Step) : Action
-        data class UpdateWeight(val weight: Double) : Action
-        data class UpdateDate(val date: Long) : Action
-        data class UpdateTime(val hour: Int, val minute: Int) : Action
+        data object CloseSheet : Action
         data object SaveWeight : Action
-    }
-
-    data class UiState(
-        val weight: Double? = null,
-        val selectedDateMillis: Long = ZonedDateTime.now()
-            .toLocalDate()
-            .atStartOfDay(ZonedDateTime.now().zone)
-            .toInstant()
-            .toEpochMilli(),
-        val hour: Int = ZonedDateTime.now().hour,
-        val minute: Int = ZonedDateTime.now().minute,
-        val currentStep: Step = Step.WEIGHT,
-    ) {
-        val date: ZonedDateTime
-            get() = ZonedDateTime
-                .ofInstant(
-                    Instant.ofEpochMilli(selectedDateMillis),
-                    ZonedDateTime.now().zone
-                ).plusHours(hour.toLong()).plusMinutes(minute.toLong())
-
-        val formattedDate: String
-            get() = date.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
-
-        val formattedTime: String
-            get() = date.format(DateTimeFormatter.ofPattern("HH:mm"))
-    }
-
-    enum class Step {
-        WEIGHT,
-        DATE,
-        TIME,
-        REVIEW,
+        data class UpdateDate(val date: LocalDate) : Action
+        data class UpdateTime(val time: LocalTime) : Action
+        data class UpdateWeight(val weight: Double) : Action
     }
 }

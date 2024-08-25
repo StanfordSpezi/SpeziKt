@@ -151,7 +151,7 @@ fun MedicationCard(
 
 @ThemePreviews
 @Composable
-fun MedicationCardPreview(
+private fun MedicationCardPreview(
     @PreviewParameter(MedicationCardModelsProvider::class) model: MedicationCardUiModel,
 ) {
     SpeziTheme(isPreview = true) {

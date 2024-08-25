@@ -3,13 +3,11 @@ package edu.stanford.bdh.engagehf.health.weight.bottomsheet
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
@@ -44,15 +42,6 @@ fun WeightDescriptionBottomSheet() {
                 "Consult with a healthcare provider to understand the ideal weight range for your body and health.",
             style = TextStyles.bodyMedium.copy(textAlign = TextAlign.Center)
         )
-        VerticalSpacer()
-        Button(
-            onClick = { },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp),
-        ) {
-            Text(text = "Learn More")
-        }
         VerticalSpacer()
     }
 }

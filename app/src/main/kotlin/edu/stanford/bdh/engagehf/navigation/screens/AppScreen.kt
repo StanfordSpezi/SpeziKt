@@ -3,6 +3,7 @@ package edu.stanford.bdh.engagehf.navigation.screens
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -27,6 +28,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.DoNewMeasurementBottomSheet
 import edu.stanford.bdh.engagehf.bluetooth.screen.BluetoothScreen
 import edu.stanford.bdh.engagehf.health.HealthScreen
+import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.AddBloodPressureBottomSheet
+import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.BloodPressureDescriptionBottomSheet
+import edu.stanford.bdh.engagehf.health.heartrate.bottomsheet.AddHeartRateBottomSheet
+import edu.stanford.bdh.engagehf.health.heartrate.bottomsheet.HeartRateDescriptionBottomSheet
 import edu.stanford.bdh.engagehf.health.weight.bottomsheet.AddWeightBottomSheet
 import edu.stanford.bdh.engagehf.health.weight.bottomsheet.WeightDescriptionBottomSheet
 import edu.stanford.bdh.engagehf.medication.ui.MedicationScreen
@@ -72,15 +77,24 @@ fun AppScreen(
             }
     }
 
+    BottomSheetScaffoldContent(
+        bottomSheetScaffoldState = bottomSheetScaffoldState,
+        uiState = uiState,
+        onAction = onAction
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BottomSheetScaffoldContent(
+    bottomSheetScaffoldState: BottomSheetScaffoldState,
+    uiState: AppUiState,
+    onAction: (Action) -> Unit,
+) {
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
         sheetContent = {
-            when (uiState.bottomSheetContent) {
-                BottomSheetContent.DO_NEW_MEASUREMENT -> DoNewMeasurementBottomSheet()
-                BottomSheetContent.WEIGHT_DESCRIPTION_INFO -> WeightDescriptionBottomSheet()
-                BottomSheetContent.ADD_WEIGHT_RECORD -> AddWeightBottomSheet()
-                BottomSheetContent.NEW_MEASUREMENT_RECEIVED, null -> {}
-            }
+            BottomSheetContent(uiState)
         },
         sheetPeekHeight = 0.dp
     ) {
@@ -145,6 +159,20 @@ fun AppScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun BottomSheetContent(uiState: AppUiState) {
+    when (uiState.bottomSheetContent) {
+        BottomSheetContent.DO_NEW_MEASUREMENT -> DoNewMeasurementBottomSheet()
+        BottomSheetContent.WEIGHT_DESCRIPTION_INFO -> WeightDescriptionBottomSheet()
+        BottomSheetContent.ADD_WEIGHT_RECORD -> AddWeightBottomSheet()
+        BottomSheetContent.NEW_MEASUREMENT_RECEIVED, null -> {}
+        BottomSheetContent.ADD_BLOOD_PRESSURE_RECORD -> AddBloodPressureBottomSheet()
+        BottomSheetContent.ADD_HEART_RATE_RECORD -> AddHeartRateBottomSheet()
+        BottomSheetContent.BLOOD_PRESSURE_DESCRIPTION_INFO -> BloodPressureDescriptionBottomSheet()
+        BottomSheetContent.HEART_RATE_DESCRIPTION_INFO -> HeartRateDescriptionBottomSheet()
     }
 }
 
