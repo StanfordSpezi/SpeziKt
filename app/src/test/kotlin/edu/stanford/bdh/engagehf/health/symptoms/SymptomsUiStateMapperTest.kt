@@ -1,13 +1,11 @@
 package edu.stanford.bdh.engagehf.health.symptoms
 
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.Timestamp
 import edu.stanford.spezi.core.utils.LocaleProvider
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Test
-import java.time.ZonedDateTime
 import java.util.Locale
 
 class SymptomsUiStateMapperTest {
