@@ -9,15 +9,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -33,6 +35,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
@@ -66,22 +69,17 @@ import com.patrykandpatrick.vico.core.common.component.TextComponent
 import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shape.Shape
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.bdh.engagehf.health.HealthPageTestIdentifier
 import edu.stanford.bdh.engagehf.health.HealthTableItem
-import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.EPOCH_SECONDS_DIVISOR
+import edu.stanford.spezi.core.design.component.CenteredBoxContent
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
+import edu.stanford.spezi.core.design.theme.Colors.secondary
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.time.Instant
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun SymptomsPage() {
@@ -98,73 +96,95 @@ fun SymptomsPage(
     uiState: SymptomsUiState,
     onAction: (SymptomsViewModel.Action) -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        when (uiState) {
-            is SymptomsUiState.Error -> {
+    when (uiState) {
+        is SymptomsUiState.Error -> {
+            CenteredBoxContent {
                 Text(
                     text = uiState.message,
-                    style = TextStyles.headlineMedium
+                    style = TextStyles.headlineMedium,
+                    textAlign = TextAlign.Center,
                 )
             }
+        }
 
-            SymptomsUiState.Loading -> {
+        SymptomsUiState.Loading -> {
+            CenteredBoxContent {
                 CircularProgressIndicator(color = primary)
             }
+        }
 
-            is SymptomsUiState.Success -> {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = Spacings.medium)
-                ) {
-                    Column {
-                        Text(
-                            text = uiState.data.headerData.formattedValue,
-                            style = TextStyles.headlineLarge.copy(color = primary),
-                            modifier = Modifier.padding(vertical = Spacings.small)
-                        )
-                        Text(
-                            text = uiState.data.headerData.formattedDate,
-                            style = TextStyles.bodyMedium
-                        )
-                    }
-                    Spacer(modifier = Modifier.weight(1f))
-                    SymptomsDropdown(uiState.data.headerData, onAction)
-                    IconButton(
-                        modifier = Modifier.size(Sizes.Icon.large),
-                        onClick = { onAction(SymptomsViewModel.Action.Info) }
-                    ) {
-                        Icon(
-                            painter = painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_info),
-                            contentDescription = stringResource(R.string.info_icon_content_description),
-                            modifier = Modifier
-                                .size(Sizes.Icon.medium)
-                                .background(primary, shape = CircleShape)
-                                .shadow(Spacings.small, CircleShape)
-                                .padding(Spacings.small),
-                            tint = onPrimary
-                        )
-                    }
-                }
-                SymptomsChart(uiState.data)
-                VerticalSpacer()
-                Row(
-                    modifier = Modifier.padding(horizontal = Spacings.medium),
-                    verticalAlignment = Alignment.Bottom,
-                ) {
-                    Text(
-                        text = stringResource(R.string.health_history),
-                        style = TextStyles.headlineMedium,
-                        modifier = Modifier.testIdentifier(HealthPageTestIdentifier.HEALTH_HISTORY_TEXT)
-                    )
-                }
-                uiState.data.tableData.forEach {
-                    HealthTableItem(entry = it)
+        is SymptomsUiState.Success -> {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                listHeader(uiState = uiState, onAction = onAction)
+                itemsIndexed(uiState.data.tableData) { index, tableEntryData ->
+                    HealthTableItem(tableEntryData)
+                    if (index != uiState.data.tableData.size - 1) HorizontalDivider()
                 }
             }
+        }
+
+        is SymptomsUiState.NoData -> {
+            CenteredBoxContent {
+                Text(
+                    text = uiState.message,
+                    textAlign = TextAlign.Center,
+                    style = TextStyles.headlineMedium,
+                )
+            }
+        }
+    }
+}
+
+private fun LazyListScope.listHeader(
+    uiState: SymptomsUiState.Success,
+    onAction: (SymptomsViewModel.Action) -> Unit,
+) {
+    item {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(vertical = Spacings.medium)
+        ) {
+            Column {
+                Text(
+                    text = uiState.data.headerData.formattedValue,
+                    style = TextStyles.headlineLarge.copy(color = primary),
+                    modifier = Modifier.padding(vertical = Spacings.small)
+                )
+                Text(
+                    text = uiState.data.headerData.formattedDate,
+                    style = TextStyles.bodyMedium.copy(color = secondary)
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            SymptomsDropdown(uiState.data.headerData, onAction)
+            IconButton(
+                modifier = Modifier.size(Sizes.Icon.large),
+                onClick = { onAction(SymptomsViewModel.Action.Info) }
+            ) {
+                Icon(
+                    painter = painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_info),
+                    contentDescription = stringResource(R.string.info_icon_content_description),
+                    modifier = Modifier
+                        .size(Sizes.Icon.medium)
+                        .background(primary, shape = CircleShape)
+                        .shadow(Spacings.small, CircleShape)
+                        .padding(Spacings.small),
+                    tint = onPrimary
+                )
+            }
+        }
+        SymptomsChart(uiState.data)
+        VerticalSpacer()
+        Row(
+            modifier = Modifier.padding(horizontal = Spacings.medium),
+            verticalAlignment = Alignment.Bottom,
+        ) {
+            Text(
+                text = stringResource(R.string.health_history),
+                style = TextStyles.headlineMedium,
+            )
         }
     }
 }
@@ -188,15 +208,11 @@ fun SymptomsChart(
     }
     val shapeComponent = rememberShapeComponent(
         shape = Shape.Pill,
+        color = primary
     )
 
     val valueFormatter: (Float, ChartValues, AxisPosition.Vertical?) -> CharSequence =
-        { index, _, _ ->
-            val epochSecond = (index * EPOCH_SECONDS_DIVISOR).toLong()
-            val dateTime =
-                ZonedDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZoneOffset.UTC)
-            dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("MMM yy"))
-        }
+        { value, _, _ -> uiState.valueFormatter(value) }
 
     val marker = remember {
         DefaultCartesianMarker(
@@ -224,7 +240,7 @@ fun SymptomsChart(
                     )
                 ),
                 axisValueOverrider = AxisValueOverrider.fixed(
-                    maxY = 100f,
+                    maxY = if (uiState.headerData.selectedSymptomType == SymptomType.DIZZINESS) 5f else 100f,
                     minY = 0f,
                     minX = uiState.chartData.first().xValues.minOrNull() ?: 0f,
                     maxX = uiState.chartData.first().xValues.maxOrNull() ?: 0f,
@@ -234,7 +250,11 @@ fun SymptomsChart(
                 titleComponent = rememberTextComponent(),
                 label = rememberAxisLabelComponent(),
                 guideline = null,
-                valueFormatter = CartesianValueFormatter.yPercent(),
+                valueFormatter = if (uiState.headerData.selectedSymptomType == SymptomType.DIZZINESS) {
+                    CartesianValueFormatter.decimal()
+                } else {
+                    CartesianValueFormatter.yPercent()
+                },
             ),
             bottomAxis = rememberBottomAxis(
                 guideline = null,
@@ -308,7 +328,7 @@ fun SymptomTypeText(symptomType: SymptomType) {
             SymptomType.PHYSICAL_LIMITS -> stringResource(R.string.symptom_type_physical)
             SymptomType.SOCIAL_LIMITS -> stringResource(R.string.symptom_type_social)
             SymptomType.QUALITY_OF_LIFE -> stringResource(R.string.symptom_type_quality)
-            SymptomType.SPECIFIC_SYMPTOMS -> stringResource(R.string.symptom_type_specific)
+            SymptomType.SYMPTOMS_FREQUENCY -> stringResource(R.string.symptom_type_specific)
             SymptomType.DIZZINESS -> stringResource(R.string.symptom_type_dizziness)
         }
     )

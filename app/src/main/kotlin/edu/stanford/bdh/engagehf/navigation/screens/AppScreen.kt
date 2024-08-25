@@ -1,8 +1,11 @@
 package edu.stanford.bdh.engagehf.navigation.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -18,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,12 +31,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.DoNewMeasurementBottomSheet
 import edu.stanford.bdh.engagehf.bluetooth.screen.BluetoothScreen
 import edu.stanford.bdh.engagehf.health.HealthScreen
+import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.AddBloodPressureBottomSheet
+import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.BloodPressureDescriptionBottomSheet
+import edu.stanford.bdh.engagehf.health.heartrate.bottomsheet.AddHeartRateBottomSheet
+import edu.stanford.bdh.engagehf.health.heartrate.bottomsheet.HeartRateDescriptionBottomSheet
 import edu.stanford.bdh.engagehf.health.weight.bottomsheet.AddWeightBottomSheet
 import edu.stanford.bdh.engagehf.health.weight.bottomsheet.WeightDescriptionBottomSheet
-import edu.stanford.bdh.engagehf.medication.MedicationScreen
+import edu.stanford.bdh.engagehf.medication.ui.MedicationScreen
+import edu.stanford.bdh.engagehf.navigation.components.AccountTopAppBarButton
 import edu.stanford.spezi.core.design.component.AppTopAppBar
+import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.modules.education.videos.EducationScreen
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @Composable
@@ -55,32 +67,42 @@ fun AppScreen(
         bottomSheetState = rememberModalBottomSheetState()
     )
 
-    LaunchedEffect(key1 = uiState.isBottomSheetExpanded) {
+    LaunchedEffect(key1 = uiState.bottomSheetContent) {
         launch {
-            if (uiState.isBottomSheetExpanded) {
+            if (uiState.bottomSheetContent != null) {
                 bottomSheetScaffoldState.bottomSheetState.expand()
             } else {
                 bottomSheetScaffoldState.bottomSheetState.hide()
             }
         }
     }
-
     LaunchedEffect(bottomSheetScaffoldState.bottomSheetState) {
         snapshotFlow { bottomSheetScaffoldState.bottomSheetState.currentValue }
-            .collect { state ->
-                onAction(Action.UpdateBottomSheetState(isExpanded = state == SheetValue.Expanded))
+            .filter { it == SheetValue.Hidden }
+            .distinctUntilChanged()
+            .collect {
+                onAction(Action.DismissBottomSheet)
             }
     }
 
+    BottomSheetScaffoldContent(
+        bottomSheetScaffoldState = bottomSheetScaffoldState,
+        uiState = uiState,
+        onAction = onAction
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BottomSheetScaffoldContent(
+    bottomSheetScaffoldState: BottomSheetScaffoldState,
+    uiState: AppUiState,
+    onAction: (Action) -> Unit,
+) {
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
         sheetContent = {
-            when (uiState.bottomSheetContent) {
-                BottomSheetContent.DO_NEW_MEASUREMENT -> DoNewMeasurementBottomSheet()
-                BottomSheetContent.WEIGHT_DESCRIPTION_INFO -> WeightDescriptionBottomSheet()
-                BottomSheetContent.ADD_WEIGHT_RECORD -> AddWeightBottomSheet()
-                BottomSheetContent.NEW_MEASUREMENT_RECEIVED, null -> {}
-            }
+            BottomSheetContent(uiState)
         },
         sheetPeekHeight = 0.dp
     ) {
@@ -90,13 +112,24 @@ fun AppScreen(
                 AppTopAppBar(
                     modifier = Modifier.testIdentifier(identifier = AppScreenTestIdentifier.TOP_APP_BAR),
                     title = {
-                        Text(
-                            text = stringResource(id = uiState.selectedItem.label),
-                            modifier = Modifier.testIdentifier(
-                                AppScreenTestIdentifier.TOP_APP_BAR_TITLE
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(end = Spacings.small),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = stringResource(id = uiState.selectedItem.label),
+                                modifier = Modifier.testIdentifier(
+                                    AppScreenTestIdentifier.TOP_APP_BAR_TITLE
+                                )
                             )
-                        )
-                    })
+                        }
+                    },
+                    actions = {
+                        AccountTopAppBarButton(uiState.accountUiState, onAction = onAction)
+                    }
+                )
             },
             bottomBar = {
                 Column {
@@ -114,11 +147,22 @@ fun AppScreen(
                                 ),
                                 icon = {
                                     Icon(
-                                        painter = painterResource(id = if (uiState.selectedItem == item) item.selectedIcon else item.icon),
+                                        painter = painterResource(
+                                            id = if (uiState.selectedItem == item) {
+                                                item.selectedIcon
+                                            } else {
+                                                item.icon
+                                            }
+                                        ),
                                         contentDescription = null
                                     )
                                 },
-                                label = { Text(text = stringResource(id = item.label), textAlign = TextAlign.Center) },
+                                label = {
+                                    Text(
+                                        text = stringResource(id = item.label),
+                                        textAlign = TextAlign.Center
+                                    )
+                                },
                                 selected = uiState.selectedItem == item,
                                 onClick = {
                                     onAction(Action.UpdateSelectedBottomBarItem(item))
@@ -140,6 +184,20 @@ fun AppScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun BottomSheetContent(uiState: AppUiState) {
+    when (uiState.bottomSheetContent) {
+        BottomSheetContent.DO_NEW_MEASUREMENT -> DoNewMeasurementBottomSheet()
+        BottomSheetContent.WEIGHT_DESCRIPTION_INFO -> WeightDescriptionBottomSheet()
+        BottomSheetContent.ADD_WEIGHT_RECORD -> AddWeightBottomSheet()
+        BottomSheetContent.NEW_MEASUREMENT_RECEIVED, null -> {}
+        BottomSheetContent.ADD_BLOOD_PRESSURE_RECORD -> AddBloodPressureBottomSheet()
+        BottomSheetContent.ADD_HEART_RATE_RECORD -> AddHeartRateBottomSheet()
+        BottomSheetContent.BLOOD_PRESSURE_DESCRIPTION_INFO -> BloodPressureDescriptionBottomSheet()
+        BottomSheetContent.HEART_RATE_DESCRIPTION_INFO -> HeartRateDescriptionBottomSheet()
     }
 }
 

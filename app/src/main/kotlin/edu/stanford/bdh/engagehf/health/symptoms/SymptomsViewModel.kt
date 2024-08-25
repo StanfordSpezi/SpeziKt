@@ -3,19 +3,26 @@
 package edu.stanford.bdh.engagehf.health.symptoms
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.health.AggregatedHealthData
+import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.TableEntryData
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.time.OffsetDateTime
+import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
 class SymptomsViewModel @Inject internal constructor(
     private val symptomsUiStateMapper: SymptomsUiStateMapper,
+    private val healthRepository: HealthRepository,
 ) : ViewModel() {
     private val logger by speziLogger()
 
@@ -24,30 +31,26 @@ class SymptomsViewModel @Inject internal constructor(
 
     init {
         logger.i { "SymptomsViewModel created" }
-        _uiState.update {
-            symptomsUiStateMapper.mapSymptomsUiState(
-                selectedSymptomType = SymptomType.OVERALL,
-                symptomScores = listOf(
-                    SymptomScore(
-                        overallScore = 80,
-                        physicalLimitsScore = 70,
-                        socialLimitsScore = 60,
-                        qualityOfLifeScore = 50,
-                        specificSymptomsScore = 40,
-                        dizzinessScore = 30,
-                        date = ZonedDateTime.now()
-                    ),
-                    SymptomScore(
-                        overallScore = 70,
-                        physicalLimitsScore = 60,
-                        socialLimitsScore = 50,
-                        qualityOfLifeScore = 40,
-                        specificSymptomsScore = 30,
-                        dizzinessScore = 20,
-                        date = ZonedDateTime.now().minusDays(4)
-                    ),
-                )
-            )
+        setup()
+    }
+
+    private fun setup() {
+        viewModelScope.launch {
+            healthRepository.observeSymptoms().collect { result ->
+                result.onFailure {
+                    _uiState.update {
+                        SymptomsUiState.Error("Failed to observe symptom scores")
+                    }
+                }.onSuccess { successResult ->
+                    _uiState.update {
+                        logger.i { "Symptoms data received: $successResult" }
+                        symptomsUiStateMapper.mapSymptomsUiState(
+                            selectedSymptomType = SymptomType.OVERALL,
+                            symptomScores = successResult
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -94,6 +97,7 @@ sealed interface SymptomsUiState {
         val data: SymptomsUiData,
     ) : SymptomsUiState
 
+    data class NoData(val message: String) : SymptomsUiState
     data class Error(val message: String) : SymptomsUiState
 }
 
@@ -102,6 +106,7 @@ data class SymptomsUiData(
     val chartData: List<AggregatedHealthData>,
     val tableData: List<TableEntryData> = emptyList(),
     val headerData: HeaderData,
+    val valueFormatter: (Float) -> String = { "" },
 )
 
 data class HeaderData(
@@ -112,15 +117,25 @@ data class HeaderData(
 )
 
 data class SymptomScore(
-    val overallScore: Int,
-    val physicalLimitsScore: Int,
-    val socialLimitsScore: Int,
-    val qualityOfLifeScore: Int,
-    val specificSymptomsScore: Int,
-    val dizzinessScore: Int,
-    val date: ZonedDateTime,
-)
+    val overallScore: Double? = null,
+    val physicalLimitsScore: Double? = null,
+    val socialLimitsScore: Double? = null,
+    val qualityOfLifeScore: Double? = null,
+    val symptomFrequencyScore: Double? = null,
+    val dizzinessScore: Double? = null,
+    val date: String? = null,
+    val formattedDate: String = "",
+) {
+    val zonedDateTime: ZonedDateTime by lazy {
+        runCatching {
+            OffsetDateTime
+                .parse(date, DateTimeFormatter.ISO_DATE_TIME)
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+        }.getOrDefault(ZonedDateTime.now())
+    }
+}
 
 enum class SymptomType {
-    OVERALL, PHYSICAL_LIMITS, SOCIAL_LIMITS, QUALITY_OF_LIFE, SPECIFIC_SYMPTOMS, DIZZINESS
+    OVERALL, PHYSICAL_LIMITS, SOCIAL_LIMITS, QUALITY_OF_LIFE, SYMPTOMS_FREQUENCY, DIZZINESS
 }

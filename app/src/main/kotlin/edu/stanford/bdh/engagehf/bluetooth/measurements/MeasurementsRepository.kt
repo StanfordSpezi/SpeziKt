@@ -52,7 +52,7 @@ class MeasurementsRepository @Inject internal constructor(
 
     private fun getCollectionForObservation(observation: Observation): ObservationCollection {
         return ObservationCollection.entries.find { collection ->
-            observation.code.coding.any { it.code == collection.loinc.code }
+            observation.code.coding.any { it.code == collection.loinc?.code }
         } ?: run {
             logger.w { "Unknown observation code" }
             throw UnsupportedOperationException("Unknown observation code")

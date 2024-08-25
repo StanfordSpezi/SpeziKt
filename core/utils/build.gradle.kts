@@ -14,4 +14,6 @@ dependencies {
     implementation(composeBom)
     implementation(libs.bundles.compose)
     implementation(libs.kotlinx.serialization.json)
+
+    testImplementation(libs.bundles.unit.testing)
 }

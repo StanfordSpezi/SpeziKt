@@ -1,9 +1,12 @@
 package edu.stanford.bdh.engagehf.navigation.screens
 
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
+import edu.stanford.bdh.engagehf.messages.HealthSummaryService
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.module.account.manager.UserSessionManager
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,16 +19,20 @@ class AppScreenViewModelTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
-    private val bottomSheetEvents: BottomSheetEvents = mockk(relaxed = true)
-    private val bottomSheetEventsFlow = MutableSharedFlow<BottomSheetEvents.Event>()
+    private val appScreenEvents: AppScreenEvents = mockk(relaxed = true)
+    private val userSessionManager: UserSessionManager = mockk(relaxed = true)
+    private val healthSummaryService: HealthSummaryService = mockk(relaxed = true)
+    private val appScreenEventsFlow = MutableSharedFlow<AppScreenEvents.Event>()
 
     private lateinit var viewModel: AppScreenViewModel
 
     @Before
     fun setup() {
-        every { bottomSheetEvents.events } returns bottomSheetEventsFlow
+        every { appScreenEvents.events } returns appScreenEventsFlow
         viewModel = AppScreenViewModel(
-            bottomSheetEvents = bottomSheetEvents
+            appScreenEvents = appScreenEvents,
+            userSessionManager = userSessionManager,
+            healthSummaryService = healthSummaryService
         )
     }
 
@@ -56,14 +63,13 @@ class AppScreenViewModelTest {
     fun `given NewMeasurementAction is received then uiState should be updated`() =
         runTestUnconfined {
             // Given
-            val event = BottomSheetEvents.Event.NewMeasurementAction
+            val event = AppScreenEvents.Event.NewMeasurementAction
 
             // When
-            bottomSheetEventsFlow.emit(event)
+            appScreenEventsFlow.emit(event)
 
             // Then
             val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.isBottomSheetExpanded).isTrue()
             assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.NEW_MEASUREMENT_RECEIVED)
         }
 
@@ -71,14 +77,13 @@ class AppScreenViewModelTest {
     fun `given DoNewMeasurement is received then uiState should be updated`() =
         runTestUnconfined {
             // Given
-            val event = BottomSheetEvents.Event.DoNewMeasurement
+            val event = AppScreenEvents.Event.DoNewMeasurement
 
             // When
-            bottomSheetEventsFlow.emit(event)
+            appScreenEventsFlow.emit(event)
 
             // Then
             val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.isBottomSheetExpanded).isTrue()
             assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.DO_NEW_MEASUREMENT)
         }
 
@@ -86,14 +91,13 @@ class AppScreenViewModelTest {
     fun `given CloseBottomSheet is received then uiState should be updated`() =
         runTestUnconfined {
             // Given
-            val event = BottomSheetEvents.Event.CloseBottomSheet
+            val event = AppScreenEvents.Event.CloseBottomSheet
 
             // When
-            bottomSheetEventsFlow.emit(event)
+            appScreenEventsFlow.emit(event)
 
             // Then
             val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.isBottomSheetExpanded).isFalse()
             assertThat(updatedUiState.bottomSheetContent).isNull()
         }
 
@@ -101,14 +105,13 @@ class AppScreenViewModelTest {
     fun `given WeightDescriptionBottomSheet is received then uiState should be updated`() =
         runTestUnconfined {
             // Given
-            val event = BottomSheetEvents.Event.WeightDescriptionBottomSheet
+            val event = AppScreenEvents.Event.WeightDescriptionBottomSheet
 
             // When
-            bottomSheetEventsFlow.emit(event)
+            appScreenEventsFlow.emit(event)
 
             // Then
             val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.isBottomSheetExpanded).isTrue()
             assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.WEIGHT_DESCRIPTION_INFO)
         }
 
@@ -116,14 +119,54 @@ class AppScreenViewModelTest {
     fun `given AddWeightRecord is received then uiState should be updated`() =
         runTestUnconfined {
             // Given
-            val event = BottomSheetEvents.Event.AddWeightRecord
+            val event = AppScreenEvents.Event.AddWeightRecord
 
             // When
-            bottomSheetEventsFlow.emit(event)
+            appScreenEventsFlow.emit(event)
 
             // Then
             val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.isBottomSheetExpanded).isTrue()
             assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.ADD_WEIGHT_RECORD)
+        }
+
+    @Test
+    fun `given ShowAccountDialog is received then uiState should be updated`() =
+        runTestUnconfined {
+            // Given
+            val event = Action.ShowAccountDialog(showDialog = true)
+
+            // When
+            viewModel.onAction(event)
+
+            // Then
+            val updatedUiState = viewModel.uiState.value
+            assertThat(updatedUiState.accountUiState.showDialog).isTrue()
+        }
+
+    @Test
+    fun `given SignOut is received then uiState should be updated`() =
+        runTestUnconfined {
+            // Given
+            val event = Action.SignOut
+
+            // When
+            viewModel.onAction(event)
+
+            // Then
+            val updatedUiState = viewModel.uiState.value
+            assertThat(updatedUiState.accountUiState.showDialog).isFalse()
+        }
+
+    @Test
+    fun `given ShowHealthSummary is received then healthSummaryService should be called`() =
+        runTestUnconfined {
+            // Given
+            val event = Action.ShowHealthSummary
+
+            // When
+            viewModel.onAction(event)
+
+            // Then
+            coVerify { healthSummaryService.generateHealthSummaryPdf() }
         }
 }

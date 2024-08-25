@@ -27,8 +27,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.bloodpressure.BloodPressurePage
 import edu.stanford.bdh.engagehf.health.heartrate.HeartRatePage
 import edu.stanford.bdh.engagehf.health.symptoms.SymptomsPage
@@ -71,6 +73,7 @@ fun HealthScreen(
             HealthTabRow(uiState = uiState, onAction = onAction)
             HorizontalPager(
                 state = pagerState,
+                userScrollEnabled = false,
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = Spacings.medium)
@@ -114,10 +117,10 @@ private fun HealthTabRow(
                 text = {
                     Text(
                         text = when (tab) {
-                            HealthTab.Symptoms -> "Symptoms"
-                            HealthTab.Weight -> "Weight"
-                            HealthTab.BloodPressure -> "Blood Pressure"
-                            HealthTab.HeartRate -> "Heart Rate"
+                            HealthTab.Symptoms -> stringResource(R.string.health_tab_title_symptoms)
+                            HealthTab.Weight -> stringResource(R.string.health_tab_title_weight)
+                            HealthTab.BloodPressure -> stringResource(R.string.health_tab_title_blood_pressure)
+                            HealthTab.HeartRate -> stringResource(R.string.health_tab_title_heart_rate)
                         },
                     )
                 },
@@ -137,7 +140,7 @@ private fun BoxScope.AddRecordFloatingIcon(
     tab: HealthTab,
     onAction: (HealthViewModel.Action) -> Unit,
 ) {
-    if (tab != HealthTab.Weight) return
+    if (tab == HealthTab.Symptoms) return
     FloatingActionButton(
         onClick = {
             onAction(HealthViewModel.Action.AddRecord(tab = tab))
@@ -169,7 +172,7 @@ fun HealthTableItem(entry: TableEntryData) {
         )
         Text(
             text = entry.formattedTrend,
-            style = if (entry.isTrendPositive) {
+            style = if (entry.isTrendPositive != false) {
                 TextStyles.bodySmall.copy(color = primary)
             } else {
                 TextStyles.bodySmall.copy(

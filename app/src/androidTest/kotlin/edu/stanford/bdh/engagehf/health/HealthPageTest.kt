@@ -155,9 +155,10 @@ class HealthPageTest {
                         trend = 0f,
                         formattedTrend = "0.0 kg",
                         secondValue = null,
-                        id = entryId
+                        id = entryId,
                     )
-                )
+                ),
+                valueFormatter = { value -> "$value" }
             )
         )
     }

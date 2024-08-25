@@ -1,7 +1,7 @@
 package edu.stanford.bdh.engagehf.health
 
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.spezi.core.testing.verifyNever
 import io.mockk.mockk
 import io.mockk.verify
@@ -9,10 +9,10 @@ import org.junit.Test
 
 class HealthViewModelTest {
 
-    private val bottomSheetEvents: BottomSheetEvents = mockk(relaxed = true)
+    private val appScreenEvents: AppScreenEvents = mockk(relaxed = true)
 
-    private val tabs = HealthTab.entries.filter { it != HealthTab.Symptoms }
-    private val viewModel: HealthViewModel = HealthViewModel(bottomSheetEvents)
+    private val tabs = HealthTab.entries
+    private val viewModel: HealthViewModel = HealthViewModel(appScreenEvents)
 
     @Test
     fun `it should have the correct initial state`() {
@@ -50,7 +50,7 @@ class HealthViewModelTest {
         viewModel.onAction(action)
 
         // then
-        verify { bottomSheetEvents.emit(BottomSheetEvents.Event.AddWeightRecord) }
+        verify { appScreenEvents.emit(AppScreenEvents.Event.AddWeightRecord) }
     }
 
     @Test
@@ -62,7 +62,7 @@ class HealthViewModelTest {
         viewModel.onAction(action)
 
         // then
-        verify { bottomSheetEvents.emit(BottomSheetEvents.Event.AddBloodPressureRecord) }
+        verify { appScreenEvents.emit(AppScreenEvents.Event.AddBloodPressureRecord) }
     }
 
     @Test
@@ -74,7 +74,7 @@ class HealthViewModelTest {
         viewModel.onAction(action)
 
         // then
-        verify { bottomSheetEvents.emit(BottomSheetEvents.Event.AddHeartRateRecord) }
+        verify { appScreenEvents.emit(AppScreenEvents.Event.AddHeartRateRecord) }
     }
 
     @Test
@@ -86,6 +86,6 @@ class HealthViewModelTest {
         viewModel.onAction(action)
 
         // then
-        verifyNever { bottomSheetEvents.emit(any()) }
+        verifyNever { appScreenEvents.emit(any()) }
     }
 }

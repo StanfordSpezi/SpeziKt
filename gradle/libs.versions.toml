@@ -26,6 +26,7 @@ firebaseFirestoreKtx = "25.0.0"
 firebaseFunctionsKtx = "21.0.0"
 firebaseStorageKtx = "21.0.0"
 foundation = "1.6.8"
+fragmentCompose = "1.8.2"
 googleGmsGoogleServices = "4.4.2"
 googleid = "1.1.0"
 gson = "2.11.0"
@@ -68,6 +69,7 @@ androidx-credentials-play-services-auth = { module = "androidx.credentials:crede
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
+androidx-fragment-compose = { module = "androidx.fragment:fragment-compose", version.ref = "fragmentCompose" }
 androidx-health-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "healthConnectClient" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleKtx" }
