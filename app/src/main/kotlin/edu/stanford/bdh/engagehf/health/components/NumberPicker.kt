@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
@@ -24,16 +25,18 @@ import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import kotlinx.coroutines.launch
 
+private val PICKER_SIZE = DpSize(height = 110.dp, width = 70.dp)
+
 @Composable
 fun NumberPicker(
     value: Int,
     onValueChange: (Int) -> Unit,
     range: IntRange,
-    modifier: Modifier = Modifier,
+    size: DpSize = PICKER_SIZE,
 ) {
     val lazyListState = rememberLazyListState(initialFirstVisibleItemIndex = value - 1)
 
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+    Box(modifier = Modifier.size(size), contentAlignment = Alignment.Center) {
         LazyColumn(
             state = lazyListState,
             modifier = Modifier.fillMaxSize(),
@@ -75,7 +78,6 @@ fun NumberPickerPreview() {
             value = 5,
             onValueChange = {},
             range = 0..10,
-            modifier = Modifier.size(height = 110.dp, width = 70.dp),
         )
     }
 }

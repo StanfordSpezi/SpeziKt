@@ -11,12 +11,13 @@ data class AddBloodPressureBottomSheetUiState(
     val isUpdateDateExpanded: Boolean = false,
     val isUpdateTimeExpanded: Boolean = false,
     val bodyPosition: BodyPositions = BodyPositions.BODY_POSITION_UNKNOWN,
-    val bodyPositions: List<BodyPositions> = BodyPositions.entries,
     val isBodyPositionsDialogShown: Boolean = false,
     val measurementLocation: MeasurementLocations = MeasurementLocations.MEASUREMENT_LOCATION_UNKNOWN,
-    val measurementLocations: List<MeasurementLocations> = MeasurementLocations.entries,
     val isMeasurementLocationsDialogShown: Boolean = false,
 ) {
+    val bodyPositions: List<BodyPositions> = BodyPositions.entries
+    val measurementLocations: List<MeasurementLocations> = MeasurementLocations.entries
+
     @Suppress("MagicNumber")
     val systolicRange = 0..200 // 200 is the maximum value for systolic blood pressure record
 

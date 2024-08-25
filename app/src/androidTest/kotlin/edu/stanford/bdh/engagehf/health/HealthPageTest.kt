@@ -158,7 +158,7 @@ class HealthPageTest {
                         id = entryId,
                     )
                 ),
-                valueFormatter = { value, _ -> "$value" }
+                valueFormatter = { value -> "$value" }
             )
         )
     }

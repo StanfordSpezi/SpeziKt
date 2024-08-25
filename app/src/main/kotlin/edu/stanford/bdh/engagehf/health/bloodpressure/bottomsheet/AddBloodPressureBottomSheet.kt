@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -17,7 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.components.AddDataHeader
@@ -74,7 +72,6 @@ private fun AddBloodPressureBottomSheet(
             horizontalArrangement = Arrangement.Center
         ) {
             NumberPicker(
-                modifier = Modifier.size(height = 110.dp, width = 70.dp),
                 value = uiState.systolic,
                 onValueChange = {
                     onAction(AddBloodPressureBottomSheetViewModel.Action.UpdateSystolic(it))
@@ -83,7 +80,6 @@ private fun AddBloodPressureBottomSheet(
             )
             Text(text = " / ", style = TextStyles.bodyLarge)
             NumberPicker(
-                modifier = Modifier.size(height = 110.dp, width = 70.dp),
                 value = uiState.diastolic,
                 onValueChange = {
                     onAction(AddBloodPressureBottomSheetViewModel.Action.UpdateDiastolic(it))

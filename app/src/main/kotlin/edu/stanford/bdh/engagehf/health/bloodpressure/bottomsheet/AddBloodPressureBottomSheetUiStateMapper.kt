@@ -1,6 +1,6 @@
 package edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet
 
-import edu.stanford.spezi.core.utils.DateTimeFormatter
+import edu.stanford.bdh.engagehf.utils.DateTimeFormatter
 import java.time.LocalDate
 import java.time.LocalTime
 import javax.inject.Inject
@@ -10,14 +10,16 @@ class AddBloodPressureBottomSheetUiStateMapper @Inject constructor(
 ) {
 
     fun initialUiState(): AddBloodPressureBottomSheetUiState {
+        val localDate = LocalDate.now()
+        val localTime = LocalTime.now()
         return AddBloodPressureBottomSheetUiState(
             timePickerState = TimePickerState(
-                selectedDate = LocalDate.now(),
-                selectedTime = LocalTime.now(),
-                initialHour = LocalTime.now().hour,
-                initialMinute = LocalTime.now().minute,
-                selectedDateFormatted = dateTimeFormatter.format(LocalDate.now()),
-                selectedTimeFormatted = dateTimeFormatter.format(LocalTime.now())
+                selectedDate = localDate,
+                selectedTime = localTime,
+                initialHour = localTime.hour,
+                initialMinute = localTime.minute,
+                selectedDateFormatted = dateTimeFormatter.format(localDate),
+                selectedTimeFormatted = dateTimeFormatter.format(localTime)
             )
         )
     }

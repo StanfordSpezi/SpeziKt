@@ -52,8 +52,7 @@ class HealthRepository @Inject constructor(
                                 logger.e(error) { "Error listening for latest observation in collection: ${collection.name}" }
                                 trySend(Result.failure(error))
                             } else {
-                                val documents = snapshot?.documents
-                                val records: List<T> = documents?.mapNotNull { document ->
+                                val records: List<T> = snapshot?.documents?.mapNotNull { document ->
                                     observationsDocumentMapper.map(document)
                                 } ?: emptyList()
                                 trySend(Result.success(records))
@@ -79,11 +78,6 @@ class HealthRepository @Inject constructor(
     suspend fun observeHeartRateRecords(): Flow<Result<List<HeartRateRecord>>> =
         observe(ObservationCollection.HEART_RATE)
 
-    companion object {
-        const val DEFAULT_MAX_MONTHS = 6L
-        const val DATE_TIME_FIELD = "effectiveDateTime"
-    }
-
     suspend fun saveRecord(record: Record): Result<Unit> {
         val observations = recordToObservationMapper.map(record)
         return withContext(ioDispatcher) {
@@ -99,11 +93,7 @@ class HealthRepository @Inject constructor(
                             batch.set(docRef, data)
                         }
                 }
-                batch.commit().await()
-            }.map {
-                Result.success(Unit)
-            }.getOrElse {
-                Result.failure(it)
+                batch.commit().await().let { }
             }
         }
     }
@@ -115,11 +105,7 @@ class HealthRepository @Inject constructor(
         return withContext(ioDispatcher) {
             runCatching {
                 observationCollectionProvider.getCollection(observationCollection)
-                    .document(recordId).delete().await()
-            }.map {
-                Result.success(Unit)
-            }.getOrElse {
-                Result.failure(it)
+                    .document(recordId).delete().await().let { }
             }
         }
     }
@@ -134,5 +120,10 @@ class HealthRepository @Inject constructor(
 
     suspend fun deleteHeartRateRecord(recordId: String): Result<Unit> {
         return deleteRecord(recordId, ObservationCollection.HEART_RATE)
+    }
+
+    companion object {
+        const val DEFAULT_MAX_MONTHS = 6L
+        const val DATE_TIME_FIELD = "effectiveDateTime"
     }
 }

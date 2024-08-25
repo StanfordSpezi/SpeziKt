@@ -181,7 +181,7 @@ private fun InfoRow(
             onClick = onInfoAction
         ) {
             Icon(
-                Icons.Filled.Info,
+                imageVector = Icons.Filled.Info,
                 contentDescription = stringResource(R.string.info_icon_content_description),
                 tint = primary
             )
@@ -209,7 +209,7 @@ private class HealthPagePreviewProvider : PreviewParameterProvider<HealthUiState
             HealthUiState.NoData("No data available"),
             HealthUiState.Success(
                 data = HealthUiData(
-                    valueFormatter = { _, _ -> "Jan 24" },
+                    valueFormatter = { "Jan 24" },
                     infoRowData = InfoRowData(
                         selectedTimeRange = TimeRange.MONTHLY,
                         formattedValue = "70.0 kg",

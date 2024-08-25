@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.TimePickerState
@@ -77,7 +75,6 @@ private fun AddHeartRateBottomSheet(
             horizontalArrangement = Arrangement.Center
         ) {
             NumberPicker(
-                modifier = Modifier.size(height = 110.dp, width = 70.dp),
                 value = uiState.heartRate,
                 onValueChange = {
                     onAction(AddHeartRateBottomSheetViewModel.Action.UpdateHeartRate(it))

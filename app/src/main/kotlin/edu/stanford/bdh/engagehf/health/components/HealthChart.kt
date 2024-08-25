@@ -84,7 +84,7 @@ fun HealthChart(
     )
 
     val valueFormatter: (Float, ChartValues, AxisPosition.Vertical?) -> CharSequence =
-        { value, _, _ -> uiState.valueFormatter(value, uiState.selectedTimeRange) }
+        { value, _, _ -> uiState.valueFormatter(value) }
 
     val marker = remember {
         DefaultCartesianMarker(

@@ -1,23 +1,23 @@
 package edu.stanford.bdh.engagehf.health.weight.bottomsheet
 
+import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.TimePickerState
 import edu.stanford.spezi.core.testing.CoroutineTestRule
-import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.core.utils.MessageNotifier
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.time.LocalDate
 import java.time.LocalTime
+import kotlin.random.Random
 
 class AddWeightBottomSheetViewModelTest {
 
@@ -27,14 +27,16 @@ class AddWeightBottomSheetViewModelTest {
     private var bottomSheetEvents: BottomSheetEvents = mockk(relaxed = true)
     private var healthRepository: HealthRepository = mockk(relaxed = true)
     private val uiStateMapper: AddWeightBottomSheetUiStateMapper = mockk(relaxed = true)
-    private val notifier: MessageNotifier = mockk()
+    private val notifier: MessageNotifier = mockk(relaxed = true)
 
-    private var viewModel: AddWeightBottomSheetViewModel = AddWeightBottomSheetViewModel(
-        bottomSheetEvents = bottomSheetEvents,
-        uiStateMapper = uiStateMapper,
-        healthRepository = healthRepository,
-        notifier = notifier
-    )
+    private val viewModel: AddWeightBottomSheetViewModel by lazy {
+        AddWeightBottomSheetViewModel(
+            bottomSheetEvents = bottomSheetEvents,
+            healthRepository = healthRepository,
+            uiStateMapper = uiStateMapper,
+            notifier = notifier
+        )
+    }
 
     @Before
     fun setup() {
@@ -53,6 +55,71 @@ class AddWeightBottomSheetViewModelTest {
     }
 
     @Test
+    fun `it should have correct initial state`() {
+        // given
+        val state: AddWeightBottomSheetUiState = mockk()
+        every { uiStateMapper.mapInitialUiState() } returns state
+
+        // when
+        val uiState = viewModel.uiState.value
+
+        // then
+        assertThat(state).isEqualTo(uiState)
+    }
+
+    @Test
+    fun `test successful save action`() {
+        // given
+        val action = AddWeightBottomSheetViewModel.Action.SaveWeight
+        coEvery { healthRepository.saveRecord(any()) } returns Result.success(Unit)
+
+        // when
+        viewModel.onAction(action)
+
+        // then
+        verify { bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet) }
+    }
+
+    @Test
+    fun `test failure save action`() {
+        // given
+        val action = AddWeightBottomSheetViewModel.Action.SaveWeight
+        coEvery { healthRepository.saveRecord(any()) } returns Result.failure(Error("Error"))
+
+        // when
+        viewModel.onAction(action)
+
+        // then
+        verify { notifier.notify("Failed to save weight record") }
+    }
+
+    @Test
+    fun `test CloseSheet action`() {
+        // when
+        viewModel.onAction(AddWeightBottomSheetViewModel.Action.CloseSheet)
+
+        // then
+        coVerify { bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet) }
+    }
+
+    @Test
+    fun `test UpdateDate action`() {
+        // given
+        val newState: AddWeightBottomSheetUiState = mockk()
+        val date: LocalDate = LocalDate.now()
+        val initialState = viewModel.uiState.value
+        every { uiStateMapper.mapUpdateDateAction(date, initialState) } returns newState
+
+        // when
+        viewModel.onAction(AddWeightBottomSheetViewModel.Action.UpdateDate(date))
+
+        // then
+        verify { uiStateMapper.mapUpdateDateAction(date, initialState) }
+        val uiState = viewModel.uiState.value
+        assertThat(uiState).isEqualTo(newState)
+    }
+
+    @Test
     fun `test SaveWeight action`() = runTest {
         // given
         coEvery { healthRepository.saveRecord(any()) } returns Result.success(Unit)
@@ -66,28 +133,32 @@ class AddWeightBottomSheetViewModelTest {
     }
 
     @Test
-    fun `test CloseSheet action`() = runTestUnconfined {
-        viewModel.onAction(AddWeightBottomSheetViewModel.Action.CloseSheet)
-        coVerify { bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet) }
-    }
-
-    @Test
-    fun `test UpdateDate action`() = runTest {
+    fun `test UpdateTime action`() {
         // given
-        val date = LocalDate.now()
+        val newState: AddWeightBottomSheetUiState = mockk()
+        val time: LocalTime = LocalTime.now()
+        val initialState = viewModel.uiState.value
+        every { uiStateMapper.mapUpdateTimeAction(time, initialState) } returns newState
 
         // when
-        viewModel.onAction(AddWeightBottomSheetViewModel.Action.UpdateDate(date))
+        viewModel.onAction(AddWeightBottomSheetViewModel.Action.UpdateTime(time))
 
         // then
-        val uiState = viewModel.uiState.first()
-        verify { uiStateMapper.mapUpdateDateAction(date, any()) }
+        verify { uiStateMapper.mapUpdateTimeAction(time, initialState) }
+        val uiState = viewModel.uiState.value
+        assertThat(uiState).isEqualTo(newState)
     }
 
     @Test
-    fun `test UpdateTime action`() = runTest {
-        val time = LocalTime.now()
-        viewModel.onAction(AddWeightBottomSheetViewModel.Action.UpdateTime(time))
-        verify { uiStateMapper.mapUpdateTimeAction(time, any()) }
+    fun `test UpdateWeight action`() {
+        // given
+        val weight = Random.nextDouble()
+        val action = AddWeightBottomSheetViewModel.Action.UpdateWeight(weight)
+
+        // when
+        viewModel.onAction(action)
+
+        // then
+        assertThat(viewModel.uiState.value.weight).isEqualTo(weight)
     }
 }
