@@ -1,7 +1,5 @@
 package edu.stanford.bdh.engagehf.questionnaire
 
-import android.os.Bundle
-import androidx.core.os.bundleOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -48,10 +46,7 @@ class QuestionnaireViewModel @Inject internal constructor(
                 .onSuccess { questionnaireString ->
                     _uiState.update {
                         State.QuestionnaireLoaded(
-                            args = bundleOf(
-                                "questionnaire" to questionnaireString,
-                                "show-cancel-button" to true
-                            ),
+                            questionnaireString = questionnaireString,
                             isSaving = false,
                         )
                     }
@@ -93,7 +88,12 @@ class QuestionnaireViewModel @Inject internal constructor(
 
     sealed interface State {
         data object Loading : State
-        data class QuestionnaireLoaded(val args: Bundle, val isSaving: Boolean) : State
+        data class QuestionnaireLoaded(
+            val questionnaireString: String,
+            val isSaving: Boolean,
+        ) : State {
+            val showCancelButton = true
+        }
         data class Error(val message: String) : State
     }
 
