@@ -4,6 +4,8 @@ import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.EPOCH_SECONDS_DIVISOR
 import edu.stanford.bdh.engagehf.health.NewestHealthData
 import edu.stanford.bdh.engagehf.health.TableEntryData
+import edu.stanford.spezi.core.logging.SpeziLogger
+import edu.stanford.spezi.core.utils.extensions.roundToDecimalPlaces
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -38,18 +40,17 @@ class SymptomsUiStateMapper @Inject constructor() {
         val chartData = calculateChartData(symptomScoresByDay, selectedSymptomType)
         val tableData = mapTableData(symptomScores, selectedSymptomType)
 
-        val newestData = symptomScores.maxByOrNull { it.date }
+        val newestData = symptomScores.maxBy { it.date }
         val newestHealthData = NewestHealthData(
             formattedValue = when (selectedSymptomType) {
-                SymptomType.OVERALL -> newestData?.overallScore.toString()
-                SymptomType.PHYSICAL_LIMITS -> newestData?.physicalLimitsScore.toString()
-                SymptomType.SOCIAL_LIMITS -> newestData?.socialLimitsScore.toString()
-                SymptomType.QUALITY_OF_LIFE -> newestData?.qualityOfLifeScore.toString()
-                SymptomType.SPECIFIC_SYMPTOMS -> newestData?.specificSymptomsScore.toString()
-                SymptomType.DIZZINESS -> newestData?.dizzinessScore.toString()
+                SymptomType.OVERALL -> newestData.overallScore.toString()
+                SymptomType.PHYSICAL_LIMITS -> newestData.physicalLimitsScore.toString()
+                SymptomType.SOCIAL_LIMITS -> newestData.socialLimitsScore.toString()
+                SymptomType.QUALITY_OF_LIFE -> newestData.qualityOfLifeScore.toString()
+                SymptomType.SPECIFIC_SYMPTOMS -> newestData.specificSymptomsScore.toString()
+                SymptomType.DIZZINESS -> newestData.dizzinessScore.toString()
             } + "%",
-            formattedDate = newestData?.date?.format(dateTimeFormatter)
-                ?: ""
+            formattedDate = newestData.date.format(dateTimeFormatter)
         )
 
         return SymptomsUiState.Success(
@@ -116,9 +117,12 @@ class SymptomsUiStateMapper @Inject constructor() {
             }.average().toFloat()
 
             yValues.add(averageScore)
-            xValues.add(date.toInstant().epochSecond / EPOCH_SECONDS_DIVISOR)
+            val xValue = (date.toInstant().epochSecond / EPOCH_SECONDS_DIVISOR)
+                .roundToDecimalPlaces(2)
+            xValues.add(xValue)
         }
 
+        SpeziLogger.i { "XValues: $xValues" }
         return AggregatedHealthData(
             yValues = yValues,
             xValues = xValues,

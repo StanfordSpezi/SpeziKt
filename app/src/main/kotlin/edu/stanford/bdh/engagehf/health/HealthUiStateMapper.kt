@@ -7,6 +7,7 @@ import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
 import edu.stanford.spezi.core.utils.LocaleProvider
+import edu.stanford.spezi.core.utils.extensions.roundToDecimalPlaces
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -108,10 +109,10 @@ class HealthUiStateMapper @Inject constructor(
 
     private fun mapXValue(selectedTimeRange: TimeRange, zonedDateTime: ZonedDateTime): Float {
         return when (selectedTimeRange) {
-            TimeRange.DAILY -> ((zonedDateTime.year.toFloat() + (zonedDateTime.dayOfYear - 1) / 365f) * 10).roundToTwoDecimalPlaces()
+            TimeRange.DAILY -> ((zonedDateTime.year.toFloat() + (zonedDateTime.dayOfYear - 1) / 365f) * 10)
             TimeRange.WEEKLY -> (zonedDateTime.toEpochSecond() / (7 * 24 * 60 * 60)).toFloat()
             TimeRange.MONTHLY -> zonedDateTime.year.toFloat() + (zonedDateTime.monthValue - 1) / 12f
-        }
+        }.roundToDecimalPlaces(places = 2)
     }
 
     private fun groupRecordsByTimeRange(
@@ -344,11 +345,6 @@ class HealthUiStateMapper @Inject constructor(
             TimeRange.MONTHLY -> "MMM yy"
         }
         return date.format(DateTimeFormatter.ofPattern(pattern))
-    }
-
-    @Suppress("MagicNumber")
-    private fun Float.roundToTwoDecimalPlaces(): Float {
-        return Math.round(this * 100) / 100.0f
     }
 
     private data class ValueUnit(val value: Double, val unit: String)
