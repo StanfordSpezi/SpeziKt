@@ -266,8 +266,8 @@ class HealthUiStateMapper @Inject constructor(
 
     private fun getAverageData(tableData: List<TableEntryData>) =
         AverageHealthData(
-            value = tableData.map { it.value }.average().toFloat(),
-            formattedValue = "Average " + formatValue(tableData.map { it.value }.average()),
+            value = tableData.mapNotNull { it.value }.average().toFloat(),
+            formattedValue = "Average " + formatValue(tableData.mapNotNull { it.value }.average()),
         )
 
     private fun getNewestRecord(records: List<EngageRecord>): NewestHealthData? {
@@ -380,7 +380,6 @@ class HealthUiStateMapper @Inject constructor(
         private const val WEEKLY_MAX_MONTHS = 3L
         private const val MONTHLY_MAX_MONTHS = 6L
 
-        const val EPOCH_SECONDS_DIVISOR = 60.0f
         const val ADAPTIVE_Y_VALUES_FRACTION = 1.05f
 
         private const val MONTH_DAY_TIME_PATTERN = "MMM dd HH:mm"

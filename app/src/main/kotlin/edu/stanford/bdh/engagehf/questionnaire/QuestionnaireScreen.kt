@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -21,6 +20,7 @@ import androidx.fragment.compose.AndroidFragment
 import androidx.fragment.compose.rememberFragmentState
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.fhir.datacapture.QuestionnaireFragment
+import edu.stanford.spezi.core.design.component.CenteredBoxContent
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Colors.primary
@@ -46,18 +46,14 @@ fun QuestionnaireScreen(
         }
 
         is QuestionnaireViewModel.State.Error -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .testIdentifier(QuestionnaireScreenTestIdentifier.ERROR),
-                contentAlignment = Alignment.Center
-            ) {
+            CenteredBoxContent {
                 Text(
+                    modifier = Modifier.testIdentifier(QuestionnaireScreenTestIdentifier.ERROR),
                     text = uiState.message,
                     textAlign = TextAlign.Center,
                     color = Colors.error
                 )
-            } // TODO use centered content from main
+            }
         }
 
         is QuestionnaireViewModel.State.QuestionnaireLoaded -> {
@@ -68,13 +64,11 @@ fun QuestionnaireScreen(
 
 @Composable
 private fun LoadingIndicator() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .testIdentifier(QuestionnaireScreenTestIdentifier.LOADING),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(color = primary) // TODO use centered content from main once merged
+    CenteredBoxContent {
+        CircularProgressIndicator(
+            modifier = Modifier.testIdentifier(QuestionnaireScreenTestIdentifier.LOADING),
+            color = primary
+        )
     }
 }
 

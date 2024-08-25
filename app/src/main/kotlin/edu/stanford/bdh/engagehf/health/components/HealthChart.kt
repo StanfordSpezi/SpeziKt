@@ -49,13 +49,11 @@ import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.AverageHealthData
 import edu.stanford.bdh.engagehf.health.HealthUiData
 import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.ADAPTIVE_Y_VALUES_FRACTION
-import edu.stanford.spezi.core.design.theme.Colors.onSurface
 import edu.stanford.spezi.core.design.theme.Colors.onTertiary
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Colors.secondary
 import edu.stanford.spezi.core.design.theme.Colors.tertiary
 import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.lighten
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -80,7 +78,7 @@ fun HealthChart(
     }
     val shapeComponent = rememberShapeComponent(
         shape = Shape.Pill,
-        color = onSurface.lighten()
+        color = primary,
     )
 
     val valueFormatter: (Float, ChartValues, AxisPosition.Vertical?) -> CharSequence =

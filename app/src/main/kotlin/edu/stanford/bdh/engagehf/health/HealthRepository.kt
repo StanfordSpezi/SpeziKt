@@ -7,6 +7,7 @@ import androidx.health.connect.client.records.WeightRecord
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
+import edu.stanford.bdh.engagehf.health.symptoms.SymptomScore
 import edu.stanford.bdh.engagehf.observations.ObservationCollection
 import edu.stanford.bdh.engagehf.observations.ObservationCollectionProvider
 import edu.stanford.healthconnectonfhir.ObservationsDocumentMapper
@@ -35,39 +36,54 @@ class HealthRepository @Inject constructor(
 
     private suspend fun <T : Record> observe(
         collection: ObservationCollection,
-    ): Flow<Result<List<T>>> =
-        callbackFlow {
-            var listenerRegistration: ListenerRegistration? = null
-            withContext(ioDispatcher) {
-                kotlin.runCatching {
-                    val fromDateString = ZonedDateTime
-                        .now()
-                        .minusMonths(DEFAULT_MAX_MONTHS)
-                        .format(DateTimeFormatter.ISO_DATE_TIME)
-                    listenerRegistration = observationCollectionProvider.getCollection(collection)
-                        .whereGreaterThanOrEqualTo(DATE_TIME_FIELD, fromDateString)
-                        .orderBy(DATE_TIME_FIELD, Query.Direction.DESCENDING)
-                        .addSnapshotListener { snapshot, error ->
-                            if (error != null) {
-                                logger.e(error) { "Error listening for latest observation in collection: ${collection.name}" }
-                                trySend(Result.failure(error))
-                            } else {
-                                val records: List<T> = snapshot?.documents?.mapNotNull { document ->
-                                    observationsDocumentMapper.map(document)
-                                } ?: emptyList()
-                                trySend(Result.success(records))
-                            }
+        maxMonths: Long = DEFAULT_MAX_MONTHS,
+    ): Flow<Result<List<T>>> = observeWithMapper(collection, maxMonths) { document ->
+        observationsDocumentMapper.map(document)
+    }
+
+    private suspend fun <T> observeWithMapper(
+        collection: ObservationCollection,
+        maxMonths: Long,
+        mapper: (document: com.google.firebase.firestore.DocumentSnapshot) -> T?,
+    ): Flow<Result<List<T>>> = callbackFlow {
+        var listenerRegistration: ListenerRegistration? = null
+        withContext(ioDispatcher) {
+            runCatching {
+                listenerRegistration =
+                    observationCollectionProvider.getCollection(collection).let { query ->
+                        val dateFieldName = if (collection == ObservationCollection.SYMPTOMS) {
+                            SYMPTOMS_DATE_FIELD
+                        } else {
+                            DATE_TIME_FIELD
                         }
-                }.onFailure {
-                    logger.e(it) { "Error while listening for latest ${collection.name} observation" }
-                    trySend(Result.failure(it))
-                }
-            }
-            awaitClose {
-                listenerRegistration?.remove()
-                channel.close()
+                        query.whereGreaterThanOrEqualTo(
+                            dateFieldName,
+                            getFormattedDate(maxMonths)
+                        ).orderBy(
+                            dateFieldName,
+                            Query.Direction.DESCENDING
+                        )
+                    }.addSnapshotListener { snapshot, error ->
+                        if (error != null) {
+                            logger.e(error) { "Error listening for latest observation in collection: ${collection.name}" }
+                            trySend(Result.failure(error))
+                        } else {
+                            val records = snapshot?.documents?.mapNotNull { document ->
+                                mapper(document)
+                            } ?: emptyList()
+                            trySend(Result.success(records))
+                        }
+                    }
+            }.onFailure {
+                logger.e(it) { "Error while listening for latest ${collection.name} observation" }
+                trySend(Result.failure(it))
             }
         }
+        awaitClose {
+            listenerRegistration?.remove()
+            channel.close()
+        }
+    }
 
     suspend fun observeWeightRecords(): Flow<Result<List<WeightRecord>>> =
         observe(ObservationCollection.BODY_WEIGHT)
@@ -78,6 +94,18 @@ class HealthRepository @Inject constructor(
     suspend fun observeHeartRateRecords(): Flow<Result<List<HeartRateRecord>>> =
         observe(ObservationCollection.HEART_RATE)
 
+    suspend fun observeSymptoms(): Flow<Result<List<SymptomScore>>> =
+        observeWithMapper(ObservationCollection.SYMPTOMS, DEFAULT_MAX_MONTHS_SYMPTOMS) { document ->
+            document.toObject(SymptomScore::class.java)
+        }
+
+    private fun getFormattedDate(monthsAgo: Long): String {
+        return ZonedDateTime
+            .now()
+            .minusMonths(monthsAgo)
+            .format(DateTimeFormatter.ISO_DATE_TIME)
+    }
+
     suspend fun saveRecord(record: Record): Result<Unit> {
         val observations = recordToObservationMapper.map(record)
         return withContext(ioDispatcher) {
@@ -85,7 +113,7 @@ class HealthRepository @Inject constructor(
                 val batch = firestore.batch()
                 observations.forEach { observation ->
                     val collection = ObservationCollection.entries.find { collection ->
-                        observation.code.coding.any { it.code == collection.loinc.code }
+                        observation.code.coding.any { it.code == collection.loinc?.code }
                     }
                     val data = observationMapper.map(observation = observation)
                     collection?.let { observationCollectionProvider.getCollection(it).document() }
@@ -124,6 +152,8 @@ class HealthRepository @Inject constructor(
 
     companion object {
         const val DEFAULT_MAX_MONTHS = 6L
+        const val DEFAULT_MAX_MONTHS_SYMPTOMS = 3L
         const val DATE_TIME_FIELD = "effectiveDateTime"
+        const val SYMPTOMS_DATE_FIELD = "date"
     }
 }
