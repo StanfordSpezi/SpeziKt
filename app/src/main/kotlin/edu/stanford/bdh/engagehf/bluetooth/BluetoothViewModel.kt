@@ -12,6 +12,7 @@ import edu.stanford.bdh.engagehf.bluetooth.measurements.MeasurementsRepository
 import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.messages.MessageRepository
 import edu.stanford.bdh.engagehf.messages.MessagesAction
+import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.spezi.core.bluetooth.api.BLEService
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
@@ -162,7 +163,12 @@ class BluetoothViewModel @Inject internal constructor(
                             is MessagesAction.MedicationsAction -> { /* TODO */
                             }
 
-                            is MessagesAction.QuestionnaireAction -> { /* TODO */
+                            is MessagesAction.QuestionnaireAction -> {
+                                navigator.navigateTo(
+                                    AppNavigationEvent.QuestionnaireScreen(
+                                        mappedAction.questionnaireId
+                                    )
+                                )
                             }
 
                             is MessagesAction.VideoSectionAction -> {
@@ -182,9 +188,6 @@ class BluetoothViewModel @Inject internal constructor(
                         }
                         val messageId = action.message.id
                         messageRepository.completeMessage(messageId = messageId)
-                        _uiState.update {
-                            it.copy(messages = it.messages.filter { message -> message.id != messageId })
-                        }
                     } else {
                         logger.e { "Error while mapping action: ${mappingResult.exceptionOrNull()}" }
                     }

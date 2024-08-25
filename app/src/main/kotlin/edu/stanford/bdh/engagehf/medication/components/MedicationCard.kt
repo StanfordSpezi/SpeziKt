@@ -72,10 +72,11 @@ fun MedicationCard(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MedicationStatusIcon(model = model)
                 Spacer(modifier = Modifier.width(Spacings.small))
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = model.title,
                         style = TextStyles.titleLarge,
+                        overflow = TextOverflow.Clip,
                         modifier = Modifier.testIdentifier(
                             identifier = MedicationScreenTestIdentifier.SUCCESS_MEDICATION_CARD_TITLE,
                             suffix = model.id
@@ -84,13 +85,13 @@ fun MedicationCard(
                     Text(
                         text = model.subtitle,
                         style = TextStyles.titleSmall,
+                        overflow = TextOverflow.Clip,
                         modifier = Modifier.testIdentifier(
                             identifier = MedicationScreenTestIdentifier.SUCCESS_MEDICATION_CARD_SUBTITLE,
                             suffix = model.id,
                         )
                     )
                 }
-                Spacer(modifier = Modifier.weight(1f))
                 IconButton(onClick = {
                     onAction(
                         MedicationViewModel.Action.ToggleExpand(

@@ -17,6 +17,7 @@ import edu.stanford.bdh.engagehf.messages.MessageRepository
 import edu.stanford.bdh.engagehf.messages.MessageType
 import edu.stanford.bdh.engagehf.messages.MessagesAction
 import edu.stanford.bdh.engagehf.messages.VideoSectionVideo
+import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.spezi.core.bluetooth.api.BLEService
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
@@ -393,7 +394,6 @@ class BluetoothViewModelTest {
         val todoActions = listOf(
             MessagesAction.HealthSummaryAction,
             MessagesAction.MedicationsAction,
-            MessagesAction.QuestionnaireAction(questionnaire = mockk()),
         )
         createViewModel()
         val initialState = bluetoothViewModel.uiState.value
@@ -423,6 +423,23 @@ class BluetoothViewModelTest {
 
         // then
         verify { bottomSheetEvents.emit(BottomSheetEvents.Event.DoNewMeasurement) }
+    }
+
+    @Test
+    fun `it should navigate to questionnaire screen on QuestionnaireAction`() {
+        // given
+        val questionnaireId = "1"
+        val action = Action.MessageItemClicked(message = message)
+        every {
+            uiStateMapper.mapMessagesAction(messageAction)
+        } returns Result.success(MessagesAction.QuestionnaireAction(questionnaireId))
+        createViewModel()
+
+        // when
+        bluetoothViewModel.onAction(action = action)
+
+        // then
+        verify { navigator.navigateTo(AppNavigationEvent.QuestionnaireScreen(questionnaireId)) }
     }
 
     @Test
@@ -466,7 +483,12 @@ class BluetoothViewModelTest {
         )
         every { this@BluetoothViewModelTest.message.id } returns "new-id"
 
-        coEvery { messageRepository.observeUserMessages() } returns flowOf(listOf(message, this.message))
+        coEvery { messageRepository.observeUserMessages() } returns flowOf(
+            listOf(
+                message,
+                this.message
+            )
+        )
         createViewModel()
 
         // when

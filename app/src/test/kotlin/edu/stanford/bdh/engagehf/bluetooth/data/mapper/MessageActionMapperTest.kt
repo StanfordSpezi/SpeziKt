@@ -81,7 +81,7 @@ class MessageActionMapperTest {
 
         // then
         val messagesAction = result.getOrThrow() as MessagesAction.QuestionnaireAction
-        assertThat(messagesAction.questionnaire.questionnaireId).isEqualTo(questionnaireId)
+        assertThat(messagesAction.questionnaireId).isEqualTo(questionnaireId)
     }
 
     @Test
