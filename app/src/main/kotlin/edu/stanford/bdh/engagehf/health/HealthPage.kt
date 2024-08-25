@@ -1,6 +1,5 @@
 package edu.stanford.bdh.engagehf.health
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,12 +29,12 @@ import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.components.HealthChart
 import edu.stanford.bdh.engagehf.health.components.SwipeBox
 import edu.stanford.bdh.engagehf.health.components.TimeRangeDropdown
+import edu.stanford.spezi.core.design.component.CenteredBoxContent
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.utils.ComposableBlock
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import java.time.ZonedDateTime
 
@@ -46,7 +45,7 @@ fun HealthPage(
 ) {
     when (uiState) {
         is HealthUiState.Error -> {
-            CenteredContent {
+            CenteredBoxContent {
                 Text(
                     text = uiState.message,
                     style = TextStyles.headlineMedium,
@@ -57,7 +56,7 @@ fun HealthPage(
         }
 
         HealthUiState.Loading -> {
-            CenteredContent {
+            CenteredBoxContent {
                 CircularProgressIndicator(
                     color = primary,
                     modifier = Modifier.testIdentifier(HealthPageTestIdentifier.PROGRESS_INDICATOR)
@@ -66,7 +65,7 @@ fun HealthPage(
         }
 
         is HealthUiState.NoData -> {
-            CenteredContent {
+            CenteredBoxContent {
                 Text(
                     text = uiState.message,
                     textAlign = TextAlign.Center,
@@ -135,18 +134,6 @@ private fun LazyListScope.listHeader(
 }
 
 @Composable
-fun CenteredContent(content: ComposableBlock) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .testIdentifier(HealthPageTestIdentifier.CENTERED_CONTENT),
-        contentAlignment = Alignment.Center,
-    ) {
-        content()
-    }
-}
-
-@Composable
 private fun InfoRow(
     infoRowData: InfoRowData,
     onTimeRangeDropdownAction: (Boolean) -> Unit,
@@ -191,7 +178,6 @@ private fun InfoRow(
 
 enum class HealthPageTestIdentifier {
     ROOT,
-    CENTERED_CONTENT,
     ERROR_MESSAGE,
     NO_DATA_MESSAGE,
     PROGRESS_INDICATOR,

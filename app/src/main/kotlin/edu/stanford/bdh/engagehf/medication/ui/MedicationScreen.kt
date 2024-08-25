@@ -1,25 +1,22 @@
 package edu.stanford.bdh.engagehf.medication.ui
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.medication.components.MedicationList
 import edu.stanford.bdh.engagehf.medication.components.getMedicationCardUiModel
+import edu.stanford.spezi.core.design.component.CenteredBoxContent
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.utils.ComposableBlock
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 
 @Composable
@@ -39,7 +36,7 @@ fun MedicationScreen(
 ) {
     when (uiState) {
         is MedicationUiState.Error -> {
-            CenteredContent {
+            CenteredBoxContent {
                 Text(
                     text = (uiState).message,
                     color = Colors.error,
@@ -50,7 +47,7 @@ fun MedicationScreen(
         }
 
         is MedicationUiState.NoData -> {
-            CenteredContent {
+            CenteredBoxContent {
                 Text(
                     text = uiState.message,
                     style = TextStyles.titleMedium,
@@ -60,7 +57,7 @@ fun MedicationScreen(
         }
 
         MedicationUiState.Loading -> {
-            CenteredContent {
+            CenteredBoxContent {
                 CircularProgressIndicator(
                     modifier = Modifier
                         .testIdentifier(MedicationScreenTestIdentifier.LOADING),
@@ -76,18 +73,6 @@ fun MedicationScreen(
                 modifier = Modifier.testIdentifier(MedicationScreenTestIdentifier.SUCCESS)
             )
         }
-    }
-}
-
-@Composable
-private fun CenteredContent(content: ComposableBlock) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .testIdentifier(MedicationScreenTestIdentifier.CENTERED_CONTENT),
-        contentAlignment = Alignment.Center,
-    ) {
-        content()
     }
 }
 
@@ -107,7 +92,6 @@ private class UiStateProvider : PreviewParameterProvider<MedicationUiState> {
 }
 
 enum class MedicationScreenTestIdentifier {
-    CENTERED_CONTENT,
     LOADING,
     ERROR_TEXT,
     NO_DATA_TEXT,

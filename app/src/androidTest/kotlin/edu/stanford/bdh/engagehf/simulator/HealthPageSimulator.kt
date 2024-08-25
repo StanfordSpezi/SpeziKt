@@ -4,6 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import edu.stanford.bdh.engagehf.health.HealthPageTestIdentifier
+import edu.stanford.spezi.core.design.component.CenteredBoxContentTestIdentifier
 import edu.stanford.spezi.core.testing.onNodeWithIdentifier
 
 class HealthPageSimulator(
@@ -12,7 +13,7 @@ class HealthPageSimulator(
     private val root = composeTestRule.onNodeWithIdentifier(HealthPageTestIdentifier.ROOT)
 
     private val centeredContent =
-        composeTestRule.onNodeWithIdentifier(HealthPageTestIdentifier.CENTERED_CONTENT)
+        composeTestRule.onNodeWithIdentifier(CenteredBoxContentTestIdentifier.ROOT)
 
     private val errorMessage =
         composeTestRule.onNodeWithIdentifier(HealthPageTestIdentifier.ERROR_MESSAGE)

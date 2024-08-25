@@ -69,8 +69,8 @@ import com.patrykandpatrick.vico.core.common.component.TextComponent
 import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shape.Shape
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.bdh.engagehf.health.CenteredContent
 import edu.stanford.bdh.engagehf.health.HealthTableItem
+import edu.stanford.spezi.core.design.component.CenteredBoxContent
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
@@ -98,7 +98,7 @@ fun SymptomsPage(
 ) {
     when (uiState) {
         is SymptomsUiState.Error -> {
-            CenteredContent {
+            CenteredBoxContent {
                 Text(
                     text = uiState.message,
                     style = TextStyles.headlineMedium,
@@ -108,7 +108,7 @@ fun SymptomsPage(
         }
 
         SymptomsUiState.Loading -> {
-            CenteredContent {
+            CenteredBoxContent {
                 CircularProgressIndicator(color = primary)
             }
         }
@@ -126,7 +126,7 @@ fun SymptomsPage(
         }
 
         is SymptomsUiState.NoData -> {
-            CenteredContent {
+            CenteredBoxContent {
                 Text(
                     text = uiState.message,
                     textAlign = TextAlign.Center,
