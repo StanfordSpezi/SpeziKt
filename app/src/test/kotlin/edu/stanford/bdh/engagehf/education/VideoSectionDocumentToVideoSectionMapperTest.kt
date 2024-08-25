@@ -4,7 +4,6 @@ import com.google.common.truth.Truth.assertThat
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
 import edu.stanford.bdh.engagehf.localization.LocalizedMapReader
-import edu.stanford.spezi.core.utils.JsonMap
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -33,9 +32,9 @@ class VideoSectionDocumentToVideoSectionMapperTest {
     @Test
     fun `it should return null if no videos found`() = runTest {
         // given
-        val jsonMap: JsonMap = mockk()
+        val jsonData = mockk<Map<String, Any>>()
         val document: DocumentSnapshot = mockk {
-            every { data } returns jsonMap as Map<String, Any>
+            every { data } returns jsonData
             every { getLong("orderIndex") } returns 1L
             val collectionReference: CollectionReference = mockk {
                 every { get() } returns mockk {
@@ -54,8 +53,8 @@ class VideoSectionDocumentToVideoSectionMapperTest {
                 every { collection("videos") } returns collectionReference
             }
         }
-        every { localizedMapReader.get("title", jsonMap) } returns "Test Title"
-        every { localizedMapReader.get("description", jsonMap) } returns "Test Description"
+        every { localizedMapReader.get("title", jsonData) } returns "Test Title"
+        every { localizedMapReader.get("description", jsonData) } returns "Test Description"
 
         // when
         val result = mapper.map(document)
@@ -67,9 +66,9 @@ class VideoSectionDocumentToVideoSectionMapperTest {
     @Test
     fun `it should return a valid VideoSection`() = runTest {
         // given
-        val videoJsonMap: JsonMap = mockk()
+        val videoJsonMap: Map<String, Any> = mockk()
         val videoDocument: DocumentSnapshot = mockk {
-            every { data } returns videoJsonMap as Map<String, Any>?
+            every { data } returns videoJsonMap
             every { exists() } returns true
             every { this@mockk.get("youtubeId") } returns "youtube123"
 
@@ -78,9 +77,9 @@ class VideoSectionDocumentToVideoSectionMapperTest {
         every { localizedMapReader.get("title", videoJsonMap) } returns "Video Title"
         every { localizedMapReader.get("description", videoJsonMap) } returns "Video Description"
 
-        val videoSectionJsonMap: JsonMap = mockk()
+        val videoSectionJsonMap: Map<String, Any> = mockk()
         val document: DocumentSnapshot = mockk {
-            every { data } returns videoSectionJsonMap as Map<String, Any>?
+            every { data } returns videoSectionJsonMap
             every { getLong("orderIndex") } returns 1L
 
             val collectionReference: CollectionReference = mockk {

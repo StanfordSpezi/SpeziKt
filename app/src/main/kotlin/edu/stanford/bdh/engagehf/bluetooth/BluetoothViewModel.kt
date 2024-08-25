@@ -157,44 +157,45 @@ class BluetoothViewModel @Inject internal constructor(
 
             is Action.MessageItemClicked -> {
                 viewModelScope.launch {
-                    val mappingResult = uiStateMapper.mapMessagesAction(action.message.action)
-                    if (mappingResult.isSuccess) {
-                        val messageId = action.message.id
-                        when (val mappedAction = mappingResult.getOrNull()!!) {
-                            is MessagesAction.HealthSummaryAction -> {
-                                handleHealthSummaryAction(messageId)
-                            }
+                    uiStateMapper.mapMessagesAction(action.message.action)
+                        .onFailure { error ->
+                            logger.e(error) { "Error while mapping action: ${action.message.action}" }
+                        }
+                        .onSuccess { mappedAction ->
+                            val messageId = action.message.id
+                            when (mappedAction) {
+                                is MessagesAction.HealthSummaryAction -> {
+                                    handleHealthSummaryAction(messageId)
+                                }
 
-                            is MessagesAction.MeasurementsAction -> {
-                                appScreenEvents.emit(AppScreenEvents.Event.DoNewMeasurement)
-                            }
+                                is MessagesAction.MeasurementsAction -> {
+                                    appScreenEvents.emit(AppScreenEvents.Event.DoNewMeasurement)
+                                }
 
-                            is MessagesAction.MedicationsAction -> {
-                                appScreenEvents.emit(
-                                    AppScreenEvents.Event.NavigateToTab(
-                                        BottomBarItem.MEDICATION
+                                is MessagesAction.MedicationsAction -> {
+                                    appScreenEvents.emit(
+                                        AppScreenEvents.Event.NavigateToTab(
+                                            BottomBarItem.MEDICATION
+                                        )
                                     )
-                                )
-                            }
+                                }
 
-                            is MessagesAction.QuestionnaireAction -> {
-                                navigator.navigateTo(
-                                    AppNavigationEvent.QuestionnaireScreen(
-                                        mappedAction.questionnaireId
+                                is MessagesAction.QuestionnaireAction -> {
+                                    navigator.navigateTo(
+                                        AppNavigationEvent.QuestionnaireScreen(
+                                            mappedAction.questionnaireId
+                                        )
                                     )
-                                )
-                            }
+                                }
 
-                            is MessagesAction.VideoSectionAction -> {
-                                viewModelScope.launch {
-                                    handleVideoSectionAction(mappedAction)
+                                is MessagesAction.VideoSectionAction -> {
+                                    viewModelScope.launch {
+                                        handleVideoSectionAction(mappedAction)
+                                    }
                                 }
                             }
+                            messageRepository.completeMessage(messageId = messageId)
                         }
-                        messageRepository.completeMessage(messageId = messageId)
-                    } else {
-                        logger.e { "Error while mapping action: ${mappingResult.exceptionOrNull()}" }
-                    }
                 }
             }
 
@@ -204,10 +205,10 @@ class BluetoothViewModel @Inject internal constructor(
         }
     }
 
-    private suspend fun handleVideoSectionAction(mappedAction: MessagesAction.VideoSectionAction) {
+    private suspend fun handleVideoSectionAction(messageAction: MessagesAction.VideoSectionAction) {
         engageEducationRepository.getVideoBySectionAndVideoId(
-            mappedAction.videoSectionVideo.videoSectionId,
-            mappedAction.videoSectionVideo.videoId
+            messageAction.videoSectionVideo.videoSectionId,
+            messageAction.videoSectionVideo.videoId
         ).getOrNull()?.let { video ->
             navigator.navigateTo(
                 EducationNavigationEvent.VideoSectionClicked(

@@ -33,6 +33,6 @@ typealias ComposableBlock = @Composable () -> Unit
 typealias TestIdentifier = Enum<*>
 
 /**
- * A typealias for kotlin.Map with generic keys and any values
+ * A typealias for kotlin.Map with String keys and any values
  */
-typealias JsonMap = Map<*, *>
+typealias JsonMap = Map<String, *>

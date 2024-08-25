@@ -25,13 +25,13 @@ class HealthSummaryRepositoryTest {
     )
 
     @Test
-    fun `findHealthSummaryByUserId returns failure when user is not authenticated`() =
+    fun `getHealthSummary returns failure when user is not authenticated`() =
         runTestUnconfined {
             // given
             every { userSessionManager.getUserUid() } returns null
 
             // when
-            val result = repository.findHealthSummaryByUserId()
+            val result = repository.getHealthSummary()
 
             // then
             assertThat(result.isFailure).isTrue()
@@ -39,7 +39,7 @@ class HealthSummaryRepositoryTest {
         }
 
     @Test
-    fun `findHealthSummaryByUserId returns failure when function call fails`() = runTestUnconfined {
+    fun `getHealthSummary returns failure when function call fails`() = runTestUnconfined {
         // given
         val exception = Exception("Function call failed")
         coEvery {
@@ -47,7 +47,7 @@ class HealthSummaryRepositoryTest {
         } throws exception
 
         // when
-        val result = repository.findHealthSummaryByUserId()
+        val result = repository.getHealthSummary()
 
         // then
         assertThat(result.isFailure).isTrue()

@@ -37,18 +37,18 @@ class AppScreenViewModel @Inject constructor(
 
     private fun setup() {
         viewModelScope.launch {
-            userSessionManager.getUserInfo().let { userInfo ->
-                _uiState.update { uiState ->
-                    uiState.copy(
-                        accountUiState = uiState.accountUiState.copy(
-                            email = userInfo.email,
-                            name = userInfo.name,
-                            initials = userInfo.name?.split(" ")
-                                ?.mapNotNull { it.firstOrNull()?.toString() }?.joinToString(""),
-                        )
+            _uiState.update { uiState ->
+                val userInfo = userSessionManager.getUserInfo()
+                uiState.copy(
+                    accountUiState = uiState.accountUiState.copy(
+                        email = userInfo.email,
+                        name = userInfo.name,
+                        initials = userInfo.name?.split(" ")
+                            ?.mapNotNull { it.firstOrNull()?.toString() }?.joinToString(""),
                     )
-                }
+                )
             }
+
             appScreenEvents.events.collect { event ->
                 if (event is AppScreenEvents.Event.NavigateToTab) {
                     _uiState.update {

@@ -17,17 +17,15 @@ class HealthSummaryRepository @Inject constructor(
 ) {
     private val logger by speziLogger()
 
-    suspend fun findHealthSummaryByUserId(): Result<ByteArray> = withContext(ioDispatcher) {
+    suspend fun getHealthSummary(): Result<ByteArray> = withContext(ioDispatcher) {
         runCatching {
             val uid = userSessionManager.getUserUid()
-                ?: throw IllegalStateException("User not authenticated")
+                ?: error("User not authenticated")
             val result = firebaseFunctions.getHttpsCallable("exportHealthSummary")
                 .call(mapOf("userId" to uid))
                 .await()
-            val resultData = result.data as? JsonMap
-                ?: throw IllegalStateException("Invalid function response")
-            val pdfBase64 = resultData["content"] as? String
-                ?: throw IllegalStateException("No content found in function response")
+            val pdfBase64 = (result.data as? JsonMap)?.get("content") as? String
+                ?: error("Invalid function response")
             val pdfBytes = android.util.Base64.decode(pdfBase64, android.util.Base64.DEFAULT)
             pdfBytes
         }.onFailure {
