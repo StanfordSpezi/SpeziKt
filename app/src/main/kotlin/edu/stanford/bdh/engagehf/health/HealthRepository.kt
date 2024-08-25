@@ -72,8 +72,7 @@ class HealthRepository @Inject constructor(
                             logger.e(error) { "Error listening for latest observation in collection: ${collection.name}" }
                             trySend(Result.failure(error))
                         } else {
-                            val documents = snapshot?.documents
-                            val records = documents?.mapNotNull { document ->
+                            val records = snapshot?.documents?.mapNotNull { document ->
                                 mapper(document)
                             } ?: emptyList()
                             trySend(Result.success(records))

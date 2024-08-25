@@ -60,9 +60,9 @@ data class DosageInformation(
  */
 data class DoseSchedule(
     val frequency: Double,
-    val dosage: List<Double>,
+    val quantity: List<Double>,
 ) {
     val totalDailyIntake: Double by lazy {
-        dosage.sum() * frequency
+        quantity.sum() * frequency
     }
 }
