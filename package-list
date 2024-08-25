@@ -25,6 +25,7 @@ edu.stanford.bdh.engagehf.medication.data
 edu.stanford.bdh.engagehf.medication.ui
 edu.stanford.bdh.engagehf.messages
 edu.stanford.bdh.engagehf.navigation
+edu.stanford.bdh.engagehf.navigation.components
 edu.stanford.bdh.engagehf.navigation.screens
 edu.stanford.bdh.engagehf.observations
 edu.stanford.bdh.engagehf.onboarding
