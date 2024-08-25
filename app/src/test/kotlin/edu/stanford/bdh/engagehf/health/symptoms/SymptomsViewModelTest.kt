@@ -4,8 +4,6 @@ import com.google.common.truth.Truth.assertThat
 import com.google.firebase.Timestamp
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.spezi.core.testing.CoroutineTestRule
-import edu.stanford.spezi.core.testing.runTestUnconfined
-import edu.stanford.spezi.core.utils.LocaleProvider
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -13,69 +11,94 @@ import kotlinx.coroutines.flow.flowOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.Locale
+import kotlin.random.Random
 
 class SymptomsViewModelTest {
 
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
-    private val localeProvider: LocaleProvider = mockk()
     private val healthRepository: HealthRepository = mockk()
-    private val symptomsUiStateMapper: SymptomsUiStateMapper = SymptomsUiStateMapper(localeProvider)
+    private val symptomsUiStateMapper: SymptomsUiStateMapper = mockk()
     private val symptomScores = getSymptomScores()
+    private val successState = SymptomsUiState.Success(getSymptomsUiData())
 
     private lateinit var viewModel: SymptomsViewModel
 
     @Before
     fun setup() {
-        every { localeProvider.getDefaultLocale() } returns Locale.US
         coEvery { healthRepository.observeSymptoms() } returns flowOf(Result.success(symptomScores))
-        viewModel = SymptomsViewModel(symptomsUiStateMapper, healthRepository)
+        every {
+            symptomsUiStateMapper.mapSymptomsUiState(
+                selectedSymptomType = SymptomType.OVERALL,
+                symptomScores = symptomScores,
+            )
+        } returns successState
     }
 
     @Test
-    fun `given symptom scores when initialized then uiState is success`() = runTestUnconfined {
+    fun `given symptom scores when initialized then uiState is success`() {
+        // given
+        createViewModel()
+
         // when
         val uiState = viewModel.uiState.value
 
         // then
-        assertThat(uiState).isInstanceOf(SymptomsUiState.Success::class.java)
+        assertThat(uiState).isEqualTo(successState)
     }
 
     @Test
-    fun `given symptom scores when ToggleSymptomTypeDropdown action is triggered then uiState is updated`() =
-        runTestUnconfined {
-            // given
-            val isExpanded = true
+    fun `it should indicate error state in case of failure of observing symptoms`() {
+        // given
+        coEvery {
+            healthRepository.observeSymptoms()
+        } returns flowOf(Result.failure(Error("Error")))
 
-            // when
-            viewModel.onAction(SymptomsViewModel.Action.ToggleSymptomTypeDropdown(isExpanded))
+        // when
+        createViewModel()
 
-            // then
-            val uiState = viewModel.uiState.value
-            assertThat(uiState).isInstanceOf(SymptomsUiState.Success::class.java)
-            assertThat((uiState as SymptomsUiState.Success).data.headerData.isSelectedSymptomTypeDropdownExpanded).isEqualTo(
-                isExpanded
-            )
-        }
+        // then
+        assertThat(viewModel.uiState.value)
+            .isEqualTo(SymptomsUiState.Error("Failed to observe symptom scores"))
+    }
 
     @Test
-    fun `given symptom scores when SelectSymptomType action is triggered then uiState is updated`() =
-        runTestUnconfined {
-            // given
-            val newSymptomType = SymptomType.PHYSICAL_LIMITS
+    fun `it should handle ToggleSymptomTypeDropdown action correctly`() {
+        // given
+        createViewModel()
+        val isExpanded = Random.nextBoolean()
 
-            // when
-            viewModel.onAction(SymptomsViewModel.Action.SelectSymptomType(newSymptomType))
+        // when
+        viewModel.onAction(SymptomsViewModel.Action.ToggleSymptomTypeDropdown(isExpanded))
 
-            // then
-            val uiState = viewModel.uiState.value
-            assertThat(uiState).isInstanceOf(SymptomsUiState.Success::class.java)
-            assertThat((uiState as SymptomsUiState.Success).data.headerData.selectedSymptomType).isEqualTo(
-                newSymptomType
+        // then
+        val uiState = viewModel.uiState.value as SymptomsUiState.Success
+        assertThat(uiState.data.headerData.isSelectedSymptomTypeDropdownExpanded).isEqualTo(
+            isExpanded
+        )
+    }
+
+    @Test
+    fun `given symptom scores when SelectSymptomType action is triggered then uiState is updated`() {
+        // given
+        createViewModel()
+        val newSymptomType = SymptomType.PHYSICAL_LIMITS
+        val newState: SymptomsUiState.Success = mockk()
+        every {
+            symptomsUiStateMapper.mapSymptomsUiState(
+                selectedSymptomType = newSymptomType,
+                symptomScores = successState.data.symptomScores,
             )
-        }
+        } returns newState
+
+        // when
+        viewModel.onAction(SymptomsViewModel.Action.SelectSymptomType(newSymptomType))
+
+        // then
+        val uiState = viewModel.uiState.value
+        assertThat(uiState).isEqualTo(newState)
+    }
 
     private fun getSymptomScores() = listOf(
         SymptomScore(
@@ -88,4 +111,17 @@ class SymptomsViewModelTest {
             date = Timestamp.now()
         )
     )
+
+    private fun getSymptomsUiData() = SymptomsUiData(
+        chartData = emptyList(),
+        headerData = HeaderData(
+            formattedDate = "",
+            formattedValue = "",
+            selectedSymptomType = SymptomType.SYMPTOMS_FREQUENCY,
+        )
+    )
+
+    private fun createViewModel() {
+        viewModel = SymptomsViewModel(symptomsUiStateMapper, healthRepository)
+    }
 }

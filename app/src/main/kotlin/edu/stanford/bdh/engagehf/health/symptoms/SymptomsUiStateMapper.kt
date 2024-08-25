@@ -11,6 +11,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
+@Suppress("MagicNumber")
 class SymptomsUiStateMapper @Inject constructor(
     private val localeProvider: LocaleProvider,
 ) {
@@ -42,56 +43,44 @@ class SymptomsUiStateMapper @Inject constructor(
                     formattedDate = newestHealthData.formattedDate,
                     selectedSymptomType = selectedSymptomType,
                     isSelectedSymptomTypeDropdownExpanded = false
-                )
+                ),
+                valueFormatter = ::valueFormatter
             )
         )
+    }
+
+    private fun valueFormatter(value: Float): String {
+        val year = value.toInt()
+        val dayOfYearFraction = value - year
+        val dayOfYear = (dayOfYearFraction * 365).toInt() + 1
+        val date = ZonedDateTime.of(year, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault())
+            .plusDays((dayOfYear - 1).toLong())
+        return date.format(DateTimeFormatter.ofPattern("MMM dd"))
     }
 
     private fun mapNewestHealthData(
         symptomScores: List<SymptomScore>,
         selectedSymptomType: SymptomType,
     ): NewestHealthData {
-        val newestData = symptomScores.maxByOrNull { it.date }
+        val newestData = symptomScores.maxBy { it.date }
         return NewestHealthData(
             formattedValue = formatValue(newestData, selectedSymptomType),
-            formattedDate = formatHeaderDate(newestData?.date)
+            formattedDate = formatHeaderDate(newestData.date)
         )
     }
 
-    private fun formatValue(newestData: SymptomScore?, selectedSymptomType: SymptomType): String {
+    private fun formatValue(newestData: SymptomScore, selectedSymptomType: SymptomType): String {
         return when (selectedSymptomType) {
-            SymptomType.OVERALL -> formatOverallScore(newestData)
-            SymptomType.PHYSICAL_LIMITS -> formatPhysicalLimitsScore(newestData)
-            SymptomType.SOCIAL_LIMITS -> formatSocialLimitsScore(newestData)
-            SymptomType.QUALITY_OF_LIFE -> formatQualityOfLifeScore(newestData)
-            SymptomType.SYMPTOMS_FREQUENCY -> formatSymptomsFrequencyScore(newestData)
-            SymptomType.DIZZINESS -> formatDizzinessScore(newestData)
+            SymptomType.OVERALL -> newestData.overallScore.asPercent()
+            SymptomType.PHYSICAL_LIMITS -> newestData.physicalLimitsScore.asPercent()
+            SymptomType.SOCIAL_LIMITS -> newestData.socialLimitsScore.asPercent()
+            SymptomType.QUALITY_OF_LIFE -> newestData.qualityOfLifeScore.asPercent()
+            SymptomType.SYMPTOMS_FREQUENCY -> newestData.symptomFrequencyScore.asPercent()
+            SymptomType.DIZZINESS -> newestData.dizzinessScore?.toString() ?: NOT_AVAILABLE
         }
     }
 
-    private fun formatOverallScore(newestData: SymptomScore?): String {
-        return newestData?.overallScore?.let { "$it%" } ?: NOT_AVAILABLE
-    }
-
-    private fun formatPhysicalLimitsScore(newestData: SymptomScore?): String {
-        return newestData?.physicalLimitsScore?.let { "$it%" } ?: NOT_AVAILABLE
-    }
-
-    private fun formatSocialLimitsScore(newestData: SymptomScore?): String {
-        return newestData?.socialLimitsScore?.let { "$it%" } ?: NOT_AVAILABLE
-    }
-
-    private fun formatQualityOfLifeScore(newestData: SymptomScore?): String {
-        return newestData?.qualityOfLifeScore?.let { "$it%" } ?: NOT_AVAILABLE
-    }
-
-    private fun formatSymptomsFrequencyScore(newestData: SymptomScore?): String {
-        return newestData?.symptomFrequencyScore?.let { "$it%" } ?: NOT_AVAILABLE
-    }
-
-    private fun formatDizzinessScore(newestData: SymptomScore?): String {
-        return newestData?.dizzinessScore?.toString() ?: NOT_AVAILABLE
-    }
+    private fun Double?.asPercent(): String = this?.let { "$it%" } ?: NOT_AVAILABLE
 
     private fun formatHeaderDate(timestamp: Timestamp?): String {
         val date = timestamp?.toInstant()?.atZone(ZoneId.systemDefault())
@@ -124,7 +113,6 @@ class SymptomsUiStateMapper @Inject constructor(
 
                 val trend =
                     if (previousValue != null && currentValue != null && previousValue != 0f) {
-                        @Suppress("MagicNumber")
                         ((currentValue - previousValue) / previousValue) * 100
                     } else {
                         null
@@ -172,7 +160,6 @@ class SymptomsUiStateMapper @Inject constructor(
             if (filteredScores.isNotEmpty()) {
                 val averageScore = filteredScores.average().toFloat()
                 yValues.add(averageScore)
-                @Suppress("MagicNumber")
                 val xValue = date.year.toFloat() + (date.dayOfYear - 1) / 365f
                 xValues.add(xValue.roundToDecimalPlaces(places = 2))
             }

@@ -52,6 +52,7 @@ class SymptomsUiStateMapperTest {
         assertThat(successState.data.tableData).isNotEmpty()
         assertThat(successState.data.headerData.formattedValue).isNotEmpty()
         assertThat(successState.data.headerData.formattedDate).isNotEmpty()
+        assertThat(successState.data.valueFormatter(0f)).isNotEmpty()
     }
 
     @Test

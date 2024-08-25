@@ -80,9 +80,6 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun SymptomsPage() {
@@ -213,16 +210,8 @@ fun SymptomsChart(
         shape = Shape.Pill,
     )
 
-    @Suppress("MagicNumber")
     val valueFormatter: (Float, ChartValues, AxisPosition.Vertical?) -> CharSequence =
-        { value, _, _ ->
-            val year = value.toInt()
-            val dayOfYearFraction = value - year
-            val dayOfYear = (dayOfYearFraction * 365).toInt() + 1
-            val date = ZonedDateTime.of(year, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault())
-                .plusDays((dayOfYear - 1).toLong())
-            date.format(DateTimeFormatter.ofPattern("MMM dd"))
-        }
+        { value, _, _ -> uiState.valueFormatter(value) }
 
     val marker = remember {
         DefaultCartesianMarker(
