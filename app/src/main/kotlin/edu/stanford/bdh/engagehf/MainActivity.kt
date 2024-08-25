@@ -1,7 +1,6 @@
 package edu.stanford.bdh.engagehf
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
@@ -14,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -26,6 +26,7 @@ import edu.stanford.bdh.engagehf.navigation.RegisterParams
 import edu.stanford.bdh.engagehf.navigation.Routes
 import edu.stanford.bdh.engagehf.navigation.screens.AppScreen
 import edu.stanford.bdh.engagehf.navigation.serializableType
+import edu.stanford.bdh.engagehf.questionnaire.QuestionnaireScreen
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.SpeziTheme
@@ -48,7 +49,7 @@ import javax.inject.Inject
 import kotlin.reflect.typeOf
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
 
     private val viewModel by viewModels<MainActivityViewModel>()
 
@@ -74,6 +75,7 @@ class MainActivity : ComponentActivity() {
                             navHostController = navHostController,
                             startDestination = uiState.startDestination
                         )
+                        setTheme(R.style.Theme_Spezi_Content)
                     }
                 }
             }
@@ -134,6 +136,14 @@ class MainActivity : ComponentActivity() {
             AppScreen()
         }
 
+        composable<Routes.QuestionnaireScreen>(
+            typeMap = mapOf(
+                typeOf<String>() to serializableType<String>()
+            )
+        ) {
+            QuestionnaireScreen()
+        }
+
         composable<Routes.InvitationCodeScreen> {
             InvitationCodeScreen()
         }
@@ -165,6 +175,10 @@ class MainActivity : ComponentActivity() {
                                     password = event.password
                                 ),
                             )
+                        )
+
+                        is AppNavigationEvent.QuestionnaireScreen -> navHostController.navigate(
+                            Routes.QuestionnaireScreen(event.questionnaireId)
                         )
 
                         is AccountNavigationEvent.LoginScreen -> navHostController.navigate(

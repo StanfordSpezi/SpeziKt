@@ -140,7 +140,7 @@ private fun BoxScope.AddRecordFloatingIcon(
     tab: HealthTab,
     onAction: (HealthViewModel.Action) -> Unit,
 ) {
-    if (tab != HealthTab.Weight) return
+    if (tab == HealthTab.Symptoms) return
     FloatingActionButton(
         onClick = {
             onAction(HealthViewModel.Action.AddRecord(tab = tab))
@@ -172,7 +172,7 @@ fun HealthTableItem(entry: TableEntryData) {
         )
         Text(
             text = entry.formattedTrend,
-            style = if (entry.isTrendPositive) {
+            style = if (entry.isTrendPositive != false) {
                 TextStyles.bodySmall.copy(color = primary)
             } else {
                 TextStyles.bodySmall.copy(

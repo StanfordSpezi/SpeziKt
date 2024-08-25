@@ -66,7 +66,7 @@ class MedicationUiStateMapper @Inject constructor(
         } else {
             schedules.map { schedule ->
                 val values = schedule
-                    .dosage
+                    .quantity
                     .map { it.toString() }
                     .joinToString("/") { it }
                 val frequency = when (val value = schedule.frequency) {

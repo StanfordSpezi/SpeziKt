@@ -7,8 +7,11 @@ import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
 import edu.stanford.spezi.core.utils.LocaleProvider
+import edu.stanford.spezi.core.utils.extensions.roundToDecimalPlaces
 import java.time.DayOfWeek
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
@@ -27,6 +30,11 @@ class HealthUiStateMapper @Inject constructor(
         selectedTimeRange: TimeRange,
     ): HealthUiState {
         val engageRecords = records.map { EngageRecord.from(it) }
+            .filter {
+                it.zonedDateTime.isAfter(
+                    ZonedDateTime.now().minusMonths(getMaxMonths(selectedTimeRange))
+                )
+            }
         return if (engageRecords.isEmpty()) {
             HealthUiState.NoData(message = "No data available")
         } else {
@@ -67,7 +75,8 @@ class HealthUiStateMapper @Inject constructor(
             tableData = tableData,
             newestData = newestData,
             averageData = getAverageData(tableData),
-            infoRowData = generateHealthHeaderData(selectedTimeRange, newestData)
+            infoRowData = generateHealthHeaderData(selectedTimeRange, newestData),
+            valueFormatter = { valueFormatter(it, selectedTimeRange) }
         )
     }
 
@@ -100,10 +109,10 @@ class HealthUiStateMapper @Inject constructor(
 
     private fun mapXValue(selectedTimeRange: TimeRange, zonedDateTime: ZonedDateTime): Float {
         return when (selectedTimeRange) {
-            TimeRange.DAILY -> zonedDateTime.year.toFloat() + (zonedDateTime.dayOfYear - 1) / 365f
+            TimeRange.DAILY -> (zonedDateTime.year.toFloat() + (zonedDateTime.dayOfYear - 1) / 365f) * 10
             TimeRange.WEEKLY -> (zonedDateTime.toEpochSecond() / (7 * 24 * 60 * 60)).toFloat()
             TimeRange.MONTHLY -> zonedDateTime.year.toFloat() + (zonedDateTime.monthValue - 1) / 12f
-        }
+        }.roundToDecimalPlaces(places = 2)
     }
 
     private fun groupRecordsByTimeRange(
@@ -257,8 +266,8 @@ class HealthUiStateMapper @Inject constructor(
 
     private fun getAverageData(tableData: List<TableEntryData>) =
         AverageHealthData(
-            value = tableData.map { it.value }.average().toFloat(),
-            formattedValue = "Average " + formatValue(tableData.map { it.value }.average()),
+            value = tableData.mapNotNull { it.value }.average().toFloat(),
+            formattedValue = "Average " + formatValue(tableData.mapNotNull { it.value }.average()),
         )
 
     private fun getNewestRecord(records: List<EngageRecord>): NewestHealthData? {
@@ -308,16 +317,34 @@ class HealthUiStateMapper @Inject constructor(
 
     private fun getDefaultLocale() = localeProvider.getDefaultLocale()
 
-    companion object {
-        private const val DAILY_MAX_MONTHS = 1L
-        private const val WEEKLY_MAX_MONTHS = 3L
-        private const val MONTHLY_MAX_MONTHS = 6L
+    private fun valueFormatter(value: Float, timeRange: TimeRange): String {
+        val date = when (timeRange) {
+            TimeRange.DAILY -> {
+                val actualValue = value * 10
+                val year = actualValue.toInt()
+                val dayOfYearFraction = actualValue - year
+                val dayOfYear = (dayOfYearFraction * 365).toInt() + 1
+                ZonedDateTime.of(year, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault())
+                    .plusDays((dayOfYear - 1).toLong())
+            }
 
-        const val EPOCH_SECONDS_DIVISOR = 60.0f
-        const val ADAPTIVE_Y_VALUES_FRACTION = 1.05f
+            TimeRange.WEEKLY -> ZonedDateTime.ofInstant(
+                Instant.ofEpochSecond(
+                    value.toLong() * 7 * 24 * 60 * 60
+                ), ZoneId.systemDefault()
+            )
 
-        private const val MONTH_DAY_TIME_PATTERN = "MMM dd HH:mm"
-        private const val MONTH_YEAR_PATTERN = "MMM yy"
+            TimeRange.MONTHLY -> {
+                val year = value.toInt()
+                val month = ((value - year) * 12).toInt() + 1
+                ZonedDateTime.of(year, month, 1, 0, 0, 0, 0, ZoneId.systemDefault())
+            }
+        }
+        val pattern = when (timeRange) {
+            TimeRange.DAILY, TimeRange.WEEKLY -> "MMM dd"
+            TimeRange.MONTHLY -> "MMM yy"
+        }
+        return date.format(DateTimeFormatter.ofPattern(pattern))
     }
 
     private data class ValueUnit(val value: Double, val unit: String)
@@ -346,5 +373,16 @@ class HealthUiStateMapper @Inject constructor(
                 else -> error("Unsupported record type ${record::javaClass.name}")
             }
         }
+    }
+
+    companion object {
+        private const val DAILY_MAX_MONTHS = 1L
+        private const val WEEKLY_MAX_MONTHS = 3L
+        private const val MONTHLY_MAX_MONTHS = 6L
+
+        const val ADAPTIVE_Y_VALUES_FRACTION = 1.05f
+
+        private const val MONTH_DAY_TIME_PATTERN = "MMM dd HH:mm"
+        private const val MONTH_YEAR_PATTERN = "MMM yy"
     }
 }

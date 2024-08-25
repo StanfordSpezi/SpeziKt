@@ -18,6 +18,7 @@ import edu.stanford.bdh.engagehf.messages.MessageRepository
 import edu.stanford.bdh.engagehf.messages.MessageType
 import edu.stanford.bdh.engagehf.messages.MessagesAction
 import edu.stanford.bdh.engagehf.messages.VideoSectionVideo
+import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
 import edu.stanford.spezi.core.bluetooth.api.BLEService
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
@@ -390,27 +391,6 @@ class BluetoothViewModelTest {
     }
 
     @Test
-    fun `it should do nothing on MessageItemClicked with for TODO actions`() {
-        // given
-        val action = Action.MessageItemClicked(message = message)
-        val todoActions = listOf(
-            MessagesAction.QuestionnaireAction(questionnaire = mockk()),
-        )
-        createViewModel()
-        val initialState = bluetoothViewModel.uiState.value
-
-        todoActions.forEach {
-            every { uiStateMapper.mapMessagesAction(messageAction) } returns Result.success(it)
-
-            // when
-            bluetoothViewModel.onAction(action = action)
-
-            // then
-            assertThat(bluetoothViewModel.uiState.value).isEqualTo(initialState)
-        }
-    }
-
-    @Test
     fun `it should handle MeasurementsAction correctly`() {
         // given
         val action = Action.MessageItemClicked(message = message)
@@ -424,6 +404,23 @@ class BluetoothViewModelTest {
 
         // then
         verify { appScreenEvents.emit(AppScreenEvents.Event.DoNewMeasurement) }
+    }
+
+    @Test
+    fun `it should navigate to questionnaire screen on QuestionnaireAction`() {
+        // given
+        val questionnaireId = "1"
+        val action = Action.MessageItemClicked(message = message)
+        every {
+            uiStateMapper.mapMessagesAction(messageAction)
+        } returns Result.success(MessagesAction.QuestionnaireAction(questionnaireId))
+        createViewModel()
+
+        // when
+        bluetoothViewModel.onAction(action = action)
+
+        // then
+        verify { navigator.navigateTo(AppNavigationEvent.QuestionnaireScreen(questionnaireId)) }
     }
 
     @Test

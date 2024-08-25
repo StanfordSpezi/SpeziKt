@@ -55,7 +55,7 @@ class MedicationRecommendationMapper @Inject constructor(
         return dosagesMap?.map { currentMap ->
             DoseSchedule(
                 frequency = (currentMap["frequency"] as? Number)?.toDouble() ?: 0.0,
-                dosage = currentMap["quantity"] as? List<Double> ?: emptyList()
+                quantity = currentMap["quantity"] as? List<Double> ?: emptyList()
             )
         } ?: emptyList()
     }

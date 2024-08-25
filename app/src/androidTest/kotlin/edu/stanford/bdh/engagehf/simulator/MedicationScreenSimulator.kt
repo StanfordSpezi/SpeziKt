@@ -4,6 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import edu.stanford.bdh.engagehf.medication.ui.MedicationScreenTestIdentifier
+import edu.stanford.spezi.core.design.component.CenteredBoxContentTestIdentifier
 import edu.stanford.spezi.core.testing.onNodeWithIdentifier
 
 class MedicationScreenSimulator(
@@ -16,7 +17,7 @@ class MedicationScreenSimulator(
         composeTestRule.onNodeWithIdentifier(MedicationScreenTestIdentifier.LOADING)
 
     private val centeredContent =
-        composeTestRule.onNodeWithIdentifier(MedicationScreenTestIdentifier.CENTERED_CONTENT)
+        composeTestRule.onNodeWithIdentifier(CenteredBoxContentTestIdentifier.ROOT)
 
     private val errorMessage =
         composeTestRule.onNodeWithIdentifier(MedicationScreenTestIdentifier.ERROR_TEXT)

@@ -55,12 +55,10 @@ class WeightViewModel @Inject internal constructor(
 
     fun onAction(healthAction: HealthAction) {
         when (healthAction) {
-            HealthAction.AddRecord -> {
-                appScreenEvents.emit(AppScreenEvents.Event.AddWeightRecord)
-            }
-
             is HealthAction.DeleteRecord -> {
-                logger.i { "WeightViewModel.onAction Delete Weight Record: ${healthAction.recordId}" }
+                viewModelScope.launch {
+                    healthRepository.deleteWeightRecord(healthAction.recordId)
+                }
             }
 
             is HealthAction.UpdateTimeRange -> {

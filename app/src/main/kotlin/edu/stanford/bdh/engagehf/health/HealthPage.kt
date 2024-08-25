@@ -1,7 +1,5 @@
 package edu.stanford.bdh.engagehf.health
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +9,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -20,8 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -32,13 +29,12 @@ import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.components.HealthChart
 import edu.stanford.bdh.engagehf.health.components.SwipeBox
 import edu.stanford.bdh.engagehf.health.components.TimeRangeDropdown
-import edu.stanford.spezi.core.design.theme.Colors.onPrimary
+import edu.stanford.spezi.core.design.component.CenteredBoxContent
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.utils.ComposableBlock
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import java.time.ZonedDateTime
 
@@ -49,7 +45,7 @@ fun HealthPage(
 ) {
     when (uiState) {
         is HealthUiState.Error -> {
-            CenteredContent {
+            CenteredBoxContent {
                 Text(
                     text = uiState.message,
                     style = TextStyles.headlineMedium,
@@ -60,7 +56,7 @@ fun HealthPage(
         }
 
         HealthUiState.Loading -> {
-            CenteredContent {
+            CenteredBoxContent {
                 CircularProgressIndicator(
                     color = primary,
                     modifier = Modifier.testIdentifier(HealthPageTestIdentifier.PROGRESS_INDICATOR)
@@ -69,7 +65,7 @@ fun HealthPage(
         }
 
         is HealthUiState.NoData -> {
-            CenteredContent {
+            CenteredBoxContent {
                 Text(
                     text = uiState.message,
                     textAlign = TextAlign.Center,
@@ -138,18 +134,6 @@ private fun LazyListScope.listHeader(
 }
 
 @Composable
-private fun CenteredContent(content: ComposableBlock) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .testIdentifier(HealthPageTestIdentifier.CENTERED_CONTENT),
-        contentAlignment = Alignment.Center,
-    ) {
-        content()
-    }
-}
-
-@Composable
 private fun InfoRow(
     infoRowData: InfoRowData,
     onTimeRangeDropdownAction: (Boolean) -> Unit,
@@ -184,14 +168,9 @@ private fun InfoRow(
             onClick = onInfoAction
         ) {
             Icon(
-                painter = painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_info),
+                imageVector = Icons.Filled.Info,
                 contentDescription = stringResource(R.string.info_icon_content_description),
-                modifier = Modifier
-                    .size(Sizes.Icon.medium)
-                    .background(primary, shape = CircleShape)
-                    .shadow(Spacings.small, CircleShape)
-                    .padding(Spacings.small),
-                tint = onPrimary
+                tint = primary
             )
         }
     }
@@ -199,7 +178,6 @@ private fun InfoRow(
 
 enum class HealthPageTestIdentifier {
     ROOT,
-    CENTERED_CONTENT,
     ERROR_MESSAGE,
     NO_DATA_MESSAGE,
     PROGRESS_INDICATOR,
@@ -217,6 +195,7 @@ private class HealthPagePreviewProvider : PreviewParameterProvider<HealthUiState
             HealthUiState.NoData("No data available"),
             HealthUiState.Success(
                 data = HealthUiData(
+                    valueFormatter = { "Jan 24" },
                     infoRowData = InfoRowData(
                         selectedTimeRange = TimeRange.MONTHLY,
                         formattedValue = "70.0 kg",

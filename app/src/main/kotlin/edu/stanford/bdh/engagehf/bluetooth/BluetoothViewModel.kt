@@ -13,6 +13,7 @@ import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.messages.HealthSummaryService
 import edu.stanford.bdh.engagehf.messages.MessageRepository
 import edu.stanford.bdh.engagehf.messages.MessagesAction
+import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
 import edu.stanford.spezi.core.bluetooth.api.BLEService
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
@@ -176,7 +177,12 @@ class BluetoothViewModel @Inject internal constructor(
                                 )
                             }
 
-                            is MessagesAction.QuestionnaireAction -> { /* TODO */
+                            is MessagesAction.QuestionnaireAction -> {
+                                navigator.navigateTo(
+                                    AppNavigationEvent.QuestionnaireScreen(
+                                        mappedAction.questionnaireId
+                                    )
+                                )
                             }
 
                             is MessagesAction.VideoSectionAction -> {

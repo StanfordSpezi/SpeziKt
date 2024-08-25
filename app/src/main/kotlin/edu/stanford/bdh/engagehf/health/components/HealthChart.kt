@@ -31,10 +31,11 @@ import com.patrykandpatrick.vico.core.cartesian.CartesianMeasureContext
 import com.patrykandpatrick.vico.core.cartesian.HorizontalLayout
 import com.patrykandpatrick.vico.core.cartesian.Scroll
 import com.patrykandpatrick.vico.core.cartesian.Zoom
+import com.patrykandpatrick.vico.core.cartesian.axis.AxisPosition
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.AxisValueOverrider
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
+import com.patrykandpatrick.vico.core.cartesian.data.ChartValues
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.decoration.HorizontalLine
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
@@ -48,7 +49,6 @@ import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.AverageHealthData
 import edu.stanford.bdh.engagehf.health.HealthUiData
 import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.ADAPTIVE_Y_VALUES_FRACTION
-import edu.stanford.bdh.engagehf.health.TimeRange
 import edu.stanford.spezi.core.design.theme.Colors.onTertiary
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Colors.secondary
@@ -56,10 +56,6 @@ import edu.stanford.spezi.core.design.theme.Colors.tertiary
 import edu.stanford.spezi.core.design.theme.Spacings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.time.Instant
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun HealthChart(
@@ -82,9 +78,11 @@ fun HealthChart(
     }
     val shapeComponent = rememberShapeComponent(
         shape = Shape.Pill,
+        color = primary,
     )
 
-    val valueFormatter = rememberValueFormater(uiState = uiState)
+    val valueFormatter: (Float, ChartValues, AxisPosition.Vertical?) -> CharSequence =
+        { value, _, _ -> uiState.valueFormatter(value) }
 
     val marker = remember {
         DefaultCartesianMarker(
@@ -150,43 +148,6 @@ fun HealthChart(
         ),
     )
 }
-
-@Suppress("MagicNumber")
-@Composable
-private fun rememberValueFormater(
-    uiState: HealthUiData,
-): CartesianValueFormatter =
-    remember(uiState.selectedTimeRange) {
-        CartesianValueFormatter { value, _, _ ->
-            val date = when (uiState.selectedTimeRange) {
-                TimeRange.DAILY -> {
-                    val year = value.toInt()
-                    val dayOfYearFraction = value - year
-                    val dayOfYear = (dayOfYearFraction * 365).toInt() + 1
-                    ZonedDateTime.of(year, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault())
-                        .plusDays((dayOfYear - 1).toLong())
-                }
-
-                TimeRange.WEEKLY -> ZonedDateTime.ofInstant(
-                    Instant.ofEpochSecond(
-                        value.toLong() * 7 * 24 * 60 * 60
-                    ), ZoneId.systemDefault()
-                )
-
-                TimeRange.MONTHLY -> {
-                    val year = value.toInt()
-                    val month = ((value - year) * 12).toInt() + 1
-                    ZonedDateTime.of(year, month, 1, 0, 0, 0, 0, ZoneId.systemDefault())
-                }
-            }
-            val pattern = when (uiState.selectedTimeRange) {
-                TimeRange.WEEKLY -> "MMM dd"
-                TimeRange.MONTHLY -> "MMM yy"
-                TimeRange.DAILY -> "MMM dd"
-            }
-            date.format(DateTimeFormatter.ofPattern(pattern))
-        }
-    }
 
 @Composable
 private fun rememberLegend(chartData: List<AggregatedHealthData>) =

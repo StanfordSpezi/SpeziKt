@@ -10,6 +10,7 @@ data class HealthUiData(
     val newestData: NewestHealthData? = null,
     val averageData: AverageHealthData? = null,
     val infoRowData: InfoRowData,
+    val valueFormatter: (Float) -> String,
 ) {
     val selectedTimeRange = infoRowData.selectedTimeRange
 }
@@ -39,16 +40,16 @@ data class NewestHealthData(
 
 data class TableEntryData(
     val id: String?,
-    val value: Float,
+    val value: Float?,
     val secondValue: Float?,
     val formattedValues: String,
     val date: ZonedDateTime,
     val formattedDate: String,
-    val trend: Float,
+    val trend: Float?,
     val formattedTrend: String,
 ) {
-    val isTrendPositive: Boolean
-        get() = trend > 0
+    val isTrendPositive: Boolean?
+        get() = trend?.let { it > 0 }
 }
 
 data class InfoRowData(
