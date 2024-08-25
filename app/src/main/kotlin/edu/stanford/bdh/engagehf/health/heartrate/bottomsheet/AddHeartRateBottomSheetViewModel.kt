@@ -4,7 +4,7 @@ import androidx.health.connect.client.records.HeartRateRecord
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.spezi.core.utils.MessageNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class AddHeartRateBottomSheetViewModel @Inject constructor(
-    private val bottomSheetEvents: BottomSheetEvents,
+    private val appScreenEvents: AppScreenEvents,
     private val healthRepository: HealthRepository,
     private val addHeartRateBottomSheetUiStateMapper: AddHeartRateBottomSheetUiStateMapper,
     private val notifier: MessageNotifier,
@@ -30,7 +30,7 @@ internal class AddHeartRateBottomSheetViewModel @Inject constructor(
     fun onAction(action: Action) {
         when (action) {
             Action.CloseSheet -> {
-                bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
+                appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet)
             }
 
             Action.SaveHeartRate -> {
@@ -83,7 +83,7 @@ internal class AddHeartRateBottomSheetViewModel @Inject constructor(
                     healthRepository.saveRecord(heartRate).onFailure {
                         notifier.notify("Failed to save heart rate record")
                     }.onSuccess {
-                        bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
+                        appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet)
                     }
                 }
             }

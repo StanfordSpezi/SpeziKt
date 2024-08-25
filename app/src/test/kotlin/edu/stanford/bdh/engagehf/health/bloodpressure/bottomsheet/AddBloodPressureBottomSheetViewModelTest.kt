@@ -1,7 +1,7 @@
 package edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet
 
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.utils.MessageNotifier
@@ -22,14 +22,14 @@ class AddBloodPressureBottomSheetViewModelTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
-    private var bottomSheetEvents: BottomSheetEvents = mockk(relaxed = true)
+    private val appScreenEvents: AppScreenEvents = mockk(relaxed = true)
     private var healthRepository: HealthRepository = mockk(relaxed = true)
     private val uiStateMapper: AddBloodPressureBottomSheetUiStateMapper = mockk(relaxed = true)
     private val notifier: MessageNotifier = mockk(relaxed = true)
 
     private val viewModel: AddBloodPressureBottomSheetViewModel by lazy {
         AddBloodPressureBottomSheetViewModel(
-            bottomSheetEvents = bottomSheetEvents,
+            appScreenEvents = appScreenEvents,
             addBloodPressureBottomSheetUiStateMapper = uiStateMapper,
             healthRepository = healthRepository,
             notifier = notifier
@@ -75,7 +75,7 @@ class AddBloodPressureBottomSheetViewModelTest {
         viewModel.onAction(action)
 
         // then
-        verify { bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet) }
+        verify { appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet) }
     }
 
     @Test
@@ -97,7 +97,7 @@ class AddBloodPressureBottomSheetViewModelTest {
         viewModel.onAction(AddBloodPressureBottomSheetViewModel.Action.CloseSheet)
 
         // then
-        coVerify { bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet) }
+        coVerify { appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet) }
     }
 
     @Test

@@ -5,7 +5,7 @@ import androidx.health.connect.client.units.Mass
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.spezi.core.utils.MessageNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddWeightBottomSheetViewModel @Inject internal constructor(
-    private val bottomSheetEvents: BottomSheetEvents,
+    private val appScreenEvents: AppScreenEvents,
     private val uiStateMapper: AddWeightBottomSheetUiStateMapper,
     private val healthRepository: HealthRepository,
     private val notifier: MessageNotifier,
@@ -35,7 +35,7 @@ class AddWeightBottomSheetViewModel @Inject internal constructor(
             }
 
             Action.CloseSheet -> {
-                bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
+                appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet)
             }
 
             is Action.UpdateDate -> {
@@ -79,7 +79,7 @@ class AddWeightBottomSheetViewModel @Inject internal constructor(
                     healthRepository.saveRecord(it).onFailure {
                         notifier.notify("Failed to save weight record")
                     }.onSuccess {
-                        bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
+                        appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet)
                     }
                 }
             }

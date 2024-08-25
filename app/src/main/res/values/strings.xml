@@ -37,6 +37,10 @@
     <string name="health_tab_title_weight">Weight</string>
     <string name="health_tab_title_blood_pressure">BP</string>
     <string name="health_tab_title_heart_rate">Heart Rate</string>
+    <string name="close_dialog_content_description">Close dialog</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="health_summary">Health Summary</string>
+    <string name="account">Account</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="time">Time</string>

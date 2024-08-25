@@ -1,7 +1,7 @@
 package edu.stanford.bdh.engagehf.health.heartrate.bottomsheet
 
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.TimePickerState
 import edu.stanford.spezi.core.testing.CoroutineTestRule
@@ -23,14 +23,14 @@ class AddHeartRateBottomSheetViewModelTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
-    private var bottomSheetEvents: BottomSheetEvents = mockk(relaxed = true)
+    private val appScreenEvents: AppScreenEvents = mockk(relaxed = true)
     private var healthRepository: HealthRepository = mockk(relaxed = true)
     private val uiStateMapper: AddHeartRateBottomSheetUiStateMapper = mockk(relaxed = true)
     private val notifier: MessageNotifier = mockk(relaxed = true)
 
     private val viewModel: AddHeartRateBottomSheetViewModel by lazy {
         AddHeartRateBottomSheetViewModel(
-            bottomSheetEvents = bottomSheetEvents,
+            appScreenEvents = appScreenEvents,
             healthRepository = healthRepository,
             addHeartRateBottomSheetUiStateMapper = uiStateMapper,
             notifier = notifier
@@ -75,7 +75,7 @@ class AddHeartRateBottomSheetViewModelTest {
         viewModel.onAction(action)
 
         // then
-        verify { bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet) }
+        verify { appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet) }
     }
 
     @Test
@@ -97,7 +97,7 @@ class AddHeartRateBottomSheetViewModelTest {
         viewModel.onAction(AddHeartRateBottomSheetViewModel.Action.CloseSheet)
 
         // then
-        coVerify { bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet) }
+        coVerify { appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet) }
     }
 
     @Test

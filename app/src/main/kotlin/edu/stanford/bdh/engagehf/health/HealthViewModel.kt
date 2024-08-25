@@ -2,7 +2,7 @@ package edu.stanford.bdh.engagehf.health
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HealthViewModel @Inject constructor(
-    private val bottomSheetEvents: BottomSheetEvents,
+    private val appScreenEvents: AppScreenEvents,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
@@ -19,12 +19,12 @@ class HealthViewModel @Inject constructor(
         when (action) {
             is Action.AddRecord -> {
                 val event = when (action.tab) {
-                    HealthTab.Weight -> BottomSheetEvents.Event.AddWeightRecord
-                    HealthTab.BloodPressure -> BottomSheetEvents.Event.AddBloodPressureRecord
-                    HealthTab.HeartRate -> BottomSheetEvents.Event.AddHeartRateRecord
+                    HealthTab.Weight -> AppScreenEvents.Event.AddWeightRecord
+                    HealthTab.BloodPressure -> AppScreenEvents.Event.AddBloodPressureRecord
+                    HealthTab.HeartRate -> AppScreenEvents.Event.AddHeartRateRecord
                     else -> return
                 }
-                bottomSheetEvents.emit(event)
+                appScreenEvents.emit(event)
             }
 
             is Action.UpdateTab -> {

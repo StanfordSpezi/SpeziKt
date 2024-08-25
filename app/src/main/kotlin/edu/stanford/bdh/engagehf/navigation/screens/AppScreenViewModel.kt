@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
+import edu.stanford.bdh.engagehf.messages.HealthSummaryService
+import edu.stanford.spezi.module.account.manager.UserSessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -16,7 +18,9 @@ import edu.stanford.spezi.core.design.R.drawable as DesignR
 
 @HiltViewModel
 class AppScreenViewModel @Inject constructor(
-    private val bottomSheetEvents: BottomSheetEvents,
+    private val appScreenEvents: AppScreenEvents,
+    private val userSessionManager: UserSessionManager,
+    private val healthSummaryService: HealthSummaryService,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
         AppUiState(
@@ -33,46 +37,42 @@ class AppScreenViewModel @Inject constructor(
 
     private fun setup() {
         viewModelScope.launch {
-            bottomSheetEvents.events.collect { event ->
-                val (isExpanded, content) = when (event) {
-                    BottomSheetEvents.Event.NewMeasurementAction -> {
-                        true to BottomSheetContent.NEW_MEASUREMENT_RECEIVED
-                    }
+            _uiState.update { uiState ->
+                val userInfo = userSessionManager.getUserInfo()
+                uiState.copy(
+                    accountUiState = uiState.accountUiState.copy(
+                        email = userInfo.email,
+                        name = userInfo.name,
+                        initials = userInfo.name?.split(" ")
+                            ?.mapNotNull { it.firstOrNull()?.toString() }?.joinToString(""),
+                    )
+                )
+            }
 
-                    BottomSheetEvents.Event.DoNewMeasurement -> {
-                        true to BottomSheetContent.DO_NEW_MEASUREMENT
+            appScreenEvents.events.collect { event ->
+                if (event is AppScreenEvents.Event.NavigateToTab) {
+                    _uiState.update {
+                        it.copy(selectedItem = event.bottomBarItem)
                     }
+                } else {
+                    val bottomSheetContent = when (event) {
+                        AppScreenEvents.Event.NewMeasurementAction ->
+                            BottomSheetContent.NEW_MEASUREMENT_RECEIVED
 
-                    BottomSheetEvents.Event.CloseBottomSheet -> {
-                        false to null
-                    }
+                        AppScreenEvents.Event.DoNewMeasurement ->
+                            BottomSheetContent.DO_NEW_MEASUREMENT
 
-                    BottomSheetEvents.Event.WeightDescriptionBottomSheet -> {
-                        true to BottomSheetContent.WEIGHT_DESCRIPTION_INFO
-                    }
+                        AppScreenEvents.Event.WeightDescriptionBottomSheet ->
+                            BottomSheetContent.WEIGHT_DESCRIPTION_INFO
 
-                    BottomSheetEvents.Event.AddWeightRecord -> {
-                        true to BottomSheetContent.ADD_WEIGHT_RECORD
-                    }
+                        AppScreenEvents.Event.AddWeightRecord ->
+                            BottomSheetContent.ADD_WEIGHT_RECORD
 
-                    BottomSheetEvents.Event.AddBloodPressureRecord -> {
-                        true to BottomSheetContent.ADD_BLOOD_PRESSURE_RECORD
+                        else -> null
                     }
-
-                    BottomSheetEvents.Event.AddHeartRateRecord -> {
-                        true to BottomSheetContent.ADD_HEART_RATE_RECORD
+                    _uiState.update {
+                        it.copy(bottomSheetContent = bottomSheetContent)
                     }
-
-                    BottomSheetEvents.Event.BloodPressureDescriptionBottomSheet -> {
-                        true to BottomSheetContent.BLOOD_PRESSURE_DESCRIPTION_INFO
-                    }
-
-                    BottomSheetEvents.Event.HeartRateDescriptionBottomSheet -> {
-                        true to BottomSheetContent.HEART_RATE_DESCRIPTION_INFO
-                    }
-                }
-                _uiState.update {
-                    it.copy(isBottomSheetExpanded = isExpanded, bottomSheetContent = content)
                 }
             }
         }
@@ -84,8 +84,38 @@ class AppScreenViewModel @Inject constructor(
                 _uiState.update { it.copy(selectedItem = action.selectedBottomBarItem) }
             }
 
-            is Action.UpdateBottomSheetState -> {
-                _uiState.update { it.copy(isBottomSheetExpanded = action.isExpanded) }
+            is Action.ShowAccountDialog -> {
+                _uiState.update { it.copy(accountUiState = it.accountUiState.copy(showDialog = action.showDialog)) }
+            }
+
+            Action.ShowHealthSummary -> {
+                viewModelScope.launch {
+                    _uiState.update {
+                        it.copy(
+                            accountUiState = it.accountUiState.copy(
+                                isHealthSummaryLoading = true
+                            )
+                        )
+                    }
+                    healthSummaryService.generateHealthSummaryPdf()
+                    _uiState.update {
+                        it.copy(
+                            accountUiState = it.accountUiState.copy(
+                                isHealthSummaryLoading = false,
+                                showDialog = false
+                            )
+                        )
+                    }
+                }
+            }
+
+            Action.SignOut -> {
+                _uiState.update { it.copy(accountUiState = it.accountUiState.copy(showDialog = false)) }
+                /* TODO: Implement sign out */
+            }
+
+            Action.DismissBottomSheet -> {
+                _uiState.update { it.copy(bottomSheetContent = null) }
             }
         }
     }
@@ -94,8 +124,16 @@ class AppScreenViewModel @Inject constructor(
 data class AppUiState(
     val items: List<BottomBarItem>,
     val selectedItem: BottomBarItem,
-    val isBottomSheetExpanded: Boolean = false,
     val bottomSheetContent: BottomSheetContent? = null,
+    val accountUiState: AccountUiState = AccountUiState(),
+)
+
+data class AccountUiState(
+    val showDialog: Boolean = false,
+    val email: String = "",
+    val name: String? = null,
+    val initials: String? = null,
+    val isHealthSummaryLoading: Boolean = false,
 )
 
 enum class BottomSheetContent {
@@ -111,7 +149,10 @@ enum class BottomSheetContent {
 
 sealed interface Action {
     data class UpdateSelectedBottomBarItem(val selectedBottomBarItem: BottomBarItem) : Action
-    data class UpdateBottomSheetState(val isExpanded: Boolean) : Action
+    data object ShowHealthSummary : Action
+    data object SignOut : Action
+    data class ShowAccountDialog(val showDialog: Boolean) : Action
+    data object DismissBottomSheet : Action
 }
 
 enum class BottomBarItem(

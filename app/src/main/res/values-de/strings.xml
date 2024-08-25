@@ -21,7 +21,7 @@
     <string name="medications_no_recommendations">Keine Empfehlungen für Medikamente</string>
     <string name="dosage_information_dose_row_current_dose">Aktuelle Dosis:</string>
     <string name="dosage_information_dose_row_target_dose">Ziel Dosis:</string>
-    <string name="dosage_information_not_available">K.A.</string>
+    <string name="dosage_information_not_available">k.A.</string>
     <string name="medication_progress_bar_current">Aktuell</string>
     <string name="medication_progress_bar_target">Ziel</string>
     <string name="time_range_daily">Täglich</string>
@@ -58,4 +58,8 @@
     <string name="blood_pressure">Blutdruck</string>
     <string name="measurement_details">ANGABEN ZUR MESSUNG</string>
     <string name="heart_rate">Herzfrequenz</string>
+    <string name="close_dialog_content_description">Dialog schließen</string>
+    <string name="sign_out">Ausloggen</string>
+    <string name="health_summary">Gesundheitszusammenfassung</string>
+    <string name="account">Account</string>
 </resources>

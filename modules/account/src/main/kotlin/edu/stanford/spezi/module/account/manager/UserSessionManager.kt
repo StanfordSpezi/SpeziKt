@@ -21,6 +21,7 @@ interface UserSessionManager {
     suspend fun getUserState(): UserState
     fun observeUserState(): Flow<UserState>
     fun getUserUid(): String?
+    fun getUserInfo(): UserInfo
 }
 
 @Singleton
@@ -32,19 +33,20 @@ internal class UserSessionManagerImpl @Inject constructor(
 ) : UserSessionManager {
     private val logger by speziLogger()
 
-    override suspend fun uploadConsentPdf(pdfBytes: ByteArray): Result<Unit> = withContext(ioDispatcher) {
-        runCatching {
-            val currentUser = firebaseAuth.currentUser ?: error("User not available")
-            val inputStream = ByteArrayInputStream(pdfBytes)
-            logger.i { "Uploading file to Firebase Storage" }
-            val uploaded = firebaseStorage
-                .getReference("users/${currentUser.uid}/consent/consent.pdf")
-                .putStream(inputStream)
-                .await().task.isSuccessful
+    override suspend fun uploadConsentPdf(pdfBytes: ByteArray): Result<Unit> =
+        withContext(ioDispatcher) {
+            runCatching {
+                val currentUser = firebaseAuth.currentUser ?: error("User not available")
+                val inputStream = ByteArrayInputStream(pdfBytes)
+                logger.i { "Uploading file to Firebase Storage" }
+                val uploaded = firebaseStorage
+                    .getReference("users/${currentUser.uid}/consent/consent.pdf")
+                    .putStream(inputStream)
+                    .await().task.isSuccessful
 
-            if (!uploaded) error("Failed to upload consent.pdf")
+                if (!uploaded) error("Failed to upload consent.pdf")
+            }
         }
-    }
 
     override suspend fun getUserState(): UserState {
         val user = firebaseAuth.currentUser
@@ -68,6 +70,14 @@ internal class UserSessionManagerImpl @Inject constructor(
     }
 
     override fun getUserUid(): String? = firebaseAuth.uid
+
+    override fun getUserInfo(): UserInfo {
+        val user = firebaseAuth.currentUser
+        return UserInfo(
+            email = user?.email ?: "",
+            name = user?.displayName?.takeIf { it.isNotBlank() },
+        )
+    }
 
     private suspend fun hasConsented(): Boolean = withContext(ioDispatcher) {
         runCatching {

@@ -3,7 +3,7 @@ package edu.stanford.bdh.engagehf.health.bloodpressure
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthAction
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.HealthUiState
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class BloodPressureViewModel @Inject internal constructor(
     private val uiStateMapper: HealthUiStateMapper,
     private val healthRepository: HealthRepository,
-    private val bottomSheetEvents: BottomSheetEvents,
+    private val appScreenEvents: AppScreenEvents,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<HealthUiState>(HealthUiState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -56,7 +56,7 @@ class BloodPressureViewModel @Inject internal constructor(
             }
 
             HealthAction.DescriptionBottomSheet -> {
-                bottomSheetEvents.emit(BottomSheetEvents.Event.BloodPressureDescriptionBottomSheet)
+                appScreenEvents.emit(AppScreenEvents.Event.BloodPressureDescriptionBottomSheet)
             }
 
             is HealthAction.ToggleTimeRangeDropdown -> {

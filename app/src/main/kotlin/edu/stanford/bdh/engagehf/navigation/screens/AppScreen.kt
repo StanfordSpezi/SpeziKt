@@ -1,6 +1,8 @@
 package edu.stanford.bdh.engagehf.navigation.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.BottomSheetScaffoldState
@@ -19,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -35,9 +38,13 @@ import edu.stanford.bdh.engagehf.health.heartrate.bottomsheet.HeartRateDescripti
 import edu.stanford.bdh.engagehf.health.weight.bottomsheet.AddWeightBottomSheet
 import edu.stanford.bdh.engagehf.health.weight.bottomsheet.WeightDescriptionBottomSheet
 import edu.stanford.bdh.engagehf.medication.ui.MedicationScreen
+import edu.stanford.bdh.engagehf.navigation.components.AccountTopAppBarButton
 import edu.stanford.spezi.core.design.component.AppTopAppBar
+import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.modules.education.videos.EducationScreen
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @Composable
@@ -60,20 +67,21 @@ fun AppScreen(
         bottomSheetState = rememberModalBottomSheetState()
     )
 
-    LaunchedEffect(key1 = uiState.isBottomSheetExpanded) {
+    LaunchedEffect(key1 = uiState.bottomSheetContent) {
         launch {
-            if (uiState.isBottomSheetExpanded) {
+            if (uiState.bottomSheetContent != null) {
                 bottomSheetScaffoldState.bottomSheetState.expand()
             } else {
                 bottomSheetScaffoldState.bottomSheetState.hide()
             }
         }
     }
-
     LaunchedEffect(bottomSheetScaffoldState.bottomSheetState) {
         snapshotFlow { bottomSheetScaffoldState.bottomSheetState.currentValue }
-            .collect { state ->
-                onAction(Action.UpdateBottomSheetState(isExpanded = state == SheetValue.Expanded))
+            .filter { it == SheetValue.Hidden }
+            .distinctUntilChanged()
+            .collect {
+                onAction(Action.DismissBottomSheet)
             }
     }
 
@@ -104,13 +112,24 @@ fun BottomSheetScaffoldContent(
                 AppTopAppBar(
                     modifier = Modifier.testIdentifier(identifier = AppScreenTestIdentifier.TOP_APP_BAR),
                     title = {
-                        Text(
-                            text = stringResource(id = uiState.selectedItem.label),
-                            modifier = Modifier.testIdentifier(
-                                AppScreenTestIdentifier.TOP_APP_BAR_TITLE
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(end = Spacings.small),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = stringResource(id = uiState.selectedItem.label),
+                                modifier = Modifier.testIdentifier(
+                                    AppScreenTestIdentifier.TOP_APP_BAR_TITLE
+                                )
                             )
-                        )
-                    })
+                        }
+                    },
+                    actions = {
+                        AccountTopAppBarButton(uiState.accountUiState, onAction = onAction)
+                    }
+                )
             },
             bottomBar = {
                 Column {
@@ -128,7 +147,13 @@ fun BottomSheetScaffoldContent(
                                 ),
                                 icon = {
                                     Icon(
-                                        painter = painterResource(id = if (uiState.selectedItem == item) item.selectedIcon else item.icon),
+                                        painter = painterResource(
+                                            id = if (uiState.selectedItem == item) {
+                                                item.selectedIcon
+                                            } else {
+                                                item.icon
+                                            }
+                                        ),
                                         contentDescription = null
                                     )
                                 },

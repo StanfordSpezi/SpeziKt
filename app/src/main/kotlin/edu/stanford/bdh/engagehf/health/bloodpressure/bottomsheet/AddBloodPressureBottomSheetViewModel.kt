@@ -5,7 +5,7 @@ import androidx.health.connect.client.units.Pressure
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.spezi.core.utils.MessageNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class AddBloodPressureBottomSheetViewModel @Inject constructor(
-    private val bottomSheetEvents: BottomSheetEvents,
+    private val appScreenEvents: AppScreenEvents,
     private val addBloodPressureBottomSheetUiStateMapper: AddBloodPressureBottomSheetUiStateMapper,
     private val healthRepository: HealthRepository,
     private val notifier: MessageNotifier,
@@ -62,7 +62,7 @@ internal class AddBloodPressureBottomSheetViewModel @Inject constructor(
             }
 
             Action.CloseSheet -> {
-                bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
+                appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet)
             }
 
             Action.CloseUpdateDate -> {
@@ -112,7 +112,7 @@ internal class AddBloodPressureBottomSheetViewModel @Inject constructor(
                 healthRepository.saveRecord(bloodPressureRecord).onFailure {
                     notifier.notify("Failed to save blood pressure record")
                 }.onSuccess {
-                    bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet)
+                    appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet)
                 }
             }
         }

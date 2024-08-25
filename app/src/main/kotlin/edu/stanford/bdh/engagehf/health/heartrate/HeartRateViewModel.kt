@@ -3,7 +3,7 @@ package edu.stanford.bdh.engagehf.health.heartrate
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthAction
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.HealthUiState
@@ -20,7 +20,7 @@ import javax.inject.Inject
 class HeartRateViewModel @Inject internal constructor(
     private val uiStateMapper: HealthUiStateMapper,
     private val healthRepository: HealthRepository,
-    private val bottomSheetEvents: BottomSheetEvents,
+    private val appScreenEvents: AppScreenEvents,
 ) : ViewModel() {
     private val logger by speziLogger()
 
@@ -60,7 +60,7 @@ class HeartRateViewModel @Inject internal constructor(
             }
 
             is HealthAction.DescriptionBottomSheet -> {
-                bottomSheetEvents.emit(BottomSheetEvents.Event.HeartRateDescriptionBottomSheet)
+                appScreenEvents.emit(AppScreenEvents.Event.HeartRateDescriptionBottomSheet)
             }
 
             is HealthAction.ToggleTimeRangeDropdown -> {

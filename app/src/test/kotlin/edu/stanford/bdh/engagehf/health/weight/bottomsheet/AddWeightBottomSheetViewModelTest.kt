@@ -1,7 +1,7 @@
 package edu.stanford.bdh.engagehf.health.weight.bottomsheet
 
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.bdh.engagehf.bluetooth.component.BottomSheetEvents
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.TimePickerState
 import edu.stanford.spezi.core.testing.CoroutineTestRule
@@ -24,14 +24,14 @@ class AddWeightBottomSheetViewModelTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
-    private var bottomSheetEvents: BottomSheetEvents = mockk(relaxed = true)
+    private var appScreenEvents: AppScreenEvents = mockk(relaxed = true)
     private var healthRepository: HealthRepository = mockk(relaxed = true)
     private val uiStateMapper: AddWeightBottomSheetUiStateMapper = mockk(relaxed = true)
     private val notifier: MessageNotifier = mockk(relaxed = true)
 
     private val viewModel: AddWeightBottomSheetViewModel by lazy {
         AddWeightBottomSheetViewModel(
-            bottomSheetEvents = bottomSheetEvents,
+            appScreenEvents = appScreenEvents,
             healthRepository = healthRepository,
             uiStateMapper = uiStateMapper,
             notifier = notifier
@@ -77,7 +77,7 @@ class AddWeightBottomSheetViewModelTest {
         viewModel.onAction(action)
 
         // then
-        verify { bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet) }
+        verify { appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet) }
     }
 
     @Test
@@ -99,7 +99,7 @@ class AddWeightBottomSheetViewModelTest {
         viewModel.onAction(AddWeightBottomSheetViewModel.Action.CloseSheet)
 
         // then
-        coVerify { bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet) }
+        coVerify { appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet) }
     }
 
     @Test
@@ -129,7 +129,7 @@ class AddWeightBottomSheetViewModelTest {
 
         // then
         coVerify { healthRepository.saveRecord(any()) }
-        coVerify { bottomSheetEvents.emit(BottomSheetEvents.Event.CloseBottomSheet) }
+        coVerify { appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet) }
     }
 
     @Test
