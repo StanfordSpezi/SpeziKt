@@ -5,35 +5,35 @@ import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import edu.stanford.bdh.engagehf.health.symptoms.SymptomScore
 import edu.stanford.bdh.engagehf.observations.ObservationCollection
 import edu.stanford.bdh.engagehf.observations.ObservationCollectionProvider
 import edu.stanford.healthconnectonfhir.ObservationsDocumentMapper
+import edu.stanford.healthconnectonfhir.RecordToObservationMapper
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Date
 import javax.inject.Inject
 
 class HealthRepository @Inject constructor(
+    private val firestore: FirebaseFirestore,
     private val observationCollectionProvider: ObservationCollectionProvider,
     private val observationsDocumentMapper: ObservationsDocumentMapper,
+    private val observationMapper: ObservationsDocumentMapper,
+    private val recordToObservationMapper: RecordToObservationMapper,
     @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
 ) {
     private val logger by speziLogger()
-
-    suspend fun observeSymptoms(): Flow<Result<List<SymptomScore>>> =
-        observeWithMapper(ObservationCollection.SYMPTOMS, DEFAULT_MAX_MONTHS_SYMPTOMS) { document ->
-            document.toObject(SymptomScore::class.java)
-        }
 
     private suspend fun <T : Record> observe(
         collection: ObservationCollection,
@@ -99,6 +99,11 @@ class HealthRepository @Inject constructor(
     suspend fun observeHeartRateRecords(): Flow<Result<List<HeartRateRecord>>> =
         observe(ObservationCollection.HEART_RATE)
 
+    suspend fun observeSymptoms(): Flow<Result<List<SymptomScore>>> =
+        observeWithMapper(ObservationCollection.SYMPTOMS, DEFAULT_MAX_MONTHS_SYMPTOMS) { document ->
+            document.toObject(SymptomScore::class.java)
+        }
+
     private fun getFormattedDate(monthsAgo: Long): String {
         return ZonedDateTime
             .now()
@@ -107,9 +112,55 @@ class HealthRepository @Inject constructor(
     }
 
     private fun getDefaultMaxMonthsSymptoms(): Timestamp {
-        val date = ZonedDateTime.now().minusMonths(DEFAULT_MAX_MONTHS_SYMPTOMS)
-        val dateAsInstant = Date.from(date.toInstant())
+        val dateAsInstant = ZonedDateTime
+            .now()
+            .minusMonths(DEFAULT_MAX_MONTHS_SYMPTOMS)
+            .toInstant()
         return Timestamp(dateAsInstant)
+    }
+
+    suspend fun saveRecord(record: Record): Result<Unit> {
+        val observations = recordToObservationMapper.map(record)
+        return withContext(ioDispatcher) {
+            runCatching {
+                val batch = firestore.batch()
+                observations.forEach { observation ->
+                    val collection = ObservationCollection.entries.find { collection ->
+                        observation.code.coding.any { it.code == collection.loinc?.code }
+                    }
+                    val data = observationMapper.map(observation = observation)
+                    collection?.let { observationCollectionProvider.getCollection(it).document() }
+                        ?.let { docRef ->
+                            batch.set(docRef, data)
+                        }
+                }
+                batch.commit().await().let { }
+            }
+        }
+    }
+
+    private suspend fun deleteRecord(
+        recordId: String,
+        observationCollection: ObservationCollection,
+    ): Result<Unit> {
+        return withContext(ioDispatcher) {
+            runCatching {
+                observationCollectionProvider.getCollection(observationCollection)
+                    .document(recordId).delete().await().let { }
+            }
+        }
+    }
+
+    suspend fun deleteWeightRecord(recordId: String): Result<Unit> {
+        return deleteRecord(recordId, ObservationCollection.BODY_WEIGHT)
+    }
+
+    suspend fun deleteBloodPressureRecord(recordId: String): Result<Unit> {
+        return deleteRecord(recordId, ObservationCollection.BLOOD_PRESSURE)
+    }
+
+    suspend fun deleteHeartRateRecord(recordId: String): Result<Unit> {
+        return deleteRecord(recordId, ObservationCollection.HEART_RATE)
     }
 
     companion object {

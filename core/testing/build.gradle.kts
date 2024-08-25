@@ -15,6 +15,7 @@ dependencies {
 
     implementation(libs.hilt.test)
     implementation(libs.androidx.test.runner)
+    implementation(libs.play.services.auth)
 
     api(libs.bundles.unit.testing)
     api(libs.bundles.compose.androidTest)

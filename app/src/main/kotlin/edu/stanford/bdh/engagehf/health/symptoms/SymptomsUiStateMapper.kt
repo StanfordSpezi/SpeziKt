@@ -5,6 +5,7 @@ import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.NewestHealthData
 import edu.stanford.bdh.engagehf.health.TableEntryData
 import edu.stanford.spezi.core.utils.LocaleProvider
+import edu.stanford.spezi.core.utils.extensions.roundToDecimalPlaces
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -172,7 +173,8 @@ class SymptomsUiStateMapper @Inject constructor(
                 val averageScore = filteredScores.average().toFloat()
                 yValues.add(averageScore)
                 @Suppress("MagicNumber")
-                xValues.add(date.year.toFloat() + (date.dayOfYear - 1) / 365f)
+                val xValue = date.year.toFloat() + (date.dayOfYear - 1) / 365f
+                xValues.add(xValue.roundToDecimalPlaces(places = 2))
             }
         }
 

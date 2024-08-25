@@ -140,7 +140,7 @@ private fun BoxScope.AddRecordFloatingIcon(
     tab: HealthTab,
     onAction: (HealthViewModel.Action) -> Unit,
 ) {
-    if (tab != HealthTab.Weight) return
+    if (tab == HealthTab.Symptoms) return
     FloatingActionButton(
         onClick = {
             onAction(HealthViewModel.Action.AddRecord(tab = tab))
