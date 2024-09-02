@@ -65,12 +65,12 @@ class HealthUiStateMapperTest {
         // Given
         val records = listOf(
             createWeightRecord(
-                year = 2024,
-                day = 1,
+                year = ZonedDateTime.now().year,
+                day = ZonedDateTime.now().dayOfMonth,
             ),
             createWeightRecord(
-                year = 2024,
-                day = 1,
+                year = ZonedDateTime.now().year,
+                day = ZonedDateTime.now().dayOfMonth,
             ),
         )
 
@@ -93,14 +93,14 @@ class HealthUiStateMapperTest {
         // Given
         val records = listOf(
             createWeightRecord(
-                day = 3,
+                day = ZonedDateTime.now().dayOfMonth,
             ),
             createWeightRecord(
-                day = 4,
+                day = ZonedDateTime.now().dayOfMonth,
             ),
             createWeightRecord(
-                month = 9,
-                day = 5,
+                month = ZonedDateTime.now().monthValue + 1,
+                day = ZonedDateTime.now().dayOfMonth + 8,
             ),
         )
 
@@ -121,8 +121,8 @@ class HealthUiStateMapperTest {
     }
 
     private fun createWeightRecord(
-        year: Int = 2024,
-        month: Int = 8,
+        year: Int = ZonedDateTime.now().year,
+        month: Int = ZonedDateTime.now().monthValue,
         day: Int = 1,
         hour: Int = 5,
         minute: Int = 4,
@@ -146,6 +146,9 @@ class HealthUiStateMapperTest {
         )
     }
 
-    private fun HealthUiStateMapper.map(records: List<Record>, timeRange: TimeRange = TimeRange.DAILY) =
+    private fun HealthUiStateMapper.map(
+        records: List<Record>,
+        timeRange: TimeRange = TimeRange.DAILY,
+    ) =
         (mapToHealthData(records, timeRange) as HealthUiState.Success).data
 }
