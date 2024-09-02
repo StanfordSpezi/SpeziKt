@@ -66,6 +66,11 @@ object Colors {
         @Composable
         @ReadOnlyComposable
         get() = scheme.error
+
+    val transparent
+        @Composable
+        @ReadOnlyComposable
+        get() = Color.Transparent
 }
 
 @Suppress("unused")
