@@ -49,8 +49,6 @@ import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import kotlinx.coroutines.flow.Flow
 import java.time.ZonedDateTime
 
-private const val BOX_CONSTRAINT_HEIGHT = 0.35f
-
 @Composable
 fun BluetoothScreen() {
     val viewModel = hiltViewModel<BluetoothViewModel>()
@@ -99,7 +97,7 @@ private fun BluetoothScreen(
                 Text(
                     text = "No messages",
                     style = TextStyles.bodyMedium,
-                    modifier = Modifier.padding(Spacings.small)
+                    modifier = Modifier.padding(vertical = Spacings.small)
                 )
             }
         }

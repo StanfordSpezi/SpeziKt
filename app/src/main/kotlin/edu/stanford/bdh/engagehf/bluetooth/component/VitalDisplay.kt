@@ -1,12 +1,13 @@
 package edu.stanford.bdh.engagehf.bluetooth.component
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,6 +19,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import edu.stanford.bdh.engagehf.bluetooth.component.VitalDisplayDataFactory.createVitalDisplayState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
+import edu.stanford.spezi.core.design.component.RectangleShimmerEffect
+import edu.stanford.spezi.core.design.component.height
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
@@ -89,14 +92,23 @@ fun VitalDisplay(
                 }
 
                 OperationStatus.PENDING -> {
-                    Box(
+                    Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(top = Spacings.small)
+                            .padding(vertical = Spacings.medium)
                             .testIdentifier(WeightDisplayTestIdentifier.PENDING),
-                        contentAlignment = Alignment.Center
+                        verticalArrangement = Arrangement.spacedBy(Spacings.medium)
                     ) {
-                        CircularProgressIndicator(color = Colors.primary)
+                        RectangleShimmerEffect(
+                            modifier = Modifier
+                                .fillMaxWidth(fraction = 0.8f)
+                                .height(textStyle = TextStyles.headlineMedium)
+                        )
+                        RectangleShimmerEffect(
+                            modifier = Modifier
+                                .fillMaxWidth(fraction = 0.5f)
+                                .height(textStyle = TextStyles.bodySmall)
+                        )
                     }
                 }
 

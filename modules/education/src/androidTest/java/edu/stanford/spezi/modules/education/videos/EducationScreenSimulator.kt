@@ -12,12 +12,12 @@ class EducationScreenSimulator(composeTestRule: ComposeTestRule) {
     private val retryButton =
         composeTestRule.onNodeWithIdentifier(EducationScreenTestIdentifier.RETRY_BUTTON)
 
-    private val progressBar =
-        composeTestRule.onNodeWithIdentifier(EducationScreenTestIdentifier.PROGRESS_BAR)
+    private val loadingRoot =
+        composeTestRule.onNodeWithIdentifier(EducationScreenTestIdentifier.LOADING_ROOT)
 
-    fun assertProgressBar() = this.progressBar.assertIsDisplayed()
+    fun assertLoading() = loadingRoot.assertIsDisplayed()
 
-    fun assertVideoSection() = this.videoSection.assertIsDisplayed()
+    fun assertVideoSection() = videoSection.assertIsDisplayed()
 
-    fun assertRetryButton() = this.retryButton.assertIsDisplayed()
+    fun assertRetryButton() = retryButton.assertIsDisplayed()
 }

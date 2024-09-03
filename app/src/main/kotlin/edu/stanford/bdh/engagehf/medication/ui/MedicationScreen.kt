@@ -1,13 +1,7 @@
 package edu.stanford.bdh.engagehf.medication.ui
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -16,21 +10,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import edu.stanford.bdh.engagehf.medication.components.LoadingMedicationCard
 import edu.stanford.bdh.engagehf.medication.components.MedicationList
 import edu.stanford.bdh.engagehf.medication.components.getMedicationCardUiModel
 import edu.stanford.spezi.core.design.component.CenteredBoxContent
-import edu.stanford.spezi.core.design.component.CircularShimmerEffect
-import edu.stanford.spezi.core.design.component.RectangleShimmerEffect
-import edu.stanford.spezi.core.design.component.VerticalSpacer
+import edu.stanford.spezi.core.design.component.RepeatingLazyColumn
 import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
-
-private const val LOADING_CARDS = 6
 
 @Composable
 fun MedicationScreen() {
@@ -70,45 +60,23 @@ fun MedicationScreen(
         }
 
         MedicationUiState.Loading -> {
-            LazyColumn(
+            RepeatingLazyColumn(
                 modifier = Modifier
-                    .testIdentifier(MedicationScreenTestIdentifier.LOADING)
                     .fillMaxSize()
-            ) {
-                items(LOADING_CARDS) { LoadingMedicationCard() }
-            }
+                    .padding(Spacings.medium)
+                    .testIdentifier(MedicationScreenTestIdentifier.LOADING),
+                content = { LoadingMedicationCard() }
+            )
         }
 
         is MedicationUiState.Success -> {
             MedicationList(
                 uiState = uiState,
                 onAction = onAction,
-                modifier = Modifier.testIdentifier(MedicationScreenTestIdentifier.SUCCESS)
-            )
-        }
-    }
-}
-
-@Composable
-private fun LoadingMedicationCard() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(Spacings.medium)
-    ) {
-        CircularShimmerEffect(modifier = Modifier.size(Sizes.Content.large))
-
-        Column(modifier = Modifier.padding(Spacings.small)) {
-            RectangleShimmerEffect(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(Sizes.Content.small)
-            )
-            VerticalSpacer()
-            RectangleShimmerEffect(
-                modifier = Modifier
-                    .fillMaxWidth(fraction = 0.5f)
-                    .height(Sizes.Content.small)
+                    .fillMaxSize()
+                    .padding(Spacings.medium)
+                    .testIdentifier(MedicationScreenTestIdentifier.SUCCESS)
             )
         }
     }
