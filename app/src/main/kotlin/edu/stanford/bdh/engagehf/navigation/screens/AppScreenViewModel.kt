@@ -8,6 +8,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.messages.HealthSummaryService
+import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.notification.NotificationNavigationEvent
 import edu.stanford.spezi.module.account.manager.UserSessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,6 +23,7 @@ class AppScreenViewModel @Inject constructor(
     private val appScreenEvents: AppScreenEvents,
     private val userSessionManager: UserSessionManager,
     private val healthSummaryService: HealthSummaryService,
+    private val navigator: Navigator,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
         AppUiState(
@@ -117,6 +120,11 @@ class AppScreenViewModel @Inject constructor(
             Action.DismissBottomSheet -> {
                 _uiState.update { it.copy(bottomSheetContent = null) }
             }
+
+            Action.ShowNotificationSettings -> {
+                _uiState.update { it.copy(accountUiState = it.accountUiState.copy(showDialog = false)) }
+                navigator.navigateTo(NotificationNavigationEvent.NotificationSettings)
+            }
         }
     }
 }
@@ -150,6 +158,7 @@ enum class BottomSheetContent {
 sealed interface Action {
     data class UpdateSelectedBottomBarItem(val selectedBottomBarItem: BottomBarItem) : Action
     data object ShowHealthSummary : Action
+    data object ShowNotificationSettings : Action
     data object SignOut : Action
     data class ShowAccountDialog(val showDialog: Boolean) : Action
     data object DismissBottomSheet : Action
