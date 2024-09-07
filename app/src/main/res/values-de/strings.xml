@@ -62,4 +62,5 @@
     <string name="sign_out">Ausloggen</string>
     <string name="health_summary">Gesundheitszusammenfassung</string>
     <string name="account">Account</string>
+    <string name="notifications">Benachrichtigungen</string>
 </resources>

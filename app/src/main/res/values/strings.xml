@@ -65,4 +65,5 @@
     <string name="bpm" translatable="false">bpm</string>
     <string name="kg" translatable="false">kg</string>
     <string name="lbs" translatable="false">lbs</string>
+    <string name="notifications">Notifications</string>
 </resources>
