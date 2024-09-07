@@ -31,6 +31,9 @@ import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.navigation.NavigationEvent
+import edu.stanford.spezi.core.notification.NotificationNavigationEvent
+import edu.stanford.spezi.core.notification.NotificationRoutes
+import edu.stanford.spezi.core.notification.setting.NotificationSettingScreen
 import edu.stanford.spezi.module.account.AccountNavigationEvent
 import edu.stanford.spezi.module.account.login.LoginScreen
 import edu.stanford.spezi.module.account.register.RegisterScreen
@@ -132,6 +135,10 @@ class MainActivity : FragmentActivity() {
             VideoScreen()
         }
 
+        composable<NotificationRoutes.NotificationSetting> {
+            NotificationSettingScreen()
+        }
+
         composable<Routes.AppScreen> {
             AppScreen()
         }
@@ -211,6 +218,10 @@ class MainActivity : FragmentActivity() {
                             EducationRoutes.VideoDetail(
                                 video = event.video
                             )
+                        )
+
+                        is NotificationNavigationEvent.NotificationSettings -> navHostController.navigate(
+                            NotificationRoutes.NotificationSetting
                         )
                     }
                 }
