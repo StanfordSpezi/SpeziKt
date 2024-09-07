@@ -60,17 +60,17 @@ class DeviceRegistrationService @Inject constructor(
     }
 
     private fun sendDeviceInfoToServer(deviceInfo: DeviceInfo) {
-        val deviceInfoMap = mapOf(
-            with(deviceInfo) {
-                KEY_NOTIFICATION_TOKEN to notificationToken
-                KEY_PLATFORM to platform
-                KEY_OS_VERSION to osVersion
-                KEY_APP_VERSION to appVersion
-                KEY_APP_BUILD to appBuild
-                KEY_LANGUAGE to language
+        val deviceInfoMap = with(deviceInfo) {
+            mapOf(
+                KEY_NOTIFICATION_TOKEN to notificationToken,
+                KEY_PLATFORM to platform,
+                KEY_OS_VERSION to osVersion,
+                KEY_APP_VERSION to appVersion,
+                KEY_APP_BUILD to appBuild,
+                KEY_LANGUAGE to language,
                 KEY_TIME_ZONE to timeZone
-            }
-        )
+            )
+        }
 
         runCatching {
             functions.getHttpsCallable(REGISTER_DEVICE_FUNCTION)
