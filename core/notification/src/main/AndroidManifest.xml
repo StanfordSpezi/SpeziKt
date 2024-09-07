@@ -5,7 +5,7 @@
 
     <application>
         <service
-            android:name="edu.stanford.spezi.core.notification.NotificationService"
+            android:name="edu.stanford.spezi.core.notification.fcm.FCMNotificationService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

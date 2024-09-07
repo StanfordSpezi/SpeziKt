@@ -20,7 +20,7 @@ the user.
 ## FCM
 
 The `DeviceRegistrationService` is responsible for registering the device to receive FCM
-notifications and the `NotificationService` is responsible for handling the FCM notifications.
+notifications and the `FCMNotificationService` is responsible for handling the FCM notifications.
 
 ## Setting
 

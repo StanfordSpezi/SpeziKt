@@ -12,6 +12,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel for notification settings.
+ */
 @HiltViewModel
 class NotificationSettingViewModel @Inject constructor(
     private val repository: NotificationSettingsRepository,

@@ -1,4 +1,4 @@
-package edu.stanford.spezi.core.notification
+package edu.stanford.spezi.core.notification.fcm
 
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -10,7 +10,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class NotificationService @Inject internal constructor(
+/*
+ * Service to handle incoming notifications from Firebase Cloud Messaging (FCM)
+ * and register the device with the server when a new token is generated.
+ */
+class FCMNotificationService @Inject internal constructor(
     // Error occurs here if there is no zero-argument constructor
 ) : FirebaseMessagingService() {
 

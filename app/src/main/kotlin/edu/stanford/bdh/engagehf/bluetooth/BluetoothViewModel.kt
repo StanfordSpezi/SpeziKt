@@ -20,7 +20,7 @@ import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.core.notification.DeviceRegistrationService
+import edu.stanford.spezi.core.notification.fcm.DeviceRegistrationService
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

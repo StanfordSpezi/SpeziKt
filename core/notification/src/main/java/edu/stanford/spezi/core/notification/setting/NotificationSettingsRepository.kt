@@ -13,6 +13,9 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+/**
+ * Repository for managing user's notification settings.
+ */
 class NotificationSettingsRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val userSessionManager: UserSessionManager,

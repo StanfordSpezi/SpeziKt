@@ -1,4 +1,4 @@
-package edu.stanford.spezi.core.notification
+package edu.stanford.spezi.core.notification.fcm
 
 import android.content.Context
 import android.os.Build
@@ -11,6 +11,9 @@ import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
 
+/**
+ * Service to register the device with the server.
+ */
 class DeviceRegistrationService @Inject constructor(
     @ApplicationContext private val context: Context,
     private val functions: FirebaseFunctions,
@@ -18,6 +21,9 @@ class DeviceRegistrationService @Inject constructor(
 
     private val logger by speziLogger()
 
+    /**
+     * Registers the device with the server.
+     */
     suspend fun registerDevice() {
         val notificationToken = getNotificationToken().getOrNull() ?: run {
             logger.e { "Notification token is null" }
