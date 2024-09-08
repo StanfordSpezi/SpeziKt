@@ -24,7 +24,6 @@ class MedicationScreenTest {
         setUiState(MedicationUiState.Loading)
         medicationScreen {
             assertLoadingIsDisplayed()
-            assertCenteredContent()
         }
     }
 

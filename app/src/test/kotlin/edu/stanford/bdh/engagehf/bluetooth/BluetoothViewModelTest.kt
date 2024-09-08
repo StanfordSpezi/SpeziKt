@@ -169,7 +169,7 @@ class BluetoothViewModelTest {
         bleServiceEvents.emit(event)
 
         // then
-        assertEvent(event = BluetoothViewModel.Event.RequestPermissions(permissions))
+        assertThat(bluetoothViewModel.uiState.value.missingPermissions).isEqualTo(permissions)
     }
 
     @Test
@@ -511,6 +511,22 @@ class BluetoothViewModelTest {
         assertThat(
             bluetoothViewModel.uiState.value.messages.first().isExpanded
         ).isEqualTo(isExpanded.not())
+    }
+
+    @Test
+    fun `it should handle permission granted action correctly`() = runTestUnconfined {
+        // given
+        val permissions = listOf("permission1")
+        val event = BLEServiceEvent.MissingPermissions(permissions)
+        createViewModel()
+        bleServiceEvents.emit(event)
+
+        // when
+        bluetoothViewModel.onAction(Action.PermissionGranted(permission = permissions.first()))
+
+        // then
+        assertThat(bluetoothViewModel.uiState.value.missingPermissions).isEmpty()
+        verify(exactly = 2) { bleService.start() }
     }
 
     private fun assertBluetothUiState(state: BluetoothUiState) {
