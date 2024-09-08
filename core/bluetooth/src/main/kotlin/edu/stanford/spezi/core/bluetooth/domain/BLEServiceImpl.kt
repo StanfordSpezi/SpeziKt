@@ -158,12 +158,12 @@ internal class BLEServiceImpl @Inject constructor(
                 }
 
                 is BLEServiceState.Scanning -> {
-                    val otherDevicesSessions =
+                    val otherDevices =
                         currentState.pairedDevices.filterNot { it.address == deviceAddress }
                     if (isConnected) {
-                        BLEServiceState.Scanning(pairedDevices = otherDevicesSessions + device)
+                        BLEServiceState.Scanning(pairedDevices = otherDevices + device)
                     } else {
-                        BLEServiceState.Scanning(pairedDevices = otherDevicesSessions)
+                        BLEServiceState.Scanning(pairedDevices = otherDevices)
                     }
                 }
             }.also {

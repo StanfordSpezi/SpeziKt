@@ -11,4 +11,7 @@ import java.util.UUID
  */
 fun UUID(string: String): UUID = UUID.fromString(string)
 
+/**
+ * @return a random [UUID]
+ */
 fun UUID(): UUID = UUID.randomUUID()
