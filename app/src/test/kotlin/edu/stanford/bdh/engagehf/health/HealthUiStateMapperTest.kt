@@ -17,6 +17,7 @@ class HealthUiStateMapperTest {
 
     private val localeProvider: LocaleProvider = mockk()
     private val healthUiStateMapper = HealthUiStateMapper(localeProvider = localeProvider)
+    private val zonedDateTime = ZonedDateTime.now()
 
     @Before
     fun setup() {
@@ -65,12 +66,12 @@ class HealthUiStateMapperTest {
         // Given
         val records = listOf(
             createWeightRecord(
-                year = ZonedDateTime.now().year,
-                day = ZonedDateTime.now().dayOfMonth,
+                year = zonedDateTime.year,
+                day = 1,
             ),
             createWeightRecord(
-                year = ZonedDateTime.now().year,
-                day = ZonedDateTime.now().dayOfMonth,
+                year = zonedDateTime.year,
+                day = 1,
             ),
         )
 
@@ -93,14 +94,14 @@ class HealthUiStateMapperTest {
         // Given
         val records = listOf(
             createWeightRecord(
-                day = ZonedDateTime.now().dayOfMonth,
+                day = 3,
             ),
             createWeightRecord(
-                day = ZonedDateTime.now().dayOfMonth,
+                day = 4,
             ),
             createWeightRecord(
-                month = ZonedDateTime.now().monthValue + 1,
-                day = ZonedDateTime.now().dayOfMonth + 8,
+                month = zonedDateTime.monthValue + 1,
+                day = 5,
             ),
         )
 
@@ -121,11 +122,11 @@ class HealthUiStateMapperTest {
     }
 
     private fun createWeightRecord(
-        year: Int = ZonedDateTime.now().year,
-        month: Int = ZonedDateTime.now().monthValue,
-        day: Int = 1,
-        hour: Int = 5,
-        minute: Int = 4,
+        year: Int = zonedDateTime.year,
+        month: Int = zonedDateTime.monthValue,
+        day: Int = zonedDateTime.dayOfMonth,
+        hour: Int = zonedDateTime.hour,
+        minute: Int = zonedDateTime.minute,
         second: Int = 0,
         nanoOfSecond: Int = 0,
         weightInKg: Double = 70.0,
@@ -141,14 +142,11 @@ class HealthUiStateMapperTest {
                 nanoOfSecond,
                 ZoneId.systemDefault()
             ).toInstant(),
-            zoneOffset = ZonedDateTime.now().offset,
+            zoneOffset = zonedDateTime.offset,
             weight = Mass.kilograms(weightInKg)
         )
     }
 
-    private fun HealthUiStateMapper.map(
-        records: List<Record>,
-        timeRange: TimeRange = TimeRange.DAILY,
-    ) =
+    private fun HealthUiStateMapper.map(records: List<Record>, timeRange: TimeRange = TimeRange.DAILY) =
         (mapToHealthData(records, timeRange) as HealthUiState.Success).data
 }
