@@ -58,10 +58,7 @@ fun MessageItem(
             containerColor = Colors.surface.lighten(),
         ),
         modifier = modifier
-            .padding(
-                top = Spacings.small,
-                bottom = Spacings.small,
-            )
+            .padding(vertical = Spacings.small)
             .fillMaxWidth()
     ) {
         Column(

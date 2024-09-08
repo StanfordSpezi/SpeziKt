@@ -103,7 +103,7 @@ private fun BluetoothScreen(
                 Text(
                     text = "No messages",
                     style = TextStyles.bodyMedium,
-                    modifier = Modifier.padding(Spacings.small)
+                    modifier = Modifier.padding(vertical = Spacings.small)
                 )
             }
         }
