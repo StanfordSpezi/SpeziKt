@@ -128,7 +128,7 @@ class LoginViewModelTest {
         coEvery { authenticationManager.signInWithGoogle() } returns Result.success(Unit)
 
         // when
-        loginViewModel.onAction(Action.GoogleSignInOrSignUp)
+        loginViewModel.onAction(Action.Async.GoogleSignInOrSignUp)
 
         // then
         verify { accountEvents.emit(event = AccountEvents.Event.SignInSuccess) }
@@ -143,7 +143,7 @@ class LoginViewModelTest {
         } returns Result.failure(Exception("Failed to sign in"))
 
         // when
-        loginViewModel.onAction(Action.GoogleSignInOrSignUp)
+        loginViewModel.onAction(Action.Async.GoogleSignInOrSignUp)
 
         // then
         verify { accountEvents.emit(event = AccountEvents.Event.SignInFailure) }
@@ -162,7 +162,7 @@ class LoginViewModelTest {
         )
 
         // when
-        loginViewModel.onAction(Action.GoogleSignInOrSignUp)
+        loginViewModel.onAction(Action.Async.GoogleSignInOrSignUp)
 
         // then
         verify { navigator.navigateTo(expectedEvent) }
@@ -187,7 +187,7 @@ class LoginViewModelTest {
     fun `given ForgotPassword action with valid email when onAction is called then send forgot password email`() =
         runTestUnconfined {
             // Given
-            val action = Action.ForgotPassword
+            val action = Action.Async.ForgotPassword
             val validEmail = "test@test.com"
             coEvery {
                 authenticationManager.sendForgotPasswordEmail(validEmail)
@@ -206,7 +206,7 @@ class LoginViewModelTest {
     fun `given ForgotPassword action with valid email when onAction is called, notifies message in case email sending failed`() =
         runTestUnconfined {
             // Given
-            val action = Action.ForgotPassword
+            val action = Action.Async.ForgotPassword
             val validEmail = "test@test.com"
             coEvery {
                 authenticationManager.sendForgotPasswordEmail(validEmail)
@@ -225,14 +225,14 @@ class LoginViewModelTest {
     fun `given ForgotPassword action with invalid email then notify message`() =
         runTestUnconfined {
             // Given
-            val action = Action.ForgotPassword
+            val action = Action.Async.ForgotPassword
             val email = "test@test.com"
             every { validator.isValidEmail(email) } returns FormValidator.Result.Invalid("invalid")
 
             // When
             listOf(
                 Action.TextFieldUpdate(email, TextFieldType.EMAIL),
-                Action.ForgotPassword,
+                action,
             ).forEach {
                 loginViewModel.onAction(action = it)
             }
@@ -257,7 +257,7 @@ class LoginViewModelTest {
         coEvery {
             authenticationManager.signIn(email = email, password = password)
         } returns Result.success(Unit)
-        val action = Action.PasswordSignInOrSignUp
+        val action = Action.Async.PasswordSignInOrSignUp
 
         // when
         loginViewModel.onAction(action)
@@ -279,7 +279,7 @@ class LoginViewModelTest {
         coEvery {
             authenticationManager.signIn(email = email, password = password)
         } returns Result.failure(Exception("Failure"))
-        val action = Action.PasswordSignInOrSignUp
+        val action = Action.Async.PasswordSignInOrSignUp
 
         // when
         loginViewModel.onAction(action)

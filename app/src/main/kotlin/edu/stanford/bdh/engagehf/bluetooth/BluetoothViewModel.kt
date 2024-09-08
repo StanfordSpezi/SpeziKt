@@ -79,9 +79,9 @@ class BluetoothViewModel @Inject internal constructor(
                 logger.i { "Received BLEService event $event" }
                 when (event) {
                     BLEServiceEvent.BluetoothNotEnabled -> _events.emit(Event.EnableBluetooth)
-                    is BLEServiceEvent.MissingPermissions -> _events.emit(
-                        Event.RequestPermissions(event.permissions)
-                    )
+                    is BLEServiceEvent.MissingPermissions -> _uiState.update {
+                        it.copy(missingPermissions = event.permissions)
+                    }
 
                     is BLEServiceEvent.GenericError -> _uiState.update {
                         it.copy(bluetooth = BluetoothUiState.Error("Something went wrong!"))
@@ -205,6 +205,10 @@ class BluetoothViewModel @Inject internal constructor(
             is Action.ToggleExpand -> {
                 handleToggleExpandAction(action)
             }
+
+            is Action.PermissionGranted -> {
+                onPermissionGranted(action = action)
+            }
         }
     }
 
@@ -283,8 +287,13 @@ class BluetoothViewModel @Inject internal constructor(
         }
     }
 
+    private fun onPermissionGranted(action: Action.PermissionGranted) {
+        val missingPermissions = _uiState.value.missingPermissions.filter { it != action.permission }
+        _uiState.update { it.copy(missingPermissions = missingPermissions) }
+        bleService.start()
+    }
+
     interface Event {
         object EnableBluetooth : Event
-        data class RequestPermissions(val permissions: List<String>) : Event
     }
 }

@@ -4,11 +4,13 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -27,7 +29,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import edu.stanford.bdh.engagehf.medication.ui.MedicationCardUiModel
 import edu.stanford.bdh.engagehf.medication.ui.MedicationScreenTestIdentifier
 import edu.stanford.bdh.engagehf.medication.ui.MedicationViewModel
+import edu.stanford.spezi.core.design.component.CircleShimmerEffect
+import edu.stanford.spezi.core.design.component.RectangleShimmerEffect
 import edu.stanford.spezi.core.design.component.VerticalSpacer
+import edu.stanford.spezi.core.design.component.height
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
@@ -43,23 +48,16 @@ fun MedicationCard(
     model: MedicationCardUiModel,
     onAction: (MedicationViewModel.Action) -> Unit,
 ) {
-    ElevatedCard(
-        elevation = CardDefaults.elevatedCardElevation(
-            defaultElevation = Sizes.Elevation.medium,
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = Colors.surface.lighten(),
-        ),
+    MedicationElevatedCard(
         modifier = modifier
+            .padding(bottom = Spacings.medium)
             .testIdentifier(
                 identifier = MedicationScreenTestIdentifier.SUCCESS_MEDICATION_CARD_ROOT,
                 suffix = model.id
             )
             .clickable {
                 onAction(
-                    MedicationViewModel.Action.ToggleExpand(
-                        medicationId = model.id
-                    )
+                    MedicationViewModel.Action.ToggleExpand(medicationId = model.id)
                 )
             },
     ) {
@@ -147,6 +145,51 @@ fun MedicationCard(
             }
         }
     }
+}
+
+@Composable
+fun LoadingMedicationCard() {
+    MedicationElevatedCard(modifier = Modifier.padding(bottom = Spacings.medium)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Spacings.medium),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CircleShimmerEffect(modifier = Modifier.size(Sizes.Icon.medium))
+
+            Column(modifier = Modifier.padding(Spacings.small)) {
+                RectangleShimmerEffect(
+                    modifier = Modifier
+                        .fillMaxWidth(fraction = 0.8f)
+                        .height(textStyle = TextStyles.titleLarge)
+                )
+                VerticalSpacer()
+                RectangleShimmerEffect(
+                    modifier = Modifier
+                        .fillMaxWidth(fraction = 0.5f)
+                        .height(textStyle = TextStyles.titleSmall)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun MedicationElevatedCard(
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    ElevatedCard(
+        elevation = CardDefaults.elevatedCardElevation(
+            defaultElevation = Sizes.Elevation.medium,
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = Colors.surface.lighten(),
+        ),
+        modifier = modifier,
+        content = content,
+    )
 }
 
 @ThemePreviews

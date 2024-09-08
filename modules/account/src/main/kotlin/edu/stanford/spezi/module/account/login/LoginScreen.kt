@@ -5,6 +5,7 @@ package edu.stanford.spezi.module.account.login
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
-import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -38,8 +39,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import edu.stanford.spezi.core.design.component.AsyncTextButton
 import edu.stanford.spezi.core.design.component.validated.outlinedtextfield.ValidatedOutlinedTextField
+import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles.bodyLarge
@@ -135,7 +139,7 @@ You may login to your existing account or create a new one if you don't have one
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = {
-                        onAction(Action.PasswordSignInOrSignUp)
+                        onAction(Action.Async.PasswordSignInOrSignUp)
                     }),
                     trailingIcon = {
                         IconButton(onClick = { onAction(Action.TogglePasswordVisibility) }) {
@@ -152,25 +156,27 @@ You may login to your existing account or create a new one if you don't have one
                     }
                 )
             })
-        TextButton(
+        val forgotPasswordAction = Action.Async.ForgotPassword
+        AsyncTextButton(
+            text = "Forgot Password?",
+            isLoading = uiState.pendingActions.contains(forgotPasswordAction),
+            containerColor = Colors.transparent,
+            contentPadding = PaddingValues(0.dp),
+            textColor = ButtonDefaults.buttonColors().containerColor,
             onClick = {
-                onAction(Action.ForgotPassword)
-            }, modifier = Modifier.align(Alignment.End)
-        ) {
-            Text("Forgot Password?")
-        }
-        Spacer(modifier = Modifier.height(Spacings.medium))
-        Button(
-            onClick = {
-                onAction(Action.PasswordSignInOrSignUp)
+                onAction(forgotPasswordAction)
             },
+            modifier = Modifier.align(Alignment.End)
+        )
+        Spacer(modifier = Modifier.height(Spacings.medium))
+        val passwordSignInOrSignUp = Action.Async.PasswordSignInOrSignUp
+        AsyncTextButton(
+            isLoading = uiState.pendingActions.contains(passwordSignInOrSignUp),
+            text = if (uiState.isAlreadyRegistered) "Login" else "Register",
+            onClick = { onAction(passwordSignInOrSignUp) },
             modifier = Modifier.fillMaxWidth(),
             enabled = uiState.isPasswordSignInEnabled
-        ) {
-            Text(
-                text = if (uiState.isAlreadyRegistered) "Login" else "Register"
-            )
-        }
+        )
 
         Spacer(modifier = Modifier.height(Spacings.medium))
         Row(
@@ -190,10 +196,10 @@ You may login to your existing account or create a new one if you don't have one
         Spacer(modifier = Modifier.height(Spacings.medium))
         TextDivider(text = "or")
         Spacer(modifier = Modifier.height(Spacings.medium))
+        val googleSignInOrSignUp = Action.Async.GoogleSignInOrSignUp
         SignInWithGoogleButton(
-            onButtonClick = {
-                onAction(Action.GoogleSignInOrSignUp)
-            },
+            isLoading = uiState.pendingActions.contains(googleSignInOrSignUp),
+            onButtonClick = { onAction(googleSignInOrSignUp) },
             isAlreadyRegistered = uiState.isAlreadyRegistered,
         )
     }
