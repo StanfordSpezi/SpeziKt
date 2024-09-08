@@ -8,4 +8,5 @@ sealed interface Action {
     data object DismissDialog : Action
     data class MessageItemClicked(val message: Message) : Action
     data class ToggleExpand(val message: Message) : Action
+    data class PermissionGranted(val permission: String) : Action
 }

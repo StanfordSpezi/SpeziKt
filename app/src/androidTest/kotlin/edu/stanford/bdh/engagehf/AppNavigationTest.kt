@@ -21,10 +21,12 @@ class AppNavigationTest {
     @get:Rule(order = 2)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    @get:Rule
+    @get:Rule(order = 3)
     val runtimePermissionRule: GrantPermissionRule = GrantPermissionRule.grant(
         Manifest.permission.BLUETOOTH_CONNECT,
         Manifest.permission.BLUETOOTH_SCAN,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION,
     )
 
     @Inject

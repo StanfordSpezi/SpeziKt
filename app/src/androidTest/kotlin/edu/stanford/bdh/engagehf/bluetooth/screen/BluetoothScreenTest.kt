@@ -1,6 +1,8 @@
 package edu.stanford.bdh.engagehf.bluetooth.screen
 
+import android.Manifest
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.test.rule.GrantPermissionRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.bdh.engagehf.R
@@ -19,6 +21,14 @@ class BluetoothScreenTest {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComposeContentActivity>()
+
+    @get:Rule
+    val runtimePermissionRule: GrantPermissionRule = GrantPermissionRule.grant(
+        Manifest.permission.BLUETOOTH_CONNECT,
+        Manifest.permission.BLUETOOTH_SCAN,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+    )
 
     @Before
     fun init() {

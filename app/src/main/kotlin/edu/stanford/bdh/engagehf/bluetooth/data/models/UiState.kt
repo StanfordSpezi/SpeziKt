@@ -14,5 +14,6 @@ data class UiState(
     ),
     val messages: List<Message> = emptyList(),
     val bluetooth: BluetoothUiState = BluetoothUiState.Idle,
+    val missingPermissions: List<String> = emptyList(),
     val measurementDialog: MeasurementDialogUiState = MeasurementDialogUiState(),
 )

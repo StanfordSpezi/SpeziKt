@@ -17,7 +17,7 @@ class EducationScreenTest {
     val composeTestRule = createAndroidComposeRule<ComposeContentActivity>()
 
     @Test
-    fun `education screen should display progress bar`() {
+    fun `education screen should display loading`() {
         composeTestRule.activity.setScreen {
             EducationScreen(
                 uiState = UiState.Loading,
@@ -26,7 +26,7 @@ class EducationScreenTest {
         }
 
         educationScreen {
-            assertProgressBar()
+            assertLoading()
         }
     }
 

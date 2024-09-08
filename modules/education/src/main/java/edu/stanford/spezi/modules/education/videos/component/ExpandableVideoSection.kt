@@ -3,18 +3,29 @@ package edu.stanford.spezi.modules.education.videos.component
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,18 +37,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import edu.stanford.spezi.core.design.component.RectangleShimmerEffect
+import edu.stanford.spezi.core.design.component.VerticalSpacer
+import edu.stanford.spezi.core.design.component.height
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
+import edu.stanford.spezi.core.design.theme.TextStyles.bodyMedium
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.design.theme.lighten
 import edu.stanford.spezi.modules.education.videos.Video
-import edu.stanford.spezi.modules.education.videos.VideoItem
+
+private const val IMAGE_HEIGHT = 200
+private const val ASPECT_16_9 = 16f / 9f
 
 @Composable
 internal fun SectionHeader(
@@ -75,15 +95,10 @@ internal fun ExpandableVideoSection(
 ) {
     var expanded by remember { mutableStateOf(expandedStartValue) }
 
-    ElevatedCard(
-        elevation = CardDefaults.cardElevation(defaultElevation = Sizes.Elevation.medium),
-        shape = RoundedCornerShape(Sizes.RoundedCorner.large),
-        colors = CardDefaults.cardColors(
-            containerColor = Colors.surface.lighten(),
-        ),
+    VideoElevatedCard(
         modifier = modifier
             .fillMaxWidth()
-            .padding(Spacings.small)
+            .padding(bottom = Spacings.medium)
             .clickable { expanded = !expanded }
     ) {
         Column(
@@ -100,7 +115,7 @@ internal fun ExpandableVideoSection(
 
             description?.let {
                 Text(
-                    style = TextStyles.bodyMedium,
+                    style = bodyMedium,
                     text = it,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -126,6 +141,120 @@ internal fun ExpandableVideoSection(
             }
         }
     }
+}
+
+@Composable
+private fun VideoItem(video: Video, onVideoClick: () -> Unit) {
+    Column(modifier = Modifier.padding(Spacings.small)) {
+        Text(
+            text = video.title,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .padding(Spacings.small)
+        )
+
+        VerticalSpacer(height = Spacings.small)
+
+        SubcomposeAsyncImage(
+            modifier = Modifier
+                .clickable { onVideoClick() }
+                .height(IMAGE_HEIGHT.dp)
+                .padding(Spacings.small)
+                .fillMaxWidth(),
+            model = video.thumbnailUrl,
+
+            contentDescription = "Video thumbnail",
+        ) {
+            val state = painter.state
+            val painter = painter
+            if (state is AsyncImagePainter.State.Loading) {
+                Box(Modifier.matchParentSize()) {
+                    CircularProgressIndicator(
+                        Modifier
+                            .align(Alignment.Center)
+                    )
+                }
+            }
+
+            if (state is AsyncImagePainter.State.Error) {
+                Box(Modifier.matchParentSize()) {
+                    Text("Error loading image", Modifier.align(Alignment.Center))
+                }
+            }
+
+            if (state is AsyncImagePainter.State.Success) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(ASPECT_16_9)
+                        .border(Sizes.Border.medium, Colors.primary),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        modifier = Modifier.fillMaxSize(),
+                        painter = painter,
+                        contentDescription = "Video thumbnail",
+                        contentScale = ContentScale.Crop,
+                    )
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .background(
+                                color = Colors.primary,
+                                shape = CircleShape
+                            )
+                            .padding(Spacings.medium)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.PlayArrow,
+                            contentDescription = "Play button",
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .size(Sizes.Icon.medium),
+                            tint = Colors.onPrimary
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun LoadingVideoCard() {
+    VideoElevatedCard(modifier = Modifier.fillMaxWidth().padding(bottom = Spacings.medium)) {
+        Column(
+            modifier = Modifier.padding(Spacings.medium),
+            verticalArrangement = Arrangement.spacedBy(Spacings.large + Spacings.medium)
+        ) {
+            RectangleShimmerEffect(
+                modifier = Modifier
+                    .fillMaxWidth(fraction = 0.8f)
+                    .height(titleLarge)
+            )
+            RectangleShimmerEffect(
+                modifier = Modifier
+                    .fillMaxWidth(fraction = 0.5f)
+                    .height(bodyMedium)
+            )
+        }
+    }
+}
+
+@Composable
+private fun VideoElevatedCard(
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    ElevatedCard(
+        elevation = CardDefaults.cardElevation(defaultElevation = Sizes.Elevation.medium),
+        shape = RoundedCornerShape(Sizes.RoundedCorner.large),
+        colors = CardDefaults.cardColors(
+            containerColor = Colors.surface.lighten(),
+        ),
+        modifier = modifier,
+        content = content,
+    )
 }
 
 @Composable

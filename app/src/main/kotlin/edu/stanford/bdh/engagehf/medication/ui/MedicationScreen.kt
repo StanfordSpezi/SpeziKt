@@ -1,6 +1,7 @@
 package edu.stanford.bdh.engagehf.medication.ui
 
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -9,11 +10,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import edu.stanford.bdh.engagehf.medication.components.LoadingMedicationCard
 import edu.stanford.bdh.engagehf.medication.components.MedicationList
 import edu.stanford.bdh.engagehf.medication.components.getMedicationCardUiModel
 import edu.stanford.spezi.core.design.component.CenteredBoxContent
+import edu.stanford.spezi.core.design.component.RepeatingLazyColumn
 import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Colors.primary
+import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
@@ -57,20 +60,23 @@ fun MedicationScreen(
         }
 
         MedicationUiState.Loading -> {
-            CenteredBoxContent {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .testIdentifier(MedicationScreenTestIdentifier.LOADING),
-                    color = primary
-                )
-            }
+            RepeatingLazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(Spacings.medium)
+                    .testIdentifier(MedicationScreenTestIdentifier.LOADING),
+                content = { LoadingMedicationCard() }
+            )
         }
 
         is MedicationUiState.Success -> {
             MedicationList(
                 uiState = uiState,
                 onAction = onAction,
-                modifier = Modifier.testIdentifier(MedicationScreenTestIdentifier.SUCCESS)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(Spacings.medium)
+                    .testIdentifier(MedicationScreenTestIdentifier.SUCCESS)
             )
         }
     }
