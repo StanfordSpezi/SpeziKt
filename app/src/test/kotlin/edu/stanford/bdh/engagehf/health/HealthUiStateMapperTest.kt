@@ -66,11 +66,11 @@ class HealthUiStateMapperTest {
         // Given
         val records = listOf(
             createWeightRecord(
-                year = 2024,
+                year = zonedDateTime.year,
                 day = 1,
             ),
             createWeightRecord(
-                year = 2024,
+                year = zonedDateTime.year,
                 day = 1,
             ),
         )
@@ -100,6 +100,7 @@ class HealthUiStateMapperTest {
                 day = 4,
             ),
             createWeightRecord(
+                month = zonedDateTime.monthValue + 1,
                 day = 5,
             ),
         )
@@ -113,8 +114,8 @@ class HealthUiStateMapperTest {
         assertThat(result.tableData).isNotEmpty()
         assertThat(result.tableData.size).isEqualTo(3)
         assertThat(result.chartData.size).isEqualTo(1)
-        assertThat(result.chartData[0].xValues.size).isEqualTo(1)
-        assertThat(result.chartData[0].yValues.size).isEqualTo(1)
+        assertThat(result.chartData[0].xValues.size).isEqualTo(2)
+        assertThat(result.chartData[0].yValues.size).isEqualTo(2)
         assertThat(result.newestData).isNotNull()
         assertThat(result.infoRowData.formattedValue).isNotEmpty()
         assertThat(result.infoRowData.formattedDate).isNotEmpty()
@@ -125,7 +126,7 @@ class HealthUiStateMapperTest {
         month: Int = zonedDateTime.monthValue,
         day: Int = zonedDateTime.dayOfMonth,
         hour: Int = zonedDateTime.hour,
-        minute: Int = 4,
+        minute: Int = zonedDateTime.minute,
         second: Int = 0,
         nanoOfSecond: Int = 0,
         weightInKg: Double = 70.0,
@@ -141,11 +142,11 @@ class HealthUiStateMapperTest {
                 nanoOfSecond,
                 ZoneId.systemDefault()
             ).toInstant(),
-            zoneOffset = ZonedDateTime.now().offset,
+            zoneOffset = zonedDateTime.offset,
             weight = Mass.kilograms(weightInKg)
         )
     }
 
-    private fun HealthUiStateMapper.map(records: List<Record>, timeRange: TimeRange = TimeRange.MONTHLY) =
+    private fun HealthUiStateMapper.map(records: List<Record>, timeRange: TimeRange = TimeRange.DAILY) =
         (mapToHealthData(records, timeRange) as HealthUiState.Success).data
 }
