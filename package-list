@@ -39,6 +39,7 @@ module:coroutines
 edu.stanford.spezi.core.coroutines
 edu.stanford.spezi.core.coroutines.di
 module:design
+edu.stanford.spezi.core.design.action
 edu.stanford.spezi.core.design.component
 edu.stanford.spezi.core.design.component.markdown
 edu.stanford.spezi.core.design.component.validated.outlinedtextfield
@@ -73,6 +74,7 @@ module:education
 edu.stanford.spezi.modules.education
 edu.stanford.spezi.modules.education.video
 edu.stanford.spezi.modules.education.videos
+edu.stanford.spezi.modules.education.videos.component
 edu.stanford.spezi.modules.education.videos.data.repository
 module:healthconnectonfhir
 edu.stanford.healthconnectonfhir
