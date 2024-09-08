@@ -25,6 +25,7 @@ import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
 import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.notification.fcm.DeviceRegistrationService
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
@@ -52,6 +53,7 @@ class BluetoothViewModelTest {
     private val messageRepository = mockk<MessageRepository>(relaxed = true)
     private val engageEducationRepository = mockk<EngageEducationRepository>(relaxed = true)
     private val healthSummaryService = mockk<HealthSummaryService>(relaxed = true)
+    private val deviceRegistrationService = mockk<DeviceRegistrationService>(relaxed = true)
 
     private val bleServiceState = MutableStateFlow<BLEServiceState>(BLEServiceState.Idle)
     private val bleServiceEvents = MutableSharedFlow<BLEServiceEvent>()
@@ -546,7 +548,8 @@ class BluetoothViewModelTest {
             appScreenEvents = appScreenEvents,
             navigator = navigator,
             engageEducationRepository = engageEducationRepository,
-            healthSummaryService = healthSummaryService
+            healthSummaryService = healthSummaryService,
+            deviceRegistrationService = deviceRegistrationService,
         )
     }
 }

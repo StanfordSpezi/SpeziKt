@@ -3,6 +3,7 @@ package edu.stanford.bdh.engagehf.navigation.screens
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.messages.HealthSummaryService
+import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.module.account.manager.UserSessionManager
@@ -23,6 +24,7 @@ class AppScreenViewModelTest {
     private val userSessionManager: UserSessionManager = mockk(relaxed = true)
     private val healthSummaryService: HealthSummaryService = mockk(relaxed = true)
     private val appScreenEventsFlow = MutableSharedFlow<AppScreenEvents.Event>()
+    private val navigator = mockk<Navigator>(relaxed = true)
 
     private lateinit var viewModel: AppScreenViewModel
 
@@ -32,7 +34,8 @@ class AppScreenViewModelTest {
         viewModel = AppScreenViewModel(
             appScreenEvents = appScreenEvents,
             userSessionManager = userSessionManager,
-            healthSummaryService = healthSummaryService
+            healthSummaryService = healthSummaryService,
+            navigator = navigator
         )
     }
 
