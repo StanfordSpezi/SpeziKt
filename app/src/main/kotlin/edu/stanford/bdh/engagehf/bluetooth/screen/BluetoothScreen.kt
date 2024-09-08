@@ -2,6 +2,8 @@ package edu.stanford.bdh.engagehf.bluetooth.screen
 
 import android.app.Activity
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,7 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.BluetoothViewModel
@@ -65,6 +66,11 @@ private fun BluetoothScreen(
     uiState: UiState,
     onAction: (Action) -> Unit,
 ) {
+    PermissionRequester(
+        permissions = uiState.missingPermissions,
+        onGranted = { onAction(Action.PermissionGranted(permission = it)) }
+    )
+
     LazyColumn(
         modifier = Modifier
             .testIdentifier(BluetoothScreenTestIdentifier.ROOT)
@@ -199,20 +205,27 @@ private fun BluetoothEvents(events: Flow<BluetoothViewModel.Event>) {
     LaunchedEffect(key1 = Unit) {
         events.collect { event ->
             when (event) {
-                is BluetoothViewModel.Event.RequestPermissions -> {
-                    ActivityCompat.requestPermissions(
-                        activity,
-                        event.permissions.toTypedArray(),
-                        1
-                    )
-                }
-
                 is BluetoothViewModel.Event.EnableBluetooth -> {
                     Toast.makeText(activity, "Bluetooth is not enabled", Toast.LENGTH_LONG)
                         .show()
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun PermissionRequester(
+    permissions: List<String>,
+    onGranted: (String) -> Unit,
+) {
+    val permission = permissions.firstOrNull() ?: return
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted -> if (granted) onGranted(permission) }
+
+    LaunchedEffect(key1 = permission) {
+        launcher.launch(permission)
     }
 }
 

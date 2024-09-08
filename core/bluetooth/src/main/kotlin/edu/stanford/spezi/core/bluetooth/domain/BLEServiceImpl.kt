@@ -182,6 +182,8 @@ internal class BLEServiceImpl @Inject constructor(
         val REQUIRED_PERMISSIONS = listOf(
             Manifest.permission.BLUETOOTH_CONNECT,
             Manifest.permission.BLUETOOTH_SCAN,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
         )
     }
 }
