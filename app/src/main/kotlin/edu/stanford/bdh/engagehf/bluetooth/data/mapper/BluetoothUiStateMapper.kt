@@ -160,7 +160,8 @@ class BluetoothUiStateMapper @Inject constructor(
                 status = OperationStatus.FAILURE,
                 date = null,
                 value = null,
-                unit = null
+                unit = null,
+                error = result.exceptionOrNull()?.message
             )
 
             successResult != null -> onSuccess(successResult)
