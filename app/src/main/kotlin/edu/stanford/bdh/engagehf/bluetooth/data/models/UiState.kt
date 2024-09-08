@@ -13,7 +13,6 @@ data class UiState(
         title = "Weight",
     ),
     val messages: List<Message> = emptyList(),
-    val bluetooth: BluetoothUiState = BluetoothUiState.Idle,
-    val missingPermissions: List<String> = emptyList(),
+    val bluetooth: BluetoothUiState = BluetoothUiState.Idle(),
     val measurementDialog: MeasurementDialogUiState = MeasurementDialogUiState(),
 )

@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
-import edu.stanford.spezi.core.bluetooth.data.model.Measurement
+import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
 import edu.stanford.spezi.core.design.component.AsyncTextButton
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles

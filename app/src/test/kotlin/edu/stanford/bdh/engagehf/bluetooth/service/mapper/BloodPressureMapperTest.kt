@@ -1,29 +1,29 @@
-package edu.stanford.spezi.core.bluetooth.data.mapper
+package edu.stanford.bdh.engagehf.bluetooth.service.mapper
 
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceType
-import edu.stanford.spezi.core.bluetooth.data.model.Measurement
+import edu.stanford.bdh.engagehf.bluetooth.service.BLEServiceType
+import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Test
 import java.util.UUID
 
-class WeightMeasurementMapperTest {
-    private val serviceType = BLEServiceType.WEIGHT
-    private val mapper = WeightMeasurementMapper()
+class BloodPressureMapperTest {
+    private val serviceType = BLEServiceType.BLOOD_PRESSURE
+    private val mapper = BloodPressureMapper()
     private val service: BluetoothGattService = mockk {
         every { uuid } returns serviceType.service
     }
     private val characteristic: BluetoothGattCharacteristic = mockk {
-        every { service } returns this@WeightMeasurementMapperTest.service
+        every { service } returns this@BloodPressureMapperTest.service
         every { uuid } returns serviceType.characteristic
     }
 
     @Test
-    fun `it should recognise characteristic with WEIGHT values`() {
+    fun `it should recognise characteristic with BLOOD_PRESSURE values`() {
         // given
         val sut = mapper
 
@@ -48,20 +48,48 @@ class WeightMeasurementMapperTest {
     }
 
     @Test
-    fun `it should map characteristic and data to weight measurement`() = runTestUnconfined {
+    fun `it should map characteristic and data to blood pressure measurement`() = runTestUnconfined {
         // given
         val sut = mapper
         val data = byteArrayOf(
-            0b00000001,
-            0x30,
-            0x75,
+            0b00101111, // Flags: bloodPressureUnitsFlag, timeStampFlag, pulseRateFlag, userIdFlag, measurementStatusFlag
+            120, // Systolic
+            0,
+            80, // Diastolic
+            0,
+            70, // Mean Arterial Pressure
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
         )
 
         // when
-        val result = sut.map(characteristic, data)
+        val result = sut.map(characteristic, data) as Measurement.BloodPressure
 
         // then
-        assertThat(result).isInstanceOf(Measurement.Weight::class.java)
+        with(result) {
+            val expectedFlags = Measurement.BloodPressure.Flags(
+                bloodPressureUnitsFlag = true,
+                timeStampFlag = true,
+                pulseRateFlag = true,
+                userIdFlag = true,
+                measurementStatusFlag = true
+            )
+            assertThat(flags).isEqualTo(expectedFlags)
+            assertThat(systolic).isEqualTo(120.0f)
+            assertThat(diastolic).isEqualTo(80.0f)
+            assertThat(meanArterialPressure).isEqualTo(70.0f)
+        }
     }
 
     @Test

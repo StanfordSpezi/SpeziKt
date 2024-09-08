@@ -1,13 +1,13 @@
 package edu.stanford.bdh.engagehf.bluetooth.data.models
 
+import edu.stanford.bdh.engagehf.R
+
 sealed interface BluetoothUiState {
-    // Initial states
-    data object Idle : BluetoothUiState
-    data object Scanning : BluetoothUiState
+    data class Idle(
+        val description: Int = R.string.bluetooth_not_enabled_description,
+        val missingPermissions: List<String>? = null,
+        val action: Action.Settings? = null,
+    ) : BluetoothUiState
 
-    // Ready; scanning or already connected to devices and receiving measurements
-    data class Ready(val header: String, val devices: List<DeviceUiModel>) : BluetoothUiState
-
-    // Generic error
-    data class Error(val message: String) : BluetoothUiState
+    data class Ready(val header: Int?, val devices: List<DeviceUiModel>) : BluetoothUiState
 }

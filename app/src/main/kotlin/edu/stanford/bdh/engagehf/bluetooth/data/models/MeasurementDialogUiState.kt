@@ -1,6 +1,6 @@
 package edu.stanford.bdh.engagehf.bluetooth.data.models
 
-import edu.stanford.spezi.core.bluetooth.data.model.Measurement
+import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
 
 data class MeasurementDialogUiState(
     val measurement: Measurement? = null,

@@ -1,7 +1,5 @@
 package edu.stanford.bdh.engagehf.bluetooth.screen
 
-import android.app.Activity
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -19,13 +17,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.BluetoothViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.OperationStatus
@@ -39,6 +38,8 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
 import edu.stanford.bdh.engagehf.messages.Message
 import edu.stanford.bdh.engagehf.messages.MessageItem
 import edu.stanford.bdh.engagehf.messages.MessageType
+import edu.stanford.spezi.core.design.component.AsyncTextButton
+import edu.stanford.spezi.core.design.component.OnLifecycleEvent
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
@@ -47,14 +48,14 @@ import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.design.theme.lighten
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
-import kotlinx.coroutines.flow.Flow
 import java.time.ZonedDateTime
+
+private const val IDLE_DESCRIPTION_WEIGHT = 0.5f
 
 @Composable
 fun BluetoothScreen() {
     val viewModel = hiltViewModel<BluetoothViewModel>()
     val uiState by viewModel.uiState.collectAsState()
-    BluetoothEvents(events = viewModel.events)
     BluetoothScreen(
         uiState = uiState,
         onAction = viewModel::onAction
@@ -67,9 +68,15 @@ private fun BluetoothScreen(
     onAction: (Action) -> Unit,
 ) {
     PermissionRequester(
-        permissions = uiState.missingPermissions,
+        bluetoothUiState = uiState.bluetooth,
         onGranted = { onAction(Action.PermissionGranted(permission = it)) }
     )
+
+    OnLifecycleEvent { event ->
+        if (event == Lifecycle.Event.ON_RESUME) {
+            onAction(Action.Resumed)
+        }
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -78,8 +85,7 @@ private fun BluetoothScreen(
             .padding(Spacings.medium)
     ) {
         item {
-            Devices(uiState.bluetooth as? BluetoothUiState.Ready)
-            AdditionalInfo(uiState = uiState.bluetooth)
+            BluetoothHeaderSection(bluetoothUiState = uiState.bluetooth, onAction = onAction)
             MeasurementDialog(
                 uiState = uiState.measurementDialog,
                 onAction = onAction,
@@ -153,26 +159,58 @@ private fun BluetoothScreen(
 }
 
 @Composable
-private fun Devices(readyState: BluetoothUiState.Ready?) {
-    val devices = readyState?.devices ?: emptyList()
-    val header = readyState?.header ?: "No devices connected yet"
-    Text(text = header, style = TextStyles.titleMedium, color = Colors.onSurface)
-    Column(verticalArrangement = Arrangement.spacedBy(Spacings.medium)) {
-        devices.forEach { device ->
-            DeviceComposable(device = device)
+private fun BluetoothHeaderSection(
+    bluetoothUiState: BluetoothUiState,
+    onAction: (Action) -> Unit,
+) {
+    Text(
+        modifier = Modifier.padding(bottom = Spacings.extraSmall),
+        text = "Your connected devices",
+        style = TextStyles.titleMedium,
+        color = Colors.onSurface
+    )
+    when (bluetoothUiState) {
+        is BluetoothUiState.Idle -> {
+            Row(
+                modifier = Modifier
+                    .padding(vertical = Spacings.extraSmall)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(end = Spacings.extraSmall)
+                        .weight(IDLE_DESCRIPTION_WEIGHT),
+                    text = stringResource(id = bluetoothUiState.description),
+                    color = Colors.secondary,
+                    style = TextStyles.bodySmall,
+                )
+                bluetoothUiState.action?.let {
+                    AsyncTextButton(
+                        text = stringResource(id = R.string.home_settings_action),
+                        onClick = { onAction(it) },
+                    )
+                }
+            }
+        }
+
+        is BluetoothUiState.Ready -> {
+            Devices(readyState = bluetoothUiState)
         }
     }
 }
 
 @Composable
-private fun AdditionalInfo(uiState: BluetoothUiState) {
-    val text = when (uiState) {
-        is BluetoothUiState.Idle -> "Idle state"
-        is BluetoothUiState.Scanning -> "Scanning..."
-        is BluetoothUiState.Ready -> "BLE Service ready"
-        is BluetoothUiState.Error -> "Something went wrong!"
+private fun Devices(readyState: BluetoothUiState.Ready) {
+    readyState.header?.let {
+        SecondaryText(text = stringResource(id = it))
     }
-    Text(text = text)
+
+    Column(verticalArrangement = Arrangement.spacedBy(Spacings.medium)) {
+        readyState.devices.forEach { device ->
+            DeviceComposable(device = device)
+        }
+    }
 }
 
 @Composable
@@ -193,33 +231,29 @@ fun DeviceComposable(device: DeviceUiModel) {
     ) {
         Column(modifier = Modifier.padding(Spacings.medium)) {
             Text("Device: ${device.address}")
-            Text("Total measurements: (${device.measurementsCount})")
-            Text(device.summary)
+            SecondaryText(text = "Total measurements: (${device.measurementsCount})")
+            SecondaryText(text = device.summary)
         }
     }
 }
 
 @Composable
-private fun BluetoothEvents(events: Flow<BluetoothViewModel.Event>) {
-    val activity = LocalContext.current as? Activity ?: return
-    LaunchedEffect(key1 = Unit) {
-        events.collect { event ->
-            when (event) {
-                is BluetoothViewModel.Event.EnableBluetooth -> {
-                    Toast.makeText(activity, "Bluetooth is not enabled", Toast.LENGTH_LONG)
-                        .show()
-                }
-            }
-        }
-    }
+private fun SecondaryText(text: String) {
+    Text(
+        text = text,
+        style = TextStyles.bodySmall,
+        color = Colors.secondary,
+    )
 }
 
 @Composable
 private fun PermissionRequester(
-    permissions: List<String>,
+    bluetoothUiState: BluetoothUiState,
     onGranted: (String) -> Unit,
 ) {
-    val permission = permissions.firstOrNull() ?: return
+    val permission = (bluetoothUiState as? BluetoothUiState.Idle)
+        ?.missingPermissions
+        ?.firstOrNull() ?: return
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { granted -> if (granted) onGranted(permission) }
@@ -250,18 +284,27 @@ private fun BluetoothScreenPreview(@PreviewParameter(BluetoothScreenPreviewProvi
 }
 
 private class BluetoothScreenPreviewProvider : PreviewParameterProvider<UiState> {
+    private val defaultUiState = createUiState()
     override val values: Sequence<UiState>
         get() = sequenceOf(
-            createUiState(),
-            createUiState().copy(
-                bluetooth = BluetoothUiState.Idle,
-                messages = emptyList(),
+            defaultUiState,
+            defaultUiState.copy(
+                bluetooth = BluetoothUiState.Idle(
+                    description = R.string.bluetooth_not_enabled_description,
+                    action = Action.Settings.BluetoothSettings
+                )
             ),
+            defaultUiState.copy(
+                bluetooth = BluetoothUiState.Idle(
+                    description = R.string.bluetooth_permissions_not_granted_description,
+                    action = Action.Settings.BluetoothSettings
+                )
+            )
         )
 
     private fun createUiState() = UiState(
         bluetooth = BluetoothUiState.Ready(
-            header = "Connected Devices",
+            header = null,
             devices = listOf(
                 DeviceUiModel(
                     address = "00:11:22:33:44:55",
