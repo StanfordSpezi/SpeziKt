@@ -16,6 +16,7 @@ import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 
 /**
  * A button that renders a circular progress CircularProgressIndicator in case of loading or
@@ -46,7 +47,7 @@ fun AsyncButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier.testIdentifier(AsyncButtonTestIdentifier.ROOT),
         enabled = enabled && isLoading.not(),
         shape = shape,
         colors = ButtonDefaults.buttonColors(
@@ -63,7 +64,9 @@ fun AsyncButton(
             if (isLoading) {
                 CircularProgressIndicator(
                     color = contentColor,
-                    modifier = Modifier.size(Sizes.Icon.small)
+                    modifier = Modifier
+                        .testIdentifier(AsyncButtonTestIdentifier.LOADING)
+                        .size(Sizes.Icon.small)
                 )
             } else {
                 content()
@@ -110,6 +113,10 @@ fun AsyncTextButton(
         onClick = onClick,
         content = { Text(text = text, color = textColor) }
     )
+}
+
+enum class AsyncButtonTestIdentifier {
+    ROOT, LOADING
 }
 
 @ThemePreviews
