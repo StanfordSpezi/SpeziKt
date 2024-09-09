@@ -10,7 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
+import edu.stanford.spezi.core.design.theme.ThemePreviews
 
 @Composable
 fun WeightDescriptionBottomSheet() {
@@ -26,22 +28,30 @@ fun WeightDescriptionBottomSheet() {
         )
         VerticalSpacer()
         Text(
-            text = "Your weight is a critical aspect of your overall health. It is influenced" +
-                " by various factors including your diet, physical activity, genetics, and lifestyle habits.",
+            text = "When the heart is weak, your body can hold onto more salt and water and your " +
+                "weight can rise quickly. This can lead to trouble breathing, leg swelling, and stomach bloating.",
             style = TextStyles.bodyMedium.copy(textAlign = TextAlign.Center)
         )
         VerticalSpacer(height = Spacings.small)
         Text(
-            text = "Maintaining a healthy weight can help you prevent and control many diseases and conditions. " +
-                "It is important to balance the calories you consume with the calories you burn through activities.",
+            text = "Small changes in weight are normal. But if you gain over 3 pounds in a day " +
+                "or over 5 pounds in a week, talk to your care team.",
             style = TextStyles.bodyMedium.copy(textAlign = TextAlign.Center)
         )
         VerticalSpacer(height = Spacings.small)
         Text(
-            text = "Regular exercise and a balanced diet are key components in managing your weight. " +
-                "Consult with a healthcare provider to understand the ideal weight range for your body and health.",
+            text = "Check your weight every day at the same time of day to see if there may be fluid buildup. " +
+                "For more info, see the weight video.",
             style = TextStyles.bodyMedium.copy(textAlign = TextAlign.Center)
         )
         VerticalSpacer()
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun WeightDescriptionBottomSheetPreview() {
+    SpeziTheme(isPreview = true) {
+        WeightDescriptionBottomSheet()
     }
 }
