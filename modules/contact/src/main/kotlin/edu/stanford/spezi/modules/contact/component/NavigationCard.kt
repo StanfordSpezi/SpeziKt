@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -16,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import edu.stanford.spezi.core.design.component.DefaultElevatedCard
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
@@ -29,7 +29,7 @@ import edu.stanford.spezi.modules.contact.OnAction
  */
 @Composable
 fun NavigationCard(address: String, publisher: (OnAction) -> Unit) {
-    ElevatedCard(
+    DefaultElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
     ) {

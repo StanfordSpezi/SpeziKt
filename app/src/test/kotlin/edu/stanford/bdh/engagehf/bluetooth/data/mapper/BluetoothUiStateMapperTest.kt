@@ -42,7 +42,8 @@ class BluetoothUiStateMapperTest {
     }
 
     private val device: BluetoothDevice = mockk {
-        every { address } returns ADDRESS
+        every { name } returns NAME
+        every { address } returns NAME
     }
 
     @Test
@@ -73,7 +74,7 @@ class BluetoothUiStateMapperTest {
         assertThat(result).isEqualTo(
             BluetoothUiState.Idle(
                 description = R.string.bluetooth_not_enabled_description,
-                action = Action.Settings.BluetoothSettings,
+                settingsAction = Action.Settings.BluetoothSettings,
             )
         )
     }
@@ -92,7 +93,7 @@ class BluetoothUiStateMapperTest {
             BluetoothUiState.Idle(
                 description = R.string.bluetooth_permissions_not_granted_description,
                 missingPermissions = permissions,
-                action = Action.Settings.AppSettings,
+                settingsAction = Action.Settings.AppSettings,
             )
         )
     }
@@ -118,8 +119,7 @@ class BluetoothUiStateMapperTest {
         val session = BLEDeviceSession(device = device, measurements = listOf(bloodPressure))
         val state = EngageBLEServiceState.Scanning(sessions = listOf(session))
         val expectedDevice = DeviceUiModel(
-            address = ADDRESS,
-            measurementsCount = session.measurements.size,
+            name = NAME,
             summary = "Blood Pressure: $SYSTOLIC mmHg / $DIASTOLIC mmHg"
         )
 
@@ -139,8 +139,7 @@ class BluetoothUiStateMapperTest {
         val session = BLEDeviceSession(device = device, measurements = listOf(weight))
         val state = EngageBLEServiceState.Scanning(sessions = listOf(session))
         val expectedDevice = DeviceUiModel(
-            address = ADDRESS,
-            measurementsCount = session.measurements.size,
+            name = NAME,
             summary = "Weight: 10.05 lbs"
         )
 
@@ -410,6 +409,6 @@ class BluetoothUiStateMapperTest {
         const val DIASTOLIC = 3
         const val PULSE_RATE = 4.32f
         const val WEIGHT = 4.56
-        const val ADDRESS = "some device address"
+        const val NAME = "some device name"
     }
 }

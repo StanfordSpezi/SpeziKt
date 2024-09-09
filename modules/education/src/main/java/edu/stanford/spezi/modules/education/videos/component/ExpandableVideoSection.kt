@@ -24,9 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -43,6 +41,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
+import edu.stanford.spezi.core.design.component.DefaultElevatedCard
 import edu.stanford.spezi.core.design.component.RectangleShimmerEffect
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.component.height
@@ -246,12 +245,8 @@ private fun VideoElevatedCard(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    ElevatedCard(
-        elevation = CardDefaults.cardElevation(defaultElevation = Sizes.Elevation.medium),
+    DefaultElevatedCard(
         shape = RoundedCornerShape(Sizes.RoundedCorner.large),
-        colors = CardDefaults.cardColors(
-            containerColor = Colors.surface.lighten(),
-        ),
         modifier = modifier,
         content = content,
     )

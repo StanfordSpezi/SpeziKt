@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import edu.stanford.bdh.engagehf.R
@@ -39,14 +36,14 @@ import edu.stanford.bdh.engagehf.messages.Message
 import edu.stanford.bdh.engagehf.messages.MessageItem
 import edu.stanford.bdh.engagehf.messages.MessageType
 import edu.stanford.spezi.core.design.component.AsyncTextButton
-import edu.stanford.spezi.core.design.component.OnLifecycleEvent
+import edu.stanford.spezi.core.design.component.DefaultElevatedCard
+import edu.stanford.spezi.core.design.component.LifecycleEvent
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.design.theme.lighten
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import java.time.ZonedDateTime
 
@@ -72,7 +69,7 @@ private fun BluetoothScreen(
         onGranted = { onAction(Action.PermissionGranted(permission = it)) }
     )
 
-    OnLifecycleEvent { event ->
+    LifecycleEvent { event ->
         if (event == Lifecycle.Event.ON_RESUME) {
             onAction(Action.Resumed)
         }
@@ -164,32 +161,32 @@ private fun BluetoothHeaderSection(
     onAction: (Action) -> Unit,
 ) {
     Text(
-        modifier = Modifier.padding(bottom = Spacings.extraSmall),
+        modifier = Modifier.padding(bottom = Spacings.small),
         text = "Your connected devices",
         style = TextStyles.titleMedium,
         color = Colors.onSurface
     )
     when (bluetoothUiState) {
         is BluetoothUiState.Idle -> {
-            Row(
-                modifier = Modifier
-                    .padding(vertical = Spacings.extraSmall)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
+            DefaultElevatedCard(modifier = Modifier.fillMaxWidth()) {
+                Row(
                     modifier = Modifier
-                        .padding(end = Spacings.extraSmall)
-                        .weight(IDLE_DESCRIPTION_WEIGHT),
-                    text = stringResource(id = bluetoothUiState.description),
-                    color = Colors.secondary,
-                    style = TextStyles.bodySmall,
-                )
-                bluetoothUiState.action?.let {
-                    AsyncTextButton(
-                        text = stringResource(id = R.string.home_settings_action),
-                        onClick = { onAction(it) },
+                        .padding(Spacings.small)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    SecondaryText(
+                        modifier = Modifier
+                            .padding(Spacings.small)
+                            .weight(IDLE_DESCRIPTION_WEIGHT),
+                        text = stringResource(id = bluetoothUiState.description),
                     )
+                    bluetoothUiState.settingsAction?.let {
+                        AsyncTextButton(
+                            text = stringResource(id = R.string.home_settings_action),
+                            onClick = { onAction(it) },
+                        )
+                    }
                 }
             }
         }
@@ -206,7 +203,7 @@ private fun Devices(readyState: BluetoothUiState.Ready) {
         SecondaryText(text = stringResource(id = it))
     }
 
-    Column(verticalArrangement = Arrangement.spacedBy(Spacings.medium)) {
+    Column(verticalArrangement = Arrangement.spacedBy(Spacings.small)) {
         readyState.devices.forEach { device ->
             DeviceComposable(device = device)
         }
@@ -215,31 +212,26 @@ private fun Devices(readyState: BluetoothUiState.Ready) {
 
 @Composable
 fun DeviceComposable(device: DeviceUiModel) {
-    ElevatedCard(
+    DefaultElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(
-                top = Spacings.small,
-                bottom = Spacings.small,
-            ),
-        elevation = CardDefaults.elevatedCardElevation(
-            defaultElevation = 4.dp,
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = Colors.surface.lighten(),
-        ),
+            .padding(bottom = Spacings.small),
     ) {
-        Column(modifier = Modifier.padding(Spacings.medium)) {
-            Text("Device: ${device.address}")
-            SecondaryText(text = "Total measurements: (${device.measurementsCount})")
+        Column(
+            modifier = Modifier
+                .padding(Spacings.medium),
+            verticalArrangement = Arrangement.spacedBy(Spacings.small)
+        ) {
+            Text(text = device.name, style = TextStyles.bodyMedium)
             SecondaryText(text = device.summary)
         }
     }
 }
 
 @Composable
-private fun SecondaryText(text: String) {
+private fun SecondaryText(text: String, modifier: Modifier = Modifier) {
     Text(
+        modifier = modifier,
         text = text,
         style = TextStyles.bodySmall,
         color = Colors.secondary,
@@ -289,15 +281,21 @@ private class BluetoothScreenPreviewProvider : PreviewParameterProvider<UiState>
         get() = sequenceOf(
             defaultUiState,
             defaultUiState.copy(
+                bluetooth = BluetoothUiState.Ready(
+                    header = R.string.paired_devices_hint_description,
+                    devices = emptyList(),
+                )
+            ),
+            defaultUiState.copy(
                 bluetooth = BluetoothUiState.Idle(
                     description = R.string.bluetooth_not_enabled_description,
-                    action = Action.Settings.BluetoothSettings
+                    settingsAction = Action.Settings.BluetoothSettings,
                 )
             ),
             defaultUiState.copy(
                 bluetooth = BluetoothUiState.Idle(
                     description = R.string.bluetooth_permissions_not_granted_description,
-                    action = Action.Settings.BluetoothSettings
+                    settingsAction = Action.Settings.BluetoothSettings,
                 )
             )
         )
@@ -307,8 +305,7 @@ private class BluetoothScreenPreviewProvider : PreviewParameterProvider<UiState>
             header = null,
             devices = listOf(
                 DeviceUiModel(
-                    address = "00:11:22:33:44:55",
-                    measurementsCount = 5,
+                    name = "My device",
                     summary = "Device 1 Summary"
                 ),
             )

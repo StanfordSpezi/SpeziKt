@@ -140,7 +140,7 @@ class BluetoothViewModel @Inject internal constructor(
                 handleToggleExpandAction(action)
             }
 
-            is Action.PermissionGranted, Action.Resumed -> {
+            is Action.PermissionGranted, is Action.Resumed -> {
                 bleService.start()
             }
 

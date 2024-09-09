@@ -54,7 +54,7 @@ class MainActivityViewModel @Inject constructor(
                     if (userState.hasConsented) Routes.AppScreen else Routes.ConsentScreen
                 }
             }
-            _uiState.update { MainUiState.Content(startDestination = Routes.AppScreen) }
+            _uiState.update { MainUiState.Content(startDestination = startDestination) }
         }
     }
 

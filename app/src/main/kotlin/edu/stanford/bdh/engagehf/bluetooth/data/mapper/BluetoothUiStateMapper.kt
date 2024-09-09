@@ -42,7 +42,7 @@ class BluetoothUiStateMapper @Inject constructor(
                 val title = R.string.bluetooth_not_enabled_description
                 BluetoothUiState.Idle(
                     description = title,
-                    action = Action.Settings.BluetoothSettings,
+                    settingsAction = Action.Settings.BluetoothSettings,
                 )
             }
 
@@ -50,7 +50,7 @@ class BluetoothUiStateMapper @Inject constructor(
                 BluetoothUiState.Idle(
                     description = R.string.bluetooth_permissions_not_granted_description,
                     missingPermissions = state.permissions,
-                    action = Action.Settings.AppSettings,
+                    settingsAction = Action.Settings.AppSettings,
                 )
             }
             is EngageBLEServiceState.Scanning -> {
@@ -66,11 +66,11 @@ class BluetoothUiStateMapper @Inject constructor(
                             )
                         }"
                         is Measurement.Weight -> "Weight: ${formatWeightForLocale(lastMeasurement.weight)}"
-                        else -> "No measurement received yet"
+                        else -> "No measurements received yet"
                     }
+                    @Suppress("MissingPermission")
                     DeviceUiModel(
-                        address = it.device.address,
-                        measurementsCount = it.measurements.size,
+                        name = runCatching { it.device.name }.getOrDefault(it.device.address),
                         summary = summary,
                     )
                 }

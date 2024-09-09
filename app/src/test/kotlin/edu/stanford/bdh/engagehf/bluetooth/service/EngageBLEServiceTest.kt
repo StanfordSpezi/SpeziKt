@@ -29,7 +29,7 @@ class EngageBLEServiceTest {
     private val bleServiceState = MutableStateFlow<BLEServiceState>(BLEServiceState.Idle)
     private val bleServiceEvents = MutableSharedFlow<BLEServiceEvent>()
     private val device: BluetoothDevice = mockk {
-        every { address } returns "some device address"
+        every { address } returns "some device name"
     }
 
     private val service by lazy {

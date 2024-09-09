@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -74,7 +75,7 @@ class EngageBLEService @Inject constructor(
 
     private fun collectEvents() {
         ioScope.launch {
-            bleService.events.collect { event ->
+            bleService.events.distinctUntilChanged().collect { event ->
                 logger.i { "Received BLEService event $event" }
                 when (event) {
                     is BLEServiceEvent.GenericError,
@@ -133,26 +134,29 @@ class EngageBLEService @Inject constructor(
                     _state.update { state ->
                         val currentState =
                             state as? EngageBLEServiceState.Scanning ?: return@update state
-                        logger.i { "Updating $currentState with $measurement" }
                         val deviceAddress = event.device.address
                         val activeSessions = currentState.sessions
                         val otherDevicesSessions =
                             activeSessions.filterNot { it.device.address == deviceAddress }
                         val deviceSession =
                             activeSessions.find { it.device.address == deviceAddress }?.let { session ->
+                                if (session.measurements.contains(measurement)) {
+                                    return@update currentState
+                                }
                                 session.copy(measurements = session.measurements.append(measurement))
                             } ?: BLEDeviceSession(
                                 device = event.device,
                                 measurements = listOf(measurement)
                             )
+                        logger.i { "Updating $currentState with $measurement" }
+                        _events.emit(
+                            EngageBLEServiceEvent.MeasurementReceived(
+                                device = event.device,
+                                measurement = measurement
+                            )
+                        )
                         EngageBLEServiceState.Scanning(otherDevicesSessions + deviceSession)
                     }
-                    _events.emit(
-                        EngageBLEServiceEvent.MeasurementReceived(
-                            device = event.device,
-                            measurement = measurement
-                        )
-                    )
                 }
         }
     }
@@ -175,39 +179,58 @@ class EngageBLEService @Inject constructor(
     }
 }
 
+/**
+ * Represents the state of [EngageBLEService]
+ */
 sealed interface EngageBLEServiceState {
 
     /**
-     * Represents the idle state of the BLE service.
+     * Represents the idle initial state of [EngageBLEService]
      */
     data object Idle : EngageBLEServiceState
 
     /**
-     * Represents an event indicating that Bluetooth is not enabled.
+     * Represents the state indicating that Bluetooth is not enabled.
      */
     data object BluetoothNotEnabled : EngageBLEServiceState
 
     /**
-     * Represents an event indicating missing permissions.
+     * Represents the state indicating missing permissions.
      *
      * @property permissions The list of permissions that are missing.
      */
     data class MissingPermissions(val permissions: List<String>) : EngageBLEServiceState
 
     /**
-     * Represents the scanning state of the BLE service.
+     * Represents the scanning state of the service.
      *
      * @property sessions The list of active device sessions.
      */
     data class Scanning(val sessions: List<BLEDeviceSession>) : EngageBLEServiceState
 }
 
+/**
+ * Represents an active ble session
+ *
+ * @property device Current paired device
+ * @property measurements List of measurements received from the device
+ */
 data class BLEDeviceSession(
     val device: BluetoothDevice,
     val measurements: List<Measurement>,
 )
 
+/**
+ * Represents the events emitted by [EngageBLEService]
+ */
 sealed interface EngageBLEServiceEvent {
+
+    /**
+     * Represents a measurement received event
+     *
+     * @property device BLE device which produced the measurement
+     * @property measurement received measurement
+     */
     data class MeasurementReceived(
         val device: BluetoothDevice,
         val measurement: Measurement,
