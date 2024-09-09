@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -76,7 +75,7 @@ class EngageBLEService @Inject constructor(
     private fun collectEvents() {
         eventsJob?.cancel()
         eventsJob = ioScope.launch {
-            bleService.events.distinctUntilChanged().collect { event ->
+            bleService.events.collect { event ->
                 logger.i { "Received BLEService event $event" }
                 when (event) {
                     is BLEServiceEvent.GenericError,
