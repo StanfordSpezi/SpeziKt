@@ -12,7 +12,6 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.coroutines.di.Dispatching
-import edu.stanford.spezi.core.utils.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -66,16 +65,14 @@ internal class BLEDeviceConnector @AssistedInject constructor(
             characteristic: BluetoothGattCharacteristic,
             value: ByteArray,
         ) {
-            scope.launch {
-                emit(
-                    event = BLEServiceEvent.CharacteristicChanged(
-                        device = device,
-                        gatt = gatt,
-                        characteristic = characteristic,
-                        value = value,
-                    )
+            emit(
+                event = BLEServiceEvent.CharacteristicChanged(
+                    device = device,
+                    gatt = gatt,
+                    characteristic = characteristic,
+                    value = value,
                 )
-            }
+            )
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
@@ -132,9 +129,5 @@ internal class BLEDeviceConnector @AssistedInject constructor(
          * @return A new instance of [BLEDeviceConnector].
          */
         fun create(device: BluetoothDevice): BLEDeviceConnector
-    }
-
-    private companion object {
-        val DESCRIPTOR_UUID = UUID("00002902-0000-1000-8000-00805f9b34fb")
     }
 }
