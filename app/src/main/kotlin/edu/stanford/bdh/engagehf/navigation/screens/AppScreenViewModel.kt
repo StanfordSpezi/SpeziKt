@@ -59,17 +59,41 @@ class AppScreenViewModel @Inject constructor(
                     }
                 } else {
                     val bottomSheetContent = when (event) {
-                        AppScreenEvents.Event.NewMeasurementAction ->
+                        AppScreenEvents.Event.NewMeasurementAction -> {
                             BottomSheetContent.NEW_MEASUREMENT_RECEIVED
+                        }
 
-                        AppScreenEvents.Event.DoNewMeasurement ->
+                        AppScreenEvents.Event.DoNewMeasurement -> {
                             BottomSheetContent.DO_NEW_MEASUREMENT
+                        }
 
-                        AppScreenEvents.Event.WeightDescriptionBottomSheet ->
+                        AppScreenEvents.Event.WeightDescriptionBottomSheet -> {
                             BottomSheetContent.WEIGHT_DESCRIPTION_INFO
+                        }
 
-                        AppScreenEvents.Event.AddWeightRecord ->
+                        AppScreenEvents.Event.AddWeightRecord -> {
                             BottomSheetContent.ADD_WEIGHT_RECORD
+                        }
+
+                        AppScreenEvents.Event.AddBloodPressureRecord -> {
+                            BottomSheetContent.ADD_BLOOD_PRESSURE_RECORD
+                        }
+
+                        AppScreenEvents.Event.AddHeartRateRecord -> {
+                            BottomSheetContent.ADD_HEART_RATE_RECORD
+                        }
+
+                        AppScreenEvents.Event.BloodPressureDescriptionBottomSheet -> {
+                            BottomSheetContent.BLOOD_PRESSURE_DESCRIPTION_INFO
+                        }
+
+                        AppScreenEvents.Event.CloseBottomSheet -> {
+                            null
+                        }
+
+                        AppScreenEvents.Event.HeartRateDescriptionBottomSheet -> {
+                            BottomSheetContent.HEART_RATE_DESCRIPTION_INFO
+                        }
 
                         else -> null
                     }

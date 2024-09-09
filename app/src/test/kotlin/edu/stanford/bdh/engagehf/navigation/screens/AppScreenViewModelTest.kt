@@ -133,6 +133,34 @@ class AppScreenViewModelTest {
         }
 
     @Test
+    fun `given AddBloodPressureRecord is received then uiState should be updated`() =
+        runTestUnconfined {
+            // Given
+            val event = AppScreenEvents.Event.AddBloodPressureRecord
+
+            // When
+            appScreenEventsFlow.emit(event)
+
+            // Then
+            val updatedUiState = viewModel.uiState.value
+            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.ADD_BLOOD_PRESSURE_RECORD)
+        }
+
+    @Test
+    fun `given AddHeartRateRecord is received then uiState should be updated`() =
+        runTestUnconfined {
+            // Given
+            val event = AppScreenEvents.Event.AddHeartRateRecord
+
+            // When
+            appScreenEventsFlow.emit(event)
+
+            // Then
+            val updatedUiState = viewModel.uiState.value
+            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.ADD_HEART_RATE_RECORD)
+        }
+
+    @Test
     fun `given ShowAccountDialog is received then uiState should be updated`() =
         runTestUnconfined {
             // Given
@@ -171,5 +199,33 @@ class AppScreenViewModelTest {
 
             // Then
             coVerify { healthSummaryService.generateHealthSummaryPdf() }
+        }
+
+    @Test
+    fun `given BloodPressureDescriptionBottomSheet is received then uiState should be updated`() =
+        runTestUnconfined {
+            // Given
+            val event = AppScreenEvents.Event.BloodPressureDescriptionBottomSheet
+
+            // When
+            appScreenEventsFlow.emit(event)
+
+            // Then
+            val updatedUiState = viewModel.uiState.value
+            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.BLOOD_PRESSURE_DESCRIPTION_INFO)
+        }
+
+    @Test
+    fun `given HeartRateDescriptionBottomSheet is received then uiState should be updated`() =
+        runTestUnconfined {
+            // Given
+            val event = AppScreenEvents.Event.HeartRateDescriptionBottomSheet
+
+            // When
+            appScreenEventsFlow.emit(event)
+
+            // Then
+            val updatedUiState = viewModel.uiState.value
+            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.HEART_RATE_DESCRIPTION_INFO)
         }
 }
