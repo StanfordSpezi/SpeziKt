@@ -7,7 +7,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
@@ -28,20 +30,17 @@ fun WeightDescriptionBottomSheet() {
         )
         VerticalSpacer()
         Text(
-            text = "When the heart is weak, your body can hold onto more salt and water and your " +
-                "weight can rise quickly. This can lead to trouble breathing, leg swelling, and stomach bloating.",
+            text = stringResource(R.string.weight_description_part_1),
             style = TextStyles.bodyMedium.copy(textAlign = TextAlign.Center)
         )
         VerticalSpacer(height = Spacings.small)
         Text(
-            text = "Small changes in weight are normal. But if you gain over 3 pounds in a day " +
-                "or over 5 pounds in a week, talk to your care team.",
+            text = stringResource(R.string.weight_description_part_2),
             style = TextStyles.bodyMedium.copy(textAlign = TextAlign.Center)
         )
         VerticalSpacer(height = Spacings.small)
         Text(
-            text = "Check your weight every day at the same time of day to see if there may be fluid buildup. " +
-                "For more info, see the weight video.",
+            text = stringResource(R.string.weight_description_part_3),
             style = TextStyles.bodyMedium.copy(textAlign = TextAlign.Center)
         )
         VerticalSpacer()

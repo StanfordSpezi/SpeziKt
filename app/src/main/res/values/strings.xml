@@ -66,4 +66,13 @@
     <string name="kg" translatable="false">kg</string>
     <string name="lbs" translatable="false">lbs</string>
     <string name="notifications">Notifications</string>
+    <string name="heart_rate_description_part_1">Heart rate is the number of times your heart beats per minute. Checking your heart rate helps your care team see how you are responding to your meds and if any meds need to be changed.</string>
+    <string name="heart_rate_description_part_2">"Everyone’s normal heart rate is different. A heart rate under 50 can make you dizzy. If your heart rate suddenly increases and stays high, you should tell your care team. "</string>
+    <string name="heart_rate_description_part_3">Your heart rate will be checked when you take your blood pressure. For more info, see the heart rate video.</string>
+    <string name="weight_description_part_1">When the heart is weak, your body can hold onto more salt and water and your weight can rise quickly. This can lead to trouble breathing, leg swelling, and stomach bloating.</string>
+    <string name="weight_description_part_2">Small changes in weight are normal. But if you gain over 3 pounds in a day or over 5 pounds in a week, talk to your care team.</string>
+    <string name="weight_description_part_3">Check your weight every day at the same time of day to see if there may be fluid buildup. For more info, see the weight video.</string>
+    <string name="blood_pressure_description_part_1">Blood pressure measures the force in your blood vessels as your heart pumps blood in your body. Check your blood pressure daily to track your heart and how it is responding to your meds.</string>
+    <string name="blood_pressure_description_part_2">The top number of the blood pressure (called systolic) should be under 130 mmHg. The blood pressure that is too low is different for each person and should be discussed with your care team. If your blood pressure is too low, it can make you feel dizzy.</string>
+    <string name="blood_pressure_description_part_3">Do not exercise in the 30 minutes before taking your blood pressure. Make sure the cuff fits well around your upper arm, and keep your legs uncrossed. For more info, see the blood pressure video.</string>
 </resources>
