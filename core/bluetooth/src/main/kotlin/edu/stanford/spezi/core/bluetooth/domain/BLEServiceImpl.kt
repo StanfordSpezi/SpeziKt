@@ -52,7 +52,7 @@ internal class BLEServiceImpl @Inject constructor(
     override val state: StateFlow<BLEServiceState> = _state.asStateFlow()
     override val events: Flow<BLEServiceEvent> = _events.asSharedFlow()
 
-    override fun start(services: List<UUID>) {
+    override fun startDiscovering(services: List<UUID>) {
         logger.i { "start($services) requested" }
         when {
             bluetoothAdapter.isEnabled.not() -> {

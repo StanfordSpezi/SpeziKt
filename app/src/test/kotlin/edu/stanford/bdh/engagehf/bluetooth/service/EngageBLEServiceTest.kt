@@ -55,7 +55,7 @@ class EngageBLEServiceTest {
         verify {
             bleService.state
             bleService.events
-            bleService.start(services = BLEServiceType.entries.map { it.service })
+            bleService.startDiscovering(services = BLEServiceType.entries.map { it.service })
         }
     }
 

@@ -8,7 +8,6 @@ import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.core.utils.extensions.append
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -39,11 +38,12 @@ class EngageBLEService @Inject constructor(
     fun start() {
         collectState()
         collectEvents()
-        bleService.start(services = BLEServiceType.entries.map { it.service })
+        bleService.startDiscovering(services = BLEServiceType.entries.map { it.service })
     }
 
     private fun collectState() {
-        ioScope.launch {
+        stateJob?.cancel()
+        stateJob = ioScope.launch {
             bleService.state.collect { state ->
                 logger.i { "Received BLEService state $state" }
                 when (state) {
@@ -74,7 +74,8 @@ class EngageBLEService @Inject constructor(
     }
 
     private fun collectEvents() {
-        ioScope.launch {
+        eventsJob?.cancel()
+        eventsJob = ioScope.launch {
             bleService.events.distinctUntilChanged().collect { event ->
                 logger.i { "Received BLEService event $event" }
                 when (event) {
@@ -143,7 +144,7 @@ class EngageBLEService @Inject constructor(
                                 if (session.measurements.contains(measurement)) {
                                     return@update currentState
                                 }
-                                session.copy(measurements = session.measurements.append(measurement))
+                                session.copy(measurements = session.measurements + measurement)
                             } ?: BLEDeviceSession(
                                 device = event.device,
                                 measurements = listOf(measurement)

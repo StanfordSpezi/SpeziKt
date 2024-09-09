@@ -29,7 +29,6 @@ class BluetoothUiStateMapper @Inject constructor(
         )
     }
 
-    @Suppress("MaxLineLength")
     fun mapBleServiceState(state: EngageBLEServiceState): BluetoothUiState {
         return when (state) {
             EngageBLEServiceState.Idle -> {
@@ -65,7 +64,9 @@ class BluetoothUiStateMapper @Inject constructor(
                                 lastMeasurement.diastolic
                             )
                         }"
-                        is Measurement.Weight -> "Weight: ${formatWeightForLocale(lastMeasurement.weight)}"
+                        is Measurement.Weight -> {
+                            "Weight: ${formatWeightForLocale(lastMeasurement.weight)}"
+                        }
                         else -> "No measurements received yet"
                     }
                     @Suppress("MissingPermission")

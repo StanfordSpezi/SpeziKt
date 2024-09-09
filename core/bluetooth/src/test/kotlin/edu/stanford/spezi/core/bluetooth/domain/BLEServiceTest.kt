@@ -81,7 +81,7 @@ class BLEServiceTest {
         every { deviceScanner.isScanning } returns true
 
         // when
-        bleService.start(services = services)
+        bleService.startDiscovering(services = services)
 
         // then
         verify { permissionChecker wasNot Called }
@@ -94,7 +94,7 @@ class BLEServiceTest {
         every { bluetoothAdapter.isEnabled } returns false
 
         // when
-        bleService.start(services = services)
+        bleService.startDiscovering(services = services)
 
         // then
         verify { deviceScanner.stopScanning() }
@@ -113,7 +113,7 @@ class BLEServiceTest {
         )
 
         // when
-        bleService.start(services = services)
+        bleService.startDiscovering(services = services)
 
         // then
         assertState(state = BLEServiceState.MissingPermissions(permissions = expectedPermissions))
@@ -127,7 +127,7 @@ class BLEServiceTest {
         every { permissionChecker.isPermissionGranted(any()) } returns true
 
         // when
-        bleService.start(services = services)
+        bleService.startDiscovering(services = services)
 
         // then
         verify { deviceScanner.events }
@@ -207,7 +207,7 @@ class BLEServiceTest {
         every { deviceScanner.isScanning } returns false
         every { bluetoothAdapter.isEnabled } returns true
         every { permissionChecker.isPermissionGranted(any()) } returns true
-        bleService.start(services = services)
+        bleService.startDiscovering(services = services)
     }
 
     private fun assertScanning() {
