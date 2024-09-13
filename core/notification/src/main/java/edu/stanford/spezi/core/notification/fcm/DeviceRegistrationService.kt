@@ -3,10 +3,8 @@ package edu.stanford.spezi.core.notification.fcm
 import android.content.Context
 import android.os.Build
 import com.google.firebase.functions.FirebaseFunctions
-import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.logging.speziLogger
-import kotlinx.coroutines.tasks.await
 import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
@@ -17,7 +15,7 @@ import javax.inject.Inject
 class DeviceRegistrationService @Inject constructor(
     @ApplicationContext private val context: Context,
     private val functions: FirebaseFunctions,
-    private val firebaseMessaging: FirebaseMessaging,
+    private val messageTokenService: MessageTokenService,
 ) {
 
     private val logger by speziLogger()
@@ -52,7 +50,7 @@ class DeviceRegistrationService @Inject constructor(
 
     private suspend fun getNotificationToken(): Result<String?> {
         return runCatching {
-            firebaseMessaging.token.await()
+            messageTokenService.getNotificationToken()
         }.onFailure { e ->
             logger.e(e) { "Error getting notification token" }
         }
