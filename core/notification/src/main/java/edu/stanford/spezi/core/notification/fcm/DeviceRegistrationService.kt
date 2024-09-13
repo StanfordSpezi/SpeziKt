@@ -17,6 +17,7 @@ import javax.inject.Inject
 class DeviceRegistrationService @Inject constructor(
     @ApplicationContext private val context: Context,
     private val functions: FirebaseFunctions,
+    private val firebaseMessaging: FirebaseMessaging,
 ) {
 
     private val logger by speziLogger()
@@ -51,7 +52,7 @@ class DeviceRegistrationService @Inject constructor(
 
     private suspend fun getNotificationToken(): Result<String?> {
         return runCatching {
-            FirebaseMessaging.getInstance().token.await()
+            firebaseMessaging.token.await()
         }.onFailure { e ->
             logger.e(e) { "Error getting notification token" }
         }
