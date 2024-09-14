@@ -66,6 +66,7 @@ class BluetoothViewModelTest {
         every { action } returns messageAction
         every { id } returns messageId
         every { isExpanded } returns false
+        every { isDismissible } returns true
     }
 
     @get:Rule
