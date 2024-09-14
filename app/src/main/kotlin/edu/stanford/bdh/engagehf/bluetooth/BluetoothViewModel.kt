@@ -185,9 +185,7 @@ class BluetoothViewModel @Inject internal constructor(
 
                                 is MessagesAction.QuestionnaireAction -> {
                                     navigator.navigateTo(
-                                        AppNavigationEvent.QuestionnaireScreen(
-                                            mappedAction.questionnaireId
-                                        )
+                                        AppNavigationEvent.QuestionnaireScreen(mappedAction.questionnaireId)
                                     )
                                 }
 
@@ -197,9 +195,8 @@ class BluetoothViewModel @Inject internal constructor(
                                     }
                                 }
 
-                                MessagesAction.NoAction -> {
-                                    logger.i { "No action for message $messageId" }
-                                }
+                                MessagesAction.NoAction -> logger.i { "No action for message $messageId" }
+
                             }
                             if (action.message.isDismissible) {
                                 messageRepository.completeMessage(messageId = messageId)
