@@ -13,8 +13,8 @@ class MessageActionMapper @Inject constructor() {
 
     fun map(action: String?): Result<MessagesAction> {
         return runCatching {
-            requireNotNull(action)
             when {
+                action.isNullOrBlank() -> MessagesAction.NoAction
                 videoSectionRegex.matches(action) -> {
                     mapVideoSectionAction(action).getOrThrow()
                 }

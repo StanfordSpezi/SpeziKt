@@ -196,8 +196,14 @@ class BluetoothViewModel @Inject internal constructor(
                                         handleVideoSectionAction(mappedAction)
                                     }
                                 }
+
+                                MessagesAction.NoAction -> {
+                                    logger.i { "No action for message $messageId" }
+                                }
                             }
-                            messageRepository.completeMessage(messageId = messageId)
+                            if (action.message.isDismissible) {
+                                messageRepository.completeMessage(messageId = messageId)
+                            }
                         }
                 }
             }
