@@ -4,5 +4,7 @@ package edu.stanford.spezi.core.notification.notifier
  * Interface for sending notifications.
  */
 interface NotificationNotifier {
-    fun sendNotification(message: String)
+    fun sendNotification(
+        firebaseMessage: FirebaseMessage,
+    )
 }

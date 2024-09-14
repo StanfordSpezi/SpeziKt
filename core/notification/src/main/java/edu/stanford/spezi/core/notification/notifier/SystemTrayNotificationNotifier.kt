@@ -14,12 +14,12 @@ import androidx.core.content.PermissionChecker
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.notification.R
-import edu.stanford.spezi.core.notification.notifier.SystemTrayNotificationNotifier.Companion.SPEZI_MESSAGE
+import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.ACTION_KEY
+import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.IS_DISMISSIBLE_KEY
+import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.MESSAGE_ID_KEY
 import edu.stanford.spezi.core.notification.notifier.SystemTrayNotificationNotifier.Companion.SPEZI_MESSAGE_NOTIFICATION_CHANNEL_ID
 import edu.stanford.spezi.core.notification.notifier.SystemTrayNotificationNotifier.Companion.SPEZI_MESSAGE_NOTIFICATION_REQUEST_CODE
 import edu.stanford.spezi.core.notification.notifier.SystemTrayNotificationNotifier.Companion.TARGET_ACTIVITY_NAME
-import org.json.JSONException
-import org.json.JSONObject
 import javax.inject.Inject
 
 /**
@@ -30,48 +30,35 @@ class SystemTrayNotificationNotifier @Inject constructor(
 ) : NotificationNotifier {
     private val logger by speziLogger()
 
-    override fun sendNotification(message: String): Unit = with(context) {
-        runCatching {
-            if (PermissionChecker.checkSelfPermission(
-                    this,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PermissionChecker.PERMISSION_GRANTED
-            ) {
-                logger.w { "Notification permission not granted" }
-                return
-            }
-
-            // TODO check if this is the correct way to parse the message. It could also be a map instead of a JSON object.
-            val jsonObject = try {
-                JSONObject(message)
-            } catch (e: JSONException) {
-                logger.e { "Invalid JSON message: $message" }
-                return
-            }
-            val title = jsonObject.optString("title", "New Message")
-            val description =
-                jsonObject.optString("description", "More information inside the application.")
-
-            logger.i { "Sending notification" }
-
-            val notification = createMessageNotification {
-                setSmallIcon(edu.stanford.spezi.core.design.R.drawable.ic_info)
-                    .setContentTitle(title)
-                    .setContentText(description)
-                    .setContentIntent(
-                        messagePendingIntent(
-                            message
+    override fun sendNotification(firebaseMessage: FirebaseMessage): Unit =
+        with(context) {
+            runCatching {
+                if (PermissionChecker.checkSelfPermission(
+                        this,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) != PermissionChecker.PERMISSION_GRANTED
+                ) {
+                    logger.w { "Notification permission not granted" }
+                    return
+                }
+                val notification = createMessageNotification {
+                    setSmallIcon(edu.stanford.spezi.core.design.R.drawable.ic_info)
+                        .setContentTitle(firebaseMessage.title)
+                        .setContentText(firebaseMessage.message)
+                        .setContentIntent(
+                            messagePendingIntent(
+                                firebaseMessage
+                            )
                         )
-                    )
-                    .setAutoCancel(true)
+                        .setAutoCancel(true)
+                }
+                val notificationManager = NotificationManagerCompat.from(this)
+                notificationManager.notify(
+                    notification.hashCode(),
+                    notification,
+                )
             }
-            val notificationManager = NotificationManagerCompat.from(this)
-            notificationManager.notify(
-                notification.hashCode(),
-                notification,
-            )
         }
-    }
 
     companion object {
         const val SPEZI_MESSAGE_NOTIFICATION_CHANNEL_ID = "SPEZI_MESSAGE_NOTIFICATION_CHANNEL"
@@ -106,7 +93,7 @@ private fun Context.ensureNotificationChannelExists() {
 }
 
 private fun Context.messagePendingIntent(
-    message: String,
+    firebaseMessage: FirebaseMessage,
 ): PendingIntent? = PendingIntent.getActivity(
     this,
     SPEZI_MESSAGE_NOTIFICATION_REQUEST_CODE,
@@ -116,7 +103,9 @@ private fun Context.messagePendingIntent(
             packageName,
             TARGET_ACTIVITY_NAME,
         )
-        putExtra(SPEZI_MESSAGE, message)
+        firebaseMessage.messageId?.let { putExtra(MESSAGE_ID_KEY, it) }
+        firebaseMessage.action?.let { putExtra(ACTION_KEY, it) }
+        firebaseMessage.isDismissible?.let { putExtra(IS_DISMISSIBLE_KEY, it) }
     },
     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
 )
