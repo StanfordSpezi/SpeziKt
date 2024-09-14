@@ -5,11 +5,14 @@ import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.WeightRecord
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.OperationStatus
+import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
+import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.DeviceUiModel
-import edu.stanford.spezi.core.bluetooth.data.model.BLEDeviceSession
-import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
-import edu.stanford.spezi.core.bluetooth.data.model.Measurement
+import edu.stanford.bdh.engagehf.bluetooth.service.BLEDeviceSession
+import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceState
+import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
 import edu.stanford.spezi.core.utils.LocaleProvider
 import io.mockk.every
 import io.mockk.mockk
@@ -39,20 +42,73 @@ class BluetoothUiStateMapperTest {
     }
 
     private val device: BluetoothDevice = mockk {
-        every { address } returns ADDRESS
+        every { name } returns NAME
+        every { address } returns NAME
     }
 
     @Test
-    fun `it should map empty sessions correctly`() {
+    fun `it should map idle state correctly`() {
         // given
-        val state = BLEServiceState.Scanning(sessions = emptyList())
+        val state = EngageBLEServiceState.Idle
 
         // when
         val result = mapper.mapBleServiceState(state)
 
         // then
+        assertThat(result).isEqualTo(
+            BluetoothUiState.Idle(
+                description = R.string.bluetooth_initializing_description,
+            )
+        )
+    }
+
+    @Test
+    fun `it should map BluetoothNotEnabled state correctly`() {
+        // given
+        val state = EngageBLEServiceState.BluetoothNotEnabled
+
+        // when
+        val result = mapper.mapBleServiceState(state)
+
+        // then
+        assertThat(result).isEqualTo(
+            BluetoothUiState.Idle(
+                description = R.string.bluetooth_not_enabled_description,
+                settingsAction = Action.Settings.BluetoothSettings,
+            )
+        )
+    }
+
+    @Test
+    fun `it should map MissingPermissions state correctly`() {
+        // given
+        val permissions = listOf("permission1", "permission2")
+        val state = EngageBLEServiceState.MissingPermissions(permissions)
+
+        // when
+        val result = mapper.mapBleServiceState(state) as BluetoothUiState.Idle
+
+        // then
+        assertThat(result).isEqualTo(
+            BluetoothUiState.Idle(
+                description = R.string.bluetooth_permissions_not_granted_description,
+                missingPermissions = permissions,
+                settingsAction = Action.Settings.AppSettings,
+            )
+        )
+    }
+
+    @Test
+    fun `it should map empty sessions correctly`() {
+        // given
+        val state = EngageBLEServiceState.Scanning(sessions = emptyList())
+
+        // when
+        val result = mapper.mapBleServiceState(state) as BluetoothUiState.Ready
+
+        // then
         with(result) {
-            assertThat(header).isEqualTo("No devices connected yet")
+            assertThat(header).isEqualTo(R.string.paired_devices_hint_description)
             assertThat(devices).isEmpty()
         }
     }
@@ -61,19 +117,18 @@ class BluetoothUiStateMapperTest {
     fun `it should map BloodPressure correctly`() {
         // given
         val session = BLEDeviceSession(device = device, measurements = listOf(bloodPressure))
-        val state = BLEServiceState.Scanning(sessions = listOf(session))
+        val state = EngageBLEServiceState.Scanning(sessions = listOf(session))
         val expectedDevice = DeviceUiModel(
-            address = ADDRESS,
-            measurementsCount = session.measurements.size,
+            name = NAME,
             summary = "Blood Pressure: $SYSTOLIC mmHg / $DIASTOLIC mmHg"
         )
 
         // when
-        val result = mapper.mapBleServiceState(state)
+        val result = mapper.mapBleServiceState(state) as BluetoothUiState.Ready
 
         // then
         with(result) {
-            assertThat(header).isEqualTo("Connected devices (1)")
+            assertThat(header).isEqualTo(null)
             assertThat(devices.first()).isEqualTo(expectedDevice)
         }
     }
@@ -82,19 +137,18 @@ class BluetoothUiStateMapperTest {
     fun `it should map Weight correctly`() {
         // given
         val session = BLEDeviceSession(device = device, measurements = listOf(weight))
-        val state = BLEServiceState.Scanning(sessions = listOf(session))
+        val state = EngageBLEServiceState.Scanning(sessions = listOf(session))
         val expectedDevice = DeviceUiModel(
-            address = ADDRESS,
-            measurementsCount = session.measurements.size,
+            name = NAME,
             summary = "Weight: 10.05 lbs"
         )
 
         // when
-        val result = mapper.mapBleServiceState(state)
+        val result = mapper.mapBleServiceState(state) as BluetoothUiState.Ready
 
         // then
         with(result) {
-            assertThat(header).isEqualTo("Connected devices (1)")
+            assertThat(header).isEqualTo(null)
             assertThat(devices.first()).isEqualTo(expectedDevice)
         }
     }
@@ -106,7 +160,7 @@ class BluetoothUiStateMapperTest {
         val measurement = weight
 
         // when
-        val result = mapper.mapToMeasurementDialogUiState(measurement = measurement)
+        val result = mapper.mapMeasurementDialog(measurement = measurement)
 
         // then
         with(result) {
@@ -124,7 +178,7 @@ class BluetoothUiStateMapperTest {
         val measurement = weight
 
         // when
-        val result = mapper.mapToMeasurementDialogUiState(measurement = measurement)
+        val result = mapper.mapMeasurementDialog(measurement = measurement)
 
         // then
         with(result) {
@@ -141,15 +195,15 @@ class BluetoothUiStateMapperTest {
         val measurement = bloodPressure
 
         // when
-        val result = mapper.mapToMeasurementDialogUiState(measurement = measurement)
+        val result = mapper.mapMeasurementDialog(measurement = measurement)
 
         // then
         with(result) {
             assertThat(this.measurement).isEqualTo(measurement)
             assertThat(isVisible).isTrue()
             assertThat(isProcessing).isFalse()
-            assertThat(formattedSystolic).isEqualTo("${SYSTOLIC.toInt()} mmHg")
-            assertThat(formattedDiastolic).isEqualTo("${DIASTOLIC.toInt()} mmHg")
+            assertThat(formattedSystolic).isEqualTo("$SYSTOLIC mmHg")
+            assertThat(formattedDiastolic).isEqualTo("$DIASTOLIC mmHg")
             assertThat(formattedHeartRate).isEqualTo("${PULSE_RATE.toInt()} bpm")
         }
     }
@@ -355,6 +409,6 @@ class BluetoothUiStateMapperTest {
         const val DIASTOLIC = 3
         const val PULSE_RATE = 4.32f
         const val WEIGHT = 4.56
-        const val ADDRESS = "some device address"
+        const val NAME = "some device name"
     }
 }

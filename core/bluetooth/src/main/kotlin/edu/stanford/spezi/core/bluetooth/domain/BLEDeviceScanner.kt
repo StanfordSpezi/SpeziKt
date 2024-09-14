@@ -8,13 +8,13 @@ import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.os.ParcelUuid
-import edu.stanford.spezi.core.bluetooth.data.model.SupportedServices
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import java.util.UUID
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
@@ -22,13 +22,11 @@ import javax.inject.Inject
  * Component responsible for scanning for BLE (Bluetooth Low Energy) devices.
  *
  * @property bluetoothAdapter The Bluetooth adapter used for scanning.
- * @property supportedServices The supported BLE services.
  * @property scope The coroutine scope used for launching scan events.
  */
 @SuppressLint("MissingPermission")
 internal class BLEDeviceScanner @Inject constructor(
     private val bluetoothAdapter: BluetoothAdapter,
-    private val supportedServices: SupportedServices,
     @Dispatching.IO private val scope: CoroutineScope,
 ) {
     private val logger by speziLogger()
@@ -69,12 +67,12 @@ internal class BLEDeviceScanner @Inject constructor(
      *
      * If scanning is already in progress, this method does nothing.
      */
-    fun startScanning() {
+    fun startScanning(services: List<UUID>) {
         val scanner = bluetoothAdapter.bluetoothLeScanner
         if (_isScanning.getAndSet(scanner != null)) return
-        val filters = supportedServices.map {
+        val filters = services.map {
             ScanFilter.Builder()
-                .setServiceUuid(ParcelUuid(it.service))
+                .setServiceUuid(ParcelUuid(it))
                 .build()
         }
         val settings = ScanSettings.Builder()

@@ -65,4 +65,9 @@
     <string name="bpm" translatable="false">bpm</string>
     <string name="kg" translatable="false">kg</string>
     <string name="lbs" translatable="false">lbs</string>
+    <string name="bluetooth_initializing_description">"Initializing bluetooth connection..."</string>
+    <string name="bluetooth_not_enabled_description">"Bluetooth not enabled, please visit device settings and enable bluetooth to be able to receive measurements from your connected devices"</string>
+    <string name="bluetooth_permissions_not_granted_description">Permissions not granted, please visit device settings and grant required bluetooth permissions be able to receive measurements from your connected devices"</string>
+    <string name="home_settings_action">Settings</string>
+    <string name="paired_devices_hint_description">Paired devices will appear here once set up. Hold down the bluetooth button for 3 seconds to put the device into pairing mode.</string>
 </resources>

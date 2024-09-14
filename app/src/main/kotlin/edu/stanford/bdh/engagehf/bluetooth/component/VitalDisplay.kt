@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +17,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import edu.stanford.bdh.engagehf.bluetooth.component.VitalDisplayDataFactory.createVitalDisplayState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
+import edu.stanford.spezi.core.design.component.DefaultElevatedCard
 import edu.stanford.spezi.core.design.component.RectangleShimmerEffect
 import edu.stanford.spezi.core.design.component.height
 import edu.stanford.spezi.core.design.theme.Colors
@@ -26,7 +25,6 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.design.theme.lighten
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -37,13 +35,7 @@ fun VitalDisplay(
     modifier: Modifier = Modifier,
     vitalDisplayUiState: VitalDisplayData,
 ) {
-    ElevatedCard(
-        elevation = CardDefaults.elevatedCardElevation(
-            defaultElevation = 4.dp,
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = Colors.surface.lighten(),
-        ),
+    DefaultElevatedCard(
         modifier = modifier
             .height(130.dp)
             .fillMaxSize()

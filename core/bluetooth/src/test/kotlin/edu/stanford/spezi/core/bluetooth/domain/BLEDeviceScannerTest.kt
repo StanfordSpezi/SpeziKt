@@ -8,11 +8,10 @@ import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceType
-import edu.stanford.spezi.core.bluetooth.data.model.SupportedServices
 import edu.stanford.spezi.core.testing.SpeziTestScope
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.core.testing.verifyNever
+import edu.stanford.spezi.core.utils.UUID
 import io.mockk.Called
 import io.mockk.Runs
 import io.mockk.every
@@ -27,7 +26,7 @@ import org.junit.Test
 
 class BLEDeviceScannerTest {
     private val bluetoothAdapter: BluetoothAdapter = mockk()
-    private val supportedServices: SupportedServices = SupportedServices(services = BLEServiceType.entries)
+    private val services = listOf(UUID())
     private val bluetoothLeScanner: BluetoothLeScanner = mockk()
     private val device: BluetoothDevice = mockk {
         every { address } returns "some device address"
@@ -39,7 +38,6 @@ class BLEDeviceScannerTest {
     private val bleDeviceScanner by lazy {
         BLEDeviceScanner(
             bluetoothAdapter = bluetoothAdapter,
-            supportedServices = supportedServices,
             scope = SpeziTestScope(),
         )
     }
@@ -77,13 +75,13 @@ class BLEDeviceScannerTest {
         val settingsSlot = slot<ScanSettings>()
 
         // when
-        bleDeviceScanner.startScanning()
+        bleDeviceScanner.startScanning(services = services)
 
         // then
         verify { bluetoothLeScanner.startScan(capture(filtersSlot), capture(settingsSlot), any<ScanCallback>()) }
         verify { anyConstructed<ScanSettings.Builder>().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY) }
-        verify(exactly = supportedServices.size) { anyConstructed<ScanFilter.Builder>().setServiceUuid(any()) }
-        assertThat(filtersSlot.captured.size == supportedServices.size).isTrue()
+        verify(exactly = services.size) { anyConstructed<ScanFilter.Builder>().setServiceUuid(any()) }
+        assertThat(filtersSlot.captured.size == services.size).isTrue()
         assertThat(bleDeviceScanner.isScanning).isTrue()
     }
 
@@ -93,7 +91,7 @@ class BLEDeviceScannerTest {
         every { bluetoothAdapter.bluetoothLeScanner } returns null
 
         // when
-        bleDeviceScanner.startScanning()
+        bleDeviceScanner.startScanning(services = services)
 
         // then
         assertThat(bleDeviceScanner.isScanning).isFalse()
@@ -103,11 +101,11 @@ class BLEDeviceScannerTest {
     @Test
     fun `it should start scanning only once if already scanning`() {
         // given
-        bleDeviceScanner.startScanning()
+        bleDeviceScanner.startScanning(services = services)
         val isScanning = bleDeviceScanner.isScanning
 
         // when
-        repeat(10) { bleDeviceScanner.startScanning() }
+        repeat(10) { bleDeviceScanner.startScanning(services = services) }
 
         // then
         verify(exactly = 1) { bluetoothLeScanner.startScan(any<List<ScanFilter>>(), any<ScanSettings>(), any<ScanCallback>()) }
@@ -198,7 +196,7 @@ class BLEDeviceScannerTest {
 
     private fun getCallback(): ScanCallback {
         val callbackSlot = slot<ScanCallback>()
-        bleDeviceScanner.startScanning()
+        bleDeviceScanner.startScanning(services = services)
         verify { bluetoothLeScanner.startScan(any<List<ScanFilter>>(), any<ScanSettings>(), capture(callbackSlot)) }
         return callbackSlot.captured
     }

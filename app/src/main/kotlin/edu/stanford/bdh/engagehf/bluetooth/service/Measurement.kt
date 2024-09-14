@@ -1,4 +1,4 @@
-package edu.stanford.spezi.core.bluetooth.data.model
+package edu.stanford.bdh.engagehf.bluetooth.service
 
 import java.time.ZonedDateTime
 

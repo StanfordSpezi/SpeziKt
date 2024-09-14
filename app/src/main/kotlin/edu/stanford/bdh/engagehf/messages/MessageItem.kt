@@ -16,9 +16,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -31,6 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
+import edu.stanford.spezi.core.design.component.DefaultElevatedCard
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Sizes
@@ -50,13 +49,7 @@ fun MessageItem(
     message: Message,
     onAction: (Action) -> Unit,
 ) {
-    ElevatedCard(
-        elevation = CardDefaults.elevatedCardElevation(
-            defaultElevation = Sizes.Elevation.medium,
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = Colors.surface.lighten(),
-        ),
+    DefaultElevatedCard(
         modifier = modifier
             .padding(vertical = Spacings.small)
             .fillMaxWidth()
@@ -64,7 +57,7 @@ fun MessageItem(
         Column(
             modifier = Modifier
                 .background(Colors.surface.lighten())
-                .padding(start = Spacings.small, end = Spacings.small)
+                .padding(horizontal = Spacings.small)
                 .fillMaxWidth()
         ) {
             Row(

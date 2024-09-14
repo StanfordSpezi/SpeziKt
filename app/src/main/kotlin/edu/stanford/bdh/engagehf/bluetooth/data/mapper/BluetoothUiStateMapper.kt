@@ -4,14 +4,16 @@ import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.OperationStatus
+import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.DeviceUiModel
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
+import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceState
+import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
 import edu.stanford.bdh.engagehf.messages.MessagesAction
-import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
-import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import edu.stanford.spezi.core.utils.LocaleProvider
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -27,37 +29,66 @@ class BluetoothUiStateMapper @Inject constructor(
         )
     }
 
-    fun mapBleServiceState(state: BLEServiceState.Scanning): BluetoothUiState.Ready {
-        val devices = state.sessions.map {
-            val summary = when (val lastMeasurement = it.measurements.lastOrNull()) {
-                is Measurement.BloodPressure -> "Blood Pressure: ${
-                    formatSystolicForLocale(
-                        lastMeasurement.systolic
-                    )
-                } / ${
-                    formatDiastolicForLocale(
-                        lastMeasurement.diastolic
-                    )
-                }"
-
-                is Measurement.Weight -> "Weight: ${formatWeightForLocale(lastMeasurement.weight)}"
-                else -> "No measurement received yet"
+    fun mapBleServiceState(state: EngageBLEServiceState): BluetoothUiState {
+        return when (state) {
+            EngageBLEServiceState.Idle -> {
+                BluetoothUiState.Idle(
+                    description = R.string.bluetooth_initializing_description,
+                )
             }
-            DeviceUiModel(
-                address = it.device.address,
-                measurementsCount = it.measurements.size,
-                summary = summary,
-            )
+
+            EngageBLEServiceState.BluetoothNotEnabled -> {
+                val title = R.string.bluetooth_not_enabled_description
+                BluetoothUiState.Idle(
+                    description = title,
+                    settingsAction = Action.Settings.BluetoothSettings,
+                )
+            }
+
+            is EngageBLEServiceState.MissingPermissions -> {
+                BluetoothUiState.Idle(
+                    description = R.string.bluetooth_permissions_not_granted_description,
+                    missingPermissions = state.permissions,
+                    settingsAction = Action.Settings.AppSettings,
+                )
+            }
+            is EngageBLEServiceState.Scanning -> {
+                val devices = state.sessions.map {
+                    val summary = when (val lastMeasurement = it.measurements.lastOrNull()) {
+                        is Measurement.BloodPressure -> "Blood Pressure: ${
+                            formatSystolicForLocale(
+                                lastMeasurement.systolic
+                            )
+                        } / ${
+                            formatDiastolicForLocale(
+                                lastMeasurement.diastolic
+                            )
+                        }"
+                        is Measurement.Weight -> {
+                            "Weight: ${formatWeightForLocale(lastMeasurement.weight)}"
+                        }
+                        else -> "No measurements received yet"
+                    }
+                    @Suppress("MissingPermission")
+                    DeviceUiModel(
+                        name = runCatching { it.device.name }.getOrDefault(it.device.address),
+                        summary = summary,
+                    )
+                }
+                val header = if (devices.isEmpty()) {
+                    R.string.paired_devices_hint_description
+                } else {
+                    null
+                }
+                BluetoothUiState.Ready(
+                    header = header,
+                    devices = devices
+                )
+            }
         }
-        val header =
-            if (devices.isEmpty()) "No devices connected yet" else "Connected devices (${devices.size})"
-        return BluetoothUiState.Ready(
-            header = header,
-            devices = devices
-        )
     }
 
-    fun mapToMeasurementDialogUiState(measurement: Measurement): MeasurementDialogUiState {
+    fun mapMeasurementDialog(measurement: Measurement): MeasurementDialogUiState {
         return when (measurement) {
             is Measurement.Weight -> MeasurementDialogUiState(
                 measurement = measurement,

@@ -2,8 +2,8 @@ package edu.stanford.bdh.engagehf.bluetooth.screen
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
+import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
 import edu.stanford.bdh.engagehf.simulator.MeasurementDialogSimulator
-import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import org.junit.Rule
 import org.junit.Test
 import java.time.ZonedDateTime

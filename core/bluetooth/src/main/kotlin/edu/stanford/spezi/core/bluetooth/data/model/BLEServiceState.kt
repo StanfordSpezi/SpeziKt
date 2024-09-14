@@ -1,5 +1,7 @@
 package edu.stanford.spezi.core.bluetooth.data.model
 
+import android.bluetooth.BluetoothDevice
+
 /**
  * Represents the state of the Bluetooth Low Energy (BLE) service.
  *
@@ -13,9 +15,21 @@ sealed interface BLEServiceState {
     data object Idle : BLEServiceState
 
     /**
+     * Represents an event indicating that Bluetooth is not enabled.
+     */
+    data object BluetoothNotEnabled : BLEServiceState
+
+    /**
+     * Represents an event indicating missing permissions.
+     *
+     * @property permissions The list of permissions that are missing.
+     */
+    data class MissingPermissions(val permissions: List<String>) : BLEServiceState
+
+    /**
      * Represents the scanning state of the BLE service.
      *
-     * @property sessions The list of BLE device sessions being scanned.
+     * @property pairedDevices The list of paired devices.
      */
-    data class Scanning(val sessions: List<BLEDeviceSession>) : BLEServiceState
+    data class Scanning(val pairedDevices: List<BluetoothDevice>) : BLEServiceState
 }

@@ -1,6 +1,8 @@
 package edu.stanford.spezi.core.bluetooth.data.model
 
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCharacteristic
 
 /**
  * Represents events emitted by the Bluetooth Low Energy (BLE) service.
@@ -8,28 +10,11 @@ import android.bluetooth.BluetoothDevice
 sealed interface BLEServiceEvent {
 
     /**
-     * Represents an event indicating that Bluetooth is not enabled.
-     */
-    data object BluetoothNotEnabled : BLEServiceEvent
-
-    /**
-     * Represents an event indicating missing permissions.
-     *
-     * @property permissions The list of permissions that are missing.
-     */
-    data class MissingPermissions(val permissions: List<String>) : BLEServiceEvent
-
-    /**
      * Represents a generic error event.
      *
      * @property cause The cause of the error.
      */
     data class GenericError(val cause: Throwable) : BLEServiceEvent
-
-    /**
-     * Represents an event indicating that scanning has started.
-     */
-    data object ScanningStarted : BLEServiceEvent
 
     /**
      * Represents an event indicating that scanning has failed.
@@ -53,10 +38,41 @@ sealed interface BLEServiceEvent {
     data class Disconnected(val device: BluetoothDevice) : BLEServiceEvent
 
     /**
-     * Represents an event indicating that a measurement is received.
+     * Represents a characteristic changed event
      *
-     * @property device The Bluetooth device from which the measurement is received.
-     * @property measurement The measurement received from the device.
+     * @property device The Bluetooth device for which the characteristic changed
+     * @property gatt the bluetooth gatt profile
+     * @property characteristic Changed characteristic
+     * @property value Changed data
      */
-    data class MeasurementReceived(val device: BluetoothDevice, val measurement: Measurement) : BLEServiceEvent
+    data class CharacteristicChanged(
+        val device: BluetoothDevice,
+        val gatt: BluetoothGatt,
+        val characteristic: BluetoothGattCharacteristic,
+        val value: ByteArray,
+    ) : BLEServiceEvent {
+        override fun equals(other: Any?): Boolean {
+            if (other !is CharacteristicChanged) return false
+
+            return this === other ||
+                (device == other.device &&
+                    gatt == other.gatt &&
+                    characteristic == other.characteristic &&
+                    value.contentEquals(other.value))
+        }
+
+        override fun hashCode(): Int {
+            var result = device.hashCode()
+            result = 31 * result + gatt.hashCode()
+            result = 31 * result + characteristic.hashCode()
+            result = 31 * result + value.contentHashCode()
+            return result
+        }
+    }
+
+    data class ServiceDiscovered(
+        val device: BluetoothDevice,
+        val gatt: BluetoothGatt,
+        val status: Int,
+    ) : BLEServiceEvent
 }
