@@ -12,7 +12,7 @@ data class Message(
     val completionDate: ZonedDateTime? = null,
     val type: MessageType,
     val title: String,
-    val description: String?,
+    val description: String? = null,
     val action: String?,
     val isDismissible: Boolean = true,
     val isLoading: Boolean = false,
