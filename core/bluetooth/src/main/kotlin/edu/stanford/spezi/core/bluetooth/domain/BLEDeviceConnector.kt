@@ -4,17 +4,14 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
-import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothProfile
 import android.content.Context
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
-import edu.stanford.spezi.core.bluetooth.data.mapper.MeasurementMapper
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.coroutines.di.Dispatching
-import edu.stanford.spezi.core.utils.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -29,14 +26,12 @@ import java.util.concurrent.atomic.AtomicBoolean
  * the [BluetoothDevice] that this component should manage.
  *
  * @property device The Bluetooth device to connect to.
- * @property measurementMapper The mapper used for mapping BLE characteristics to measurements.
  * @property scope The coroutine scope used for launching connection events and mapping measurements.
  * @property context The application context.
  */
-@Suppress("DEPRECATION", "MissingPermission")
+@Suppress("MissingPermission")
 internal class BLEDeviceConnector @AssistedInject constructor(
     @Assisted private val device: BluetoothDevice,
-    private val measurementMapper: MeasurementMapper,
     @Dispatching.IO private val scope: CoroutineScope,
     @ApplicationContext private val context: Context,
 ) {
@@ -57,6 +52,7 @@ internal class BLEDeviceConnector @AssistedInject constructor(
                     gatt.discoverServices()
                     emit(event = BLEServiceEvent.Connected(device))
                 }
+
                 BluetoothProfile.STATE_DISCONNECTED -> {
                     bluetoothGatt = null
                     disconnect()
@@ -64,25 +60,30 @@ internal class BLEDeviceConnector @AssistedInject constructor(
             }
         }
 
-        override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, value: ByteArray) {
-            scope.launch {
-                measurementMapper.map(characteristic = characteristic, data = value)?.let {
-                    emit(event = BLEServiceEvent.MeasurementReceived(device = device, measurement = it))
-                }
-            }
+        override fun onCharacteristicChanged(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic,
+            value: ByteArray,
+        ) {
+            emit(
+                event = BLEServiceEvent.CharacteristicChanged(
+                    device = device,
+                    gatt = gatt,
+                    characteristic = characteristic,
+                    value = value,
+                )
+            )
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
-            gatt?.services?.forEach { service ->
-                service.characteristics.forEach { characteristic ->
-                    if (measurementMapper.recognises(characteristic)) {
-                        gatt.setCharacteristicNotification(characteristic, true)
-                        val descriptor = characteristic.getDescriptor(DESCRIPTOR_UUID)
-                        descriptor.value = BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
-                        gatt.writeDescriptor(descriptor)
-                    }
-                }
-            }
+            gatt ?: return
+            emit(
+                event = BLEServiceEvent.ServiceDiscovered(
+                    device = device,
+                    gatt = gatt,
+                    status = status,
+                )
+            )
         }
     }
 
@@ -128,9 +129,5 @@ internal class BLEDeviceConnector @AssistedInject constructor(
          * @return A new instance of [BLEDeviceConnector].
          */
         fun create(device: BluetoothDevice): BLEDeviceConnector
-    }
-
-    private companion object {
-        val DESCRIPTOR_UUID = UUID("00002902-0000-1000-8000-00805f9b34fb")
     }
 }

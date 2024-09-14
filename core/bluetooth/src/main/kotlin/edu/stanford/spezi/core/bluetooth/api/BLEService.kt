@@ -2,8 +2,10 @@ package edu.stanford.spezi.core.bluetooth.api
 
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
+import edu.stanford.spezi.core.utils.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import java.util.UUID
 
 /**
  * Component encapsulating the capabilities to manage Bluetooth Low Energy (BLE) device connections
@@ -21,17 +23,23 @@ interface BLEService {
     val events: Flow<BLEServiceEvent>
 
     /**
-     * Starts the Bluetooth Low Energy (BLE) service.
+     * Starts the Bluetooth Low Energy (BLE) service to discover the [services].
      *
-     * When starting the service, the following events may be emitted, so please make sure to listen to [events] accordingly:
-     * - [BLEServiceEvent.BluetoothNotEnabled] if Bluetooth is not enabled on the device.
-     * - [BLEServiceEvent.MissingPermissions] if required permissions are missing.
-     * - [BLEServiceEvent.ScanningStarted] if scanning is successfully started.
+     * When starting the service, the following state changes may occur, so please make sure to listen to [state] accordingly:
+     * - [BLEServiceState.BluetoothNotEnabled] if Bluetooth is not enabled on the device.
+     * - [BLEServiceState.MissingPermissions] if required permissions are missing.
+     * - [BLEServiceState.Scanning] if scanning is successfully started.
+     *
+     * @param services list of service UUIDs to be discovered / filtered
      */
-    fun start()
+    fun startDiscovering(services: List<UUID>)
 
     /**
      * Stops the BLE service and disconnects all ongoing device connections immediately.
      */
     fun stop()
+
+    companion object {
+        val DESCRIPTOR_UUID: UUID = UUID("00002902-0000-1000-8000-00805f9b34fb")
+    }
 }

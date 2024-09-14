@@ -4,21 +4,14 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
-import android.bluetooth.BluetoothGattDescriptor
-import android.bluetooth.BluetoothGattService
 import android.bluetooth.BluetoothProfile
 import android.content.Context
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.spezi.core.bluetooth.data.mapper.MeasurementMapper
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
-import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import edu.stanford.spezi.core.testing.SpeziTestScope
 import edu.stanford.spezi.core.testing.runTestUnconfined
-import edu.stanford.spezi.core.testing.verifyNever
-import edu.stanford.spezi.core.utils.UUID
 import io.mockk.Called
 import io.mockk.Runs
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -28,17 +21,14 @@ import kotlinx.coroutines.flow.first
 import org.junit.Before
 import org.junit.Test
 
-@Suppress("DEPRECATION")
 class BLEDeviceConnectorTest {
     private val device: BluetoothDevice = mockk()
-    private val measurementMapper: MeasurementMapper = mockk()
     private val context: Context = mockk()
     private val bluetoothGatt: BluetoothGatt = mockk()
 
     private val bleDeviceConnector by lazy {
         BLEDeviceConnector(
             device = device,
-            measurementMapper = measurementMapper,
             scope = SpeziTestScope(),
             context = context,
         )
@@ -137,14 +127,12 @@ class BLEDeviceConnectorTest {
         val gatt: BluetoothGatt = mockk(relaxed = true)
         val characteristic: BluetoothGattCharacteristic = mockk()
         val data = ByteArray(10)
-        val measurement: Measurement = mockk()
-        coEvery { measurementMapper.map(characteristic, data) } returns measurement
 
         // when
         callback.onCharacteristicChanged(gatt, characteristic, data)
 
         // then
-        assertEvent(BLEServiceEvent.MeasurementReceived(device, measurement))
+        assertEvent(BLEServiceEvent.CharacteristicChanged(device, gatt, characteristic, value = data))
     }
 
     @Test
@@ -152,40 +140,13 @@ class BLEDeviceConnectorTest {
         // given
         val callback = getCallback()
         val gatt: BluetoothGatt = mockk(relaxed = true)
-        val service: BluetoothGattService = mockk()
-        every { gatt.services } returns listOf(service)
-        val characteristic: BluetoothGattCharacteristic = mockk()
-        every { service.characteristics } returns listOf(characteristic)
-        every { measurementMapper.recognises(characteristic) } returns true
-        val descriptor: BluetoothGattDescriptor = mockk(relaxed = true)
-        every { characteristic.getDescriptor(UUID("00002902-0000-1000-8000-00805f9b34fb")) } returns descriptor
+        val status = 42
 
         // when
-        callback.onServicesDiscovered(gatt, 1)
+        callback.onServicesDiscovered(gatt, status)
 
         // then
-        verify { gatt.setCharacteristicNotification(characteristic, true) }
-        verify { descriptor.value = BluetoothGattDescriptor.ENABLE_INDICATION_VALUE }
-        verify { gatt.writeDescriptor(descriptor) }
-    }
-
-    @Test
-    fun `it should handle onServicesDiscovered state disconnected correctly if not recognized`() = runTestUnconfined {
-        // given
-        val callback = getCallback()
-        val gatt: BluetoothGatt = mockk(relaxed = true)
-        val service: BluetoothGattService = mockk()
-        every { gatt.services } returns listOf(service)
-        val characteristic: BluetoothGattCharacteristic = mockk()
-        every { service.characteristics } returns listOf(characteristic)
-        every { measurementMapper.recognises(characteristic) } returns false
-
-        // when
-        callback.onServicesDiscovered(gatt, 1)
-
-        // then
-        verifyNever { gatt.setCharacteristicNotification(characteristic, true) }
-        verifyNever { gatt.writeDescriptor(any()) }
+        assertEvent(event = BLEServiceEvent.ServiceDiscovered(device = device, gatt = gatt, status = status))
     }
 
     private fun getCallback(): BluetoothGattCallback {
