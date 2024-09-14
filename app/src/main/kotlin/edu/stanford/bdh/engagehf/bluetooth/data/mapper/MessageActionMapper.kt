@@ -11,22 +11,23 @@ class MessageActionMapper @Inject constructor() {
         private val questionnaireRegex = Regex("/?questionnaires/(.+)")
     }
 
-    fun map(action: String): Result<MessagesAction> {
+    fun map(action: String?): Result<MessagesAction> {
         return runCatching {
+            requireNotNull(action)
             when {
                 videoSectionRegex.matches(action) -> {
                     mapVideoSectionAction(action).getOrThrow()
                 }
 
-                action == "/medications" -> MessagesAction.MedicationsAction
-                action == "/measurements" -> MessagesAction.MeasurementsAction
+                action == "medications" -> MessagesAction.MedicationsAction
+                action == "observations" -> MessagesAction.MeasurementsAction
                 questionnaireRegex.matches(action) -> {
                     val matchResult = questionnaireRegex.find(action)
                     val (questionnaireId) = matchResult!!.destructured
                     MessagesAction.QuestionnaireAction(questionnaireId)
                 }
 
-                action == "/healthSummary" -> MessagesAction.HealthSummaryAction
+                action == "healthSummary" -> MessagesAction.HealthSummaryAction
                 else -> error("Unknown action type")
             }
         }
