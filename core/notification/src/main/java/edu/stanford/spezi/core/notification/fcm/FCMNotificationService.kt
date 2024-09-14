@@ -2,6 +2,7 @@ package edu.stanford.spezi.core.notification.fcm
 
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import dagger.hilt.android.AndroidEntryPoint
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.notification.notifier.NotificationNotifier
@@ -14,6 +15,7 @@ import javax.inject.Inject
  * Service to handle incoming notifications from Firebase Cloud Messaging (FCM)
  * and register the device with the server when a new token is generated.
  */
+@AndroidEntryPoint
 class FCMNotificationService @Inject internal constructor(
     // Error occurs here if there is no zero-argument constructor
 ) : FirebaseMessagingService() {
