@@ -9,6 +9,9 @@ edu.stanford.bdh.engagehf.bluetooth.data.mapper
 edu.stanford.bdh.engagehf.bluetooth.data.models
 edu.stanford.bdh.engagehf.bluetooth.measurements
 edu.stanford.bdh.engagehf.bluetooth.screen
+edu.stanford.bdh.engagehf.bluetooth.service
+edu.stanford.bdh.engagehf.bluetooth.service.mapper
+edu.stanford.bdh.engagehf.di
 edu.stanford.bdh.engagehf.education
 edu.stanford.bdh.engagehf.health
 edu.stanford.bdh.engagehf.health.bloodpressure
