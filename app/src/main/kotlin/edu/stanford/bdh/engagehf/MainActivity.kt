@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -21,6 +22,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import dagger.hilt.android.AndroidEntryPoint
+import edu.stanford.bdh.engagehf.bluetooth.BluetoothViewModel
+import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
+import edu.stanford.bdh.engagehf.messages.Message
+import edu.stanford.bdh.engagehf.messages.MessageType
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.RegisterParams
 import edu.stanford.bdh.engagehf.navigation.Routes
@@ -30,9 +35,13 @@ import edu.stanford.bdh.engagehf.questionnaire.QuestionnaireScreen
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.SpeziTheme
+import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.notification.NotificationNavigationEvent
 import edu.stanford.spezi.core.notification.NotificationRoutes
+import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.ACTION_KEY
+import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.IS_DISMISSIBLE_KEY
+import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.MESSAGE_ID_KEY
 import edu.stanford.spezi.core.notification.setting.NotificationSettingScreen
 import edu.stanford.spezi.module.account.AccountNavigationEvent
 import edu.stanford.spezi.module.account.login.LoginScreen
@@ -55,6 +64,10 @@ import kotlin.reflect.typeOf
 class MainActivity : FragmentActivity() {
 
     private val viewModel by viewModels<MainActivityViewModel>()
+
+    private val bluetoothViewModel by viewModels<BluetoothViewModel>()
+
+    private val logger by speziLogger()
 
     @Inject
     @Dispatching.Main
@@ -81,6 +94,25 @@ class MainActivity : FragmentActivity() {
                         setTheme(R.style.Theme_Spezi_Content)
                     }
                 }
+            }
+        }
+        logger.i { "Intent Data from Main Activity ${intent.extras}" }
+        logger.i { "Intent Action from Main Activity ${intent.data}" }
+
+        val messageId = intent.getStringExtra(MESSAGE_ID_KEY)
+        if (messageId != null) {
+            lifecycleScope.launch(mainDispatcher) {
+                bluetoothViewModel.onAction(
+                    Action.MessageItemClicked(
+                        message = Message(
+                            id = messageId, // Is needed to dismiss the message
+                            type = MessageType.Unknown, // We don't need the type, since we directly use the action
+                            title = "", // We don't need the title, since we directly use the action
+                            action = intent.getStringExtra(ACTION_KEY), // We directly use the action
+                            isDismissible = intent.getBooleanExtra(IS_DISMISSIBLE_KEY, true),
+                        )
+                    )
+                )
             }
         }
     }
