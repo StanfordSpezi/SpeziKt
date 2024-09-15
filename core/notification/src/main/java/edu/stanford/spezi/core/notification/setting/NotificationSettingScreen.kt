@@ -4,13 +4,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -21,9 +22,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import edu.stanford.spezi.core.design.action.PendingActions
 import edu.stanford.spezi.core.design.component.AppTopAppBar
+import edu.stanford.spezi.core.design.component.AsyncSwitch
 import edu.stanford.spezi.core.design.component.CenteredBoxContent
-import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
@@ -85,7 +87,9 @@ internal fun NotificationSettingScreen(
                 }
 
                 is NotificationSettingViewModel.UiState.NotificationSettingsLoaded -> NotificationOptions(
-                    notificationSettings = uiState.notificationSettings, onAction = onAction
+                    notificationSettings = uiState.notificationSettings,
+                    onAction = onAction,
+                    pendingActions = uiState.notificationSettings.pendingActions,
                 )
             }
         }
@@ -96,84 +100,40 @@ internal fun NotificationSettingScreen(
 private fun NotificationOptions(
     notificationSettings: NotificationSettings,
     onAction: (NotificationSettingViewModel.Action) -> Unit,
+    pendingActions: PendingActions<NotificationType>,
 ) {
-    VerticalSpacer()
-    NotificationOptionHeadline(text = stringResource(R.string.reminders))
-    VerticalSpacer()
-    NotificationOptionRow(
-        text = stringResource(R.string.appointment),
-        checked = notificationSettings.receivesAppointmentReminders,
-        onCheckedChange = {
-            onAction(
-                NotificationSettingViewModel.Action.SwitchChanged(
-                    NotificationSettingViewModel.SwitchType.APPOINTMENT, it
+    LazyColumn(modifier = Modifier.padding(vertical = Spacings.medium)) {
+        notificationSettings.groupBySection().forEach { (section, settings) ->
+            item {
+                NotificationOptionHeadline(
+                    text = when (section) {
+                        NotificationType.Section.REMINDERS -> stringResource(R.string.reminders)
+                        NotificationType.Section.UPDATES -> stringResource(R.string.updates)
+                        NotificationType.Section.TRENDS -> stringResource(R.string.trends)
+                    }
                 )
-            )
-        }
-    )
-    NotificationOptionRow(
-        text = stringResource(R.string.survey),
-        checked = notificationSettings.receivesQuestionnaireReminders,
-        onCheckedChange = {
-            onAction(
-                NotificationSettingViewModel.Action.SwitchChanged(
-                    NotificationSettingViewModel.SwitchType.QUESTIONNAIRE, it
+            }
+            items(settings) { (type, value) ->
+                NotificationOptionRow(
+                    text = when (type) {
+                        NotificationType.APPOINTMENT_REMINDERS -> stringResource(R.string.appointment)
+                        NotificationType.MEDICATION_UPDATES -> stringResource(R.string.medications)
+                        NotificationType.QUESTIONNAIRE_REMINDERS -> stringResource(R.string.survey)
+                        NotificationType.RECOMMENDATION_UPDATES -> stringResource(R.string.recommendations)
+                        NotificationType.VITALS_REMINDERS -> stringResource(R.string.vital)
+                        NotificationType.WEIGHT_ALERTS -> stringResource(R.string.weight_trends)
+                    },
+                    checked = value,
+                    onCheckedChange = {
+                        onAction(NotificationSettingViewModel.Action.SwitchChanged(type, it))
+                    },
+                    isLoading = pendingActions.containsActionValue(
+                        actionValue = type
+                    )
                 )
-            )
+            }
         }
-    )
-    NotificationOptionRow(
-        text = stringResource(R.string.vital),
-        checked = notificationSettings.receivesVitalsReminders,
-        onCheckedChange = {
-            onAction(
-                NotificationSettingViewModel.Action.SwitchChanged(
-                    NotificationSettingViewModel.SwitchType.VITALS, it
-                )
-            )
-        }
-    )
-    VerticalSpacer()
-    NotificationOptionHeadline(text = stringResource(R.string.updates))
-    VerticalSpacer()
-    NotificationOptionRow(
-        text = stringResource(R.string.medications),
-        checked = notificationSettings.receivesMedicationUpdates,
-        onCheckedChange = {
-            onAction(
-                NotificationSettingViewModel.Action.SwitchChanged(
-                    NotificationSettingViewModel.SwitchType.MEDICATION, it
-                )
-            )
-        }
-    )
-    NotificationOptionRow(
-        text = stringResource(R.string.recommendations),
-        checked = notificationSettings.receivesRecommendationUpdates,
-        onCheckedChange = {
-            onAction(
-                NotificationSettingViewModel.Action.SwitchChanged(
-                    NotificationSettingViewModel.SwitchType.RECOMMENDATION, it
-                )
-            )
-        }
-    )
-    VerticalSpacer()
-    NotificationOptionHeadline(
-        text = stringResource(R.string.trends),
-    )
-    VerticalSpacer()
-    NotificationOptionRow(
-        text = stringResource(R.string.weight_trends),
-        checked = notificationSettings.receivesWeightAlerts,
-        onCheckedChange = {
-            onAction(
-                NotificationSettingViewModel.Action.SwitchChanged(
-                    NotificationSettingViewModel.SwitchType.WEIGHT, it
-                )
-            )
-        }
-    )
+    }
 }
 
 @Composable
@@ -189,6 +149,7 @@ private fun NotificationOptionRow(
     text: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
+    isLoading: Boolean = false,
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
@@ -198,9 +159,10 @@ private fun NotificationOptionRow(
             style = TextStyles.bodyLarge,
         )
         Spacer(modifier = Modifier.weight(1f))
-        Switch(
+        AsyncSwitch(
             checked = checked,
-            onCheckedChange = onCheckedChange
+            onCheckedChange = onCheckedChange,
+            isLoading = isLoading
         )
     }
 }
@@ -212,9 +174,14 @@ private class NotificationUiStateProvider :
         NotificationSettingViewModel.UiState.Error("An error occurred"),
         NotificationSettingViewModel.UiState.NotificationSettingsLoaded(
             notificationSettings = NotificationSettings(
-                receivesAppointmentReminders = true,
-                receivesQuestionnaireReminders = true,
-                receivesVitalsReminders = true,
+                settings = mapOf(
+                    NotificationType.APPOINTMENT_REMINDERS to true,
+                    NotificationType.MEDICATION_UPDATES to false,
+                    NotificationType.QUESTIONNAIRE_REMINDERS to true,
+                    NotificationType.RECOMMENDATION_UPDATES to false,
+                    NotificationType.VITALS_REMINDERS to true,
+                    NotificationType.WEIGHT_ALERTS to false,
+                )
             )
         )
     )

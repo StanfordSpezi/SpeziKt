@@ -36,33 +36,11 @@ internal class NotificationSettingsRepository @Inject constructor(
                                 logger.e(exception) { "Error observing notification settings" }
                                 trySend(Result.failure(exception))
                             } else {
-                                val notificationSettings =
-                                    NotificationSettings().copy(
-                                        receivesAppointmentReminders = snapshot?.getBoolean(
-                                            KEY_RECEIVES_APPOINTMENT_REMINDERS
-                                        )
-                                            ?: false,
-                                        receivesMedicationUpdates = snapshot?.getBoolean(
-                                            KEY_RECEIVES_MEDICATION_UPDATES
-                                        )
-                                            ?: false,
-                                        receivesQuestionnaireReminders = snapshot?.getBoolean(
-                                            KEY_RECEIVES_QUESTIONNAIRE_REMINDERS
-                                        )
-                                            ?: false,
-                                        receivesRecommendationUpdates = snapshot?.getBoolean(
-                                            KEY_RECEIVES_RECOMMENDATION_UPDATES
-                                        )
-                                            ?: false,
-                                        receivesVitalsReminders = snapshot?.getBoolean(
-                                            KEY_RECEIVES_VITALS_REMINDERS
-                                        )
-                                            ?: false,
-                                        receivesWeightAlerts = snapshot?.getBoolean(
-                                            KEY_RECEIVES_WEIGHT_ALERTS
-                                        )
-                                            ?: false
-                                    )
+                                val notificationSettings = NotificationSettings(
+                                    settings = NotificationType.entries.associateWith { type ->
+                                        snapshot?.getBoolean(type.key) ?: false
+                                    }
+                                )
                                 trySend(Result.success(notificationSettings))
                             }
                         }
@@ -85,28 +63,17 @@ internal class NotificationSettingsRepository @Inject constructor(
                 val userId = userSessionManager.getUserUid() ?: error("User not authenticated")
                 firestore.collection(NOTIFICATION_SETTINGS_PATH)
                     .document(userId)
-                    .update(
-                        mapOf(
-                            KEY_RECEIVES_APPOINTMENT_REMINDERS to notificationSettings.receivesAppointmentReminders,
-                            KEY_RECEIVES_MEDICATION_UPDATES to notificationSettings.receivesMedicationUpdates,
-                            KEY_RECEIVES_QUESTIONNAIRE_REMINDERS to notificationSettings.receivesQuestionnaireReminders,
-                            KEY_RECEIVES_RECOMMENDATION_UPDATES to notificationSettings.receivesRecommendationUpdates,
-                            KEY_RECEIVES_VITALS_REMINDERS to notificationSettings.receivesVitalsReminders,
-                            KEY_RECEIVES_WEIGHT_ALERTS to notificationSettings.receivesWeightAlerts
-                        )
-                    )
+                    .update(notificationSettings.mapKeys { it.key.key })
                     .await().let { }
+            }.onFailure {
+                logger.e(it) { "Error saving notification settings" }
+            }.onSuccess {
+                logger.i { "Notification settings saved" }
             }
         }
     }
 
     companion object {
         const val NOTIFICATION_SETTINGS_PATH = "users"
-        const val KEY_RECEIVES_APPOINTMENT_REMINDERS = "receivesAppointmentReminders"
-        const val KEY_RECEIVES_MEDICATION_UPDATES = "receivesMedicationUpdates"
-        const val KEY_RECEIVES_QUESTIONNAIRE_REMINDERS = "receivesQuestionnaireReminders"
-        const val KEY_RECEIVES_RECOMMENDATION_UPDATES = "receivesRecommendationUpdates"
-        const val KEY_RECEIVES_VITALS_REMINDERS = "receivesVitalsReminders"
-        const val KEY_RECEIVES_WEIGHT_ALERTS = "receivesWeightAlerts"
     }
 }

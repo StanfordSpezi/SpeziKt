@@ -19,7 +19,7 @@ import javax.inject.Inject
 internal class NotificationSettingViewModel @Inject constructor(
     private val repository: NotificationSettingsRepository,
     private val navigator: Navigator,
-    private val uiStateMapper: NotificationSettingUiStateMapper,
+    private val notificationSettingsMapper: NotificationSettingsStateMapper,
     private val messageNotifier: MessageNotifier,
 ) : ViewModel() {
 
@@ -50,18 +50,44 @@ internal class NotificationSettingViewModel @Inject constructor(
             }
 
             is Action.SwitchChanged -> {
-                if (_uiState.value is UiState.NotificationSettingsLoaded) {
-                    val state = _uiState.value as UiState.NotificationSettingsLoaded
+                val currentState = _uiState.value
+                if (currentState is UiState.NotificationSettingsLoaded) {
+                    val currentSettings = currentState.notificationSettings
+                    val newSettings =
+                        notificationSettingsMapper.mapSwitchChanged(action, currentSettings)
                     _uiState.update {
-                        uiStateMapper.mapSwitchChanged(
-                            action,
-                            state
+                        UiState.NotificationSettingsLoaded(
+                            currentSettings.copy(
+                                pendingActions = currentSettings.pendingActions.plus(
+                                    action.notificationType
+                                )
+                            )
                         )
                     }
                     viewModelScope.launch {
-                        repository.saveNotificationSettings(state.notificationSettings).onFailure {
-                            messageNotifier.notify("Failed to save notification settings")
-                        }
+                        repository.saveNotificationSettings(newSettings)
+                            .onFailure {
+                                messageNotifier.notify("Failed to save notification settings")
+                                _uiState.update {
+                                    UiState.NotificationSettingsLoaded(
+                                        currentSettings.copy(
+                                            pendingActions = currentSettings.pendingActions.minus(
+                                                action.notificationType
+                                            )
+                                        )
+                                    )
+                                }
+                            }.onSuccess {
+                                _uiState.update {
+                                    UiState.NotificationSettingsLoaded(
+                                        newSettings.copy(
+                                            pendingActions = currentSettings.pendingActions.minus(
+                                                action.notificationType
+                                            )
+                                        )
+                                    )
+                                }
+                            }
                     }
                 }
             }
@@ -72,13 +98,9 @@ internal class NotificationSettingViewModel @Inject constructor(
         data object Back : Action
 
         data class SwitchChanged(
-            val switchType: SwitchType,
+            val notificationType: NotificationType,
             val isChecked: Boolean,
         ) : Action
-    }
-
-    enum class SwitchType {
-        APPOINTMENT, MEDICATION, QUESTIONNAIRE, RECOMMENDATION, VITALS, WEIGHT
     }
 
     sealed interface UiState {
@@ -86,7 +108,9 @@ internal class NotificationSettingViewModel @Inject constructor(
         data class Error(val message: String) :
             UiState
 
-        data class NotificationSettingsLoaded(val notificationSettings: NotificationSettings) :
+        data class NotificationSettingsLoaded(
+            val notificationSettings: NotificationSettings,
+        ) :
             UiState
     }
 }

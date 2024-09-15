@@ -75,4 +75,15 @@ data class PendingActions<T : Any>(
             actions.any { it.javaClass == action.javaClass }
         }
     }
+
+    /**
+     * @param actionValue action value to be checked whether it is contained
+     * @return true if the action value is contained, false otherwise
+     */
+    @Composable
+    fun containsActionValue(actionValue: T): Boolean {
+        return remember(this, actionValue) {
+            actions.any { it == actionValue }
+        }
+    }
 }
