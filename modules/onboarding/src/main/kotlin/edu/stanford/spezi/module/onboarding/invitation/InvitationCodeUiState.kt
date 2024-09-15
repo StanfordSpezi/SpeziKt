@@ -12,7 +12,5 @@ sealed interface Action {
 
     data object ClearError : Action
 
-    data object AlreadyHasAccountPressed : Action
-
     data object RedeemInvitationCode : Action
 }
