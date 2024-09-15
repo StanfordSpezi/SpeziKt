@@ -2,6 +2,7 @@ package edu.stanford.spezi.core.utils
 
 import android.content.Context
 import android.widget.Toast
+import androidx.annotation.StringRes
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -13,7 +14,7 @@ class MessageNotifier @Inject constructor(
         Toast.makeText(context, message, duration.value).show()
     }
 
-    fun notify(messageId: Int, duration: Duration = Duration.SHORT) {
+    fun notify(@StringRes messageId: Int, duration: Duration = Duration.SHORT) {
         notify(message = context.getString(messageId), duration = duration)
     }
 
