@@ -65,7 +65,7 @@ internal fun NotificationSettingScreen(
         Column(
             modifier = Modifier
                 .padding(paddingValues)
-                .padding(start = Spacings.medium, end = Spacings.medium)
+                .padding(horizontal = Spacings.medium)
         ) {
             when (uiState) {
                 is NotificationSettingViewModel.UiState.Error -> {
