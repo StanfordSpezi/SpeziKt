@@ -16,7 +16,7 @@ import javax.inject.Inject
  * ViewModel for notification settings.
  */
 @HiltViewModel
-class NotificationSettingViewModel @Inject constructor(
+internal class NotificationSettingViewModel @Inject constructor(
     private val repository: NotificationSettingsRepository,
     private val navigator: Navigator,
     private val uiStateMapper: NotificationSettingUiStateMapper,
