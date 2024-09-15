@@ -20,9 +20,7 @@ import javax.inject.Inject
  * and register the device with the server when a new token is generated.
  */
 @AndroidEntryPoint
-class FCMNotificationService @Inject internal constructor(
-    // Error occurs here if there is no zero-argument constructor
-) : FirebaseMessagingService() {
+class FCMNotificationService : FirebaseMessagingService() {
 
     private val logger by speziLogger()
 
