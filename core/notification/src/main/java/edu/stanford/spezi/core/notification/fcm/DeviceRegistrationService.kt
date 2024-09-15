@@ -56,12 +56,14 @@ class DeviceRegistrationService @Inject constructor(
         }
     }
 
+    private fun getPackageInfo() = context.packageManager.getPackageInfo(context.packageName, 0)
+
     private fun getAppVersion(): String {
-        return context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        return getPackageInfo().versionName
     }
 
     private fun getAppBuild(): String {
-        return context.packageManager.getPackageInfo(context.packageName, 0).versionCode.toString()
+        return getPackageInfo().versionCode.toString()
     }
 
     private fun sendDeviceInfoToServer(deviceInfo: DeviceInfo) {
