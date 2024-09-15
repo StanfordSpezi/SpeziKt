@@ -8,6 +8,7 @@
     <string name="systolic">Systolic</string>
     <string name="confirm_button_text">Confirm</string>
     <string name="cancel_button_text">Cancel</string>
+    <string name="dismiss_button_text">Dismiss</string>
     <string name="diastolic">Diastolic</string>
     <string name="pulse_rate">Pulse rate</string>
     <string name="weight">Weight</string>
@@ -70,4 +71,6 @@
     <string name="bluetooth_permissions_not_granted_description">Permissions not granted, please visit device settings and grant required bluetooth permissions be able to receive measurements from your connected devices"</string>
     <string name="home_settings_action">Settings</string>
     <string name="paired_devices_hint_description">Paired devices will appear here once set up. Hold down the bluetooth button for 3 seconds to put the device into pairing mode.</string>
+    <string name="delete_health_record">Delete health record</string>
+    <string name="health_record_deletion_description">Are you sure you want to permanently remove this health record? This action cannot be undone.</string>
 </resources>
