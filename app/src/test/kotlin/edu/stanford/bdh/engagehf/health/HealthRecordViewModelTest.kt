@@ -1,9 +1,12 @@
 package edu.stanford.bdh.engagehf.health
 
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.spezi.core.testing.CoroutineTestRule
+import edu.stanford.spezi.core.utils.MessageNotifier
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -19,6 +22,7 @@ class HealthRecordViewModelTest {
     private val appScreenEvents: AppScreenEvents = mockk(relaxed = true)
     private val uiStateMapper: HealthUiStateMapper = mockk(relaxed = true)
     private val healthRepository: HealthRepository = mockk(relaxed = true)
+    private val messageNotifier: MessageNotifier = mockk(relaxed = true)
     private val uiData = HealthUiData(
         infoRowData = InfoRowData(
             formattedDate = "",
@@ -178,16 +182,11 @@ class HealthRecordViewModelTest {
     }
 
     @Test
-    fun `it should handle DeleteRecord correctly`() {
+    fun `it should handle successful DeleteRecord correctly`() {
         // given
         val recordId = "some record id"
         RecordType.entries.forEach {
             val viewModel = createViewModel(it)
-
-            // when
-            viewModel.onAction(HealthAction.Async.DeleteRecord(recordId))
-
-            // then
             coEvery {
                 when (it) {
                     RecordType.WEIGHT ->
@@ -199,9 +198,45 @@ class HealthRecordViewModelTest {
                     RecordType.HEART_RATE ->
                         healthRepository.deleteHeartRateRecord(recordId)
                 }
+            } returns Result.success(Unit)
+
+            // when
+            viewModel.onAction(HealthAction.Async.DeleteRecord(recordId))
+
+            // then
+            coVerify {
+                when (it) {
+                    RecordType.WEIGHT ->
+                        healthRepository.deleteWeightRecord(recordId)
+
+                    RecordType.BLOOD_PRESSURE ->
+                        healthRepository.deleteBloodPressureRecord(recordId)
+
+                    RecordType.HEART_RATE ->
+                        healthRepository.deleteHeartRateRecord(recordId)
+                }
             }
+            verify { messageNotifier.notify(R.string.delete_health_record_success_message) }
             assertThat(viewModel.getUiData().deleteRecordAlertData).isNull()
         }
+    }
+
+    @Test
+    fun `it should handle failure DeleteRecord correctly`() {
+        // given
+        val recordId = "some record id"
+        val viewModel = createViewModel()
+        coEvery {
+            healthRepository.deleteWeightRecord(recordId)
+        } returns Result.failure(Error())
+
+        // when
+        viewModel.onAction(HealthAction.Async.DeleteRecord(recordId))
+
+        // then
+        coVerify { healthRepository.deleteWeightRecord(recordId) }
+        verify { messageNotifier.notify(R.string.delete_health_record_failure_message) }
+        assertThat(viewModel.getUiData().deleteRecordAlertData).isNull()
     }
 
     private fun HealthRecordViewModel.getUiData() = (uiState.value as HealthUiState.Success).data
@@ -212,5 +247,6 @@ class HealthRecordViewModelTest {
             appScreenEvents = appScreenEvents,
             uiStateMapper = uiStateMapper,
             healthRepository = healthRepository,
+            messageNotifier = messageNotifier,
         )
 }

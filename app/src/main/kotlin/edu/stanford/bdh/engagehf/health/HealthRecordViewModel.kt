@@ -8,7 +8,9 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
+import edu.stanford.spezi.core.utils.MessageNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -20,6 +22,7 @@ class HealthRecordViewModel @AssistedInject constructor(
     private val appScreenEvents: AppScreenEvents,
     private val uiStateMapper: HealthUiStateMapper,
     private val healthRepository: HealthRepository,
+    private val messageNotifier: MessageNotifier,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<HealthUiState>(HealthUiState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -85,6 +88,12 @@ class HealthRecordViewModel @AssistedInject constructor(
             is HealthAction.Async.DeleteRecord -> {
                 execute(action = healthAction) {
                     deleteRecord(healthAction.recordId)
+                        .onFailure {
+                            messageNotifier.notify(R.string.delete_health_record_failure_message)
+                        }
+                        .onSuccess {
+                            messageNotifier.notify(R.string.delete_health_record_success_message)
+                        }
                     updateSuccessState { it.copy(deleteRecordAlertData = null) }
                 }
             }

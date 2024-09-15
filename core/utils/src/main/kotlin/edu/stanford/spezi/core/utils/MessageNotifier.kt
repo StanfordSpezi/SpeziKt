@@ -13,6 +13,10 @@ class MessageNotifier @Inject constructor(
         Toast.makeText(context, message, duration.value).show()
     }
 
+    fun notify(messageId: Int, duration: Duration = Duration.SHORT) {
+        notify(message = context.getString(messageId), duration = duration)
+    }
+
     enum class Duration(internal val value: Int) {
         LONG(Toast.LENGTH_LONG),
         SHORT(Toast.LENGTH_SHORT),

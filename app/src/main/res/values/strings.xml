@@ -73,4 +73,6 @@
     <string name="paired_devices_hint_description">Paired devices will appear here once set up. Hold down the bluetooth button for 3 seconds to put the device into pairing mode.</string>
     <string name="delete_health_record">Delete health record</string>
     <string name="health_record_deletion_description">Are you sure you want to permanently remove this health record? This action cannot be undone.</string>
+    <string name="delete_health_record_failure_message">Unable to delete the health record. Please try again.</string>
+    <string name="delete_health_record_success_message">Health record deleted successfully.</string>
 </resources>
