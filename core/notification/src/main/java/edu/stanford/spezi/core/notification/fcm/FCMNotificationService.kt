@@ -3,16 +3,12 @@ package edu.stanford.spezi.core.notification.fcm
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
-import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.notification.notifier.FirebaseMessage
 import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.ACTION_KEY
 import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.IS_DISMISSIBLE_KEY
 import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.MESSAGE_ID_KEY
 import edu.stanford.spezi.core.notification.notifier.NotificationNotifier
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /*
@@ -20,7 +16,7 @@ import javax.inject.Inject
  * and register the device with the server when a new token is generated.
  */
 @AndroidEntryPoint
-class FCMNotificationService : FirebaseMessagingService() {
+internal class FCMNotificationService : FirebaseMessagingService() {
 
     private val logger by speziLogger()
 
@@ -29,10 +25,6 @@ class FCMNotificationService : FirebaseMessagingService() {
 
     @Inject
     lateinit var notificationNotifier: NotificationNotifier
-
-    @Inject
-    @Dispatching.IO
-    lateinit var ioDispatcher: CoroutineDispatcher
 
     /**
      * Called when a message is received from Firebase Cloud Messaging.
@@ -56,8 +48,6 @@ class FCMNotificationService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        CoroutineScope(ioDispatcher).launch {
-            deviceRegistrationService.registerDevice()
-        }
+        deviceRegistrationService.registerDevice(token = token)
     }
 }

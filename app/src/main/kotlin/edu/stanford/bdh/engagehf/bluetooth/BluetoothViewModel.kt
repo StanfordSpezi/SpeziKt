@@ -23,7 +23,6 @@ import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.core.notification.fcm.DeviceRegistrationService
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -42,7 +41,6 @@ class BluetoothViewModel @Inject internal constructor(
     private val navigator: Navigator,
     private val engageEducationRepository: EngageEducationRepository,
     private val healthSummaryService: HealthSummaryService,
-    private val deviceRegistrationService: DeviceRegistrationService,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
     private val logger by speziLogger()
@@ -56,7 +54,6 @@ class BluetoothViewModel @Inject internal constructor(
         observeBleService()
         observeRecords()
         observeMessages()
-        viewModelScope.launch { deviceRegistrationService.registerDevice() }
     }
 
     private fun observeBleService() {

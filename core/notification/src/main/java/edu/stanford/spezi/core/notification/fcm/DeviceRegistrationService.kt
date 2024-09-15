@@ -4,7 +4,11 @@ import android.content.Context
 import android.os.Build
 import com.google.firebase.functions.FirebaseFunctions
 import dagger.hilt.android.qualifiers.ApplicationContext
+import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
@@ -12,10 +16,10 @@ import javax.inject.Inject
 /**
  * Service to register the device with the server.
  */
-class DeviceRegistrationService @Inject constructor(
+internal class DeviceRegistrationService @Inject constructor(
     @ApplicationContext private val context: Context,
     private val functions: FirebaseFunctions,
-    private val messageTokenService: MessageTokenService,
+    @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
 ) {
 
     private val logger by speziLogger()
@@ -23,11 +27,7 @@ class DeviceRegistrationService @Inject constructor(
     /**
      * Registers the device with the server.
      */
-    suspend fun registerDevice() {
-        val notificationToken = getNotificationToken().getOrNull() ?: run {
-            logger.e { "Notification token is null" }
-            return
-        }
+    fun registerDevice(token: String) {
         val platform = PLATFORM_ANDROID
         val osVersion = Build.VERSION.RELEASE
         val appVersion = getAppVersion()
@@ -36,7 +36,7 @@ class DeviceRegistrationService @Inject constructor(
         val timeZone = TimeZone.getDefault().id
 
         val deviceInfo = DeviceInfo(
-            notificationToken = notificationToken,
+            notificationToken = token,
             platform = platform,
             osVersion = osVersion,
             appVersion = appVersion,
@@ -46,14 +46,6 @@ class DeviceRegistrationService @Inject constructor(
         )
 
         sendDeviceInfoToServer(deviceInfo)
-    }
-
-    private suspend fun getNotificationToken(): Result<String?> {
-        return runCatching {
-            messageTokenService.getNotificationToken()
-        }.onFailure { e ->
-            logger.e(e) { "Error getting notification token" }
-        }
     }
 
     private fun getPackageInfo() = context.packageManager.getPackageInfo(context.packageName, 0)
@@ -80,14 +72,13 @@ class DeviceRegistrationService @Inject constructor(
         }
 
         runCatching {
-            functions.getHttpsCallable(REGISTER_DEVICE_FUNCTION)
-                .call(deviceInfoMap)
-                .addOnSuccessListener {
-                    logger.i { "Successfully registered device" }
-                }
-                .addOnFailureListener { e ->
-                    logger.e(e) { "Failed to register device" }
-                }
+            CoroutineScope(ioDispatcher).launch {
+                functions.getHttpsCallable(REGISTER_DEVICE_FUNCTION)
+                    .call(deviceInfoMap)
+                    .addOnSuccessListener {
+                        logger.i { "Successfully registered device" }
+                    }
+            }
         }.onFailure { e ->
             logger.e(e) { "Exception occurred while registering device" }
         }

@@ -6,8 +6,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import edu.stanford.spezi.core.notification.fcm.DefaultMessageTokenService
-import edu.stanford.spezi.core.notification.fcm.MessageTokenService
 import edu.stanford.spezi.core.notification.notifier.NotificationNotifier
 import edu.stanford.spezi.core.notification.notifier.SystemTrayNotificationNotifier
 import javax.inject.Singleton
@@ -27,10 +25,5 @@ internal class NotificationModule {
         abstract fun bindNotificationNotifier(
             systemTrayNotificationNotifier: SystemTrayNotificationNotifier,
         ): NotificationNotifier
-
-        @Binds
-        abstract fun bindMessageTokenService(
-            defaultMessageTokenService: DefaultMessageTokenService,
-        ): MessageTokenService
     }
 }
