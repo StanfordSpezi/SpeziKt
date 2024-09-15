@@ -135,11 +135,13 @@ class BluetoothViewModel @Inject internal constructor(
                             logger.e(error) { "Error while mapping action: ${action.message.action}" }
                         }
                         .onSuccess { messagesAction ->
-                            onMessage(
-                                messagesAction = messagesAction,
-                                messageId = action.message.id,
-                                isDismissible = action.message.isDismissible,
-                            )
+                            messagesAction?.let {
+                                onMessage(
+                                    messagesAction = it,
+                                    messageId = action.message.id,
+                                    isDismissible = action.message.isDismissible,
+                                )
+                            }
                         }
                 }
             }
@@ -231,8 +233,6 @@ class BluetoothViewModel @Inject internal constructor(
                     handleVideoSectionAction(messagesAction)
                 }
             }
-
-            MessagesAction.NoAction -> logger.i { "No action for message $messageId" }
         }
         if (isDismissible) {
             messageRepository.completeMessage(messageId = messageId)

@@ -11,10 +11,10 @@ class MessageActionMapper @Inject constructor() {
         private val questionnaireRegex = Regex("/?questionnaires/(.+)")
     }
 
-    fun map(action: String?): Result<MessagesAction> {
+    fun map(action: String?): Result<MessagesAction?> {
         return runCatching {
             when {
-                action.isNullOrBlank() -> MessagesAction.NoAction
+                action.isNullOrBlank() -> null
                 videoSectionRegex.matches(action) -> {
                     mapVideoSectionAction(action).getOrThrow()
                 }

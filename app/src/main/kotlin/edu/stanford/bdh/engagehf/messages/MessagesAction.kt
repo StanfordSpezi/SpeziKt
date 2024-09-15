@@ -6,7 +6,6 @@ sealed class MessagesAction {
     data object MeasurementsAction : MessagesAction()
     data class QuestionnaireAction(val questionnaireId: String) : MessagesAction()
     data object HealthSummaryAction : MessagesAction()
-    data object NoAction : MessagesAction()
 }
 
 data class VideoSectionVideo(val videoSectionId: String, val videoId: String)
