@@ -18,8 +18,7 @@ internal class NotificationModule {
     @Provides
     @Singleton
     internal fun provideFirebaseMessaging(): FirebaseMessaging =
-        FirebaseMessaging.getInstance().apply {
-        }
+        FirebaseMessaging.getInstance()
 
     @Module
     @InstallIn(SingletonComponent::class)
