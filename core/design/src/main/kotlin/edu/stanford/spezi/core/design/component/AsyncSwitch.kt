@@ -46,7 +46,6 @@ fun AsyncSwitch(
     }
 }
 
-
 private class AsyncSwitchPreviewParameterProvider : PreviewParameterProvider<AsyncSwitchState> {
     override val values = sequenceOf(
         AsyncSwitchState(isLoading = true, checked = false),
