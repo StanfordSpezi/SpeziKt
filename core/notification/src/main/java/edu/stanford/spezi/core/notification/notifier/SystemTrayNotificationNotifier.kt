@@ -19,7 +19,6 @@ import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.I
 import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.MESSAGE_ID_KEY
 import edu.stanford.spezi.core.notification.notifier.SystemTrayNotificationNotifier.Companion.SPEZI_MESSAGE_NOTIFICATION_CHANNEL_ID
 import edu.stanford.spezi.core.notification.notifier.SystemTrayNotificationNotifier.Companion.SPEZI_MESSAGE_NOTIFICATION_REQUEST_CODE
-import edu.stanford.spezi.core.notification.notifier.SystemTrayNotificationNotifier.Companion.TARGET_ACTIVITY_NAME
 import javax.inject.Inject
 
 /**
@@ -27,6 +26,7 @@ import javax.inject.Inject
  */
 class SystemTrayNotificationNotifier @Inject constructor(
     @ApplicationContext private val context: Context,
+    @Notifications.TargetActivity private val componentName: ComponentName,
 ) : NotificationNotifier {
     private val logger by speziLogger()
 
@@ -47,7 +47,8 @@ class SystemTrayNotificationNotifier @Inject constructor(
                         .setContentText(firebaseMessage.message)
                         .setContentIntent(
                             messagePendingIntent(
-                                firebaseMessage
+                                firebaseMessage = firebaseMessage,
+                                componentName = componentName,
                             )
                         )
                         .setAutoCancel(true)
@@ -63,7 +64,6 @@ class SystemTrayNotificationNotifier @Inject constructor(
     companion object {
         const val SPEZI_MESSAGE_NOTIFICATION_CHANNEL_ID = "SPEZI_MESSAGE_NOTIFICATION_CHANNEL"
         const val SPEZI_MESSAGE_NOTIFICATION_REQUEST_CODE = 0
-        const val TARGET_ACTIVITY_NAME = "edu.stanford.spezi.core.MainActivity"
     }
 }
 
@@ -93,15 +93,13 @@ private fun Context.ensureNotificationChannelExists() {
 
 private fun Context.messagePendingIntent(
     firebaseMessage: FirebaseMessage,
+    componentName: ComponentName,
 ): PendingIntent? = PendingIntent.getActivity(
     this,
     SPEZI_MESSAGE_NOTIFICATION_REQUEST_CODE,
     Intent().apply {
         action = Intent.ACTION_VIEW
-        component = ComponentName(
-            packageName,
-            TARGET_ACTIVITY_NAME,
-        )
+        component = componentName
         firebaseMessage.messageId?.let { putExtra(MESSAGE_ID_KEY, it) }
         firebaseMessage.action?.let { putExtra(ACTION_KEY, it) }
         firebaseMessage.isDismissible?.let { putExtra(IS_DISMISSIBLE_KEY, it) }
