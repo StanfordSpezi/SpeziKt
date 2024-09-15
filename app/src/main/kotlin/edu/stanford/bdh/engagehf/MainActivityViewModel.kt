@@ -51,7 +51,7 @@ class MainActivityViewModel @Inject constructor(
             val startDestination = when (val userState = userSessionManager.getUserState()) {
                 is UserState.NotInitialized, UserState.Anonymous -> Routes.OnboardingScreen
                 is UserState.Registered -> {
-                    if (userState.hasConsented) Routes.AppScreen else Routes.ConsentScreen
+                    if (userState.hasInvitationCodeConfirmed) Routes.AppScreen else Routes.InvitationCodeScreen
                 }
             }
             _uiState.update { MainUiState.Content(startDestination = startDestination) }

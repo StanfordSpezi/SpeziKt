@@ -120,8 +120,7 @@ class MainActivity : FragmentActivity() {
         }
 
         composable<Routes.LoginScreen> {
-            val args = it.toRoute<Routes.LoginScreen>()
-            LoginScreen(isAlreadyRegistered = args.isAlreadyRegistered)
+            LoginScreen()
         }
 
         composable<EducationRoutes.VideoDetail>(
@@ -182,9 +181,7 @@ class MainActivity : FragmentActivity() {
                         )
 
                         is AccountNavigationEvent.LoginScreen -> navHostController.navigate(
-                            Routes.LoginScreen(
-                                isAlreadyRegistered = event.isAlreadyRegistered
-                            )
+                            Routes.LoginScreen()
                         )
 
                         is OnboardingNavigationEvent.InvitationCodeScreen -> navHostController.navigate(
