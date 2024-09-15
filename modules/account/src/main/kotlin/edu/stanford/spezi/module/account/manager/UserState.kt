@@ -17,7 +17,7 @@ sealed interface UserState {
     /**
      * Indicates a registered user.
      *
-     * @property hasConsented Whether the consent pdf has been submitted or not
+     * @property hasInvitationCodeConfirmed Whether the invitation code has been submitted or not
      */
-    data class Registered(val hasConsented: Boolean) : UserState
+    data class Registered(val hasInvitationCodeConfirmed: Boolean) : UserState
 }
