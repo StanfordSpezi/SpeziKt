@@ -2,7 +2,6 @@ package edu.stanford.bdh.engagehf.health.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
@@ -46,11 +45,7 @@ fun SwipeBox(
                     .fillMaxSize()
             ) {
                 Icon(
-                    modifier = Modifier
-                        .minimumInteractiveComponentSize()
-                        .clickable {
-                            onDelete()
-                        },
+                    modifier = Modifier.minimumInteractiveComponentSize(),
                     tint = Colors.background,
                     imageVector = Icons.Outlined.Delete,
                     contentDescription = null
