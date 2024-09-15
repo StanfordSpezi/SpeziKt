@@ -9,5 +9,5 @@ sealed class AccountNavigationEvent : NavigationEvent {
         val password: String = "",
     ) : AccountNavigationEvent()
 
-    data class LoginScreen(val isAlreadyRegistered: Boolean) : AccountNavigationEvent()
+    data object LoginScreen : AccountNavigationEvent()
 }
