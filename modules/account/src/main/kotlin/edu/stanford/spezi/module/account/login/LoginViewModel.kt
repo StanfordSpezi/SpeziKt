@@ -50,12 +50,6 @@ internal class LoginViewModel @Inject constructor(
                 navigateToRegister()
             }
 
-            is Action.SetIsAlreadyRegistered -> {
-                _uiState.update {
-                    it.copy(isAlreadyRegistered = action.isAlreadyRegistered)
-                }
-            }
-
             is Action.Async.GoogleSignInOrSignUp -> {
                 execute(action = action, block = ::onGoogleSignInOrSignUp)
             }
@@ -64,15 +58,15 @@ internal class LoginViewModel @Inject constructor(
                 execute(action = action, block = ::onForgotPassword)
             }
 
-            is Action.Async.PasswordSignInOrSignUp -> {
-                execute(action = action, block = ::onPasswordSignInOrSignUp)
+            is Action.Async.PasswordSignIn -> {
+                execute(action = action, block = ::onPasswordSignIn)
             }
         }
     }
 
-    private suspend fun onPasswordSignInOrSignUp() {
+    private suspend fun onPasswordSignIn() {
         val uiState = _uiState.value
-        if (uiState.isAlreadyRegistered && validator.isFormValid(uiState)) {
+        if (validator.isFormValid(uiState)) {
             authenticationManager.signIn(
                 email = email,
                 password = password,
@@ -82,10 +76,6 @@ internal class LoginViewModel @Inject constructor(
                 accountEvents.emit(event = AccountEvents.Event.SignInFailure)
                 messageNotifier.notify("Failed to sign in")
             }
-        }
-
-        if (!uiState.isAlreadyRegistered && validator.isFormValid(uiState)) {
-            navigateToRegister()
         }
 
         hasAttemptedSubmit = true
@@ -153,23 +143,20 @@ internal class LoginViewModel @Inject constructor(
     }
 
     private suspend fun onGoogleSignInOrSignUp() {
-        if (uiState.value.isAlreadyRegistered) {
-            authenticationManager.signInWithGoogle()
-                .onSuccess {
-                    accountEvents.emit(event = AccountEvents.Event.SignInSuccess)
-                }.onFailure {
-                    accountEvents.emit(event = AccountEvents.Event.SignInFailure)
-                    messageNotifier.notify("Failed to sign in")
-                }
-        } else {
-            navigator.navigateTo(
-                AccountNavigationEvent.RegisterScreen(
-                    isGoogleSignUp = true,
-                    email = uiState.value.email.value,
-                    password = uiState.value.password.value
+        authenticationManager.signInWithGoogle()
+            .onSuccess {
+                accountEvents.emit(event = AccountEvents.Event.SignInSuccess)
+            }.onFailure {
+                accountEvents.emit(event = AccountEvents.Event.SignInFailure)
+                messageNotifier.notify("Failed to sign in")
+                navigator.navigateTo(
+                    AccountNavigationEvent.RegisterScreen(
+                        isGoogleSignUp = true,
+                        email = uiState.value.email.value,
+                        password = uiState.value.password.value
+                    )
                 )
-            )
-        }
+            }
     }
 
     private fun execute(
