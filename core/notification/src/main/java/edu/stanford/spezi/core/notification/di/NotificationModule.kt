@@ -1,13 +1,13 @@
 package edu.stanford.spezi.core.notification.di
 
+import android.content.Context
+import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.messaging.FirebaseMessaging
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import edu.stanford.spezi.core.notification.notifier.NotificationNotifier
-import edu.stanford.spezi.core.notification.notifier.SystemTrayNotificationNotifier
 import javax.inject.Singleton
 
 @Module
@@ -18,12 +18,7 @@ internal class NotificationModule {
     internal fun provideFirebaseMessaging(): FirebaseMessaging =
         FirebaseMessaging.getInstance()
 
-    @Module
-    @InstallIn(SingletonComponent::class)
-    abstract class Bindings {
-        @Binds
-        abstract fun bindNotificationNotifier(
-            systemTrayNotificationNotifier: SystemTrayNotificationNotifier,
-        ): NotificationNotifier
-    }
+    @Provides
+    fun provideNotificationManagerCompat(@ApplicationContext context: Context): NotificationManagerCompat =
+        NotificationManagerCompat.from(context)
 }
