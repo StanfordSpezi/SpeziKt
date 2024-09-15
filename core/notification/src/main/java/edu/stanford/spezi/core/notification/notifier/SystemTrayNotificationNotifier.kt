@@ -64,7 +64,6 @@ class SystemTrayNotificationNotifier @Inject constructor(
         const val SPEZI_MESSAGE_NOTIFICATION_CHANNEL_ID = "SPEZI_MESSAGE_NOTIFICATION_CHANNEL"
         const val SPEZI_MESSAGE_NOTIFICATION_REQUEST_CODE = 0
         const val TARGET_ACTIVITY_NAME = "edu.stanford.spezi.core.MainActivity"
-        const val SPEZI_MESSAGE = "message"
     }
 }
 
