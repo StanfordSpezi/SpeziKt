@@ -17,12 +17,16 @@ import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEService
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceEvent
 import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.messages.HealthSummaryService
+import edu.stanford.bdh.engagehf.messages.Message
 import edu.stanford.bdh.engagehf.messages.MessageRepository
+import edu.stanford.bdh.engagehf.messages.MessageType
 import edu.stanford.bdh.engagehf.messages.MessagesAction
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.notification.notifier.FirebaseMessage
+import edu.stanford.spezi.core.notification.notifier.NotificationNotifier.Companion.FIREBASE_MESSAGE_KEY
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -157,6 +161,29 @@ class BluetoothViewModel @Inject internal constructor(
 
             is Action.Settings.BluetoothSettings -> {
                 launch(intent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS))
+            }
+
+            is Action.NewIntent -> handleNewIntent(action.intent)
+        }
+    }
+
+    private fun handleNewIntent(intent: Intent) {
+        val firebaseMessage =
+            intent.getParcelableExtra(FIREBASE_MESSAGE_KEY, FirebaseMessage::class.java)
+        firebaseMessage?.messageId?.let { messageId ->
+            viewModelScope.launch {
+                onAction(
+                    Action.MessageItemClicked(
+                        message = Message(
+                            id = messageId, // Is needed to dismiss the message
+                            type = MessageType.Unknown, // We don't need the type, since we directly use the action
+                            title = "", // We don't need the title, since we directly use the action
+                            action = firebaseMessage.action, // We directly use the action
+                            isDismissible = firebaseMessage.isDismissible
+                                ?: false
+                        )
+                    )
+                )
             }
         }
     }
