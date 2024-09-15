@@ -5,7 +5,7 @@ import javax.inject.Inject
 /**
  * Maps [NotificationSettingViewModel.Action] to [NotificationSettingViewModel.UiState].
  */
-class NotificationSettingUiStateMapper @Inject constructor() {
+internal class NotificationSettingUiStateMapper @Inject constructor() {
     fun mapSwitchChanged(
         action: NotificationSettingViewModel.Action.SwitchChanged,
         it: NotificationSettingViewModel.UiState.NotificationSettingsLoaded,
