@@ -56,12 +56,9 @@ import edu.stanford.spezi.module.account.register.IconLeadingContent
 import edu.stanford.spezi.core.design.R as DesignR
 
 @Composable
-fun LoginScreen(
-    isAlreadyRegistered: Boolean,
-) {
+fun LoginScreen() {
     val viewModel = hiltViewModel<LoginViewModel>()
     val uiState by viewModel.uiState.collectAsState()
-    viewModel.onAction(Action.SetIsAlreadyRegistered(isAlreadyRegistered))
 
     LoginScreen(
         uiState = uiState, onAction = viewModel::onAction
@@ -139,7 +136,7 @@ You may login to your existing account or create a new one if you don't have one
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = {
-                        onAction(Action.Async.PasswordSignInOrSignUp)
+                        onAction(Action.Async.PasswordSignIn)
                     }),
                     trailingIcon = {
                         IconButton(onClick = { onAction(Action.TogglePasswordVisibility) }) {
@@ -169,11 +166,11 @@ You may login to your existing account or create a new one if you don't have one
             modifier = Modifier.align(Alignment.End)
         )
         Spacer(modifier = Modifier.height(Spacings.medium))
-        val passwordSignInOrSignUp = Action.Async.PasswordSignInOrSignUp
+        val passwordSignIn = Action.Async.PasswordSignIn
         AsyncTextButton(
-            isLoading = uiState.pendingActions.contains(passwordSignInOrSignUp),
-            text = if (uiState.isAlreadyRegistered) "Login" else "Register",
-            onClick = { onAction(passwordSignInOrSignUp) },
+            isLoading = uiState.pendingActions.contains(passwordSignIn),
+            text = "Login",
+            onClick = { onAction(passwordSignIn) },
             modifier = Modifier.fillMaxWidth(),
             enabled = uiState.isPasswordSignInEnabled
         )
@@ -185,7 +182,6 @@ You may login to your existing account or create a new one if you don't have one
         ) {
             Text("Don't have an Account yet?")
             TextButton(
-                enabled = !uiState.isAlreadyRegistered,
                 onClick = {
                     onAction(Action.NavigateToRegister)
                 },
@@ -200,7 +196,6 @@ You may login to your existing account or create a new one if you don't have one
         SignInWithGoogleButton(
             isLoading = uiState.pendingActions.contains(googleSignInOrSignUp),
             onButtonClick = { onAction(googleSignInOrSignUp) },
-            isAlreadyRegistered = uiState.isAlreadyRegistered,
         )
     }
 }
@@ -225,7 +220,6 @@ private class LoginScreenPreviewProvider : PreviewParameterProvider<UiState> {
             email = FieldState("test@test.de"),
             password = FieldState("password"),
             passwordVisibility = true,
-            isAlreadyRegistered = true
         )
     )
 }

@@ -1,6 +1,5 @@
 package edu.stanford.spezi.module.account.login.components
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -10,18 +9,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import edu.stanford.spezi.core.design.R
 import edu.stanford.spezi.core.design.component.AsyncButton
-import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.core.design.theme.SpeziTheme
+import edu.stanford.spezi.core.design.theme.ThemePreviews
 
 @Composable
 fun SignInWithGoogleButton(
     onButtonClick: () -> Unit,
     isLoading: Boolean = false,
-    isAlreadyRegistered: Boolean = false,
 ) {
     AsyncButton(
         isLoading = isLoading,
@@ -37,18 +35,14 @@ fun SignInWithGoogleButton(
             modifier = Modifier.size(Sizes.Icon.small)
         )
         Spacer(modifier = Modifier.width(Spacings.small))
-        Text(if (isAlreadyRegistered) "Sign in with Google" else "Sign up with Google")
+        Text("Sign in with Google")
     }
 }
 
-@Preview
+@ThemePreviews
 @Composable
 fun SignInWithGoogleButtonPreview() {
-    Column {
+    SpeziTheme(isPreview = true) {
         SignInWithGoogleButton(onButtonClick = {})
-        VerticalSpacer()
-        SignInWithGoogleButton(onButtonClick = {}, isAlreadyRegistered = true)
-        VerticalSpacer()
-        SignInWithGoogleButton(onButtonClick = {}, isLoading = true, isAlreadyRegistered = true)
     }
 }
