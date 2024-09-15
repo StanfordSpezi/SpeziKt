@@ -20,7 +20,6 @@ import io.mockk.verify
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.random.Random
 
 class LoginViewModelTest {
 
@@ -124,7 +123,6 @@ class LoginViewModelTest {
     @Test
     fun `it should handle successful google sign in correctly`() = runTestUnconfined {
         // given
-        loginViewModel.onAction(Action.SetIsAlreadyRegistered(isAlreadyRegistered = true))
         coEvery { authenticationManager.signInWithGoogle() } returns Result.success(Unit)
 
         // when
@@ -137,7 +135,6 @@ class LoginViewModelTest {
     @Test
     fun `it should failure google sign in correctly`() = runTestUnconfined {
         // given
-        loginViewModel.onAction(Action.SetIsAlreadyRegistered(isAlreadyRegistered = true))
         coEvery {
             authenticationManager.signInWithGoogle()
         } returns Result.failure(Exception("Failed to sign in"))
@@ -153,13 +150,15 @@ class LoginViewModelTest {
     @Test
     fun `it should handle google sign up correctly`() = runTestUnconfined {
         // given
-        loginViewModel.onAction(Action.SetIsAlreadyRegistered(isAlreadyRegistered = false))
         val uiState = loginViewModel.uiState.value
         val expectedEvent = AccountNavigationEvent.RegisterScreen(
             isGoogleSignUp = true,
             email = uiState.email.value,
             password = uiState.password.value,
         )
+        coEvery {
+            authenticationManager.signInWithGoogle()
+        } returns Result.failure(Exception("Failed to sign in"))
 
         // when
         loginViewModel.onAction(Action.Async.GoogleSignInOrSignUp)
@@ -167,21 +166,6 @@ class LoginViewModelTest {
         // then
         verify { navigator.navigateTo(expectedEvent) }
     }
-
-    @Test
-    fun `given SetIsAlreadyRegistered action when onAction is called then update isAlreadyRegistered in LoginUiState`() =
-        runTestUnconfined {
-            // Given
-            val value = Random.nextBoolean()
-            val action = Action.SetIsAlreadyRegistered(isAlreadyRegistered = value)
-
-            // When
-            loginViewModel.onAction(action)
-
-            // Then
-            val uiState = loginViewModel.uiState.value
-            assertThat(uiState.isAlreadyRegistered).isEqualTo(value)
-        }
 
     @Test
     fun `given ForgotPassword action with valid email when onAction is called then send forgot password email`() =
@@ -250,14 +234,13 @@ class LoginViewModelTest {
         listOf(
             Action.TextFieldUpdate(email, TextFieldType.EMAIL),
             Action.TextFieldUpdate(password, TextFieldType.PASSWORD),
-            Action.SetIsAlreadyRegistered(isAlreadyRegistered = true),
         ).forEach {
             loginViewModel.onAction(it)
         }
         coEvery {
             authenticationManager.signIn(email = email, password = password)
         } returns Result.success(Unit)
-        val action = Action.Async.PasswordSignInOrSignUp
+        val action = Action.Async.PasswordSignIn
 
         // when
         loginViewModel.onAction(action)
@@ -274,12 +257,11 @@ class LoginViewModelTest {
         listOf(
             Action.TextFieldUpdate(email, TextFieldType.EMAIL),
             Action.TextFieldUpdate(password, TextFieldType.PASSWORD),
-            Action.SetIsAlreadyRegistered(isAlreadyRegistered = true),
         ).forEach { loginViewModel.onAction(it) }
         coEvery {
             authenticationManager.signIn(email = email, password = password)
         } returns Result.failure(Exception("Failure"))
-        val action = Action.Async.PasswordSignInOrSignUp
+        val action = Action.Async.PasswordSignIn
 
         // when
         loginViewModel.onAction(action)
