@@ -5,9 +5,6 @@ import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.notification.notifier.FirebaseMessage
-import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.ACTION_KEY
-import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.IS_DISMISSIBLE_KEY
-import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.MESSAGE_ID_KEY
 import edu.stanford.spezi.core.notification.notifier.NotificationNotifier
 import javax.inject.Inject
 
@@ -49,5 +46,11 @@ internal class FCMNotificationService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         deviceRegistrationService.registerDevice(token = token)
+    }
+
+    companion object {
+        private const val ACTION_KEY = "action"
+        private const val MESSAGE_ID_KEY = "messageId"
+        private const val IS_DISMISSIBLE_KEY = "isDismissible"
     }
 }

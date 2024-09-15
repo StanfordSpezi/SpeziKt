@@ -14,15 +14,10 @@ import androidx.core.content.PermissionChecker
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.notification.R
-import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.ACTION_KEY
-import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.IS_DISMISSIBLE_KEY
-import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.MESSAGE_ID_KEY
-import edu.stanford.spezi.core.notification.notifier.NotificationNotifier.Companion.SPEZI_MESSAGE_NOTIFICATION_CHANNEL_ID
-import edu.stanford.spezi.core.notification.notifier.NotificationNotifier.Companion.SPEZI_MESSAGE_NOTIFICATION_REQUEST_CODE
 import javax.inject.Inject
 
 /**
- * A [NotificationNotifier] that sends notifications using the system tray.
+ * A class that sends notifications using the system tray.
  */
 class NotificationNotifier @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -40,16 +35,8 @@ class NotificationNotifier @Inject constructor(
                 logger.w { "Notification permission not granted" }
                 return
             }
-            val notification = createMessageNotification(notificationManagerCompat) {
-                setSmallIcon(edu.stanford.spezi.core.design.R.drawable.ic_info).setContentTitle(
-                    firebaseMessage.title
-                ).setContentText(firebaseMessage.message).setContentIntent(
-                    messagePendingIntent(
-                        firebaseMessage = firebaseMessage,
-                        componentName = componentName,
-                    )
-                ).setAutoCancel(true)
-            }
+            createNotificationChannel()
+            val notification = createMessageNotification(firebaseMessage)
             notificationManagerCompat.notify(
                 notification.hashCode(),
                 notification,
@@ -57,48 +44,50 @@ class NotificationNotifier @Inject constructor(
         }
     }
 
+    private fun createMessageNotification(
+        firebaseMessage: FirebaseMessage,
+    ): Notification {
+        return NotificationCompat.Builder(context, SPEZI_MESSAGE_NOTIFICATION_CHANNEL_ID)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setSmallIcon(edu.stanford.spezi.core.design.R.drawable.ic_info).setContentTitle(
+                firebaseMessage.title
+            ).setContentText(firebaseMessage.message).setContentIntent(
+                messagePendingIntent(
+                    firebaseMessage = firebaseMessage,
+                    componentName = componentName,
+                )
+            ).setAutoCancel(true)
+            .build()
+    }
+
+    private fun messagePendingIntent(
+        firebaseMessage: FirebaseMessage,
+        componentName: ComponentName,
+    ): PendingIntent? = PendingIntent.getActivity(
+        context,
+        SPEZI_MESSAGE_NOTIFICATION_REQUEST_CODE,
+        Intent().apply {
+            action = Intent.ACTION_VIEW
+            component = componentName
+            putExtra(FIREBASE_MESSAGE_KEY, firebaseMessage)
+        },
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+    )
+
+    private fun createNotificationChannel() {
+        val channel = NotificationChannel(
+            SPEZI_MESSAGE_NOTIFICATION_CHANNEL_ID,
+            context.getString(R.string.spezi_message_notification_channel_name),
+            NotificationManager.IMPORTANCE_DEFAULT,
+        ).apply {
+            description = context.getString(R.string.spezi_message_notification_channel_description)
+        }
+        notificationManagerCompat.createNotificationChannel(channel)
+    }
+
     companion object {
         const val SPEZI_MESSAGE_NOTIFICATION_CHANNEL_ID = "SPEZI_MESSAGE_NOTIFICATION_CHANNEL"
         const val SPEZI_MESSAGE_NOTIFICATION_REQUEST_CODE = 0
+        const val FIREBASE_MESSAGE_KEY = "FIREBASE_MESSAGE"
     }
 }
-
-private fun Context.createMessageNotification(
-    notificationManagerCompat: NotificationManagerCompat,
-    block: NotificationCompat.Builder.() -> Unit,
-): Notification {
-    ensureNotificationChannelExists(notificationManagerCompat)
-    return NotificationCompat.Builder(
-        this,
-        SPEZI_MESSAGE_NOTIFICATION_CHANNEL_ID,
-    ).setPriority(NotificationCompat.PRIORITY_DEFAULT).apply(block).build()
-}
-
-private fun Context.ensureNotificationChannelExists(
-    notificationManagerCompat: NotificationManagerCompat,
-) {
-    val channel = NotificationChannel(
-        SPEZI_MESSAGE_NOTIFICATION_CHANNEL_ID,
-        getString(R.string.spezi_message_notification_channel_name),
-        NotificationManager.IMPORTANCE_DEFAULT,
-    ).apply {
-        description = getString(R.string.spezi_message_notification_channel_description)
-    }
-    notificationManagerCompat.createNotificationChannel(channel)
-}
-
-private fun Context.messagePendingIntent(
-    firebaseMessage: FirebaseMessage,
-    componentName: ComponentName,
-): PendingIntent? = PendingIntent.getActivity(
-    this,
-    SPEZI_MESSAGE_NOTIFICATION_REQUEST_CODE,
-    Intent().apply {
-        action = Intent.ACTION_VIEW
-        component = componentName
-        firebaseMessage.messageId?.let { putExtra(MESSAGE_ID_KEY, it) }
-        firebaseMessage.action?.let { putExtra(ACTION_KEY, it) }
-        firebaseMessage.isDismissible?.let { putExtra(IS_DISMISSIBLE_KEY, it) }
-    },
-    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-)
