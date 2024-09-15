@@ -42,7 +42,7 @@ fun NotificationSettingScreen() {
 }
 
 @Composable
-fun NotificationSettingScreen(
+internal fun NotificationSettingScreen(
     onAction: (NotificationSettingViewModel.Action) -> Unit,
     uiState: NotificationSettingViewModel.UiState,
 ) {

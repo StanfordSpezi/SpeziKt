@@ -16,7 +16,7 @@ import javax.inject.Inject
 /**
  * Repository for managing user's notification settings.
  */
-class NotificationSettingsRepository @Inject constructor(
+internal class NotificationSettingsRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val userSessionManager: UserSessionManager,
     @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
