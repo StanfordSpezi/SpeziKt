@@ -65,10 +65,9 @@ internal class NotificationSettingViewModel @Inject constructor(
                         )
                     }
                     viewModelScope.launch {
-                        repository.saveNotificationSettings(newSettings)
-                            .onFailure {
-                                messageNotifier.notify("Failed to save notification settings")
-                            }
+                        repository.saveNotificationSettings(newSettings).onFailure {
+                            messageNotifier.notify("Failed to save notification settings")
+                        }
                         _uiState.update {
                             UiState.NotificationSettingsLoaded(
                                 currentSettings.copy(
@@ -95,12 +94,10 @@ internal class NotificationSettingViewModel @Inject constructor(
 
     sealed interface UiState {
         data object Loading : UiState
-        data class Error(val message: String) :
-            UiState
+        data class Error(val message: String) : UiState
 
         data class NotificationSettingsLoaded(
             val notificationSettings: NotificationSettings,
-        ) :
-            UiState
+        ) : UiState
     }
 }
