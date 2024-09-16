@@ -26,7 +26,6 @@ import edu.stanford.bdh.engagehf.messages.VideoSectionVideo
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
 import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.core.notification.fcm.DeviceRegistrationService
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
@@ -54,7 +53,6 @@ class BluetoothViewModelTest {
     private val engageEducationRepository = mockk<EngageEducationRepository>(relaxed = true)
     private val healthSummaryService = mockk<HealthSummaryService>(relaxed = true)
     private val context: Context = mockk(relaxed = true)
-    private val deviceRegistrationService = mockk<DeviceRegistrationService>(relaxed = true)
 
     private val bleServiceState =
         MutableStateFlow<EngageBLEServiceState>(EngageBLEServiceState.Idle)
@@ -479,7 +477,6 @@ class BluetoothViewModelTest {
             engageEducationRepository = engageEducationRepository,
             healthSummaryService = healthSummaryService,
             context = context,
-            deviceRegistrationService = deviceRegistrationService
         )
     }
 }
