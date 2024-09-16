@@ -1,6 +1,7 @@
 package edu.stanford.spezi.core.notification.setting
 
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.spezi.core.design.action.PendingActions
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
@@ -21,7 +22,7 @@ class NotificationSettingViewModelTest {
 
     private val repository: NotificationSettingsRepository = mockk(relaxed = true)
     private val navigator: Navigator = mockk(relaxed = true)
-    private val uiStateMapper: NotificationSettingUiStateMapper = mockk(relaxed = true)
+    private val uiStateMapper: NotificationSettingsStateMapper = mockk(relaxed = true)
     private val messageNotifier: MessageNotifier = mockk(relaxed = true)
 
     private lateinit var viewModel: NotificationSettingViewModel
@@ -31,7 +32,7 @@ class NotificationSettingViewModelTest {
         viewModel = NotificationSettingViewModel(
             repository = repository,
             navigator = navigator,
-            uiStateMapper = uiStateMapper,
+            notificationSettingsMapper = uiStateMapper,
             messageNotifier = messageNotifier
         )
     }
@@ -51,7 +52,10 @@ class NotificationSettingViewModelTest {
     @Test
     fun `loadNotificationSettings should update state on success`() = runTest {
         // Given
-        val notificationSettings = NotificationSettings()
+        val notificationSettings = NotificationSettings(
+            mapOf(NotificationType.APPOINTMENT_REMINDERS to true),
+            PendingActions()
+        )
         coEvery { repository.observeNotificationSettings() } returns flowOf(
             Result.success(
                 notificationSettings
@@ -62,7 +66,7 @@ class NotificationSettingViewModelTest {
         viewModel = NotificationSettingViewModel(
             repository = repository,
             navigator = navigator,
-            uiStateMapper = uiStateMapper,
+            notificationSettingsMapper = uiStateMapper,
             messageNotifier = messageNotifier
         )
 
@@ -88,7 +92,7 @@ class NotificationSettingViewModelTest {
         viewModel = NotificationSettingViewModel(
             repository = repository,
             navigator = navigator,
-            uiStateMapper = uiStateMapper,
+            notificationSettingsMapper = uiStateMapper,
             messageNotifier = messageNotifier
         )
 
