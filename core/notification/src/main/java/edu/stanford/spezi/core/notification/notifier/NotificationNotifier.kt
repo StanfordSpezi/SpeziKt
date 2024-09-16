@@ -49,9 +49,10 @@ class NotificationNotifier @Inject constructor(
     ): Notification {
         return NotificationCompat.Builder(context, SPEZI_MESSAGE_NOTIFICATION_CHANNEL_ID)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setSmallIcon(edu.stanford.spezi.core.design.R.drawable.ic_info).setContentTitle(
-                firebaseMessage.title
-            ).setContentText(firebaseMessage.message).setContentIntent(
+            .setSmallIcon(edu.stanford.spezi.core.design.R.drawable.ic_info)
+            .setContentTitle(firebaseMessage.title)
+            .setContentText(firebaseMessage.message)
+            .setContentIntent(
                 messagePendingIntent(
                     firebaseMessage = firebaseMessage,
                     componentName = componentName,
