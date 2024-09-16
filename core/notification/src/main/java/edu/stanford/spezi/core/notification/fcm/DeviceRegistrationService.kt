@@ -87,7 +87,7 @@ internal class DeviceRegistrationService @Inject constructor(
     }
 }
 
-data class DeviceInfo(
+private data class DeviceInfo(
     val notificationToken: String,
     val platform: String,
     val osVersion: String?,
