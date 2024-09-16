@@ -15,8 +15,8 @@ class DeviceRegistrationServiceTest {
 
     private val context: Context = mockk(relaxed = true)
     private val functions: FirebaseFunctions = mockk(relaxed = true)
-    private val packageManager: PackageManager = mockk(relaxed = true)
-    private val packageInfo: PackageInfo = mockk(relaxed = true)
+    private val packageManager: PackageManager = mockk()
+    private val packageInfo: PackageInfo = mockk()
 
     private val service: DeviceRegistrationService =
         DeviceRegistrationService(
