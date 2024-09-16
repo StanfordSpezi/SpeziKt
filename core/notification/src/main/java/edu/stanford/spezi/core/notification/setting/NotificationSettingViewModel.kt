@@ -68,26 +68,16 @@ internal class NotificationSettingViewModel @Inject constructor(
                         repository.saveNotificationSettings(newSettings)
                             .onFailure {
                                 messageNotifier.notify("Failed to save notification settings")
-                                _uiState.update {
-                                    UiState.NotificationSettingsLoaded(
-                                        currentSettings.copy(
-                                            pendingActions = currentSettings.pendingActions.minus(
-                                                action.notificationType
-                                            )
-                                        )
-                                    )
-                                }
-                            }.onSuccess {
-                                _uiState.update {
-                                    UiState.NotificationSettingsLoaded(
-                                        newSettings.copy(
-                                            pendingActions = currentSettings.pendingActions.minus(
-                                                action.notificationType
-                                            )
-                                        )
-                                    )
-                                }
                             }
+                        _uiState.update {
+                            UiState.NotificationSettingsLoaded(
+                                currentSettings.copy(
+                                    pendingActions = currentSettings.pendingActions.minus(
+                                        action.notificationType
+                                    )
+                                )
+                            )
+                        }
                     }
                 }
             }
