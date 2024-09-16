@@ -6,7 +6,6 @@ import com.google.firebase.functions.FirebaseFunctions
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -19,7 +18,7 @@ import javax.inject.Inject
 internal class DeviceRegistrationService @Inject constructor(
     @ApplicationContext private val context: Context,
     private val functions: FirebaseFunctions,
-    @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
+    @Dispatching.IO private val coroutineScope: CoroutineScope,
 ) {
 
     private val logger by speziLogger()
@@ -63,7 +62,7 @@ internal class DeviceRegistrationService @Inject constructor(
         }
 
         runCatching {
-            CoroutineScope(ioDispatcher).launch {
+            coroutineScope.launch {
                 functions.getHttpsCallable(REGISTER_DEVICE_FUNCTION)
                     .call(deviceInfoMap)
                     .addOnSuccessListener {
