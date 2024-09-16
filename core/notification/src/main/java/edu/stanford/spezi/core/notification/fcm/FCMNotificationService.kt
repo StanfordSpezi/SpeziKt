@@ -33,8 +33,8 @@ internal class FCMNotificationService : FirebaseMessagingService() {
         remoteMessage.notification?.let { notification ->
             notificationNotifier.sendNotification(
                 firebaseMessage = FirebaseMessage(
-                    title = notification.title ?: "New ENGAGE-HF Message",
-                    message = notification.body ?: "Open the app to view the message",
+                    title = notification.title ?: "New Message",
+                    message = notification.body ?: "Open the app to view the message.",
                     action = remoteMessage.data[ACTION_KEY],
                     messageId = remoteMessage.data[MESSAGE_ID_KEY],
                     isDismissible = remoteMessage.data[IS_DISMISSIBLE_KEY]?.toBoolean(),
