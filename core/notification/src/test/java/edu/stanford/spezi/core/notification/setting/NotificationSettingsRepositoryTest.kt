@@ -6,6 +6,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import edu.stanford.spezi.core.design.action.PendingActions
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.module.account.manager.UserSessionManager
 import io.mockk.coEvery
@@ -36,12 +37,16 @@ class NotificationSettingsRepositoryTest {
             // given
             val notificationDocument: DocumentSnapshot = mockk()
             val notificationSettings = NotificationSettings(
-                receivesAppointmentReminders = true,
-                receivesMedicationUpdates = false,
-                receivesQuestionnaireReminders = true,
-                receivesRecommendationUpdates = false,
-                receivesVitalsReminders = true,
-                receivesWeightAlerts = false
+                settings =
+                mapOf(
+                    NotificationType.APPOINTMENT_REMINDERS to true,
+                    NotificationType.MEDICATION_UPDATES to false,
+                    NotificationType.QUESTIONNAIRE_REMINDERS to true,
+                    NotificationType.RECOMMENDATION_UPDATES to false,
+                    NotificationType.VITALS_REMINDERS to true,
+                    NotificationType.WEIGHT_ALERTS to false
+                ),
+                pendingActions = PendingActions()
             )
             val listenerSlot = slot<EventListener<DocumentSnapshot>>()
             val registrationListener: ListenerRegistration = mockk(relaxed = true)
@@ -54,35 +59,31 @@ class NotificationSettingsRepositoryTest {
 
             every {
                 notificationDocument.getBoolean(
-                    NotificationSettingsRepository.KEY_RECEIVES_APPOINTMENT_REMINDERS
+                    NotificationType.APPOINTMENT_REMINDERS.key
                 )
-            } returns notificationSettings.receivesAppointmentReminders
+            } returns notificationSettings[NotificationType.APPOINTMENT_REMINDERS]
             every {
                 notificationDocument.getBoolean(
-                    NotificationSettingsRepository.KEY_RECEIVES_MEDICATION_UPDATES
+                    NotificationType.MEDICATION_UPDATES.key
                 )
-            } returns notificationSettings.receivesMedicationUpdates
+            } returns notificationSettings[NotificationType.MEDICATION_UPDATES]
             every {
                 notificationDocument.getBoolean(
-                    NotificationSettingsRepository.KEY_RECEIVES_QUESTIONNAIRE_REMINDERS
+                    NotificationType.QUESTIONNAIRE_REMINDERS.key
                 )
             } returns
-                notificationSettings.receivesQuestionnaireReminders
+                notificationSettings[NotificationType.QUESTIONNAIRE_REMINDERS]
             every {
                 notificationDocument.getBoolean(
-                    NotificationSettingsRepository.KEY_RECEIVES_RECOMMENDATION_UPDATES
+                    NotificationType.RECOMMENDATION_UPDATES.key
                 )
-            } returns notificationSettings.receivesRecommendationUpdates
+            } returns notificationSettings[NotificationType.RECOMMENDATION_UPDATES]
             every {
-                notificationDocument.getBoolean(
-                    NotificationSettingsRepository.KEY_RECEIVES_VITALS_REMINDERS
-                )
-            } returns notificationSettings.receivesVitalsReminders
+                notificationDocument.getBoolean(NotificationType.VITALS_REMINDERS.key)
+            } returns notificationSettings[NotificationType.VITALS_REMINDERS]
             every {
-                notificationDocument.getBoolean(
-                    NotificationSettingsRepository.KEY_RECEIVES_WEIGHT_ALERTS
-                )
-            } returns notificationSettings.receivesWeightAlerts
+                notificationDocument.getBoolean(NotificationType.WEIGHT_ALERTS.key)
+            } returns notificationSettings[NotificationType.WEIGHT_ALERTS]
 
             var collectedSettings: Result<NotificationSettings>? = null
 
@@ -104,7 +105,18 @@ class NotificationSettingsRepositoryTest {
     @Test
     fun `saveNotificationSettings updates settings successfully`() = runTestUnconfined {
         // given
-        val notificationSettings = NotificationSettings()
+        val notificationSettings = NotificationSettings(
+            settings =
+            mapOf(
+                NotificationType.APPOINTMENT_REMINDERS to true,
+                NotificationType.MEDICATION_UPDATES to false,
+                NotificationType.QUESTIONNAIRE_REMINDERS to true,
+                NotificationType.RECOMMENDATION_UPDATES to false,
+                NotificationType.VITALS_REMINDERS to true,
+                NotificationType.WEIGHT_ALERTS to false
+            ),
+            pendingActions = PendingActions()
+        )
         val documentReference = mockk<DocumentReference>()
         coEvery { documentReference.update(any<Map<String, Any>>()) } returns mockk()
         every {
