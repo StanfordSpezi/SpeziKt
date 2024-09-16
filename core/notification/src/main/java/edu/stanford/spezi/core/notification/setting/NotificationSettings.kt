@@ -11,7 +11,7 @@ internal enum class NotificationType(
     QUESTIONNAIRE_REMINDERS(key = "receivesQuestionnaireReminders", section = Section.REMINDERS),
     RECOMMENDATION_UPDATES(key = "receivesRecommendationUpdates", section = Section.UPDATES),
     VITALS_REMINDERS(key = "receivesVitalsReminders", section = Section.REMINDERS),
-    WEIGHT_ALERTS(key = "receivesWeightAlerts", section = Section.TRENDS)
+    WEIGHT_ALERTS(key = "receivesWeightAlerts", section = Section.TRENDS),
     ;
 
     enum class Section {
