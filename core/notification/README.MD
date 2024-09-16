@@ -3,26 +3,37 @@
 The notification module provides a way to show notifications to the user and handle FCM as well as
 the notification settings.
 
-## Notifier
+## NotificationNotifier
 
-`NotificationNotifier` is an interface that defines the contract for a notifier responsible for
-showing notifications:
+`NotificationNotifier` is a class that is responsible for showing notifications to the user.
 
 ```kotlin
-interface NotificationNotifier {
-    fun sendNotification(message: String)
+class NotificationNotifier {
+    fun sendNotification(firebaseMessage: FirebaseMessage): Unit {
+        // Show notification to the user
+    }
 }
 ```
 
-`sendNotification(message: String)` is a function that takes a message and shows a notification to
+`sendNotification(firebaseMessage: FirebaseMessage)` is a function that takes a message and shows a
+notification to
 the user.
 
 ## FCM
 
-The `DeviceRegistrationService` is responsible for registering the device to receive FCM
-notifications and the `FCMNotificationService` is responsible for handling the FCM notifications.
+The `DeviceRegistrationService` is a internal class responsible for registering the device to
+receive FCM
+notifications and the `FCMNotificationService` is a internal class responsible for handling the FCM
+notifications.
 
-## Setting
+## NotificationSettings
 
-The `NotificationSetting` is responsible for handling the notification settings. It provides a way
-to enable or disable notifications.
+The `NotificationSettings` is responsible for handling the notification settings. It provides a way
+to enable or disable notifications and also groups the settings for the notification by sections.
+
+## NotificationSettingScreen
+
+The `NotificationSettingScreen` is a screen that shows the notification settings to the user. It
+uses the `NotificationSettings` to get the settings and update them.
+The `NotificationNavigationEvent` is a sealed class that represents the navigation events that can
+be triggered by the `NotificationSettingScreen` to navigate to the `NotificationSettingScreen`.
