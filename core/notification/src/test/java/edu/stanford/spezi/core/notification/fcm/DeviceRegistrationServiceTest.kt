@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import com.google.firebase.functions.FirebaseFunctions
+import edu.stanford.spezi.core.testing.SpeziTestScope
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -22,7 +22,7 @@ class DeviceRegistrationServiceTest {
         DeviceRegistrationService(
             context = context,
             functions = functions,
-            ioDispatcher = UnconfinedTestDispatcher()
+            coroutineScope = SpeziTestScope()
         )
 
     @Test
