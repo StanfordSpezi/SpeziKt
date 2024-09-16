@@ -30,8 +30,7 @@ internal class DeviceRegistrationService @Inject constructor(
     fun registerDevice(token: String) {
         val platform = PLATFORM_ANDROID
         val osVersion = Build.VERSION.RELEASE
-        val appVersion = getAppVersion()
-        val appBuild = getAppBuild()
+        val packageInfo = getPackageInfo()
         val language = Locale.getDefault().toLanguageTag()
         val timeZone = TimeZone.getDefault().id
 
@@ -39,8 +38,8 @@ internal class DeviceRegistrationService @Inject constructor(
             notificationToken = token,
             platform = platform,
             osVersion = osVersion,
-            appVersion = appVersion,
-            appBuild = appBuild,
+            appVersion = packageInfo.versionName,
+            appBuild = packageInfo.versionCode.toString(),
             language = language,
             timeZone = timeZone
         )
@@ -49,14 +48,6 @@ internal class DeviceRegistrationService @Inject constructor(
     }
 
     private fun getPackageInfo() = context.packageManager.getPackageInfo(context.packageName, 0)
-
-    private fun getAppVersion(): String {
-        return getPackageInfo().versionName
-    }
-
-    private fun getAppBuild(): String {
-        return getPackageInfo().versionCode.toString()
-    }
 
     private fun sendDeviceInfoToServer(deviceInfo: DeviceInfo) {
         val deviceInfoMap = with(deviceInfo) {
