@@ -171,7 +171,7 @@ class BluetoothViewModel @Inject internal constructor(
 
     private fun handleNewIntent(intent: Intent) {
         val firebaseMessage =
-            intent.getParcelableExtra(FIREBASE_MESSAGE_KEY, FirebaseMessage::class.java)
+            intent.getParcelableExtra<FirebaseMessage>(FIREBASE_MESSAGE_KEY)
         firebaseMessage?.messageId?.let { messageId ->
             viewModelScope.launch {
                 onAction(
