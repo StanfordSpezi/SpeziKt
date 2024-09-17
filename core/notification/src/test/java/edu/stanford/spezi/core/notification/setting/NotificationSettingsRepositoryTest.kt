@@ -6,7 +6,6 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import edu.stanford.spezi.core.design.action.PendingActions
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.module.account.manager.UserSessionManager
 import io.mockk.coEvery
@@ -46,7 +45,6 @@ class NotificationSettingsRepositoryTest {
                     NotificationType.VITALS_REMINDERS to true,
                     NotificationType.WEIGHT_ALERTS to false
                 ),
-                pendingActions = PendingActions()
             )
             val listenerSlot = slot<EventListener<DocumentSnapshot>>()
             val registrationListener: ListenerRegistration = mockk(relaxed = true)
@@ -115,7 +113,6 @@ class NotificationSettingsRepositoryTest {
                 NotificationType.VITALS_REMINDERS to true,
                 NotificationType.WEIGHT_ALERTS to false
             ),
-            pendingActions = PendingActions()
         )
         val documentReference = mockk<DocumentReference>()
         coEvery { documentReference.update(any<Map<String, Any>>()) } returns mockk()

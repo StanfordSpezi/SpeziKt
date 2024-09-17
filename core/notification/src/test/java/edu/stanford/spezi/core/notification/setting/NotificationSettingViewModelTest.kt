@@ -1,7 +1,6 @@
 package edu.stanford.spezi.core.notification.setting
 
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.spezi.core.design.action.PendingActions
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
@@ -54,7 +53,6 @@ class NotificationSettingViewModelTest {
         // Given
         val notificationSettings = NotificationSettings(
             mapOf(NotificationType.APPOINTMENT_REMINDERS to true),
-            PendingActions()
         )
         coEvery { repository.observeNotificationSettings() } returns flowOf(
             Result.success(
