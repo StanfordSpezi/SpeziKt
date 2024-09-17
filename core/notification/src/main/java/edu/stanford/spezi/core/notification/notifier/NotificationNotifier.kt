@@ -14,12 +14,13 @@ import androidx.core.content.PermissionChecker
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.notification.R
+import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.FIREBASE_MESSAGE_KEY
 import javax.inject.Inject
 
 /**
  * A class that sends notifications using the system tray.
  */
-class NotificationNotifier @Inject constructor(
+internal class NotificationNotifier @Inject constructor(
     @ApplicationContext private val context: Context,
     @Notifications.TargetActivity private val componentName: ComponentName,
     private val notificationManagerCompat: NotificationManagerCompat,
@@ -89,6 +90,5 @@ class NotificationNotifier @Inject constructor(
     companion object {
         const val SPEZI_MESSAGE_NOTIFICATION_CHANNEL_ID = "SPEZI_MESSAGE_NOTIFICATION_CHANNEL"
         const val SPEZI_MESSAGE_NOTIFICATION_REQUEST_CODE = 0
-        const val FIREBASE_MESSAGE_KEY = "FIREBASE_MESSAGE"
     }
 }

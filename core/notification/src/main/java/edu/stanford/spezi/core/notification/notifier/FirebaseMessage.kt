@@ -10,4 +10,8 @@ data class FirebaseMessage(
     val action: String?,
     val messageId: String?,
     val isDismissible: Boolean?,
-) : Parcelable
+) : Parcelable {
+    companion object {
+        const val FIREBASE_MESSAGE_KEY = "FIREBASE_MESSAGE"
+    }
+}
