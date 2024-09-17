@@ -31,10 +31,3 @@ internal data class NotificationSettings(
         return NotificationSettings(settings = newSettings.toMap())
     }
 }
-
-internal fun NotificationSettings.groupBySection(): Map<NotificationType.Section, List<Pair<NotificationType, Boolean>>> {
-    return this.entries.groupBy(
-        keySelector = { it.key.section },
-        valueTransform = { it.toPair() }
-    )
-}

@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -102,8 +103,9 @@ private fun NotificationOptions(
     onAction: (NotificationSettingViewModel.Action) -> Unit,
     pendingActions: PendingActions<NotificationSettingViewModel.Action.SwitchChanged>,
 ) {
+    val groupedBySectionNotificationSettings = notificationSettings.groupBySection()
     LazyColumn(modifier = Modifier.padding(vertical = Spacings.medium)) {
-        notificationSettings.groupBySection().forEach { (section, settings) ->
+        groupedBySectionNotificationSettings.forEach { (section, settings) ->
             item {
                 NotificationOptionHeadline(
                     text = when (section) {
@@ -142,6 +144,16 @@ private fun NotificationOptionHeadline(text: String) {
         text = text,
         style = TextStyles.headlineMedium,
     )
+}
+
+@Composable
+private fun NotificationSettings.groupBySection(): Map<NotificationType.Section, List<Pair<NotificationType, Boolean>>> {
+    return remember(key1 = this) {
+        entries.groupBy(
+            keySelector = { it.key.section },
+            valueTransform = { it.toPair() }
+        )
+    }
 }
 
 @Composable
