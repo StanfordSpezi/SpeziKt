@@ -3,6 +3,7 @@ package edu.stanford.spezi.core.notification.setting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.spezi.core.design.action.PendingActions
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.utils.MessageNotifier
@@ -57,11 +58,8 @@ internal class NotificationSettingViewModel @Inject constructor(
                         notificationSettingsMapper.mapSwitchChanged(action, currentSettings)
                     _uiState.update {
                         UiState.NotificationSettingsLoaded(
-                            currentSettings.copy(
-                                pendingActions = currentSettings.pendingActions.plus(
-                                    action.notificationType
-                                )
-                            )
+                            newSettings,
+                            currentState.pendingActions.plus(action)
                         )
                     }
                     viewModelScope.launch {
@@ -70,11 +68,8 @@ internal class NotificationSettingViewModel @Inject constructor(
                         }
                         _uiState.update {
                             UiState.NotificationSettingsLoaded(
-                                currentSettings.copy(
-                                    pendingActions = currentSettings.pendingActions.minus(
-                                        action.notificationType
-                                    )
-                                )
+                                notificationSettings = newSettings,
+                                pendingActions = currentState.pendingActions.minus(action)
                             )
                         }
                     }
@@ -98,6 +93,7 @@ internal class NotificationSettingViewModel @Inject constructor(
 
         data class NotificationSettingsLoaded(
             val notificationSettings: NotificationSettings,
+            val pendingActions: PendingActions<Action.SwitchChanged> = PendingActions(),
         ) : UiState
     }
 }

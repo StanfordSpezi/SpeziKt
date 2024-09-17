@@ -89,7 +89,7 @@ internal fun NotificationSettingScreen(
                 is NotificationSettingViewModel.UiState.NotificationSettingsLoaded -> NotificationOptions(
                     notificationSettings = uiState.notificationSettings,
                     onAction = onAction,
-                    pendingActions = uiState.notificationSettings.pendingActions,
+                    pendingActions = uiState.pendingActions,
                 )
             }
         }
@@ -100,7 +100,7 @@ internal fun NotificationSettingScreen(
 private fun NotificationOptions(
     notificationSettings: NotificationSettings,
     onAction: (NotificationSettingViewModel.Action) -> Unit,
-    pendingActions: PendingActions<NotificationType>,
+    pendingActions: PendingActions<NotificationSettingViewModel.Action.SwitchChanged>,
 ) {
     LazyColumn(modifier = Modifier.padding(vertical = Spacings.medium)) {
         notificationSettings.groupBySection().forEach { (section, settings) ->
@@ -127,8 +127,8 @@ private fun NotificationOptions(
                     onCheckedChange = {
                         onAction(NotificationSettingViewModel.Action.SwitchChanged(type, it))
                     },
-                    isLoading = pendingActions.containsActionValue(
-                        actionValue = type
+                    isLoading = pendingActions.contains(
+                        action = NotificationSettingViewModel.Action.SwitchChanged(type, value)
                     )
                 )
             }

@@ -10,7 +10,6 @@ internal class NotificationSettingsStateMapper @Inject constructor() {
         action: NotificationSettingViewModel.Action.SwitchChanged,
         currentSettings: NotificationSettings,
     ): NotificationSettings {
-        val updatedSettings = currentSettings.update(action.notificationType, action.isChecked)
-        return updatedSettings.copy(pendingActions = currentSettings.pendingActions + action.notificationType)
+        return currentSettings.update(action.notificationType, action.isChecked)
     }
 }

@@ -1,7 +1,5 @@
 package edu.stanford.spezi.core.notification.setting
 
-import edu.stanford.spezi.core.design.action.PendingActions
-
 internal enum class NotificationType(
     val key: String,
     val section: Section,
@@ -21,7 +19,6 @@ internal enum class NotificationType(
 
 internal data class NotificationSettings(
     private val settings: Map<NotificationType, Boolean>,
-    val pendingActions: PendingActions<NotificationType> = PendingActions(),
 ) : Map<NotificationType, Boolean> by settings {
 
     override fun get(key: NotificationType): Boolean {
