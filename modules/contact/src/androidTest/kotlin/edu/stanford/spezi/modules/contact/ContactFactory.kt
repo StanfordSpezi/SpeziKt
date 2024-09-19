@@ -8,8 +8,8 @@ import java.util.UUID
 object ContactFactory {
     fun create(
         id: UUID = UUID.randomUUID(),
-        icon: ImageVector? = null,
         name: String = "",
+        image: ImageVector? = null,
         title: String = "",
         description: String = "",
         organization: String = "",
@@ -18,8 +18,8 @@ object ContactFactory {
     ): Contact {
         return Contact(
             id = id,
-            icon = icon,
             name = name,
+            image = image,
             title = title,
             description = description,
             organization = organization,

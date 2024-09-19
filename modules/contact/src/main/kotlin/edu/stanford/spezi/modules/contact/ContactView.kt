@@ -18,40 +18,32 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.modules.contact.component.ContactOptionCard
-import edu.stanford.spezi.modules.contact.component.NavigationCard
+import edu.stanford.spezi.modules.contact.component.AddressButton
+import edu.stanford.spezi.modules.contact.component.ContactOptionButton
 import edu.stanford.spezi.modules.contact.model.Contact
-import edu.stanford.spezi.modules.contact.repository.DefaultContactRepository
+import edu.stanford.spezi.modules.contact.model.ContactOption
 
 /**
  * ContactView composable function to display contact information.
  *
- * @param viewModel The ViewModel associated with the screen.
+ * @param contact The contact associated with the view.
  *
- * @sample edu.stanford.spezi.modules.contact.ContactScreenPreview
+ * @sample edu.stanford.spezi.modules.contact.ContactViewPreview
  *
  * @see Contact
- * @see ContactOptionCard
- * @see NavigationCard
- * @see edu.stanford.spezi.modules.contact.repository.ContactRepository
+ * @see ContactOptionButton
+ * @see AddressButton
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ContactScreen(viewModel: ContactViewModel) {
-    val contact by viewModel.contact.collectAsState()
-
+fun ContactView(contact: Contact) {
     Column {
         Card(
             modifier = Modifier
@@ -78,29 +70,27 @@ fun ContactScreen(viewModel: ContactViewModel) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
-                                contact?.icon ?: Icons.Default.AccountBox,
+                                contact.image ?: Icons.Default.AccountBox,
                                 contentDescription = "Profile Picture",
                                 modifier = Modifier.size(Sizes.Icon.medium)
                             )
                             Column {
-                                contact?.let {
+                                Text(
+                                    text = contact.name,
+                                    style = TextStyles.titleLarge
+                                )
+                                contact.title?.let {
                                     Text(
-                                        text = it.name,
-                                        style = TextStyles.titleLarge
-                                    )
-                                }
-                                contact?.let {
-                                    Text(
-                                        text = it.title,
+                                        text = it,
                                         style = TextStyles.titleSmall
                                     )
                                 }
                             }
                         }
                         Spacer(modifier = Modifier.height(Spacings.small))
-                        contact?.let {
+                        contact.description?.let {
                             Text(
-                                text = it.description,
+                                text = it,
                                 style = TextStyles.bodyMedium
                             )
                         }
@@ -110,19 +100,13 @@ fun ContactScreen(viewModel: ContactViewModel) {
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
-                            val context = LocalContext.current
-                            contact?.options?.forEach { option ->
-                                ContactOptionCard(option = option) {
-                                    viewModel.handleAction(it, context)
-                                }
+                            contact.options.forEach { option ->
+                                ContactOptionButton(option = option)
                             }
                         }
                         Spacer(modifier = Modifier.height(Spacings.large))
-                        val context = LocalContext.current
-                        contact?.let { contact ->
-                            NavigationCard(address = contact.address) {
-                                viewModel.handleAction(it, context)
-                            }
+                        contact.address?.let { address ->
+                            AddressButton(address = address)
                         }
                     }
                 }
@@ -133,16 +117,22 @@ fun ContactScreen(viewModel: ContactViewModel) {
 
 @Preview
 @Composable
-fun ContactScreenPreview(
-    @PreviewParameter(ContactViewModelPreviewParameterProvider::class) viewModel: ContactViewModel,
-) {
+fun ContactViewPreview() {
     SpeziTheme {
-        ContactScreen(viewModel)
+        ContactView(
+            Contact(
+                name = "Leland Stanford",
+                image = null,
+                title = "CEO",
+                description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                organization = "Stanford University",
+                address = "450 Jane Stanford Way Stanford, CA",
+                options = listOf(
+                    ContactOption.call("+49 123 456 789"),
+                    ContactOption.email(listOf("test@gmail.com")),
+                    ContactOption.website("https://www.google.com")
+                )
+            )
+        )
     }
-}
-
-class ContactViewModelPreviewParameterProvider : PreviewParameterProvider<ContactViewModel> {
-    override val values: Sequence<ContactViewModel> = sequenceOf(
-        ContactViewModel(DefaultContactRepository()),
-    )
 }

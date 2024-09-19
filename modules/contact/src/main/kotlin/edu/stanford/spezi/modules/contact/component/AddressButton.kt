@@ -1,5 +1,7 @@
 package edu.stanford.spezi.modules.contact.component
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,20 +17,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.modules.contact.OnAction
 
 /**
- * A card that displays an address and allows the user to navigate to it.
+ * A button that displays an address and allows the user to navigate to it.
  * @param address The address to display and navigate to.
- * @sample edu.stanford.spezi.modules.contact.component.NavigationCardPreview
- * @see edu.stanford.spezi.modules.contact.ContactScreen
+ * @sample edu.stanford.spezi.modules.contact.component.AddressButtonPreview
+ * @see edu.stanford.spezi.modules.contact.ContactView
  */
 @Composable
-fun NavigationCard(address: String, publisher: (OnAction) -> Unit) {
+fun AddressButton(address: String) {
+    val context = LocalContext.current
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -51,7 +54,10 @@ fun NavigationCard(address: String, publisher: (OnAction) -> Unit) {
             )
             IconButton(
                 onClick = {
-                    publisher(OnAction.NavigateTo(address = address))
+                    val gmmIntentUri = Uri.parse("geo:0,0?q=${address}")
+                    val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                    mapIntent.setPackage("com.google.android.apps.maps")
+                    context.startActivity(mapIntent)
                 },
                 modifier = Modifier.align(Alignment.Top)
             ) {
@@ -66,9 +72,8 @@ fun NavigationCard(address: String, publisher: (OnAction) -> Unit) {
 
 @Composable
 @Preview
-fun NavigationCardPreview() {
+fun AddressButtonPreview() {
     SpeziTheme {
-        NavigationCard("1234 Main Street, 12345 City",
-            publisher = { action -> println(action) })
+        AddressButton("1234 Main Street, 12345 City")
     }
 }
