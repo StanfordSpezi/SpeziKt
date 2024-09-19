@@ -36,7 +36,7 @@ data class ContactOption(
                 title = "Call",
                 action = { context ->
                     val dialIntent = Intent(Intent.ACTION_DIAL).apply {
-                        data = Uri.parse("tel:${number}")
+                        data = Uri.parse("tel:$number")
                     }
                     context.startActivity(dialIntent)
                 }
@@ -49,7 +49,7 @@ data class ContactOption(
                 title = "Text",
                 action = { context ->
                     val intent = Intent(Intent.ACTION_DIAL).apply {
-                        data = Uri.parse("sms:${number}")
+                        data = Uri.parse("sms:$number")
                     }
                     context.startActivity(intent)
                 }
@@ -64,7 +64,7 @@ data class ContactOption(
                     val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
                         val subjectLine = URLEncoder.encode(subject ?: "", "utf-8")
                         val addressLine = URLEncoder.encode(addresses.joinToString(","), "utf-8")
-                        data = Uri.parse("mailto:${addressLine}?subject=${subjectLine}")
+                        data = Uri.parse("mailto:$addressLine?subject=$subjectLine")
                     }
                     context.startActivity(emailIntent)
                 }

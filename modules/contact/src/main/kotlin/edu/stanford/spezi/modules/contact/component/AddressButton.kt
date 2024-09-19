@@ -27,7 +27,7 @@ import edu.stanford.spezi.core.design.theme.TextStyles
  * A card that displays an address and allows the user to navigate to it.
  * @param address The address to display and navigate to.
  * @sample edu.stanford.spezi.modules.contact.component.NavigationCardPreview
- * @see edu.stanford.spezi.modules.contact.ContactScreen
+ * @see edu.stanford.spezi.modules.contact.ContactView
  */
 @Composable
 fun AddressButton(address: String) {
@@ -54,7 +54,7 @@ fun AddressButton(address: String) {
             )
             IconButton(
                 onClick = {
-                    val gmmIntentUri = Uri.parse("geo:0,0?q=${address}")
+                    val gmmIntentUri = Uri.parse("geo:0,0?q=$address")
                     val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
                     mapIntent.setPackage("com.google.android.apps.maps")
                     context.startActivity(mapIntent)
