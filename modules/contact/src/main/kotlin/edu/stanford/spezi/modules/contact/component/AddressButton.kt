@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -19,20 +18,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import edu.stanford.spezi.core.design.component.DefaultElevatedCard
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 
 /**
- * A button that displays an address and allows the user to navigate to it.
+ * A card that displays an address and allows the user to navigate to it.
  * @param address The address to display and navigate to.
- * @sample edu.stanford.spezi.modules.contact.component.AddressButtonPreview
- * @see edu.stanford.spezi.modules.contact.ContactView
+ * @sample edu.stanford.spezi.modules.contact.component.NavigationCardPreview
+ * @see edu.stanford.spezi.modules.contact.ContactScreen
  */
 @Composable
 fun AddressButton(address: String) {
     val context = LocalContext.current
-    ElevatedCard(
+    DefaultElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
     ) {
@@ -72,7 +72,7 @@ fun AddressButton(address: String) {
 
 @Composable
 @Preview
-fun AddressButtonPreview() {
+fun NavigationCardPreview() {
     SpeziTheme {
         AddressButton("1234 Main Street, 12345 City")
     }

@@ -1,7 +1,7 @@
-package edu.stanford.spezi.core.bluetooth.data.mapper
+package edu.stanford.bdh.engagehf.bluetooth.service.mapper
 
 import android.bluetooth.BluetoothGattCharacteristic
-import edu.stanford.spezi.core.bluetooth.data.model.Measurement
+import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -10,7 +10,7 @@ import javax.inject.Inject
 /**
  * Component for mapping Bluetooth Low Energy (BLE) characteristics to measurements.
  */
-internal interface MeasurementMapper {
+interface MeasurementMapper {
 
     /**
      * Determines if the given Bluetooth GATT characteristic is recognized by the mapper.

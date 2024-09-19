@@ -17,6 +17,7 @@ class HealthUiStateMapperTest {
 
     private val localeProvider: LocaleProvider = mockk()
     private val healthUiStateMapper = HealthUiStateMapper(localeProvider = localeProvider)
+    private val zonedDateTime = ZonedDateTime.now()
 
     @Before
     fun setup() {
@@ -65,11 +66,11 @@ class HealthUiStateMapperTest {
         // Given
         val records = listOf(
             createWeightRecord(
-                year = 2024,
+                year = zonedDateTime.year,
                 day = 1,
             ),
             createWeightRecord(
-                year = 2024,
+                year = zonedDateTime.year,
                 day = 1,
             ),
         )
@@ -99,7 +100,7 @@ class HealthUiStateMapperTest {
                 day = 4,
             ),
             createWeightRecord(
-                month = 9,
+                month = zonedDateTime.monthValue + 1,
                 day = 5,
             ),
         )
@@ -121,11 +122,11 @@ class HealthUiStateMapperTest {
     }
 
     private fun createWeightRecord(
-        year: Int = 2024,
-        month: Int = 8,
-        day: Int = 1,
-        hour: Int = 5,
-        minute: Int = 4,
+        year: Int = zonedDateTime.year,
+        month: Int = zonedDateTime.monthValue,
+        day: Int = zonedDateTime.dayOfMonth,
+        hour: Int = zonedDateTime.hour,
+        minute: Int = zonedDateTime.minute,
         second: Int = 0,
         nanoOfSecond: Int = 0,
         weightInKg: Double = 70.0,
@@ -141,7 +142,7 @@ class HealthUiStateMapperTest {
                 nanoOfSecond,
                 ZoneId.systemDefault()
             ).toInstant(),
-            zoneOffset = ZonedDateTime.now().offset,
+            zoneOffset = zonedDateTime.offset,
             weight = Mass.kilograms(weightInKg)
         )
     }

@@ -7,10 +7,10 @@ import androidx.health.connect.client.records.WeightRecord
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
+import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
 import edu.stanford.bdh.engagehf.observations.ObservationCollection
 import edu.stanford.bdh.engagehf.observations.ObservationCollectionProvider
 import edu.stanford.healthconnectonfhir.ObservationsDocumentMapper
-import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.CoroutineDispatcher

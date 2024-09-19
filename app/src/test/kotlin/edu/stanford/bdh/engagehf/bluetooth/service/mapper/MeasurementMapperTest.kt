@@ -1,8 +1,8 @@
-package edu.stanford.spezi.core.bluetooth.data.mapper
+package edu.stanford.bdh.engagehf.bluetooth.service.mapper
 
 import android.bluetooth.BluetoothGattCharacteristic
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.spezi.core.bluetooth.data.model.Measurement
+import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import io.mockk.coEvery
 import io.mockk.every

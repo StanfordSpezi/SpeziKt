@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import edu.stanford.spezi.core.design.component.DefaultElevatedCard
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.modules.contact.model.ContactOption
@@ -31,7 +31,7 @@ import edu.stanford.spezi.modules.contact.model.ContactOption
 @Composable
 fun ContactOptionButton(option: ContactOption) {
     val context = LocalContext.current
-    ElevatedCard(
+    DefaultElevatedCard(
         modifier = Modifier
             .wrapContentSize(Alignment.Center)
             .width(90.dp)

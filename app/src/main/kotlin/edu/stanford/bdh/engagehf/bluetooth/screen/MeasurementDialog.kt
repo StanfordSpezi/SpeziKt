@@ -5,10 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,9 +19,8 @@ import androidx.compose.ui.unit.dp
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
-import edu.stanford.spezi.core.bluetooth.data.model.Measurement
-import edu.stanford.spezi.core.design.component.Button
-import edu.stanford.spezi.core.design.theme.Sizes
+import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
+import edu.stanford.spezi.core.design.component.AsyncTextButton
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
@@ -78,22 +75,15 @@ fun MeasurementDialog(
                 }
             },
             confirmButton = {
-                Button(
+                AsyncTextButton(
+                    text = stringResource(R.string.confirm_button_text),
+                    isLoading = uiState.isProcessing,
                     onClick = {
                         uiState.measurement?.let {
                             onAction(Action.ConfirmMeasurement(it))
                         }
-                    },
-                    enabled = uiState.isProcessing.not()
-                ) {
-                    if (uiState.isProcessing) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(Sizes.Icon.small)
-                        )
-                    } else {
-                        Text(stringResource(R.string.confirm_button_text))
                     }
-                }
+                )
             },
             dismissButton = {
                 FilledTonalButton(

@@ -1,7 +1,6 @@
 package edu.stanford.bdh.engagehf.bluetooth.data.models
 
 data class DeviceUiModel(
-    val address: String,
-    val measurementsCount: Int,
+    val name: String,
     val summary: String,
 )

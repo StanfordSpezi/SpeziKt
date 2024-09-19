@@ -10,3 +10,8 @@ import java.util.UUID
  * @throws IllegalArgumentException if the specified string does not conform to the string representation format.
  */
 fun UUID(string: String): UUID = UUID.fromString(string)
+
+/**
+ * @return a random [UUID]
+ */
+fun UUID(): UUID = UUID.randomUUID()

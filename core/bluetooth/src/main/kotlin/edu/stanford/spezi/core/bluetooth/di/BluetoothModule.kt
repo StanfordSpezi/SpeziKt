@@ -10,12 +10,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import edu.stanford.spezi.core.bluetooth.api.BLEService
-import edu.stanford.spezi.core.bluetooth.data.mapper.MeasurementMapper
-import edu.stanford.spezi.core.bluetooth.data.mapper.MeasurementMapperImpl
-import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceType
-import edu.stanford.spezi.core.bluetooth.data.model.SupportedServices
 import edu.stanford.spezi.core.bluetooth.domain.BLEServiceImpl
-import javax.inject.Singleton
 
 /**
  * Dagger Hilt module for providing Bluetooth-related dependencies.
@@ -23,15 +18,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class BluetoothModule {
-
-    /**
-     * Provides the supported BLE services.
-     *
-     * @return An instance of [SupportedServices] containing the supported BLE service types.
-     */
-    @Singleton
-    @Provides
-    internal fun provideSupportedServices(): SupportedServices = SupportedServices(services = BLEServiceType.entries)
 
     /**
      * Provides the Bluetooth adapter.
@@ -49,15 +35,6 @@ class BluetoothModule {
     @Module
     @InstallIn(SingletonComponent::class)
     abstract class Bindings {
-
-        /**
-         * Binds the implementation of [MeasurementMapper] interface.
-         *
-         * @param impl The implementation of [MeasurementMapper].
-         * @return An instance of [MeasurementMapper].
-         */
-        @Binds
-        internal abstract fun bindMeasurementMapper(impl: MeasurementMapperImpl): MeasurementMapper
 
         /**
          * Binds the implementation of [BLEService] interface.

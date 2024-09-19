@@ -1,9 +1,9 @@
 @file:Suppress("MagicNumber")
-package edu.stanford.spezi.core.bluetooth.data.mapper
+package edu.stanford.bdh.engagehf.bluetooth.service.mapper
 
 import android.bluetooth.BluetoothGattCharacteristic
-import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceType
-import edu.stanford.spezi.core.bluetooth.data.model.Measurement
+import edu.stanford.bdh.engagehf.bluetooth.service.BLEServiceType
+import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
 import javax.inject.Inject
 
 /**

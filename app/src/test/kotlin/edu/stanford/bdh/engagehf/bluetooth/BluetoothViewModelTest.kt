@@ -1,5 +1,6 @@
 package edu.stanford.bdh.engagehf.bluetooth
 
+import android.content.Context
 import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.WeightRecord
@@ -11,6 +12,10 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
 import edu.stanford.bdh.engagehf.bluetooth.measurements.MeasurementsRepository
+import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEService
+import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceEvent
+import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceState
+import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
 import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.messages.HealthSummaryService
 import edu.stanford.bdh.engagehf.messages.Message
@@ -20,10 +25,6 @@ import edu.stanford.bdh.engagehf.messages.MessagesAction
 import edu.stanford.bdh.engagehf.messages.VideoSectionVideo
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
-import edu.stanford.spezi.core.bluetooth.api.BLEService
-import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
-import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
-import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
@@ -38,7 +39,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Before
 import org.junit.Rule
@@ -46,15 +46,17 @@ import org.junit.Test
 import java.time.ZonedDateTime
 
 class BluetoothViewModelTest {
-    private val bleService: BLEService = mockk()
+    private val bleService: EngageBLEService = mockk()
     private val uiStateMapper: BluetoothUiStateMapper = mockk()
     private val measurementsRepository = mockk<MeasurementsRepository>(relaxed = true)
     private val messageRepository = mockk<MessageRepository>(relaxed = true)
     private val engageEducationRepository = mockk<EngageEducationRepository>(relaxed = true)
     private val healthSummaryService = mockk<HealthSummaryService>(relaxed = true)
+    private val context: Context = mockk(relaxed = true)
 
-    private val bleServiceState = MutableStateFlow<BLEServiceState>(BLEServiceState.Idle)
-    private val bleServiceEvents = MutableSharedFlow<BLEServiceEvent>()
+    private val bleServiceState =
+        MutableStateFlow<EngageBLEServiceState>(EngageBLEServiceState.Idle)
+    private val bleServiceEvents = MutableSharedFlow<EngageBLEServiceEvent>()
     private val readyUiState: BluetoothUiState.Ready = mockk()
     private val appScreenEvents = mockk<AppScreenEvents>(relaxed = true)
     private val navigator = mockk<Navigator>(relaxed = true)
@@ -84,9 +86,10 @@ class BluetoothViewModelTest {
             every { mapWeight(any()) } returns mockk()
             every { mapHeartRate(any()) } returns mockk()
             every { mapBloodPressure(any()) } returns mockk()
-            every { mapToMeasurementDialogUiState(any()) } returns mockk()
+            every { mapMeasurementDialog(any()) } returns mockk()
             every { mapMessagesAction(any()) } returns Result.failure(Throwable())
         }
+        every { context.packageName } returns "some-package"
     }
 
     @Test
@@ -121,112 +124,27 @@ class BluetoothViewModelTest {
     }
 
     @Test
-    fun `it should handle idle state correctly`() = runTestUnconfined {
+    fun `it should handle ble service state updates correctly`() = runTestUnconfined {
         // given
+        val updates = listOf(
+            EngageBLEServiceState.Idle,
+            EngageBLEServiceState.Scanning(emptyList()),
+            EngageBLEServiceState.MissingPermissions(emptyList()),
+            EngageBLEServiceState.BluetoothNotEnabled,
+        )
+
         createViewModel()
-
-        // when
-        bleServiceState.emit(BLEServiceState.Idle)
-
-        // then
-        assertBluetothUiState(state = BluetoothUiState.Idle)
-    }
-
-    @Test
-    fun `it should handle scanning state correctly`() = runTestUnconfined {
-        // given
-        val scanningState = BLEServiceState.Scanning(sessions = mockk())
-        createViewModel()
-
-        // when
-        bleServiceState.emit(scanningState)
-
-        // then
-        verify { uiStateMapper.mapBleServiceState(scanningState) }
-        assertBluetothUiState(state = readyUiState)
-    }
-
-    @Test
-    fun `it should handle BluetoothNotEnabled event correctly`() = runTestUnconfined {
-        // given
-        createViewModel()
-
-        // when
-        bleServiceEvents.emit(BLEServiceEvent.BluetoothNotEnabled)
-
-        // then
-        assertEvent(event = BluetoothViewModel.Event.EnableBluetooth)
-    }
-
-    @Test
-    fun `it should handle MissingPermissions event correctly`() = runTestUnconfined {
-        // given
-        val permissions = listOf("permission1", "permission2")
-        val event = BLEServiceEvent.MissingPermissions(permissions)
-        createViewModel()
-
-        // when
-        bleServiceEvents.emit(event)
-
-        // then
-        assertEvent(event = BluetoothViewModel.Event.RequestPermissions(permissions))
-    }
-
-    @Test
-    fun `it should handle GenericError event correctly`() = runTestUnconfined {
-        // given
-        val event = BLEServiceEvent.GenericError(mockk())
-        createViewModel()
-
-        // when
-        bleServiceEvents.emit(event)
-
-        // then
-        assertBluetothUiState(state = BluetoothUiState.Error("Something went wrong!"))
-    }
-
-    @Test
-    fun `it should handle ScanningFailed event correctly`() = runTestUnconfined {
-        // given
-        val event = BLEServiceEvent.ScanningFailed(42)
-        createViewModel()
-
-        // when
-        bleServiceEvents.emit(event)
-
-        // then
-        assertBluetothUiState(state = BluetoothUiState.Error("Error while scanning for devices"))
-    }
-
-    @Test
-    fun `it should handle ScanningStarted event correctly`() = runTestUnconfined {
-        // given
-        val event = BLEServiceEvent.ScanningStarted
-        createViewModel()
-
-        // when
-        bleServiceEvents.emit(event)
-
-        // then
-        assertBluetothUiState(state = BluetoothUiState.Scanning)
-    }
-
-    @Test
-    fun `it should do nothing on Connected, Disconnected and MeasurementReceived events`() =
-        runTestUnconfined {
-            // given
-            val events = listOf(
-                mockk<BLEServiceEvent.Connected>(),
-                mockk<BLEServiceEvent.Disconnected>(),
-            )
-            createViewModel()
+        updates.forEach { update ->
+            every { uiStateMapper.mapBleServiceState(update) } returns readyUiState
 
             // when
-            events.forEach { bleServiceEvents.emit(it) }
+            bleServiceState.emit(update)
 
             // then
-            assertBluetothUiState(state = BluetoothUiState.Idle)
+            verify { uiStateMapper.mapBleServiceState(update) }
+            assertBluetoothUiState(state = readyUiState)
         }
+    }
 
     @Test
     fun `it should handle MeasurementReceived events correctly`() =
@@ -234,9 +152,12 @@ class BluetoothViewModelTest {
             // given
             val measurement: Measurement = mockk()
             val event =
-                BLEServiceEvent.MeasurementReceived(device = mockk(), measurement = measurement)
+                EngageBLEServiceEvent.MeasurementReceived(
+                    device = mockk(),
+                    measurement = measurement
+                )
             val measurementDialog: MeasurementDialogUiState = mockk()
-            every { uiStateMapper.mapToMeasurementDialogUiState(measurement) } returns measurementDialog
+            every { uiStateMapper.mapMeasurementDialog(measurement) } returns measurementDialog
 
             createViewModel()
 
@@ -245,7 +166,7 @@ class BluetoothViewModelTest {
 
             // then
             verify { appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet) }
-            assertBluetothUiState(state = BluetoothUiState.Idle)
+            assertBluetoothUiState(state = readyUiState)
             assertThat(bluetoothViewModel.uiState.value.measurementDialog).isEqualTo(
                 measurementDialog
             )
@@ -513,12 +434,35 @@ class BluetoothViewModelTest {
         ).isEqualTo(isExpanded.not())
     }
 
-    private fun assertBluetothUiState(state: BluetoothUiState) {
-        assertThat(bluetoothViewModel.uiState.value.bluetooth).isEqualTo(state)
+    @Test
+    fun `it should handle permission granted action correctly`() = runTestUnconfined {
+        // given
+        val permissions = listOf("permission1")
+        val state = EngageBLEServiceState.MissingPermissions(permissions)
+        createViewModel()
+        bleServiceState.emit(state)
+
+        // when
+        bluetoothViewModel.onAction(Action.PermissionGranted(permission = permissions.first()))
+
+        // then
+        verify(exactly = 2) { bleService.start() }
     }
 
-    private suspend fun assertEvent(event: BluetoothViewModel.Event) {
-        assertThat(bluetoothViewModel.events.first()).isEqualTo(event)
+    @Test
+    fun `it should handle resumed action correctly`() = runTestUnconfined {
+        // given
+        createViewModel()
+
+        // when
+        bluetoothViewModel.onAction(Action.Resumed)
+
+        // then
+        verify(exactly = 2) { bleService.start() }
+    }
+
+    private fun assertBluetoothUiState(state: BluetoothUiState) {
+        assertThat(bluetoothViewModel.uiState.value.bluetooth).isEqualTo(state)
     }
 
     private fun createViewModel() {
@@ -530,7 +474,8 @@ class BluetoothViewModelTest {
             appScreenEvents = appScreenEvents,
             navigator = navigator,
             engageEducationRepository = engageEducationRepository,
-            healthSummaryService = healthSummaryService
+            healthSummaryService = healthSummaryService,
+            context = context,
         )
     }
 }

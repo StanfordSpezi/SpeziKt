@@ -4,13 +4,10 @@ import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import edu.stanford.spezi.core.bluetooth.api.BLEService
-import edu.stanford.spezi.core.bluetooth.data.model.BLEDeviceSession
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
-import edu.stanford.spezi.core.bluetooth.data.model.Measurement
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.core.utils.extensions.append
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,6 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -54,22 +52,25 @@ internal class BLEServiceImpl @Inject constructor(
     override val state: StateFlow<BLEServiceState> = _state.asStateFlow()
     override val events: Flow<BLEServiceEvent> = _events.asSharedFlow()
 
-    override fun start() {
-        logger.i { "start() requested" }
+    override fun startDiscovering(services: List<UUID>) {
+        logger.i { "start($services) requested" }
         when {
-            deviceScanner.isScanning -> logger.i { "Already scanning. Ignoring start request" }
             bluetoothAdapter.isEnabled.not() -> {
                 logger.i { "Start ignored, bluetooth not enabled" }
-                emitEvent(event = BLEServiceEvent.BluetoothNotEnabled)
+                deviceScanner.stopScanning()
+                _state.update { BLEServiceState.BluetoothNotEnabled }
             }
+            deviceScanner.isScanning -> logger.i { "Already scanning. Ignoring start request" }
+
             else -> {
-                val missingPermissions = REQUIRED_PERMISSIONS.filterNot { permissionChecker.isPermissionGranted(it) }
+                val missingPermissions =
+                    REQUIRED_PERMISSIONS.filterNot { permissionChecker.isPermissionGranted(it) }
                 if (missingPermissions.isNotEmpty()) {
-                    emitEvent(event = BLEServiceEvent.MissingPermissions(permissions = missingPermissions))
+                    _state.update { BLEServiceState.MissingPermissions(permissions = missingPermissions) }
                 } else {
+                    _state.update { BLEServiceState.Scanning(pairedDevices = emptyList()) }
                     startScannerEventCollection()
-                    emitEvent(event = BLEServiceEvent.ScanningStarted)
-                    deviceScanner.startScanning()
+                    deviceScanner.startScanning(services = services)
                 }
             }
         }
@@ -93,7 +94,11 @@ internal class BLEServiceImpl @Inject constructor(
                 .collect { event ->
                     when (event) {
                         is BLEDeviceScanner.Event.DeviceFound -> onDeviceFound(event.device)
-                        is BLEDeviceScanner.Event.Failure -> _events.emit(BLEServiceEvent.ScanningFailed(errorCode = event.errorCode))
+                        is BLEDeviceScanner.Event.Failure -> _events.emit(
+                            BLEServiceEvent.ScanningFailed(
+                                errorCode = event.errorCode
+                            )
+                        )
                     }
                 }
         }
@@ -116,60 +121,49 @@ internal class BLEServiceImpl @Inject constructor(
                         is BLEServiceEvent.Connected -> updateState(
                             device = device,
                             deviceConnector = deviceConnector,
-                            measurement = null,
                         )
+
                         is BLEServiceEvent.Disconnected -> updateState(
                             device = device,
                             deviceConnector = null,
-                            measurement = null
                         )
-                        is BLEServiceEvent.MeasurementReceived -> updateState(
-                            device = device,
-                            deviceConnector = deviceConnector,
-                            measurement = event.measurement
-                        )
+
                         else -> Unit
                     }
                 }
         }
     }
 
-    private fun emitEvent(event: BLEServiceEvent) {
-        scope.launch { _events.emit(event) }
-    }
-
     private fun updateState(
         device: BluetoothDevice,
         deviceConnector: BLEDeviceConnector?,
-        measurement: Measurement?,
     ) {
-        val isConnected = deviceConnector != null
         val deviceAddress = device.address
+        val isConnected = deviceConnector != null
         deviceConnector?.let { connector ->
             if (connectedDevices.containsKey(deviceAddress).not()) connectedDevices[deviceAddress] = connector
         } ?: connectedDevices.remove(deviceAddress)
 
         _state.update { currentState ->
             when (currentState) {
-                is BLEServiceState.Idle -> {
+                is BLEServiceState.Idle,
+                is BLEServiceState.BluetoothNotEnabled,
+                is BLEServiceState.MissingPermissions,
+                -> {
                     if (isConnected) {
-                        val deviceSession = BLEDeviceSession(device = device, measurements = listOfNotNull(measurement))
-                        BLEServiceState.Scanning(sessions = listOf(deviceSession))
+                        BLEServiceState.Scanning(pairedDevices = listOf(device))
                     } else {
                         currentState
                     }
                 }
-                is BLEServiceState.Scanning -> {
-                    val activeSessions = currentState.sessions
-                    val otherDevicesSessions = activeSessions.filterNot { it.device.address == deviceAddress }
-                    if (isConnected) {
-                        val deviceSession = activeSessions.find { it.device.address == deviceAddress }?.let { session ->
-                            session.copy(measurements = session.measurements.append(measurement))
-                        } ?: BLEDeviceSession(device = device, measurements = listOfNotNull(measurement))
 
-                        BLEServiceState.Scanning(sessions = otherDevicesSessions.append(deviceSession))
+                is BLEServiceState.Scanning -> {
+                    val otherDevices =
+                        currentState.pairedDevices.filterNot { it.address == deviceAddress }
+                    if (isConnected) {
+                        BLEServiceState.Scanning(pairedDevices = otherDevices + device)
                     } else {
-                        BLEServiceState.Scanning(sessions = otherDevicesSessions)
+                        BLEServiceState.Scanning(pairedDevices = otherDevices)
                     }
                 }
             }.also {
@@ -182,6 +176,8 @@ internal class BLEServiceImpl @Inject constructor(
         val REQUIRED_PERMISSIONS = listOf(
             Manifest.permission.BLUETOOTH_CONNECT,
             Manifest.permission.BLUETOOTH_SCAN,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
         )
     }
 }
