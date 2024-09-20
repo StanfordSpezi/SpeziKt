@@ -171,22 +171,22 @@ class UserSessionManagerTest {
     @Test
     fun `it should emit Registered with hasInvitationCodeConfirmed false when uid is null`() =
         runTestUnconfined {
-        // given
-        val firebaseUser: FirebaseUser = mockk {
-            every { isAnonymous } returns false
-        }
-        every { firebaseAuth.currentUser } returns firebaseUser
-        every { firebaseAuth.uid } returns null
+            // given
+            val firebaseUser: FirebaseUser = mockk {
+                every { isAnonymous } returns false
+            }
+            every { firebaseAuth.currentUser } returns firebaseUser
+            every { firebaseAuth.uid } returns null
 
-        // when
-        createUserSessionManager()
+            // when
+            createUserSessionManager()
 
-        // then
+            // then
             assertObservedState(
                 userState = UserState.Registered(hasInvitationCodeConfirmed = false),
                 scope = this
             )
-    }
+        }
 
     @Test
     fun `it should emit Registered with hasInvitationCodeConfirmed true when user has consented`() =
