@@ -103,10 +103,10 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `it should have app screen start destination for registered user if consented`() =
+    fun `it should have app screen start destination for registered user if has Invitation Code Confirmed`() =
         runTestUnconfined {
             // given
-            val userState = UserState.Registered(hasConsented = true)
+            val userState = UserState.Registered(hasInvitationCodeConfirmed = true)
             coEvery { userSessionManager.getUserState() } returns userState
 
             // when
@@ -117,17 +117,17 @@ class MainActivityViewModelTest {
         }
 
     @Test
-    fun `it should have consent screen start destination for registered user if not consented`() =
+    fun `it should have consent screen start destination for registered user if has not Invitation Code Confirmed`() =
         runTestUnconfined {
             // given
-            val userState = UserState.Registered(hasConsented = false)
+            val userState = UserState.Registered(hasInvitationCodeConfirmed = false)
             coEvery { userSessionManager.getUserState() } returns userState
 
             // when
             createViewModel()
 
             // then
-            assertStartDestination(startDestination = Routes.ConsentScreen)
+            assertStartDestination(startDestination = Routes.InvitationCodeScreen)
         }
 
     @Test
