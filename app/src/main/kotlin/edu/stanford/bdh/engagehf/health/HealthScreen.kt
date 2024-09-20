@@ -35,6 +35,7 @@ import edu.stanford.bdh.engagehf.health.bloodpressure.BloodPressurePage
 import edu.stanford.bdh.engagehf.health.heartrate.HeartRatePage
 import edu.stanford.bdh.engagehf.health.symptoms.SymptomsPage
 import edu.stanford.bdh.engagehf.health.weight.WeightPage
+import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Colors.secondary
@@ -157,7 +158,8 @@ private fun BoxScope.AddRecordFloatingIcon(
 fun HealthTableItem(entry: TableEntryData) {
     Row(
         modifier = Modifier
-            .padding(vertical = Spacings.extraSmall)
+            .background(Colors.background)
+            .padding(Spacings.extraSmall)
             .testIdentifier(
                 identifier = HealthPageTestIdentifier.HEALTH_HISTORY_TABLE_ITEM,
                 suffix = entry.id

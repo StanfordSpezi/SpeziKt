@@ -4,6 +4,8 @@ import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.units.Mass
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.R
+import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.utils.LocaleProvider
 import io.mockk.every
 import io.mockk.mockk
@@ -90,6 +92,27 @@ class HealthUiStateMapperTest {
     }
 
     @Test
+    fun `it should map delete record alert data correctly`() {
+        // given
+        val recordId = "some-record-id"
+        val action = HealthAction.RequestDeleteRecord(recordId = recordId)
+
+        // when
+        val result = healthUiStateMapper.mapDeleteRecordAlertData(action)
+
+        // then
+        assertThat(result).isEqualTo(
+            DeleteRecordAlertData(
+                recordId = recordId,
+                title = StringResource(R.string.delete_health_record),
+                description = StringResource(R.string.health_record_deletion_description),
+                confirmButton = StringResource(R.string.confirm_button_text),
+                dismissButton = StringResource(R.string.dismiss_button_text),
+            )
+        )
+    }
+
+    @Test
     fun `mapToHealthData with non-empty records and selectedTimeRange MONTHLY returns correct HealthUiData`() {
         // Given
         val records = listOf(
@@ -147,6 +170,8 @@ class HealthUiStateMapperTest {
         )
     }
 
-    private fun HealthUiStateMapper.map(records: List<Record>, timeRange: TimeRange = TimeRange.DAILY) =
-        (mapToHealthData(records, timeRange) as HealthUiState.Success).data
+    private fun HealthUiStateMapper.map(
+        records: List<Record>,
+        timeRange: TimeRange = TimeRange.DAILY,
+    ) = (mapToHealthData(records, timeRange) as HealthUiState.Success).data
 }

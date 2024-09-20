@@ -1,6 +1,7 @@
 package edu.stanford.bdh.engagehf.health.components
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
@@ -13,9 +14,11 @@ import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.core.design.theme.Colors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -25,29 +28,28 @@ fun SwipeBox(
     onDelete: () -> Unit,
     content: @Composable () -> Unit,
 ) {
-    val swipeState = rememberSwipeToDismissBoxState()
-
-    val iconVisible = remember(swipeState.dismissDirection) {
-        swipeState.dismissDirection == SwipeToDismissBoxValue.EndToStart
-    }
+    val localDensity = LocalDensity.current
+    val dismissThreshold = LocalConfiguration.current.screenWidthDp / 2
+    val swipeState = rememberSwipeToDismissBoxState(
+        positionalThreshold = { with(localDensity) { dismissThreshold.dp.toPx() } }
+    )
 
     SwipeToDismissBox(
         modifier = modifier.animateContentSize(),
         state = swipeState,
         backgroundContent = {
-            if (iconVisible) {
-                Box(
-                    contentAlignment = Alignment.CenterEnd,
-                    modifier = Modifier
-                        .fillMaxSize()
-                ) {
-                    Icon(
-                        modifier = Modifier.minimumInteractiveComponentSize(),
-                        tint = Colors.error,
-                        imageVector = Icons.Outlined.Delete,
-                        contentDescription = null
-                    )
-                }
+            Box(
+                contentAlignment = Alignment.CenterEnd,
+                modifier = Modifier
+                    .background(Colors.error)
+                    .fillMaxSize()
+            ) {
+                Icon(
+                    modifier = Modifier.minimumInteractiveComponentSize(),
+                    tint = Colors.background,
+                    imageVector = Icons.Outlined.Delete,
+                    contentDescription = null
+                )
             }
         },
         enableDismissFromStartToEnd = false,

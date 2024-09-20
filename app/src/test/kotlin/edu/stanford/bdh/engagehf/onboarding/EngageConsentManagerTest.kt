@@ -24,7 +24,7 @@ class EngageConsentManagerTest {
     @Before
     fun setup() {
         every { navigator.navigateTo(AppNavigationEvent.AppScreen) } just Runs
-        every { messageNotifier.notify(any(), any()) } just Runs
+        every { messageNotifier.notify(message = any(), any()) } just Runs
     }
 
     @Test

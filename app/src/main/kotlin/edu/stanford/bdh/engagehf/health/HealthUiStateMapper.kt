@@ -6,6 +6,8 @@ import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
+import edu.stanford.bdh.engagehf.R
+import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.utils.LocaleProvider
 import edu.stanford.spezi.core.utils.extensions.roundToDecimalPlaces
 import java.time.DayOfWeek
@@ -314,6 +316,16 @@ class HealthUiStateMapper @Inject constructor(
     } else {
         uiState
     }
+
+    fun mapDeleteRecordAlertData(
+        action: HealthAction.RequestDeleteRecord,
+    ) = DeleteRecordAlertData(
+        recordId = action.recordId,
+        title = StringResource(R.string.delete_health_record),
+        description = StringResource(R.string.health_record_deletion_description),
+        dismissButton = StringResource(R.string.dismiss_button_text),
+        confirmButton = StringResource(R.string.confirm_button_text),
+    )
 
     private fun getDefaultLocale() = localeProvider.getDefaultLocale()
 

@@ -134,7 +134,7 @@ class QuestionnaireViewModelTest {
         coEvery {
             questionnaireRepository.save(questionnaireResponse)
         } returns Result.failure(Error("Error"))
-        every { notifier.notify(any()) } just Runs
+        every { notifier.notify(message = any()) } just Runs
         createViewModel()
 
         // when
@@ -159,7 +159,7 @@ class QuestionnaireViewModelTest {
         // then
         coVerifyNever { questionnaireRepository.save(any()) }
         verifyNever { navigator.navigateTo(any()) }
-        verifyNever { notifier.notify(any()) }
+        verifyNever { notifier.notify(message = any()) }
         verifyNever { questionnaireResponse.setAuthored(any()) }
     }
 

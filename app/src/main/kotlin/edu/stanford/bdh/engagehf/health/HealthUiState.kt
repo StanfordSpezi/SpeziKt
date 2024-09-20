@@ -1,6 +1,8 @@
 package edu.stanford.bdh.engagehf.health
 
 import androidx.health.connect.client.records.Record
+import edu.stanford.spezi.core.design.action.PendingActions
+import edu.stanford.spezi.core.design.component.StringResource
 import java.time.ZonedDateTime
 
 data class HealthUiData(
@@ -10,10 +12,11 @@ data class HealthUiData(
     val newestData: NewestHealthData? = null,
     val averageData: AverageHealthData? = null,
     val infoRowData: InfoRowData,
+    val pendingActions: PendingActions<HealthAction.Async> = PendingActions(),
+    val deleteRecordAlertData: DeleteRecordAlertData? = null,
     val valueFormatter: (Float) -> String,
-) {
-    val selectedTimeRange = infoRowData.selectedTimeRange
-}
+
+)
 
 sealed interface HealthUiState {
     data object Loading : HealthUiState
@@ -58,3 +61,27 @@ data class InfoRowData(
     val isSelectedTimeRangeDropdownExpanded: Boolean,
     val selectedTimeRange: TimeRange = TimeRange.DAILY,
 )
+
+data class DeleteRecordAlertData(
+    val recordId: String,
+    val title: StringResource,
+    val description: StringResource,
+    val dismissButton: StringResource,
+    val confirmButton: StringResource,
+)
+
+sealed interface HealthAction {
+    data object DescriptionBottomSheet : HealthAction
+    data object DismissConfirmationAlert : HealthAction
+    data class RequestDeleteRecord(val recordId: String) : HealthAction
+    data class UpdateTimeRange(val timeRange: TimeRange) : HealthAction
+    data class ToggleTimeRangeDropdown(val expanded: Boolean) : HealthAction
+
+    sealed interface Async : HealthAction {
+        data class DeleteRecord(val recordId: String) : Async
+    }
+}
+
+enum class RecordType {
+    WEIGHT, BLOOD_PRESSURE, HEART_RATE
+}
