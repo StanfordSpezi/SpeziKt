@@ -1,4 +1,4 @@
-package edu.stanford.spezi.core.bluetooth.domain
+package edu.stanford.spezi.core.utils
 
 import android.content.Context
 import android.content.pm.PackageManager
@@ -11,7 +11,7 @@ import javax.inject.Inject
  *
  * @property context The application context.
  */
-internal class PermissionChecker @Inject constructor(
+class PermissionChecker @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
 

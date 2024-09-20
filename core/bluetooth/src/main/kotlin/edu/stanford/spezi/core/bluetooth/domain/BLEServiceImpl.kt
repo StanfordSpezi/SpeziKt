@@ -8,6 +8,7 @@ import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.core.utils.PermissionChecker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
