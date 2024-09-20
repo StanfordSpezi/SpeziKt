@@ -13,24 +13,18 @@ class ContactViewTest {
 
     @Test
     fun contactView_displaysContactName() {
-        val contact = ContactFactory.create(name = "John Doe")
+        val contact = ContactFactory.mock
 
         composeTestRule.setContent {
             ContactView(contact)
         }
 
-        composeTestRule.onNodeWithText(contact.name).assertExists()
+        composeTestRule.onNodeWithText(contact.name.formatted()).assertExists()
     }
 
     @Test
     fun contactView_displaysContactOptions() {
-        val contact = ContactFactory.create(
-            options = listOf(
-                ContactOption.call("+49 123 456 789"),
-                ContactOption.email(listOf()),
-                ContactOption.website("https://www.google.com")
-            )
-        )
+        val contact = ContactFactory.mock
 
         composeTestRule.setContent {
             ContactView(contact)
@@ -43,25 +37,24 @@ class ContactViewTest {
 
     @Test
     fun contactView_displaysContactTitle() {
-        val contact = ContactFactory.create(title = "CEO")
+        val contact = ContactFactory.mock
 
         composeTestRule.setContent {
             ContactView(contact)
         }
 
-        composeTestRule.onNodeWithText(contact.title ?: "")
+        composeTestRule.onNodeWithText((contact.title ?: "") + (" - ") + (contact.organization ?: ""))
             .assertExists()
     }
 
     @Test
     fun contactView_displaysContactDescription() {
-        val description = "Lorem ipsum dolor sit amet"
-        val contact = ContactFactory.create(description = description)
+        val contact = ContactFactory.mock
 
         composeTestRule.setContent {
             ContactView(contact)
         }
 
-        composeTestRule.onNodeWithText(description).assertExists()
+        composeTestRule.onNodeWithText(contact.description ?: "").assertExists()
     }
 }

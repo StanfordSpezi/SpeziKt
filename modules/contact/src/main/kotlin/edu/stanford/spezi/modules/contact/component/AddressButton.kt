@@ -1,12 +1,15 @@
 package edu.stanford.spezi.modules.contact.component
 
 import android.content.Intent
+import android.location.Address
 import android.net.Uri
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Place
@@ -18,10 +21,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.core.design.component.DefaultElevatedCard
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
+import edu.stanford.spezi.modules.contact.model.formatted
+import java.net.URLEncoder
+import java.util.Locale
 
 /**
  * A card that displays an address and allows the user to navigate to it.
@@ -30,7 +37,7 @@ import edu.stanford.spezi.core.design.theme.TextStyles
  * @see edu.stanford.spezi.modules.contact.ContactView
  */
 @Composable
-fun AddressButton(address: String) {
+fun AddressButton(address: Address) {
     val context = LocalContext.current
     DefaultElevatedCard(
         modifier = Modifier
@@ -43,18 +50,16 @@ fun AddressButton(address: String) {
                 .height(IntrinsicSize.Min),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                Icons.Default.Place,
-                contentDescription = "Address",
-            )
+            val addressText = address.formatted()
             Text(
-                text = address,
+                text = addressText,
                 style = TextStyles.bodyMedium,
                 modifier = Modifier.weight(1f)
             )
             IconButton(
                 onClick = {
-                    val gmmIntentUri = Uri.parse("geo:0,0?q=$address")
+                    val addressQuery = URLEncoder.encode(addressText, "utf-8")
+                    val gmmIntentUri = Uri.parse("geo:0,0?q=${addressQuery}")
                     val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
                     mapIntent.setPackage("com.google.android.apps.maps")
                     context.startActivity(mapIntent)
@@ -62,8 +67,8 @@ fun AddressButton(address: String) {
                 modifier = Modifier.align(Alignment.Top)
             ) {
                 Icon(
-                    Icons.AutoMirrored.Filled.Send,
-                    contentDescription = "Navigate to"
+                    Icons.Default.Place,
+                    contentDescription = "Address",
                 )
             }
         }
@@ -74,6 +79,12 @@ fun AddressButton(address: String) {
 @Preview
 fun NavigationCardPreview() {
     SpeziTheme {
-        AddressButton("1234 Main Street, 12345 City")
+        AddressButton(run {
+            val address = Address(Locale.US)
+            address.setAddressLine(0, "1234 Main Street")
+            address.postalCode = "12345"
+            address.locality = "City"
+            address
+        })
     }
 }

@@ -1,5 +1,6 @@
 package edu.stanford.spezi.modules.contact.model
 
+import android.location.Address
 import androidx.compose.ui.graphics.vector.ImageVector
 import java.util.UUID
 
@@ -19,11 +20,11 @@ import java.util.UUID
  */
 data class Contact(
     val id: UUID = UUID.randomUUID(),
-    var name: String,
+    var name: PersonNameComponents,
     val image: ImageVector?,
     val title: String?,
     val description: String?,
     val organization: String?,
-    val address: String?,
+    val address: Address?,
     val options: List<ContactOption>,
 )
