@@ -1,0 +1,8 @@
+package edu.stanford.spezi.module.account.account
+
+import edu.stanford.spezi.module.account.foundation.RepositoryAnchor
+import edu.stanford.spezi.module.account.foundation.SendableValueRepository
+
+enum class AccountServiceConfigurationStorageAnchor: RepositoryAnchor
+
+typealias AccountServiceConfigurationStorage = SendableValueRepository<AccountServiceConfigurationStorageAnchor>
