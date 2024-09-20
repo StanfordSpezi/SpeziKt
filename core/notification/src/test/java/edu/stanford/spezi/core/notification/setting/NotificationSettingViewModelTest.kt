@@ -1,10 +1,12 @@
 package edu.stanford.spezi.core.notification.setting
 
+import android.content.Context
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.utils.MessageNotifier
+import edu.stanford.spezi.core.utils.PermissionChecker
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
@@ -23,6 +25,8 @@ class NotificationSettingViewModelTest {
     private val navigator: Navigator = mockk(relaxed = true)
     private val uiStateMapper: NotificationSettingsStateMapper = mockk(relaxed = true)
     private val messageNotifier: MessageNotifier = mockk(relaxed = true)
+    private val permissionChecker: PermissionChecker = mockk(relaxed = true)
+    private val context: Context = mockk(relaxed = true)
 
     private lateinit var viewModel: NotificationSettingViewModel
 
@@ -32,7 +36,9 @@ class NotificationSettingViewModelTest {
             repository = repository,
             navigator = navigator,
             notificationSettingsMapper = uiStateMapper,
-            messageNotifier = messageNotifier
+            messageNotifier = messageNotifier,
+            permissionChecker = permissionChecker,
+            context = context,
         )
     }
 
@@ -65,7 +71,9 @@ class NotificationSettingViewModelTest {
             repository = repository,
             navigator = navigator,
             notificationSettingsMapper = uiStateMapper,
-            messageNotifier = messageNotifier
+            messageNotifier = messageNotifier,
+            permissionChecker = permissionChecker,
+            context = context,
         )
 
         // Then
@@ -91,7 +99,9 @@ class NotificationSettingViewModelTest {
             repository = repository,
             navigator = navigator,
             notificationSettingsMapper = uiStateMapper,
-            messageNotifier = messageNotifier
+            messageNotifier = messageNotifier,
+            permissionChecker = permissionChecker,
+            context = context,
         )
 
         // Then
