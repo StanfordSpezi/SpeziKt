@@ -76,7 +76,7 @@ class NavigatorSimulator(
     }
 
     fun navigateToLoginScreen() {
-        navigator.navigateTo(AccountNavigationEvent.LoginScreen(false))
+        navigator.navigateTo(AccountNavigationEvent.LoginScreen)
     }
 
     fun navigateToRegisterScreen() {
