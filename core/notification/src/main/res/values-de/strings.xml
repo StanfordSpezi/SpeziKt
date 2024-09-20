@@ -13,4 +13,6 @@
     <string name="recommendations">Empfehlungen</string>
     <string name="weight_trends">Gewichtstrends</string>
     <string name="trends">Trends</string>
+    <string name="feature_requires_notifications">Diese Funktion erfordert die Genehmigung zum Senden von Benachrichtigungen.</string>
+    <string name="settings">Einstellungen</string>
 </resources>
