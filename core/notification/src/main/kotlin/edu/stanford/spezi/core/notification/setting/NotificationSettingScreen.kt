@@ -1,5 +1,7 @@
 package edu.stanford.spezi.core.notification.setting
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +16,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -91,6 +94,7 @@ internal fun NotificationSettingScreen(
                     notificationSettings = uiState.notificationSettings,
                     onAction = onAction,
                     pendingActions = uiState.pendingActions,
+                    missingPermissions = uiState.missingPermissions
                 )
             }
         }
@@ -102,9 +106,18 @@ private fun NotificationOptions(
     notificationSettings: NotificationSettings,
     onAction: (NotificationSettingViewModel.Action) -> Unit,
     pendingActions: PendingActions<NotificationSettingViewModel.Action.SwitchChanged>,
+    missingPermissions: List<String>?,
 ) {
     val groupedBySectionNotificationSettings = notificationSettings.groupBySection()
     LazyColumn(modifier = Modifier.padding(vertical = Spacings.medium)) {
+        item {
+            PermissionRequester(
+                missingPermissions = missingPermissions,
+                onGranted = { permission ->
+                    onAction(NotificationSettingViewModel.Action.PermissionGranted(permission))
+                }
+            )
+        }
         groupedBySectionNotificationSettings.forEach { (section, settings) ->
             item {
                 NotificationOptionHeadline(
@@ -176,6 +189,21 @@ private fun NotificationOptionRow(
             onCheckedChange = onCheckedChange,
             isLoading = isLoading
         )
+    }
+}
+
+@Composable
+private fun PermissionRequester(
+    missingPermissions: List<String>?,
+    onGranted: (String) -> Unit,
+) {
+    val permission = missingPermissions?.firstOrNull() ?: return
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted -> if (granted) onGranted(permission) }
+
+    LaunchedEffect(key1 = permission) {
+        launcher.launch(permission)
     }
 }
 

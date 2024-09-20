@@ -1,5 +1,6 @@
 package edu.stanford.spezi.core.notification.setting
 
+import android.Manifest
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -75,6 +76,33 @@ internal class NotificationSettingViewModel @Inject constructor(
                     }
                 }
             }
+
+            is Action.PermissionGranted -> {
+                println("Permission granted: ${action.permission}")
+                handlePermissionResult(action.permission)
+            }
+        }
+    }
+
+    private fun handlePermissionResult(permission: String) {
+        _uiState.update {
+            when (val currentState = _uiState.value) {
+                is UiState.NotificationSettingsLoaded -> {
+                    val missingPermissions = currentState.missingPermissions.orEmpty()
+                        .filterNot { it == permission }
+                    if (missingPermissions.isEmpty()) {
+                        currentState
+                    } else {
+                        UiState.NotificationSettingsLoaded(
+                            notificationSettings = currentState.notificationSettings,
+                            pendingActions = currentState.pendingActions,
+                            missingPermissions = missingPermissions
+                        )
+                    }
+                }
+
+                else -> currentState
+            }
         }
     }
 
@@ -85,6 +113,8 @@ internal class NotificationSettingViewModel @Inject constructor(
             val notificationType: NotificationType,
             val isChecked: Boolean,
         ) : Action
+
+        data class PermissionGranted(val permission: String) : Action
     }
 
     sealed interface UiState {
@@ -94,6 +124,13 @@ internal class NotificationSettingViewModel @Inject constructor(
         data class NotificationSettingsLoaded(
             val notificationSettings: NotificationSettings,
             val pendingActions: PendingActions<Action.SwitchChanged> = PendingActions(),
+            val missingPermissions: List<String>? = null,
         ) : UiState
+    }
+
+    private companion object {
+        val REQUIRED_PERMISSIONS = listOf(
+            Manifest.permission.POST_NOTIFICATIONS,
+        )
     }
 }
