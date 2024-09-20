@@ -1,10 +1,10 @@
 package edu.stanford.spezi.core.notification.setting
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,10 +16,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -29,13 +29,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.core.design.action.PendingActions
 import edu.stanford.spezi.core.design.component.AppTopAppBar
 import edu.stanford.spezi.core.design.component.AsyncSwitch
+import edu.stanford.spezi.core.design.component.AsyncTextButton
 import edu.stanford.spezi.core.design.component.CenteredBoxContent
+import edu.stanford.spezi.core.design.component.DefaultElevatedCard
+import edu.stanford.spezi.core.design.component.PermissionRequester
+import edu.stanford.spezi.core.design.component.SecondaryText
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.notification.R
+
+private const val IDLE_DESCRIPTION_WEIGHT = 0.5f
 
 @Composable
 fun NotificationSettingScreen() {
@@ -94,11 +100,62 @@ internal fun NotificationSettingScreen(
                     notificationSettings = uiState.notificationSettings,
                     onAction = onAction,
                     pendingActions = uiState.pendingActions,
-                    missingPermissions = uiState.missingPermissions
                 )
+
+                is NotificationSettingViewModel.UiState.MissingPermissions -> {
+                    MissingPermissions(
+                        uiState = uiState,
+                        onAction = onAction
+                    )
+                }
             }
         }
     })
+}
+
+@Composable
+private fun MissingPermissions(
+    uiState: NotificationSettingViewModel.UiState.MissingPermissions,
+    onAction: (NotificationSettingViewModel.Action) -> Unit,
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(Spacings.medium)
+    ) {
+        item {
+            PermissionRequester(missingPermissions = uiState.missingPermissions,
+                onGranted = { permission ->
+                    onAction(
+                        NotificationSettingViewModel.Action.PermissionGranted(
+                            permission
+                        )
+                    )
+                })
+        }
+        item {
+            DefaultElevatedCard(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier
+                        .padding(Spacings.small)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    SecondaryText(
+                        modifier = Modifier
+                            .padding(Spacings.small)
+                            .weight(IDLE_DESCRIPTION_WEIGHT),
+                        text = stringResource(R.string.feature_requires_notifications),
+                    )
+                    AsyncTextButton(
+                        modifier = Modifier.padding(Spacings.small),
+                        text = stringResource(R.string.settings),
+                        onClick = { onAction(NotificationSettingViewModel.Action.AppSettings) },
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -106,18 +163,9 @@ private fun NotificationOptions(
     notificationSettings: NotificationSettings,
     onAction: (NotificationSettingViewModel.Action) -> Unit,
     pendingActions: PendingActions<NotificationSettingViewModel.Action.SwitchChanged>,
-    missingPermissions: List<String>?,
 ) {
     val groupedBySectionNotificationSettings = notificationSettings.groupBySection()
     LazyColumn(modifier = Modifier.padding(vertical = Spacings.medium)) {
-        item {
-            PermissionRequester(
-                missingPermissions = missingPermissions,
-                onGranted = { permission ->
-                    onAction(NotificationSettingViewModel.Action.PermissionGranted(permission))
-                }
-            )
-        }
         groupedBySectionNotificationSettings.forEach { (section, settings) ->
             item {
                 NotificationOptionHeadline(
@@ -162,10 +210,7 @@ private fun NotificationOptionHeadline(text: String) {
 @Composable
 private fun NotificationSettings.groupBySection(): Map<NotificationType.Section, List<Pair<NotificationType, Boolean>>> {
     return remember(key1 = this) {
-        entries.groupBy(
-            keySelector = { it.key.section },
-            valueTransform = { it.toPair() }
-        )
+        entries.groupBy(keySelector = { it.key.section }, valueTransform = { it.toPair() })
     }
 }
 
@@ -185,25 +230,8 @@ private fun NotificationOptionRow(
         )
         Spacer(modifier = Modifier.weight(1f))
         AsyncSwitch(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
-            isLoading = isLoading
+            checked = checked, onCheckedChange = onCheckedChange, isLoading = isLoading
         )
-    }
-}
-
-@Composable
-private fun PermissionRequester(
-    missingPermissions: List<String>?,
-    onGranted: (String) -> Unit,
-) {
-    val permission = missingPermissions?.firstOrNull() ?: return
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { granted -> if (granted) onGranted(permission) }
-
-    LaunchedEffect(key1 = permission) {
-        launcher.launch(permission)
     }
 }
 
@@ -212,6 +240,7 @@ private class NotificationUiStateProvider :
     override val values = sequenceOf(
         NotificationSettingViewModel.UiState.Loading,
         NotificationSettingViewModel.UiState.Error("An error occurred"),
+        NotificationSettingViewModel.UiState.MissingPermissions(listOf("permission")),
         NotificationSettingViewModel.UiState.NotificationSettingsLoaded(
             notificationSettings = NotificationSettings(
                 settings = mapOf(
