@@ -1,6 +1,5 @@
 package edu.stanford.spezi.module.account.manager
 
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.functions.FirebaseFunctions
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.tasks.await
@@ -8,19 +7,14 @@ import javax.inject.Inject
 
 internal class FirebaseInvitationAuthManager @Inject constructor(
     private val functions: FirebaseFunctions,
-    private val auth: FirebaseAuth,
+    private val userSessionManager: UserSessionManager,
 ) : InvitationAuthManager {
 
     private val logger by speziLogger()
 
     override suspend fun checkInvitationCode(invitationCode: String): Result<Unit> {
         return runCatching {
-            val userId = if (auth.currentUser == null) {
-                val authResult = auth.signInAnonymously().await()
-                authResult.user?.uid
-            } else {
-                auth.currentUser?.uid
-            }
+            val userId = userSessionManager.getUserUid() ?: error("User not logged in")
 
             val data = hashMapOf(
                 "invitationCode" to invitationCode,
