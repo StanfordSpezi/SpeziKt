@@ -39,6 +39,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -55,6 +56,7 @@ import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.titleSmall
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.module.account.R
 import java.time.LocalDate
 
 @Composable
@@ -111,12 +113,12 @@ fun RegisterScreen(
                 .size(Sizes.Icon.large)
         )
         Text(
-            text = "Create a new Account",
+            text = stringResource(R.string.create_a_new_account),
             style = titleLarge,
         )
         VerticalSpacer()
         Text(
-            "Please fill out the details below to create your new account.",
+            text = stringResource(R.string.please_fill_out_the_details_below_to_create_your_new_account),
             style = titleSmall,
         )
         VerticalSpacer(height = Spacings.large)
@@ -129,7 +131,7 @@ fun RegisterScreen(
                     onValueChange = {
                         onAction(Action.TextFieldUpdate(it, TextFieldType.EMAIL))
                     },
-                    labelText = "E-Mail Address",
+                    labelText = stringResource(R.string.e_mail_address),
                     errorText = uiState.email.error,
                 )
             })
@@ -144,7 +146,7 @@ fun RegisterScreen(
                         onValueChange = {
                             onAction(Action.TextFieldUpdate(it, TextFieldType.PASSWORD))
                         },
-                        labelText = "Password",
+                        labelText = stringResource(R.string.password),
                         errorText = uiState.password.error,
                         trailingIcon = {
                             IconButton(onClick = { onAction(Action.TogglePasswordVisibility) }) {
@@ -155,7 +157,9 @@ fun RegisterScreen(
                                 }
                                 Icon(
                                     painter = painterResource(id = iconId),
-                                    contentDescription = if (uiState.isPasswordVisible) "Hide password" else "Show password"
+                                    contentDescription = if (uiState.isPasswordVisible) stringResource(
+                                        R.string.hide_password
+                                    ) else stringResource(R.string.show_password)
                                 )
                             }
                         },
@@ -181,7 +185,7 @@ fun RegisterScreen(
                             )
                         )
                     },
-                    labelText = "First Name",
+                    labelText = stringResource(R.string.first_name),
                     errorText = uiState.firstName.error,
                 )
             })
@@ -194,7 +198,7 @@ fun RegisterScreen(
                     onValueChange = {
                         onAction(Action.TextFieldUpdate(it, TextFieldType.LAST_NAME))
                     },
-                    labelText = "Last Name",
+                    labelText = stringResource(R.string.last_name),
                     errorText = uiState.lastName.error,
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(onNext = {
@@ -233,7 +237,7 @@ fun RegisterScreen(
                     onValueChange = {
                         onAction(Action.TextFieldUpdate(it, TextFieldType.GENDER))
                     },
-                    labelText = "Gender",
+                    labelText = stringResource(R.string.gender),
                     readOnly = true,
                     trailingIcon = {
                         IconButton(onClick = {
@@ -241,7 +245,7 @@ fun RegisterScreen(
                         }) {
                             Icon(
                                 Icons.Filled.ArrowDropDown,
-                                contentDescription = "Select Gender",
+                                contentDescription = stringResource(R.string.select_gender),
                             )
                         }
                     },
@@ -265,14 +269,17 @@ fun RegisterScreen(
                         .focusRequester(dateOfBirthFocus),
                     value = uiState.formattedDateOfBirth,
                     onValueChange = { /* Do nothing as we handle the date through the DatePicker */ },
-                    labelText = "Date of Birth",
+                    labelText = stringResource(R.string.date_of_birth),
                     singleLine = true,
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                     trailingIcon = {
                         IconButton(onClick = {
                             onAction(Action.SetIsDatePickerOpen(true))
                         }) {
-                            Icon(Icons.Filled.Edit, contentDescription = "Select Date")
+                            Icon(
+                                Icons.Filled.Edit,
+                                contentDescription = stringResource(R.string.select_date)
+                            )
                         }
                     },
                     readOnly = true,
@@ -301,7 +308,7 @@ fun RegisterScreen(
             modifier = Modifier.fillMaxWidth(),
             enabled = uiState.isRegisterButtonEnabled
         ) {
-            Text("Signup")
+            Text(stringResource(R.string.signup))
         }
     }
 }

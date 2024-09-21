@@ -13,4 +13,16 @@
     <string name="show_password">Show password</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="don_t_have_an_account_yet">Don\'t have an Account yet?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="create_a_new_account">Create a new Account</string>
+    <string name="please_fill_out_the_details_below_to_create_your_new_account">Please fill out the details below to create your new account.</string>
+    <string name="e_mail_address">E-Mail Address</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="gender">Gender</string>
+    <string name="select_gender">Select Gender</string>
+    <string name="date_of_birth">Date of Birth</string>
+    <string name="select_date">Select Date</string>
+    <string name="signup">Signup</string>
 </resources>
