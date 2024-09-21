@@ -157,9 +157,13 @@ fun RegisterScreen(
                                 }
                                 Icon(
                                     painter = painterResource(id = iconId),
-                                    contentDescription = if (uiState.isPasswordVisible) stringResource(
-                                        R.string.hide_password
-                                    ) else stringResource(R.string.show_password)
+                                    contentDescription = if (uiState.isPasswordVisible) {
+                                        stringResource(
+                                            R.string.hide_password
+                                        )
+                                    } else {
+                                        stringResource(R.string.show_password)
+                                    }
                                 )
                             }
                         },
