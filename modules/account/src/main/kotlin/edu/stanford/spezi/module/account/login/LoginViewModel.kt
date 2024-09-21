@@ -7,6 +7,7 @@ import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.AccountNavigationEvent
+import edu.stanford.spezi.module.account.R
 import edu.stanford.spezi.module.account.manager.AuthenticationManager
 import edu.stanford.spezi.module.account.register.FieldState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -74,7 +75,7 @@ internal class LoginViewModel @Inject constructor(
                 accountEvents.emit(event = AccountEvents.Event.SignInSuccess)
             }.onFailure {
                 accountEvents.emit(event = AccountEvents.Event.SignInFailure)
-                messageNotifier.notify("Failed to sign in")
+                messageNotifier.notify(R.string.error_sign_in_failed)
             }
         }
 
@@ -132,13 +133,13 @@ internal class LoginViewModel @Inject constructor(
         if (validator.isValidEmail(email).isValid) {
             authenticationManager.sendForgotPasswordEmail(email)
                 .onSuccess {
-                    messageNotifier.notify("Email sent")
+                    messageNotifier.notify(R.string.email_sent)
                 }
                 .onFailure {
-                    messageNotifier.notify("Failed to send email")
+                    messageNotifier.notify(R.string.failed_to_send_email)
                 }
         } else {
-            messageNotifier.notify("Please enter a valid email")
+            messageNotifier.notify(R.string.please_enter_a_valid_email)
         }
     }
 
@@ -148,7 +149,7 @@ internal class LoginViewModel @Inject constructor(
                 accountEvents.emit(event = AccountEvents.Event.SignInSuccess)
             }.onFailure {
                 accountEvents.emit(event = AccountEvents.Event.SignInFailure)
-                messageNotifier.notify("Failed to sign in")
+                messageNotifier.notify(R.string.error_sign_in_failed)
                 navigator.navigateTo(
                     AccountNavigationEvent.RegisterScreen(
                         isGoogleSignUp = true,
