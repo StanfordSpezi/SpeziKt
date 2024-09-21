@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import edu.stanford.spezi.core.design.R
 import edu.stanford.spezi.core.design.component.AsyncButton
 import edu.stanford.spezi.core.design.theme.Sizes
@@ -31,11 +32,11 @@ fun SignInWithGoogleButton(
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_google),
-            contentDescription = "Google Icon",
+            contentDescription = stringResource(edu.stanford.spezi.module.account.R.string.google_icon),
             modifier = Modifier.size(Sizes.Icon.small)
         )
         Spacer(modifier = Modifier.width(Spacings.small))
-        Text("Sign in with Google")
+        Text(stringResource(edu.stanford.spezi.module.account.R.string.sign_in_with_google))
     }
 }
 

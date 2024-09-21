@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -42,6 +43,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.core.design.component.AsyncTextButton
+import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.component.validated.outlinedtextfield.ValidatedOutlinedTextField
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
@@ -49,6 +51,7 @@ import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles.bodyLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.module.account.R
 import edu.stanford.spezi.module.account.login.components.SignInWithGoogleButton
 import edu.stanford.spezi.module.account.login.components.TextDivider
 import edu.stanford.spezi.module.account.register.FieldState
@@ -91,7 +94,7 @@ internal fun LoginScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Your Account", style = titleLarge
+            text = stringResource(R.string.your_account), style = titleLarge
         )
         Spacer(modifier = Modifier.height(Spacings.large))
         Text(
@@ -128,7 +131,7 @@ You may login to your existing account or create a new one if you don't have one
                     onValueChange = {
                         onAction(Action.TextFieldUpdate(it, TextFieldType.PASSWORD))
                     },
-                    labelText = "Password",
+                    labelText = stringResource(R.string.password),
                     visualTransformation = if (uiState.passwordVisibility) {
                         VisualTransformation.None
                     } else {
@@ -147,7 +150,13 @@ You may login to your existing account or create a new one if you don't have one
                             }
                             Icon(
                                 painter = painterResource(id = iconId),
-                                contentDescription = if (uiState.passwordVisibility) "Hide password" else "Show password"
+                                contentDescription = if (uiState.passwordVisibility) {
+                                    stringResource(
+                                        R.string.hide_password
+                                    )
+                                } else {
+                                    stringResource(R.string.show_password)
+                                }
                             )
                         }
                     }
@@ -155,7 +164,7 @@ You may login to your existing account or create a new one if you don't have one
             })
         val forgotPasswordAction = Action.Async.ForgotPassword
         AsyncTextButton(
-            text = "Forgot Password?",
+            text = stringResource(R.string.forgot_password),
             isLoading = uiState.pendingActions.contains(forgotPasswordAction),
             containerColor = Colors.transparent,
             contentPadding = PaddingValues(0.dp),
@@ -180,7 +189,7 @@ You may login to your existing account or create a new one if you don't have one
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Don't have an Account yet?")
+            Text(stringResource(R.string.don_t_have_an_account_yet))
             TextButton(
                 onClick = {
                     onAction(Action.NavigateToRegister)
@@ -190,8 +199,8 @@ You may login to your existing account or create a new one if you don't have one
             }
         }
         Spacer(modifier = Modifier.height(Spacings.medium))
-        TextDivider(text = "or")
-        Spacer(modifier = Modifier.height(Spacings.medium))
+        TextDivider(stringResource(R.string.or))
+        VerticalSpacer()
         val googleSignInOrSignUp = Action.Async.GoogleSignInOrSignUp
         SignInWithGoogleButton(
             isLoading = uiState.pendingActions.contains(googleSignInOrSignUp),

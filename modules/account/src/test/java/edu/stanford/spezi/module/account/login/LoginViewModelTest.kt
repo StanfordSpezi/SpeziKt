@@ -8,6 +8,7 @@ import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.AccountNavigationEvent
+import edu.stanford.spezi.module.account.R
 import edu.stanford.spezi.module.account.manager.AuthenticationManager
 import edu.stanford.spezi.module.account.register.FormValidator
 import io.mockk.Runs
@@ -144,7 +145,7 @@ class LoginViewModelTest {
 
         // then
         verify { accountEvents.emit(event = AccountEvents.Event.SignInFailure) }
-        verify { messageNotifier.notify(message = "Failed to sign in") }
+        verify { messageNotifier.notify(R.string.error_sign_in_failed) }
     }
 
     @Test
@@ -183,7 +184,7 @@ class LoginViewModelTest {
 
             // Then
             coVerify { authenticationManager.sendForgotPasswordEmail(validEmail) }
-            verify { messageNotifier.notify("Email sent") }
+            verify { messageNotifier.notify(R.string.email_sent) }
         }
 
     @Test
@@ -202,7 +203,7 @@ class LoginViewModelTest {
 
             // Then
             coVerify { authenticationManager.sendForgotPasswordEmail(validEmail) }
-            verify { messageNotifier.notify("Failed to send email") }
+            verify { messageNotifier.notify(R.string.failed_to_send_email) }
         }
 
     @Test
@@ -223,7 +224,7 @@ class LoginViewModelTest {
 
             // Then
             coVerifyNever { authenticationManager.sendForgotPasswordEmail(email) }
-            verify { messageNotifier.notify("Please enter a valid email") }
+            verify { messageNotifier.notify(R.string.please_enter_a_valid_email) }
         }
 
     @Test
@@ -268,6 +269,6 @@ class LoginViewModelTest {
 
         // then
         verify { accountEvents.emit(AccountEvents.Event.SignInFailure) }
-        verify { messageNotifier.notify(message = "Failed to sign in") }
+        verify { messageNotifier.notify(R.string.error_sign_in_failed) }
     }
 }
