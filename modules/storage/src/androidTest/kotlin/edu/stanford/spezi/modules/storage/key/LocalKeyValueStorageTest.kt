@@ -5,6 +5,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.testing.runTestUnconfined
+import kotlinx.serialization.Serializable
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -341,4 +342,53 @@ class LocalKeyValueStorageTest {
         val readData = localStorage.getByteArray(key, byteArrayOf())
         assertThat(readData).isEqualTo(byteArrayOf())
     }
+
+
+    @Test
+    fun `it should handle serializable type correctly`() = runTestUnconfined {
+        // given
+        val data = Complex()
+        localStorage.putSerializable(key, data)
+
+        // when
+        val contains = localStorage.getSerializable<Complex>(key) == data
+        localStorage.deleteSerializable<Complex>(key)
+        val deleted = localStorage.getSerializable<Complex>(key) == null
+
+        // then
+        assertThat(contains).isTrue()
+        assertThat(deleted).isTrue()
+    }
+
+    @Test
+    fun `it should handle serializable list read correctly`() = runTestUnconfined {
+        // given
+        val data = listOf(Complex())
+        localStorage.putSerializable(key, data)
+
+        // when
+        val contains = localStorage.getSerializableList<Complex>(key) == data
+        localStorage.deleteSerializable<List<Complex>>(key)
+        val deleted = localStorage.getSerializable<List<Complex>>(key) == null
+
+        // then
+        assertThat(contains).isTrue()
+        assertThat(deleted).isTrue()
+    }
+
+    @Test
+    fun `it should handle clear correctly`() = runTestUnconfined {
+        // given
+        val initialValue = 1234
+        localStorage.putInt(key, initialValue)
+
+        // when
+        localStorage.clear()
+
+        // then
+        assertThat(localStorage.getInt(key, -1)).isNotEqualTo(initialValue)
+    }
+
+    @Serializable
+    data class Complex(val id: Int = 1)
 }

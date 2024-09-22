@@ -1,20 +1,14 @@
 package edu.stanford.spezi.modules.storage.key
 
-import android.content.Context
-import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.testing.runTestUnconfined
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.serialization.Serializable
 import org.junit.Test
 
-class EncryptedKeyValueStorageTest {
+class InMemoryStorageTest {
 
-    private val context = ApplicationProvider.getApplicationContext<Context>()
-    private var storage: EncryptedKeyValueStorage =
-        EncryptedKeyValueStorage(context, UnconfinedTestDispatcher())
-
-    private val key = "test_key"
+    private val storage = InMemoryKeyValueStorage()
+    private val key = "local_storage_test_key"
 
     @Test
     fun `it should save and read string data correctly`() = runTestUnconfined {
