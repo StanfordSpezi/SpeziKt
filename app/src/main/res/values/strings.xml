@@ -8,6 +8,7 @@
     <string name="systolic">Systolic</string>
     <string name="confirm_button_text">Confirm</string>
     <string name="cancel_button_text">Cancel</string>
+    <string name="dismiss_button_text">Dismiss</string>
     <string name="diastolic">Diastolic</string>
     <string name="pulse_rate">Pulse rate</string>
     <string name="weight">Weight</string>
@@ -70,6 +71,10 @@
     <string name="bluetooth_permissions_not_granted_description">Permissions not granted, please visit device settings and grant required bluetooth permissions be able to receive measurements from your connected devices"</string>
     <string name="home_settings_action">Settings</string>
     <string name="paired_devices_hint_description">Paired devices will appear here once set up. Hold down the bluetooth button for 3 seconds to put the device into pairing mode.</string>
+    <string name="delete_health_record">Delete health record</string>
+    <string name="health_record_deletion_description">Are you sure you want to permanently remove this health record? This action cannot be undone.</string>
+    <string name="delete_health_record_failure_message">Unable to delete the health record. Please try again.</string>
+    <string name="delete_health_record_success_message">Health record deleted successfully.</string>
     <string name="notifications">Notifications</string>
     <string name="heart_rate_description_part_1">Heart rate is the number of times your heart beats per minute. Checking your heart rate helps your care team see how you are responding to your meds and if any meds need to be changed.</string>
     <string name="heart_rate_description_part_2">"Everyone’s normal heart rate is different. A heart rate under 50 can make you dizzy. If your heart rate suddenly increases and stays high, you should tell your care team. "</string>

@@ -9,6 +9,7 @@
     <string name="systolic">Systolisch</string>
     <string name="confirm_button_text">Bestätigen</string>
     <string name="cancel_button_text">Abbrechen</string>
+    <string name="dismiss_button_text">Abbrechen</string>
     <string name="diastolic">Diastolisch</string>
     <string name="pulse_rate">Pulsfrequenz</string>
     <string name="weight">Gewicht</string>
