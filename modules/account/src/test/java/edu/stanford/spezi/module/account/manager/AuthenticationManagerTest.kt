@@ -85,19 +85,18 @@ class AuthenticationManagerTest {
     }
 
     @Test
-    fun `linkUserToGoogleAccount should link user and save user data`() = runTestUnconfined {
+    fun `signUpWithGoogleAccount should create user and save user data`() = runTestUnconfined {
         // given
-        coEvery { firebaseAuth.signInAnonymously() } returns mockTask(authResult)
         every { firebaseAuth.currentUser } returns firebaseUser
         every { GoogleAuthProvider.getCredential(googleIdToken, null) } returns credential
-        coEvery { firebaseUser.linkWithCredential(credential) } returns mockTask(authResult)
+        coEvery { firebaseAuth.signInWithCredential(credential) } returns mockTask(authResult)
         coEvery { firebaseUser.updateProfile(any<UserProfileChangeRequest>()) } returns mockTask(mockk())
         coEvery { firebaseUser.updateEmail(email) } returns mockTask(mockk())
         val mapCaptor = slot<Map<String, Any>>()
         every { documentReference.set(capture(mapCaptor)) } returns mockTask(mockk())
 
         // when
-        val result = authenticationManager.linkUserToGoogleAccount(
+        val result = authenticationManager.signUpWithGoogleAccount(
             googleIdToken = googleIdToken,
             firstName = firstName,
             lastName = lastName,
@@ -108,8 +107,7 @@ class AuthenticationManagerTest {
 
         // then
         coVerify {
-            firebaseAuth.signInAnonymously()
-            firebaseUser.linkWithCredential(credential)
+            firebaseAuth.signInWithCredential(credential)
             firebaseUser.updateProfile(any<UserProfileChangeRequest>())
             firebaseUser.updateEmail(email)
             documentReference.set(any())
@@ -122,16 +120,16 @@ class AuthenticationManagerTest {
     }
 
     @Test
-    fun `linkUserToGoogleAccount should return error if linking fails to return user`() =
+    fun `signUpWithGoogleAccount should return error if signInWithCredential fails to return user`() =
         runTestUnconfined {
             // given
-            coEvery { firebaseAuth.signInAnonymously() } returns mockTask(authResult)
-            every { firebaseAuth.currentUser } returns firebaseUser
             every { GoogleAuthProvider.getCredential(googleIdToken, null) } returns credential
-            coEvery { firebaseUser.linkWithCredential(credential) } returns mockTask(noUserAuthResult)
+            coEvery { firebaseAuth.signInWithCredential(credential) } returns mockTask(
+                noUserAuthResult
+            )
 
             // when
-            val result = authenticationManager.linkUserToGoogleAccount(
+            val result = authenticationManager.signUpWithGoogleAccount(
                 googleIdToken = googleIdToken,
                 firstName = firstName,
                 lastName = lastName,
@@ -142,22 +140,20 @@ class AuthenticationManagerTest {
 
             // then
             coVerify {
-                firebaseAuth.signInAnonymously()
-                firebaseUser.linkWithCredential(credential)
+                firebaseAuth.signInWithCredential(credential)
             }
             assertThat(result.isFailure).isTrue()
         }
 
     @Test
-    fun `linkUserToGoogleAccount should return error if linking fails`() = runTestUnconfined {
+    fun `signUpWithGoogleAccount should return error if creating fails`() = runTestUnconfined {
         // given
-        coEvery { firebaseAuth.signInAnonymously() } returns mockTask(authResult)
         every { firebaseAuth.currentUser } returns firebaseUser
         every { GoogleAuthProvider.getCredential(googleIdToken, null) } returns credential
-        coEvery { firebaseUser.linkWithCredential(credential) } throws Exception("Failed to link")
+        coEvery { firebaseUser.linkWithCredential(credential) } throws Exception("Failed to create")
 
         // when
-        val result = authenticationManager.linkUserToGoogleAccount(
+        val result = authenticationManager.signUpWithGoogleAccount(
             googleIdToken = googleIdToken,
             firstName = firstName,
             lastName = lastName,

@@ -186,7 +186,7 @@ class RegisterViewModelTest {
         registerViewModel.onAction(Action.SetIsGoogleSignUp(true))
         val uiState = registerViewModel.uiState.value
         coEvery {
-            authenticationManager.linkUserToGoogleAccount(
+            authenticationManager.signUpWithGoogleAccount(
                 googleIdToken = idToken,
                 firstName = uiState.firstName.value,
                 lastName = uiState.lastName.value,
@@ -201,7 +201,7 @@ class RegisterViewModelTest {
 
         // then
         coVerify {
-            authenticationManager.linkUserToGoogleAccount(
+            authenticationManager.signUpWithGoogleAccount(
                 googleIdToken = idToken,
                 firstName = uiState.firstName.value,
                 lastName = uiState.lastName.value,
