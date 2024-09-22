@@ -53,23 +53,6 @@ class UserSessionManagerTest {
     }
 
     @Test
-    fun `it should reflect the correct anonymous user state`() = runTestUnconfined {
-        // given
-        val firebaseUser: FirebaseUser = mockk {
-            every { isAnonymous } returns true
-        }
-        every { firebaseAuth.currentUser } returns firebaseUser
-        createUserSessionManager()
-        val expectedUserState = UserState.Anonymous
-
-        // when
-        val state = userSessionManager.getUserState()
-
-        // then
-        assertThat(state).isEqualTo(expectedUserState)
-    }
-
-    @Test
     fun `it should reflect registered user without uid state correctly`() = runTestUnconfined {
         // given
         val firebaseUser: FirebaseUser = mockk {
@@ -154,7 +137,7 @@ class UserSessionManagerTest {
     }
 
     @Test
-    fun `it should emit Anonymous when currentUser is anonymous`() = runTestUnconfined {
+    fun `it should emit NotInitialized when currentUser is anonymous`() = runTestUnconfined {
         // given
         val firebaseUser: FirebaseUser = mockk {
             every { isAnonymous } returns true
@@ -165,7 +148,7 @@ class UserSessionManagerTest {
         createUserSessionManager()
 
         // then
-        assertObservedState(userState = UserState.Anonymous, scope = this)
+        assertObservedState(userState = UserState.NotInitialized, scope = this)
     }
 
     @Test
