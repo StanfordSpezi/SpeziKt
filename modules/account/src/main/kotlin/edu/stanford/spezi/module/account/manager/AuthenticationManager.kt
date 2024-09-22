@@ -28,7 +28,7 @@ internal class AuthenticationManager @Inject constructor(
 ) {
     private val logger by speziLogger()
 
-    suspend fun linkUserToGoogleAccount(
+    suspend fun signUpWithGoogleAccount(
         googleIdToken: String,
         firstName: String,
         lastName: String,
@@ -38,8 +38,7 @@ internal class AuthenticationManager @Inject constructor(
     ): Result<Unit> {
         return runCatching {
             val credential = GoogleAuthProvider.getCredential(googleIdToken, null)
-            firebaseAuth.signInAnonymously().await()
-            val result = getUser().linkWithCredential(credential).await()
+            val result = firebaseAuth.signInWithCredential(credential).await()
             if (result?.user == null) error("Failed to link to google account")
             saveUserData(
                 firstName = firstName,
@@ -121,7 +120,9 @@ internal class AuthenticationManager @Inject constructor(
 
     suspend fun signInWithGoogle(): Result<Unit> {
         return runCatching {
-            val googleIdTokenCredential = getCredential(filterByAuthorizedAccounts = true) ?: error("Failed to get credential")
+            val googleIdTokenCredential = getCredential(filterByAuthorizedAccounts = true) ?: error(
+                "Failed to get credential"
+            )
             val credential = GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
             logger.i { "Credential: $credential" }
             val result = firebaseAuth.signInWithCredential(credential).await()
