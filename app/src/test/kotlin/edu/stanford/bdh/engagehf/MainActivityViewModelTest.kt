@@ -87,19 +87,19 @@ class MainActivityViewModelTest {
     @Test
     fun `it should navigate to InvitationCodeScreen on SignInSuccess event with hasInvitationCodeConfirmed false`() =
         runTestUnconfined {
-        // given
-        createViewModel()
-        val event = AccountEvents.Event.SignInSuccess
+            // given
+            createViewModel()
+            val event = AccountEvents.Event.SignInSuccess
             coEvery { userSessionManager.getUserState() } returns UserState.Registered(
                 hasInvitationCodeConfirmed = false
             )
 
-        // when
-        accountEventsFlow.emit(event)
+            // when
+            accountEventsFlow.emit(event)
 
-        // then
+            // then
             verify { navigator.navigateTo(event = OnboardingNavigationEvent.InvitationCodeScreen) }
-    }
+        }
 
     @Test
     fun `it should navigate to app screen on SignInSuccess event with hasInvitationCodeConfirmed true`() =
