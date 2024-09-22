@@ -50,7 +50,7 @@ class BluetoothViewModel @Inject internal constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
-        bleService.start()
+        bleService.start(true)
         observeBleService()
         observeRecords()
         observeMessages()
@@ -141,7 +141,7 @@ class BluetoothViewModel @Inject internal constructor(
             }
 
             is Action.PermissionGranted, is Action.Resumed -> {
-                bleService.start()
+                bleService.start(true)
             }
 
             is Action.Settings.AppSettings -> {

@@ -21,6 +21,7 @@ class BluetoothModule {
      *
      * @return The Bluetooth adapter instance obtained from the system service.
      */
+    @Suppress("DEPRECATION")
     @Provides
     fun provideBluetoothAdapter(): BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
 

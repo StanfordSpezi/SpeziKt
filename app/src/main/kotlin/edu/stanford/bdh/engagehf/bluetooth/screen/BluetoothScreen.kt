@@ -2,14 +2,18 @@ package edu.stanford.bdh.engagehf.bluetooth.screen
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,9 +21,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import edu.stanford.bdh.engagehf.R
@@ -222,7 +228,21 @@ fun DeviceComposable(device: DeviceUiModel) {
                 .padding(Spacings.medium),
             verticalArrangement = Arrangement.spacedBy(Spacings.small)
         ) {
-            Text(text = device.name, style = TextStyles.bodyMedium)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(10.dp)
+                        .background(
+                            if (device.connected) Color.Green else Color.Red,
+                            shape = CircleShape,
+                        )
+
+                )
+                Text(text = device.name, style = TextStyles.bodyMedium)
+            }
             SecondaryText(text = device.summary)
         }
     }
@@ -306,7 +326,8 @@ private class BluetoothScreenPreviewProvider : PreviewParameterProvider<UiState>
             devices = listOf(
                 DeviceUiModel(
                     name = "My device",
-                    summary = "Device 1 Summary"
+                    summary = "Device 1 Summary",
+                    connected = true,
                 ),
             )
         ),

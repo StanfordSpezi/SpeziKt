@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattDescriptor
 import edu.stanford.bdh.engagehf.bluetooth.service.mapper.MeasurementMapper
 import edu.stanford.spezi.core.bluetooth.api.BLEService
+import edu.stanford.spezi.core.bluetooth.data.model.BLEDevice
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
 import edu.stanford.spezi.core.coroutines.di.Dispatching
@@ -34,10 +35,13 @@ class EngageBLEService @Inject constructor(
     val state = _state.asStateFlow()
     val events: Flow<EngageBLEServiceEvent> = _events.asSharedFlow()
 
-    fun start() {
+    fun start(autoConnect: Boolean) {
         collectState()
         collectEvents()
-        bleService.startDiscovering(services = BLEServiceType.entries.map { it.service })
+        bleService.startDiscovering(
+            services = BLEServiceType.entries.map { it.service },
+            autoConnect = autoConnect,
+        )
     }
 
     private fun collectState() {
@@ -49,23 +53,22 @@ class EngageBLEService @Inject constructor(
                     is BLEServiceState.Idle -> _state.update { EngageBLEServiceState.Idle }
                     is BLEServiceState.BluetoothNotEnabled -> _state.update { EngageBLEServiceState.BluetoothNotEnabled }
                     is BLEServiceState.MissingPermissions -> _state.update {
-                        EngageBLEServiceState.MissingPermissions(
-                            state.permissions
-                        )
+                        EngageBLEServiceState.MissingPermissions(state.permissions)
                     }
 
                     is BLEServiceState.Scanning -> _state.update { currentState ->
-                        if (currentState is EngageBLEServiceState.Scanning) {
-                            currentState
-                        } else {
-                            val sessions = state.pairedDevices.map {
-                                BLEDeviceSession(
-                                    device = it,
-                                    measurements = emptyList(),
-                                )
-                            }
-                            EngageBLEServiceState.Scanning(sessions = sessions)
+                        val scanningState = currentState as? EngageBLEServiceState.Scanning
+                        val sessions = state.devices.map { device ->
+                            val measurements = scanningState
+                                ?.sessions
+                                ?.find { it.device.address == device.address }
+                                ?.measurements ?: emptyList()
+                            BLEDeviceSession(
+                                device = device,
+                                measurements = measurements,
+                            )
                         }
+                        EngageBLEServiceState.Scanning(sessions = sessions)
                     }
                 }
             }
@@ -80,16 +83,14 @@ class EngageBLEService @Inject constructor(
                 when (event) {
                     is BLEServiceEvent.GenericError,
                     is BLEServiceEvent.ScanningFailed,
+                    is BLEServiceEvent.Connected,
+                    is BLEServiceEvent.Disconnected,
                     -> {
                         logger.i { "Ignoring event $event" }
                     }
 
-                    is BLEServiceEvent.Connected -> {
-                        onDeviceConnected(event = event)
-                    }
-
-                    is BLEServiceEvent.Disconnected -> {
-                        onDeviceDisconnected(event = event)
+                    is BLEServiceEvent.DeviceDiscovered -> {
+                        _events.emit(EngageBLEServiceEvent.DeviceDiscovered(event.device))
                     }
 
                     is BLEServiceEvent.CharacteristicChanged -> {
@@ -102,6 +103,10 @@ class EngageBLEService @Inject constructor(
                 }
             }
         }
+    }
+
+    fun pair(bluetoothDevice: BluetoothDevice) {
+        bleService.pair(device = bluetoothDevice)
     }
 
     fun stop() {
@@ -139,12 +144,13 @@ class EngageBLEService @Inject constructor(
                         val otherDevicesSessions =
                             activeSessions.filterNot { it.device.address == deviceAddress }
                         val deviceSession =
-                            activeSessions.find { it.device.address == deviceAddress }?.let { session ->
-                                if (session.measurements.contains(measurement)) {
-                                    return@update currentState
-                                }
-                                session.copy(measurements = session.measurements + measurement)
-                            } ?: BLEDeviceSession(
+                            activeSessions.find { it.device.address == deviceAddress }
+                                ?.let { session ->
+                                    if (session.measurements.contains(measurement)) {
+                                        return@update currentState
+                                    }
+                                    session.copy(measurements = session.measurements + measurement)
+                                } ?: BLEDeviceSession(
                                 device = event.device,
                                 measurements = listOf(measurement)
                             )
@@ -158,23 +164,6 @@ class EngageBLEService @Inject constructor(
                         EngageBLEServiceState.Scanning(otherDevicesSessions + deviceSession)
                     }
                 }
-        }
-    }
-
-    private fun onDeviceConnected(event: BLEServiceEvent.Connected) {
-        _state.update { state ->
-            val scanning = state as? EngageBLEServiceState.Scanning ?: return@update state
-            if (scanning.sessions.any { it.device.address == event.device.address }) return@update scanning
-            val session = BLEDeviceSession(device = event.device, measurements = emptyList())
-            scanning.copy(sessions = scanning.sessions + session)
-        }
-    }
-
-    private fun onDeviceDisconnected(event: BLEServiceEvent.Disconnected) {
-        _state.update { state ->
-            val scanning = state as? EngageBLEServiceState.Scanning ?: return@update state
-            val sessions = scanning.sessions.filter { it.device.address != event.device.address }
-            scanning.copy(sessions = sessions)
         }
     }
 }
@@ -204,7 +193,7 @@ sealed interface EngageBLEServiceState {
     /**
      * Represents the scanning state of the service.
      *
-     * @property sessions The list of active device sessions.
+     * @property sessions The list of device sessions.
      */
     data class Scanning(val sessions: List<BLEDeviceSession>) : EngageBLEServiceState
 }
@@ -216,7 +205,7 @@ sealed interface EngageBLEServiceState {
  * @property measurements List of measurements received from the device
  */
 data class BLEDeviceSession(
-    val device: BluetoothDevice,
+    val device: BLEDevice,
     val measurements: List<Measurement>,
 )
 
@@ -226,13 +215,21 @@ data class BLEDeviceSession(
 sealed interface EngageBLEServiceEvent {
 
     /**
+     * Represents an event indicating that a new not yet paired device has been discovered
+     * @property bluetoothDevice discovered device
+     */
+    data class DeviceDiscovered(
+        val bluetoothDevice: BluetoothDevice,
+    ) : EngageBLEServiceEvent
+
+    /**
      * Represents a measurement received event
      *
      * @property device BLE device which produced the measurement
      * @property measurement received measurement
      */
     data class MeasurementReceived(
-        val device: BluetoothDevice,
+        val device: BLEDevice,
         val measurement: Measurement,
     ) : EngageBLEServiceEvent
 }

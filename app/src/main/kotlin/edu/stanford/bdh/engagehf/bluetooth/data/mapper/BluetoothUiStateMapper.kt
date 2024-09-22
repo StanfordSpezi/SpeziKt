@@ -69,10 +69,10 @@ class BluetoothUiStateMapper @Inject constructor(
                         }
                         else -> "No measurements received yet"
                     }
-                    @Suppress("MissingPermission")
                     DeviceUiModel(
-                        name = runCatching { it.device.name }.getOrDefault(it.device.address),
+                        name = it.device.name,
                         summary = summary,
+                        connected = it.device.connected,
                     )
                 }
                 val header = if (devices.isEmpty()) {

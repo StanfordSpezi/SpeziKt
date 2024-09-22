@@ -47,5 +47,6 @@ gradlePlugin {
         conventionPlugin(id = "compose", className = "SpeziComposeConventionPlugin")
         conventionPlugin(id = "hilt", className = "HiltConventionPlugin")
         conventionPlugin(id = "library", className = "SpeziLibraryConventionPlugin")
+        conventionPlugin(id = "serialization", className = "SpeziSerializationConventionPlugin")
     }
 }

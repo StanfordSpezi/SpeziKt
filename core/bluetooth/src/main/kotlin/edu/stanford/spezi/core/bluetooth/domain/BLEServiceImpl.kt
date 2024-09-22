@@ -39,6 +39,7 @@ internal class BLEServiceImpl @Inject constructor(
     private val bluetoothAdapter: BluetoothAdapter,
     private val permissionChecker: PermissionChecker,
     private val deviceScanner: BLEDeviceScanner,
+    private val pairedDevicesStorage: PairedDevicesStorage,
     @Dispatching.IO private val scope: CoroutineScope,
     private val deviceConnectorFactory: BLEDeviceConnector.Factory,
 ) : BLEService {
@@ -52,7 +53,7 @@ internal class BLEServiceImpl @Inject constructor(
     override val state: StateFlow<BLEServiceState> = _state.asStateFlow()
     override val events: Flow<BLEServiceEvent> = _events.asSharedFlow()
 
-    override fun startDiscovering(services: List<UUID>) {
+    override fun startDiscovering(services: List<UUID>, autoConnect: Boolean) {
         logger.i { "start($services) requested" }
         when {
             bluetoothAdapter.isEnabled.not() -> {
@@ -60,7 +61,11 @@ internal class BLEServiceImpl @Inject constructor(
                 deviceScanner.stopScanning()
                 _state.update { BLEServiceState.BluetoothNotEnabled }
             }
-            deviceScanner.isScanning -> logger.i { "Already scanning. Ignoring start request" }
+
+            deviceScanner.isScanning -> {
+                logger.i { "Already scanning. Ignoring start request" }
+                pairedDevicesStorage.refresh()
+            }
 
             else -> {
                 val missingPermissions =
@@ -68,46 +73,15 @@ internal class BLEServiceImpl @Inject constructor(
                 if (missingPermissions.isNotEmpty()) {
                     _state.update { BLEServiceState.MissingPermissions(permissions = missingPermissions) }
                 } else {
-                    _state.update { BLEServiceState.Scanning(pairedDevices = emptyList()) }
-                    startScannerEventCollection()
+                    startPairedDevicesStorageCollection()
+                    startScannerEventCollection(autoConnect = autoConnect)
                     deviceScanner.startScanning(services = services)
                 }
             }
         }
     }
 
-    override fun stop() {
-        logger.i { "stop()" }
-        deviceScanner.stopScanning()
-        connectedDevices.keys.forEach { address ->
-            val connector = connectedDevices[address]
-            connector?.disconnect()
-            connectedDevices.remove(address)
-        }
-        _state.update { BLEServiceState.Idle }
-    }
-
-    private fun startScannerEventCollection() {
-        scope.launch {
-            deviceScanner.events
-                .onEach { logger.i { "Received scanner event $it" } }
-                .collect { event ->
-                    when (event) {
-                        is BLEDeviceScanner.Event.DeviceFound -> onDeviceFound(event.device)
-                        is BLEDeviceScanner.Event.Failure -> _events.emit(
-                            BLEServiceEvent.ScanningFailed(
-                                errorCode = event.errorCode
-                            )
-                        )
-                    }
-                }
-        }
-    }
-
-    private fun onDeviceFound(device: BluetoothDevice) {
-        if (connectedDevices[device.address] != null) {
-            return logger.i { "Device ${device.address} already known. Ignoring device found event" }
-        }
+    override fun pair(device: BluetoothDevice) {
         val deviceConnector = deviceConnectorFactory.create(device)
         deviceConnector.connect()
         scope.launch {
@@ -134,6 +108,61 @@ internal class BLEServiceImpl @Inject constructor(
         }
     }
 
+    override fun stop() {
+        logger.i { "stop()" }
+        deviceScanner.stopScanning()
+        connectedDevices.keys.forEach { address ->
+            val connector = connectedDevices[address]
+            connector?.disconnect()
+            connectedDevices.remove(address)
+        }
+        pairedDevicesStorage.onStopped()
+    }
+
+    private fun startScannerEventCollection(autoConnect: Boolean) {
+        scope.launch {
+            deviceScanner.events
+                .onEach { logger.i { "Received scanner event $it" } }
+                .collect { event ->
+                    when (event) {
+                        is BLEDeviceScanner.Event.DeviceFound -> onDeviceFound(
+                            device = event.device,
+                            autoConnect = autoConnect,
+                        )
+
+                        is BLEDeviceScanner.Event.Failure -> _events.emit(
+                            BLEServiceEvent.ScanningFailed(
+                                errorCode = event.errorCode
+                            )
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun startPairedDevicesStorageCollection() {
+        pairedDevicesStorage.refresh()
+        scope.launch {
+            pairedDevicesStorage.pairedDevices.collect { devices ->
+                _state.update { BLEServiceState.Scanning(devices) }
+            }
+        }
+    }
+
+    private suspend fun onDeviceFound(
+        device: BluetoothDevice,
+        autoConnect: Boolean,
+    ) {
+        if (connectedDevices[device.address] != null) {
+            return logger.i { "Device ${device.address} already known. Ignoring device found event" }
+        }
+        if (autoConnect || pairedDevicesStorage.isPaired(device)) {
+            pair(device = device)
+        } else {
+            _events.emit(BLEServiceEvent.DeviceDiscovered(device))
+        }
+    }
+
     private fun updateState(
         device: BluetoothDevice,
         deviceConnector: BLEDeviceConnector?,
@@ -141,35 +170,11 @@ internal class BLEServiceImpl @Inject constructor(
         val deviceAddress = device.address
         val isConnected = deviceConnector != null
         deviceConnector?.let { connector ->
-            if (connectedDevices.containsKey(deviceAddress).not()) connectedDevices[deviceAddress] = connector
-        } ?: connectedDevices.remove(deviceAddress)
-
-        _state.update { currentState ->
-            when (currentState) {
-                is BLEServiceState.Idle,
-                is BLEServiceState.BluetoothNotEnabled,
-                is BLEServiceState.MissingPermissions,
-                -> {
-                    if (isConnected) {
-                        BLEServiceState.Scanning(pairedDevices = listOf(device))
-                    } else {
-                        currentState
-                    }
-                }
-
-                is BLEServiceState.Scanning -> {
-                    val otherDevices =
-                        currentState.pairedDevices.filterNot { it.address == deviceAddress }
-                    if (isConnected) {
-                        BLEServiceState.Scanning(pairedDevices = otherDevices + device)
-                    } else {
-                        BLEServiceState.Scanning(pairedDevices = otherDevices)
-                    }
-                }
-            }.also {
-                logger.i { "Updating own state due to $deviceAddress to $it" }
+            if (connectedDevices.containsKey(deviceAddress).not()) {
+                connectedDevices[deviceAddress] = connector
             }
-        }
+        } ?: connectedDevices.remove(deviceAddress)
+        pairedDevicesStorage.updateDevice(device = device, connected = isConnected)
     }
 
     private companion object {

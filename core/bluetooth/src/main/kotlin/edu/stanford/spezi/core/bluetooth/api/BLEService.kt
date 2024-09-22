@@ -1,5 +1,6 @@
 package edu.stanford.spezi.core.bluetooth.api
 
+import android.bluetooth.BluetoothDevice
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
 import edu.stanford.spezi.core.utils.UUID
@@ -32,7 +33,14 @@ interface BLEService {
      *
      * @param services list of service UUIDs to be discovered / filtered
      */
-    fun startDiscovering(services: List<UUID>)
+    fun startDiscovering(services: List<UUID>, autoConnect: Boolean)
+
+    /**
+     * Pairs to a new device
+     *
+     * @param device bluetooth device to be paired
+     */
+    fun pair(device: BluetoothDevice)
 
     /**
      * Stops the BLE service and disconnects all ongoing device connections immediately.
