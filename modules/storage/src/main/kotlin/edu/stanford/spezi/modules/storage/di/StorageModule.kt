@@ -14,6 +14,6 @@ abstract class StorageModule {
     @Binds
     @Storage.Encrypted
     abstract fun bindLocalKeyValueStorage(
-        encryptedKeyValueStorage: EncryptedKeyValueStorage
+        encryptedKeyValueStorage: EncryptedKeyValueStorage,
     ): KeyValueStorage
 }

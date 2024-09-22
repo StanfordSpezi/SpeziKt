@@ -5,7 +5,6 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 
-
 suspend inline fun <reified T : Any> KeyValueStorage.getSerializable(key: String): T? =
     when (this) {
         is EncryptedKeyValueStorage, is LocalKeyValueStorage -> {
@@ -37,7 +36,7 @@ suspend inline fun <reified T : Any> KeyValueStorage.deleteSerializable(key: Str
     deleteString(key)
 
 suspend inline fun <reified T : Any> KeyValueStorage.getSerializableList(
-    key: String
+    key: String,
 ): List<T> =
     when (this) {
         is EncryptedKeyValueStorage, is LocalKeyValueStorage -> {

@@ -1,6 +1,5 @@
 package edu.stanford.bdh.engagehf.bluetooth.data.mapper
 
-import android.bluetooth.BluetoothDevice
 import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.WeightRecord
@@ -13,6 +12,7 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.DeviceUiModel
 import edu.stanford.bdh.engagehf.bluetooth.service.BLEDeviceSession
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceState
 import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
+import edu.stanford.spezi.core.bluetooth.data.model.BLEDevice
 import edu.stanford.spezi.core.utils.LocaleProvider
 import io.mockk.every
 import io.mockk.mockk
@@ -41,9 +41,10 @@ class BluetoothUiStateMapperTest {
         every { weight } returns WEIGHT
     }
 
-    private val device: BluetoothDevice = mockk {
+    private val device: BLEDevice = mockk {
         every { name } returns NAME
         every { address } returns NAME
+        every { connected } returns CONNECTED
     }
 
     @Test
@@ -120,7 +121,8 @@ class BluetoothUiStateMapperTest {
         val state = EngageBLEServiceState.Scanning(sessions = listOf(session))
         val expectedDevice = DeviceUiModel(
             name = NAME,
-            summary = "Blood Pressure: $SYSTOLIC mmHg / $DIASTOLIC mmHg"
+            summary = "Blood Pressure: $SYSTOLIC mmHg / $DIASTOLIC mmHg",
+            connected = CONNECTED,
         )
 
         // when
@@ -140,7 +142,8 @@ class BluetoothUiStateMapperTest {
         val state = EngageBLEServiceState.Scanning(sessions = listOf(session))
         val expectedDevice = DeviceUiModel(
             name = NAME,
-            summary = "Weight: 10.05 lbs"
+            summary = "Weight: 10.05 lbs",
+            connected = CONNECTED,
         )
 
         // when
@@ -410,5 +413,6 @@ class BluetoothUiStateMapperTest {
         const val PULSE_RATE = 4.32f
         const val WEIGHT = 4.56
         const val NAME = "some device name"
+        const val CONNECTED = true
     }
 }

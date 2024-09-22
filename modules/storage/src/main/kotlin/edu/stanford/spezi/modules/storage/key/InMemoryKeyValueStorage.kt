@@ -4,7 +4,7 @@ import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
-class InMemoryKeyValueStorage @Inject constructor(): KeyValueStorage {
+class InMemoryKeyValueStorage @Inject constructor() : KeyValueStorage {
     private val storage = ConcurrentHashMap<String, Any?>()
 
     override suspend fun getString(key: String, default: String): String {

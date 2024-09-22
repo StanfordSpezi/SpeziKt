@@ -343,7 +343,6 @@ class LocalKeyValueStorageTest {
         assertThat(readData).isEqualTo(byteArrayOf())
     }
 
-
     @Test
     fun `it should handle serializable type correctly`() = runTestUnconfined {
         // given

@@ -75,6 +75,9 @@ class BluetoothViewModel @Inject internal constructor(
                             it.copy(measurementDialog = dialog)
                         }
                     }
+                    is EngageBLEServiceEvent.DeviceDiscovered -> {
+                        logger.i { "Ignoring device discovered event" }
+                    }
                 }
             }
         }
