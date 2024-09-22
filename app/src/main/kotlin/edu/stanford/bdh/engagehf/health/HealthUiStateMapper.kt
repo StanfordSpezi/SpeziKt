@@ -103,8 +103,8 @@ class HealthUiStateMapper @Inject constructor(
         return groupedRecords.values.map { entries ->
             val averageValue = entries.map { getValue(it, diastolic).value }.average()
             Pair(
-                averageValue.toFloat(),
-                mapXValue(selectedTimeRange, entries.first().zonedDateTime)
+                averageValue.toFloat().roundToDecimalPlaces(2),
+                mapXValue(selectedTimeRange, entries.first().zonedDateTime).roundToDecimalPlaces(2)
             )
         }
     }
@@ -114,7 +114,7 @@ class HealthUiStateMapper @Inject constructor(
             TimeRange.DAILY -> (zonedDateTime.year.toFloat() + (zonedDateTime.dayOfYear - 1) / 365f) * 10
             TimeRange.WEEKLY -> (zonedDateTime.toEpochSecond() / (7 * 24 * 60 * 60)).toFloat()
             TimeRange.MONTHLY -> zonedDateTime.year.toFloat() + (zonedDateTime.monthValue - 1) / 12f
-        }.roundToDecimalPlaces(places = 2)
+        }
     }
 
     private fun groupRecordsByTimeRange(
