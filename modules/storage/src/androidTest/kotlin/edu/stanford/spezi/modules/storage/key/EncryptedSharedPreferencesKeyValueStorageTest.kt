@@ -4,167 +4,247 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.testing.runTestUnconfined
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Test
 
 class EncryptedSharedPreferencesKeyValueStorageTest {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private var storage: EncryptedSharedPreferencesKeyValueStorage =
-        EncryptedSharedPreferencesKeyValueStorage(context)
+        EncryptedSharedPreferencesKeyValueStorage(context, UnconfinedTestDispatcher())
+
+    private val key = "test_key"
 
     @Test
     fun `it should save and read string data correctly`() = runTestUnconfined {
-        // Given
-        val key = PreferenceKey.StringKey("test_string_key")
+        // given
         val expectedValue = "Test String"
 
-        // When
-        storage.saveData(key, expectedValue)
+        // when
+        storage.putString(key, expectedValue)
 
-        // Then
-        val actualValue = storage.readDataBlocking(key)
+        // then
+        val actualValue = storage.getString(key, "")
         assertThat(actualValue).isEqualTo(expectedValue)
     }
 
     @Test
-    fun `it should return null when reading non-existent data`() = runTestUnconfined {
-        // Given
-        val key = PreferenceKey.StringKey("non_existent_key")
+    fun `it should return default when reading non-existent string data`() = runTestUnconfined {
+        // given
+        val default = "default"
 
-        // When
-        val actualValue = storage.readDataBlocking(key)
+        // when
+        val actualValue = storage.getString(key, default)
 
-        // Then
-        assertThat(actualValue).isNull()
+        // then
+        assertThat(actualValue).isEqualTo(default)
     }
 
     @Test
-    fun `it should overwrite existing data when saving with same key`() = runTestUnconfined {
-        // Given
-        val key = PreferenceKey.StringKey("test_string_key")
-        val initialData = "Initial Data"
-        val newData = "New Data"
+    fun `it should delete string data correctly`() = runTestUnconfined {
+        // given
+        val value = "Test String"
+        storage.putString(key, value)
 
-        // When
-        storage.saveData(key, initialData)
-        storage.saveData(key, newData)
+        // when
+        storage.deleteString(key)
 
-        // Then
-        val actualValue = storage.readDataBlocking(key)
-        assertThat(actualValue).isEqualTo(newData)
+        // then
+        val actualValue = storage.getString(key, "default")
+        assertThat(actualValue).isEqualTo("default")
     }
 
     @Test
     fun `it should save and read int data correctly`() = runTestUnconfined {
-        // Given
-        val key = PreferenceKey.IntKey("test_int_key")
+        // given
         val expectedValue = 42
 
-        // When
-        storage.saveData(key, expectedValue)
+        // when
+        storage.putInt(key, expectedValue)
 
-        // Then
-        val actualValue = storage.readDataBlocking(key)
+        // then
+        val actualValue = storage.getInt(key, 0)
         assertThat(actualValue).isEqualTo(expectedValue)
+    }
+
+    @Test
+    fun `it should return default when reading non-existent int data`() = runTestUnconfined {
+        // given
+        val default = 0
+
+        // when
+        val actualValue = storage.getInt(key, default)
+
+        // then
+        assertThat(actualValue).isEqualTo(default)
+    }
+
+    @Test
+    fun `it should delete int data correctly`() = runTestUnconfined {
+        // given
+        val value = 42
+        storage.putInt(key, value)
+
+        // when
+        storage.deleteInt(key)
+
+        // then
+        val actualValue = storage.getInt(key, 0)
+        assertThat(actualValue).isEqualTo(0)
     }
 
     @Test
     fun `it should save and read boolean data correctly`() = runTestUnconfined {
-        // Given
-        val key = PreferenceKey.BooleanKey("test_boolean_key")
+        // given
         val expectedValue = true
 
-        // When
-        storage.saveData(key, expectedValue)
+        // when
+        storage.putBoolean(key, expectedValue)
 
-        // Then
-        val actualValue = storage.readDataBlocking(key)
+        // then
+        val actualValue = storage.getBoolean(key, false)
         assertThat(actualValue).isEqualTo(expectedValue)
+    }
+
+    @Test
+    fun `it should return default when reading non-existent boolean data`() = runTestUnconfined {
+        // given
+        val default = false
+
+        // when
+        val actualValue = storage.getBoolean(key, default)
+
+        // then
+        assertThat(actualValue).isEqualTo(default)
+    }
+
+    @Test
+    fun `it should delete boolean data correctly`() = runTestUnconfined {
+        // given
+        storage.putBoolean(key, true)
+
+        // when
+        storage.deleteBoolean(key)
+
+        // then
+        val actualValue = storage.getBoolean(key, false)
+        assertThat(actualValue).isEqualTo(false)
     }
 
     @Test
     fun `it should save and read float data correctly`() = runTestUnconfined {
-        // Given
-        val key = PreferenceKey.FloatKey("test_float_key")
+        // given
         val expectedValue = 3.14f
 
-        // When
-        storage.saveData(key, expectedValue)
+        // when
+        storage.putFloat(key, expectedValue)
 
-        // Then
-        val actualValue = storage.readDataBlocking(key)
+        // then
+        val actualValue = storage.getFloat(key, 0f)
         assertThat(actualValue).isEqualTo(expectedValue)
+    }
+
+    @Test
+    fun `it should return default when reading non-existent float data`() = runTestUnconfined {
+        // given
+        val default = 0f
+
+        // when
+        val actualValue = storage.getFloat(key, default)
+
+        // then
+        assertThat(actualValue).isEqualTo(default)
+    }
+
+    @Test
+    fun `it should delete float data correctly`() = runTestUnconfined {
+        // given
+        val value = 3.14f
+        storage.putFloat(key, value)
+
+        // when
+        storage.deleteFloat(key)
+
+        // then
+        val actualValue = storage.getFloat(key, 0f)
+        assertThat(actualValue).isEqualTo(0f)
     }
 
     @Test
     fun `it should save and read long data correctly`() = runTestUnconfined {
-        // Given
-        val key = PreferenceKey.LongKey("test_long_key")
+        // given
         val expectedValue = 123456789L
 
-        // When
-        storage.saveData(key, expectedValue)
+        // when
+        storage.putLong(key, expectedValue)
 
-        // Then
-        val actualValue = storage.readDataBlocking(key)
+        // then
+        val actualValue = storage.getLong(key, 0L)
         assertThat(actualValue).isEqualTo(expectedValue)
     }
 
     @Test
-    fun `it should save and read double data correctly`() = runTestUnconfined {
-        // Given
-        val key = PreferenceKey.DoubleKey("test_double_key")
-        val expectedValue = 3.14159
+    fun `it should return default when reading non-existent long data`() = runTestUnconfined {
+        // given
+        val default = 0L
 
-        // When
-        storage.saveData(key, expectedValue)
+        // when
+        val actualValue = storage.getLong(key, default)
 
-        // Then
-        val actualValue = storage.readDataBlocking(key)
-        assertThat(actualValue).isEqualTo(expectedValue)
+        // then
+        assertThat(actualValue).isEqualTo(default)
+    }
+
+    @Test
+    fun `it should delete long data correctly`() = runTestUnconfined {
+        // given
+        val value = 123456789L
+        storage.putLong(key, value)
+
+        // when
+        storage.deleteLong(key)
+
+        // then
+        val actualValue = storage.getLong(key, 0L)
+        assertThat(actualValue).isEqualTo(0L)
     }
 
     @Test
     fun `it should save and read byte array data correctly`() = runTestUnconfined {
-        // Given
-        val key = PreferenceKey.ByteArrayKey("test_byte_array_key")
+        // given
         val expectedValue = byteArrayOf(0x01, 0x02, 0x03, 0x04)
 
-        // When
-        storage.saveData(key, expectedValue)
+        // when
+        storage.putByteArray(key, expectedValue)
 
-        // Then
-        val actualValue = storage.readDataBlocking(key)
+        // then
+        val actualValue = storage.getByteArray(key, byteArrayOf())
         assertThat(actualValue).isEqualTo(expectedValue)
     }
 
     @Test
-    fun `it should delete data correctly`() = runTestUnconfined {
-        // Given
-        val key = PreferenceKey.StringKey("test_string_key")
-        val value = "Test String"
-        storage.saveData(key, value)
+    fun `it should return default when reading non-existent byte array data`() = runTestUnconfined {
+        // given
+        val default = byteArrayOf()
 
-        // When
-        storage.deleteData(key)
+        // when
+        val actualValue = storage.getByteArray(key, default)
 
-        // Then
-        val actualValue = storage.readDataBlocking(key)
-        assertThat(actualValue).isNull()
+        // then
+        assertThat(actualValue).isEqualTo(default)
     }
 
     @Test
-    fun `it should read data flow correctly`() = runTestUnconfined {
-        // Given
-        val key = PreferenceKey.StringKey("test_string_key")
-        val expectedValue = "Test String"
-        storage.saveData(key, expectedValue)
+    fun `it should delete byte array data correctly`() = runTestUnconfined {
+        // given
+        val value = byteArrayOf(0x01, 0x02, 0x03, 0x04)
+        storage.putByteArray(key, value)
 
-        // When
-        val actualValue = storage.readData(key).first()
+        // when
+        storage.deleteByteArray(key)
 
-        // Then
-        assertThat(actualValue).isEqualTo(expectedValue)
+        // then
+        val actualValue = storage.getByteArray(key, byteArrayOf())
+        assertThat(actualValue).isEqualTo(byteArrayOf())
     }
 }

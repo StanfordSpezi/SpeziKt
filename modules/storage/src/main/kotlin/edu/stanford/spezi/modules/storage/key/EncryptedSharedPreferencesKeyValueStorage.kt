@@ -2,16 +2,20 @@ package edu.stanford.spezi.modules.storage.key
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Base64
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import edu.stanford.spezi.core.coroutines.di.Dispatching
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@Suppress("TooManyFunctions")
 class EncryptedSharedPreferencesKeyValueStorage @Inject constructor(
     @ApplicationContext private val context: Context,
+    @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
 ) : KeyValueStorage {
     private val masterKey = MasterKey.Builder(context)
         .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
@@ -26,58 +30,87 @@ class EncryptedSharedPreferencesKeyValueStorage @Inject constructor(
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
 
-    @OptIn(ExperimentalStdlibApi::class)
-    override suspend fun <T : Any> saveData(key: PreferenceKey<T>, data: T) {
-        sharedPreferences.edit(commit = false) {
-            when (data) {
-                is String -> putString(key.key.name, data)
-                is Int -> putInt(key.key.name, data)
-                is Boolean -> putBoolean(key.key.name, data)
-                is Float -> putFloat(key.key.name, data)
-                is Long -> putLong(key.key.name, data)
-                is Double -> putString(key.key.name, data.toString())
-                is ByteArray -> putString(key.key.name, data.toHexString())
-            }
+    override suspend fun getString(key: String, default: String): String {
+        return execute { sharedPreferences.getString(key, default) ?: default }
+    }
+
+    override suspend fun putString(key: String, value: String) {
+        execute { sharedPreferences.edit { putString(key, value) } }
+    }
+
+    override suspend fun deleteString(key: String) {
+        execute { sharedPreferences.edit { remove(key) } }
+    }
+
+    override suspend fun getBoolean(key: String, default: Boolean): Boolean {
+        return execute { sharedPreferences.getBoolean(key, default) }
+    }
+
+    override suspend fun putBoolean(key: String, value: Boolean) {
+        execute { sharedPreferences.edit { putBoolean(key, value) } }
+    }
+
+    override suspend fun deleteBoolean(key: String) {
+        execute { sharedPreferences.edit { remove(key) } }
+    }
+
+    override suspend fun getLong(key: String, default: Long): Long {
+        return execute { sharedPreferences.getLong(key, default) }
+    }
+
+    override suspend fun putLong(key: String, value: Long) {
+        execute { sharedPreferences.edit { putLong(key, value) } }
+    }
+
+    override suspend fun deleteLong(key: String) {
+        execute { sharedPreferences.edit { remove(key) } }
+    }
+
+    override suspend fun getInt(key: String, default: Int): Int {
+        return execute { sharedPreferences.getInt(key, default) }
+    }
+
+    override suspend fun putInt(key: String, value: Int) {
+        execute { sharedPreferences.edit { putInt(key, value) } }
+    }
+
+    override suspend fun deleteInt(key: String) {
+        execute { sharedPreferences.edit { remove(key) } }
+    }
+
+    override suspend fun getFloat(key: String, default: Float): Float {
+        return execute { sharedPreferences.getFloat(key, default) }
+    }
+
+    override suspend fun putFloat(key: String, value: Float) {
+        execute { sharedPreferences.edit { putFloat(key, value) } }
+    }
+
+    override suspend fun deleteFloat(key: String) {
+        execute { sharedPreferences.edit { remove(key) } }
+    }
+
+    override suspend fun getByteArray(key: String, default: ByteArray): ByteArray {
+        return execute {
+            val encoded = sharedPreferences.getString(key, null)
+            encoded?.let { Base64.decode(it, Base64.DEFAULT) } ?: default
         }
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
-    override fun <T> readData(key: PreferenceKey<T>): Flow<T?> = flow {
-        emit(
-            when (key) {
-                is PreferenceKey.StringKey -> sharedPreferences.getString(key.key.name, null)
-                is PreferenceKey.IntKey -> sharedPreferences.getInt(key.key.name, 0)
-                is PreferenceKey.BooleanKey -> sharedPreferences.getBoolean(key.key.name, false)
-                is PreferenceKey.FloatKey -> sharedPreferences.getFloat(key.key.name, 0f)
-                is PreferenceKey.LongKey -> sharedPreferences.getLong(key.key.name, 0L)
-                is PreferenceKey.DoubleKey -> sharedPreferences.getString(key.key.name, null)
-                    ?.toDouble()
-
-                is PreferenceKey.ByteArrayKey -> sharedPreferences.getString(key.key.name, null)
-                    ?.hexToByteArray()
-            } as T?
-        )
+    override suspend fun clear() {
+        sharedPreferences.edit { clear() }
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
-    override suspend fun <T> readDataBlocking(key: PreferenceKey<T>): T? {
-        return when (key) {
-            is PreferenceKey.StringKey -> sharedPreferences.getString(key.key.name, null)
-            is PreferenceKey.IntKey -> sharedPreferences.getInt(key.key.name, 0)
-            is PreferenceKey.BooleanKey -> sharedPreferences.getBoolean(key.key.name, false)
-            is PreferenceKey.FloatKey -> sharedPreferences.getFloat(key.key.name, 0f)
-            is PreferenceKey.LongKey -> sharedPreferences.getLong(key.key.name, 0L)
-            is PreferenceKey.DoubleKey -> sharedPreferences.getString(key.key.name, null)
-                ?.toDouble()
-
-            is PreferenceKey.ByteArrayKey -> sharedPreferences.getString(key.key.name, null)
-                ?.hexToByteArray()
-        } as T?
-    }
-
-    override suspend fun <T> deleteData(key: PreferenceKey<T>) {
-        sharedPreferences.edit(commit = false) {
-            remove(key.key.name)
+    override suspend fun putByteArray(key: String, value: ByteArray) {
+        execute {
+            val encoded = Base64.encodeToString(value, Base64.DEFAULT)
+            sharedPreferences.edit { putString(key, encoded) }
         }
     }
+
+    override suspend fun deleteByteArray(key: String) {
+        execute { sharedPreferences.edit { remove(key) } }
+    }
+
+    private suspend fun <T> execute(block: suspend () -> T) = withContext(ioDispatcher) { block() }
 }
