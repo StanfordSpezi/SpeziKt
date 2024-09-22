@@ -50,16 +50,13 @@ class EngageBLEServiceTest {
     @Test
     fun `it should handle start correctly`() {
         // when
-        start()
+        service.start()
 
         // then
         verify {
             bleService.state
             bleService.events
-            bleService.startDiscovering(
-                services = BLEServiceType.entries.map { it.service },
-                autoConnect = true
-            )
+            bleService.startDiscovering(services = BLEServiceType.entries.map { it.service })
         }
     }
 
@@ -67,7 +64,7 @@ class EngageBLEServiceTest {
     fun `it should handle idle state correctly`() {
         // given
         val state = BLEServiceState.Idle
-        start()
+        service.start()
 
         // when
         bleServiceState.value = state
@@ -80,7 +77,7 @@ class EngageBLEServiceTest {
     fun `it should handle BluetoothNotEnabled state correctly`() {
         // given
         val state = BLEServiceState.BluetoothNotEnabled
-        start()
+        service.start()
 
         // when
         bleServiceState.value = state
@@ -94,7 +91,7 @@ class EngageBLEServiceTest {
         // given
         val permissions = listOf("permission1", "permission2")
         val state = BLEServiceState.MissingPermissions(permissions)
-        start()
+        service.start()
 
         // when
         bleServiceState.value = state
@@ -107,7 +104,7 @@ class EngageBLEServiceTest {
     fun `it should handle Scanning state correctly`() {
         // given
         val state = BLEServiceState.Scanning(emptyList())
-        start()
+        service.start()
 
         // when
         bleServiceState.value = state
@@ -120,7 +117,7 @@ class EngageBLEServiceTest {
     fun `it should handle GenericError correctly`() = runTestUnconfined {
         // given
         val event = BLEServiceEvent.GenericError(mockk())
-        start()
+        service.start()
 
         // when
         bleServiceEvents.emit(event)
@@ -133,7 +130,7 @@ class EngageBLEServiceTest {
     fun `it should handle ScanningFailed correctly`() = runTestUnconfined {
         // given
         val event = BLEServiceEvent.ScanningFailed(1)
-        start()
+        service.start()
 
         // when
         bleServiceEvents.emit(event)
@@ -146,7 +143,7 @@ class EngageBLEServiceTest {
     fun `it should handle connected event correctly`() = runTestUnconfined {
         // given
         val event = BLEServiceEvent.Connected(device)
-        start()
+        service.start()
 
         // when
         bleServiceEvents.emit(event)
@@ -159,7 +156,7 @@ class EngageBLEServiceTest {
     fun `it should handle disconnected event correctly`() = runTestUnconfined {
         // given
         val event = BLEServiceEvent.Disconnected(device)
-        start()
+        service.start()
 
         // when
         bleServiceEvents.emit(event)
@@ -180,7 +177,7 @@ class EngageBLEServiceTest {
         )
         val measurement: Measurement = mockk()
         coEvery { measurementMapper.map(characteristic, event.value) } returns measurement
-        start()
+        service.start()
         bleServiceState.value = BLEServiceState.Scanning(emptyList())
 
         // when
@@ -209,7 +206,7 @@ class EngageBLEServiceTest {
         every { measurementMapper.recognises(characteristic) } returns true
         val descriptor: BluetoothGattDescriptor = mockk(relaxed = true)
         every { characteristic.getDescriptor(UUID("00002902-0000-1000-8000-00805f9b34fb")) } returns descriptor
-        start()
+        service.start()
 
         // when
         bleServiceEvents.emit(BLEServiceEvent.ServiceDiscovered(device, gatt, 1))
@@ -235,9 +232,5 @@ class EngageBLEServiceTest {
 
     private suspend fun assertEvent(event: EngageBLEServiceEvent) {
         assertThat(service.events.first()).isEqualTo(event)
-    }
-
-    private fun start(autoConnect: Boolean = true) {
-        service.start(autoConnect = autoConnect)
     }
 }

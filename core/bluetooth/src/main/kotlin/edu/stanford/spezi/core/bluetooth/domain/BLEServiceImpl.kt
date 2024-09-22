@@ -53,7 +53,7 @@ internal class BLEServiceImpl @Inject constructor(
     override val state: StateFlow<BLEServiceState> = _state.asStateFlow()
     override val events: Flow<BLEServiceEvent> = _events.asSharedFlow()
 
-    override fun startDiscovering(services: List<UUID>, autoConnect: Boolean) {
+    override fun startDiscovering(services: List<UUID>) {
         logger.i { "start($services) requested" }
         when {
             bluetoothAdapter.isEnabled.not() -> {
@@ -74,7 +74,7 @@ internal class BLEServiceImpl @Inject constructor(
                     _state.update { BLEServiceState.MissingPermissions(permissions = missingPermissions) }
                 } else {
                     startPairedDevicesStorageCollection()
-                    startScannerEventCollection(autoConnect = autoConnect)
+                    startScannerEventCollection()
                     deviceScanner.startScanning(services = services)
                 }
             }
@@ -119,7 +119,7 @@ internal class BLEServiceImpl @Inject constructor(
         pairedDevicesStorage.onStopped()
     }
 
-    private fun startScannerEventCollection(autoConnect: Boolean) {
+    private fun startScannerEventCollection() {
         scope.launch {
             deviceScanner.events
                 .onEach { logger.i { "Received scanner event $it" } }
@@ -127,7 +127,6 @@ internal class BLEServiceImpl @Inject constructor(
                     when (event) {
                         is BLEDeviceScanner.Event.DeviceFound -> onDeviceFound(
                             device = event.device,
-                            autoConnect = autoConnect,
                         )
 
                         is BLEDeviceScanner.Event.Failure -> _events.emit(
@@ -151,12 +150,11 @@ internal class BLEServiceImpl @Inject constructor(
 
     private suspend fun onDeviceFound(
         device: BluetoothDevice,
-        autoConnect: Boolean,
     ) {
         if (connectedDevices[device.address] != null) {
             return logger.i { "Device ${device.address} already known. Ignoring device found event" }
         }
-        if (autoConnect || pairedDevicesStorage.isPaired(device)) {
+        if (pairedDevicesStorage.isPaired(device)) {
             pair(device = device)
         } else {
             _events.emit(BLEServiceEvent.DeviceDiscovered(device))

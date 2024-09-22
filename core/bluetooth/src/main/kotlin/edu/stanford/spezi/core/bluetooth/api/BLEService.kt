@@ -33,7 +33,7 @@ interface BLEService {
      *
      * @param services list of service UUIDs to be discovered / filtered
      */
-    fun startDiscovering(services: List<UUID>, autoConnect: Boolean)
+    fun startDiscovering(services: List<UUID>)
 
     /**
      * Pairs to a new device

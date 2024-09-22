@@ -35,13 +35,10 @@ class EngageBLEService @Inject constructor(
     val state = _state.asStateFlow()
     val events: Flow<EngageBLEServiceEvent> = _events.asSharedFlow()
 
-    fun start(autoConnect: Boolean) {
+    fun start() {
         collectState()
         collectEvents()
-        bleService.startDiscovering(
-            services = BLEServiceType.entries.map { it.service },
-            autoConnect = autoConnect,
-        )
+        bleService.startDiscovering(services = BLEServiceType.entries.map { it.service })
     }
 
     private fun collectState() {

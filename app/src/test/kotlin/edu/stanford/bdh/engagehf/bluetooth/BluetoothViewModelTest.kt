@@ -78,7 +78,7 @@ class BluetoothViewModelTest {
         with(bleService) {
             every { state } returns bleServiceState
             every { events } returns bleServiceEvents
-            every { start(any()) } just Runs
+            every { start() } just Runs
             every { stop() } just Runs
         }
         with(uiStateMapper) {
@@ -98,7 +98,7 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // then
-        verify { bleService.start(true) }
+        verify { bleService.start() }
         verify { bleService.state }
         verify { bleService.events }
     }
@@ -446,7 +446,7 @@ class BluetoothViewModelTest {
         bluetoothViewModel.onAction(Action.PermissionGranted(permission = permissions.first()))
 
         // then
-        verify(exactly = 2) { bleService.start(true) }
+        verify(exactly = 2) { bleService.start() }
     }
 
     @Test
@@ -458,7 +458,7 @@ class BluetoothViewModelTest {
         bluetoothViewModel.onAction(Action.Resumed)
 
         // then
-        verify(exactly = 2) { bleService.start(true) }
+        verify(exactly = 2) { bleService.start() }
     }
 
     private fun assertBluetoothUiState(state: BluetoothUiState) {

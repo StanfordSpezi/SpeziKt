@@ -93,7 +93,7 @@ class BLEServiceTest {
         every { deviceScanner.isScanning } returns true
 
         // when
-        bleService.startDiscovering(services = services, autoConnect = true)
+        bleService.startDiscovering(services = services)
 
         // then
         verify { pairedDevicesStorage.refresh() }
@@ -108,7 +108,7 @@ class BLEServiceTest {
             every { bluetoothAdapter.isEnabled } returns false
 
             // when
-            bleService.startDiscovering(services = services, autoConnect = true)
+            bleService.startDiscovering(services = services)
 
             // then
             verify { deviceScanner.stopScanning() }
@@ -127,7 +127,7 @@ class BLEServiceTest {
         )
 
         // when
-        bleService.startDiscovering(services = services, autoConnect = true)
+        bleService.startDiscovering(services = services)
 
         // then
         assertState(state = BLEServiceState.MissingPermissions(permissions = expectedPermissions))
@@ -141,7 +141,7 @@ class BLEServiceTest {
         every { permissionChecker.isPermissionGranted(any()) } returns true
 
         // when
-        bleService.startDiscovering(services = services, autoConnect = true)
+        bleService.startDiscovering(services = services)
 
         // then
         verify { pairedDevicesStorage.refresh() }
@@ -166,7 +166,7 @@ class BLEServiceTest {
     @Test
     fun `it should handle device found event correctly`() = runTestUnconfined {
         // given
-        start(autoConnect = true)
+        start()
 
         // when
         emitDeviceFound()
@@ -187,24 +187,10 @@ class BLEServiceTest {
     }
 
     @Test
-    fun `it should handle device found with auto connect false correctly`() = runTestUnconfined {
-        // given
-        start(autoConnect = false)
-
-        // when
-        emitDeviceFound()
-
-        // then
-        assertEvent(BLEServiceEvent.DeviceDiscovered(bluetoothDevice))
-        verifyNever { bleService.pair(bluetoothDevice) }
-    }
-
-    @Test
-    fun `it should handle device found with auto connect false correctly if device already paired`() =
+    fun `it should handle device found correctly if device already paired`() =
         runTestUnconfined {
             // given
             every { pairedDevicesStorage.isPaired(bluetoothDevice) } returns true
-            start(autoConnect = false)
 
             // when
             emitDeviceFound()
@@ -265,11 +251,11 @@ class BLEServiceTest {
         assertState(BLEServiceState.Scanning(devices))
     }
 
-    private fun start(autoConnect: Boolean = true) {
+    private fun start() {
         every { deviceScanner.isScanning } returns false
         every { bluetoothAdapter.isEnabled } returns true
         every { permissionChecker.isPermissionGranted(any()) } returns true
-        bleService.startDiscovering(services = services, autoConnect = autoConnect)
+        bleService.startDiscovering(services = services)
     }
 
     private suspend fun emitDeviceFound() {
