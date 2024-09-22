@@ -126,7 +126,7 @@ class RegisterViewModel @Inject internal constructor(
             viewModelScope.launch {
                 if (uiState.isGoogleSignUp && googleIdToken != null) {
                     logger.i { "Google sign up: $googleIdToken" }
-                    authenticationManager.linkUserToGoogleAccount(
+                    authenticationManager.signUpWithGoogleAccount(
                         googleIdToken = googleIdToken,
                         firstName = uiState.firstName.value,
                         lastName = uiState.lastName.value,

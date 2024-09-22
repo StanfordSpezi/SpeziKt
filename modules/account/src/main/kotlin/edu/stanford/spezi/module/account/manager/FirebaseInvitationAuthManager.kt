@@ -14,16 +14,14 @@ internal class FirebaseInvitationAuthManager @Inject constructor(
 
     override suspend fun checkInvitationCode(invitationCode: String): Result<Unit> {
         return runCatching {
-            val userId = userSessionManager.getUserUid() ?: error("User not logged in")
-
+            userSessionManager.getUserUid() ?: error("User not logged in")
             val data = hashMapOf(
                 "invitationCode" to invitationCode,
-                "userId" to userId
             )
             logger.i { "Checking invitation code: $data" }
 
             functions
-                .getHttpsCallable("checkInvitationCode")
+                .getHttpsCallable("enrollUser")
                 .call(data)
                 .await()
 

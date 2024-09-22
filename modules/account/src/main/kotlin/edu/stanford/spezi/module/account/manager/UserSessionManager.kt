@@ -51,10 +51,11 @@ internal class UserSessionManagerImpl @Inject constructor(
 
     override suspend fun getUserState(): UserState {
         val user = firebaseAuth.currentUser
-        return when {
-            user == null -> UserState.NotInitialized
-            user.isAnonymous -> UserState.Anonymous
-            else -> UserState.Registered(hasInvitationCodeConfirmed = hasConfirmedInvitationCode())
+        if (user == null || user.isAnonymous) {
+            logger.i { "User is not available" }
+            return UserState.NotInitialized
+        } else {
+            return UserState.Registered(hasInvitationCodeConfirmed = hasConfirmedInvitationCode())
         }
     }
 

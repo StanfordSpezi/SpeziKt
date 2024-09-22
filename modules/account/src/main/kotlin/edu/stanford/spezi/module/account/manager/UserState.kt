@@ -10,11 +10,6 @@ sealed interface UserState {
     data object NotInitialized : UserState
 
     /**
-     * Indicates an anonymous user state
-     */
-    data object Anonymous : UserState
-
-    /**
      * Indicates a registered user.
      *
      * @property hasInvitationCodeConfirmed Whether the invitation code has been submitted or not
