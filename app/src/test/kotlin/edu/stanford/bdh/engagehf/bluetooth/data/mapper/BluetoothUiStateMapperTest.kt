@@ -8,7 +8,6 @@ import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.OperationStatus
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
-import edu.stanford.bdh.engagehf.bluetooth.data.models.DeviceUiModel
 import edu.stanford.bdh.engagehf.bluetooth.service.BLEDeviceSession
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceState
 import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
@@ -45,6 +44,7 @@ class BluetoothUiStateMapperTest {
         every { name } returns NAME
         every { address } returns NAME
         every { connected } returns CONNECTED
+        every { lastSeenTimeStamp } returns 1630454400000L
     }
 
     @Test
@@ -119,11 +119,6 @@ class BluetoothUiStateMapperTest {
         // given
         val session = BLEDeviceSession(device = device, measurements = listOf(bloodPressure))
         val state = EngageBLEServiceState.Scanning(sessions = listOf(session))
-        val expectedDevice = DeviceUiModel(
-            name = NAME,
-            summary = "Blood Pressure: $SYSTOLIC mmHg / $DIASTOLIC mmHg",
-            connected = CONNECTED,
-        )
 
         // when
         val result = mapper.mapBleServiceState(state) as BluetoothUiState.Ready
@@ -131,7 +126,11 @@ class BluetoothUiStateMapperTest {
         // then
         with(result) {
             assertThat(header).isEqualTo(null)
-            assertThat(devices.first()).isEqualTo(expectedDevice)
+            with(devices.first()) {
+                assertThat(name).isEqualTo(NAME)
+                assertThat(summary).isEqualTo("Blood Pressure: $SYSTOLIC mmHg / $DIASTOLIC mmHg")
+                assertThat(connected).isEqualTo(CONNECTED)
+            }
         }
     }
 
@@ -140,11 +139,6 @@ class BluetoothUiStateMapperTest {
         // given
         val session = BLEDeviceSession(device = device, measurements = listOf(weight))
         val state = EngageBLEServiceState.Scanning(sessions = listOf(session))
-        val expectedDevice = DeviceUiModel(
-            name = NAME,
-            summary = "Weight: 10.05 lbs",
-            connected = CONNECTED,
-        )
 
         // when
         val result = mapper.mapBleServiceState(state) as BluetoothUiState.Ready
@@ -152,7 +146,11 @@ class BluetoothUiStateMapperTest {
         // then
         with(result) {
             assertThat(header).isEqualTo(null)
-            assertThat(devices.first()).isEqualTo(expectedDevice)
+            with(devices.first()) {
+                assertThat(name).isEqualTo(NAME)
+                assertThat(summary).isEqualTo("Weight: 10.05 lbs")
+                assertThat(connected).isEqualTo(CONNECTED)
+            }
         }
     }
 

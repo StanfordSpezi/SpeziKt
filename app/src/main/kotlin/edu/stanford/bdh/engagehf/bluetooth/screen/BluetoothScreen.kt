@@ -49,6 +49,7 @@ import edu.stanford.bdh.engagehf.messages.MessageType
 import edu.stanford.spezi.core.design.component.AsyncTextButton
 import edu.stanford.spezi.core.design.component.DefaultElevatedCard
 import edu.stanford.spezi.core.design.component.LifecycleEvent
+import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
@@ -260,6 +261,7 @@ fun DeviceComposable(device: DeviceUiModel) {
                 Text(text = device.name, style = TextStyles.bodyMedium)
             }
             SecondaryText(text = device.summary)
+            SecondaryText(text = device.lastSeen.text())
         }
     }
 }
@@ -344,6 +346,7 @@ private class BluetoothScreenPreviewProvider : PreviewParameterProvider<UiState>
                     name = "My device",
                     summary = "Device 1 Summary",
                     connected = true,
+                    lastSeen = StringResource("Last seen on 12.04.05 12:43"),
                 ),
             )
         ),

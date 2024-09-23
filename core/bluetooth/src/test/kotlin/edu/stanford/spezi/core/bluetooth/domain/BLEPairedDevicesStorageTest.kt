@@ -6,6 +6,7 @@ import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.bluetooth.data.model.BLEDevice
 import edu.stanford.spezi.core.testing.SpeziTestScope
 import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.core.utils.TimeProvider
 import edu.stanford.spezi.modules.storage.key.InMemoryKeyValueStorage
 import io.mockk.every
 import io.mockk.mockk
@@ -24,6 +25,7 @@ class BLEPairedDevicesStorageTest {
         every { name } returns this@BLEPairedDevicesStorageTest.name
         every { address } returns this@BLEPairedDevicesStorageTest.address
     }
+    private val timeProvider: TimeProvider = mockk()
     private val notifierEvents = MutableSharedFlow<BLEDevicePairingNotifier.Event>()
     private val bleDevicePairingNotifier: BLEDevicePairingNotifier = mockk(relaxed = true)
 
@@ -33,6 +35,7 @@ class BLEPairedDevicesStorageTest {
             encryptedKeyValueStorage = storage,
             ioScope = SpeziTestScope(),
             bleDevicePairingNotifier = bleDevicePairingNotifier,
+            timeProvider = timeProvider,
         )
     }
 
@@ -41,6 +44,7 @@ class BLEPairedDevicesStorageTest {
         storage.clear()
         every { bleDevicePairingNotifier.events } returns notifierEvents
         every { adapter.bondedDevices } returns mutableSetOf(bluetoothDevice)
+        every { timeProvider.currentTimeMillis() } returns 0L
     }
 
     @Test

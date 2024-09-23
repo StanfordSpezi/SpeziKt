@@ -14,7 +14,11 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceState
 import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
 import edu.stanford.bdh.engagehf.messages.MessagesAction
+import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.utils.LocaleProvider
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
@@ -32,15 +36,12 @@ class BluetoothUiStateMapper @Inject constructor(
     fun mapBleServiceState(state: EngageBLEServiceState): BluetoothUiState {
         return when (state) {
             EngageBLEServiceState.Idle -> {
-                BluetoothUiState.Idle(
-                    description = R.string.bluetooth_initializing_description,
-                )
+                BluetoothUiState.Idle(description = R.string.bluetooth_initializing_description)
             }
 
             EngageBLEServiceState.BluetoothNotEnabled -> {
-                val title = R.string.bluetooth_not_enabled_description
                 BluetoothUiState.Idle(
-                    description = title,
+                    description = R.string.bluetooth_not_enabled_description,
                     settingsAction = Action.Settings.BluetoothSettings,
                 )
             }
@@ -52,6 +53,7 @@ class BluetoothUiStateMapper @Inject constructor(
                     settingsAction = Action.Settings.AppSettings,
                 )
             }
+
             is EngageBLEServiceState.Scanning -> {
                 val devices = state.sessions.map {
                     val summary = when (val lastMeasurement = it.measurements.lastOrNull()) {
@@ -64,15 +66,22 @@ class BluetoothUiStateMapper @Inject constructor(
                                 lastMeasurement.diastolic
                             )
                         }"
+
                         is Measurement.Weight -> {
                             "Weight: ${formatWeightForLocale(lastMeasurement.weight)}"
                         }
+
                         else -> "No measurements received yet"
                     }
+                    val time = ZonedDateTime.ofInstant(
+                        Instant.ofEpochMilli(it.device.lastSeenTimeStamp),
+                        ZoneId.systemDefault()
+                    )
                     DeviceUiModel(
                         name = it.device.name,
                         summary = summary,
                         connected = it.device.connected,
+                        lastSeen = StringResource(R.string.last_seen_on, dateFormatter.format(time))
                     )
                 }
                 val header = if (devices.isEmpty()) {

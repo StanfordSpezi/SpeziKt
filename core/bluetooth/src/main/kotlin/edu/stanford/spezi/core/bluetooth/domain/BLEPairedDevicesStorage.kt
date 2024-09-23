@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothDevice
 import edu.stanford.spezi.core.bluetooth.data.model.BLEDevice
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.core.utils.TimeProvider
 import edu.stanford.spezi.modules.storage.di.Storage
 import edu.stanford.spezi.modules.storage.key.KeyValueStorage
 import edu.stanford.spezi.modules.storage.key.getSerializableList
@@ -23,6 +24,7 @@ internal class BLEPairedDevicesStorage @Inject constructor(
     private val bleDevicePairingNotifier: BLEDevicePairingNotifier,
     @Storage.Encrypted
     private val encryptedKeyValueStorage: KeyValueStorage,
+    private val timeProvider: TimeProvider,
     @Dispatching.IO private val ioScope: CoroutineScope,
 ) {
     private val logger by speziLogger()
@@ -46,6 +48,7 @@ internal class BLEPairedDevicesStorage @Inject constructor(
             address = device.address,
             name = device.name,
             connected = connected,
+            lastSeenTimeStamp = timeProvider.currentTimeMillis()
         )
 
         update(devices = currentDevices + newDevice)
@@ -62,7 +65,7 @@ internal class BLEPairedDevicesStorage @Inject constructor(
 
     fun onStopped() = execute {
         val devices = getCurrentStoredDevices().map {
-            it.copy(connected = false)
+            it.copy(connected = false, lastSeenTimeStamp = timeProvider.currentTimeMillis())
         }
         update(devices = devices)
     }
@@ -99,6 +102,7 @@ internal class BLEPairedDevicesStorage @Inject constructor(
                                 address = device.address,
                                 name = device.name,
                                 connected = true,
+                                lastSeenTimeStamp = timeProvider.currentTimeMillis()
                             )
 
                             update(devices = currentDevices + newDevice)
