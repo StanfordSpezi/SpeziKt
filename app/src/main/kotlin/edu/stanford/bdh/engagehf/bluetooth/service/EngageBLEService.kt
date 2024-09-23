@@ -225,13 +225,17 @@ sealed interface EngageBLEServiceEvent {
         val bluetoothDevice: BluetoothDevice,
     ) : EngageBLEServiceEvent
 
+    /**
+     * Represents an event indicating that a new device has been paired
+     * @property bluetoothDevice paired device
+     */
     data class DevicePaired(
         val bluetoothDevice: BluetoothDevice,
     ) : EngageBLEServiceEvent
 
     /**
-     * Represents an event indicating that a new device has been paired
-     * @property bleDevice discovered device
+     * Represents an event indicating that a new device has been connected
+     * @property bleDevice paired device
      */
     data class DeviceConnected(
         val bleDevice: BLEDevice,

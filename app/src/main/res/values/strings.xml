@@ -85,4 +85,5 @@
     <string name="ble_device_paired_subtitle">%1$s was successfully paired with ENGAGEHF app</string>
     <string name="ble_device_error_title">Error</string>
     <string name="ble_device_error_subtitle">Something went wrong, please try again later.</string>
+    <string name="your_devices_header_title">Your devices</string>
 </resources>

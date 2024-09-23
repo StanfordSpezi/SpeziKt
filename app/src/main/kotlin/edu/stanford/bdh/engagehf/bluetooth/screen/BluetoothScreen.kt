@@ -176,7 +176,7 @@ private fun BluetoothHeaderSection(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = "Your devices",
+            text = stringResource(R.string.your_devices_header_title),
             style = TextStyles.titleMedium,
             color = Colors.onSurface,
         )
