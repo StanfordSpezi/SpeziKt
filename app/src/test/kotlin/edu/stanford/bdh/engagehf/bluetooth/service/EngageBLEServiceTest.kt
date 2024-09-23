@@ -140,9 +140,36 @@ class EngageBLEServiceTest {
     }
 
     @Test
+    fun `it should handle paired event correctly`() = runTestUnconfined {
+        // given
+        val device: BluetoothDevice = mockk()
+        val event = BLEServiceEvent.DevicePaired(device)
+        service.start()
+
+        // when
+        bleServiceEvents.emit(event)
+
+        // then
+        assertEvent(EngageBLEServiceEvent.DevicePaired(device))
+    }
+
+    @Test
     fun `it should handle connected event correctly`() = runTestUnconfined {
         // given
         val event = BLEServiceEvent.Connected(device)
+        service.start()
+
+        // when
+        bleServiceEvents.emit(event)
+
+        // then
+        assertEvent(EngageBLEServiceEvent.DeviceConnected(device))
+    }
+
+    @Test
+    fun `it should handle disconnected event correctly`() = runTestUnconfined {
+        // given
+        val event = BLEServiceEvent.Disconnected(device)
         service.start()
 
         // when
@@ -153,9 +180,9 @@ class EngageBLEServiceTest {
     }
 
     @Test
-    fun `it should handle disconnected event correctly`() = runTestUnconfined {
+    fun `it should handle unpaired event correctly`() = runTestUnconfined {
         // given
-        val event = BLEServiceEvent.Disconnected(device)
+        val event = BLEServiceEvent.DeviceUnpaired(mockk())
         service.start()
 
         // when
@@ -224,6 +251,18 @@ class EngageBLEServiceTest {
 
         // then
         verify { bleService.stop() }
+    }
+
+    @Test
+    fun `it should handle pair correctly`() {
+        // given
+        val device: BluetoothDevice = mockk()
+
+        // when
+        service.pair(device)
+
+        // then
+        verify { bleService.pair(device) }
     }
 
     private fun assertState(state: EngageBLEServiceState) {

@@ -29,8 +29,7 @@ internal class BLEDevicePairingNotifier @Inject constructor(
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            val action = intent.action
-            if (BluetoothDevice.ACTION_BOND_STATE_CHANGED == action) {
+            if (BluetoothDevice.ACTION_BOND_STATE_CHANGED == intent.action) {
                 val device: BluetoothDevice =
                     intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE) ?: return
                 val bondState =

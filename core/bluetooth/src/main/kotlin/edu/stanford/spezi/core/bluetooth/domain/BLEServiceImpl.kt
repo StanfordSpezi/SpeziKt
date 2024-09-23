@@ -50,7 +50,7 @@ internal class BLEServiceImpl @Inject constructor(
 
     private val connectedDevices = ConcurrentHashMap<String, BLEDeviceConnector>()
     private val _state = MutableStateFlow<BLEServiceState>(BLEServiceState.Idle)
-    private val _events = MutableSharedFlow<BLEServiceEvent>()
+    private val _events = MutableSharedFlow<BLEServiceEvent>(replay = 1, extraBufferCapacity = 1)
 
     override val state: StateFlow<BLEServiceState> = _state.asStateFlow()
     override val events: Flow<BLEServiceEvent> = _events.asSharedFlow()
@@ -157,6 +157,7 @@ internal class BLEServiceImpl @Inject constructor(
                     is BLEDevicePairingNotifier.Event.DevicePaired -> {
                         _events.emit(BLEServiceEvent.DevicePaired(it.device))
                     }
+
                     is BLEDevicePairingNotifier.Event.DeviceUnpaired -> {
                         _events.emit(BLEServiceEvent.DeviceUnpaired(it.device))
                     }

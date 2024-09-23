@@ -35,6 +35,7 @@ class BLEServiceTest {
     private val pairedDevicesStorage: BLEPairedDevicesStorage = mockk(relaxed = true)
     private val bleDevicePairingNotifier: BLEDevicePairingNotifier = mockk(relaxed = true)
     private val deviceScannerEvents = MutableSharedFlow<BLEDeviceScanner.Event>()
+    private val notifierEvents = MutableSharedFlow<BLEDevicePairingNotifier.Event>()
     private val pairedDevicesState = MutableStateFlow(emptyList<BLEDevice>())
     private val bluetoothDevice: BluetoothDevice = mockk {
         every { address } returns "some device address"
@@ -45,16 +46,14 @@ class BLEServiceTest {
     private val services = listOf(UUID())
 
     private val bleService by lazy {
-        spyk(
-            BLEServiceImpl(
-                bluetoothAdapter = bluetoothAdapter,
-                permissionChecker = permissionChecker,
-                deviceScanner = deviceScanner,
-                scope = SpeziTestScope(),
-                deviceConnectorFactory = deviceConnectorFactory,
-                pairedDevicesStorage = pairedDevicesStorage,
-                bleDevicePairingNotifier = bleDevicePairingNotifier,
-            )
+        BLEServiceImpl(
+            bluetoothAdapter = bluetoothAdapter,
+            permissionChecker = permissionChecker,
+            deviceScanner = deviceScanner,
+            scope = SpeziTestScope(),
+            deviceConnectorFactory = deviceConnectorFactory,
+            pairedDevicesStorage = pairedDevicesStorage,
+            bleDevicePairingNotifier = bleDevicePairingNotifier,
         )
     }
 
@@ -75,6 +74,8 @@ class BLEServiceTest {
             every { stopScanning() } just Runs
         }
         every { pairedDevicesStorage.pairedDevices } returns pairedDevicesState
+        every { pairedDevicesStorage.isPaired(any()) } returns true
+        every { bleDevicePairingNotifier.events } returns notifierEvents
     }
 
     @Test
@@ -145,6 +146,8 @@ class BLEServiceTest {
         bleService.startDiscovering(services = services)
 
         // then
+        verify { bleDevicePairingNotifier.events }
+        verify { bleDevicePairingNotifier.start() }
         verify { pairedDevicesStorage.pairedDevices }
         verify { deviceScanner.events }
         verify { deviceScanner.startScanning(services = services) }
@@ -166,13 +169,14 @@ class BLEServiceTest {
     @Test
     fun `it should handle device found event correctly`() = runTestUnconfined {
         // given
-        start()
+        val service = spyk(bleService)
+        start(service)
 
         // when
         emitDeviceFound()
 
         // then
-        verify { bleService.pair(bluetoothDevice) }
+        verify { service.pair(bluetoothDevice) }
     }
 
     @Test
@@ -190,13 +194,15 @@ class BLEServiceTest {
     fun `it should handle device found correctly if device already paired`() =
         runTestUnconfined {
             // given
+            val service = spyk(bleService)
+            start(service)
             every { pairedDevicesStorage.isPaired(bluetoothDevice) } returns true
 
             // when
             emitDeviceFound()
 
             // then
-            verify { bleService.pair(bluetoothDevice) }
+            verify { service.pair(bluetoothDevice) }
         }
 
     @Test
@@ -235,6 +241,7 @@ class BLEServiceTest {
         // then
         verify { deviceScanner.stopScanning() }
         verify { pairedDevicesStorage.onStopped() }
+        verify { bleDevicePairingNotifier.stop() }
     }
 
     @Test
@@ -250,11 +257,35 @@ class BLEServiceTest {
         assertState(BLEServiceState.Scanning(devices))
     }
 
-    private fun start() {
+    @Test
+    fun `it should handle paired event correctly`() = runTestUnconfined {
+        // given
+        start()
+
+        // when
+        notifierEvents.emit(BLEDevicePairingNotifier.Event.DevicePaired(bluetoothDevice))
+
+        // then
+        assertEvent(BLEServiceEvent.DevicePaired(bluetoothDevice))
+    }
+
+    @Test
+    fun `it should handle unpaired event correctly`() = runTestUnconfined {
+        // given
+        start()
+
+        // when
+        notifierEvents.emit(BLEDevicePairingNotifier.Event.DeviceUnpaired(bluetoothDevice))
+
+        // then
+        assertEvent(BLEServiceEvent.DeviceUnpaired(bluetoothDevice))
+    }
+
+    private fun start(bleService: BLEServiceImpl? = null) {
         every { deviceScanner.isScanning } returns false
         every { bluetoothAdapter.isEnabled } returns true
         every { permissionChecker.isPermissionGranted(any()) } returns true
-        bleService.startDiscovering(services = services)
+        (bleService ?: this.bleService).startDiscovering(services = services)
     }
 
     private suspend fun emitDeviceFound() {

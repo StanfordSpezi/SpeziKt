@@ -27,7 +27,7 @@ class EngageBLEService @Inject constructor(
 ) {
     private val logger by speziLogger()
     private val _events =
-        MutableSharedFlow<EngageBLEServiceEvent>()
+        MutableSharedFlow<EngageBLEServiceEvent>(replay = 1, extraBufferCapacity = 1)
     private var eventsJob: Job? = null
     private var stateJob: Job? = null
 
@@ -73,7 +73,7 @@ class EngageBLEService @Inject constructor(
     }
 
     private fun collectEvents() {
-        eventsJob?.cancel()
+        if (eventsJob?.isActive == true) return
         eventsJob = ioScope.launch {
             bleService.events.collect { event ->
                 logger.i { "Received BLEService event $event" }

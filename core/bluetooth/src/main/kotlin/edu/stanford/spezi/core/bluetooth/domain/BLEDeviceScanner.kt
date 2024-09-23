@@ -39,7 +39,7 @@ internal class BLEDeviceScanner @Inject constructor(
      */
     val isScanning get() = _isScanning.get()
 
-    private val _events = MutableSharedFlow<Event>()
+    private val _events = MutableSharedFlow<Event>(replay = 1, extraBufferCapacity = 1)
 
     /**
      * Scanning events flow
