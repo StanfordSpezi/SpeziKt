@@ -88,7 +88,7 @@ class BLEServiceTest {
     }
 
     @Test
-    fun `it should refresh storage if device scanner is scanning`() {
+    fun `it should do nothing if device scanner is scanning`() {
         // given
         every { deviceScanner.isScanning } returns true
 
@@ -96,7 +96,6 @@ class BLEServiceTest {
         bleService.startDiscovering(services = services)
 
         // then
-        verify { pairedDevicesStorage.refresh() }
         verify { permissionChecker wasNot Called }
         verifyNever { deviceScanner.startScanning(services = services) }
     }
@@ -144,7 +143,6 @@ class BLEServiceTest {
         bleService.startDiscovering(services = services)
 
         // then
-        verify { pairedDevicesStorage.refresh() }
         verify { pairedDevicesStorage.pairedDevices }
         verify { deviceScanner.events }
         verify { deviceScanner.startScanning(services = services) }
@@ -247,7 +245,6 @@ class BLEServiceTest {
         start()
 
         // then
-        verify { pairedDevicesStorage.refresh() }
         assertState(BLEServiceState.Scanning(devices))
     }
 

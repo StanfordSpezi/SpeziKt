@@ -22,6 +22,7 @@ class AppScreenViewModel @Inject constructor(
     private val userSessionManager: UserSessionManager,
     private val healthSummaryService: HealthSummaryService,
 ) : ViewModel() {
+
     private val _uiState = MutableStateFlow(
         AppUiState(
             items = BottomBarItem.entries,
@@ -67,6 +68,9 @@ class AppScreenViewModel @Inject constructor(
 
                         AppScreenEvents.Event.AddWeightRecord ->
                             BottomSheetContent.ADD_WEIGHT_RECORD
+
+                        AppScreenEvents.Event.BLEDevicePairingBottomSheet ->
+                            BottomSheetContent.BLUETOOTH_DEVICE_PAIRING
 
                         else -> null
                     }
@@ -115,7 +119,7 @@ class AppScreenViewModel @Inject constructor(
             }
 
             Action.DismissBottomSheet -> {
-                _uiState.update { it.copy(bottomSheetContent = null) }
+                appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet)
             }
         }
     }
@@ -145,6 +149,7 @@ enum class BottomSheetContent {
     ADD_WEIGHT_RECORD,
     ADD_BLOOD_PRESSURE_RECORD,
     ADD_HEART_RATE_RECORD,
+    BLUETOOTH_DEVICE_PAIRING,
 }
 
 sealed interface Action {

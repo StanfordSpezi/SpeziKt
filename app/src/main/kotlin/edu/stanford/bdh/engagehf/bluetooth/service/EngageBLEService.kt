@@ -27,7 +27,7 @@ class EngageBLEService @Inject constructor(
 ) {
     private val logger by speziLogger()
     private val _events =
-        MutableSharedFlow<EngageBLEServiceEvent>(replay = 1, extraBufferCapacity = 1)
+        MutableSharedFlow<EngageBLEServiceEvent>()
     private var eventsJob: Job? = null
     private var stateJob: Job? = null
 
@@ -80,12 +80,18 @@ class EngageBLEService @Inject constructor(
                 when (event) {
                     is BLEServiceEvent.GenericError,
                     is BLEServiceEvent.ScanningFailed,
-                    is BLEServiceEvent.Connected,
                     is BLEServiceEvent.Disconnected,
+                    is BLEServiceEvent.DeviceUnpaired,
                     -> {
                         logger.i { "Ignoring event $event" }
                     }
 
+                    is BLEServiceEvent.DevicePaired -> {
+                        _events.emit(EngageBLEServiceEvent.DevicePaired(event.device))
+                    }
+                    is BLEServiceEvent.Connected -> {
+                        _events.emit(EngageBLEServiceEvent.DeviceConnected(event.device))
+                    }
                     is BLEServiceEvent.DeviceDiscovered -> {
                         _events.emit(EngageBLEServiceEvent.DeviceDiscovered(event.device))
                     }
@@ -217,6 +223,18 @@ sealed interface EngageBLEServiceEvent {
      */
     data class DeviceDiscovered(
         val bluetoothDevice: BluetoothDevice,
+    ) : EngageBLEServiceEvent
+
+    data class DevicePaired(
+        val bluetoothDevice: BluetoothDevice,
+    ) : EngageBLEServiceEvent
+
+    /**
+     * Represents an event indicating that a new device has been paired
+     * @property bleDevice discovered device
+     */
+    data class DeviceConnected(
+        val bleDevice: BLEDevice,
     ) : EngageBLEServiceEvent
 
     /**

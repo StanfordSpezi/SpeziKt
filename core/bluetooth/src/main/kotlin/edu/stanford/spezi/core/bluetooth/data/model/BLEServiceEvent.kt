@@ -43,6 +43,18 @@ sealed interface BLEServiceEvent {
     data class DeviceDiscovered(val device: BluetoothDevice) : BLEServiceEvent
 
     /**
+     * Event indicating that a BLE device was paired.
+     * @property device BLE device
+     */
+    data class DevicePaired(val device: BluetoothDevice) : BLEServiceEvent
+
+    /**
+     * Event indicating that a BLE device was paired.
+     * @property device BLE device
+     */
+    data class DeviceUnpaired(val device: BluetoothDevice) : BLEServiceEvent
+
+    /**
      * Represents a characteristic changed event
      *
      * @property device The Bluetooth device for which the characteristic changed

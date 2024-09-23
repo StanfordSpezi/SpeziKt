@@ -10,6 +10,7 @@ sealed interface Action {
     data class ToggleExpand(val message: Message) : Action
     data class PermissionGranted(val permission: String) : Action
     data object Resumed : Action
+    data object BLEDevicePairing : Action
 
     sealed interface Settings : Action {
         data object BluetoothSettings : Settings

@@ -3,6 +3,7 @@ package edu.stanford.bdh.engagehf.bluetooth.screen
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -167,10 +168,10 @@ private fun BluetoothHeaderSection(
     onAction: (Action) -> Unit,
 ) {
     Text(
-        modifier = Modifier.padding(bottom = Spacings.small),
+        modifier = Modifier.padding(bottom = Spacings.small).clickable { onAction(Action.BLEDevicePairing) },
         text = "Your connected devices",
         style = TextStyles.titleMedium,
-        color = Colors.onSurface
+        color = Colors.onSurface,
     )
     when (bluetoothUiState) {
         is BluetoothUiState.Idle -> {

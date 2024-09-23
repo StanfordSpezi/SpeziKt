@@ -1,10 +1,13 @@
 package edu.stanford.spezi.core.bluetooth.di
 
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
+import android.content.Context
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import edu.stanford.spezi.core.bluetooth.api.BLEService
 import edu.stanford.spezi.core.bluetooth.domain.BLEServiceImpl
@@ -21,9 +24,10 @@ class BluetoothModule {
      *
      * @return The Bluetooth adapter instance obtained from the system service.
      */
-    @Suppress("DEPRECATION")
     @Provides
-    fun provideBluetoothAdapter(): BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+    fun provideSystemBluetoothAdapter(
+        @ApplicationContext context: Context,
+    ): BluetoothAdapter = context.getSystemService(BluetoothManager::class.java).adapter
 
     /**
      * Dagger Hilt module for providing bindings.

@@ -37,7 +37,7 @@ internal class BLEDeviceConnector @AssistedInject constructor(
     @ApplicationContext private val context: Context,
 ) {
     private var bluetoothGatt: BluetoothGatt? = null
-    private val _events = MutableSharedFlow<BLEServiceEvent>(replay = 1, extraBufferCapacity = 1)
+    private val _events = MutableSharedFlow<BLEServiceEvent>()
     private val isDestroyed = AtomicBoolean(false)
 
     /**

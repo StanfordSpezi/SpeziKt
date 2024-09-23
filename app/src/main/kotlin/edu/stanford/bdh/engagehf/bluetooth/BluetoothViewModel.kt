@@ -75,8 +75,8 @@ class BluetoothViewModel @Inject internal constructor(
                             it.copy(measurementDialog = dialog)
                         }
                     }
-                    is EngageBLEServiceEvent.DeviceDiscovered -> {
-                        logger.i { "Ignoring device discovered event" }
+                    is EngageBLEServiceEvent.DeviceDiscovered, is EngageBLEServiceEvent.DeviceConnected, is EngageBLEServiceEvent.DevicePaired  -> {
+                        logger.i { "Ignoring event $event" }
                     }
                 }
             }
@@ -119,6 +119,10 @@ class BluetoothViewModel @Inject internal constructor(
         when (action) {
             is Action.ConfirmMeasurement -> {
                 handleConfirmMeasurementAction(action)
+            }
+
+            is Action.BLEDevicePairing -> {
+                appScreenEvents.emit(AppScreenEvents.Event.BLEDevicePairingBottomSheet)
             }
 
             is Action.DismissDialog -> {

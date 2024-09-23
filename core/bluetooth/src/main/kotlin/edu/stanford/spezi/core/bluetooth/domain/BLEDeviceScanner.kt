@@ -29,6 +29,7 @@ internal class BLEDeviceScanner @Inject constructor(
     private val bluetoothAdapter: BluetoothAdapter,
     @Dispatching.IO private val scope: CoroutineScope,
 ) {
+
     private val logger by speziLogger()
 
     private val _isScanning = AtomicBoolean(false)
@@ -38,7 +39,7 @@ internal class BLEDeviceScanner @Inject constructor(
      */
     val isScanning get() = _isScanning.get()
 
-    private val _events = MutableSharedFlow<Event>(replay = 1, extraBufferCapacity = 1)
+    private val _events = MutableSharedFlow<Event>()
 
     /**
      * Scanning events flow

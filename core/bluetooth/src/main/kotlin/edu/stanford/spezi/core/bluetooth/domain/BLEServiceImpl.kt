@@ -40,6 +40,7 @@ internal class BLEServiceImpl @Inject constructor(
     private val permissionChecker: PermissionChecker,
     private val deviceScanner: BLEDeviceScanner,
     private val pairedDevicesStorage: PairedDevicesStorage,
+    private val bleDevicePairingNotifier: BLEDevicePairingNotifier,
     @Dispatching.IO private val scope: CoroutineScope,
     private val deviceConnectorFactory: BLEDeviceConnector.Factory,
 ) : BLEService {
@@ -48,7 +49,7 @@ internal class BLEServiceImpl @Inject constructor(
 
     private val connectedDevices = ConcurrentHashMap<String, BLEDeviceConnector>()
     private val _state = MutableStateFlow<BLEServiceState>(BLEServiceState.Idle)
-    private val _events = MutableSharedFlow<BLEServiceEvent>(replay = 1, extraBufferCapacity = 1)
+    private val _events = MutableSharedFlow<BLEServiceEvent>()
 
     override val state: StateFlow<BLEServiceState> = _state.asStateFlow()
     override val events: Flow<BLEServiceEvent> = _events.asSharedFlow()
@@ -62,10 +63,7 @@ internal class BLEServiceImpl @Inject constructor(
                 _state.update { BLEServiceState.BluetoothNotEnabled }
             }
 
-            deviceScanner.isScanning -> {
-                logger.i { "Already scanning. Ignoring start request" }
-                pairedDevicesStorage.refresh()
-            }
+            deviceScanner.isScanning -> logger.i { "Already scanning. Ignoring start request" }
 
             else -> {
                 val missingPermissions =
@@ -73,6 +71,7 @@ internal class BLEServiceImpl @Inject constructor(
                 if (missingPermissions.isNotEmpty()) {
                     _state.update { BLEServiceState.MissingPermissions(permissions = missingPermissions) }
                 } else {
+                    startPairingDevicesCollection()
                     startPairedDevicesStorageCollection()
                     startScannerEventCollection()
                     deviceScanner.startScanning(services = services)
@@ -116,6 +115,7 @@ internal class BLEServiceImpl @Inject constructor(
             connector?.disconnect()
             connectedDevices.remove(address)
         }
+        bleDevicePairingNotifier.stop()
         pairedDevicesStorage.onStopped()
     }
 
@@ -140,10 +140,26 @@ internal class BLEServiceImpl @Inject constructor(
     }
 
     private fun startPairedDevicesStorageCollection() {
-        pairedDevicesStorage.refresh()
         scope.launch {
             pairedDevicesStorage.pairedDevices.collect { devices ->
                 _state.update { BLEServiceState.Scanning(devices) }
+            }
+        }
+    }
+
+    private fun startPairingDevicesCollection() {
+        bleDevicePairingNotifier.start()
+        scope.launch {
+            bleDevicePairingNotifier.events.collect {
+                logger.i { "Received pairing event $it" }
+                when (it) {
+                    is BLEDevicePairingNotifier.Event.DevicePaired -> {
+                        _events.emit(BLEServiceEvent.DevicePaired(it.device))
+                    }
+                    is BLEDevicePairingNotifier.Event.DeviceUnpaired -> {
+                        _events.emit(BLEServiceEvent.DeviceUnpaired(it.device))
+                    }
+                }
             }
         }
     }

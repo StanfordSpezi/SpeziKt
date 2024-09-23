@@ -20,6 +20,7 @@ import javax.inject.Inject
 @Suppress("MissingPermission")
 internal class PairedDevicesStorage @Inject constructor(
     private val bluetoothAdapter: BluetoothAdapter,
+    private val bleDevicePairingNotifier: BLEDevicePairingNotifier,
     @Storage.Encrypted
     private val encryptedKeyValueStorage: KeyValueStorage,
     @Dispatching.IO private val ioScope: CoroutineScope,
@@ -32,7 +33,13 @@ internal class PairedDevicesStorage @Inject constructor(
     private val _pairedDevices = MutableStateFlow(emptyList<BLEDevice>())
     val pairedDevices = _pairedDevices.asStateFlow()
 
+    init {
+        refreshState()
+        observeUnpairingEvents()
+    }
+
     fun updateDevice(device: BluetoothDevice, connected: Boolean) = execute {
+        if (isPaired(device).not()) return@execute
         val currentDevices = getCurrentStoredDevices()
         currentDevices.removeAll { it.address == device.address }
         val newDevice = BLEDevice(
@@ -44,7 +51,7 @@ internal class PairedDevicesStorage @Inject constructor(
         update(devices = currentDevices + newDevice)
     }
 
-    fun refresh() = execute {
+    private fun refreshState() = execute {
         val systemBoundDevices = bluetoothAdapter.bondedDevices
         val newDevices = getCurrentStoredDevices().filter { storedDevice ->
             systemBoundDevices.any { it.address == storedDevice.address }
@@ -68,6 +75,36 @@ internal class PairedDevicesStorage @Inject constructor(
 
     fun isPaired(bluetoothDevice: BluetoothDevice) = bluetoothAdapter.bondedDevices.any {
         it.address == bluetoothDevice.address
+    }
+
+    private fun observeUnpairingEvents() {
+        ioScope.launch {
+            bleDevicePairingNotifier
+                .events
+                .collect { event ->
+                    when (event) {
+                        is BLEDevicePairingNotifier.Event.DeviceUnpaired -> {
+                            val newDevices = getCurrentStoredDevices().filter { storedDevice ->
+                                storedDevice.address != event.device.address
+                            }
+                            update(newDevices)
+                        }
+
+                        is BLEDevicePairingNotifier.Event.DevicePaired -> {
+                            val device = event.device
+                            val currentDevices = getCurrentStoredDevices()
+                            currentDevices.removeAll { it.address == device.address }
+                            val newDevice = BLEDevice(
+                                address = device.address,
+                                name = device.name,
+                                connected = true,
+                            )
+
+                            update(devices = currentDevices + newDevice)
+                        }
+                    }
+                }
+        }
     }
 
     private suspend fun getCurrentStoredDevices() =
