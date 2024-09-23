@@ -89,10 +89,9 @@ class BLEDevicePairingViewModel @Inject constructor(
     @OptIn(FlowPreview::class)
     private fun pairDevice() {
         val device = discoveredDevice ?: return
-
-        bleService.pair(device)
         var job: Job? = null
         job = viewModelScope.launch {
+            bleService.pair(device)
             _uiState.update {
                 if (it is UiState.DeviceFound) {
                     it.copy(pendingActions = it.pendingActions + Action.Pair)
