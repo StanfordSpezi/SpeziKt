@@ -3,11 +3,11 @@ package edu.stanford.bdh.engagehf.bluetooth.screen
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,6 +15,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -167,12 +171,23 @@ private fun BluetoothHeaderSection(
     bluetoothUiState: BluetoothUiState,
     onAction: (Action) -> Unit,
 ) {
-    Text(
-        modifier = Modifier.padding(bottom = Spacings.small).clickable { onAction(Action.BLEDevicePairing) },
-        text = "Your connected devices",
-        style = TextStyles.titleMedium,
-        color = Colors.onSurface,
-    )
+    Row(
+        modifier = Modifier.padding(bottom = Spacings.small),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = "Your devices",
+            style = TextStyles.titleMedium,
+            color = Colors.onSurface,
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        if (bluetoothUiState is BluetoothUiState.Ready) {
+            IconButton(onClick = { onAction(Action.BLEDevicePairing) }) {
+                Icon(Icons.Filled.Add, contentDescription = "Pair device")
+            }
+        }
+    }
+
     when (bluetoothUiState) {
         is BluetoothUiState.Idle -> {
             DefaultElevatedCard(modifier = Modifier.fillMaxWidth()) {

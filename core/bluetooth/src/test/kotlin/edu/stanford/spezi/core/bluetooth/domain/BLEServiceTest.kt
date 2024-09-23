@@ -32,7 +32,8 @@ class BLEServiceTest {
     private val deviceConnectorFactory: BLEDeviceConnector.Factory = mockk()
     private val deviceConnector: BLEDeviceConnector = mockk()
     private val deviceConnectorEvents = MutableSharedFlow<BLEServiceEvent>()
-    private val pairedDevicesStorage: PairedDevicesStorage = mockk(relaxed = true)
+    private val pairedDevicesStorage: BLEPairedDevicesStorage = mockk(relaxed = true)
+    private val bleDevicePairingNotifier: BLEDevicePairingNotifier = mockk(relaxed = true)
     private val deviceScannerEvents = MutableSharedFlow<BLEDeviceScanner.Event>()
     private val pairedDevicesState = MutableStateFlow(emptyList<BLEDevice>())
     private val bluetoothDevice: BluetoothDevice = mockk {
@@ -51,7 +52,8 @@ class BLEServiceTest {
                 deviceScanner = deviceScanner,
                 scope = SpeziTestScope(),
                 deviceConnectorFactory = deviceConnectorFactory,
-                pairedDevicesStorage = pairedDevicesStorage
+                pairedDevicesStorage = pairedDevicesStorage,
+                bleDevicePairingNotifier = bleDevicePairingNotifier,
             )
         )
     }
@@ -206,7 +208,7 @@ class BLEServiceTest {
         setupDeviceConnectorEvent(event = event)
 
         // then
-        verify { pairedDevicesStorage.updateDevice(bluetoothDevice, true) }
+        verify { pairedDevicesStorage.updateDeviceConnection(bluetoothDevice, true) }
     }
 
     @Test
@@ -219,7 +221,7 @@ class BLEServiceTest {
 
         // then
         assertEvent(event = event)
-        verify { pairedDevicesStorage.updateDevice(bluetoothDevice, false) }
+        verify { pairedDevicesStorage.updateDeviceConnection(bluetoothDevice, false) }
     }
 
     @Test

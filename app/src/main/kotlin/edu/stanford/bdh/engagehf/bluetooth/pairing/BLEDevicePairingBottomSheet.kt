@@ -13,9 +13,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.spezi.core.design.component.AsyncTextButton
+import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
@@ -35,14 +39,13 @@ fun BLEDevicePairingBottomSheet() {
 @Composable
 fun BLEDevicePairingBottomSheet(
     uiState: BLEDevicePairingViewModel.UiState,
-    onAction: (BLEDevicePairingViewModel.Action) -> Unit
+    onAction: (BLEDevicePairingViewModel.Action) -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(Spacings.medium)
     ) {
-
         Text(
             modifier = Modifier
                 .fillMaxWidth()
@@ -72,11 +75,15 @@ fun BLEDevicePairingBottomSheet(
         }
 
         uiState.action?.let {
+            val isLoading = if (uiState is BLEDevicePairingViewModel.UiState.DeviceFound) {
+                uiState.pendingActions.contains(action = uiState.action)
+            } else {
+                false
+            }
             AsyncTextButton(
-                onClick = {
-                    onAction(it)
-                },
-                text = it.actionTitle.text(),
+                isLoading = isLoading,
+                onClick = { onAction(it) },
+                text = it.title.text(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = Spacings.medium)
@@ -85,35 +92,36 @@ fun BLEDevicePairingBottomSheet(
     }
 }
 
-
-@ThemePreviews
-@Composable
-fun PreviewBLEDevicePairingBottomSheet1() {
-    SpeziTheme(isPreview = true) {
-        BLEDevicePairingBottomSheet(
-            uiState = discovering,
-            onAction = {},
+private class UIStateParamProvider : PreviewParameterProvider<BLEDevicePairingViewModel.UiState> {
+    override val values: Sequence<BLEDevicePairingViewModel.UiState>
+        get() = sequenceOf(
+            BLEDevicePairingViewModel.UiState.Discovering(
+                title = StringResource(R.string.ble_device_discovering_title),
+                subtitle = StringResource(R.string.ble_device_discovering_subtitle),
+            ),
+            BLEDevicePairingViewModel.UiState.DeviceFound(
+                title = StringResource(R.string.ble_device_found_title),
+                subtitle = StringResource(R.string.ble_device_found_subtitle, "Smart Device"),
+            ),
+            BLEDevicePairingViewModel.UiState.DevicePaired(
+                title = StringResource(R.string.ble_device_paired_title),
+                subtitle = StringResource(R.string.ble_device_paired_subtitle, "Device"),
+            ),
+            BLEDevicePairingViewModel.UiState.Error(
+                title = StringResource(R.string.ble_device_error_title),
+                subtitle = StringResource(R.string.ble_device_error_subtitle),
+            )
         )
-    }
 }
 
 @ThemePreviews
 @Composable
-fun PreviewBLEDevicePairingBottomSheet2() {
+fun PreviewBLEDevicePairingBottomSheet(
+    @PreviewParameter(UIStateParamProvider::class) state: BLEDevicePairingViewModel.UiState,
+) {
     SpeziTheme(isPreview = true) {
         BLEDevicePairingBottomSheet(
-            uiState = found,
-            onAction = {},
-        )
-    }
-}
-
-@ThemePreviews
-@Composable
-fun PreviewBLEDevicePairingBottomSheet3() {
-    SpeziTheme(isPreview = true) {
-        BLEDevicePairingBottomSheet(
-            uiState = success,
+            uiState = state,
             onAction = {},
         )
     }

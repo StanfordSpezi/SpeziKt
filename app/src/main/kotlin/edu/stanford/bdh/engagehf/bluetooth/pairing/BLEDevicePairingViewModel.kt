@@ -4,14 +4,14 @@ import android.bluetooth.BluetoothDevice
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEService
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceEvent
+import edu.stanford.spezi.core.design.action.PendingActions
 import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -24,30 +24,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
-val discovering = BLEDevicePairingViewModel.UiState.Discovering(
-    title = StringResource("Discovering"),
-    subtitle = StringResource("Hold down the bluetooth button for 3 seconds to put the device into pairing mode."),
-)
-
-val found = BLEDevicePairingViewModel.UiState.DeviceFound(
-    title = StringResource("Pair Accessory"),
-    subtitle = StringResource("Do you want to pair DEVICE_NAME with ENGAGEHF app?"),
-)
-
-val success = BLEDevicePairingViewModel.UiState.DevicePaired(
-    title = StringResource("Accessory Paired"),
-    subtitle = StringResource("DEVICE_NAME was succesfully paired with ENGAGEHF app"),
-)
-
 @HiltViewModel
 class BLEDevicePairingViewModel @Inject constructor(
     private val bleService: EngageBLEService,
+    private val uiStateMapper: BLEDevicePairingUiStateMapper,
     private val appScreenEvents: AppScreenEvents,
 ) : ViewModel() {
-    private val logger by speziLogger()
     private var discoveringJob: Job? = null
     private var discoveredDevice: BluetoothDevice? = null
-    private val _uiState = MutableStateFlow<UiState>(discovering)
+    private val _uiState = MutableStateFlow<UiState>(uiStateMapper.mapInitialState())
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -55,10 +40,21 @@ class BLEDevicePairingViewModel @Inject constructor(
         observeAppScreenEvents()
     }
 
+    fun onAction(action: Action) {
+        when (action) {
+            is Action.Done -> {
+                appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet)
+            }
+
+            is Action.Pair -> {
+                pairDevice()
+            }
+        }
+    }
+
     private fun observeAppScreenEvents() {
         viewModelScope.launch {
             appScreenEvents.events.collect {
-                logger.i { "Received app screen event $it" }
                 when (it) {
                     AppScreenEvents.Event.CloseBottomSheet -> stop()
                     AppScreenEvents.Event.BLEDevicePairingBottomSheet -> start()
@@ -76,9 +72,8 @@ class BLEDevicePairingViewModel @Inject constructor(
                 .filterIsInstance<EngageBLEServiceEvent.DeviceDiscovered>()
                 .take(1)
                 .collect {
-                    logger.i { "Received new collection" }
                     discoveredDevice = it.bluetoothDevice
-                    _uiState.update { found }
+                    _uiState.update { _ -> uiStateMapper.mapDeviceFoundState(it.bluetoothDevice) }
                     discoveringJob?.cancel()
                     discoveringJob = null
                 }
@@ -86,46 +81,37 @@ class BLEDevicePairingViewModel @Inject constructor(
     }
 
     private fun stop() {
-        logger.i { "Stopping" }
         discoveringJob?.cancel()
         discoveringJob = null
-        _uiState.update { discovering }
-    }
-
-    fun onAction(action: Action) {
-        when (action) {
-            is Action.Done -> {
-                _uiState.update { discovering }
-                appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet)
-            }
-
-            is Action.Pair -> {
-                pairDevice()
-            }
-        }
+        _uiState.update { uiStateMapper.mapInitialState() }
     }
 
     @OptIn(FlowPreview::class)
     private fun pairDevice() {
         val device = discoveredDevice ?: return
 
+        bleService.pair(device)
         var job: Job? = null
-
         job = viewModelScope.launch {
-            delay(100L)
+            _uiState.update {
+                if (it is UiState.DeviceFound) {
+                    it.copy(pendingActions = it.pendingActions + Action.Pair)
+                } else {
+                    it
+                }
+            }
             bleService
                 .events
                 .filterIsInstance<EngageBLEServiceEvent.DevicePaired>()
                 .filter { it.bluetoothDevice.address == device.address }
-                .timeout(10.seconds)
-                .catch { }
+                .timeout(20.seconds)
+                .catch { _uiState.update { uiStateMapper.mapErrorState() } }
                 .collect {
-                    _uiState.update { success }
+                    _uiState.update { uiStateMapper.mapDevicePairedState(device) }
                     job?.cancel()
                     job = null
                 }
         }
-        bleService.pair(device)
     }
 
     sealed interface UiState {
@@ -137,12 +123,13 @@ class BLEDevicePairingViewModel @Inject constructor(
             override val title: StringResource,
             override val subtitle: StringResource,
         ) : UiState {
-            override val action = null
+            override val action: Action? = null
         }
 
         data class DeviceFound(
             override val title: StringResource,
             override val subtitle: StringResource,
+            val pendingActions: PendingActions<Action.Pair> = PendingActions(),
         ) : UiState {
             override val action = Action.Pair
         }
@@ -153,17 +140,24 @@ class BLEDevicePairingViewModel @Inject constructor(
         ) : UiState {
             override val action = Action.Done
         }
+
+        data class Error(
+            override val title: StringResource,
+            override val subtitle: StringResource,
+        ) : UiState {
+            override val action = Action.Done
+        }
     }
 
     sealed interface Action {
-        val actionTitle: StringResource
+        val title: StringResource
+
         data object Pair : Action {
-            override val actionTitle: StringResource = StringResource("Pair")
+            override val title = StringResource(R.string.ble_device_pair_action_title)
         }
+
         data object Done : Action {
-            override val actionTitle: StringResource = StringResource("Done")
+            override val title = StringResource(R.string.ble_device_pair_done_action_title)
         }
     }
 }
-
-

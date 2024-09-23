@@ -13,8 +13,10 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
+import javax.inject.Singleton
 
 @Suppress("MissingPermission")
+@Singleton
 internal class BLEDevicePairingNotifier @Inject constructor(
     @ApplicationContext private val context: Context,
     @Dispatching.IO private val ioScope: CoroutineScope,

@@ -34,12 +34,13 @@ import javax.inject.Singleton
  * @property scope The coroutine scope used for launching BLE-related operations.
  * @property deviceConnectorFactory The factory used for creating instances of [BLEDeviceConnector].
  */
+@Suppress("LongParameterList")
 @Singleton
 internal class BLEServiceImpl @Inject constructor(
     private val bluetoothAdapter: BluetoothAdapter,
     private val permissionChecker: PermissionChecker,
     private val deviceScanner: BLEDeviceScanner,
-    private val pairedDevicesStorage: PairedDevicesStorage,
+    private val pairedDevicesStorage: BLEPairedDevicesStorage,
     private val bleDevicePairingNotifier: BLEDevicePairingNotifier,
     @Dispatching.IO private val scope: CoroutineScope,
     private val deviceConnectorFactory: BLEDeviceConnector.Factory,
@@ -188,7 +189,7 @@ internal class BLEServiceImpl @Inject constructor(
                 connectedDevices[deviceAddress] = connector
             }
         } ?: connectedDevices.remove(deviceAddress)
-        pairedDevicesStorage.updateDevice(device = device, connected = isConnected)
+        pairedDevicesStorage.updateDeviceConnection(device = device, connected = isConnected)
     }
 
     private companion object {
