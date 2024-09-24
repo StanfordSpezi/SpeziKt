@@ -133,6 +133,20 @@ class AppScreenViewModelTest {
         }
 
     @Test
+    fun `given BLEDevicePairingBottomSheet is received then uiState should be updated`() =
+        runTestUnconfined {
+            // Given
+            val event = AppScreenEvents.Event.BLEDevicePairingBottomSheet
+
+            // When
+            appScreenEventsFlow.emit(event)
+
+            // Then
+            val updatedUiState = viewModel.uiState.value
+            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.BLUETOOTH_DEVICE_PAIRING)
+        }
+
+    @Test
     fun `given AddBloodPressureRecord is received then uiState should be updated`() =
         runTestUnconfined {
             // Given

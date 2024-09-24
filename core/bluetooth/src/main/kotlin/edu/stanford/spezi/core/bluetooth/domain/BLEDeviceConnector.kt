@@ -10,6 +10,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
+import edu.stanford.spezi.core.bluetooth.data.model.BLEDevice
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +36,6 @@ internal class BLEDeviceConnector @AssistedInject constructor(
     @Dispatching.IO private val scope: CoroutineScope,
     @ApplicationContext private val context: Context,
 ) {
-
     private var bluetoothGatt: BluetoothGatt? = null
     private val _events = MutableSharedFlow<BLEServiceEvent>(replay = 1, extraBufferCapacity = 1)
     private val isDestroyed = AtomicBoolean(false)
@@ -50,7 +50,7 @@ internal class BLEDeviceConnector @AssistedInject constructor(
             when (newState) {
                 BluetoothProfile.STATE_CONNECTED -> {
                     gatt.discoverServices()
-                    emit(event = BLEServiceEvent.Connected(device))
+                    emit(event = BLEServiceEvent.Connected(bleDevice(connected = true)))
                 }
 
                 BluetoothProfile.STATE_DISCONNECTED -> {
@@ -67,7 +67,7 @@ internal class BLEDeviceConnector @AssistedInject constructor(
         ) {
             emit(
                 event = BLEServiceEvent.CharacteristicChanged(
-                    device = device,
+                    device = bleDevice(connected = true),
                     gatt = gatt,
                     characteristic = characteristic,
                     value = value,
@@ -109,10 +109,16 @@ internal class BLEDeviceConnector @AssistedInject constructor(
             if (currentGatt != null) {
                 currentGatt.disconnect()
             } else {
-                emit(event = BLEServiceEvent.Disconnected(device))
+                emit(event = BLEServiceEvent.Disconnected(bleDevice(false)))
             }
         }
     }
+
+    private fun bleDevice(connected: Boolean) = BLEDevice(
+        address = device.address,
+        name = device.name,
+        connected = connected
+    )
 
     private fun emit(event: BLEServiceEvent) {
         scope.launch { _events.emit(event) }

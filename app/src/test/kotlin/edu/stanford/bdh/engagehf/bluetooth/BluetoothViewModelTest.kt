@@ -329,6 +329,19 @@ class BluetoothViewModelTest {
     }
 
     @Test
+    fun `it should handle BLEDevicePairing correctly`() {
+        // given
+        val action = Action.BLEDevicePairing
+        createViewModel()
+
+        // when
+        bluetoothViewModel.onAction(action = action)
+
+        // then
+        verify { appScreenEvents.emit(AppScreenEvents.Event.BLEDevicePairingBottomSheet) }
+    }
+
+    @Test
     fun `it should navigate to questionnaire screen on QuestionnaireAction`() {
         // given
         val questionnaireId = "1"

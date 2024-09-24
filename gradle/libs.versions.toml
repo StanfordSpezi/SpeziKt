@@ -141,6 +141,7 @@ spezi-base = { id = "spezi.base", version = "unspecified" }
 spezi-compose = { id = "spezi.compose", version = "unspecified" }
 spezi-hilt = { id = "spezi.hilt", version = "unspecified" }
 spezi-library = { id = "spezi.library", version = "unspecified" }
+spezi-serialization = { id = "spezi.serialization", version = "unspecified" }
 
 # Please keep [bundles] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [bundles]

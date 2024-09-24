@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothProfile
 import android.content.Context
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.spezi.core.bluetooth.data.model.BLEDevice
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.testing.SpeziTestScope
 import edu.stanford.spezi.core.testing.runTestUnconfined
@@ -22,7 +23,16 @@ import org.junit.Before
 import org.junit.Test
 
 class BLEDeviceConnectorTest {
-    private val device: BluetoothDevice = mockk()
+    private val bleDevice = BLEDevice(
+        name = "device",
+        address = "address",
+        connected = false,
+    )
+    private val device: BluetoothDevice = mockk {
+        every { name } returns bleDevice.name
+        every { address } returns bleDevice.address
+    }
+
     private val context: Context = mockk()
     private val bluetoothGatt: BluetoothGatt = mockk()
 
@@ -62,7 +72,7 @@ class BLEDeviceConnectorTest {
 
         // then
         verify { bluetoothGatt wasNot Called }
-        assertEvent(BLEServiceEvent.Disconnected(device))
+        assertEvent(BLEServiceEvent.Disconnected(bleDevice.copy(connected = false)))
     }
 
     @Test
@@ -89,7 +99,7 @@ class BLEDeviceConnectorTest {
 
         // then
         verify { gatt.discoverServices() }
-        assertEvent(BLEServiceEvent.Connected(device))
+        assertEvent(BLEServiceEvent.Connected(bleDevice.copy(connected = true)))
     }
 
     @Test
@@ -102,7 +112,7 @@ class BLEDeviceConnectorTest {
         callback.onConnectionStateChange(gatt, 1, BluetoothProfile.STATE_DISCONNECTED)
 
         // then
-        assertEvent(BLEServiceEvent.Disconnected(device))
+        assertEvent(BLEServiceEvent.Disconnected(bleDevice.copy(connected = false)))
     }
 
     @Test
@@ -116,7 +126,7 @@ class BLEDeviceConnectorTest {
         bleDeviceConnector.disconnect()
 
         // then
-        assertEvent(BLEServiceEvent.Disconnected(device))
+        assertEvent(BLEServiceEvent.Disconnected(bleDevice.copy(connected = false)))
         verify { bluetoothGatt wasNot Called }
     }
 
@@ -132,7 +142,7 @@ class BLEDeviceConnectorTest {
         callback.onCharacteristicChanged(gatt, characteristic, data)
 
         // then
-        assertEvent(BLEServiceEvent.CharacteristicChanged(device, gatt, characteristic, value = data))
+        assertEvent(BLEServiceEvent.CharacteristicChanged(bleDevice.copy(connected = true), gatt, characteristic, value = data))
     }
 
     @Test
