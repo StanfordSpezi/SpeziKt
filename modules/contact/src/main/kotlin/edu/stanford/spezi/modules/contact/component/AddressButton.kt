@@ -55,7 +55,7 @@ fun AddressButton(address: Address) {
             IconButton(
                 onClick = {
                     val addressQuery = URLEncoder.encode(addressText, "utf-8")
-                    val gmmIntentUri = Uri.parse("geo:0,0?q=${addressQuery}")
+                    val gmmIntentUri = Uri.parse("geo:0,0?q=$addressQuery")
                     val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
                     mapIntent.setPackage("com.google.android.apps.maps")
                     context.startActivity(mapIntent)

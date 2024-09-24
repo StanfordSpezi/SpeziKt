@@ -1,6 +1,8 @@
 package edu.stanford.spezi.modules.contact
 
 import android.location.Address
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import edu.stanford.spezi.modules.contact.model.Contact
 import edu.stanford.spezi.modules.contact.model.ContactOption
 import edu.stanford.spezi.modules.contact.model.PersonNameComponents
@@ -9,7 +11,7 @@ import java.util.Locale
 object ContactFactory {
     val leland = Contact(
         name = PersonNameComponents(givenName = "Leland", familyName = "Stanford"),
-        image = null, // Image(systemName: "figure.wave.circle"),
+        image = Icons.Default.AccountBox,
         title = "University Founder",
         description = """
                       Amasa Leland Stanford (March 9, 1824 – June 21, 1893) was an American industrialist and politician. [...] \
@@ -37,7 +39,7 @@ object ContactFactory {
 
     val mock = Contact(
         name = PersonNameComponents(givenName = "Paul", familyName = "Schmiedmayer"),
-        image = null,  // Image(systemName: "figure.wave.circle"), // swiftlint:disable:this accessibility_label_for_image
+        image = Icons.Default.AccountBox,
         title = "A Title",
         description = """
                       This is a description of a contact that will be displayed. It might even be longer than what has to be displayed in the contact card.
