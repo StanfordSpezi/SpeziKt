@@ -55,7 +55,7 @@ internal class BLEPairedDevicesStorage @Inject constructor(
     }
 
     private fun refreshState() = execute {
-        val systemBoundDevices = bluetoothAdapter.bondedDevices
+        val systemBoundDevices = bluetoothAdapter.bondedDevices ?: return@execute
         val newDevices = getCurrentStoredDevices().filter { storedDevice ->
             systemBoundDevices.any { it.address == storedDevice.address }
         }
