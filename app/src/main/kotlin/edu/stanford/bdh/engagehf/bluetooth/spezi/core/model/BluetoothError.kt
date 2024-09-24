@@ -1,6 +1,6 @@
-package edu.stanford.bdh.engagehf.bluetooth.spezi
+package edu.stanford.bdh.engagehf.bluetooth.spezi.core.model
 
-import java.util.UUID
+import android.os.ParcelUuid
 
 sealed class BluetoothError: Error() {
     data object IncompatibleDataFormat: BluetoothError() {
@@ -8,17 +8,17 @@ sealed class BluetoothError: Error() {
     }
 
     data class NotPresent(
-        val service: UUID?,
-        val characteristic: UUID
+        val service: ParcelUuid?,
+        val characteristic: ParcelUuid
     ): BluetoothError()
 
     data class ControlPointRequiresNotifying(
-        val service: UUID,
-        val characteristic: UUID
+        val service: ParcelUuid,
+        val characteristic: ParcelUuid
     ): BluetoothError()
 
     data class ControlPointInProgress(
-        val service: UUID,
-        val characteristic: UUID
+        val service: ParcelUuid,
+        val characteristic: ParcelUuid
     ): BluetoothError()
 }

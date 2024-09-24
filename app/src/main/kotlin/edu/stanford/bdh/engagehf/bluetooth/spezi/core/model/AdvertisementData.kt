@@ -1,16 +1,16 @@
-package edu.stanford.bdh.engagehf.bluetooth.spezi
+package edu.stanford.bdh.engagehf.bluetooth.spezi.core.model
 
-import java.util.UUID
+import edu.stanford.bdh.engagehf.bluetooth.spezi.utils.BTUUID
 
 data class AdvertisementData(
     val localName: String?,
     val manufacturerData: ByteArray?,
-    val serviceData: Map<UUID, ByteArray>?,
-    val serviceIdentifiers: List<UUID>?,
-    val overflowServiceIdentifiers: List<UUID>?,
+    val serviceData: Map<BTUUID, ByteArray>?,
+    val serviceIdentifiers: List<BTUUID>?,
+    val overflowServiceIdentifiers: List<BTUUID>?,
     val txPowerLevel: Double?,
     val isConnectable: Boolean?,
-    val solicitedServiceIdentifiers: List<UUID>?
+    val solicitedServiceIdentifiers: List<BTUUID>?
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
