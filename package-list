@@ -55,6 +55,10 @@ edu.stanford.spezi.core.logging.models
 module:navigation
 edu.stanford.spezi.core.navigation
 edu.stanford.spezi.core.navigation.di
+module:notification
+edu.stanford.spezi.core.notification
+edu.stanford.spezi.core.notification.notifier
+edu.stanford.spezi.core.notification.setting
 module:testing
 edu.stanford.spezi.core.testing
 module:utils
