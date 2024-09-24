@@ -47,7 +47,7 @@ class MessageActionMapperTest {
     @Test
     fun `it should map medications action correctly`() {
         // given
-        val action = "/medications"
+        val action = "medications"
 
         // when
         val result = mapper.map(action)
@@ -60,7 +60,7 @@ class MessageActionMapperTest {
     @Test
     fun `it should map measurements action correctly`() {
         // given
-        val action = "/measurements"
+        val action = "observations"
 
         // when
         val result = mapper.map(action)
@@ -87,7 +87,7 @@ class MessageActionMapperTest {
     @Test
     fun `it should map health summary action correctly`() {
         // given
-        val action = "/healthSummary"
+        val action = "healthSummary"
 
         // when
         val result = mapper.map(action)
@@ -100,7 +100,7 @@ class MessageActionMapperTest {
     @Test
     fun `it should throw error for unknown action`() {
         // given
-        val action = "/unknownAction"
+        val action = "unknownAction"
 
         // when
         val result = mapper.map(action)

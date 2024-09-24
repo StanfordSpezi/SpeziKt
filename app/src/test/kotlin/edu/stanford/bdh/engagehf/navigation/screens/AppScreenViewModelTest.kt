@@ -3,6 +3,7 @@ package edu.stanford.bdh.engagehf.navigation.screens
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.messages.HealthSummaryService
+import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.module.account.manager.UserSessionManager
@@ -23,6 +24,7 @@ class AppScreenViewModelTest {
     private val userSessionManager: UserSessionManager = mockk(relaxed = true)
     private val healthSummaryService: HealthSummaryService = mockk(relaxed = true)
     private val appScreenEventsFlow = MutableSharedFlow<AppScreenEvents.Event>()
+    private val navigator = mockk<Navigator>(relaxed = true)
 
     private lateinit var viewModel: AppScreenViewModel
 
@@ -32,7 +34,8 @@ class AppScreenViewModelTest {
         viewModel = AppScreenViewModel(
             appScreenEvents = appScreenEvents,
             userSessionManager = userSessionManager,
-            healthSummaryService = healthSummaryService
+            healthSummaryService = healthSummaryService,
+            navigator = navigator
         )
     }
 
@@ -130,6 +133,34 @@ class AppScreenViewModelTest {
         }
 
     @Test
+    fun `given AddBloodPressureRecord is received then uiState should be updated`() =
+        runTestUnconfined {
+            // Given
+            val event = AppScreenEvents.Event.AddBloodPressureRecord
+
+            // When
+            appScreenEventsFlow.emit(event)
+
+            // Then
+            val updatedUiState = viewModel.uiState.value
+            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.ADD_BLOOD_PRESSURE_RECORD)
+        }
+
+    @Test
+    fun `given AddHeartRateRecord is received then uiState should be updated`() =
+        runTestUnconfined {
+            // Given
+            val event = AppScreenEvents.Event.AddHeartRateRecord
+
+            // When
+            appScreenEventsFlow.emit(event)
+
+            // Then
+            val updatedUiState = viewModel.uiState.value
+            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.ADD_HEART_RATE_RECORD)
+        }
+
+    @Test
     fun `given ShowAccountDialog is received then uiState should be updated`() =
         runTestUnconfined {
             // Given
@@ -168,5 +199,33 @@ class AppScreenViewModelTest {
 
             // Then
             coVerify { healthSummaryService.generateHealthSummaryPdf() }
+        }
+
+    @Test
+    fun `given BloodPressureDescriptionBottomSheet is received then uiState should be updated`() =
+        runTestUnconfined {
+            // Given
+            val event = AppScreenEvents.Event.BloodPressureDescriptionBottomSheet
+
+            // When
+            appScreenEventsFlow.emit(event)
+
+            // Then
+            val updatedUiState = viewModel.uiState.value
+            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.BLOOD_PRESSURE_DESCRIPTION_INFO)
+        }
+
+    @Test
+    fun `given HeartRateDescriptionBottomSheet is received then uiState should be updated`() =
+        runTestUnconfined {
+            // Given
+            val event = AppScreenEvents.Event.HeartRateDescriptionBottomSheet
+
+            // When
+            appScreenEventsFlow.emit(event)
+
+            // Then
+            val updatedUiState = viewModel.uiState.value
+            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.HEART_RATE_DESCRIPTION_INFO)
         }
 }
