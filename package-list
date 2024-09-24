@@ -8,6 +8,7 @@ edu.stanford.bdh.engagehf.bluetooth.component
 edu.stanford.bdh.engagehf.bluetooth.data.mapper
 edu.stanford.bdh.engagehf.bluetooth.data.models
 edu.stanford.bdh.engagehf.bluetooth.measurements
+edu.stanford.bdh.engagehf.bluetooth.pairing
 edu.stanford.bdh.engagehf.bluetooth.screen
 edu.stanford.bdh.engagehf.bluetooth.service
 edu.stanford.bdh.engagehf.bluetooth.service.mapper
@@ -94,5 +95,6 @@ edu.stanford.spezi.module.onboarding.onboarding
 edu.stanford.spezi.module.onboarding.sequential
 edu.stanford.spezi.module.onboarding.sequential.components
 module:storage
+edu.stanford.spezi.modules.storage.di
 edu.stanford.spezi.modules.storage.file
 edu.stanford.spezi.modules.storage.key
