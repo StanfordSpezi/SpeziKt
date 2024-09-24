@@ -2,7 +2,6 @@ package edu.stanford.spezi.modules.contact
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import edu.stanford.spezi.modules.contact.model.ContactOption
 import org.junit.Rule
 import org.junit.Test
 
