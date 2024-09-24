@@ -157,6 +157,18 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
                         }
                     }
                 }
+                TextButton(
+                    onClick = {
+                        onAction(Action.ShowNotificationSettings)
+                    },
+                    modifier = Modifier
+                        .align(Alignment.Start),
+                ) {
+                    Text(
+                        text = stringResource(R.string.notifications),
+                        style = bodyMedium,
+                    )
+                }
                 HorizontalDivider()
                 VerticalSpacer()
                 TextButton(

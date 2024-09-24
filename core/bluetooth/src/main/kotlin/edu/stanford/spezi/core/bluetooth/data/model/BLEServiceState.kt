@@ -1,7 +1,5 @@
 package edu.stanford.spezi.core.bluetooth.data.model
 
-import android.bluetooth.BluetoothDevice
-
 /**
  * Represents the state of the Bluetooth Low Energy (BLE) service.
  *
@@ -29,7 +27,7 @@ sealed interface BLEServiceState {
     /**
      * Represents the scanning state of the BLE service.
      *
-     * @property pairedDevices The list of paired devices.
+     * @property devices The list BLE devices.
      */
-    data class Scanning(val pairedDevices: List<BluetoothDevice>) : BLEServiceState
+    data class Scanning(val devices: List<BLEDevice>) : BLEServiceState
 }

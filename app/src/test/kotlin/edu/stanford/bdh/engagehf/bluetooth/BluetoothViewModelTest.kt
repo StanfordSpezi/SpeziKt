@@ -66,6 +66,7 @@ class BluetoothViewModelTest {
         every { action } returns messageAction
         every { id } returns messageId
         every { isExpanded } returns false
+        every { isDismissible } returns true
     }
 
     @get:Rule
@@ -325,6 +326,19 @@ class BluetoothViewModelTest {
 
         // then
         verify { appScreenEvents.emit(AppScreenEvents.Event.DoNewMeasurement) }
+    }
+
+    @Test
+    fun `it should handle BLEDevicePairing correctly`() {
+        // given
+        val action = Action.BLEDevicePairing
+        createViewModel()
+
+        // when
+        bluetoothViewModel.onAction(action = action)
+
+        // then
+        verify { appScreenEvents.emit(AppScreenEvents.Event.BLEDevicePairingBottomSheet) }
     }
 
     @Test

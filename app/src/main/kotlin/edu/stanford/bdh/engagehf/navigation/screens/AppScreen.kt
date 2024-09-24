@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package edu.stanford.bdh.engagehf.navigation.screens
 
 import androidx.compose.foundation.layout.Column
@@ -12,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -29,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.DoNewMeasurementBottomSheet
+import edu.stanford.bdh.engagehf.bluetooth.pairing.BLEDevicePairingBottomSheet
 import edu.stanford.bdh.engagehf.bluetooth.screen.BluetoothScreen
 import edu.stanford.bdh.engagehf.health.HealthScreen
 import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.AddBloodPressureBottomSheet
@@ -43,8 +47,6 @@ import edu.stanford.spezi.core.design.component.AppTopAppBar
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.modules.education.videos.EducationScreen
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @Composable
@@ -57,34 +59,23 @@ fun AppScreen() {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppScreen(
     uiState: AppUiState,
     onAction: (Action) -> Unit,
 ) {
-    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = rememberModalBottomSheetState()
-    )
+    val bottomSheetState = rememberModalBottomSheetState()
+    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
 
     LaunchedEffect(key1 = uiState.bottomSheetContent) {
         launch {
             if (uiState.bottomSheetContent != null) {
-                bottomSheetScaffoldState.bottomSheetState.expand()
+                bottomSheetState.expand()
             } else {
-                bottomSheetScaffoldState.bottomSheetState.hide()
+                bottomSheetState.hide()
             }
         }
     }
-    LaunchedEffect(bottomSheetScaffoldState.bottomSheetState) {
-        snapshotFlow { bottomSheetScaffoldState.bottomSheetState.currentValue }
-            .filter { it == SheetValue.Hidden }
-            .distinctUntilChanged()
-            .collect {
-                onAction(Action.DismissBottomSheet)
-            }
-    }
-
     BottomSheetScaffoldContent(
         bottomSheetScaffoldState = bottomSheetScaffoldState,
         uiState = uiState,
@@ -92,7 +83,6 @@ fun AppScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheetScaffoldContent(
     bottomSheetScaffoldState: BottomSheetScaffoldState,
@@ -102,7 +92,11 @@ fun BottomSheetScaffoldContent(
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
         sheetContent = {
-            BottomSheetContent(uiState)
+            BottomSheetContent(
+                uiState = uiState,
+                onAction = onAction,
+                sheetState = bottomSheetScaffoldState.bottomSheetState,
+            )
         },
         sheetPeekHeight = 0.dp
     ) {
@@ -188,7 +182,23 @@ fun BottomSheetScaffoldContent(
 }
 
 @Composable
-fun BottomSheetContent(uiState: AppUiState) {
+private fun BottomSheetContent(
+    uiState: AppUiState,
+    onAction: (Action) -> Unit,
+    sheetState: SheetState,
+) {
+    LaunchedEffect(Unit) {
+        var lastValue = sheetState.currentValue
+        snapshotFlow { sheetState.currentValue }
+            .collect {
+                val movingToPartiallyExpanded = lastValue == SheetValue.Expanded &&
+                    it == SheetValue.PartiallyExpanded
+                if (movingToPartiallyExpanded || it == SheetValue.Hidden) {
+                    onAction(Action.DismissBottomSheet)
+                }
+                lastValue = it
+            }
+    }
     when (uiState.bottomSheetContent) {
         BottomSheetContent.DO_NEW_MEASUREMENT -> DoNewMeasurementBottomSheet()
         BottomSheetContent.WEIGHT_DESCRIPTION_INFO -> WeightDescriptionBottomSheet()
@@ -198,6 +208,7 @@ fun BottomSheetContent(uiState: AppUiState) {
         BottomSheetContent.ADD_HEART_RATE_RECORD -> AddHeartRateBottomSheet()
         BottomSheetContent.BLOOD_PRESSURE_DESCRIPTION_INFO -> BloodPressureDescriptionBottomSheet()
         BottomSheetContent.HEART_RATE_DESCRIPTION_INFO -> HeartRateDescriptionBottomSheet()
+        BottomSheetContent.BLUETOOTH_DEVICE_PAIRING -> BLEDevicePairingBottomSheet()
     }
 }
 
