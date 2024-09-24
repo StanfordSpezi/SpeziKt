@@ -14,10 +14,10 @@ object ContactFactory {
         image = Icons.Default.AccountBox,
         title = "University Founder",
         description = """
-                      Amasa Leland Stanford (March 9, 1824 – June 21, 1893) was an American industrialist and politician. [...] \
-                      He and his wife Jane were also the founders of Stanford University, which they named after their late son.
-                      [https://en.wikipedia.org/wiki/Leland_Stanford]
-                      """,
+Amasa Leland Stanford (March 9, 1824 – June 21, 1893) was an American industrialist and politician. [...] \
+He and his wife Jane were also the founders of Stanford University, which they named after their late son.
+[https://en.wikipedia.org/wiki/Leland_Stanford]
+""",
         organization = "Stanford University",
         address = run {
             val address = Address(Locale.US)
@@ -42,9 +42,9 @@ object ContactFactory {
         image = Icons.Default.AccountBox,
         title = "A Title",
         description = """
-                      This is a description of a contact that will be displayed. It might even be longer than what has to be displayed in the contact card.
-                      Why is this text so long, how much can you tell about one person?
-                      """,
+This is a description of a contact that will be displayed. It might even be longer than what has to be displayed in the contact card.
+Why is this text so long, how much can you tell about one person?
+""",
         organization = "Stanford University",
         address = run {
             val address = Address(Locale.US)
