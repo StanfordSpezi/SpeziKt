@@ -132,7 +132,11 @@ fun ContactViewPreview() {
                 name = PersonNameComponents(givenName = "Leland", familyName = "Stanford"),
                 image = Icons.Default.AccountBox,
                 title = "University Founder",
-                description = "Amasa Leland Stanford (March 9, 1824 – June 21, 1893) was an American industrialist and politician. [...] He and his wife Jane were also the founders of Stanford University, which they named after their late son. [https://en.wikipedia.org/wiki/Leland_Stanford]",
+                description = """
+                              Amasa Leland Stanford (March 9, 1824 – June 21, 1893) was an American industrialist and politician. [...] \
+                              He and his wife Jane were also the founders of Stanford University, which they named after their late son.
+                              [https://en.wikipedia.org/wiki/Leland_Stanford]
+                              """,
                 organization = "Stanford University",
                 address = run {
                     val address = Address(Locale.US)
