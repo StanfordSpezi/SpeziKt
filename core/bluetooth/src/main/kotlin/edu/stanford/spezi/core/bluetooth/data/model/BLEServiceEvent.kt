@@ -28,14 +28,31 @@ sealed interface BLEServiceEvent {
      *
      * @property device The Bluetooth device that is connected.
      */
-    data class Connected(val device: BluetoothDevice) : BLEServiceEvent
+    data class Connected(val device: BLEDevice) : BLEServiceEvent
 
     /**
      * Represents an event indicating that a device is disconnected.
      *
      * @property device The Bluetooth device that is disconnected.
      */
-    data class Disconnected(val device: BluetoothDevice) : BLEServiceEvent
+    data class Disconnected(val device: BLEDevice) : BLEServiceEvent
+
+    /**
+     * Represents an event indicating that a device has been discovered
+     */
+    data class DeviceDiscovered(val device: BluetoothDevice) : BLEServiceEvent
+
+    /**
+     * Event indicating that a BLE device was paired.
+     * @property device BLE device
+     */
+    data class DevicePaired(val device: BluetoothDevice) : BLEServiceEvent
+
+    /**
+     * Event indicating that a BLE device was paired.
+     * @property device BLE device
+     */
+    data class DeviceUnpaired(val device: BluetoothDevice) : BLEServiceEvent
 
     /**
      * Represents a characteristic changed event
@@ -46,7 +63,7 @@ sealed interface BLEServiceEvent {
      * @property value Changed data
      */
     data class CharacteristicChanged(
-        val device: BluetoothDevice,
+        val device: BLEDevice,
         val gatt: BluetoothGatt,
         val characteristic: BluetoothGattCharacteristic,
         val value: ByteArray,

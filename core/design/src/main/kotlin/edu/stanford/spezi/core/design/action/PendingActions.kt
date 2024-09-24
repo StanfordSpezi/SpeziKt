@@ -62,7 +62,7 @@ data class PendingActions<T : Any>(
      * @return A new PendingActions instance that contains existing actions without `action`
      */
     operator fun minus(action: T) = PendingActions(
-        actions = actions.filter { it.javaClass != action.javaClass }
+        actions = actions.filter { it != action }
     )
 
     /**
@@ -72,7 +72,7 @@ data class PendingActions<T : Any>(
     @Composable
     fun contains(action: T): Boolean {
         return remember(this, action) {
-            actions.any { it.javaClass == action.javaClass }
+            actions.any { it == action }
         }
     }
 }

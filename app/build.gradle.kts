@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.spezi.application)
     alias(libs.plugins.spezi.compose)
     alias(libs.plugins.spezi.hilt)
-    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.spezi.serialization)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.google.gms.google.services)
 }
@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":core:bluetooth"))
     implementation(project(":core:coroutines"))
     implementation(project(":core:navigation"))
+    implementation(project(":core:notification"))
     implementation(project(":modules:account"))
     implementation(project(":modules:education"))
     implementation(project(":modules:healthconnectonfhir"))
@@ -60,7 +61,6 @@ dependencies {
     implementation(libs.androidx.splashscreen)
 
     implementation(libs.hilt.navigation.compose)
-    implementation(libs.kotlinx.serialization.json)
     implementation(libs.navigation.compose)
     implementation(libs.vico.compose.m3)
 
