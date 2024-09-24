@@ -1,4 +1,4 @@
-package edu.stanford.bdh.engagehf.bluetooth.spezi
+package edu.stanford.bdh.engagehf.bluetooth.spezi.core.model
 
 enum class WriteType {
     WITH_RESPONSE,

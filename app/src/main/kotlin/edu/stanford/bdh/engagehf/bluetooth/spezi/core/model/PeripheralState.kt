@@ -1,4 +1,4 @@
-package edu.stanford.bdh.engagehf.bluetooth.spezi
+package edu.stanford.bdh.engagehf.bluetooth.spezi.core.model
 
 // TODO: We use Device pretty consistently, why now Peripheral?
 enum class PeripheralState(private val value: UByte) {

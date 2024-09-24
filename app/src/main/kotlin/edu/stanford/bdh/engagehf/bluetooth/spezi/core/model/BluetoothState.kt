@@ -1,4 +1,4 @@
-package edu.stanford.bdh.engagehf.bluetooth.spezi
+package edu.stanford.bdh.engagehf.bluetooth.spezi.core.model
 
 enum class BluetoothState(private val rawValue: UByte) {
     UNKNOWN(0u),
