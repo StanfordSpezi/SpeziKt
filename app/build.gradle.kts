@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":core:bluetooth"))
     implementation(project(":core:coroutines"))
     implementation(project(":core:navigation"))
+    implementation(project(":core:notification"))
     implementation(project(":modules:account"))
     implementation(project(":modules:education"))
     implementation(project(":modules:healthconnectonfhir"))

@@ -184,7 +184,7 @@ class BluetoothUiStateMapper @Inject constructor(
         )
     }
 
-    fun mapMessagesAction(action: String): Result<MessagesAction> {
+    fun mapMessagesAction(action: String?): Result<MessagesAction?> {
         return messageActionMapper.map(action)
     }
 

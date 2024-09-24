@@ -1,7 +1,5 @@
 package edu.stanford.bdh.engagehf.bluetooth.screen
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,7 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -49,6 +46,8 @@ import edu.stanford.bdh.engagehf.messages.MessageType
 import edu.stanford.spezi.core.design.component.AsyncTextButton
 import edu.stanford.spezi.core.design.component.DefaultElevatedCard
 import edu.stanford.spezi.core.design.component.LifecycleEvent
+import edu.stanford.spezi.core.design.component.PermissionRequester
+import edu.stanford.spezi.core.design.component.SecondaryText
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
@@ -76,10 +75,13 @@ private fun BluetoothScreen(
     uiState: UiState,
     onAction: (Action) -> Unit,
 ) {
-    PermissionRequester(
-        bluetoothUiState = uiState.bluetooth,
-        onGranted = { onAction(Action.PermissionGranted(permission = it)) }
-    )
+    val state = uiState.bluetooth as? BluetoothUiState.Idle
+    state?.let {
+        PermissionRequester(
+            missingPermissions = it.missingPermissions,
+            onGranted = { onAction(Action.PermissionGranted(permission = it)) }
+        )
+    }
 
     LifecycleEvent { event ->
         if (event == Lifecycle.Event.ON_RESUME) {
@@ -263,33 +265,6 @@ fun DeviceComposable(device: DeviceUiModel) {
             SecondaryText(text = device.summary)
             SecondaryText(text = device.lastSeen.text())
         }
-    }
-}
-
-@Composable
-private fun SecondaryText(text: String, modifier: Modifier = Modifier) {
-    Text(
-        modifier = modifier,
-        text = text,
-        style = TextStyles.bodySmall,
-        color = Colors.secondary,
-    )
-}
-
-@Composable
-private fun PermissionRequester(
-    bluetoothUiState: BluetoothUiState,
-    onGranted: (String) -> Unit,
-) {
-    val permission = (bluetoothUiState as? BluetoothUiState.Idle)
-        ?.missingPermissions
-        ?.firstOrNull() ?: return
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { granted -> if (granted) onGranted(permission) }
-
-    LaunchedEffect(key1 = permission) {
-        launcher.launch(permission)
     }
 }
 
