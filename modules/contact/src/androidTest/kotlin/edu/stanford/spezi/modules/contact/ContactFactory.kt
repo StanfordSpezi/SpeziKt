@@ -15,7 +15,9 @@ import edu.stanford.spezi.modules.contact.model.website
 import java.util.Locale
 
 private object EmptyContactOptionAction : ContactOptionAction {
-    override fun handle(context: Context) {}
+    override fun handle(context: Context) {
+        println("EmptyContactOptionAction handled.")
+    }
 }
 
 object ContactFactory {
