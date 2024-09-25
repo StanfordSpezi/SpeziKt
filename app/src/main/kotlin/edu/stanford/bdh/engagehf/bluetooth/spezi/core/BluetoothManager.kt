@@ -7,6 +7,7 @@ import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
+import androidx.annotation.RequiresPermission
 import edu.stanford.bdh.engagehf.bluetooth.spezi.utils.BTUUID
 import edu.stanford.bdh.engagehf.bluetooth.spezi.core.configuration.DiscoveryDescription
 import edu.stanford.bdh.engagehf.bluetooth.spezi.core.configuration.DeviceDescription
@@ -14,62 +15,133 @@ import edu.stanford.bdh.engagehf.bluetooth.spezi.core.model.BluetoothManagerStor
 import edu.stanford.bdh.engagehf.bluetooth.spezi.core.model.BluetoothState
 import kotlin.time.Duration
 
-class BluetoothManager(context: Context): ScanCallback() {
+class BluetoothManager(context: Context) {
     // TODO: Throw better errors
     private val manager: BluetoothManager =
         context.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager ?: throw Error("")
 
     private val storage = BluetoothManagerStorage()
+    private val callbacks = mutableListOf<BluetoothManagerScanCallback>()
 
     val nearbyPeripherals: List<BluetoothPeripheral>
         get() = TODO()
 
     val state: BluetoothState
-        get() = TODO()
+        get() = storage.state
 
     fun powerOn(): Unit = TODO()
     fun powerOff(): Unit = TODO()
 
-    @SuppressLint("MissingPermission")
+    @RequiresPermission(android.Manifest.permission.BLUETOOTH_SCAN)
     fun scanNearbyDevices(
         discovery: Set<DiscoveryDescription>,
-        minimumRssi: Double?,
+        minimumRssi: Int?,
         advertisementStaleInterval: Duration? = null,
         autoConnect: Boolean = false
     ) {
-        val scanFilters = mutableListOf<ScanFilter>()
-        for (description in discovery) {
-            val builder = ScanFilter.Builder()
-                .setServiceUuid(description.device.services?.first()?.identifier)
-                .build()
-            scanFilters.add(scanFilters.count(), builder)
+        val callbacks = discovery.map {
+            BluetoothManagerScanCallback(
+                it,
+                minimumRssi,
+                advertisementStaleInterval,
+                autoConnect
+            )
         }
-        val settings = ScanSettings.Builder().build()
-        manager.adapter.bluetoothLeScanner.startScan(scanFilters, settings, this)
+
+        this.callbacks.addAll(callbacks)
+
+        for (callback in callbacks) {
+            manager.adapter.bluetoothLeScanner.startScan(
+                callback.scanFilters,
+                callback.settings,
+                callback
+            )
+        }
     }
 
-    @SuppressLint("MissingPermission")
+    @RequiresPermission(android.Manifest.permission.BLUETOOTH_SCAN)
     fun stopScanning() {
-        manager.adapter.bluetoothLeScanner.stopScan(this)
+        for (callback in callbacks) {
+            manager.adapter.bluetoothLeScanner.stopScan(callback)
+        }
     }
 
     @SuppressLint("MissingPermission")
+    @RequiresPermission(android.Manifest.permission.BLUETOOTH_SCAN)
     suspend fun retrievePeripheral(uuid: BTUUID, description: DeviceDescription): BluetoothPeripheral? {
-        val availableScanResults = scanResults.filter { it.device.uuids.contains(uuid.parcelUuid) }
+        for (callback in callbacks) {
+            val result = callback.results.firstOrNull {
+                it.device.uuids.contains(uuid.parcelUuid)
+            }
+            if (result != null) return BluetoothPeripheral(result.device)
+        }
         return null
     }
+}
 
-    private val scanResults = mutableListOf<ScanResult>()
+internal class BluetoothManagerScanCallback(
+    val description: DiscoveryDescription,
+    val minimumRssi: Int?,
+    val advertisementStaleInterval: Duration?,
+    val autoConnect: Boolean,
+): ScanCallback() {
+    val scanFilters by lazy<List<ScanFilter>> {
+        val scanFilters = mutableListOf<ScanFilter>()
+        TODO()
+    }
+    val settings by lazy<ScanSettings> {
+        ScanSettings.Builder().build()
+        TODO()
+    }
+    val results = mutableListOf<ScanResult>()
 
+    @SuppressLint("MissingPermission")
+    @RequiresPermission(android.Manifest.permission.BLUETOOTH_SCAN)
     override fun onScanResult(callbackType: Int, result: ScanResult?) {
-        result?.let { scanResults.add(it) }
+        if (result == null) return
+
+        when (callbackType) {
+            ScanSettings.CALLBACK_TYPE_MATCH_LOST -> {
+                println("onScanResult: Lost result")
+                results.removeIf {
+                    it.device.uuids.contentEquals(
+                        result.device.uuids ?: emptyArray()
+                    )
+                }
+            }
+            ScanSettings.CALLBACK_TYPE_FIRST_MATCH,
+            ScanSettings.CALLBACK_TYPE_ALL_MATCHES -> {
+                println("onScanResult: Received result")
+                results.add(result)
+            }
+            else ->
+                println("onScanResult: Unexpected callbackType $callbackType")
+        }
     }
 
     override fun onScanFailed(errorCode: Int) {
         super.onScanFailed(errorCode)
+
+        when (errorCode) {
+            SCAN_FAILED_INTERNAL_ERROR ->
+                println("onScanFailed: Internal Error")
+            SCAN_FAILED_SCANNING_TOO_FREQUENTLY ->
+                println("onScanFailed: Scanning too frequently")
+            SCAN_FAILED_ALREADY_STARTED ->
+                println("onScanFailed: Already started")
+            SCAN_FAILED_APPLICATION_REGISTRATION_FAILED ->
+                println("onScanFailed: Application registration failed")
+            SCAN_FAILED_FEATURE_UNSUPPORTED ->
+                println("onScanFailed: Feature unsupported")
+            SCAN_FAILED_OUT_OF_HARDWARE_RESOURCES ->
+                println("onScanFailed: Out of hardware resources")
+            else ->
+                println("onScanFailed: Unknown error $errorCode")
+        }
     }
 
     override fun onBatchScanResults(results: MutableList<ScanResult>?) {
-        results?.let { scanResults.addAll(it) }
+        println("onBatchScanResults: Received ${results?.count() ?: 0} results")
+        results?.let { results.addAll(it) }
     }
 }

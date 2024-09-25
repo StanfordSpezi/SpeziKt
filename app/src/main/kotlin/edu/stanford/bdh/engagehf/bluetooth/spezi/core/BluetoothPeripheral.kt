@@ -1,6 +1,14 @@
 package edu.stanford.bdh.engagehf.bluetooth.spezi.core
 
+import android.annotation.SuppressLint
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothManager
+import android.bluetooth.le.ScanResult
+import android.content.Context
 import android.os.ParcelUuid
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import edu.stanford.bdh.engagehf.bluetooth.spezi.utils.BTUUID
 import edu.stanford.bdh.engagehf.bluetooth.spezi.core.model.GATTCharacteristic
 import edu.stanford.bdh.engagehf.bluetooth.spezi.core.model.GATTService
@@ -10,18 +18,44 @@ import edu.stanford.bdh.engagehf.bluetooth.spezi.core.model.PeripheralState
 import java.util.Date
 
 class BluetoothPeripheral(
-    val id: ParcelUuid
+    private val manager: BluetoothManager,
+    private val result: ScanResult,
 ) {
+    class Storage {
 
-    val name: String? get() = TODO()
-    val rssi: Int get() = TODO()
+    }
+
+    private var gatt: BluetoothGatt? = null
+    private val storage = Storage()
+
+    val id: BTUUID @SuppressLint("MissingPermission")
+        get() = BTUUID(result.device.uuids.first())
+
+    val name: String? @SuppressLint("MissingPermission")
+        get() = result.device.name
+
+    val rssi: Int get() = result.rssi
     val state: PeripheralState get() = TODO()
-    val advertisementData: AdvertisementData get() = TODO()
+    val advertisementData: AdvertisementData
+        get() = AdvertisementData(
+            localName = result.scanRecord?.deviceName,
+            manufacturerData = null, // TODO: result.scanRecord?.manufacturerSpecificData,
+            serviceData = result.scanRecord?.serviceData?.mapKeys { BTUUID(it.key) },
+            serviceIdentifiers = result.scanRecord?.serviceUuids?.map { BTUUID(it) },
+            overflowServiceIdentifiers = null, // TODO: Figure out whether this exists or how it is set on iOS
+            txPowerLevel = result.scanRecord?.txPowerLevel,
+            isConnectable = result.isConnectable,
+            solicitedServiceIdentifiers = result.scanRecord?.serviceSolicitationUuids?.map { BTUUID(it) }
+        )
+
     val services: List<GATTService>? get() = TODO()
     val lastActivity: Date get() = TODO()
     val nearby: Boolean get() = TODO()
 
-    suspend fun connect(): Unit = TODO()
+    @SuppressLint("MissingPermission")
+    suspend fun connect(context: Context) {
+        gatt = result.device.connectGatt(context, true, null)
+    }
     fun disconnect(): Unit = TODO()
 
     fun getService(id: BTUUID): GATTService? = TODO()

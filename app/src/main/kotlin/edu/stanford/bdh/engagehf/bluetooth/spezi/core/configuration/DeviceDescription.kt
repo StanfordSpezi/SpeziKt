@@ -1,10 +1,10 @@
 package edu.stanford.bdh.engagehf.bluetooth.spezi.core.configuration
 
-import android.os.ParcelUuid
+import edu.stanford.bdh.engagehf.bluetooth.spezi.utils.BTUUID
 
 data class DeviceDescription(
     val services: Set<ServiceDescription>? = null
 ) {
-    fun description(identifier: ParcelUuid): ServiceDescription? =
+    fun description(identifier: BTUUID): ServiceDescription? =
         services?.firstOrNull { it.identifier == identifier }
 }

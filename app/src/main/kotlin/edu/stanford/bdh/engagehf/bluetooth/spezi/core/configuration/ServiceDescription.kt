@@ -4,7 +4,7 @@ import android.os.ParcelUuid
 import edu.stanford.bdh.engagehf.bluetooth.spezi.utils.BTUUID
 
 data class ServiceDescription(
-    val identifier: ParcelUuid,
+    val identifier: BTUUID,
     val characteristics: Set<CharacteristicDescription>? = null
 ) {
     fun description(identifier: BTUUID): CharacteristicDescription? =
