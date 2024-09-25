@@ -8,7 +8,7 @@ data class AdvertisementData(
     val serviceData: Map<BTUUID, ByteArray>?,
     val serviceIdentifiers: List<BTUUID>?,
     val overflowServiceIdentifiers: List<BTUUID>?,
-    val txPowerLevel: Double?,
+    val txPowerLevel: Int?,
     val isConnectable: Boolean?,
     val solicitedServiceIdentifiers: List<BTUUID>?
 ) {
