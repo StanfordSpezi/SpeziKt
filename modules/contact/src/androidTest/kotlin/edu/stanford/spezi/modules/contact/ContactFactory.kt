@@ -1,12 +1,22 @@
 package edu.stanford.spezi.modules.contact
 
+import android.content.Context
 import android.location.Address
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import edu.stanford.spezi.modules.contact.model.Contact
 import edu.stanford.spezi.modules.contact.model.ContactOption
+import edu.stanford.spezi.modules.contact.model.ContactOptionAction
 import edu.stanford.spezi.modules.contact.model.PersonNameComponents
+import edu.stanford.spezi.modules.contact.model.call
+import edu.stanford.spezi.modules.contact.model.email
+import edu.stanford.spezi.modules.contact.model.text
+import edu.stanford.spezi.modules.contact.model.website
 import java.util.Locale
+
+private object EmptyContactOptionAction: ContactOptionAction {
+    override fun handle(context: Context) {}
+}
 
 object ContactFactory {
     val leland = Contact(
@@ -60,7 +70,7 @@ Why is this text so long, how much can you tell about one person?
             ContactOption.call("+1 (234) 567-891"),
             ContactOption.text("+1 (234) 567-892"),
             ContactOption.email(addresses = listOf("lelandstanford@stanford.edu"), subject = "Hi Leland!"),
-            ContactOption(image = null, title = "Cloud", action = { })
+            ContactOption(image = null, title = "Cloud", action = EmptyContactOptionAction)
         )
     )
 }
