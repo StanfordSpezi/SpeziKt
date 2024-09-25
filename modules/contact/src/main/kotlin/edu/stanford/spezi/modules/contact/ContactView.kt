@@ -27,11 +27,14 @@ import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.modules.contact.component.AddressButton
-import edu.stanford.spezi.modules.contact.component.ContactOptionButton
+import edu.stanford.spezi.modules.contact.component.AddressCard
+import edu.stanford.spezi.modules.contact.component.ContactOptionCard
 import edu.stanford.spezi.modules.contact.model.Contact
 import edu.stanford.spezi.modules.contact.model.ContactOption
 import edu.stanford.spezi.modules.contact.model.PersonNameComponents
+import edu.stanford.spezi.modules.contact.model.call
+import edu.stanford.spezi.modules.contact.model.email
+import edu.stanford.spezi.modules.contact.model.website
 import java.util.Locale
 
 /**
@@ -109,12 +112,12 @@ fun ContactView(contact: Contact) {
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             contact.options.forEach { option ->
-                                ContactOptionButton(option = option)
+                                ContactOptionCard(option = option)
                             }
                         }
                         Spacer(modifier = Modifier.height(Spacings.large))
                         contact.address?.let { address ->
-                            AddressButton(address = address)
+                            AddressCard(address = address)
                         }
                     }
                 }
@@ -125,7 +128,7 @@ fun ContactView(contact: Contact) {
 
 @Preview
 @Composable
-fun ContactViewPreview() {
+private fun ContactViewPreview() {
     SpeziTheme {
         ContactView(
             Contact(

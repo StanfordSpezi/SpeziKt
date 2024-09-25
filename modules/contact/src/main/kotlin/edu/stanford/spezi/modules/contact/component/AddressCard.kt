@@ -26,15 +26,8 @@ import edu.stanford.spezi.modules.contact.model.formatted
 import java.net.URLEncoder
 import java.util.Locale
 
-/**
- * A card that displays an address and allows the user to navigate to it.
- * @param address The address to display and navigate to.
- * @sample edu.stanford.spezi.modules.contact.component.NavigationCardPreview
- * @see edu.stanford.spezi.modules.contact.ContactView
- */
 @Composable
-fun AddressButton(address: Address) {
-    val context = LocalContext.current
+internal fun AddressCard(address: Address) {
     DefaultElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -52,6 +45,7 @@ fun AddressButton(address: Address) {
                 style = TextStyles.bodyMedium,
                 modifier = Modifier.weight(1f)
             )
+            val context = LocalContext.current
             IconButton(
                 onClick = {
                     val addressQuery = URLEncoder.encode(addressText, "utf-8")
@@ -73,9 +67,9 @@ fun AddressButton(address: Address) {
 
 @Composable
 @Preview
-fun NavigationCardPreview() {
+private fun AddressCardPreview() {
     SpeziTheme {
-        AddressButton(run {
+        AddressCard(run {
             val address = Address(Locale.US)
             address.setAddressLine(0, "1234 Main Street")
             address.postalCode = "12345"

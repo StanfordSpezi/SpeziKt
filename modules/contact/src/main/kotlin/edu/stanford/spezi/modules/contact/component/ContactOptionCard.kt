@@ -20,23 +20,17 @@ import edu.stanford.spezi.core.design.component.DefaultElevatedCard
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.modules.contact.model.ContactOption
+import edu.stanford.spezi.modules.contact.model.email
 
-/**
- * A card that displays a contact option.
- * @param option The contact option to display.
- * @sample edu.stanford.spezi.modules.contact.component.ContactOptionButtonPreview
- * @see ContactOption
- * @see edu.stanford.spezi.modules.contact.ContactView
- */
 @Composable
-fun ContactOptionButton(option: ContactOption) {
+internal fun ContactOptionCard(option: ContactOption) {
     val context = LocalContext.current
     DefaultElevatedCard(
         modifier = Modifier
             .wrapContentSize(Alignment.Center)
             .width(90.dp)
             .clickable {
-                option.perform(context)
+                option.action.handle(context)
             }
     ) {
         Column(
@@ -58,10 +52,10 @@ fun ContactOptionButton(option: ContactOption) {
 
 @Composable
 @Preview
-fun ContactOptionButtonPreview() {
+private fun ContactOptionCardPreview() {
     SpeziTheme {
-        ContactOptionButton(
-            option = ContactOption.email(
+        ContactOptionCard(
+            ContactOption.email(
                 addresses = listOf("test@test.de"),
             ),
         )
