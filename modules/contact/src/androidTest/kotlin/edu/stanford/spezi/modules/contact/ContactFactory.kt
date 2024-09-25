@@ -14,7 +14,7 @@ import edu.stanford.spezi.modules.contact.model.text
 import edu.stanford.spezi.modules.contact.model.website
 import java.util.Locale
 
-private object EmptyContactOptionAction: ContactOptionAction {
+private object EmptyContactOptionAction : ContactOptionAction {
     override fun handle(context: Context) {}
 }
 
