@@ -7,7 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 
 private data class TextContactOptionAction(
-    private val number: String
+    private val number: String,
 ): ContactOptionAction {
     override fun handle(context: Context) {
         val intent = Intent(Intent.ACTION_DIAL).apply {
@@ -17,7 +17,7 @@ private data class TextContactOptionAction(
     }
 }
 
-fun ContactOption.Companion.text(number: String): ContactOption =
+fun ContactOption.Companion.text(number: String) : ContactOption =
     ContactOption(
         image = Icons.Default.Call, // TODO: Find sms icon instead
         title = "Text",

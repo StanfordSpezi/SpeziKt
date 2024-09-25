@@ -9,7 +9,7 @@ import java.net.URLEncoder
 
 private data class EmailContactOptionAction(
     private val addresses: List<String>,
-    private val subject: String? = null
+    private val subject: String? = null,
 ): ContactOptionAction {
     override fun handle(context: Context) {
         val emailIntent = Intent(Intent.ACTION_SENDTO).apply {

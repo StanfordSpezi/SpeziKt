@@ -7,7 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 
 private data class CallContactOptionAction(
-    private val number: String
+    private val number: String,
 ): ContactOptionAction {
     override fun handle(context: Context) {
         val dialIntent = Intent(Intent.ACTION_DIAL).apply {

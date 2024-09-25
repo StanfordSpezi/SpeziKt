@@ -7,7 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 
 private data class WebsiteContactOptionAction(
-    private val uriString: String
+    private val uriString: String,
 ): ContactOptionAction {
     override fun handle(context: Context) {
         val browserIntent =
