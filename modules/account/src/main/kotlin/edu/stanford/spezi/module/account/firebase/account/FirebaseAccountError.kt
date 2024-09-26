@@ -1,4 +1,4 @@
-package edu.stanford.spezi.module.account.firebase
+package edu.stanford.spezi.module.account.firebase.account
 
 sealed class FirebaseAccountError: Error() {
     data object NotSignedIn: FirebaseAccountError() {

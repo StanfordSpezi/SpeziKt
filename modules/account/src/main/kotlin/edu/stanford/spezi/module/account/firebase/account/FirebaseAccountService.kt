@@ -1,4 +1,4 @@
-package edu.stanford.spezi.module.account.firebase
+package edu.stanford.spezi.module.account.firebase.account
 
 import android.accounts.Account
 import com.google.firebase.auth.AuthResult
@@ -19,10 +19,6 @@ data class FirebaseEmulatorSettings(
     val host: String,
     val port: Int
 )
-
-enum class FirebaseAuthProvider {
-    EMAIL_AND_PASSWORD, SIGN_IN_WITH_GOOGLE, ANONYMOUS
-}
 
 private sealed class InitialUserState {
     data object Unknown: InitialUserState()
@@ -54,7 +50,7 @@ class FirebaseAccountService(
     val authProviders: Set<FirebaseAuthProvider>,
 ) : AccountService {
 
-    val configuration: AccountServiceConfiguration = AccountServiceConfiguration(
+    override val configuration: AccountServiceConfiguration = AccountServiceConfiguration(
         AccountServiceConfigurationStorage()
     )
 
@@ -63,7 +59,7 @@ class FirebaseAccountService(
     @Inject lateinit var account: Account
     @Inject lateinit var externalStorage: ExternalAccountStorage
 
-    fun configure() {
+    override fun configure() {
         emulatorSettings?.let {
             auth.useEmulator(it.host, it.port)
         }
