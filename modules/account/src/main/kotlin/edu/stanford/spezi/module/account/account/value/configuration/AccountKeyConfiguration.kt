@@ -1,6 +1,7 @@
-package edu.stanford.spezi.module.account.account
+package edu.stanford.spezi.module.account.account.value.configuration
 
-import android.accounts.Account
+import edu.stanford.spezi.module.account.account.value.AccountKeys
+import edu.stanford.spezi.module.account.account.value.collections.AccountKey
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 

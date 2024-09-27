@@ -1,16 +1,16 @@
 package edu.stanford.spezi.module.account.firebase.account
 
-import android.accounts.Account
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.OAuthCredential
 import com.google.firebase.auth.UserProfileChangeRequest
-import edu.stanford.spezi.module.account.account.AccountDetails
-import edu.stanford.spezi.module.account.account.AccountModifications
-import edu.stanford.spezi.module.account.account.AccountService
-import edu.stanford.spezi.module.account.account.AccountServiceConfiguration
-import edu.stanford.spezi.module.account.account.AccountServiceConfigurationStorage
+import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.module.account.account.Account
+import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
+import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
+import edu.stanford.spezi.module.account.account.service.AccountService
+import edu.stanford.spezi.module.account.account.service.configuration.AccountServiceConfiguration
+import edu.stanford.spezi.module.account.account.service.configuration.AccountServiceConfigurationStorage
 import edu.stanford.spezi.module.account.account.ExternalAccountStorage
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -20,41 +20,17 @@ data class FirebaseEmulatorSettings(
     val port: Int
 )
 
-private sealed class InitialUserState {
-    data object Unknown: InitialUserState()
-    data object NotPresent: InitialUserState()
-    data class Present(val incomplete: Boolean): InitialUserState()
-}
-
-private sealed class UserChange {
-    data class User(val user: FirebaseUser): UserChange()
-    data object Removed: UserChange()
-}
-
-private data class UserUpdate(
-    val change: UserChange,
-    var authResult: AuthResult? = null
-) {
-    companion object {
-        val removed = UserUpdate(UserChange.Removed)
-
-        operator fun invoke(authResult: AuthResult): UserUpdate {
-            // TODO: Figure out how to deal with this error
-            return UserUpdate(UserChange.User(authResult.user ?: throw Error()), authResult)
-        }
-    }
-}
-
 class FirebaseAccountService(
     private val emulatorSettings: FirebaseEmulatorSettings? = null,
     val authProviders: Set<FirebaseAuthProvider>,
 ) : AccountService {
+    private val logger by speziLogger()
+
+    private val auth get() = FirebaseAuth.getInstance()
 
     override val configuration: AccountServiceConfiguration = AccountServiceConfiguration(
         AccountServiceConfigurationStorage()
     )
-
-    val auth = FirebaseAuth.getInstance()
 
     @Inject lateinit var account: Account
     @Inject lateinit var externalStorage: ExternalAccountStorage
@@ -145,18 +121,6 @@ class FirebaseAccountService(
         }
     }
 
-    private suspend fun reauthenticateUser(user: FirebaseUser): ReauthenticationOperation {
-
-    }
-
-    private suspend fun reauthenticateUserPassword(user: FirebaseUser): ReauthenticationOperation {
-
-    }
-
-    private suspend fun reauthenticateUserApple(user: FirebaseUser): ReauthenticationOperation {
-
-    }
-
     private suspend fun updateDisplayName(user: FirebaseUser, name: String) {
         user.updateProfile(
             UserProfileChangeRequest.Builder()
@@ -166,6 +130,6 @@ class FirebaseAccountService(
     }
 
     private fun notifyUserRemoval() {
-        account.removeUserDetails()
+        TODO()
     }
 }

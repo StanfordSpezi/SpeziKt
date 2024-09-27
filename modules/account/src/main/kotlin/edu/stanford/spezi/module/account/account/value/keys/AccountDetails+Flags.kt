@@ -1,5 +1,6 @@
-package edu.stanford.spezi.module.account.account
+package edu.stanford.spezi.module.account.account.value.keys
 
+import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.foundation.KnowledgeSource
 
 private enum class AccountDetailsIsIncompleteKey: KnowledgeSource<AccountAnchor, Boolean>

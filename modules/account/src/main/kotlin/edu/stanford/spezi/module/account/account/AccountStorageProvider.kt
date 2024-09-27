@@ -1,5 +1,8 @@
 package edu.stanford.spezi.module.account.account
 
+import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
+import edu.stanford.spezi.module.account.account.value.collections.AccountKey
+import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
 import edu.stanford.spezi.module.account.spezi.Module
 import kotlin.reflect.KClass
 

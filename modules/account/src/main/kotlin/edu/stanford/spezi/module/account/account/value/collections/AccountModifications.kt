@@ -1,4 +1,4 @@
-package edu.stanford.spezi.module.account.account
+package edu.stanford.spezi.module.account.account.value.collections
 
 data class AccountModifications(
     val modifiedDetails: AccountDetails,

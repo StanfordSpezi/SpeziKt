@@ -1,4 +1,4 @@
-package edu.stanford.spezi.module.account.account
+package edu.stanford.spezi.module.account.account.value.collections
 
 import edu.stanford.spezi.module.account.foundation.SendableValueRepository
 

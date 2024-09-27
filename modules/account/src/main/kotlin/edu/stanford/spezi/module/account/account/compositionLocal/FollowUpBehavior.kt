@@ -1,7 +1,6 @@
-package edu.stanford.spezi.module.account.account
+package edu.stanford.spezi.module.account.account.compositionLocal
 
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.ui.Modifier
 
 enum class FollowUpBehavior {
     DISABLED, MINIMAL, REDUNDANT;

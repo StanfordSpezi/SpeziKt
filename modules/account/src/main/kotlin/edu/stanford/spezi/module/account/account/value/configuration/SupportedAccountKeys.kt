@@ -1,6 +1,6 @@
-package edu.stanford.spezi.module.account.account
+package edu.stanford.spezi.module.account.account.value.configuration
 
-import java.util.UUID
+import edu.stanford.spezi.module.account.account.value.collections.AccountKey
 
 sealed class SupportedAccountKeys {
     data object Arbitrary: SupportedAccountKeys()

@@ -1,4 +1,4 @@
-package edu.stanford.spezi.module.account.account
+package edu.stanford.spezi.module.account.account.value
 
 sealed class InitialValue<Value> {
     data class Empty<Value>(private val value: Value): InitialValue<Value>()

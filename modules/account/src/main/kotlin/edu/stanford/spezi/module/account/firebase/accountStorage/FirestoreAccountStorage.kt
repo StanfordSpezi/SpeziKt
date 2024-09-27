@@ -4,11 +4,9 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ListenerRegistration
-import edu.stanford.spezi.core.coroutines.di.Dispatching
-import edu.stanford.spezi.module.account.account.Account
-import edu.stanford.spezi.module.account.account.AccountDetails
-import edu.stanford.spezi.module.account.account.AccountKey
-import edu.stanford.spezi.module.account.account.AccountModifications
+import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
+import edu.stanford.spezi.module.account.account.value.collections.AccountKey
+import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
 import edu.stanford.spezi.module.account.account.AccountStorageProvider
 import kotlinx.coroutines.tasks.await
 import kotlin.reflect.KClass
