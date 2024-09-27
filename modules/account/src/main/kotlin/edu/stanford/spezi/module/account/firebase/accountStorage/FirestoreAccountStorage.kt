@@ -11,19 +11,19 @@ import edu.stanford.spezi.module.account.account.value.collections.AccountKey
 import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
 import edu.stanford.spezi.module.account.account.AccountStorageProvider
 import edu.stanford.spezi.module.account.account.ExternalAccountStorage
+import edu.stanford.spezi.module.account.firebase.firestore.Firestore
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlin.reflect.KClass
 
-// TODO: Create dependencies to Firestore, ExternalAccountStorage and AccountDetailsCache
 class FirestoreAccountStorage(
     val collection: () -> CollectionReference,
     val identifierMapping: Map<String, KClass<AccountKey<*>>>
 ): AccountStorageProvider {
 
+    private val firestore: Firestore = TODO()
     private val localCache: AccountDetailsCache = TODO()
     private val externalStorage: ExternalAccountStorage = TODO()
     private val listenerRegistration = mutableMapOf<String, ListenerRegistration>()
