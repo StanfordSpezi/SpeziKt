@@ -25,6 +25,7 @@ internal class FirebaseInvitationAuthManager @Inject constructor(
                 .call(data)
                 .await()
 
+            userSessionManager.forceRefresh()
             logger.i { "Successfully checked invitation code" }
             Result.success(Unit)
         }.onFailure { e ->

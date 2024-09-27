@@ -96,7 +96,6 @@ internal class LoginViewModel @Inject constructor(
     private fun navigateToRegister() {
         navigator.navigateTo(
             AccountNavigationEvent.RegisterScreen(
-                isGoogleSignUp = false,
                 email = email,
                 password = password,
             )
@@ -150,13 +149,6 @@ internal class LoginViewModel @Inject constructor(
             }.onFailure {
                 accountEvents.emit(event = AccountEvents.Event.SignInFailure)
                 messageNotifier.notify(R.string.error_sign_in_failed)
-                navigator.navigateTo(
-                    AccountNavigationEvent.RegisterScreen(
-                        isGoogleSignUp = true,
-                        email = uiState.value.email.value,
-                        password = uiState.value.password.value
-                    )
-                )
             }
     }
 

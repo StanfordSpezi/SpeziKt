@@ -23,6 +23,7 @@ interface UserSessionManager {
     fun observeUserState(): Flow<UserState>
     fun getUserUid(): String?
     fun getUserInfo(): UserInfo
+    suspend fun forceRefresh()
 }
 
 @Singleton
@@ -79,6 +80,10 @@ internal class UserSessionManagerImpl @Inject constructor(
             email = user?.email ?: "",
             name = user?.displayName?.takeIf { it.isNotBlank() },
         )
+    }
+
+    override suspend fun forceRefresh() {
+        firebaseAuth.currentUser?.getIdToken(true)?.await()
     }
 
     @Suppress("UnusedPrivateMember")
