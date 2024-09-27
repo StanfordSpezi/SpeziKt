@@ -12,7 +12,7 @@ class AccountDetailsCache: Module {
 
     private val localCache = mutableMapOf<String, AccountDetails>()
 
-    fun loadEntry(accountId: String, keys: List<KClass<AccountKey<*>>>): AccountDetails? {
+    fun loadEntry(accountId: String, keys: Set<KClass<AccountKey<*>>>): AccountDetails? {
         localCache[accountId]?.let {
             return it
         }

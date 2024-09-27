@@ -3,11 +3,18 @@ package edu.stanford.spezi.module.account.firebase.accountStorage
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import edu.stanford.spezi.module.account.account.AccountDetailsCache
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.collections.AccountKey
 import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
 import edu.stanford.spezi.module.account.account.AccountStorageProvider
+import edu.stanford.spezi.module.account.account.ExternalAccountStorage
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlin.reflect.KClass
 
@@ -17,60 +24,83 @@ class FirestoreAccountStorage(
     val identifierMapping: Map<String, KClass<AccountKey<*>>>
 ): AccountStorageProvider {
 
+    private val localCache: AccountDetailsCache = TODO()
+    private val externalStorage: ExternalAccountStorage = TODO()
     private val listenerRegistration = mutableMapOf<String, ListenerRegistration>()
+    private val registeredKeys = mutableMapOf<String, Set<KClass<AccountKey<*>>>>()
 
     private fun userDocument(accountId: String): DocumentReference =
         collection().document(accountId)
 
-    private fun snapshotListener(accountId: String, keys: List<KClass<AccountKey<*>>>) {
+    @OptIn(DelicateCoroutinesApi::class) // TODO: Check if the GlobalScope.launch is the right call here...
+    private fun snapshotListener(accountId: String, keys: Set<KClass<AccountKey<*>>>) {
         listenerRegistration.remove(accountId)
         val document = userDocument(accountId)
 
-        listenerRegistration[accountId] = document.addSnapshotListener { snapshot, error ->
+        registeredKeys[accountId] = keys
+
+        listenerRegistration[accountId] = document.addSnapshotListener { snapshot, _ ->
+            // TODO: What about the error?! also ignored on iOS though
+
             if (snapshot?.metadata?.hasPendingWrites() == true) {
                 return@addSnapshotListener
             }
 
             snapshot?.let {
-                processUpdatedSnapshot(accountId, it, keys)
+                GlobalScope.launch {
+                    processUpdatedSnapshot(accountId, it)
+                }
             }
         }
     }
 
-    private fun processUpdatedSnapshot(
+    private suspend fun processUpdatedSnapshot(
         accountId: String,
-        snapshot: DocumentSnapshot,
-        keys: List<KClass<AccountKey<*>>>
+        snapshot: DocumentSnapshot
     ) {
+        val keys = registeredKeys[accountId] ?: return // TODO: Add logging
+
         val details = buildAccountDetails(snapshot, keys)
-        if (details.isEmpty) return
-        // TODO: Propagate to cache and external storage
+        if (details.isEmpty()) return
+
+        localCache.communicateRemoteChanges(accountId, details)
+        externalStorage.notifyAboutUpdatedDetails(accountId, details)
     }
 
-    private fun buildAccountDetails(snapshot: DocumentSnapshot, keys: List<KClass<AccountKey<*>>>): AccountDetails {
+    private fun buildAccountDetails(snapshot: DocumentSnapshot, keys: Set<KClass<AccountKey<*>>>): AccountDetails {
         if (!snapshot.exists()) return AccountDetails()
 
-        TODO("Decode")
+        TODO("Figure out how to decode this solely based on the identifierMapping")
     }
 
     override suspend fun load(
         accountId: String,
-        keys: List<KClass<out AccountKey<*>>>,
+        keys: Set<KClass<AccountKey<*>>>,
     ): AccountDetails? {
-        TODO("Not yet implemented")
+        val cached = localCache.loadEntry(accountId, keys)
+
+        if (listenerRegistration[accountId] == null) {
+            snapshotListener(accountId, keys)
+        }
+
+        return cached
     }
 
     override suspend fun store(accountId: String, modifications: AccountModifications) {
+        val document = userDocument(accountId)
+        val batch = FirebaseFirestore.getInstance().batch()
+
         TODO("Not yet implemented")
     }
 
     override suspend fun disassociate(accountId: String) {
-        TODO("Not yet implemented")
+        listenerRegistration.remove(accountId)?.remove()
+        registeredKeys.remove(accountId)
+        localCache.clearEntry(accountId)
     }
 
     override suspend fun delete(accountId: String) {
         disassociate(accountId)
-
         userDocument(accountId).delete().await()
     }
 }
