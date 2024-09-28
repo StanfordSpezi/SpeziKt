@@ -8,7 +8,6 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.module.account.R
@@ -17,7 +16,6 @@ import javax.inject.Inject
 
 internal class AuthenticationManager @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
-    private val firestore: FirebaseFirestore,
     private val credentialManager: CredentialManager,
     @ApplicationContext private val context: Context,
 ) {
