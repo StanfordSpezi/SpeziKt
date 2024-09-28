@@ -10,7 +10,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.module.account.R
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -71,7 +70,7 @@ internal class AuthenticationManager @Inject constructor(
             val googleIdOption = GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
                 .setAutoSelectEnabled(true)
-                .setServerClientId(context.getString(R.string.serverClientId))
+                // TODO .setServerClientId(context.getString(R.string.serverClientId))
                 .build()
 
             val request = GetCredentialRequest.Builder()
