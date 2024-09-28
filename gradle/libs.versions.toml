@@ -52,7 +52,7 @@ targetSdk = "34"
 testCoreVersion = "1.5.0"
 timberVersion = "5.0.1"
 truth = "1.4.2"
-vico = "2.0.0-alpha.24"
+vico = "2.0.0-alpha.25"
 
 # Please keep [libraries] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [libraries]
