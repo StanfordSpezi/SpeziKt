@@ -145,11 +145,11 @@ class HealthPageTest {
         entryId: String? = null,
         tableData: List<TableEntryData> = listOf(
             TableEntryData(
-                value = 70.0f,
+                value = 70.0,
                 formattedValues = "70.0 kg",
                 date = ZonedDateTime.now(),
                 formattedDate = "Jan 2022",
-                trend = 0f,
+                trend = 0.0,
                 formattedTrend = "0.0 kg",
                 secondValue = null,
                 id = entryId,
