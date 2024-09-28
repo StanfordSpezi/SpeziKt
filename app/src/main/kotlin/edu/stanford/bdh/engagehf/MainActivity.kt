@@ -113,7 +113,6 @@ class MainActivity : FragmentActivity() {
         ) {
             val args = it.toRoute<Routes.RegisterScreen>()
             RegisterScreen(
-                args.registerParams.isGoogleSignUp,
                 args.registerParams.email,
                 args.registerParams.password
             )
@@ -169,7 +168,6 @@ class MainActivity : FragmentActivity() {
                         is AccountNavigationEvent.RegisterScreen -> navHostController.navigate(
                             Routes.RegisterScreen(
                                 registerParams = RegisterParams(
-                                    isGoogleSignUp = event.isGoogleSignUp,
                                     email = event.email,
                                     password = event.password
                                 ),
