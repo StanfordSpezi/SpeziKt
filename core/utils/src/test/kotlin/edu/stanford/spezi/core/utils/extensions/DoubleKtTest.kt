@@ -15,7 +15,7 @@ class DoubleKtTest {
         val result = value.roundToDecimalPlaces(decimalPlaces)
 
         // Then
-        assertThat(result).isEqualTo(1.0f)
+        assertThat(result).isEqualTo(1.0)
     }
 
     @Test
@@ -28,7 +28,7 @@ class DoubleKtTest {
         val result = value.roundToDecimalPlaces(decimalPlaces)
 
         // Then
-        assertThat(result).isEqualTo(1.2f)
+        assertThat(result).isEqualTo(1.2)
     }
 
     @Test
@@ -41,7 +41,7 @@ class DoubleKtTest {
         val result = value.roundToDecimalPlaces(decimalPlaces)
 
         // Then
-        assertThat(result).isEqualTo(1.23f)
+        assertThat(result).isEqualTo(1.23)
     }
 
     @Test
@@ -54,6 +54,6 @@ class DoubleKtTest {
         val result = value.roundToDecimalPlaces(decimalPlaces)
 
         // Then
-        assertThat(result).isEqualTo(1.235f)
+        assertThat(result).isEqualTo(1.235)
     }
 }
