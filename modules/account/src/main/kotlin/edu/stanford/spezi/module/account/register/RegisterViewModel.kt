@@ -53,16 +53,16 @@ class RegisterViewModel @Inject internal constructor(
         val uiState = _uiState.value
         return if (validator.isFormValid(uiState)) {
             viewModelScope.launch {
-                    authenticationManager.signUpWithEmailAndPassword(
-                        email = uiState.email.value,
-                        password = uiState.password.value,
-                    )
-                        .onSuccess {
-                    accountEvents.emit(AccountEvents.Event.SignUpSuccess)
-                }.onFailure {
-                    accountEvents.emit(AccountEvents.Event.SignUpFailure)
-                    messageNotifier.notify("Failed to sign up")
-                }
+                authenticationManager.signUpWithEmailAndPassword(
+                    email = uiState.email.value,
+                    password = uiState.password.value,
+                )
+                    .onSuccess {
+                        accountEvents.emit(AccountEvents.Event.SignUpSuccess)
+                    }.onFailure {
+                        accountEvents.emit(AccountEvents.Event.SignUpFailure)
+                        messageNotifier.notify("Failed to sign up")
+                    }
             }
             uiState
         } else {
