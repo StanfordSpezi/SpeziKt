@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothGattService
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.service.mapper.MeasurementMapper
 import edu.stanford.spezi.core.bluetooth.api.BLEService
+import edu.stanford.spezi.core.bluetooth.data.model.BLEDevice
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
 import edu.stanford.spezi.core.testing.SpeziTestScope
@@ -28,7 +29,7 @@ class EngageBLEServiceTest {
     private val bleService: BLEService = mockk(relaxed = true)
     private val bleServiceState = MutableStateFlow<BLEServiceState>(BLEServiceState.Idle)
     private val bleServiceEvents = MutableSharedFlow<BLEServiceEvent>()
-    private val device: BluetoothDevice = mockk {
+    private val device: BLEDevice = mockk {
         every { address } returns "some device name"
     }
 
@@ -113,23 +114,6 @@ class EngageBLEServiceTest {
     }
 
     @Test
-    fun `it should ignore consecutive Scanning`() {
-        // given
-        val device: BluetoothDevice = mockk()
-        val state = BLEServiceState.Scanning(listOf(device))
-        service.start()
-
-        // when
-        bleServiceState.value = state
-        bleServiceState.value = BLEServiceState.Scanning(emptyList())
-
-        // then
-        assertState(
-            state = EngageBLEServiceState.Scanning(listOf(BLEDeviceSession(device, emptyList())))
-        )
-    }
-
-    @Test
     fun `it should handle GenericError correctly`() = runTestUnconfined {
         // given
         val event = BLEServiceEvent.GenericError(mockk())
@@ -156,36 +140,31 @@ class EngageBLEServiceTest {
     }
 
     @Test
+    fun `it should handle paired event correctly`() = runTestUnconfined {
+        // given
+        val device: BluetoothDevice = mockk()
+        val event = BLEServiceEvent.DevicePaired(device)
+        service.start()
+
+        // when
+        bleServiceEvents.emit(event)
+
+        // then
+        assertEvent(EngageBLEServiceEvent.DevicePaired(device))
+    }
+
+    @Test
     fun `it should handle connected event correctly`() = runTestUnconfined {
         // given
         val event = BLEServiceEvent.Connected(device)
         service.start()
 
         // when
-        bleServiceState.value = BLEServiceState.Scanning(emptyList())
         bleServiceEvents.emit(event)
 
         // then
-        assertState(
-            state = EngageBLEServiceState.Scanning(
-                listOf(BLEDeviceSession(device, emptyList()))
-            )
-        )
+        assertEvent(EngageBLEServiceEvent.DeviceConnected(device))
     }
-
-    @Test
-    fun `it should handle connected event correctly if not in scanning state`() =
-        runTestUnconfined {
-            // given
-            val event = BLEServiceEvent.Connected(device)
-            service.start()
-
-            // when
-            bleServiceEvents.emit(event)
-
-            // then
-            assertState(state = EngageBLEServiceState.Idle)
-        }
 
     @Test
     fun `it should handle disconnected event correctly`() = runTestUnconfined {
@@ -194,28 +173,24 @@ class EngageBLEServiceTest {
         service.start()
 
         // when
-        bleServiceState.value = BLEServiceState.Scanning(emptyList())
         bleServiceEvents.emit(event)
 
         // then
-        assertState(
-            state = EngageBLEServiceState.Scanning(emptyList())
-        )
+        assertState(EngageBLEServiceState.Idle)
     }
 
     @Test
-    fun `it should handle disconnected event correctly if not in scanning state`() =
-        runTestUnconfined {
-            // given
-            val event = BLEServiceEvent.Disconnected(device)
-            service.start()
+    fun `it should handle unpaired event correctly`() = runTestUnconfined {
+        // given
+        val event = BLEServiceEvent.DeviceUnpaired(mockk())
+        service.start()
 
-            // when
-            bleServiceEvents.emit(event)
+        // when
+        bleServiceEvents.emit(event)
 
-            // then
-            assertState(state = EngageBLEServiceState.Idle)
-        }
+        // then
+        assertState(EngageBLEServiceState.Idle)
+    }
 
     @Test
     fun `it should handle CharacteristicChanged event correctly`() = runTestUnconfined {
@@ -248,6 +223,9 @@ class EngageBLEServiceTest {
     @Test
     fun `it should handle ServiceDiscovered correctly`() = runTestUnconfined {
         val gatt: BluetoothGatt = mockk(relaxed = true)
+        val device: BluetoothDevice = mockk {
+            every { address } returns "address"
+        }
         val gattService: BluetoothGattService = mockk()
         every { gatt.services } returns listOf(gattService)
         val characteristic: BluetoothGattCharacteristic = mockk()
@@ -273,6 +251,18 @@ class EngageBLEServiceTest {
 
         // then
         verify { bleService.stop() }
+    }
+
+    @Test
+    fun `it should handle pair correctly`() {
+        // given
+        val device: BluetoothDevice = mockk()
+
+        // when
+        service.pair(device)
+
+        // then
+        verify { bleService.pair(device) }
     }
 
     private fun assertState(state: EngageBLEServiceState) {

@@ -1,5 +1,6 @@
 package edu.stanford.bdh.engagehf
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -21,6 +22,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import dagger.hilt.android.AndroidEntryPoint
+import edu.stanford.bdh.engagehf.bluetooth.BluetoothViewModel
+import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.RegisterParams
 import edu.stanford.bdh.engagehf.navigation.Routes
@@ -30,7 +33,11 @@ import edu.stanford.bdh.engagehf.questionnaire.QuestionnaireScreen
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.SpeziTheme
+import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.NavigationEvent
+import edu.stanford.spezi.core.notification.NotificationNavigationEvent
+import edu.stanford.spezi.core.notification.NotificationRoutes
+import edu.stanford.spezi.core.notification.setting.NotificationSettingScreen
 import edu.stanford.spezi.module.account.AccountNavigationEvent
 import edu.stanford.spezi.module.account.login.LoginScreen
 import edu.stanford.spezi.module.account.register.RegisterScreen
@@ -53,9 +60,18 @@ class MainActivity : FragmentActivity() {
 
     private val viewModel by viewModels<MainActivityViewModel>()
 
+    private val bluetoothViewModel by viewModels<BluetoothViewModel>()
+
+    private val logger by speziLogger()
+
     @Inject
     @Dispatching.Main
     lateinit var mainDispatcher: CoroutineDispatcher
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        bluetoothViewModel.onAction(Action.NewIntent(intent))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen().apply {
@@ -128,6 +144,10 @@ class MainActivity : FragmentActivity() {
             )
         ) {
             VideoScreen()
+        }
+
+        composable<NotificationRoutes.NotificationSetting> {
+            NotificationSettingScreen()
         }
 
         composable<Routes.AppScreen> {
@@ -206,6 +226,10 @@ class MainActivity : FragmentActivity() {
                             EducationRoutes.VideoDetail(
                                 video = event.video
                             )
+                        )
+
+                        is NotificationNavigationEvent.NotificationSettings -> navHostController.navigate(
+                            NotificationRoutes.NotificationSetting
                         )
                     }
                 }
