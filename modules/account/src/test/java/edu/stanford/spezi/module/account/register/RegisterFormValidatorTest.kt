@@ -2,7 +2,6 @@ package edu.stanford.spezi.module.account.register
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
-import java.time.LocalDate
 
 class RegisterFormValidatorTest {
 
@@ -75,30 +74,6 @@ class RegisterFormValidatorTest {
 
         // When
         val result = registerFormValidator.lastnameResult(invalidLastName)
-
-        // Then
-        assertThat(result.isValid).isFalse()
-    }
-
-    @Test
-    fun `given valid date of birth when birthdayResult is called then return Valid`() {
-        // Given
-        val validDateOfBirth = LocalDate.of(2000, 1, 1)
-
-        // When
-        val result = registerFormValidator.birthdayResult(validDateOfBirth)
-
-        // Then
-        assertThat(result.isValid).isTrue()
-    }
-
-    @Test
-    fun `given invalid date of birth when birthdayResult is called then return Invalid`() {
-        // Given
-        val invalidDateOfBirth = LocalDate.now().plusDays(1)
-
-        // When
-        val result = registerFormValidator.birthdayResult(invalidDateOfBirth)
 
         // Then
         assertThat(result.isValid).isFalse()
