@@ -22,12 +22,12 @@ class BluetoothModule {
     /**
      * Provides the Bluetooth adapter.
      *
-     * @param context The application context.
      * @return The Bluetooth adapter instance obtained from the system service.
      */
     @Provides
-    fun provideBluetoothAdapter(@ApplicationContext context: Context): BluetoothAdapter =
-        context.getSystemService(BluetoothManager::class.java).adapter
+    fun provideSystemBluetoothAdapter(
+        @ApplicationContext context: Context,
+    ): BluetoothAdapter = context.getSystemService(BluetoothManager::class.java).adapter
 
     /**
      * Dagger Hilt module for providing bindings.

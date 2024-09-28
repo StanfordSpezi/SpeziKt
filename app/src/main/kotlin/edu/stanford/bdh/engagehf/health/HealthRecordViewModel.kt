@@ -143,5 +143,6 @@ class HealthRecordViewModel @AssistedInject constructor(
 @Composable
 fun healthRecordViewModel(type: RecordType) =
     hiltViewModel<HealthRecordViewModel, HealthRecordViewModel.Factory>(
-        creationCallback = { factory -> factory.create(type) }
+        creationCallback = { factory -> factory.create(type) },
+        key = type.name,
     )
