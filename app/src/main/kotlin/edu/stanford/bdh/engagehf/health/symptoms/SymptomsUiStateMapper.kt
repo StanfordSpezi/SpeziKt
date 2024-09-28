@@ -142,12 +142,12 @@ class SymptomsUiStateMapper @Inject constructor(
         val xValues = mutableListOf<Double>()
 
         symptomScoresByDay.forEach { (date, scores) ->
-            val filteredScores = scores.map { score ->
+            val filteredScores = scores.mapNotNull { score ->
                 getScoreForSelectedSymptomType(selectedSymptomType, score)
             }
 
             if (filteredScores.isNotEmpty()) {
-                val averageScore = filteredScores.mapNotNull { it }.average()
+                val averageScore = filteredScores.map { it }.average()
                 yValues.add(averageScore)
                 val xValue = date.year + (date.dayOfYear - 1) / 365.0
                 xValues.add(xValue.roundToDecimalPlaces(places = 2))
