@@ -109,7 +109,6 @@ class LoginViewModelTest {
             // Given
             val action = Action.NavigateToRegister
             val expectedNavigationEvent = AccountNavigationEvent.RegisterScreen(
-                isGoogleSignUp = false,
                 email = loginViewModel.uiState.value.email.value,
                 password = loginViewModel.uiState.value.password.value,
             )
@@ -146,26 +145,6 @@ class LoginViewModelTest {
         // then
         verify { accountEvents.emit(event = AccountEvents.Event.SignInFailure) }
         verify { messageNotifier.notify(R.string.error_sign_in_failed) }
-    }
-
-    @Test
-    fun `it should handle google sign up correctly`() = runTestUnconfined {
-        // given
-        val uiState = loginViewModel.uiState.value
-        val expectedEvent = AccountNavigationEvent.RegisterScreen(
-            isGoogleSignUp = true,
-            email = uiState.email.value,
-            password = uiState.password.value,
-        )
-        coEvery {
-            authenticationManager.signInWithGoogle()
-        } returns Result.failure(Exception("Failed to sign in"))
-
-        // when
-        loginViewModel.onAction(Action.Async.GoogleSignInOrSignUp)
-
-        // then
-        verify { navigator.navigateTo(expectedEvent) }
     }
 
     @Test
