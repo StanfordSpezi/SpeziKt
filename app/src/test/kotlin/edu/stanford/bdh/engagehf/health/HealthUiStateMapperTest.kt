@@ -81,7 +81,7 @@ class HealthUiStateMapperTest {
         assertThat(
             result.chartData[0].xValues[0].toBigDecimal().stripTrailingZeros().scale()
         ).isAtMost(2)
-        assertThat(result.chartData[0].yValues[0]).isEqualTo(154.60f)
+        assertThat(result.chartData[0].yValues[0]).isEqualTo(154.60)
     }
 
     @Test
