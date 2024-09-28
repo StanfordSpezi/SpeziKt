@@ -211,14 +211,13 @@ fun SymptomsChart(
         color = primary
     )
 
-    val valueFormatter: (Float, ChartValues, AxisPosition.Vertical?) -> CharSequence =
+    val valueFormatter: (Double, ChartValues, AxisPosition.Vertical?) -> CharSequence =
         { value, _, _ -> uiState.valueFormatter(value) }
 
     val marker = remember {
         DefaultCartesianMarker(
             label = TextComponent(),
             labelPosition = DefaultCartesianMarker.LabelPosition.AroundPoint,
-            indicator = shapeComponent,
             indicatorSizeDp = 5f,
         )
     }
@@ -240,10 +239,10 @@ fun SymptomsChart(
                     )
                 ),
                 axisValueOverrider = AxisValueOverrider.fixed(
-                    maxY = if (uiState.headerData.selectedSymptomType == SymptomType.DIZZINESS) 5f else 100f,
-                    minY = 0f,
-                    minX = uiState.chartData.first().xValues.minOrNull() ?: 0f,
-                    maxX = uiState.chartData.first().xValues.maxOrNull() ?: 0f,
+                    maxY = if (uiState.headerData.selectedSymptomType == SymptomType.DIZZINESS) 5.0 else 100.0,
+                    minY = 0.0,
+                    minX = uiState.chartData.first().xValues.minOrNull() ?: 0.0,
+                    maxX = uiState.chartData.first().xValues.maxOrNull() ?: 0.0,
                 )
             ),
             startAxis = rememberStartAxis(

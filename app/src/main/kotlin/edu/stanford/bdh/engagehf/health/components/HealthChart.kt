@@ -81,14 +81,13 @@ fun HealthChart(
         color = primary,
     )
 
-    val valueFormatter: (Float, ChartValues, AxisPosition.Vertical?) -> CharSequence =
+    val valueFormatter: (Double, ChartValues, AxisPosition.Vertical?) -> CharSequence =
         { value, _, _ -> uiState.valueFormatter(value) }
 
     val marker = remember {
         DefaultCartesianMarker(
             label = TextComponent(),
             labelPosition = DefaultCartesianMarker.LabelPosition.AroundPoint,
-            indicator = shapeComponent,
             indicatorSizeDp = 5f,
         )
     }

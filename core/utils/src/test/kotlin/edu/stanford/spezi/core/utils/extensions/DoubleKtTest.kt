@@ -3,12 +3,12 @@ package edu.stanford.spezi.core.utils.extensions
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class FloatKtTest {
+class DoubleKtTest {
 
     @Test
     fun `roundToDecimalPlaces with 0 decimal places returns correct value`() {
         // Given
-        val value = 1.2345f
+        val value = 1.2345
         val decimalPlaces = 0
 
         // When
@@ -21,7 +21,7 @@ class FloatKtTest {
     @Test
     fun `roundToDecimalPlaces with 1 decimal places returns correct value`() {
         // Given
-        val value = 1.2345f
+        val value = 1.2345
         val decimalPlaces = 1
 
         // When
@@ -34,7 +34,7 @@ class FloatKtTest {
     @Test
     fun `roundToDecimalPlaces with 2 decimal places returns correct value`() {
         // Given
-        val value = 1.2345f
+        val value = 1.2345
         val decimalPlaces = 2
 
         // When
@@ -47,7 +47,7 @@ class FloatKtTest {
     @Test
     fun `roundToDecimalPlaces with 3 decimal places returns correct value`() {
         // Given
-        val value = 1.2345f
+        val value = 1.2345
         val decimalPlaces = 3
 
         // When
