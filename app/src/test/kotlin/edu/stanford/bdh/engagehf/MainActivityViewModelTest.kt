@@ -85,6 +85,20 @@ class MainActivityViewModelTest {
         }
 
     @Test
+    fun `it should navigate to OnboardingScreen when user state is NotInitialized`() =
+        runTestUnconfined {
+            // given
+            coEvery { userSessionManager.getUserState() } returns UserState.NotInitialized
+            createViewModel()
+
+            // when
+            accountEventsFlow.emit(AccountEvents.Event.SignInSuccess)
+
+            // then
+            verify { navigator.navigateTo(event = OnboardingNavigationEvent.OnboardingScreen) }
+        }
+
+    @Test
     fun `it should navigate to InvitationCodeScreen on SignInSuccess event with hasInvitationCodeConfirmed false`() =
         runTestUnconfined {
             // given

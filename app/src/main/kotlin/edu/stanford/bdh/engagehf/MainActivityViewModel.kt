@@ -38,19 +38,21 @@ class MainActivityViewModel @Inject constructor(
             accountEvents.events.collect { event ->
                 when (event) {
                     is AccountEvents.Event.SignInSuccess, AccountEvents.Event.SignUpSuccess -> {
-                        when (val userState = userSessionManager.getUserState()) {
-                            UserState.NotInitialized -> {
-                                navigator.navigateTo(OnboardingNavigationEvent.OnboardingScreen)
-                            }
+                        val navigationEvent =
+                            when (val userState = userSessionManager.getUserState()) {
+                                UserState.NotInitialized -> {
+                                    OnboardingNavigationEvent.OnboardingScreen
+                                }
 
-                            is UserState.Registered -> {
-                                if (userState.hasInvitationCodeConfirmed) {
-                                    navigator.navigateTo(AppNavigationEvent.AppScreen)
-                                } else {
-                                    navigator.navigateTo(OnboardingNavigationEvent.InvitationCodeScreen)
+                                is UserState.Registered -> {
+                                    if (userState.hasInvitationCodeConfirmed) {
+                                        AppNavigationEvent.AppScreen
+                                    } else {
+                                        OnboardingNavigationEvent.InvitationCodeScreen
+                                    }
                                 }
                             }
-                        }
+                        navigator.navigateTo(navigationEvent)
                     }
 
                     else -> {
