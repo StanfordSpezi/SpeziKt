@@ -83,7 +83,11 @@ internal class UserSessionManagerImpl @Inject constructor(
     }
 
     override suspend fun forceRefresh() {
-        firebaseAuth.currentUser?.getIdToken(true)?.await()
+        runCatching {
+            firebaseAuth.currentUser?.getIdToken(true)?.await()
+        }.onFailure {
+            logger.e { "Failed to force refresh user" }
+        }
     }
 
     @Suppress("UnusedPrivateMember")
