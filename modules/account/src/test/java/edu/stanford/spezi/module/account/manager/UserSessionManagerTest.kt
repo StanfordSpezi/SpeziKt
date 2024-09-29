@@ -1,17 +1,16 @@
 package edu.stanford.spezi.module.account.manager
 
-import com.google.android.gms.tasks.Task
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageMetadata
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import edu.stanford.spezi.core.testing.SpeziTestScope
+import edu.stanford.spezi.core.testing.mockTask
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import io.mockk.Runs
 import io.mockk.every
@@ -245,13 +244,7 @@ class UserSessionManagerTest {
             every { isAnonymous } returns false
         }
         val storageReference: StorageReference = mockk()
-        val metadataTask: Task<StorageMetadata> = mockk {
-            every { isComplete } returns true
-            every { isCanceled } returns false
-            every { exception } returns null
-            every { result } returns mockk()
-        }
-        every { storageReference.metadata } returns metadataTask
+        every { storageReference.metadata } returns mockTask(mockk())
         every { firebaseAuth.currentUser } returns firebaseUser
         every { firebaseAuth.uid } returns uid
         every { firebaseStorage.getReference(location) } returns storageReference
@@ -265,15 +258,9 @@ class UserSessionManagerTest {
         val firebaseUser: FirebaseUser = mockk {
             every { isAnonymous } returns false
         }
-        val documentTask: Task<DocumentSnapshot> = mockk {
-            every { isComplete } returns true
-            every { isCanceled } returns false
-            every { exception } returns null
-            every { result } returns document
-        }
         every { firebaseAuth.currentUser } returns firebaseUser
         every { firebaseAuth.uid } returns uid
-        every { firestore.collection("users").document(uid).get() } returns documentTask
+        every { firestore.collection("users").document(uid).get() } returns mockTask(document)
     }
 
     private fun setupPDFUpload(successful: Boolean) {
