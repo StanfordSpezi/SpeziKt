@@ -62,11 +62,6 @@ class NavigatorSimulator(
         sequential.assertIsDisplayed()
     }
 
-    fun assertConsentScreenIsDisplayed() {
-        waitNode(ConsentScreenTestIdentifier.ROOT)
-        consent.assertIsDisplayed()
-    }
-
     fun navigateToAppScreen() {
         navigator.navigateTo(AppNavigationEvent.AppScreen)
     }
@@ -89,10 +84,6 @@ class NavigatorSimulator(
 
     fun navigateToSequentialOnboardingScreen() {
         navigator.navigateTo(OnboardingNavigationEvent.SequentialOnboardingScreen)
-    }
-
-    fun navigateToConsentScreen() {
-        navigator.navigateTo(OnboardingNavigationEvent.ConsentScreen)
     }
 
     private fun waitNode(testIdentifier: TestIdentifier) {
