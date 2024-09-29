@@ -147,7 +147,7 @@ class SymptomsUiStateMapper @Inject constructor(
             }
 
             if (filteredScores.isNotEmpty()) {
-                val averageScore = filteredScores.map { it }.average()
+                val averageScore = filteredScores.average()
                 yValues.add(averageScore)
                 val xValue = date.year + (date.dayOfYear - 1) / 365.0
                 xValues.add(xValue.roundToDecimalPlaces(places = 2))
