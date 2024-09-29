@@ -64,6 +64,27 @@ class HealthUiStateMapperTest {
     }
 
     @Test
+    fun `mapToHealthData with precise data will round the value to at most 2 decimal places`() {
+        // Given
+        val weightInKg = 70.123456789
+        val records = listOf(
+            createWeightRecord(
+                weightInKg = weightInKg,
+            ),
+        )
+
+        // When
+        val result = healthUiStateMapper.map(records)
+
+        // Then
+        assertThat(result.chartData).isNotEmpty()
+        assertThat(
+            result.chartData[0].xValues[0].toBigDecimal().stripTrailingZeros().scale()
+        ).isAtMost(2)
+        assertThat(result.chartData[0].yValues[0]).isEqualTo(154.60)
+    }
+
+    @Test
     fun `mapToHealthData with non-empty records and selectedTimeRange WEEKLY returns correct HealthUiData`() {
         // Given
         val records = listOf(
