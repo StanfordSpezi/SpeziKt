@@ -475,6 +475,25 @@ class BluetoothViewModelTest {
         verify(exactly = 2) { bleService.start() }
     }
 
+    @Test
+    fun `it should handle VitalsCardClicked action correctly`() {
+        // given
+        val action = Action.VitalsCardClicked
+        createViewModel()
+
+        // when
+        bluetoothViewModel.onAction(action)
+
+        // then
+        verify {
+            appScreenEvents.emit(
+                AppScreenEvents.Event.NavigateToTab(
+                    BottomBarItem.HEART_HEALTH
+                )
+            )
+        }
+    }
+
     private fun assertBluetoothUiState(state: BluetoothUiState) {
         assertThat(bluetoothViewModel.uiState.value.bluetooth).isEqualTo(state)
     }

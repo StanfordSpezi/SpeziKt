@@ -1,6 +1,7 @@
 package edu.stanford.bdh.engagehf.bluetooth.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -141,14 +142,17 @@ private fun BluetoothScreen(
                 VitalDisplay(
                     modifier = Modifier
                         .weight(1f)
+                        .clickable { onAction(Action.VitalsCardClicked) }
                         .testIdentifier(
                             identifier = BluetoothScreenTestIdentifier.VITALS,
                             suffix = uiState.weight.title
-                        ), vitalDisplayUiState = uiState.weight
+                        ),
+                    vitalDisplayUiState = uiState.weight
                 )
                 VitalDisplay(
                     modifier = Modifier
                         .weight(1f)
+                        .clickable { onAction(Action.VitalsCardClicked) }
                         .testIdentifier(
                             identifier = BluetoothScreenTestIdentifier.VITALS,
                             suffix = uiState.heartRate.title
@@ -159,6 +163,7 @@ private fun BluetoothScreen(
             VitalDisplay(
                 modifier = Modifier
                     .padding(vertical = Spacings.medium)
+                    .clickable { onAction(Action.VitalsCardClicked) }
                     .testIdentifier(
                         identifier = BluetoothScreenTestIdentifier.VITALS,
                         suffix = uiState.bloodPressure.title
