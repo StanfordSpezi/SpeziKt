@@ -21,10 +21,10 @@ import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
+import com.patrykandpatrick.vico.compose.common.fill
 import com.patrykandpatrick.vico.compose.common.of
 import com.patrykandpatrick.vico.compose.common.rememberLegendItem
 import com.patrykandpatrick.vico.compose.common.rememberVerticalLegend
-import com.patrykandpatrick.vico.compose.common.shader.color
 import com.patrykandpatrick.vico.compose.common.vicoTheme
 import com.patrykandpatrick.vico.core.cartesian.CartesianDrawContext
 import com.patrykandpatrick.vico.core.cartesian.CartesianMeasureContext
@@ -43,7 +43,6 @@ import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer.PointPr
 import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
 import com.patrykandpatrick.vico.core.common.Dimensions
 import com.patrykandpatrick.vico.core.common.component.TextComponent
-import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shape.Shape
 import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.AverageHealthData
@@ -81,14 +80,13 @@ fun HealthChart(
         color = primary,
     )
 
-    val valueFormatter: (Float, ChartValues, AxisPosition.Vertical?) -> CharSequence =
+    val valueFormatter: (Double, ChartValues, AxisPosition.Vertical?) -> CharSequence =
         { value, _, _ -> uiState.valueFormatter(value) }
 
     val marker = remember {
         DefaultCartesianMarker(
             label = TextComponent(),
             labelPosition = DefaultCartesianMarker.LabelPosition.AroundPoint,
-            indicator = shapeComponent,
             indicatorSizeDp = 5f,
         )
     }
@@ -99,8 +97,8 @@ fun HealthChart(
                 LineCartesianLayer.LineProvider.series(
                     chartColors().map { color ->
                         rememberLine(
-                            shader = DynamicShader.color(color),
-                            backgroundShader = DynamicShader.color(Color.Transparent),
+                            fill = LineCartesianLayer.LineFill.single(fill(color)),
+                            areaFill = LineCartesianLayer.AreaFill.single(fill(Color.Transparent)),
                             pointProvider = single(
                                 rememberPoint(
                                     shapeComponent,
