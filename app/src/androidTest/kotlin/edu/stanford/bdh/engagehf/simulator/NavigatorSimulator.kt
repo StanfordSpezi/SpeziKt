@@ -12,7 +12,6 @@ import edu.stanford.spezi.module.account.AccountNavigationEvent
 import edu.stanford.spezi.module.account.login.LoginScreenTestIdentifier
 import edu.stanford.spezi.module.account.register.RegisterScreenTestIdentifier
 import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
-import edu.stanford.spezi.module.onboarding.consent.ConsentScreenTestIdentifier
 import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeScreenTestIdentifier
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingScreenTestIdentifier
 import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreenTestIdentifier
@@ -30,7 +29,6 @@ class NavigatorSimulator(
     private val sequential =
         composeTestRule.onNodeWithIdentifier(SequentialOnboardingScreenTestIdentifier.ROOT)
     private val appScreen = composeTestRule.onNodeWithIdentifier(AppScreenTestIdentifier.ROOT)
-    private val consent = composeTestRule.onNodeWithIdentifier(ConsentScreenTestIdentifier.ROOT)
 
     fun assertOnboardingIsDisplayed() {
         waitNode(OnboardingScreenTestIdentifier.ROOT)
