@@ -42,7 +42,6 @@ import edu.stanford.spezi.module.account.AccountNavigationEvent
 import edu.stanford.spezi.module.account.login.LoginScreen
 import edu.stanford.spezi.module.account.register.RegisterScreen
 import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
-import edu.stanford.spezi.module.onboarding.consent.ConsentScreen
 import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeScreen
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingScreen
 import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreen
@@ -172,10 +171,6 @@ class MainActivity : FragmentActivity() {
 
         composable<Routes.SequentialOnboardingScreen> {
             SequentialOnboardingScreen()
-        }
-
-        composable<Routes.ConsentScreen> {
-            ConsentScreen()
         }
     }
 
