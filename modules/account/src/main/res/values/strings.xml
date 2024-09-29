@@ -19,4 +19,5 @@
     <string name="please_fill_out_the_details_below_to_create_your_new_account">Please fill out the details below to create your new account.</string>
     <string name="e_mail_address">E-Mail Address</string>
     <string name="signup">Signup</string>
+    <string name="login">Login</string>
 </resources>

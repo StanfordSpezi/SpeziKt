@@ -85,7 +85,6 @@ internal fun LoginScreen(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = {
-                        println("Hide Keyboard")
                         keyboardController?.hide()
                     }
                 )
@@ -178,7 +177,7 @@ You may login to your existing account or create a new one if you don't have one
         val passwordSignIn = Action.Async.PasswordSignIn
         AsyncTextButton(
             isLoading = uiState.pendingActions.contains(passwordSignIn),
-            text = "Login",
+            text = stringResource(R.string.login),
             onClick = { onAction(passwordSignIn) },
             modifier = Modifier.fillMaxWidth(),
             enabled = uiState.isPasswordSignInEnabled
@@ -195,7 +194,7 @@ You may login to your existing account or create a new one if you don't have one
                     onAction(Action.NavigateToRegister)
                 },
             ) {
-                Text("Signup")
+                Text(stringResource(R.string.signup))
             }
         }
         Spacer(modifier = Modifier.height(Spacings.medium))
