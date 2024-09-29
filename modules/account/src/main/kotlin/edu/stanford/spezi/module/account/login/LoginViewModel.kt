@@ -9,6 +9,7 @@ import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.AccountNavigationEvent
 import edu.stanford.spezi.module.account.R
 import edu.stanford.spezi.module.account.manager.AuthenticationManager
+import edu.stanford.spezi.module.account.register.AuthValidator
 import edu.stanford.spezi.module.account.register.FieldState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,7 +23,7 @@ internal class LoginViewModel @Inject constructor(
     private val authenticationManager: AuthenticationManager,
     private val accountEvents: AccountEvents,
     private val messageNotifier: MessageNotifier,
-    private val validator: LoginFormValidator,
+    private val authValidator: AuthValidator,
 ) : ViewModel() {
     private var hasAttemptedSubmit: Boolean = false
     private val email: String
@@ -67,7 +68,11 @@ internal class LoginViewModel @Inject constructor(
 
     private suspend fun onPasswordSignIn() {
         val uiState = _uiState.value
-        if (validator.isFormValid(uiState)) {
+        if (authValidator.isFormValid(
+                password = uiState.password.value,
+                email = uiState.email.value
+            )
+        ) {
             authenticationManager.signIn(
                 email = email,
                 password = password,
@@ -83,10 +88,11 @@ internal class LoginViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 email = it.email.copy(
-                    error = validator.isValidEmail(email = uiState.email.value).errorMessageOrNull()
+                    error = authValidator.isValidEmail(email = uiState.email.value)
+                        .errorMessageOrNull()
                 ),
                 password = it.password.copy(
-                    error = validator.isValidPassword(password = uiState.password.value)
+                    error = authValidator.isValidPassword(password = uiState.password.value)
                         .errorMessageOrNull()
                 ),
             )
@@ -108,28 +114,34 @@ internal class LoginViewModel @Inject constructor(
         val uiState = _uiState.value
         val newValue = FieldState(action.newValue)
         val result = when (action.type) {
-            TextFieldType.PASSWORD -> validator.isValidPassword(action.newValue)
-            TextFieldType.EMAIL -> validator.isValidEmail(action.newValue)
+            TextFieldType.PASSWORD -> authValidator.isValidPassword(action.newValue)
+            TextFieldType.EMAIL -> authValidator.isValidEmail(action.newValue)
         }
         val error =
             if (hasAttemptedSubmit && result.isValid.not()) result.errorMessageOrNull() else null
         return when (action.type) {
             TextFieldType.PASSWORD -> uiState.copy(
                 password = newValue.copy(error = error),
-                isFormValid = validator.isFormValid(uiState),
+                isFormValid = authValidator.isFormValid(
+                    password = newValue.value,
+                    email = uiState.email.value
+                ),
                 isPasswordSignInEnabled = uiState.email.value.isNotEmpty() && newValue.value.isNotEmpty()
             )
 
             TextFieldType.EMAIL -> uiState.copy(
                 email = newValue.copy(error = error),
-                isFormValid = validator.isFormValid(uiState),
+                isFormValid = authValidator.isFormValid(
+                    password = uiState.password.value,
+                    email = newValue.value,
+                ),
                 isPasswordSignInEnabled = newValue.value.isNotEmpty() && uiState.password.value.isNotEmpty()
             )
         }
     }
 
     private suspend fun onForgotPassword() {
-        if (validator.isValidEmail(email).isValid) {
+        if (authValidator.isValidEmail(email).isValid) {
             authenticationManager.sendForgotPasswordEmail(email)
                 .onSuccess {
                     messageNotifier.notify(R.string.email_sent)

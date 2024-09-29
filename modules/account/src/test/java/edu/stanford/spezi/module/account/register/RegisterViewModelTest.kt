@@ -26,20 +26,20 @@ class RegisterViewModelTest {
     private val authenticationManager: AuthenticationManager = mockk(relaxed = true)
     private val messageNotifier: MessageNotifier = mockk(relaxed = true)
     private val accountEvents: AccountEvents = mockk(relaxed = true)
-    private val validator: RegisterFormValidator = mockk(relaxed = true)
+    private val validator: AuthValidator = mockk(relaxed = true)
 
     @Before
     fun setUp() {
         with(validator) {
-            every { isFormValid(any()) } returns true
-            every { isValidEmail(any()) } returns FormValidator.Result.Valid
-            every { isValidPassword(any()) } returns FormValidator.Result.Valid
+            every { isFormValid(any(), any()) } returns true
+            every { isValidEmail(any()) } returns AuthValidator.Result.Valid
+            every { isValidPassword(any()) } returns AuthValidator.Result.Valid
         }
         registerViewModel = RegisterViewModel(
             authenticationManager = authenticationManager,
             messageNotifier = messageNotifier,
             accountEvents = accountEvents,
-            validator = validator
+            authValidator = validator
         )
     }
 
@@ -128,7 +128,7 @@ class RegisterViewModelTest {
     fun `it should reevaluate in case form is not valid for google sign up with email failure correctly`() =
         runTestUnconfined {
             // given
-            every { validator.isFormValid(any()) } returns false
+            every { validator.isFormValid(any(), any()) } returns false
 
             // when
             registerViewModel.onAction(Action.OnRegisterPressed)
@@ -142,7 +142,7 @@ class RegisterViewModelTest {
             }
             val uiState = registerViewModel.uiState.value
             with(validator) {
-                verify { isFormValid(uiState) }
+                verify { isFormValid(uiState.password.value, uiState.email.value) }
                 verify { isValidEmail(uiState.email.value) }
                 verify { isValidPassword(uiState.password.value) }
             }

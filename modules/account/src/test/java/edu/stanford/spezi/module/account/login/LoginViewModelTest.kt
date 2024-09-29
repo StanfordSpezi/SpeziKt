@@ -10,7 +10,7 @@ import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.AccountNavigationEvent
 import edu.stanford.spezi.module.account.R
 import edu.stanford.spezi.module.account.manager.AuthenticationManager
-import edu.stanford.spezi.module.account.register.FormValidator
+import edu.stanford.spezi.module.account.register.AuthValidator
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -28,7 +28,7 @@ class LoginViewModelTest {
     private val authenticationManager: AuthenticationManager = mockk(relaxed = true)
     private val messageNotifier: MessageNotifier = mockk(relaxed = true)
     private val accountEvents: AccountEvents = mockk(relaxed = true)
-    private val validator: LoginFormValidator = mockk()
+    private val validator: AuthValidator = mockk()
     private val navigator: Navigator = mockk()
 
     @get:Rule
@@ -37,9 +37,9 @@ class LoginViewModelTest {
     @Before
     fun setUp() {
         with(validator) {
-            every { isFormValid(any()) } returns true
-            every { isValidEmail(any()) } returns FormValidator.Result.Valid
-            every { isValidPassword(any()) } returns FormValidator.Result.Valid
+            every { isFormValid(any(), any()) } returns true
+            every { isValidEmail(any()) } returns AuthValidator.Result.Valid
+            every { isValidPassword(any()) } returns AuthValidator.Result.Valid
         }
 
         every { navigator.navigateTo(any()) } just Runs
@@ -48,7 +48,7 @@ class LoginViewModelTest {
             messageNotifier = messageNotifier,
             accountEvents = accountEvents,
             navigator = navigator,
-            validator = validator
+            authValidator = validator
         )
     }
 
@@ -191,7 +191,7 @@ class LoginViewModelTest {
             // Given
             val action = Action.Async.ForgotPassword
             val email = "test@test.com"
-            every { validator.isValidEmail(email) } returns FormValidator.Result.Invalid("invalid")
+            every { validator.isValidEmail(email) } returns AuthValidator.Result.Invalid("invalid")
 
             // When
             listOf(

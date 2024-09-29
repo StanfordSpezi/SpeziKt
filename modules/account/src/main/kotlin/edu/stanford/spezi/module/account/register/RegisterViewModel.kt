@@ -17,7 +17,7 @@ class RegisterViewModel @Inject internal constructor(
     private val authenticationManager: AuthenticationManager,
     private val messageNotifier: MessageNotifier,
     private val accountEvents: AccountEvents,
-    private val validator: RegisterFormValidator,
+    private val authValidator: AuthValidator,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegisterUiState())
@@ -33,7 +33,10 @@ class RegisterViewModel @Inject internal constructor(
                         TextFieldType.PASSWORD -> it.copy(password = newValue)
                     }
                     updatedUiState.copy(
-                        isFormValid = validator.isFormValid(updatedUiState),
+                        isFormValid = authValidator.isFormValid(
+                            password = updatedUiState.password.value,
+                            email = updatedUiState.email.value
+                        ),
                         isRegisterButtonEnabled = isRegisterButtonEnabled(updatedUiState)
                     )
                 }
@@ -51,7 +54,11 @@ class RegisterViewModel @Inject internal constructor(
 
     private fun onRegisteredPressed(): RegisterUiState {
         val uiState = _uiState.value
-        return if (validator.isFormValid(uiState)) {
+        return if (authValidator.isFormValid(
+                password = uiState.password.value,
+                email = uiState.email.value,
+            )
+        ) {
             viewModelScope.launch {
                 authenticationManager.signUpWithEmailAndPassword(
                     email = uiState.email.value,
@@ -68,12 +75,16 @@ class RegisterViewModel @Inject internal constructor(
         } else {
             uiState.copy(
                 email = uiState.email.copy(
-                    error = validator.isValidEmail(uiState.email.value).errorMessageOrNull()
+                    error = authValidator.isValidEmail(uiState.email.value).errorMessageOrNull()
                 ),
                 password = uiState.password.copy(
-                    error = validator.isValidPassword(uiState.password.value).errorMessageOrNull()
+                    error = authValidator.isValidPassword(uiState.password.value)
+                        .errorMessageOrNull()
                 ),
-                isFormValid = validator.isFormValid(uiState)
+                isFormValid = authValidator.isFormValid(
+                    password = uiState.password.value,
+                    email = uiState.email.value,
+                ),
             )
         }
     }
