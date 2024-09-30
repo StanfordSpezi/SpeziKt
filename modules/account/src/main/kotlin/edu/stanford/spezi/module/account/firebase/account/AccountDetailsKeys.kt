@@ -1,6 +1,6 @@
 package edu.stanford.spezi.module.account.firebase.account
 
-import edu.stanford.spezi.module.account.account.AccountAnchor
+import edu.stanford.spezi.module.account.account.value.collections.AccountAnchor
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.foundation.KnowledgeSource
 import java.util.Date

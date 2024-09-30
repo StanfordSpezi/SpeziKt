@@ -5,6 +5,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import dagger.Binds
 import edu.stanford.spezi.module.account.account.AccountDetailsCache
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.collections.AccountKey
@@ -16,16 +17,18 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 import kotlin.reflect.KClass
 
 class FirestoreAccountStorage(
     val collection: () -> CollectionReference,
-    val identifierMapping: Map<String, KClass<AccountKey<*>>>
+    val identifierMapping: Map<String, KClass<AccountKey<*>>>,
 ): AccountStorageProvider {
 
-    private val firestore: Firestore = TODO()
-    private val localCache: AccountDetailsCache = TODO()
-    private val externalStorage: ExternalAccountStorage = TODO()
+    @Inject private lateinit var firestore: Firestore
+    @Inject private lateinit var localCache: AccountDetailsCache
+    @Inject private lateinit var externalStorage: ExternalAccountStorage
+
     private val listenerRegistration = mutableMapOf<String, ListenerRegistration>()
     private val registeredKeys = mutableMapOf<String, Set<KClass<AccountKey<*>>>>()
 

@@ -10,7 +10,6 @@ import kotlin.reflect.KProperty1
 
 // SpeziAccount
 
-
 /*
 
 interface AccountKeyInput<Value : Any> {

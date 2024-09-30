@@ -6,12 +6,14 @@ import com.google.firebase.auth.OAuthCredential
 import com.google.firebase.auth.UserProfileChangeRequest
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.module.account.account.Account
+import edu.stanford.spezi.module.account.account.AccountNotifications
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
 import edu.stanford.spezi.module.account.account.service.AccountService
 import edu.stanford.spezi.module.account.account.service.configuration.AccountServiceConfiguration
 import edu.stanford.spezi.module.account.account.service.configuration.AccountServiceConfigurationStorage
 import edu.stanford.spezi.module.account.account.ExternalAccountStorage
+import edu.stanford.spezi.module.account.firebase.configuration.ConfigureFirebaseApp
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -26,14 +28,19 @@ class FirebaseAccountService(
 ) : AccountService {
     private val logger by speziLogger()
 
-    private val auth get() = FirebaseAuth.getInstance()
+    @Inject private lateinit var configureFirebaseApp: ConfigureFirebaseApp
+    // TODO: @Inject private lateinit var localStorage: LocalStorage
+    // TODO: @Inject private lateinit var secureStorage: SecureStorage
+
+    @Inject private lateinit var account: Account
+    @Inject private lateinit var notifications: AccountNotifications
+    @Inject private lateinit var externalStorage: ExternalAccountStorage
 
     override val configuration: AccountServiceConfiguration = AccountServiceConfiguration(
         AccountServiceConfigurationStorage()
     )
 
-    @Inject lateinit var account: Account
-    @Inject lateinit var externalStorage: ExternalAccountStorage
+    private val auth get() = FirebaseAuth.getInstance()
 
     override fun configure() {
         emulatorSettings?.let {
