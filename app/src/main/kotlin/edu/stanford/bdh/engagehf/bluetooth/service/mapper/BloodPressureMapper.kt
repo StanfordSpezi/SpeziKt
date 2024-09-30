@@ -36,11 +36,15 @@ internal class BloodPressureMapper @Inject constructor() : MeasurementMapper.Chi
         characteristic: BluetoothGattCharacteristic?,
         data: ByteArray,
     ): Measurement? {
-        return if (recognises(characteristic).not()) null else runCatching {
-            interpretBloodPressureMeasurement(
-                data = data
-            )
-        }.getOrNull()
+        return if (recognises(characteristic).not()) {
+            null
+        } else {
+            runCatching {
+                interpretBloodPressureMeasurement(
+                    data = data
+                )
+            }.getOrNull()
+        }
     }
 
     private fun interpretBloodPressureMeasurement(data: ByteArray): Measurement.BloodPressure {
