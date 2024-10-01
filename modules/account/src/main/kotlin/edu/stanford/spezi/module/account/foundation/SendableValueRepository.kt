@@ -3,14 +3,15 @@ package edu.stanford.spezi.module.account.foundation
 import kotlin.reflect.KClass
 
 data class SendableValueRepository<Anchor>(var storage: MutableMap<KClass<*>, Any> = mutableMapOf()) {
-    inline operator fun <reified Value, reified Key: KnowledgeSource<Anchor, Value>> get(
-        key: KClass<Key>
+    @Suppress("UNCHECKED_CAST")
+    operator fun <Value, Anchor: RepositoryAnchor> get(
+        key: KClass<out KnowledgeSource<Anchor, Value>>
     ): Value? {
         return storage[key]?.let { it as? Value }
     }
 
-    inline operator fun <reified Value, reified Key: KnowledgeSource<Anchor, Value>> set(
-        key: KClass<Key>,
+    operator fun <Value, Anchor: RepositoryAnchor> set(
+        key: KClass<out KnowledgeSource<Anchor, Value>>,
         value: Value?
     ) {
         value?.let {

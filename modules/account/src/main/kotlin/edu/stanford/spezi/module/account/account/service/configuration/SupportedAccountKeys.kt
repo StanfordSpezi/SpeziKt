@@ -25,9 +25,11 @@ var AccountServiceConfiguration.supportedAccountKeys: SupportedAccountKeys
     get() = this.storage[SupportedAccountKeys::class] ?: TODO("Figure out how to translate preconditionFailure.")
     set(value) { this.storage[SupportedAccountKeys::class] = value }
 
+/* TODO:
 fun AccountServiceConfiguration.unsupportedAccountKeys(configuration: AccountValueConfiguration): List<AccountKeyConfiguration<*>> {
     val supportedAccountKeys = supportedAccountKeys
 
     return configuration
         .filter { !supportedAccountKeys.canStore(it) }
 }
+ */

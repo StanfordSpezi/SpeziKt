@@ -17,7 +17,7 @@ data class AccountKeyConfigurationImpl<Key: AccountKey<*>>(
     override val keyPathDescription: String
 ): AccountKeyConfiguration<Key> {
     companion object {
-        inline fun <reified K: AccountKey<*>> invoke(
+        inline operator fun <reified K: AccountKey<*>> invoke(
             property: KProperty1<AccountKeys, KClass<K>>,
             requirement: AccountKeyRequirement
         ): AccountKeyConfigurationImpl<K> {
