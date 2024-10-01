@@ -14,7 +14,7 @@ data class HealthUiData(
     val infoRowData: InfoRowData,
     val pendingActions: PendingActions<HealthAction.Async> = PendingActions(),
     val deleteRecordAlertData: DeleteRecordAlertData? = null,
-    val valueFormatter: (Float) -> String,
+    val valueFormatter: (Double) -> String,
 
 )
 
@@ -26,13 +26,13 @@ sealed interface HealthUiState {
 }
 
 data class AverageHealthData(
-    val value: Float,
+    val value: Double,
     val formattedValue: String,
 )
 
 data class AggregatedHealthData(
-    val yValues: List<Float>,
-    val xValues: List<Float>,
+    val yValues: List<Double>,
+    val xValues: List<Double>,
     val seriesName: String,
 )
 
@@ -43,12 +43,12 @@ data class NewestHealthData(
 
 data class TableEntryData(
     val id: String?,
-    val value: Float?,
+    val value: Double?,
     val secondValue: Float?,
     val formattedValues: String,
     val date: ZonedDateTime,
     val formattedDate: String,
-    val trend: Float?,
+    val trend: Double?,
     val formattedTrend: String,
 ) {
     val isTrendPositive: Boolean?
