@@ -31,7 +31,7 @@ First, create a Google Cloud Services Account and corresponding JSON secrets key
 Follow along
 the [Set up your Google APIs console](https://developer.android.com/identity/sign-in/credential-manager-siwg#set-google)
 documentation to create a OAuth client ID. Store secrets.xml representation of the key in
-a `SERVER_CLIENT_ID` secret available to the GitHub action.
+a `SECRETS_XML` secret available to the GitHub action.
 
 This is the secrets.xml representation of the key:
 
