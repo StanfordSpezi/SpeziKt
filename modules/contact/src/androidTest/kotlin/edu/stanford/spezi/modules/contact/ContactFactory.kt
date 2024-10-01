@@ -31,7 +31,14 @@ He and his wife Jane were also the founders of Stanford University, which they n
 [https://en.wikipedia.org/wiki/Leland_Stanford]
 """,
         organization = "Stanford University",
-        address = run {
+        address = Address(Locale.US).apply {
+            setAddressLine(0, "450 Serra Mall")
+            postalCode = "94305"
+            locality = "Stanford"
+            adminArea = "CA"
+            countryCode = "US"
+            countryName = "United States of America"
+        },
             val address = Address(Locale.US)
             address.setAddressLine(0, "450 Serra Mall")
             address.postalCode = "94305"
