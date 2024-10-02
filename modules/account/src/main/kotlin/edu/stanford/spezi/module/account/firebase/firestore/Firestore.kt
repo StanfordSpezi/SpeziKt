@@ -5,8 +5,8 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings
 import edu.stanford.spezi.module.account.spezi.Module
 
 class Firestore( // TODO: Add dependency to ConfigureFirebaseApp
-    private val settings: FirebaseFirestoreSettings = FirebaseFirestoreSettings.Builder().build()
-): Module {
+    private val settings: FirebaseFirestoreSettings = FirebaseFirestoreSettings.Builder().build(),
+) : Module {
     override fun configure() {
         FirebaseFirestore.getInstance().firestoreSettings = settings
 

@@ -5,13 +5,12 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import dagger.Binds
 import edu.stanford.spezi.module.account.account.AccountDetailsCache
+import edu.stanford.spezi.module.account.account.AccountStorageProvider
+import edu.stanford.spezi.module.account.account.ExternalAccountStorage
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.collections.AccountKey
 import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
-import edu.stanford.spezi.module.account.account.AccountStorageProvider
-import edu.stanford.spezi.module.account.account.ExternalAccountStorage
 import edu.stanford.spezi.module.account.firebase.firestore.Firestore
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -23,10 +22,12 @@ import kotlin.reflect.KClass
 class FirestoreAccountStorage(
     val collection: () -> CollectionReference,
     val identifierMapping: Map<String, KClass<AccountKey<*>>>,
-): AccountStorageProvider {
+) : AccountStorageProvider {
 
     @Inject private lateinit var firestore: Firestore
+
     @Inject private lateinit var localCache: AccountDetailsCache
+
     @Inject private lateinit var externalStorage: ExternalAccountStorage
 
     private val listenerRegistration = mutableMapOf<String, ListenerRegistration>()
@@ -59,7 +60,7 @@ class FirestoreAccountStorage(
 
     private suspend fun processUpdatedSnapshot(
         accountId: String,
-        snapshot: DocumentSnapshot
+        snapshot: DocumentSnapshot,
     ) {
         val keys = registeredKeys[accountId] ?: return // TODO: Add logging
 

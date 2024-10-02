@@ -100,7 +100,7 @@ class FirebaseAccountService(
             if (account.signedIn) {
                 notifyUserRemoval()
             } else {
-                throw FirebaseAccountError.NotSignedIn
+                throw Error() // TODO: FirebaseAccountError.NotSignedIn
             }
         }
     }
@@ -116,7 +116,7 @@ class FirebaseAccountService(
             if (account.signedIn) {
                 notifyUserRemoval()
             }
-            throw FirebaseAccountError.NotSignedIn
+            throw Error() // TODO: FirebaseAccountError.NotSignedIn
         }
     }
 
