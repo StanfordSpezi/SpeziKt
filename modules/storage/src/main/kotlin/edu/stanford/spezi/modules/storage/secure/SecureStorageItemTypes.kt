@@ -3,7 +3,7 @@ package edu.stanford.spezi.modules.storage.secure
 enum class SecureStorageItemType {
     KEYS,
     SERVER_CREDENTIALS,
-    NON_SERVER_CREDENTIALS
+    NON_SERVER_CREDENTIALS,
 }
 
 data class SecureStorageItemTypes(val types: Set<SecureStorageItemType>) {

@@ -1,7 +1,6 @@
 package edu.stanford.spezi.modules.storage.local
 
 import android.content.Context
-import androidx.security.crypto.EncryptedFile
 import androidx.security.crypto.MasterKey
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.coroutines.di.Dispatching
@@ -14,19 +13,19 @@ import kotlin.reflect.KClass
 class LocalStorage @Inject constructor(
     @ApplicationContext val context: Context,
     @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
-    ) {
+) {
     private val masterKey = MasterKey.Builder(context)
         .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
         .build()
     private val secureStorage = SecureStorage()
 
-    private inline fun <reified C: Any> store(
+    private inline fun <reified C : Any> store(
         // TODO: iOS has this only as a private helper function
         element: C,
         storageKey: String?,
         settings: LocalStorageSetting,
-        encode: (C) -> ByteArray
-    ): Unit {
+        encode: (C) -> ByteArray,
+    ) {
         val file = file(storageKey, C::class)
 
         val alreadyExistedBefore = file.exists()
@@ -34,10 +33,9 @@ class LocalStorage @Inject constructor(
         // Called at the end of each execution path
         // We can not use defer as the function can potentially throw an error.
 
-
         val data = encode(element)
 
-            val keys = settings.keys(secureStorage)
+        val keys = settings.keys(secureStorage)
 
         // Determine if the data should be encrypted or not:
         if (keys == null) {
@@ -67,10 +65,10 @@ class LocalStorage @Inject constructor(
         setResourceValues(alreadyExistedBefore, settings, file)
     }
 
-    private inline fun <reified C: Any> read( // TODO: iOS only has this as a private helper
+    private inline fun <reified C : Any> read( // TODO: iOS only has this as a private helper
         storageKey: String?,
         settings: LocalStorageSetting,
-        decode: (ByteArray) -> C
+        decode: (ByteArray) -> C,
     ): C {
         val file = file(storageKey, C::class)
         val keys = settings.keys(secureStorage = secureStorage)
@@ -95,7 +93,7 @@ class LocalStorage @Inject constructor(
     private fun setResourceValues(
         alreadyExistedBefore: Boolean,
         settings: LocalStorageSetting,
-        file: File
+        file: File,
     ) {
         try {
             if (settings.excludedFromBackupValue) {
@@ -115,8 +113,9 @@ class LocalStorage @Inject constructor(
         val directory = File(context.filesDir, "edu.stanford.spezi/LocalStorage")
 
         try {
-            if (!directory.exists())
+            if (!directory.exists()) {
                 directory.mkdirs()
+            }
         } catch (error: Throwable) {
             println("Failed to create directories: $error")
         }

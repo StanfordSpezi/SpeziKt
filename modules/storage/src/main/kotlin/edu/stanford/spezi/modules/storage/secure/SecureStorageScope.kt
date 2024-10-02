@@ -1,11 +1,9 @@
 package edu.stanford.spezi.modules.storage.secure
 
-import android.provider.Settings.Secure
-
 sealed class SecureStorageScope {
-    data class SecureEnclave(val userPresence: Boolean = false): SecureStorageScope()
-    data class Keychain(val userPresence: Boolean = false, val accessGroup: String? = null): SecureStorageScope()
-    data class KeychainSynchronizable(val accessGroup: String? = null): SecureStorageScope()
+    data class SecureEnclave(val userPresence: Boolean = false) : SecureStorageScope()
+    data class Keychain(val userPresence: Boolean = false, val accessGroup: String? = null) : SecureStorageScope()
+    data class KeychainSynchronizable(val accessGroup: String? = null) : SecureStorageScope()
 
     companion object {
         val secureEnclave = SecureEnclave()
