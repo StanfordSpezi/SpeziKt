@@ -107,4 +107,3 @@ class AuthValidatorTest {
         assertThat(result).isFalse()
     }
 }
-

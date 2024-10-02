@@ -71,7 +71,6 @@ internal class AuthenticationManager @Inject constructor(
             val googleIdOption = GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
                 .setAutoSelectEnabled(true)
-                // TODO .setServerClientId(context.getString(R.string.serverClientId))
                 .setServerClientId(context.getString(R.string.serverClientId))
                 .build()
 
