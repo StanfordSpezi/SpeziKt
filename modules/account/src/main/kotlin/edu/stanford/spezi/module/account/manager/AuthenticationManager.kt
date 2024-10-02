@@ -14,6 +14,7 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.module.account.R
 import edu.stanford.spezi.module.account.register.GenderIdentity
 import kotlinx.coroutines.tasks.await
 import java.time.LocalDate
@@ -137,8 +138,7 @@ internal class AuthenticationManager @Inject constructor(
             val googleIdOption = GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
                 .setAutoSelectEnabled(true)
-                // TODO: Uncomment once secrets xml has been added in CI secrets
-                // .setServerClientId(context.getString(R.string.serverClientId))
+                .setServerClientId(context.getString(R.string.serverClientId))
                 .build()
 
             val request = GetCredentialRequest.Builder()
