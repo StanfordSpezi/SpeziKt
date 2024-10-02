@@ -14,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,9 +28,9 @@ import java.net.URLEncoder
 import java.util.Locale
 
 @Composable
-internal fun AddressCard(address: Address) {
+internal fun AddressCard(address: Address, modifier: Modifier = Modifier) {
     DefaultElevatedCard(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
     ) {
         Row(
@@ -39,7 +40,7 @@ internal fun AddressCard(address: Address) {
                 .height(IntrinsicSize.Min),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val addressText = address.formatted()
+            val addressText = remember(address) { address.formatted() }
             Text(
                 text = addressText,
                 style = TextStyles.bodyMedium,
@@ -48,11 +49,15 @@ internal fun AddressCard(address: Address) {
             val context = LocalContext.current
             IconButton(
                 onClick = {
-                    val addressQuery = URLEncoder.encode(addressText, "utf-8")
-                    val gmmIntentUri = Uri.parse("geo:0,0?q=$addressQuery")
-                    val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-                    mapIntent.setPackage("com.google.android.apps.maps")
-                    context.startActivity(mapIntent)
+                    runCatching {
+                        val addressQuery = URLEncoder.encode(addressText, "utf-8")
+                        val gmmIntentUri = Uri.parse("geo:0,0?q=$addressQuery")
+                        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                        mapIntent.setPackage("com.google.android.apps.maps")
+                        context.startActivity(mapIntent)
+                    }.onFailure {
+                        println("Failed to open intent for address `$addressText` due to `$it`.")
+                    }
                 },
                 modifier = Modifier.align(Alignment.Top)
             ) {
@@ -69,12 +74,10 @@ internal fun AddressCard(address: Address) {
 @Preview
 private fun AddressCardPreview() {
     SpeziTheme {
-        AddressCard(run {
-            val address = Address(Locale.US)
-            address.setAddressLine(0, "1234 Main Street")
-            address.postalCode = "12345"
-            address.locality = "City"
-            address
+        AddressCard(Address(Locale.US).apply {
+            setAddressLine(0, "1234 Main Street")
+            postalCode = "12345"
+            locality = "City"
         })
     }
 }

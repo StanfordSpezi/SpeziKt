@@ -23,14 +23,14 @@ import edu.stanford.spezi.modules.contact.model.ContactOption
 import edu.stanford.spezi.modules.contact.model.email
 
 @Composable
-internal fun ContactOptionCard(option: ContactOption) {
+internal fun ContactOptionCard(option: ContactOption, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     DefaultElevatedCard(
-        modifier = Modifier
+        modifier = modifier
             .wrapContentSize(Alignment.Center)
             .width(90.dp)
             .clickable {
-                option.action.handle(context)
+                option.action(context)
             }
     ) {
         Column(
@@ -41,11 +41,9 @@ internal fun ContactOptionCard(option: ContactOption) {
         ) {
             Icon(
                 option.image ?: Icons.Default.Email,
-                contentDescription = option.title
+                contentDescription = option.title.text()
             )
-            Text(
-                text = option.title,
-            )
+            Text(option.title.text())
         }
     }
 }

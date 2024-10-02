@@ -1,6 +1,9 @@
 package edu.stanford.spezi.modules.contact.model
 
+import android.content.Context
 import androidx.compose.ui.graphics.vector.ImageVector
+import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.utils.UUID
 import java.util.UUID
 
 /**
@@ -12,10 +15,10 @@ import java.util.UUID
  * @param action the action of the contact option
  */
 data class ContactOption(
-    val id: UUID = UUID.randomUUID(),
+    val id: UUID = UUID(),
     val image: ImageVector?,
-    val title: String,
-    val action: ContactOptionAction,
+    val title: StringResource,
+    val action: (Context) -> Unit,
 ) {
     companion object
 }

@@ -1,16 +1,27 @@
 package edu.stanford.spezi.modules.contact
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.modules.contact.model.Contact
 
 @Composable
-fun ContactsList(contacts: List<Contact>) {
-    val scrollState = rememberScrollState()
-    Column(modifier = Modifier.verticalScroll(scrollState)) {
-        contacts.forEach { ContactView(contact = it) }
+fun ContactsList(contacts: List<Contact>, modifier: Modifier = Modifier) {
+    LazyColumn(modifier = modifier) {
+        items(contacts) {
+            ContactComposable(
+                it,
+                modifier = Modifier.testIdentifier(
+                    ContactsListTestIdentifier.CONTACT,
+                    suffix = it.title?.text()
+                )
+            )
+        }
     }
+}
+
+enum class ContactsListTestIdentifier {
+    CONTACT
 }
