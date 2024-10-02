@@ -1,15 +1,21 @@
 package edu.stanford.spezi.module.onboarding.invitation
 
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.module.account.manager.InvitationAuthManager
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.flow.first
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class InvitationCodeViewModelTest {
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     private val invitationAuthManager: InvitationAuthManager = mockk(relaxed = true)
     private val invitationCodeRepository: InvitationCodeRepository = mockk(relaxed = true)
@@ -49,15 +55,45 @@ class InvitationCodeViewModelTest {
     }
 
     @Test
-    fun `it should invoke gotAnAccountAction on AlreadyHasAccountPressed action`() =
+    fun `it should redeem invitation code on RedeemInvitationCode action`() = runTestUnconfined {
+        // given
+        val action = Action.RedeemInvitationCode
+
+        // when
+        invitationCodeViewModel.onAction(action)
+
+        // then
+        coVerify { invitationAuthManager.checkInvitationCode(any()) }
+    }
+
+    @Test
+    fun `it should update error message when redeeming invitation code fails`() =
         runTestUnconfined {
             // given
-            val action = Action.AlreadyHasAccountPressed
+            val action = Action.RedeemInvitationCode
+            coEvery { invitationAuthManager.checkInvitationCode(any()) } returns Result.failure(
+                Exception()
+            )
 
             // when
             invitationCodeViewModel.onAction(action)
 
             // then
-            verify { invitationCodeRepository.getScreenData().gotAnAccountAction() }
+            val uiState = invitationCodeViewModel.uiState.first()
+            assertThat(uiState.error).isEqualTo("Invitation Code is already used or incorrect")
+        }
+
+    @Test
+    fun `it should redeem invitation code when redeeming invitation code succeeds`() =
+        runTestUnconfined {
+            // given
+            val action = Action.RedeemInvitationCode
+            coEvery { invitationAuthManager.checkInvitationCode(any()) } returns Result.success(Unit)
+
+            // when
+            invitationCodeViewModel.onAction(action)
+
+            // then
+            coVerify { invitationCodeRepository.getScreenData().redeemAction() }
         }
 }

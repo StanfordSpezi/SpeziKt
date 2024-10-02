@@ -1,7 +1,7 @@
 package edu.stanford.bdh.engagehf.onboarding
 
+import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.module.account.AccountNavigationEvent
 import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeRepository
 import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeScreenData
 import javax.inject.Inject
@@ -18,8 +18,7 @@ class EngageInvitationCodeRepository @Inject constructor(
         return InvitationCodeScreenData(
             title = "Invitation Code",
             description = "Please enter your invitation code to join the ENGAGE-HF study.",
-            redeemAction = { navigator.navigateTo(AccountNavigationEvent.LoginScreen(false)) },
-            gotAnAccountAction = { navigator.navigateTo(AccountNavigationEvent.LoginScreen(true)) }
+            redeemAction = { navigator.navigateTo(AppNavigationEvent.AppScreen) },
         )
     }
 }
