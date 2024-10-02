@@ -2,14 +2,11 @@ package edu.stanford.spezi.modules.contact.simulator
 
 import android.location.Address
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertContentDescriptionContains
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.ComposeTestRule
-import androidx.compose.ui.test.onChild
 import androidx.compose.ui.test.onChildAt
-import androidx.compose.ui.test.onChildren
 import androidx.test.platform.app.InstrumentationRegistry
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.testing.onNodeWithIdentifier

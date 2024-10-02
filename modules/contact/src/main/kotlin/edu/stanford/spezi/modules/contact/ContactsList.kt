@@ -23,5 +23,5 @@ fun ContactsList(contacts: List<Contact>, modifier: Modifier = Modifier) {
 }
 
 enum class ContactsListTestIdentifier {
-    CONTACT
+    CONTACT,
 }
