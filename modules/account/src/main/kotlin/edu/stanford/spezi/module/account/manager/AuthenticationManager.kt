@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.module.account.R
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -71,6 +72,7 @@ internal class AuthenticationManager @Inject constructor(
                 .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
                 .setAutoSelectEnabled(true)
                 // TODO .setServerClientId(context.getString(R.string.serverClientId))
+                .setServerClientId(context.getString(R.string.serverClientId))
                 .build()
 
             val request = GetCredentialRequest.Builder()
