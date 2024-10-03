@@ -1,115 +1,83 @@
 package edu.stanford.spezi.modules.storage.local
 
 import android.content.Context
-import androidx.security.crypto.MasterKey
 import dagger.hilt.android.qualifiers.ApplicationContext
-import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.modules.storage.secure.SecureStorage
-import kotlinx.coroutines.CoroutineDispatcher
 import java.io.File
+import java.io.Serializable
+import java.security.Key
+import javax.crypto.Cipher
 import javax.inject.Inject
 import kotlin.reflect.KClass
 
 class LocalStorage @Inject constructor(
     @ApplicationContext val context: Context,
-    @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
 ) {
-    private val masterKey = MasterKey.Builder(context)
-        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-        .build()
-    private val secureStorage = SecureStorage()
+    private val secureStorage = SecureStorage(context)
 
-    private inline fun <reified C : Any> store(
-        // TODO: iOS has this only as a private helper function
+    private fun createCipher(mode: Int, key: Key): Cipher =
+        // TODO: Supported values: https://developer.android.com/reference/kotlin/javax/crypto/Cipher
+        Cipher.getInstance("RSA/ECB/PKCS1Padding").apply { init(mode, key) }
+
+    fun <C : Any> store(
         element: C,
-        storageKey: String?,
+        storageKey: String? = null,
+        type: KClass<C>,
         settings: LocalStorageSetting,
         encode: (C) -> ByteArray,
     ) {
-        val file = file(storageKey, C::class)
-
-        val alreadyExistedBefore = file.exists()
-
-        // Called at the end of each execution path
-        // We can not use defer as the function can potentially throw an error.
-
+        val file = file(storageKey, type)
         val data = encode(element)
-
-        val keys = settings.keys(secureStorage)
-
-        // Determine if the data should be encrypted or not:
-        if (keys == null) {
+        val keys = settings.keys(secureStorage) ?: run {
             file.writeBytes(data)
-            setResourceValues(alreadyExistedBefore, settings, file)
             return
         }
-
-        // TODO: Check if encryption is supported
-        //
-        // iOS:
-        // // Encryption enabled:
-        // guard SecKeyIsAlgorithmSupported (keys.publicKey, .encrypt, encryptionAlgorithm) else {
-        //     throw LocalStorageError.encryptionNotPossible
-        // }
-        //
-        // var encryptError: Unmanaged<CFError>?
-        // guard let encryptedData = SecKeyCreateEncryptedData(
-        //          keys.publicKey,
-        //          encryptionAlgorithm,
-        //          data as CFData, & encryptError) as Data? else {
-        //      throw LocalStorageError.encryptionNotPossible
-        // }
-
-        val encryptedData = data
+        val encryptedData = createCipher(Cipher.ENCRYPT_MODE, keys.public)
+            .doFinal(data)
         file.writeBytes(encryptedData)
-        setResourceValues(alreadyExistedBefore, settings, file)
     }
 
-    private inline fun <reified C : Any> read( // TODO: iOS only has this as a private helper
-        storageKey: String?,
+    fun <C : Any> read(
+        storageKey: String? = null,
+        type: KClass<C>,
         settings: LocalStorageSetting,
         decode: (ByteArray) -> C,
     ): C {
-        val file = file(storageKey, C::class)
+        val file = file(storageKey, type)
         val keys = settings.keys(secureStorage = secureStorage)
             ?: return decode(file.readBytes())
-
-        val privateKey = keys.first
-        val publicKey = keys.second
-
-        // TODO: iOS decryption:
-        // guard SecKeyIsAlgorithmSupported(keys.privateKey, .decrypt, encryptionAlgorithm) else {
-        //      throw LocalStorageError.decryptionNotPossible
-        // }
-
-        // var decryptError: Unmanaged<CFError>?
-        // guard let decryptedData = SecKeyCreateDecryptedData(keys.privateKey, encryptionAlgorithm, data as CFData, &decryptError) as Data? else {
-        //      throw LocalStorageError.decryptionNotPossible
-        // }
-
-        return decode(file.readBytes())
+        val data = createCipher(Cipher.DECRYPT_MODE, keys.private)
+            .doFinal(file.readBytes())
+        return decode(data)
     }
 
-    private fun setResourceValues(
-        alreadyExistedBefore: Boolean,
-        settings: LocalStorageSetting,
-        file: File,
+    fun delete(storageKey: String?) {
+        delete(storageKey, String::class)
+    }
+
+    fun <C : Any> delete(type: KClass<C>) {
+        delete(null, type)
+    }
+
+    private fun <C : Any> delete(
+        storageKey: String?,
+        type: KClass<C>,
     ) {
-        try {
-            if (settings.excludedFromBackupValue) {
-                // TODO: Check how to exclude files from backup - may need more flexibility here though
-            }
-        } catch (error: Throwable) {
-            // Revert a written file if it did not exist before.
-            if (!alreadyExistedBefore) {
+        val file = file(storageKey, type)
+        if (file.exists()) {
+            try {
                 file.delete()
+            } catch (error: Throwable) {
+                throw LocalStorageError.DeletionNotPossible
             }
-            throw LocalStorageError.CouldNotExcludedFromBackup
         }
     }
 
-    private inline fun <reified C : Any> file(storageKey: String? = null, type: KClass<C> = C::class): File {
-        val fileName = storageKey ?: type.qualifiedName ?: throw Error() // TODO: This should never happen, right?
+    private fun file(storageKey: String?, type: KClass<*>): File {
+        val filename = storageKey
+            ?: type.qualifiedName
+            ?: type.simpleName
+            ?: throw Error() // TODO: Figure out what to do here?!
         val directory = File(context.filesDir, "edu.stanford.spezi/LocalStorage")
 
         try {
@@ -120,6 +88,6 @@ class LocalStorage @Inject constructor(
             println("Failed to create directories: $error")
         }
 
-        return File(context.filesDir, "edu.stanford.spezi/LocalStorage/$fileName.localstorage")
+        return File(context.filesDir, "edu.stanford.spezi/LocalStorage/$filename.localstorage")
     }
 }

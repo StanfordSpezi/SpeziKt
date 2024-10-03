@@ -10,4 +10,7 @@ sealed class LocalStorageError : Error() {
     data object DecryptionNotPossible : LocalStorageError() {
         private fun readResolve(): Any = DecryptionNotPossible
     }
+    data object DeletionNotPossible : LocalStorageError() {
+        private fun readResolve(): Any = DeletionNotPossible
+    }
 }
