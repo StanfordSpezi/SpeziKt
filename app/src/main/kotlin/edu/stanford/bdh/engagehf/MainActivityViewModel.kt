@@ -11,6 +11,7 @@ import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.manager.UserSessionManager
 import edu.stanford.spezi.module.account.manager.UserState
+import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,8 +37,22 @@ class MainActivityViewModel @Inject constructor(
         viewModelScope.launch {
             accountEvents.events.collect { event ->
                 when (event) {
-                    is AccountEvents.Event.SignUpSuccess, AccountEvents.Event.SignInSuccess -> {
-                        navigator.navigateTo(AppNavigationEvent.AppScreen)
+                    is AccountEvents.Event.SignInSuccess, AccountEvents.Event.SignUpSuccess -> {
+                        val navigationEvent =
+                            when (val userState = userSessionManager.getUserState()) {
+                                UserState.NotInitialized -> {
+                                    OnboardingNavigationEvent.OnboardingScreen
+                                }
+
+                                is UserState.Registered -> {
+                                    if (userState.hasInvitationCodeConfirmed) {
+                                        AppNavigationEvent.AppScreen
+                                    } else {
+                                        OnboardingNavigationEvent.InvitationCodeScreen
+                                    }
+                                }
+                            }
+                        navigator.navigateTo(navigationEvent)
                     }
 
                     else -> {
@@ -49,9 +64,9 @@ class MainActivityViewModel @Inject constructor(
 
         viewModelScope.launch {
             val startDestination = when (val userState = userSessionManager.getUserState()) {
-                is UserState.NotInitialized, UserState.Anonymous -> Routes.OnboardingScreen
+                is UserState.NotInitialized -> Routes.OnboardingScreen
                 is UserState.Registered -> {
-                    if (userState.hasConsented) Routes.AppScreen else Routes.ConsentScreen
+                    if (userState.hasInvitationCodeConfirmed) Routes.AppScreen else Routes.InvitationCodeScreen
                 }
             }
             _uiState.update { MainUiState.Content(startDestination = startDestination) }

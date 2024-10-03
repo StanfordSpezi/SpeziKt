@@ -10,6 +10,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import edu.stanford.spezi.module.account.R
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -42,14 +44,14 @@ fun DatePickerDialog(
             }
 
             ) {
-                Text(text = "OK")
+                Text(text = stringResource(R.string.ok))
             }
         },
         dismissButton = {
             Button(onClick = {
                 onDismiss()
             }) {
-                Text(text = "Cancel")
+                Text(text = stringResource(R.string.cancel))
             }
         }
     ) {

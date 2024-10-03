@@ -42,7 +42,6 @@ import edu.stanford.spezi.module.account.AccountNavigationEvent
 import edu.stanford.spezi.module.account.login.LoginScreen
 import edu.stanford.spezi.module.account.register.RegisterScreen
 import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
-import edu.stanford.spezi.module.onboarding.consent.ConsentScreen
 import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeScreen
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingScreen
 import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreen
@@ -129,15 +128,13 @@ class MainActivity : FragmentActivity() {
         ) {
             val args = it.toRoute<Routes.RegisterScreen>()
             RegisterScreen(
-                args.registerParams.isGoogleSignUp,
                 args.registerParams.email,
                 args.registerParams.password
             )
         }
 
         composable<Routes.LoginScreen> {
-            val args = it.toRoute<Routes.LoginScreen>()
-            LoginScreen(isAlreadyRegistered = args.isAlreadyRegistered)
+            LoginScreen()
         }
 
         composable<EducationRoutes.VideoDetail>(
@@ -175,10 +172,6 @@ class MainActivity : FragmentActivity() {
         composable<Routes.SequentialOnboardingScreen> {
             SequentialOnboardingScreen()
         }
-
-        composable<Routes.ConsentScreen> {
-            ConsentScreen()
-        }
     }
 
     @Composable
@@ -190,7 +183,6 @@ class MainActivity : FragmentActivity() {
                         is AccountNavigationEvent.RegisterScreen -> navHostController.navigate(
                             Routes.RegisterScreen(
                                 registerParams = RegisterParams(
-                                    isGoogleSignUp = event.isGoogleSignUp,
                                     email = event.email,
                                     password = event.password
                                 ),
@@ -202,9 +194,7 @@ class MainActivity : FragmentActivity() {
                         )
 
                         is AccountNavigationEvent.LoginScreen -> navHostController.navigate(
-                            Routes.LoginScreen(
-                                isAlreadyRegistered = event.isAlreadyRegistered
-                            )
+                            Routes.LoginScreen()
                         )
 
                         is OnboardingNavigationEvent.InvitationCodeScreen -> navHostController.navigate(

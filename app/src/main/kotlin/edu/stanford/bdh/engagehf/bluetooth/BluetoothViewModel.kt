@@ -176,6 +176,11 @@ class BluetoothViewModel @Inject internal constructor(
             }
 
             is Action.NewIntent -> handleNewIntent(action.intent)
+            is Action.VitalsCardClicked -> appScreenEvents.emit(
+                AppScreenEvents.Event.NavigateToTab(
+                    BottomBarItem.HEART_HEALTH
+                )
+            )
         }
     }
 

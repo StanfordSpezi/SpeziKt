@@ -1,8 +1,17 @@
 package edu.stanford.spezi.module.account.register
 
 import androidx.core.util.PatternsCompat
+import javax.inject.Inject
 
-internal abstract class FormValidator {
+internal class AuthValidator @Inject constructor() {
+
+    fun isFormValid(password: String, email: String): Boolean {
+        val passwordConditionSatisfied = {
+            isValidPassword(password).isValid
+        }
+        return isValidEmail(email).isValid &&
+            passwordConditionSatisfied()
+    }
 
     fun isValidEmail(email: String): Result {
         return if (PatternsCompat.EMAIL_ADDRESS.matcher(email).matches()) {
