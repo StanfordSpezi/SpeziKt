@@ -43,9 +43,12 @@ class ObservationsDocumentMapperImpl @Inject constructor(
             clientRecordId = clientRecordId
         )
         val time = observation.effectiveDateTimeType.value.toInstant()
-        val heartRate = observation.valueQuantity.value.toDouble()
         val zoneOffset =
-            ZoneOffset.ofTotalSeconds(observation.effectiveDateTimeType.value.timezoneOffset)
+            ZoneOffset.ofHoursMinutes(
+                observation.effectiveDateTimeType.tzHour,
+                observation.effectiveDateTimeType.tzMin
+            )
+        val heartRate = observation.valueQuantity.value.toDouble()
 
         return HeartRateRecord(
             startTime = time,
@@ -66,10 +69,6 @@ class ObservationsDocumentMapperImpl @Inject constructor(
         observation: Observation,
         clientRecordId: String?,
     ): BloodPressureRecord {
-        val time = observation.effectiveDateTimeType.value.toInstant()
-        val zoneOffset =
-            ZoneOffset.ofTotalSeconds(observation.effectiveDateTimeType.value.timezoneOffset)
-
         val systolic =
             observation.component.first { it.code.codingFirstRep.code == SYSTOLIC }
                 .valueQuantity.value.toDouble()
@@ -82,8 +81,11 @@ class ObservationsDocumentMapperImpl @Inject constructor(
         )
 
         return BloodPressureRecord(
-            time = time,
-            zoneOffset = zoneOffset,
+            time = observation.effectiveDateTimeType.value.toInstant(),
+            zoneOffset = ZoneOffset.ofHoursMinutes(
+                observation.effectiveDateTimeType.tzHour,
+                observation.effectiveDateTimeType.tzMin,
+            ),
             systolic = Pressure.millimetersOfMercury(systolic),
             diastolic = Pressure.millimetersOfMercury(diastolic),
             metadata = metadata
@@ -91,10 +93,6 @@ class ObservationsDocumentMapperImpl @Inject constructor(
     }
 
     private fun mapToWeightRecord(observation: Observation, clientRecordId: String?): WeightRecord {
-        val time = observation.effectiveDateTimeType.value.toInstant()
-        val zoneOffset =
-            ZoneOffset.ofTotalSeconds(observation.effectiveDateTimeType.value.timezoneOffset)
-
         val weight = observation.valueQuantity.value.toDouble()
         val unit =
             observation.valueQuantity.unit
@@ -104,8 +102,11 @@ class ObservationsDocumentMapperImpl @Inject constructor(
         )
 
         return WeightRecord(
-            time = time,
-            zoneOffset = zoneOffset,
+            time = observation.effectiveDateTimeType.value.toInstant(),
+            zoneOffset = ZoneOffset.ofHoursMinutes(
+                observation.effectiveDateTimeType.tzHour,
+                observation.effectiveDateTimeType.tzMin,
+            ),
             weight = if (unit.equals(
                     "lbs",
                     ignoreCase = true
