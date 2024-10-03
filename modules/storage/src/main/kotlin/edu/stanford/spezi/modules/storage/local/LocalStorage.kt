@@ -16,7 +16,7 @@ class LocalStorage @Inject constructor(
 
     private fun createCipher(mode: Int, key: Key): Cipher =
         // TODO: Supported values: https://developer.android.com/reference/kotlin/javax/crypto/Cipher
-        Cipher.getInstance("RSA/ECB/PKCS1Padding").apply { init(mode, key) }
+        Cipher.getInstance("RSA/ECB/OAEPPadding").apply { init(mode, key) }
 
     fun <C : Any> store(
         element: C,

@@ -144,11 +144,11 @@ class SecureStorageTests {
         val plainText = "Spezi & Paul Schmiedmayer".toByteArray(StandardCharsets.UTF_8)
         println(plainText.toString(StandardCharsets.UTF_8))
 
-        val encipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
+        val encipher = Cipher.getInstance("RSA/ECB/OAEPPadding")
         encipher.init(Cipher.ENCRYPT_MODE, publicKey)
         val encryptedBytes = encipher.doFinal(plainText)
 
-        val decipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
+        val decipher = Cipher.getInstance("RSA/ECB/OAEPPadding")
         decipher.init(Cipher.DECRYPT_MODE, privateKey)
         val decryptedBytes = decipher.doFinal(encryptedBytes)
         println(decryptedBytes.toString(StandardCharsets.UTF_8))
