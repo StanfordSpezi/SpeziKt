@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import androidx.core.content.edit
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.security.KeyPair
 import java.security.KeyPairGenerator
@@ -17,7 +19,16 @@ class SecureStorage(
 ) {
     private val provider = "AndroidKeyStore"
     private val keyStore: KeyStore = KeyStore.getInstance(provider).apply { load(null) }
-    private val preferences: SharedPreferences = context.getSharedPreferences("Spezi_SecureStoragePrefs", Context.MODE_PRIVATE)
+    private val preferencesKey = MasterKey.Builder(context)
+        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+        .build()
+    private val preferences: SharedPreferences = EncryptedSharedPreferences.create(
+        context,
+        "Spezi_SecureStoragePrefs",
+        preferencesKey,
+        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+    )
 
     fun createKey(
         tag: String,

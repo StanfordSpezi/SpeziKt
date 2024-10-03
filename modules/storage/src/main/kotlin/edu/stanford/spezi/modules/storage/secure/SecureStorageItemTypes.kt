@@ -1,36 +1,38 @@
 package edu.stanford.spezi.modules.storage.secure
 
+import java.util.EnumSet
+
 enum class SecureStorageItemType {
     KEYS,
     SERVER_CREDENTIALS,
     NON_SERVER_CREDENTIALS,
 }
 
-data class SecureStorageItemTypes(val types: Set<SecureStorageItemType>) {
+data class SecureStorageItemTypes(val types: EnumSet<SecureStorageItemType>) {
     companion object {
         val keys = SecureStorageItemTypes(
-            setOf(
+            EnumSet.of(
                 SecureStorageItemType.KEYS
             )
         )
         val serverCredentials = SecureStorageItemTypes(
-            setOf(
+            EnumSet.of(
                 SecureStorageItemType.SERVER_CREDENTIALS
             )
         )
         val nonServerCredentials = SecureStorageItemTypes(
-            setOf(
+            EnumSet.of(
                 SecureStorageItemType.NON_SERVER_CREDENTIALS
             )
         )
         val credentials = SecureStorageItemTypes(
-            setOf(
+            EnumSet.of(
                 SecureStorageItemType.SERVER_CREDENTIALS,
                 SecureStorageItemType.NON_SERVER_CREDENTIALS
             )
         )
         val all = SecureStorageItemTypes(
-            SecureStorageItemType.entries.toSet()
+            EnumSet.allOf(SecureStorageItemType::class.java)
         )
     }
 }

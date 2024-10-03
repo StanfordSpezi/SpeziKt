@@ -11,24 +11,25 @@ sealed class LocalStorageSetting {
 
     data object EncryptedUsingKeyStore : LocalStorageSetting()
 
-    @Suppress("detekt:ReturnCount")
+    @Suppress("detekt:TooGenericExceptionCaught")
     fun keys(secureStorage: SecureStorage): KeyPair? {
-        val secureStorageScope = when (this) {
-            is Unencrypted -> return null
-            is Encrypted -> return keyPair
-            is EncryptedUsingKeyStore ->
-                SecureStorageScope.KeyStore
-        }
-
-        val tag = "LocalStorage.${secureStorageScope.identifier}"
-        try {
-            val privateKey = secureStorage.retrievePrivateKey(tag)
-            val publicKey = secureStorage.retrievePublicKey(tag)
-            if (privateKey != null && publicKey != null) {
-                return KeyPair(publicKey, privateKey)
+        return when (this) {
+            is Unencrypted -> null
+            is Encrypted -> keyPair
+            is EncryptedUsingKeyStore -> {
+                val identifier = SecureStorageScope.KeyStore.identifier
+                val tag = "LocalStorage.$identifier"
+                try {
+                    val privateKey = secureStorage.retrievePrivateKey(tag)
+                    val publicKey = secureStorage.retrievePublicKey(tag)
+                    if (privateKey != null && publicKey != null) {
+                        return KeyPair(publicKey, privateKey)
+                    }
+                } catch (error: Throwable) {
+                    println("Retrieving private or public key from SecureStorage failed due to `$error`.")
+                }
+                secureStorage.createKey(tag)
             }
-        } catch (_: Throwable) {}
-
-        return secureStorage.createKey(tag)
+        }
     }
 }
