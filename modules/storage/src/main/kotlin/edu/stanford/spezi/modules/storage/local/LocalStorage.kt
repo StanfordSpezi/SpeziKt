@@ -17,16 +17,23 @@ class LocalStorage @Inject constructor(
     private fun createCipher(mode: Int, key: Key): Cipher =
         // TODO: Supported values: https://developer.android.com/reference/kotlin/javax/crypto/Cipher
         Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding").apply { init(mode, key) }
+g
+    fun store(storageKey: String, data: ByteArray, settings: LocalStorageSetting) =
+        store(file(storageKey, ByteArray::class), data, settings)
 
     fun <C : Any> store(
-        element: C,
+        value: C,
         storageKey: String? = null,
         type: KClass<C>,
         settings: LocalStorageSetting,
         encode: (C) -> ByteArray,
+    ) = store(file(storageKey, type), encode(value), settings)
+
+    private fun store(
+        file: File,
+        data: ByteArray,
+        settings: LocalStorageSetting,
     ) {
-        val file = file(storageKey, type)
-        val data = encode(element)
         val keys = settings.keys(secureStorage) ?: run {
             file.writeBytes(data)
             return
@@ -41,8 +48,16 @@ class LocalStorage @Inject constructor(
         type: KClass<C>,
         settings: LocalStorageSetting,
         decode: (ByteArray) -> C,
+    ): C = read(file(storageKey, type), settings, decode)
+
+    fun read(storageKey: String, settings: LocalStorageSetting): ByteArray =
+        read(file(storageKey, ByteArray::class), settings) { it }
+
+    private fun <C : Any> read(
+        file: File,
+        settings: LocalStorageSetting,
+        decode: (ByteArray) -> C,
     ): C {
-        val file = file(storageKey, type)
         val keys = settings.keys(secureStorage = secureStorage)
             ?: return decode(file.readBytes())
         val data = createCipher(Cipher.DECRYPT_MODE, keys.private)
@@ -50,19 +65,11 @@ class LocalStorage @Inject constructor(
         return decode(data)
     }
 
-    fun delete(storageKey: String?) {
-        delete(storageKey, String::class)
-    }
+    fun delete(storageKey: String) = delete(file(storageKey, String::class))
 
-    fun <C : Any> delete(type: KClass<C>) {
-        delete(null, type)
-    }
+    fun <C : Any> delete(type: KClass<C>) = delete(file(null, type))
 
-    private fun <C : Any> delete(
-        storageKey: String?,
-        type: KClass<C>,
-    ) {
-        val file = file(storageKey, type)
+    private fun delete(file: File) {
         if (file.exists()) {
             file.delete()
         }
@@ -72,7 +79,7 @@ class LocalStorage @Inject constructor(
         val filename = storageKey
             ?: type.qualifiedName
             ?: type.simpleName
-            ?: LocalStorageError.FileNameCouldNotBeIdentified
+            ?: throw LocalStorageError.FileNameCouldNotBeIdentified
         val directory = File(context.filesDir, "edu.stanford.spezi/LocalStorage")
         if (!directory.exists()) {
             directory.mkdirs()
