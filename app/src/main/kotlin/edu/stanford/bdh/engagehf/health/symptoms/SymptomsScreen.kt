@@ -51,7 +51,7 @@ import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
-import com.patrykandpatrick.vico.compose.common.shader.color
+import com.patrykandpatrick.vico.compose.common.fill
 import com.patrykandpatrick.vico.core.cartesian.HorizontalLayout
 import com.patrykandpatrick.vico.core.cartesian.Scroll
 import com.patrykandpatrick.vico.core.cartesian.Zoom
@@ -66,7 +66,6 @@ import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer.PointProvider.Companion.single
 import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
 import com.patrykandpatrick.vico.core.common.component.TextComponent
-import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shape.Shape
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.HealthTableItem
@@ -211,26 +210,24 @@ fun SymptomsChart(
         color = primary
     )
 
-    val valueFormatter: (Float, ChartValues, AxisPosition.Vertical?) -> CharSequence =
+    val valueFormatter: (Double, ChartValues, AxisPosition.Vertical?) -> CharSequence =
         { value, _, _ -> uiState.valueFormatter(value) }
 
     val marker = remember {
         DefaultCartesianMarker(
             label = TextComponent(),
             labelPosition = DefaultCartesianMarker.LabelPosition.AroundPoint,
-            indicator = shapeComponent,
             indicatorSizeDp = 5f,
         )
     }
-
     CartesianChartHost(
         chart =
         rememberCartesianChart(
             rememberLineCartesianLayer(
                 LineCartesianLayer.LineProvider.series(
                     rememberLine(
-                        shader = DynamicShader.color(primary),
-                        backgroundShader = DynamicShader.color(Color.Transparent),
+                        fill = LineCartesianLayer.LineFill.single(fill(primary)),
+                        areaFill = LineCartesianLayer.AreaFill.single(fill(Color.Transparent)),
                         pointProvider = single(
                             rememberPoint(
                                 shapeComponent,
@@ -240,10 +237,10 @@ fun SymptomsChart(
                     )
                 ),
                 axisValueOverrider = AxisValueOverrider.fixed(
-                    maxY = if (uiState.headerData.selectedSymptomType == SymptomType.DIZZINESS) 5f else 100f,
-                    minY = 0f,
-                    minX = uiState.chartData.first().xValues.minOrNull() ?: 0f,
-                    maxX = uiState.chartData.first().xValues.maxOrNull() ?: 0f,
+                    maxY = if (uiState.headerData.selectedSymptomType == SymptomType.DIZZINESS) 5.0 else 100.0,
+                    minY = 0.0,
+                    minX = uiState.chartData.first().xValues.minOrNull() ?: 0.0,
+                    maxX = uiState.chartData.first().xValues.maxOrNull() ?: 0.0,
                 )
             ),
             startAxis = rememberStartAxis(

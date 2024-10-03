@@ -1,6 +1,7 @@
 package edu.stanford.spezi.module.account.manager
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
@@ -22,11 +23,13 @@ interface UserSessionManager {
     fun observeUserState(): Flow<UserState>
     fun getUserUid(): String?
     fun getUserInfo(): UserInfo
+    suspend fun forceRefresh()
 }
 
 @Singleton
 internal class UserSessionManagerImpl @Inject constructor(
     private val firebaseStorage: FirebaseStorage,
+    private val firestore: FirebaseFirestore,
     private val firebaseAuth: FirebaseAuth,
     @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
     @Dispatching.IO private val coroutineScope: CoroutineScope,
@@ -39,10 +42,9 @@ internal class UserSessionManagerImpl @Inject constructor(
                 val currentUser = firebaseAuth.currentUser ?: error("User not available")
                 val inputStream = ByteArrayInputStream(pdfBytes)
                 logger.i { "Uploading file to Firebase Storage" }
-                val uploaded = firebaseStorage
-                    .getReference("users/${currentUser.uid}/consent/consent.pdf")
-                    .putStream(inputStream)
-                    .await().task.isSuccessful
+                val uploaded =
+                    firebaseStorage.getReference("users/${currentUser.uid}/consent/consent.pdf")
+                        .putStream(inputStream).await().task.isSuccessful
 
                 if (!uploaded) error("Failed to upload consent.pdf")
             }
@@ -50,10 +52,11 @@ internal class UserSessionManagerImpl @Inject constructor(
 
     override suspend fun getUserState(): UserState {
         val user = firebaseAuth.currentUser
-        return when {
-            user == null -> UserState.NotInitialized
-            user.isAnonymous -> UserState.Anonymous
-            else -> UserState.Registered(hasConsented = hasConsented())
+        if (user == null || user.isAnonymous) {
+            logger.i { "User is not available" }
+            return UserState.NotInitialized
+        } else {
+            return UserState.Registered(hasInvitationCodeConfirmed = hasConfirmedInvitationCode())
         }
     }
 
@@ -79,11 +82,28 @@ internal class UserSessionManagerImpl @Inject constructor(
         )
     }
 
+    override suspend fun forceRefresh() {
+        runCatching {
+            firebaseAuth.currentUser?.getIdToken(true)?.await()
+        }.onFailure {
+            logger.e { "Failed to force refresh user" }
+        }
+    }
+
+    @Suppress("UnusedPrivateMember")
     private suspend fun hasConsented(): Boolean = withContext(ioDispatcher) {
         runCatching {
             val uid = getUserUid() ?: error("No uid available")
             val reference = firebaseStorage.getReference("users/$uid/consent/consent.pdf")
             reference.metadata.await()
         }.isSuccess
+    }
+
+    private suspend fun hasConfirmedInvitationCode(): Boolean = withContext(ioDispatcher) {
+        runCatching {
+            val uid = getUserUid() ?: error("No uid available")
+            val document = firestore.collection("users").document(uid).get().await()
+            document.getString("invitationCode") != null
+        }.getOrDefault(false)
     }
 }

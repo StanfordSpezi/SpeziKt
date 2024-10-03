@@ -10,6 +10,7 @@ import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.manager.UserSessionManager
 import edu.stanford.spezi.module.account.manager.UserState
+import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
 import io.mockk.Called
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -50,30 +51,86 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `it should navigate to app screen on SignUpSuccess event`() = runTestUnconfined {
-        // given
-        createViewModel()
-        val event = AccountEvents.Event.SignUpSuccess
+    fun `it should navigate to InvitationCodeScreen on SignUpSuccess event with hasInvitationCodeConfirmed false`() =
+        runTestUnconfined {
+            // given
+            createViewModel()
+            val event = AccountEvents.Event.SignUpSuccess
+            coEvery { userSessionManager.getUserState() } returns UserState.Registered(
+                hasInvitationCodeConfirmed = false
+            )
 
-        // when
-        accountEventsFlow.emit(event)
+            // when
+            accountEventsFlow.emit(event)
 
-        // then
-        verify { navigator.navigateTo(event = AppNavigationEvent.AppScreen) }
-    }
+            // then
+            verify { navigator.navigateTo(event = OnboardingNavigationEvent.InvitationCodeScreen) }
+        }
 
     @Test
-    fun `it should navigate to app screen on SignInSuccess event`() = runTestUnconfined {
-        // given
-        createViewModel()
-        val event = AccountEvents.Event.SignInSuccess
+    fun `it should navigate to app screen on SignUpSuccess event with hasInvitationCodeConfirmed true`() =
+        runTestUnconfined {
+            // given
+            createViewModel()
+            val event = AccountEvents.Event.SignUpSuccess
+            coEvery { userSessionManager.getUserState() } returns UserState.Registered(
+                hasInvitationCodeConfirmed = true
+            )
 
-        // when
-        accountEventsFlow.emit(event)
+            // when
+            accountEventsFlow.emit(event)
 
-        // then
-        verify { navigator.navigateTo(event = AppNavigationEvent.AppScreen) }
-    }
+            // then
+            verify { navigator.navigateTo(event = AppNavigationEvent.AppScreen) }
+        }
+
+    @Test
+    fun `it should navigate to OnboardingScreen when user state is NotInitialized`() =
+        runTestUnconfined {
+            // given
+            coEvery { userSessionManager.getUserState() } returns UserState.NotInitialized
+            createViewModel()
+
+            // when
+            accountEventsFlow.emit(AccountEvents.Event.SignInSuccess)
+
+            // then
+            verify { navigator.navigateTo(event = OnboardingNavigationEvent.OnboardingScreen) }
+        }
+
+    @Test
+    fun `it should navigate to InvitationCodeScreen on SignInSuccess event with hasInvitationCodeConfirmed false`() =
+        runTestUnconfined {
+            // given
+            createViewModel()
+            val event = AccountEvents.Event.SignInSuccess
+            coEvery { userSessionManager.getUserState() } returns UserState.Registered(
+                hasInvitationCodeConfirmed = false
+            )
+
+            // when
+            accountEventsFlow.emit(event)
+
+            // then
+            verify { navigator.navigateTo(event = OnboardingNavigationEvent.InvitationCodeScreen) }
+        }
+
+    @Test
+    fun `it should navigate to app screen on SignInSuccess event with hasInvitationCodeConfirmed true`() =
+        runTestUnconfined {
+            // given
+            createViewModel()
+            val event = AccountEvents.Event.SignInSuccess
+            coEvery { userSessionManager.getUserState() } returns UserState.Registered(
+                hasInvitationCodeConfirmed = true
+            )
+
+            // when
+            accountEventsFlow.emit(event)
+
+            // then
+            verify { navigator.navigateTo(event = AppNavigationEvent.AppScreen) }
+        }
 
     @Test
     fun `it should not navigate on other account events`() = runTestUnconfined {
@@ -103,10 +160,10 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `it should have app screen start destination for registered user if consented`() =
+    fun `it should have app screen start destination for registered user if has Invitation Code Confirmed`() =
         runTestUnconfined {
             // given
-            val userState = UserState.Registered(hasConsented = true)
+            val userState = UserState.Registered(hasInvitationCodeConfirmed = true)
             coEvery { userSessionManager.getUserState() } returns userState
 
             // when
@@ -117,17 +174,17 @@ class MainActivityViewModelTest {
         }
 
     @Test
-    fun `it should have consent screen start destination for registered user if not consented`() =
+    fun `it should have consent screen start destination for registered user if has not Invitation Code Confirmed`() =
         runTestUnconfined {
             // given
-            val userState = UserState.Registered(hasConsented = false)
+            val userState = UserState.Registered(hasInvitationCodeConfirmed = false)
             coEvery { userSessionManager.getUserState() } returns userState
 
             // when
             createViewModel()
 
             // then
-            assertStartDestination(startDestination = Routes.ConsentScreen)
+            assertStartDestination(startDestination = Routes.InvitationCodeScreen)
         }
 
     @Test
@@ -135,20 +192,6 @@ class MainActivityViewModelTest {
         runTestUnconfined {
             // given
             val userState = UserState.NotInitialized
-            coEvery { userSessionManager.getUserState() } returns userState
-
-            // when
-            createViewModel()
-
-            // then
-            assertStartDestination(startDestination = Routes.OnboardingScreen)
-        }
-
-    @Test
-    fun `it should have OnboardingScreen start destination  for anonymous users`() =
-        runTestUnconfined {
-            // given
-            val userState = UserState.Anonymous
             coEvery { userSessionManager.getUserState() } returns userState
 
             // when

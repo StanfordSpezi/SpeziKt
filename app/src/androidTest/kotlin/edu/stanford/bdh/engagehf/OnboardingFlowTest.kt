@@ -3,7 +3,9 @@ package edu.stanford.bdh.engagehf
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import edu.stanford.bdh.engagehf.simulator.NavigatorSimulator
 import edu.stanford.bdh.engagehf.simulator.OnboardingFlowSimulator
+import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeRepository
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingRepository
 import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingRepository
@@ -30,6 +32,9 @@ class OnboardingFlowTest {
 
     @Inject
     lateinit var invitationCodeRepository: InvitationCodeRepository
+
+    @Inject
+    lateinit var navigator: Navigator
 
     @Before
     fun init() {
@@ -58,7 +63,8 @@ class OnboardingFlowTest {
 
     @Test
     fun `it should navigate and display sequential onboarding correctly`() = runTest {
-        val stepTitle = sequentialOnboardingRepository.getSequentialOnboardingData().steps.first().title
+        val stepTitle =
+            sequentialOnboardingRepository.getSequentialOnboardingData().steps.first().title
         onboardingFlow {
             onboardingScreen {
                 clickContinueButton()
@@ -73,7 +79,7 @@ class OnboardingFlowTest {
     }
 
     @Test
-    fun `it should display and navigate invitation screen correctly`() = runTest {
+    fun `it should display and navigate login screen correctly`() = runTest {
         val steps = sequentialOnboardingRepository.getSequentialOnboardingData().steps
         onboardingFlow {
             onboardingScreen {
@@ -86,18 +92,17 @@ class OnboardingFlowTest {
                 }
             }
 
-            invitationCodeScreen {
-                val screenData = invitationCodeRepository.getScreenData()
-                assertTitle(text = screenData.title)
-                assertDescription(text = screenData.description)
-                assertIsDisplayed()
-                assertMainButtonDisplayed()
-                assertSecondaryButtonDisplayed()
+            navigatorSimulator {
+                assertLoginScreenIsDisplayed()
             }
         }
     }
 
     private fun onboardingFlow(scope: OnboardingFlowSimulator.() -> Unit) {
         OnboardingFlowSimulator(composeTestRule).apply(scope)
+    }
+
+    private fun navigatorSimulator(scope: NavigatorSimulator.() -> Unit) {
+        NavigatorSimulator(composeTestRule, navigator).apply(scope)
     }
 }

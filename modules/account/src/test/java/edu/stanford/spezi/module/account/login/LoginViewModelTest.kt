@@ -8,8 +8,9 @@ import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.AccountNavigationEvent
+import edu.stanford.spezi.module.account.R
 import edu.stanford.spezi.module.account.manager.AuthenticationManager
-import edu.stanford.spezi.module.account.register.FormValidator
+import edu.stanford.spezi.module.account.register.AuthValidator
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -20,7 +21,6 @@ import io.mockk.verify
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.random.Random
 
 class LoginViewModelTest {
 
@@ -28,7 +28,7 @@ class LoginViewModelTest {
     private val authenticationManager: AuthenticationManager = mockk(relaxed = true)
     private val messageNotifier: MessageNotifier = mockk(relaxed = true)
     private val accountEvents: AccountEvents = mockk(relaxed = true)
-    private val validator: LoginFormValidator = mockk()
+    private val validator: AuthValidator = mockk()
     private val navigator: Navigator = mockk()
 
     @get:Rule
@@ -37,9 +37,9 @@ class LoginViewModelTest {
     @Before
     fun setUp() {
         with(validator) {
-            every { isFormValid(any()) } returns true
-            every { isValidEmail(any()) } returns FormValidator.Result.Valid
-            every { isValidPassword(any()) } returns FormValidator.Result.Valid
+            every { isFormValid(any(), any()) } returns true
+            every { isValidEmail(any()) } returns AuthValidator.Result.Valid
+            every { isValidPassword(any()) } returns AuthValidator.Result.Valid
         }
 
         every { navigator.navigateTo(any()) } just Runs
@@ -48,7 +48,7 @@ class LoginViewModelTest {
             messageNotifier = messageNotifier,
             accountEvents = accountEvents,
             navigator = navigator,
-            validator = validator
+            authValidator = validator
         )
     }
 
@@ -109,7 +109,6 @@ class LoginViewModelTest {
             // Given
             val action = Action.NavigateToRegister
             val expectedNavigationEvent = AccountNavigationEvent.RegisterScreen(
-                isGoogleSignUp = false,
                 email = loginViewModel.uiState.value.email.value,
                 password = loginViewModel.uiState.value.password.value,
             )
@@ -124,7 +123,6 @@ class LoginViewModelTest {
     @Test
     fun `it should handle successful google sign in correctly`() = runTestUnconfined {
         // given
-        loginViewModel.onAction(Action.SetIsAlreadyRegistered(isAlreadyRegistered = true))
         coEvery { authenticationManager.signInWithGoogle() } returns Result.success(Unit)
 
         // when
@@ -137,7 +135,6 @@ class LoginViewModelTest {
     @Test
     fun `it should failure google sign in correctly`() = runTestUnconfined {
         // given
-        loginViewModel.onAction(Action.SetIsAlreadyRegistered(isAlreadyRegistered = true))
         coEvery {
             authenticationManager.signInWithGoogle()
         } returns Result.failure(Exception("Failed to sign in"))
@@ -147,41 +144,8 @@ class LoginViewModelTest {
 
         // then
         verify { accountEvents.emit(event = AccountEvents.Event.SignInFailure) }
-        verify { messageNotifier.notify(message = "Failed to sign in") }
+        verify { messageNotifier.notify(R.string.error_sign_in_failed) }
     }
-
-    @Test
-    fun `it should handle google sign up correctly`() = runTestUnconfined {
-        // given
-        loginViewModel.onAction(Action.SetIsAlreadyRegistered(isAlreadyRegistered = false))
-        val uiState = loginViewModel.uiState.value
-        val expectedEvent = AccountNavigationEvent.RegisterScreen(
-            isGoogleSignUp = true,
-            email = uiState.email.value,
-            password = uiState.password.value,
-        )
-
-        // when
-        loginViewModel.onAction(Action.Async.GoogleSignInOrSignUp)
-
-        // then
-        verify { navigator.navigateTo(expectedEvent) }
-    }
-
-    @Test
-    fun `given SetIsAlreadyRegistered action when onAction is called then update isAlreadyRegistered in LoginUiState`() =
-        runTestUnconfined {
-            // Given
-            val value = Random.nextBoolean()
-            val action = Action.SetIsAlreadyRegistered(isAlreadyRegistered = value)
-
-            // When
-            loginViewModel.onAction(action)
-
-            // Then
-            val uiState = loginViewModel.uiState.value
-            assertThat(uiState.isAlreadyRegistered).isEqualTo(value)
-        }
 
     @Test
     fun `given ForgotPassword action with valid email when onAction is called then send forgot password email`() =
@@ -199,7 +163,7 @@ class LoginViewModelTest {
 
             // Then
             coVerify { authenticationManager.sendForgotPasswordEmail(validEmail) }
-            verify { messageNotifier.notify("Email sent") }
+            verify { messageNotifier.notify(R.string.email_sent) }
         }
 
     @Test
@@ -218,7 +182,7 @@ class LoginViewModelTest {
 
             // Then
             coVerify { authenticationManager.sendForgotPasswordEmail(validEmail) }
-            verify { messageNotifier.notify("Failed to send email") }
+            verify { messageNotifier.notify(R.string.failed_to_send_email) }
         }
 
     @Test
@@ -227,7 +191,7 @@ class LoginViewModelTest {
             // Given
             val action = Action.Async.ForgotPassword
             val email = "test@test.com"
-            every { validator.isValidEmail(email) } returns FormValidator.Result.Invalid("invalid")
+            every { validator.isValidEmail(email) } returns AuthValidator.Result.Invalid("invalid")
 
             // When
             listOf(
@@ -239,7 +203,7 @@ class LoginViewModelTest {
 
             // Then
             coVerifyNever { authenticationManager.sendForgotPasswordEmail(email) }
-            verify { messageNotifier.notify("Please enter a valid email") }
+            verify { messageNotifier.notify(R.string.please_enter_a_valid_email) }
         }
 
     @Test
@@ -250,14 +214,13 @@ class LoginViewModelTest {
         listOf(
             Action.TextFieldUpdate(email, TextFieldType.EMAIL),
             Action.TextFieldUpdate(password, TextFieldType.PASSWORD),
-            Action.SetIsAlreadyRegistered(isAlreadyRegistered = true),
         ).forEach {
             loginViewModel.onAction(it)
         }
         coEvery {
             authenticationManager.signIn(email = email, password = password)
         } returns Result.success(Unit)
-        val action = Action.Async.PasswordSignInOrSignUp
+        val action = Action.Async.PasswordSignIn
 
         // when
         loginViewModel.onAction(action)
@@ -274,18 +237,17 @@ class LoginViewModelTest {
         listOf(
             Action.TextFieldUpdate(email, TextFieldType.EMAIL),
             Action.TextFieldUpdate(password, TextFieldType.PASSWORD),
-            Action.SetIsAlreadyRegistered(isAlreadyRegistered = true),
         ).forEach { loginViewModel.onAction(it) }
         coEvery {
             authenticationManager.signIn(email = email, password = password)
         } returns Result.failure(Exception("Failure"))
-        val action = Action.Async.PasswordSignInOrSignUp
+        val action = Action.Async.PasswordSignIn
 
         // when
         loginViewModel.onAction(action)
 
         // then
         verify { accountEvents.emit(AccountEvents.Event.SignInFailure) }
-        verify { messageNotifier.notify(message = "Failed to sign in") }
+        verify { messageNotifier.notify(R.string.error_sign_in_failed) }
     }
 }

@@ -92,14 +92,6 @@ class AppNavigationTest {
         }
     }
 
-    @Test
-    fun `test navigation to consent screen`() {
-        mainActivity {
-            navigateToConsentScreen()
-            assertConsentScreenIsDisplayed()
-        }
-    }
-
     private fun mainActivity(scope: NavigatorSimulator.() -> Unit) {
         NavigatorSimulator(composeTestRule, navigator).apply(scope)
     }

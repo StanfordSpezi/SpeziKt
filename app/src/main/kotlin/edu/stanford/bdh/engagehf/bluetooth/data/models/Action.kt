@@ -13,6 +13,7 @@ sealed interface Action {
     data object Resumed : Action
     data object BLEDevicePairing : Action
     data class NewIntent(val intent: Intent) : Action
+    data object VitalsCardClicked : Action
 
     sealed interface Settings : Action {
         data object BluetoothSettings : Settings
