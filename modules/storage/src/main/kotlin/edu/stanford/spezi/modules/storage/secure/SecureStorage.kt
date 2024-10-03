@@ -41,7 +41,6 @@ class SecureStorage(
     }
 
     fun retrievePublicKey(tag: String): PublicKey? {
-        keyStore.getKey(tag, null) as? PrivateKey
         return keyStore.getCertificate(tag)?.publicKey
     }
 
