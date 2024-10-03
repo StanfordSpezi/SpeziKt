@@ -8,9 +8,4 @@ sealed class SecureStorageScope {
             is KeyStore ->
                 "keyStore"
         }
-
-    val userPresence: Boolean get() =
-        when (this) {
-            is KeyStore -> false
-        }
 }

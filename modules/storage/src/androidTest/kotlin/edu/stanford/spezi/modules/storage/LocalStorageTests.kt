@@ -4,7 +4,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import edu.stanford.spezi.modules.storage.local.LocalStorage
 import edu.stanford.spezi.modules.storage.local.LocalStorageSetting
 import org.junit.Test
-import java.io.Serializable
 import java.nio.charset.StandardCharsets
 import kotlin.random.Random
 

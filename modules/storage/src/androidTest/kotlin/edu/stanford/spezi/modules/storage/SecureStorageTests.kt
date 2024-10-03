@@ -8,11 +8,10 @@ import org.junit.Test
 import java.nio.charset.StandardCharsets
 import javax.crypto.Cipher
 
-
 class SecureStorageTests {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-    val secureStorage = SecureStorage(targetContext)
+    private val secureStorage = SecureStorage(targetContext)
 
     @Test
     fun testDeleteAllCredentials() {

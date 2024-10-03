@@ -4,7 +4,6 @@ import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.modules.storage.secure.SecureStorage
 import java.io.File
-import java.io.Serializable
 import java.security.Key
 import javax.crypto.Cipher
 import javax.inject.Inject
@@ -65,11 +64,7 @@ class LocalStorage @Inject constructor(
     ) {
         val file = file(storageKey, type)
         if (file.exists()) {
-            try {
-                file.delete()
-            } catch (error: Throwable) {
-                throw LocalStorageError.DeletionNotPossible
-            }
+            file.delete()
         }
     }
 
@@ -77,17 +72,11 @@ class LocalStorage @Inject constructor(
         val filename = storageKey
             ?: type.qualifiedName
             ?: type.simpleName
-            ?: throw Error() // TODO: Figure out what to do here?!
+            ?: LocalStorageError.FileNameCouldNotBeIdentified
         val directory = File(context.filesDir, "edu.stanford.spezi/LocalStorage")
-
-        try {
-            if (!directory.exists()) {
-                directory.mkdirs()
-            }
-        } catch (error: Throwable) {
-            println("Failed to create directories: $error")
+        if (!directory.exists()) {
+            directory.mkdirs()
         }
-
         return File(context.filesDir, "edu.stanford.spezi/LocalStorage/$filename.localstorage")
     }
 }

@@ -1,16 +1,8 @@
 package edu.stanford.spezi.modules.storage.local
 
-sealed class LocalStorageError : Error() {
-    data object EncryptionNotPossible : LocalStorageError() {
-        private fun readResolve(): Any = EncryptionNotPossible
-    }
-    data object CouldNotExcludedFromBackup : LocalStorageError() {
-        private fun readResolve(): Any = CouldNotExcludedFromBackup // TODO: Weird naming
-    }
-    data object DecryptionNotPossible : LocalStorageError() {
-        private fun readResolve(): Any = DecryptionNotPossible
-    }
-    data object DeletionNotPossible : LocalStorageError() {
-        private fun readResolve(): Any = DeletionNotPossible
+sealed class LocalStorageError : Exception() {
+    data object FileNameCouldNotBeIdentified : LocalStorageError() {
+        @Suppress("detekt:UnusedPrivateMember")
+        private fun readResolve(): Any = FileNameCouldNotBeIdentified
     }
 }
