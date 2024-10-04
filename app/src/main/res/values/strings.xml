@@ -97,4 +97,5 @@
     <string name="ble_device_error_subtitle">Something went wrong, please try again later.</string>
     <string name="your_devices_header_title">Your devices</string>
     <string name="last_seen_on">Last seen on %1$s</string>
+    <string name="sign_out_failed">Sign out failed.</string>
 </resources>
