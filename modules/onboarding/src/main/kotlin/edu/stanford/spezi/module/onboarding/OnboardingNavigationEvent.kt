@@ -8,4 +8,5 @@ sealed class OnboardingNavigationEvent : NavigationEvent {
     data object OnboardingScreen : OnboardingNavigationEvent()
     data object SequentialOnboardingScreen : OnboardingNavigationEvent()
     data object ConsentScreen : OnboardingNavigationEvent()
+    data object ClearBackStackOnboarding : OnboardingNavigationEvent()
 }
