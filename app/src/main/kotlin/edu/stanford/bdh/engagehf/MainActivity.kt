@@ -216,6 +216,11 @@ class MainActivity : FragmentActivity() {
                         is AppNavigationEvent.AppScreen -> navHostController.navigate(Routes.AppScreen)
                         is NavigationEvent.PopBackStack -> navHostController.popBackStack()
                         is NavigationEvent.NavigateUp -> navHostController.navigateUp()
+                        is OnboardingNavigationEvent.ClearBackStackOnboarding -> navHostController.navigate(
+                            Routes.OnboardingScreen
+                        ) {
+                            popUpTo(navHostController.graph.startDestinationId) { inclusive = true }
+                        }
 
                         is EducationNavigationEvent.VideoSectionClicked -> navHostController.navigate(
                             EducationRoutes.VideoDetail(

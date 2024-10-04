@@ -8,6 +8,7 @@ import edu.stanford.bdh.engagehf.navigation.Routes
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.manager.UserSessionManager
 import edu.stanford.spezi.module.account.manager.UserState
@@ -24,6 +25,7 @@ class MainActivityViewModel @Inject constructor(
     private val accountEvents: AccountEvents,
     private val navigator: Navigator,
     private val userSessionManager: UserSessionManager,
+    private val messageNotifier: MessageNotifier,
 ) : ViewModel() {
     private val logger by speziLogger()
     private val _uiState = MutableStateFlow<MainUiState>(MainUiState.SplashScreen)
@@ -53,6 +55,15 @@ class MainActivityViewModel @Inject constructor(
                                 }
                             }
                         navigator.navigateTo(navigationEvent)
+                    }
+
+                    is AccountEvents.Event.SignOutSuccess -> {
+                        navigator.navigateTo(OnboardingNavigationEvent.ClearBackStackOnboarding)
+                    }
+
+                    is AccountEvents.Event.SignOutFailure -> {
+                        messageNotifier.notify(R.string.sign_out_failed)
+                        logger.e { "Sign out failed" }
                     }
 
                     else -> {
