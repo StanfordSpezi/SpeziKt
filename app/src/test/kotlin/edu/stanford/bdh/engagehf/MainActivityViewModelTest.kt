@@ -7,6 +7,7 @@ import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.manager.UserSessionManager
 import edu.stanford.spezi.module.account.manager.UserState
@@ -32,6 +33,7 @@ class MainActivityViewModelTest {
     private val accountEvents: AccountEvents = mockk(relaxed = true)
     private val navigator: Navigator = mockk(relaxed = true)
     private val userSessionManager: UserSessionManager = mockk()
+    private val messageNotifier: MessageNotifier = mockk(relaxed = true)
     private lateinit var viewModel: MainActivityViewModel
 
     @Before
@@ -97,6 +99,33 @@ class MainActivityViewModelTest {
             // then
             verify { navigator.navigateTo(event = OnboardingNavigationEvent.OnboardingScreen) }
         }
+
+    @Test
+    fun `it should navigate to ClearBackStackOnboarding when user account event is SignOutSuccess`() =
+        runTestUnconfined {
+            // given
+            coEvery { userSessionManager.getUserState() } returns UserState.NotInitialized
+            createViewModel()
+
+            // when
+            accountEventsFlow.emit(AccountEvents.Event.SignOutSuccess)
+
+            // then
+            verify { navigator.navigateTo(event = OnboardingNavigationEvent.ClearBackStackOnboarding) }
+        }
+
+    @Test
+    fun `it should notify message when user account event is SignOutFailure`() = runTestUnconfined {
+        // given
+        coEvery { userSessionManager.getUserState() } returns UserState.NotInitialized
+        createViewModel()
+
+        // when
+        accountEventsFlow.emit(AccountEvents.Event.SignOutFailure)
+
+        // then
+        verify { messageNotifier.notify(R.string.sign_out_failed) }
+    }
 
     @Test
     fun `it should navigate to InvitationCodeScreen on SignInSuccess event with hasInvitationCodeConfirmed false`() =
@@ -211,6 +240,7 @@ class MainActivityViewModelTest {
             accountEvents = accountEvents,
             navigator = navigator,
             userSessionManager = userSessionManager,
+            messageNotifier = messageNotifier,
         )
     }
 }
