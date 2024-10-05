@@ -17,12 +17,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.bdh.engagehf.medication.ui.MedicationColor
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
+
+private const val PROGRESS_GREEN_HEX = 0xFF00796B
+private val PROGRESS_GREEN = Color(PROGRESS_GREEN_HEX)
 
 @Composable
 fun MedicationProgressBar(progress: Float) {
@@ -37,7 +39,7 @@ fun MedicationProgressBar(progress: Float) {
                 modifier = Modifier
                     .fillMaxHeight()
                     .fillMaxWidth(progress)
-                    .background(MedicationColor.GREEN_PROGRESS.value, RoundedCornerShape(Sizes.RoundedCorner.large))
+                    .background(PROGRESS_GREEN, RoundedCornerShape(Sizes.RoundedCorner.large))
             )
         }
         VerticalSpacer(height = Spacings.extraSmall)
@@ -47,11 +49,11 @@ fun MedicationProgressBar(progress: Float) {
         ) {
             Text(
                 text = stringResource(R.string.medication_progress_bar_current),
-                color = MedicationColor.GREEN_PROGRESS.value,
+                color = PROGRESS_GREEN,
             )
             Text(
                 text = stringResource(R.string.medication_progress_bar_target),
-                color = MedicationColor.GREY.value,
+                color = Color.LightGray,
             )
         }
     }
