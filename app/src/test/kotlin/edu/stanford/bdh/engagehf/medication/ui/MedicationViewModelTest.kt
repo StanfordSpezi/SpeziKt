@@ -61,6 +61,37 @@ class MedicationViewModelTest {
     }
 
     @Test
+    fun `given success state when ToggleSectionExpand action then uiState is updated`() =
+        runTestUnconfined {
+            // given
+            val givenExpanded = true
+            val initialState = MedicationUiState.Success(
+                medicationsTaking = Medications(medications = uiModels, expanded = givenExpanded),
+                medicationsThatMayHelp = Medications(medications = uiModels, expanded = true),
+                colorKeyExpanded = true
+            )
+            every {
+                medicationUiStateMapper.toggleItemExpand(
+                    section = MedicationViewModel.SECTION.MEDICATIONS_TAKING,
+                    uiState = initialState
+                )
+            } returns initialState.copy(
+                medicationsTaking = initialState.medicationsTaking.copy(expanded = false)
+            )
+
+            // when
+            viewModel.onAction(MedicationViewModel.Action.ToggleSectionExpand(MedicationViewModel.SECTION.MEDICATIONS_TAKING))
+
+            // then
+            val result = viewModel.uiState.value
+            assertThat(result).isEqualTo(
+                initialState.copy(
+                    medicationsTaking = initialState.medicationsTaking.copy(expanded = givenExpanded.not())
+                )
+            )
+        }
+
+    @Test
     fun `given medication details when initialized then uiState is success`() = runTestUnconfined {
         // given
         every {

@@ -15,9 +15,15 @@ class MedicationScreenTest {
     fun `it should display the success correctly`() {
         setUiState(
             MedicationUiState.Success(
-                Medications(getMedicationCardUiModels(), true),
-                Medications(getMedicationCardUiModels(), true),
-                true,
+                medicationsTaking = Medications(
+                    medications = getMedicationCardUiModels(),
+                    expanded = true
+                ),
+                medicationsThatMayHelp = Medications(
+                    medications = getMedicationCardUiModels(),
+                    expanded = true
+                ),
+                colorKeyExpanded = true,
             )
         )
         medicationScreen {
