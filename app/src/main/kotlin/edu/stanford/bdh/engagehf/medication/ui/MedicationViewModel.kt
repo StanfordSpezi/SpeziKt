@@ -86,11 +86,31 @@ class MedicationViewModel @Inject internal constructor(
                     }
                 }
             }
+
+            is Action.ToggleSectionExpand -> {
+                _uiState.update {
+                    if (it is MedicationUiState.Success) {
+                        medicationUiStateMapper.toggleItemExpand(
+                            section = action.section,
+                            uiState = it
+                        )
+                    } else {
+                        it
+                    }
+                }
+            }
         }
     }
 
     interface Action {
         data class ToggleExpand(val medicationId: String) : Action
         data class InfoClicked(val videoPath: String) : Action
+        data class ToggleSectionExpand(val section: SECTION) : Action
+    }
+
+    enum class SECTION {
+        MEDICATIONS_TAKING,
+        MEDICATIONS_THAT_MAY_HELP,
+        COLOR_KEY,
     }
 }
