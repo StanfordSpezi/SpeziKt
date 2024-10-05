@@ -122,6 +122,47 @@ class MedicationUiStateMapperTest {
         assertThat(result.medicationsTaking.medications[0].dosageInformation).isNotNull()
     }
 
+    @Test
+    fun `given SuccessState when toggleItemExpand then return updated SuccessState`() {
+        // given
+        val initialIsExpandedState = false
+        val model = getMedicationCardUiModel()
+        val uiState = MedicationUiState.Success(
+            medicationsTaking = Medications(listOf(model), initialIsExpandedState),
+            medicationsThatMayHelp = Medications(listOf(model), initialIsExpandedState),
+            colorKeyExpanded = initialIsExpandedState
+        )
+
+        // when
+        var result = medicationUiStateMapper.toggleItemExpand(
+            MedicationViewModel.SECTION.MEDICATIONS_TAKING,
+            uiState
+        )
+        result =
+            medicationUiStateMapper.toggleItemExpand(
+                MedicationViewModel.SECTION.COLOR_KEY,
+                result as MedicationUiState.Success
+            )
+
+        result = medicationUiStateMapper.toggleItemExpand(
+            MedicationViewModel.SECTION.MEDICATIONS_THAT_MAY_HELP,
+            result as MedicationUiState.Success
+        )
+
+        // then
+        assertThat(result).isInstanceOf(MedicationUiState.Success::class.java)
+        assertThat((result as MedicationUiState.Success).medicationsTaking.medications).hasSize(1)
+        assertThat(result.medicationsTaking.expanded).isEqualTo(
+            initialIsExpandedState.not()
+        )
+        assertThat(result.medicationsThatMayHelp.expanded).isEqualTo(
+            initialIsExpandedState.not()
+        )
+        assertThat(result.colorKeyExpanded).isEqualTo(
+            initialIsExpandedState.not()
+        )
+    }
+
     private fun getMedicationCardUiModel(
         id: String = "",
         title: String = "",
