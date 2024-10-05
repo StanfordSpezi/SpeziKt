@@ -22,15 +22,17 @@ class MedicationUiStateMapper @Inject constructor(
         } else {
             MedicationUiState.Success(
                 medicationsTaking =
-                Medications(medications = recommendations.filter { it.type != MedicationRecommendationType.NOT_STARTED }
-                    .sortedByDescending { it.type.priority }.map { map(it) },
-                    expanded = true
+                Medications(
+                    medications = recommendations.filter { it.type != MedicationRecommendationType.NOT_STARTED }
+                        .sortedByDescending { it.type.priority }
+                        .map { map(it) },
+                    expanded = true,
                 ),
-                medicationsThatMayHelp = Medications(medications =
-                recommendations.filter { it.type == MedicationRecommendationType.NOT_STARTED }
-                    .sortedByDescending { it.type.priority }
-                    .map { map(it) },
-                    expanded = false
+                medicationsThatMayHelp = Medications(
+                    medications = recommendations.filter { it.type == MedicationRecommendationType.NOT_STARTED }
+                        .sortedByDescending { it.type.priority }
+                        .map { map(it) },
+                    expanded = false,
                 ),
                 colorKeyExpanded = false
             )
