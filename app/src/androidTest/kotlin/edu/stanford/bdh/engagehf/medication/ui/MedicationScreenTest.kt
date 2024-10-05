@@ -13,7 +13,13 @@ class MedicationScreenTest {
 
     @Test
     fun `it should display the success correctly`() {
-        setUiState(MedicationUiState.Success(getMedicationCardUiModels()))
+        setUiState(
+            MedicationUiState.Success(
+                Medications(getMedicationCardUiModels(), true),
+                Medications(getMedicationCardUiModels(), true),
+                true,
+            )
+        )
         medicationScreen {
             assertSuccessIsDisplayed()
         }
@@ -81,7 +87,7 @@ class MedicationScreenTest {
                 progress = 0.234f,
             ),
             isExpanded = true,
-            statusColor = MedicationColor.GREY,
+            statusColor = MedicationColor.BLUE,
             statusIconResId = R.drawable.ic_check,
             videoPath = "/videoSections/1/videos/1"
         )
