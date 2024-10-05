@@ -45,7 +45,11 @@ class MedicationViewModelTest {
         )
         every {
             medicationUiStateMapper.mapMedicationUiState(recommendations)
-        } returns MedicationUiState.Success(uiModels)
+        } returns MedicationUiState.Success(
+            medicationsTaking = Medications(medications = uiModels, expanded = true),
+            medicationsThatMayHelp = Medications(medications = uiModels, expanded = true),
+            colorKeyExpanded = true
+        )
         viewModel = MedicationViewModel(
             medicationRepository,
             medicationUiStateMapper,
@@ -61,21 +65,32 @@ class MedicationViewModelTest {
         // given
         every {
             medicationUiStateMapper.mapMedicationUiState(recommendations)
-        } returns MedicationUiState.Success(uiModels)
+        } returns MedicationUiState.Success(
+            medicationsTaking = Medications(medications = uiModels, expanded = true),
+            medicationsThatMayHelp = Medications(medications = uiModels, expanded = true),
+            colorKeyExpanded = true,
+        )
 
         // when
         val uiState = viewModel.uiState.value
 
         // then
         assertThat(uiState).isInstanceOf(MedicationUiState.Success::class.java)
-        assertThat((uiState as MedicationUiState.Success).uiModels).isEqualTo(uiModels)
+        assertThat((uiState as MedicationUiState.Success).medicationsTaking.medications).isEqualTo(
+            uiModels
+        )
+        assertThat(uiState.medicationsThatMayHelp.medications).isEqualTo(uiModels)
     }
 
     @Test
     fun `given success state when expand action then uiState is updated`() = runTestUnconfined {
         // given
         val medicationId = "some-id"
-        val toggledResult = MedicationUiState.Success(uiModels = emptyList())
+        val toggledResult = MedicationUiState.Success(
+            medicationsTaking = Medications(medications = emptyList(), expanded = true),
+            medicationsThatMayHelp = Medications(medications = emptyList(), expanded = true),
+            colorKeyExpanded = true
+        )
         every {
             medicationUiStateMapper.expandMedication(
                 medicationId = medicationId,
