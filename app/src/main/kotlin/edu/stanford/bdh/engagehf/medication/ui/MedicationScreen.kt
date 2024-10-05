@@ -88,11 +88,19 @@ private class UiStateProvider : PreviewParameterProvider<MedicationUiState> {
         MedicationUiState.Error(message = "An error occurred"),
         MedicationUiState.NoData(message = "No message recommendations"),
         MedicationUiState.Success(
-            uiModels = listOf(
-                getMedicationCardUiModel(MedicationColor.YELLOW, true),
-                getMedicationCardUiModel(MedicationColor.GREEN_SUCCESS, true),
-                getMedicationCardUiModel(MedicationColor.GREY),
-            )
+            medicationsTaking = Medications(
+                listOf(
+                    getMedicationCardUiModel(MedicationColor.YELLOW, true),
+                    getMedicationCardUiModel(MedicationColor.GREEN_SUCCESS, true),
+                ), expanded = true
+            ),
+            medicationsThatMayHelp = Medications(
+                listOf(
+                    getMedicationCardUiModel(MedicationColor.BLUE),
+                ),
+                expanded = false
+            ),
+            colorKeyExpanded = false
         )
     )
 }
