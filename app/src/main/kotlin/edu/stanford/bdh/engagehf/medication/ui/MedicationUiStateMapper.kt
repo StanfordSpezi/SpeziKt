@@ -28,7 +28,8 @@ class MedicationUiStateMapper @Inject constructor(
                 ),
                 medicationsThatMayHelp = Medications(medications =
                 recommendations.filter { it.type == MedicationRecommendationType.NOT_STARTED }
-                    .sortedByDescending { it.type.priority }.map { map(it) },
+                    .sortedByDescending { it.type.priority }
+                    .map { map(it) },
                     expanded = false
                 ),
                 colorKeyExpanded = false
