@@ -43,11 +43,7 @@ class ObservationsDocumentMapperImpl @Inject constructor(
             clientRecordId = clientRecordId
         )
         val time = observation.effectiveDateTimeType.value.toInstant()
-        val zoneOffset =
-            ZoneOffset.ofHoursMinutes(
-                observation.effectiveDateTimeType.tzHour,
-                observation.effectiveDateTimeType.tzMin
-            )
+        val zoneOffset = getZoneOffset(observation)
         val heartRate = observation.valueQuantity.value.toDouble()
 
         return HeartRateRecord(
@@ -82,15 +78,17 @@ class ObservationsDocumentMapperImpl @Inject constructor(
 
         return BloodPressureRecord(
             time = observation.effectiveDateTimeType.value.toInstant(),
-            zoneOffset = ZoneOffset.ofHoursMinutes(
-                observation.effectiveDateTimeType.tzHour,
-                observation.effectiveDateTimeType.tzMin,
-            ),
+            zoneOffset = getZoneOffset(observation),
             systolic = Pressure.millimetersOfMercury(systolic),
             diastolic = Pressure.millimetersOfMercury(diastolic),
             metadata = metadata
         )
     }
+
+    private fun getZoneOffset(observation: Observation) = ZoneOffset.ofHoursMinutes(
+        observation.effectiveDateTimeType.tzHour,
+        observation.effectiveDateTimeType.tzMin
+    )
 
     private fun mapToWeightRecord(observation: Observation, clientRecordId: String?): WeightRecord {
         val weight = observation.valueQuantity.value.toDouble()
@@ -103,10 +101,7 @@ class ObservationsDocumentMapperImpl @Inject constructor(
 
         return WeightRecord(
             time = observation.effectiveDateTimeType.value.toInstant(),
-            zoneOffset = ZoneOffset.ofHoursMinutes(
-                observation.effectiveDateTimeType.tzHour,
-                observation.effectiveDateTimeType.tzMin,
-            ),
+            zoneOffset = getZoneOffset(observation),
             weight = if (unit.equals(
                     "lbs",
                     ignoreCase = true
