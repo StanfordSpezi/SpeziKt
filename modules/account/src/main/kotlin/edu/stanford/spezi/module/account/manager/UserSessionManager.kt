@@ -5,6 +5,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.module.account.AccountEvents
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
@@ -24,6 +25,7 @@ interface UserSessionManager {
     fun getUserUid(): String?
     fun getUserInfo(): UserInfo
     suspend fun forceRefresh()
+    fun signOut()
 }
 
 @Singleton
@@ -31,10 +33,21 @@ internal class UserSessionManagerImpl @Inject constructor(
     private val firebaseStorage: FirebaseStorage,
     private val firestore: FirebaseFirestore,
     private val firebaseAuth: FirebaseAuth,
+    private val accountEvents: AccountEvents,
     @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
     @Dispatching.IO private val coroutineScope: CoroutineScope,
 ) : UserSessionManager {
     private val logger by speziLogger()
+
+    override fun signOut() {
+        runCatching {
+            firebaseAuth.signOut()
+        }.onSuccess {
+            accountEvents.emit(event = AccountEvents.Event.SignOutSuccess)
+        }.onFailure {
+            accountEvents.emit(event = AccountEvents.Event.SignOutFailure)
+        }
+    }
 
     override suspend fun uploadConsentPdf(pdfBytes: ByteArray): Result<Unit> =
         withContext(ioDispatcher) {

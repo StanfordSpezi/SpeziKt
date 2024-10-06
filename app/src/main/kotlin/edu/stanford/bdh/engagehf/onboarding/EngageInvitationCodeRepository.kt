@@ -18,7 +18,7 @@ class EngageInvitationCodeRepository @Inject constructor(
         return InvitationCodeScreenData(
             title = "Invitation Code",
             description = "Please enter your invitation code to join the ENGAGE-HF study.",
-            redeemAction = { navigator.navigateTo(AppNavigationEvent.AppScreen) },
+            redeemAction = { navigator.navigateTo(AppNavigationEvent.AppScreen(true)) },
         )
     }
 }
