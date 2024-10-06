@@ -11,7 +11,9 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.hl7.fhir.r4.model.Observation
+import java.time.ZoneId
 import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import javax.inject.Inject
 
 class ObservationsDocumentMapperImpl @Inject constructor(
@@ -85,10 +87,17 @@ class ObservationsDocumentMapperImpl @Inject constructor(
         )
     }
 
-    private fun getZoneOffset(observation: Observation) = ZoneOffset.ofHoursMinutes(
-        observation.effectiveDateTimeType.tzHour,
-        observation.effectiveDateTimeType.tzMin
-    )
+    private fun getZoneOffset(observation: Observation) = runCatching {
+        ZoneOffset.ofHoursMinutes(
+            observation.effectiveDateTimeType.tzHour,
+            observation.effectiveDateTimeType.tzMin
+        )
+    }.getOrDefault(getSystemDefaultZoneOffset())
+
+    private fun getSystemDefaultZoneOffset(): ZoneOffset {
+        val zonedDateTime = ZonedDateTime.now(ZoneId.systemDefault())
+        return zonedDateTime.offset
+    }
 
     private fun mapToWeightRecord(observation: Observation, clientRecordId: String?): WeightRecord {
         val weight = observation.valueQuantity.value.toDouble()
