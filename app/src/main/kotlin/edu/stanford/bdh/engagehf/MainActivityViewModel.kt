@@ -48,7 +48,7 @@ class MainActivityViewModel @Inject constructor(
 
                                 is UserState.Registered -> {
                                     if (userState.hasInvitationCodeConfirmed) {
-                                        AppNavigationEvent.AppScreen
+                                        AppNavigationEvent.AppScreen(true)
                                     } else {
                                         OnboardingNavigationEvent.InvitationCodeScreen
                                     }

@@ -83,7 +83,7 @@ class MainActivityViewModelTest {
             accountEventsFlow.emit(event)
 
             // then
-            verify { navigator.navigateTo(event = AppNavigationEvent.AppScreen) }
+            verify { navigator.navigateTo(event = AppNavigationEvent.AppScreen(clearStackTrace = true)) }
         }
 
     @Test
@@ -97,7 +97,13 @@ class MainActivityViewModelTest {
             accountEventsFlow.emit(AccountEvents.Event.SignInSuccess)
 
             // then
-            verify { navigator.navigateTo(event = OnboardingNavigationEvent.OnboardingScreen) }
+            verify {
+                navigator.navigateTo(
+                    event = OnboardingNavigationEvent.OnboardingScreen(
+                        clearBackStack = true
+                    )
+                )
+            }
         }
 
     @Test
@@ -111,7 +117,13 @@ class MainActivityViewModelTest {
             accountEventsFlow.emit(AccountEvents.Event.SignOutSuccess)
 
             // then
-            verify { navigator.navigateTo(event = OnboardingNavigationEvent.ClearBackStackOnboarding) }
+            verify {
+                navigator.navigateTo(
+                    event = OnboardingNavigationEvent.OnboardingScreen(
+                        clearBackStack = true
+                    )
+                )
+            }
         }
 
     @Test
@@ -158,7 +170,7 @@ class MainActivityViewModelTest {
             accountEventsFlow.emit(event)
 
             // then
-            verify { navigator.navigateTo(event = AppNavigationEvent.AppScreen) }
+            verify { navigator.navigateTo(event = AppNavigationEvent.AppScreen(clearStackTrace = true)) }
         }
 
     @Test
