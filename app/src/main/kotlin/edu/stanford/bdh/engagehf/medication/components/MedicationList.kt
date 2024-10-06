@@ -32,7 +32,7 @@ fun MedicationList(
             SectionHeader(
                 title = stringResource(R.string.medication_you_are_taking),
                 onToggleExpand = {
-                    onAction(MedicationViewModel.Action.ToggleSectionExpand(MedicationViewModel.SECTION.MEDICATIONS_TAKING))
+                    onAction(MedicationViewModel.Action.ToggleSectionExpand(MedicationViewModel.Section.MEDICATIONS_TAKING))
                 }
             )
         }
@@ -45,7 +45,7 @@ fun MedicationList(
             SectionHeader(
                 title = stringResource(R.string.medications_that_may_help),
                 onToggleExpand = {
-                    onAction(MedicationViewModel.Action.ToggleSectionExpand(MedicationViewModel.SECTION.MEDICATIONS_THAT_MAY_HELP))
+                    onAction(MedicationViewModel.Action.ToggleSectionExpand(MedicationViewModel.Section.MEDICATIONS_THAT_MAY_HELP))
                 }
             )
         }
@@ -58,7 +58,7 @@ fun MedicationList(
             SectionHeader(
                 title = stringResource(R.string.color_key),
                 onToggleExpand = {
-                    onAction(MedicationViewModel.Action.ToggleSectionExpand(MedicationViewModel.SECTION.COLOR_KEY))
+                    onAction(MedicationViewModel.Action.ToggleSectionExpand(MedicationViewModel.Section.COLOR_KEY))
                 }
             )
         }

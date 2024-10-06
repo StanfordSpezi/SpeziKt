@@ -105,10 +105,10 @@ class MedicationViewModel @Inject internal constructor(
     interface Action {
         data class ToggleExpand(val medicationId: String) : Action
         data class InfoClicked(val videoPath: String) : Action
-        data class ToggleSectionExpand(val section: SECTION) : Action
+        data class ToggleSectionExpand(val section: Section) : Action
     }
 
-    enum class SECTION {
+    enum class Section {
         MEDICATIONS_TAKING,
         MEDICATIONS_THAT_MAY_HELP,
         COLOR_KEY,

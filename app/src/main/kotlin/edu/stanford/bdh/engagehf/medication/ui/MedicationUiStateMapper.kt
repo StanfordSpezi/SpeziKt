@@ -54,11 +54,11 @@ class MedicationUiStateMapper @Inject constructor(
     }
 
     fun toggleItemExpand(
-        section: MedicationViewModel.SECTION,
+        section: MedicationViewModel.Section,
         uiState: MedicationUiState.Success,
     ): MedicationUiState {
         return when (section) {
-            MedicationViewModel.SECTION.MEDICATIONS_TAKING -> {
+            MedicationViewModel.Section.MEDICATIONS_TAKING -> {
                 uiState.copy(
                     medicationsTaking = uiState.medicationsTaking.copy(
                         expanded = !uiState.medicationsTaking.expanded
@@ -66,7 +66,7 @@ class MedicationUiStateMapper @Inject constructor(
                 )
             }
 
-            MedicationViewModel.SECTION.MEDICATIONS_THAT_MAY_HELP -> {
+            MedicationViewModel.Section.MEDICATIONS_THAT_MAY_HELP -> {
                 uiState.copy(
                     medicationsThatMayHelp = uiState.medicationsThatMayHelp.copy(
                         expanded = !uiState.medicationsThatMayHelp.expanded
@@ -74,7 +74,7 @@ class MedicationUiStateMapper @Inject constructor(
                 )
             }
 
-            MedicationViewModel.SECTION.COLOR_KEY -> {
+            MedicationViewModel.Section.COLOR_KEY -> {
                 uiState.copy(colorKeyExpanded = !uiState.colorKeyExpanded)
             }
         }

@@ -135,17 +135,17 @@ class MedicationUiStateMapperTest {
 
         // when
         var result = medicationUiStateMapper.toggleItemExpand(
-            MedicationViewModel.SECTION.MEDICATIONS_TAKING,
+            MedicationViewModel.Section.MEDICATIONS_TAKING,
             uiState
         )
         result =
             medicationUiStateMapper.toggleItemExpand(
-                MedicationViewModel.SECTION.COLOR_KEY,
+                MedicationViewModel.Section.COLOR_KEY,
                 result as MedicationUiState.Success
             )
 
         result = medicationUiStateMapper.toggleItemExpand(
-            MedicationViewModel.SECTION.MEDICATIONS_THAT_MAY_HELP,
+            MedicationViewModel.Section.MEDICATIONS_THAT_MAY_HELP,
             result as MedicationUiState.Success
         )
 

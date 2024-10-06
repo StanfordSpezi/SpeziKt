@@ -72,7 +72,7 @@ class MedicationViewModelTest {
             )
             every {
                 medicationUiStateMapper.toggleItemExpand(
-                    section = MedicationViewModel.SECTION.MEDICATIONS_TAKING,
+                    section = MedicationViewModel.Section.MEDICATIONS_TAKING,
                     uiState = initialState
                 )
             } returns initialState.copy(
@@ -80,7 +80,7 @@ class MedicationViewModelTest {
             )
 
             // when
-            viewModel.onAction(MedicationViewModel.Action.ToggleSectionExpand(MedicationViewModel.SECTION.MEDICATIONS_TAKING))
+            viewModel.onAction(MedicationViewModel.Action.ToggleSectionExpand(MedicationViewModel.Section.MEDICATIONS_TAKING))
 
             // then
             val result = viewModel.uiState.value
