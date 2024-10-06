@@ -203,6 +203,19 @@ class AppScreenViewModelTest {
         }
 
     @Test
+    fun `given SignOut is received then user should be signed out`() =
+        runTestUnconfined {
+            // Given
+            val event = Action.SignOut
+
+            // When
+            viewModel.onAction(event)
+
+            // Then
+            coVerify { userSessionManager.signOut() }
+        }
+
+    @Test
     fun `given ShowHealthSummary is received then healthSummaryService should be called`() =
         runTestUnconfined {
             // Given
