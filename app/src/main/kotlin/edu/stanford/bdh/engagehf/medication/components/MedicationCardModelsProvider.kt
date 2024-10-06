@@ -12,7 +12,7 @@ class MedicationCardModelsProvider : PreviewParameterProvider<MedicationCardUiMo
         getMedicationCardUiModel(MedicationColor.GREEN_SUCCESS, isExpanded = true),
         getMedicationCardUiModel(color = MedicationColor.GREEN_SUCCESS),
         getMedicationCardUiModel(color = MedicationColor.YELLOW),
-        getMedicationCardUiModel(color = MedicationColor.GREY),
+        getMedicationCardUiModel(color = MedicationColor.BLUE),
     )
 }
 
