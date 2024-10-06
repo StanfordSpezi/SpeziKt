@@ -201,8 +201,8 @@ class MainActivity : FragmentActivity() {
                             Routes.InvitationCodeScreen
                         )
 
-                        is OnboardingNavigationEvent.OnboardingScreen -> navHostController.navigate(
-                            Routes.OnboardingScreen
+                        is OnboardingNavigationEvent.OnboardingScreen -> navHostController.navigateTo(
+                            Routes.OnboardingScreen, event.clearBackStack
                         )
 
                         is OnboardingNavigationEvent.SequentialOnboardingScreen -> navHostController.navigate(
@@ -213,14 +213,13 @@ class MainActivity : FragmentActivity() {
                             Routes.ConsentScreen
                         )
 
-                        is AppNavigationEvent.AppScreen -> navHostController.navigate(Routes.AppScreen)
+                        is AppNavigationEvent.AppScreen -> navHostController.navigateTo(
+                            route = Routes.AppScreen,
+                            clearBackStack = true
+                        )
+
                         is NavigationEvent.PopBackStack -> navHostController.popBackStack()
                         is NavigationEvent.NavigateUp -> navHostController.navigateUp()
-                        is OnboardingNavigationEvent.ClearBackStackOnboarding -> navHostController.navigate(
-                            Routes.OnboardingScreen
-                        ) {
-                            popUpTo(navHostController.graph.startDestinationId) { inclusive = true }
-                        }
 
                         is EducationNavigationEvent.VideoSectionClicked -> navHostController.navigate(
                             EducationRoutes.VideoDetail(
@@ -233,6 +232,15 @@ class MainActivity : FragmentActivity() {
                         )
                     }
                 }
+            }
+        }
+    }
+
+    private fun NavHostController.navigateTo(route: Routes, clearBackStack: Boolean = false) {
+        navigate(route) {
+            if (clearBackStack) {
+                popUpTo(graph.startDestinationId) { inclusive = true }
+                launchSingleTop = true
             }
         }
     }

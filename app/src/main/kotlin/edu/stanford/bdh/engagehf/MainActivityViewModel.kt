@@ -43,7 +43,7 @@ class MainActivityViewModel @Inject constructor(
                         val navigationEvent =
                             when (val userState = userSessionManager.getUserState()) {
                                 UserState.NotInitialized -> {
-                                    OnboardingNavigationEvent.OnboardingScreen
+                                    OnboardingNavigationEvent.OnboardingScreen(clearBackStack = false)
                                 }
 
                                 is UserState.Registered -> {
@@ -58,7 +58,11 @@ class MainActivityViewModel @Inject constructor(
                     }
 
                     is AccountEvents.Event.SignOutSuccess -> {
-                        navigator.navigateTo(OnboardingNavigationEvent.ClearBackStackOnboarding)
+                        navigator.navigateTo(
+                            OnboardingNavigationEvent.OnboardingScreen(
+                                clearBackStack = true
+                            )
+                        )
                     }
 
                     is AccountEvents.Event.SignOutFailure -> {
