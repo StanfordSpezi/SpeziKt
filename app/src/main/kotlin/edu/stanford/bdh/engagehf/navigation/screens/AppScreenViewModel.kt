@@ -142,7 +142,7 @@ class AppScreenViewModel @Inject constructor(
 
             Action.SignOut -> {
                 _uiState.update { it.copy(accountUiState = it.accountUiState.copy(showDialog = false)) }
-                /* TODO: Implement sign out */
+                userSessionManager.signOut()
             }
 
             Action.DismissBottomSheet -> {
