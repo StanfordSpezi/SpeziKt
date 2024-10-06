@@ -47,7 +47,7 @@ class EngageConsentManagerTest {
     @Test
     fun `it should navigate to bluetooth screen on consented`() = runTestUnconfined {
         // given
-        val navigationEvent = AppNavigationEvent.AppScreen(clearStackTrace = true)
+        val navigationEvent = AppNavigationEvent.AppScreen(clearBackStack = true)
 
         // when
         manager.onConsented()

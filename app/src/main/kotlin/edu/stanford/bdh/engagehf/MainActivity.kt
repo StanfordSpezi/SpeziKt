@@ -215,7 +215,7 @@ class MainActivity : FragmentActivity() {
 
                         is AppNavigationEvent.AppScreen -> navHostController.navigateTo(
                             route = Routes.AppScreen,
-                            clearBackStack = event.clearStackTrace
+                            clearBackStack = event.clearBackStack
                         )
 
                         is NavigationEvent.PopBackStack -> navHostController.popBackStack()

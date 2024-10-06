@@ -21,7 +21,7 @@ class EngageConsentManager @Inject internal constructor(
     }
 
     override suspend fun onConsented() {
-        navigator.navigateTo(AppNavigationEvent.AppScreen(clearStackTrace = true))
+        navigator.navigateTo(AppNavigationEvent.AppScreen(clearBackStack = true))
     }
 
     override suspend fun onConsentFailure(error: Throwable) {

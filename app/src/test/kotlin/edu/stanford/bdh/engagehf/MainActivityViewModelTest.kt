@@ -83,7 +83,7 @@ class MainActivityViewModelTest {
             accountEventsFlow.emit(event)
 
             // then
-            verify { navigator.navigateTo(event = AppNavigationEvent.AppScreen(clearStackTrace = true)) }
+            verify { navigator.navigateTo(event = AppNavigationEvent.AppScreen(clearBackStack = true)) }
         }
 
     @Test
@@ -170,7 +170,7 @@ class MainActivityViewModelTest {
             accountEventsFlow.emit(event)
 
             // then
-            verify { navigator.navigateTo(event = AppNavigationEvent.AppScreen(clearStackTrace = true)) }
+            verify { navigator.navigateTo(event = AppNavigationEvent.AppScreen(clearBackStack = true)) }
         }
 
     @Test
