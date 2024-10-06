@@ -100,7 +100,7 @@ class MainActivityViewModelTest {
             verify {
                 navigator.navigateTo(
                     event = OnboardingNavigationEvent.OnboardingScreen(
-                        clearBackStack = true
+                        clearBackStack = false
                     )
                 )
             }
