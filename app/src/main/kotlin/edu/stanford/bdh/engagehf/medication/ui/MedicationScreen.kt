@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.bdh.engagehf.medication.components.LoadingMedicationCard
+import edu.stanford.bdh.engagehf.medication.components.LoadingMedicationSection
 import edu.stanford.bdh.engagehf.medication.components.MedicationList
 import edu.stanford.bdh.engagehf.medication.components.getMedicationCardUiModel
 import edu.stanford.spezi.core.design.component.CenteredBoxContent
@@ -65,7 +65,8 @@ fun MedicationScreen(
                     .fillMaxSize()
                     .padding(Spacings.medium)
                     .testIdentifier(MedicationScreenTestIdentifier.LOADING),
-                content = { LoadingMedicationCard() }
+                itemCount = 2,
+                content = { LoadingMedicationSection() }
             )
         }
 
@@ -88,11 +89,19 @@ private class UiStateProvider : PreviewParameterProvider<MedicationUiState> {
         MedicationUiState.Error(message = "An error occurred"),
         MedicationUiState.NoData(message = "No message recommendations"),
         MedicationUiState.Success(
-            uiModels = listOf(
-                getMedicationCardUiModel(MedicationColor.YELLOW, true),
-                getMedicationCardUiModel(MedicationColor.GREEN_SUCCESS, true),
-                getMedicationCardUiModel(MedicationColor.GREY),
-            )
+            medicationsTaking = Medications(
+                listOf(
+                    getMedicationCardUiModel(MedicationColor.YELLOW, true),
+                    getMedicationCardUiModel(MedicationColor.GREEN_SUCCESS, true),
+                ), expanded = true
+            ),
+            medicationsThatMayHelp = Medications(
+                listOf(
+                    getMedicationCardUiModel(MedicationColor.BLUE),
+                ),
+                expanded = false
+            ),
+            colorKeyExpanded = false
         )
     )
 }
