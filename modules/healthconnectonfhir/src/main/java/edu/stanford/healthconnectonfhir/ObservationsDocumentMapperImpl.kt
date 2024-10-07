@@ -11,7 +11,9 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.hl7.fhir.r4.model.Observation
+import java.time.ZoneId
 import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import javax.inject.Inject
 
 class ObservationsDocumentMapperImpl @Inject constructor(
@@ -43,9 +45,8 @@ class ObservationsDocumentMapperImpl @Inject constructor(
             clientRecordId = clientRecordId
         )
         val time = observation.effectiveDateTimeType.value.toInstant()
+        val zoneOffset = getZoneOffset(observation)
         val heartRate = observation.valueQuantity.value.toDouble()
-        val zoneOffset =
-            ZoneOffset.ofTotalSeconds(observation.effectiveDateTimeType.value.timezoneOffset)
 
         return HeartRateRecord(
             startTime = time,
@@ -66,10 +67,6 @@ class ObservationsDocumentMapperImpl @Inject constructor(
         observation: Observation,
         clientRecordId: String?,
     ): BloodPressureRecord {
-        val time = observation.effectiveDateTimeType.value.toInstant()
-        val zoneOffset =
-            ZoneOffset.ofTotalSeconds(observation.effectiveDateTimeType.value.timezoneOffset)
-
         val systolic =
             observation.component.first { it.code.codingFirstRep.code == SYSTOLIC }
                 .valueQuantity.value.toDouble()
@@ -82,19 +79,27 @@ class ObservationsDocumentMapperImpl @Inject constructor(
         )
 
         return BloodPressureRecord(
-            time = time,
-            zoneOffset = zoneOffset,
+            time = observation.effectiveDateTimeType.value.toInstant(),
+            zoneOffset = getZoneOffset(observation),
             systolic = Pressure.millimetersOfMercury(systolic),
             diastolic = Pressure.millimetersOfMercury(diastolic),
             metadata = metadata
         )
     }
 
-    private fun mapToWeightRecord(observation: Observation, clientRecordId: String?): WeightRecord {
-        val time = observation.effectiveDateTimeType.value.toInstant()
-        val zoneOffset =
-            ZoneOffset.ofTotalSeconds(observation.effectiveDateTimeType.value.timezoneOffset)
+    private fun getZoneOffset(observation: Observation) = runCatching {
+        ZoneOffset.ofHoursMinutes(
+            observation.effectiveDateTimeType.tzHour,
+            observation.effectiveDateTimeType.tzMin
+        )
+    }.getOrDefault(getSystemDefaultZoneOffset())
 
+    private fun getSystemDefaultZoneOffset(): ZoneOffset {
+        val zonedDateTime = ZonedDateTime.now(ZoneId.systemDefault())
+        return zonedDateTime.offset
+    }
+
+    private fun mapToWeightRecord(observation: Observation, clientRecordId: String?): WeightRecord {
         val weight = observation.valueQuantity.value.toDouble()
         val unit =
             observation.valueQuantity.unit
@@ -104,8 +109,8 @@ class ObservationsDocumentMapperImpl @Inject constructor(
         )
 
         return WeightRecord(
-            time = time,
-            zoneOffset = zoneOffset,
+            time = observation.effectiveDateTimeType.value.toInstant(),
+            zoneOffset = getZoneOffset(observation),
             weight = if (unit.equals(
                     "lbs",
                     ignoreCase = true
