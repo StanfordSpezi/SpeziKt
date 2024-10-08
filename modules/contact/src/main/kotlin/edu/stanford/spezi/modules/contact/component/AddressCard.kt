@@ -1,36 +1,36 @@
 package edu.stanford.spezi.modules.contact.component
 
+import android.content.Intent
+import android.location.Address
+import android.net.Uri
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import edu.stanford.spezi.core.design.component.DefaultElevatedCard
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.modules.contact.OnAction
+import edu.stanford.spezi.modules.contact.model.formatted
+import java.net.URLEncoder
+import java.util.Locale
 
-/**
- * A card that displays an address and allows the user to navigate to it.
- * @param address The address to display and navigate to.
- * @sample edu.stanford.spezi.modules.contact.component.NavigationCardPreview
- * @see edu.stanford.spezi.modules.contact.ContactScreen
- */
 @Composable
-fun NavigationCard(address: String, publisher: (OnAction) -> Unit) {
+internal fun AddressCard(address: Address, modifier: Modifier = Modifier) {
     DefaultElevatedCard(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
     ) {
         Row(
@@ -40,24 +40,30 @@ fun NavigationCard(address: String, publisher: (OnAction) -> Unit) {
                 .height(IntrinsicSize.Min),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                Icons.Default.Place,
-                contentDescription = "Address",
-            )
+            val addressText = remember(address) { address.formatted() }
             Text(
-                text = address,
+                text = addressText,
                 style = TextStyles.bodyMedium,
                 modifier = Modifier.weight(1f)
             )
+            val context = LocalContext.current
             IconButton(
                 onClick = {
-                    publisher(OnAction.NavigateTo(address = address))
+                    runCatching {
+                        val addressQuery = URLEncoder.encode(addressText, "utf-8")
+                        val gmmIntentUri = Uri.parse("geo:0,0?q=$addressQuery")
+                        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                        mapIntent.setPackage("com.google.android.apps.maps")
+                        context.startActivity(mapIntent)
+                    }.onFailure {
+                        println("Failed to open intent for address `$addressText` due to `$it`.")
+                    }
                 },
                 modifier = Modifier.align(Alignment.Top)
             ) {
                 Icon(
-                    Icons.AutoMirrored.Filled.Send,
-                    contentDescription = "Navigate to"
+                    Icons.Default.Place,
+                    contentDescription = "Address",
                 )
             }
         }
@@ -66,9 +72,12 @@ fun NavigationCard(address: String, publisher: (OnAction) -> Unit) {
 
 @Composable
 @Preview
-fun NavigationCardPreview() {
+private fun AddressCardPreview() {
     SpeziTheme {
-        NavigationCard("1234 Main Street, 12345 City",
-            publisher = { action -> println(action) })
+        AddressCard(Address(Locale.US).apply {
+            setAddressLine(0, "1234 Main Street")
+            postalCode = "12345"
+            locality = "City"
+        })
     }
 }
