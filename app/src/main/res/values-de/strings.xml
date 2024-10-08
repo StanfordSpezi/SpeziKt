@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Spezi</string>
+    <string name="app_name">ENGAGEHF</string>
     <string name="home">Startseite</string>
     <string name="heart_health">Gesundheit</string>
     <string name="medication">Medikation</string>
@@ -78,4 +78,17 @@
     <string name="blood_pressure_description_part_1">Der Blutdruck misst die Kraft in Ihren Blutgefäßen, mit der Ihr Herz das Blut in Ihren Körper pumpt. Überprüfen Sie Ihren Blutdruck täglich, um zu sehen, wie Ihr Herz auf die Medikamente reagiert.</string>
     <string name="blood_pressure_description_part_2">Der höchste Wert des Blutdrucks (systolisch genannt) sollte unter 130 mmHg liegen. Welcher Blutdruck zu niedrig ist, ist von Person zu Person unterschiedlich und sollte mit Ihrem Pflegeteam besprochen werden. Ein zu niedriger Blutdruck kann dazu führen, dass Sie sich schwindlig fühlen.</string>
     <string name="blood_pressure_description_part_3">Treiben Sie in den 30 Minuten vor der Blutdruckmessung keinen Sport. Vergewissern Sie sich, dass die Manschette gut um Ihren Oberarm passt, und legen Sie die Beine nicht übereinander. Weitere Informationen finden Sie im Video zum Blutdruckmessen.</string>
+    <string name="ble_device_pair_action_title">Koppeln</string>
+    <string name="ble_device_pair_done_action_title">Erledigt</string>
+    <string name="ble_device_discovering_title">Entdecken</string>
+    <string name="ble_device_discovering_subtitle">Halten Sie die Bluetooth-Taste 3 Sekunden lang gedrückt, um das Gerät in den Pairing-Modus zu versetzen.</string>
+    <string name="ble_device_found_title">Zubehör koppeln</string>
+    <string name="ble_device_found_subtitle">Möchten Sie %1$s mit der ENGAGEHF-App koppeln?</string>
+    <string name="ble_device_paired_title">Zubehör Gepaart</string>
+    <string name="ble_device_paired_subtitle">%1$s wurde erfolgreich mit der ENGAGEHF-App gekoppelt</string>
+    <string name="ble_device_error_title">Fehler</string>
+    <string name="ble_device_error_subtitle">Es ist ein Fehler aufgetreten, bitte versuchen Sie es später noch einmal.</string>
+    <string name="your_devices_header_title">Deine Geräte</string>
+    <string name="last_seen_on">Zuletzt gesehen am %1$s</string>
+    <string name="sign_out_failed">Abmeldung fehlgeschlagen.</string>
 </resources>

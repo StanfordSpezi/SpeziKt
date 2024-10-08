@@ -12,11 +12,13 @@ import com.google.firebase.storage.UploadTask
 import edu.stanford.spezi.core.testing.SpeziTestScope
 import edu.stanford.spezi.core.testing.mockTask
 import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.module.account.AccountEvents
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
+import io.mockk.verify
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
@@ -29,6 +31,7 @@ class UserSessionManagerTest {
     private val firebaseStorage: FirebaseStorage = mockk()
     private val firebaseAuth: FirebaseAuth = mockk()
     private val firestore: FirebaseFirestore = mockk()
+    private val accountEvents: AccountEvents = mockk(relaxed = true)
 
     private lateinit var userSessionManager: UserSessionManager
 
@@ -95,6 +98,32 @@ class UserSessionManagerTest {
 
         // then
         assertThat(result.isFailure).isTrue()
+    }
+
+    @Test
+    fun `it should emit SignOutSuccess when signOut is successful`() = runTestUnconfined {
+        // given
+        every { firebaseAuth.signOut() } just Runs
+        createUserSessionManager()
+
+        // when
+        userSessionManager.signOut()
+
+        // then
+        verify { accountEvents.emit(AccountEvents.Event.SignOutSuccess) }
+    }
+
+    @Test
+    fun `it should emit SignOutFailure when signOut is unsuccessful`() = runTestUnconfined {
+        // given
+        every { firebaseAuth.signOut() } throws Exception()
+        createUserSessionManager()
+
+        // when
+        userSessionManager.signOut()
+
+        // then
+        verify { accountEvents.emit(AccountEvents.Event.SignOutFailure) }
     }
 
     @Test
@@ -291,7 +320,8 @@ class UserSessionManagerTest {
             firebaseAuth = firebaseAuth,
             ioDispatcher = UnconfinedTestDispatcher(),
             coroutineScope = SpeziTestScope(),
-            firestore = firestore
+            firestore = firestore,
+            accountEvents = accountEvents,
         )
     }
 }

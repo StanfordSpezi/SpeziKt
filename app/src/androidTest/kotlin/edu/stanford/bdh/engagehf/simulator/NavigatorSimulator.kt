@@ -61,11 +61,11 @@ class NavigatorSimulator(
     }
 
     fun navigateToAppScreen() {
-        navigator.navigateTo(AppNavigationEvent.AppScreen)
+        navigator.navigateTo(AppNavigationEvent.AppScreen(false))
     }
 
     fun navigateToOnboardingScreen() {
-        navigator.navigateTo(OnboardingNavigationEvent.OnboardingScreen)
+        navigator.navigateTo(OnboardingNavigationEvent.OnboardingScreen(false))
     }
 
     fun navigateToLoginScreen() {
