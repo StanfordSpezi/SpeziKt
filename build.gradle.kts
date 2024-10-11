@@ -26,6 +26,7 @@ installCustomTasks()
 
 tasks.dokkaHtmlMultiModule {
     moduleName.set("Spezi Documentation")
+    includes.from("README.md")
 }
 
 fun Project.setupDokka() {
@@ -145,6 +146,7 @@ fun Project.setupJacoco() {
 fun Project.installCustomTasks() {
     val tasksDir = File("$rootDir/gradle/tasks")
     if (tasksDir.exists() && tasksDir.isDirectory) {
-        tasksDir.listFiles { file -> file.extension == "kts" }?.forEach { file -> apply(from = file) }
+        tasksDir.listFiles { file -> file.extension == "kts" }
+            ?.forEach { file -> apply(from = file) }
     }
 }
