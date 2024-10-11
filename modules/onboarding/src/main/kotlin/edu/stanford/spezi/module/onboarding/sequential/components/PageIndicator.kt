@@ -37,7 +37,7 @@ import edu.stanford.spezi.core.utils.extensions.testIdentifier
  * @param backgroundColor The background color of the indicator
  */
 @Composable
-fun PageIndicator(
+internal fun PageIndicator(
     modifier: Modifier = Modifier,
     currentPage: Int,
     pageCount: Int,
