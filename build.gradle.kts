@@ -27,6 +27,7 @@ installCustomTasks()
 tasks.dokkaHtmlMultiModule {
     moduleName.set("Spezi Documentation")
     includes.from("README.md")
+    dependsOn("copyDocumentationImages")
 }
 
 fun Project.setupDokka() {
@@ -148,5 +149,18 @@ fun Project.installCustomTasks() {
     if (tasksDir.exists() && tasksDir.isDirectory) {
         tasksDir.listFiles { file -> file.extension == "kts" }
             ?.forEach { file -> apply(from = file) }
+    }
+
+    tasks.register<Copy>("copyDocumentationImages") {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        fileTree("$rootDir").matching {
+            include("**/screens/*.jpg")
+        }.forEach { file ->
+            val relativePath = file.parentFile.relativeTo(File("$rootDir"))
+            from(file.parentFile) {
+                include("*.jpg")
+            }
+            into("$buildDir/dokka/htmlMultiModule/$relativePath")
+        }
     }
 }
