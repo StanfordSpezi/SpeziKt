@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,6 +34,7 @@ import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.titleSmall
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.modules.onboarding.R
 
 /**
  * The onboarding screen.
@@ -105,7 +107,7 @@ fun FeatureItem(area: Area) {
     ) {
         Icon(
             painter = painterResource(id = area.iconId),
-            contentDescription = "Area Icon",
+            contentDescription = stringResource(R.string.area_icon),
             modifier = Modifier.size(Sizes.Icon.medium),
             tint = primary
         )

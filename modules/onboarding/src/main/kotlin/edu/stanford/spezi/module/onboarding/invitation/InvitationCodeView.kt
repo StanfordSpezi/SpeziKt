@@ -17,6 +17,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -29,6 +30,7 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.modules.onboarding.R
 
 @Composable
 fun InvitationCodeView() {
@@ -53,7 +55,7 @@ internal fun InvitationCodeView(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Invitation Code",
+            text = stringResource(R.string.invitation_code),
             modifier = Modifier.testIdentifier(InvitationCodeScreenTestIdentifier.TITLE),
             style = titleLarge,
         )
@@ -61,7 +63,7 @@ internal fun InvitationCodeView(
         Icon(
             imageVector = Icons.Default.Edit,
             tint = primary,
-            contentDescription = "Edit Icon",
+            contentDescription = stringResource(R.string.edit_icon),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .size(Sizes.Icon.medium)
@@ -79,7 +81,7 @@ internal fun InvitationCodeView(
                 onAction(Action.UpdateInvitationCode(it))
                 onAction(Action.ClearError)
             },
-            labelText = "Invitation Code",
+            labelText = stringResource(R.string.invitation_code),
             errorText = uiState.error,
         )
         Spacer(modifier = Modifier.height(Spacings.medium))
@@ -91,7 +93,7 @@ internal fun InvitationCodeView(
                 .testIdentifier(InvitationCodeScreenTestIdentifier.MAIN_ACTION_BUTTON)
                 .fillMaxWidth(),
         ) {
-            Text("Redeem Invitation Code", color = onPrimary)
+            Text(stringResource(R.string.redeem_invitation_code), color = onPrimary)
         }
     }
 }
