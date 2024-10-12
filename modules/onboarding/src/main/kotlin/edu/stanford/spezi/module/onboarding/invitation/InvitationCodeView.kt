@@ -31,17 +31,17 @@ import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 
 @Composable
-fun InvitationCodeScreen() {
+fun InvitationCodeView() {
     val viewModel = hiltViewModel<InvitationCodeViewModel>()
     val uiState by viewModel.uiState.collectAsState()
-    InvitationCodeScreen(
+    InvitationCodeView(
         uiState = uiState,
         onAction = viewModel::onAction
     )
 }
 
 @Composable
-fun InvitationCodeScreen(
+internal fun InvitationCodeView(
     uiState: InvitationCodeUiState,
     onAction: (Action) -> Unit,
 ) {
@@ -125,7 +125,7 @@ private fun InvitationCodeScreenPreview(
     @PreviewParameter(InvitationCodeScreenProvider::class) uiState: InvitationCodeUiState,
 ) {
     SpeziTheme {
-        InvitationCodeScreen(
+        InvitationCodeView(
             uiState = uiState,
             onAction = { }
         )

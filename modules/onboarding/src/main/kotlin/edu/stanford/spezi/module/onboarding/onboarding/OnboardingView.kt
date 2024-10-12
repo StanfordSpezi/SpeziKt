@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -21,7 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,21 +31,22 @@ import edu.stanford.spezi.core.design.theme.TextStyles.bodyLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.bodyMedium
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.titleSmall
+import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 
 /**
  * The onboarding screen.
  */
 @Composable
-fun OnboardingScreen() {
+fun OnboardingView() {
     val viewModel = hiltViewModel<OnboardingViewModel>()
     val uiState by viewModel.uiState.collectAsState()
 
-    OnboardingScreen(uiState = uiState, onAction = viewModel::onAction)
+    OnboardingView(uiState = uiState, onAction = viewModel::onAction)
 }
 
 @Composable
-fun OnboardingScreen(
+fun OnboardingView(
     uiState: OnboardingUiState,
     onAction: (OnboardingAction) -> Unit,
 ) {
@@ -67,18 +66,21 @@ fun OnboardingScreen(
                 modifier = Modifier.testIdentifier(OnboardingScreenTestIdentifier.TITLE),
                 style = titleLarge
             )
-
             Text(
                 text = uiState.subtitle,
                 modifier = Modifier.testIdentifier(OnboardingScreenTestIdentifier.SUBTITLE),
                 style = bodyLarge
             )
-            Spacer(modifier = Modifier.height(Spacings.small))
-
-            LazyColumn(modifier = Modifier.testIdentifier(OnboardingScreenTestIdentifier.AREAS_LIST)) {
+            LazyColumn(
+                modifier = Modifier
+                    .testIdentifier(OnboardingScreenTestIdentifier.AREAS_LIST)
+                    .padding(
+                        top = Spacings.small,
+                    ),
+                verticalArrangement = Arrangement.spacedBy(Spacings.medium)
+            ) {
                 items(uiState.areas) { area ->
                     FeatureItem(area = area)
-                    Spacer(modifier = Modifier.height(Spacings.medium))
                 }
             }
         }
@@ -153,13 +155,13 @@ private class OnboardingUiStateProvider : PreviewParameterProvider<OnboardingUiS
     )
 }
 
-@Preview(showBackground = true, heightDp = 600, widthDp = 300)
+@ThemePreviews
 @Composable
 private fun OnboardingScreenPreview(
     @PreviewParameter(OnboardingUiStateProvider::class) uiState: OnboardingUiState,
 ) {
     SpeziTheme {
-        OnboardingScreen(
+        OnboardingView(
             uiState = uiState,
             onAction = { }
         )
