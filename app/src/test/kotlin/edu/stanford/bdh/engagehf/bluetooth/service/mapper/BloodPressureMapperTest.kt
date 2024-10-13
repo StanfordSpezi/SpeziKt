@@ -48,49 +48,50 @@ class BloodPressureMapperTest {
     }
 
     @Test
-    fun `it should map characteristic and data to blood pressure measurement`() = runTestUnconfined {
-        // given
-        val sut = mapper
-        val data = byteArrayOf(
-            0b00101111, // Flags: bloodPressureUnitsFlag, timeStampFlag, pulseRateFlag, userIdFlag, measurementStatusFlag
-            120, // Systolic
-            0,
-            80, // Diastolic
-            0,
-            70, // Mean Arterial Pressure
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-        )
-
-        // when
-        val result = sut.map(characteristic, data) as Measurement.BloodPressure
-
-        // then
-        with(result) {
-            val expectedFlags = Measurement.BloodPressure.Flags(
-                bloodPressureUnitsFlag = true,
-                timeStampFlag = true,
-                pulseRateFlag = true,
-                userIdFlag = true,
-                measurementStatusFlag = true
+    fun `it should map characteristic and data to blood pressure measurement`() =
+        runTestUnconfined {
+            // given
+            val sut = mapper
+            val data = byteArrayOf(
+                0b00101111, // Flags: bloodPressureUnitsFlag, timeStampFlag, pulseRateFlag, userIdFlag, measurementStatusFlag
+                120, // Systolic
+                0,
+                80, // Diastolic
+                0,
+                70, // Mean Arterial Pressure
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
             )
-            assertThat(flags).isEqualTo(expectedFlags)
-            assertThat(systolic).isEqualTo(120.0f)
-            assertThat(diastolic).isEqualTo(80.0f)
-            assertThat(meanArterialPressure).isEqualTo(70.0f)
+
+            // when
+            val result = sut.map(characteristic, data) as Measurement.BloodPressure
+
+            // then
+            with(result) {
+                val expectedFlags = Measurement.BloodPressure.Flags(
+                    bloodPressureUnitsFlag = true,
+                    timeStampFlag = true,
+                    pulseRateFlag = true,
+                    userIdFlag = true,
+                    measurementStatusFlag = true
+                )
+                assertThat(flags).isEqualTo(expectedFlags)
+                assertThat(systolic).isEqualTo(120.0f)
+                assertThat(diastolic).isEqualTo(80.0f)
+                assertThat(meanArterialPressure).isEqualTo(70.0f)
+            }
         }
-    }
 
     @Test
     fun `it should return null when characteristic is not recognised`() = runTestUnconfined {
@@ -117,5 +118,24 @@ class BloodPressureMapperTest {
 
         // then
         assertThat(result).isNull()
+    }
+
+    @Test
+    fun `it should return correct date when map from byteArray`() = runTestUnconfined {
+        // given
+        val data = byteArrayOf(30, -126, 0, 83, 0, 98, 0, -24, 7, 9, 30, 22, 11, 23, 80, 0, 1, 0, 0)
+
+        // when
+        val result = mapper.map(characteristic, data) as Measurement.BloodPressure
+
+        // then
+        with(result) {
+            assertThat(timestampYear).isEqualTo(2024)
+            assertThat(timestampMonth).isEqualTo(9)
+            assertThat(timestampDay).isEqualTo(30)
+            assertThat(timeStampHour).isEqualTo(22)
+            assertThat(timeStampMinute).isEqualTo(11)
+            assertThat(timeStampSecond).isEqualTo(23)
+        }
     }
 }

@@ -1,6 +1,7 @@
 package edu.stanford.bdh.engagehf.health
 
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.units.Mass
 import edu.stanford.bdh.engagehf.simulator.HealthPageSimulator
@@ -55,10 +56,20 @@ class HealthPageTest {
     }
 
     @Test
-    fun `test health page health chart is displayed`() {
+    fun `test health page health chart is displayed with data`() {
         // given
         setState(state = getSuccessState())
 
+        // then
+        healthPage {
+            assertHealthChartIsDisplayed()
+        }
+    }
+
+    @Test
+    fun `test health page health chart is displayed when empty data`() {
+        // given
+        setState(state = getSuccessState(records = emptyList()))
         // then
         healthPage {
             assertHealthChartIsDisplayed()
@@ -130,7 +141,28 @@ class HealthPageTest {
         HealthPageSimulator(composeTestRule).apply(block)
     }
 
-    private fun getSuccessState(entryId: String? = null): HealthUiState {
+    private fun getSuccessState(
+        entryId: String? = null,
+        tableData: List<TableEntryData> = listOf(
+            TableEntryData(
+                value = 70.0,
+                formattedValues = "70.0 kg",
+                date = ZonedDateTime.now(),
+                formattedDate = "Jan 2022",
+                trend = 0.0,
+                formattedTrend = "0.0 kg",
+                secondValue = null,
+                id = entryId,
+            )
+        ),
+        records: List<Record> = listOf(
+            WeightRecord(
+                time = ZonedDateTime.now().toInstant(),
+                zoneOffset = ZonedDateTime.now().offset,
+                weight = @Suppress("MagicNumber") Mass.pounds(154.0)
+            )
+        ),
+    ): HealthUiState {
         return HealthUiState.Success(
             data = HealthUiData(
                 infoRowData = InfoRowData(
@@ -139,25 +171,8 @@ class HealthPageTest {
                     formattedDate = "Jan 2022",
                     isSelectedTimeRangeDropdownExpanded = false
                 ),
-                records = listOf(
-                    WeightRecord(
-                        time = ZonedDateTime.now().toInstant(),
-                        zoneOffset = ZonedDateTime.now().offset,
-                        weight = @Suppress("MagicNumber") Mass.pounds(154.0)
-                    )
-                ),
-                tableData = listOf(
-                    TableEntryData(
-                        value = 70.0f,
-                        formattedValues = "70.0 kg",
-                        date = ZonedDateTime.now(),
-                        formattedDate = "Jan 2022",
-                        trend = 0f,
-                        formattedTrend = "0.0 kg",
-                        secondValue = null,
-                        id = entryId,
-                    )
-                ),
+                records = records,
+                tableData = tableData,
                 valueFormatter = { value -> "$value" }
             )
         )

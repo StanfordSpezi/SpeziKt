@@ -40,10 +40,6 @@ class InvitationCodeViewModel @Inject internal constructor(
                 }
             }
 
-            Action.AlreadyHasAccountPressed -> {
-                screenData.gotAnAccountAction()
-            }
-
             Action.RedeemInvitationCode -> {
                 redeemInvitationCode()
             }

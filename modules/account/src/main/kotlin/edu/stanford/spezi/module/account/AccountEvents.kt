@@ -26,5 +26,8 @@ class AccountEvents @Inject constructor(
 
         data object SignUpSuccess : Event
         data object SignUpFailure : Event
+
+        data object SignOutSuccess : Event
+        data object SignOutFailure : Event
     }
 }

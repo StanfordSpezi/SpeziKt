@@ -42,8 +42,12 @@ jobs:
           bundler-cache: true
       - name: Decode and Write Google Service JSON
         env:
-            GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: echo $GOOGLE_SERVICES_JSON | base64 --decode >./app/google-services.json
+      - name: Decode and Write Secrets
+        env:
+          SECRETS_XML: ${{ secrets. SECRETS_XML }}
+        run: echo $SECRETS_XML | base64 --decode >./modules/account/src/main/res/values/secrets.xml
       - name: Setup keystore file
         env:
           KEY_STORE: ${{ secrets.KEY_STORE }}

@@ -1,4 +1,5 @@
 @file:Suppress("MagicNumber")
+
 package edu.stanford.bdh.engagehf.bluetooth.service.mapper
 
 import android.bluetooth.BluetoothGattCharacteristic
@@ -19,7 +20,8 @@ internal class BloodPressureMapper @Inject constructor() : MeasurementMapper.Chi
      */
     override fun recognises(characteristic: BluetoothGattCharacteristic?): Boolean {
         return with(BLEServiceType.BLOOD_PRESSURE) {
-            characteristic?.let { service == it.service.uuid && this.characteristic == it.uuid } ?: false
+            characteristic?.let { service == it.service.uuid && this.characteristic == it.uuid }
+                ?: false
         }
     }
 
@@ -30,8 +32,19 @@ internal class BloodPressureMapper @Inject constructor() : MeasurementMapper.Chi
      * @param data The byte array representing the data of the characteristic.
      * @return The blood pressure measurement, or null if the characteristic is not recognized or mapping fails.
      */
-    override suspend fun map(characteristic: BluetoothGattCharacteristic?, data: ByteArray): Measurement? {
-        return if (recognises(characteristic).not()) null else runCatching { interpretBloodPressureMeasurement(data = data) }.getOrNull()
+    override suspend fun map(
+        characteristic: BluetoothGattCharacteristic?,
+        data: ByteArray,
+    ): Measurement? {
+        return if (recognises(characteristic).not()) {
+            null
+        } else {
+            runCatching {
+                interpretBloodPressureMeasurement(
+                    data = data
+                )
+            }.getOrNull()
+        }
     }
 
     private fun interpretBloodPressureMeasurement(data: ByteArray): Measurement.BloodPressure {
@@ -46,7 +59,7 @@ internal class BloodPressureMapper @Inject constructor() : MeasurementMapper.Chi
         val systolic = (data[1].toInt() and 0xFF).toFloat()
         val diastolic = (data[3].toInt() and 0xFF).toFloat()
         val meanArterialPressure = (data[5].toInt() and 0xFF).toFloat()
-        val timestampYear = (data[7].toInt() and 0xFF)
+        val timestampYear = (data[7].toInt() and 0xFF) or ((data[8].toInt() and 0xFF) shl 8)
         val timestampMonth = (data[9].toInt() and 0xFF)
         val timestampDay = (data[10].toInt() and 0xFF)
         val timeStampHour = (data[11].toInt() and 0xFF)

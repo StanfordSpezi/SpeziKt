@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spezi_message_notification_channel_description">Spezi Nachricht Benachrichtigungskanal Beschreibung</string>
+    <string name="spezi_message_notification_channel_name">Spezi Nachricht Benachrichtigung Kanalname</string>
+    <string name="notification_settings">Benachrichtigungseinstellungen</string>
+    <string name="back">Zurück</string>
+    <string name="reminders">Erinnerungen</string>
+    <string name="appointment">Termin</string>
+    <string name="survey">Umfrage</string>
+    <string name="vital">Vitalwerte</string>
+    <string name="updates">Updates</string>
+    <string name="medications">Medikamente</string>
+    <string name="recommendations">Empfehlungen</string>
+    <string name="weight_trends">Gewichtstrends</string>
+    <string name="trends">Trends</string>
+    <string name="feature_requires_notifications">Diese Funktion erfordert die Genehmigung zum Senden von Benachrichtigungen.</string>
+    <string name="settings">Einstellungen</string>
+</resources>

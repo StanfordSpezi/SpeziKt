@@ -21,9 +21,21 @@ class MedicationUiStateMapper @Inject constructor(
             )
         } else {
             MedicationUiState.Success(
-                uiModels = recommendations
-                    .sortedByDescending { it.type.priority }
-                    .map { map(it) })
+                medicationsTaking =
+                Medications(
+                    medications = recommendations.filter { it.type != MedicationRecommendationType.NOT_STARTED }
+                        .sortedByDescending { it.type.priority }
+                        .map { map(it) },
+                    expanded = true,
+                ),
+                medicationsThatMayHelp = Medications(
+                    medications = recommendations.filter { it.type == MedicationRecommendationType.NOT_STARTED }
+                        .sortedByDescending { it.type.priority }
+                        .map { map(it) },
+                    expanded = false,
+                ),
+                colorKeyExpanded = false
+            )
         }
     }
 
@@ -41,20 +53,63 @@ class MedicationUiStateMapper @Inject constructor(
         )
     }
 
+    fun toggleItemExpand(
+        section: MedicationViewModel.Section,
+        uiState: MedicationUiState.Success,
+    ): MedicationUiState {
+        return when (section) {
+            MedicationViewModel.Section.MEDICATIONS_TAKING -> {
+                uiState.copy(
+                    medicationsTaking = uiState.medicationsTaking.copy(
+                        expanded = !uiState.medicationsTaking.expanded
+                    )
+                )
+            }
+
+            MedicationViewModel.Section.MEDICATIONS_THAT_MAY_HELP -> {
+                uiState.copy(
+                    medicationsThatMayHelp = uiState.medicationsThatMayHelp.copy(
+                        expanded = !uiState.medicationsThatMayHelp.expanded
+                    )
+                )
+            }
+
+            MedicationViewModel.Section.COLOR_KEY -> {
+                uiState.copy(colorKeyExpanded = !uiState.colorKeyExpanded)
+            }
+        }
+    }
+
     fun expandMedication(
         medicationId: String,
         uiState: MedicationUiState,
     ): MedicationUiState {
         return if (uiState is MedicationUiState.Success) {
-            val newValue = uiState.uiModels
-                .map { model ->
-                    if (model.id == medicationId) {
-                        model.copy(isExpanded = model.isExpanded.not())
-                    } else {
-                        model
-                    }
+            val newValueTaking = uiState.medicationsTaking.medications.map { model ->
+                if (model.id == medicationId) {
+                    model.copy(isExpanded = model.isExpanded.not())
+                } else {
+                    model
                 }
-            MedicationUiState.Success(newValue)
+            }
+            val newValueMayHelp = uiState.medicationsThatMayHelp.medications.map { model ->
+                if (model.id == medicationId) {
+                    model.copy(isExpanded = model.isExpanded.not())
+                } else {
+                    model
+                }
+            }
+            MedicationUiState.Success(
+                medicationsTaking = Medications(
+                    medications = newValueTaking,
+                    expanded = uiState.medicationsTaking.expanded
+                ),
+                medicationsThatMayHelp = Medications(
+                    medications = newValueMayHelp,
+                    expanded = uiState.medicationsThatMayHelp.expanded
+                ),
+                colorKeyExpanded = uiState.colorKeyExpanded,
+            )
         } else {
             uiState
         }
@@ -65,17 +120,12 @@ class MedicationUiStateMapper @Inject constructor(
             listOf(context.getString(R.string.dosage_information_not_available))
         } else {
             schedules.map { schedule ->
-                val values = schedule
-                    .quantity
-                    .map { it.toString() }
-                    .joinToString("/") { it }
+                val values = schedule.quantity.map { it.toString() }.joinToString("/") { it }
                 val frequency = when (val value = schedule.frequency) {
                     1.0 -> ""
                     2.0 -> "twice "
                     else -> {
-                        val sanitized = value.toString()
-                            .removeSuffix(".0")
-                            .removeSuffix(",0")
+                        val sanitized = value.toString().removeSuffix(".0").removeSuffix(",0")
                         "${sanitized}x "
                     }
                 }
@@ -98,12 +148,10 @@ class MedicationUiStateMapper @Inject constructor(
             currentDose = DosageRowInfoData(
                 label = context.getString(R.string.dosage_information_dose_row_current_dose),
                 dosageValues = dosageValues(dosageInformation.currentSchedule, unit),
-            ),
-            targetDose = DosageRowInfoData(
+            ), targetDose = DosageRowInfoData(
                 label = context.getString(R.string.dosage_information_dose_row_target_dose),
                 dosageValues = dosageValues(dosageInformation.targetSchedule, unit),
-            ),
-            progress = progress.toFloat().coerceIn(0f, 1.0f)
+            ), progress = progress.toFloat().coerceIn(0f, 1.0f)
         )
     }
 
@@ -137,7 +185,7 @@ class MedicationUiStateMapper @Inject constructor(
 
             MedicationRecommendationType.NOT_STARTED,
             MedicationRecommendationType.NO_ACTION_REQUIRED,
-            -> MedicationColor.GREY
+            -> MedicationColor.BLUE
         }
     }
 }

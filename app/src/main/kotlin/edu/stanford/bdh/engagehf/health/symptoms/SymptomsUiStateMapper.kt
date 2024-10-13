@@ -47,7 +47,7 @@ class SymptomsUiStateMapper @Inject constructor(
         )
     }
 
-    private fun valueFormatter(value: Float): String {
+    private fun valueFormatter(value: Double): String {
         val year = value.toInt()
         val dayOfYearFraction = value - year
         val dayOfYear = (dayOfYearFraction * 365).toInt() + 1
@@ -79,7 +79,7 @@ class SymptomsUiStateMapper @Inject constructor(
     }
 
     private fun Double?.asPercent(): String = this?.let {
-        "${it.toFloat().roundToDecimalPlaces(places = 2)}%"
+        "${it.roundToDecimalPlaces(places = 2)}%"
     } ?: NOT_AVAILABLE
 
     private fun mapTableData(
@@ -107,7 +107,7 @@ class SymptomsUiStateMapper @Inject constructor(
                 } ?: NOT_AVAILABLE
 
                 val trend =
-                    if (previousValue != null && currentValue != null && previousValue != 0f) {
+                    if (previousValue != null && currentValue != null && previousValue != 0.0) {
                         ((currentValue - previousValue) / previousValue) * 100
                     } else {
                         null
@@ -138,8 +138,8 @@ class SymptomsUiStateMapper @Inject constructor(
         symptomScoresByDay: Map<ZonedDateTime, List<SymptomScore>>,
         selectedSymptomType: SymptomType,
     ): AggregatedHealthData {
-        val yValues = mutableListOf<Float>()
-        val xValues = mutableListOf<Float>()
+        val yValues = mutableListOf<Double>()
+        val xValues = mutableListOf<Double>()
 
         symptomScoresByDay.forEach { (date, scores) ->
             val filteredScores = scores.mapNotNull { score ->
@@ -147,9 +147,9 @@ class SymptomsUiStateMapper @Inject constructor(
             }
 
             if (filteredScores.isNotEmpty()) {
-                val averageScore = filteredScores.average().toFloat()
+                val averageScore = filteredScores.average()
                 yValues.add(averageScore)
-                val xValue = date.year.toFloat() + (date.dayOfYear - 1) / 365f
+                val xValue = date.year + (date.dayOfYear - 1) / 365.0
                 xValues.add(xValue.roundToDecimalPlaces(places = 2))
             }
         }
@@ -171,7 +171,7 @@ class SymptomsUiStateMapper @Inject constructor(
         SymptomType.QUALITY_OF_LIFE -> score.qualityOfLifeScore
         SymptomType.SYMPTOMS_FREQUENCY -> score.symptomFrequencyScore
         SymptomType.DIZZINESS -> score.dizzinessScore
-    }?.toFloat()?.roundToDecimalPlaces(places = 2)
+    }?.roundToDecimalPlaces(places = 2)
 
     companion object {
         private const val PERCENT_FORMAT = "%+.1f%%"

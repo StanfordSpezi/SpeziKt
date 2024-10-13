@@ -24,6 +24,7 @@ fhirDataCapture = "1.1.0"
 firebaseAuthKtx = "23.0.0"
 firebaseFirestoreKtx = "25.0.0"
 firebaseFunctionsKtx = "21.0.0"
+firebaseMessagingKtx = "24.0.1"
 firebaseStorageKtx = "21.0.0"
 foundation = "1.6.8"
 fragmentCompose = "1.8.2"
@@ -52,7 +53,7 @@ targetSdk = "34"
 testCoreVersion = "1.5.0"
 timberVersion = "5.0.1"
 truth = "1.4.2"
-vico = "2.0.0-alpha.23"
+vico = "2.0.0-alpha.26"
 
 # Please keep [libraries] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [libraries]
@@ -98,6 +99,7 @@ detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", 
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-functions-ktx", version.ref = "firebaseFunctionsKtx" }
+firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
@@ -139,6 +141,7 @@ spezi-base = { id = "spezi.base", version = "unspecified" }
 spezi-compose = { id = "spezi.compose", version = "unspecified" }
 spezi-hilt = { id = "spezi.hilt", version = "unspecified" }
 spezi-library = { id = "spezi.library", version = "unspecified" }
+spezi-serialization = { id = "spezi.serialization", version = "unspecified" }
 
 # Please keep [bundles] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [bundles]

@@ -3,6 +3,7 @@ package edu.stanford.bdh.engagehf.messages
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
+import edu.stanford.bdh.engagehf.localization.LocalizedMapReader
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before
@@ -12,11 +13,12 @@ import java.time.ZonedDateTime
 class FirestoreMessageMapperTest {
     private lateinit var documentSnapshot: DocumentSnapshot
     private lateinit var mapper: FirestoreMessageMapper
+    private val localizedMapReader: LocalizedMapReader = mockk()
 
     @Before
     fun setUp() {
         documentSnapshot = mockk()
-        mapper = FirestoreMessageMapper()
+        mapper = FirestoreMessageMapper(localizedMapReader)
     }
 
     @Test
@@ -28,6 +30,9 @@ class FirestoreMessageMapperTest {
         val expectedTitle = "Medication Reminder"
         val expectedDescription = "Time to take your medication"
         val expectedAction = "/medication/1234"
+        val expectedIsDismissible = true
+        every { localizedMapReader.get("title", any()) } returns expectedTitle
+        every { localizedMapReader.get("description", any()) } returns expectedDescription
 
         val documentData = hashMapOf(
             "id" to expectedId,
@@ -35,7 +40,8 @@ class FirestoreMessageMapperTest {
             "type" to expectedType.name,
             "title" to expectedTitle,
             "description" to expectedDescription,
-            "action" to expectedAction
+            "action" to expectedAction,
+            "isDismissible" to expectedIsDismissible
         )
 
         every { documentSnapshot.id } returns expectedId

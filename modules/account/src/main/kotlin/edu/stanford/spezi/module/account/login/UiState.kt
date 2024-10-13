@@ -10,7 +10,6 @@ data class UiState(
     val showProgress: Boolean = false,
     val showFilterByAuthorizedAccounts: Boolean = true,
     val isFormValid: Boolean = false,
-    val isAlreadyRegistered: Boolean = false,
     val isPasswordSignInEnabled: Boolean = false,
     val pendingActions: PendingActions<Action.Async> = PendingActions(),
 )
@@ -23,11 +22,10 @@ sealed interface Action {
     data class TextFieldUpdate(val newValue: String, val type: TextFieldType) : Action
     data object TogglePasswordVisibility : Action
     data object NavigateToRegister : Action
-    data class SetIsAlreadyRegistered(val isAlreadyRegistered: Boolean) : Action
 
     sealed interface Async : Action {
         data object ForgotPassword : Async
         data object GoogleSignInOrSignUp : Async
-        data object PasswordSignInOrSignUp : Async
+        data object PasswordSignIn : Async
     }
 }

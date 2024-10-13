@@ -8,9 +8,19 @@ import androidx.compose.ui.graphics.Color
 sealed interface MedicationUiState {
     data object Loading : MedicationUiState
     data class NoData(val message: String) : MedicationUiState
-    data class Success(val uiModels: List<MedicationCardUiModel>) : MedicationUiState
+    data class Success(
+        val medicationsTaking: Medications,
+        val medicationsThatMayHelp: Medications,
+        val colorKeyExpanded: Boolean,
+    ) : MedicationUiState
+
     data class Error(val message: String) : MedicationUiState
 }
+
+data class Medications(
+    val medications: List<MedicationCardUiModel>,
+    val expanded: Boolean,
+)
 
 /**
  * Represents the ui model displayed in a medication card
@@ -44,7 +54,6 @@ data class DosageRowInfoData(
 @Suppress("MagicNumber")
 enum class MedicationColor(val value: Color) {
     GREEN_SUCCESS(value = Color(0xFF34C759)),
-    GREEN_PROGRESS(value = Color(0xFF00796B)),
     YELLOW(value = Color(0xFFFFCC00)),
-    GREY(value = Color(0xFF53565A)),
+    BLUE(value = Color(0xFF677FF0)),
 }

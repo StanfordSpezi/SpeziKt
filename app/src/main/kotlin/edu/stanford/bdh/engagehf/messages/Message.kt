@@ -8,18 +8,19 @@ import java.time.format.DateTimeFormatter
 @IgnoreExtraProperties
 data class Message(
     var id: String,
-    val dueDate: ZonedDateTime,
+    val dueDate: ZonedDateTime? = null,
     val completionDate: ZonedDateTime? = null,
     val type: MessageType,
     val title: String,
-    val description: String,
-    val action: String,
+    val description: String? = null,
+    val action: String?,
+    val isDismissible: Boolean = true,
     val isLoading: Boolean = false,
     val isExpanded: Boolean = false,
 ) {
 
     val dueDateFormattedString: String?
-        get() = dueDate.format(DateTimeFormatter.ofPattern("MMM dd, yyyy hh:mm a"))
+        get() = dueDate?.format(DateTimeFormatter.ofPattern("MMM dd, yyyy hh:mm a"))
 
     val icon: Int =
         when (type) {

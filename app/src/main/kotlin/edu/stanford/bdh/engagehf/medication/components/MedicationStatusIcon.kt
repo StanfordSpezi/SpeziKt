@@ -17,13 +17,18 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 
+const val MEDICATION_ICON_ALPHA_COLOR_FACTOR = 0.3f
+
 @Composable
 fun MedicationStatusIcon(model: MedicationCardUiModel) {
     val backgroundColor = model.statusColor.value
     Box(
         modifier = Modifier
             .size(Sizes.Icon.medium)
-            .background(backgroundColor.copy(alpha = 0.1f), shape = CircleShape)
+            .background(
+                backgroundColor.copy(alpha = MEDICATION_ICON_ALPHA_COLOR_FACTOR),
+                shape = CircleShape
+            )
             .padding(Spacings.small),
         contentAlignment = Alignment.Center
     ) {

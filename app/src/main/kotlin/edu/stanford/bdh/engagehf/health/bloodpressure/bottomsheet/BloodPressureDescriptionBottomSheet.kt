@@ -7,7 +7,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
@@ -28,20 +30,17 @@ fun BloodPressureDescriptionBottomSheet() {
         )
         VerticalSpacer()
         Text(
-            text = "Blood pressure is the force of blood against the walls of your arteries. " +
-                "It is measured in millimeters of mercury (mmHg) and consists of two numbers: systolic and diastolic.",
+            text = stringResource(R.string.blood_pressure_description_part_1),
             style = TextStyles.bodyMedium.copy(textAlign = TextAlign.Center)
         )
         VerticalSpacer(height = Spacings.small)
         Text(
-            text = "A normal blood pressure reading is less than 120/80 mmHg. " +
-                "High blood pressure (hypertension) is a common condition that can lead to serious health problems.",
+            text = stringResource(R.string.blood_pressure_description_part_2),
             style = TextStyles.bodyMedium.copy(textAlign = TextAlign.Center)
         )
         VerticalSpacer(height = Spacings.small)
         Text(
-            text = "Regular exercise, a healthy diet, and stress management can help maintain a healthy blood pressure. " +
-                "Consult with a healthcare provider to understand your target blood pressure and how to monitor it.",
+            text = stringResource(R.string.blood_pressure_description_part_3),
             style = TextStyles.bodyMedium.copy(textAlign = TextAlign.Center)
         )
         VerticalSpacer()

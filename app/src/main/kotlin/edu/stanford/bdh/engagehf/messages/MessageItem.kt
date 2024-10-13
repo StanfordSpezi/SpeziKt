@@ -73,7 +73,7 @@ fun MessageItem(
                     color = Colors.onBackground,
                 )
             }
-            message.description.let {
+            message.description?.let {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,

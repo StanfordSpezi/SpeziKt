@@ -29,6 +29,7 @@ internal class BLEDeviceScanner @Inject constructor(
     private val bluetoothAdapter: BluetoothAdapter,
     @Dispatching.IO private val scope: CoroutineScope,
 ) {
+
     private val logger by speziLogger()
 
     private val _isScanning = AtomicBoolean(false)

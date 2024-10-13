@@ -68,6 +68,7 @@ jobs:
           files: '**/build/reports/jacoco/jacocoCoverageReport/jacocoCoverageReport.xml'
           flags: unittests
           name: codecov-coverage
+          fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
   test:
     name: Instrumented tests
@@ -137,6 +138,7 @@ jobs:
           files: '**/build/reports/coverage/androidTest/debug/connected/index.html'
           flags: uitests
           name: codecov-coverage
+          fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
   dokka:
     name: Dokka Documentation Deployment

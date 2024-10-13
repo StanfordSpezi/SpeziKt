@@ -1,7 +1,7 @@
 package edu.stanford.bdh.engagehf.onboarding
 
 import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
+import edu.stanford.spezi.module.account.AccountNavigationEvent
 import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingData
 import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingRepository
 import edu.stanford.spezi.module.onboarding.sequential.Step
@@ -45,7 +45,7 @@ class EngageSequentialOnboardingRepository @Inject internal constructor(
             ),
             actionText = "Start",
             onAction = {
-                navigator.navigateTo(OnboardingNavigationEvent.InvitationCodeScreen)
+                navigator.navigateTo(AccountNavigationEvent.LoginScreen)
             }
         )
     }

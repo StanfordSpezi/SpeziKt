@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.spezi.library)
     alias(libs.plugins.spezi.hilt)
+    alias(libs.plugins.spezi.serialization)
 }
 
 android {

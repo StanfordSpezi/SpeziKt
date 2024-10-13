@@ -38,6 +38,8 @@ import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 
+private const val LOADING_ITEM_COUNT = 3
+
 @Composable
 fun MedicationCard(
     modifier: Modifier = Modifier,
@@ -144,30 +146,49 @@ fun MedicationCard(
 }
 
 @Composable
-fun LoadingMedicationCard() {
-    DefaultElevatedCard(modifier = Modifier.padding(bottom = Spacings.medium)) {
-        Row(
+fun LoadingMedicationSection() {
+    Column {
+        RectangleShimmerEffect(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(Spacings.medium),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            CircleShimmerEffect(modifier = Modifier.size(Sizes.Icon.medium))
+                .padding(vertical = Spacings.medium)
+                .fillMaxWidth(fraction = 0.7f)
+                .height(textStyle = TextStyles.titleMedium) // section header, same height as the text style
+        )
 
-            Column(modifier = Modifier.padding(Spacings.small)) {
-                RectangleShimmerEffect(
+        repeat(LOADING_ITEM_COUNT) {
+            DefaultElevatedCard(modifier = Modifier.padding(bottom = Spacings.medium)) {
+                Row(
                     modifier = Modifier
-                        .fillMaxWidth(fraction = 0.8f)
-                        .height(textStyle = TextStyles.titleLarge)
-                )
-                VerticalSpacer()
-                RectangleShimmerEffect(
-                    modifier = Modifier
-                        .fillMaxWidth(fraction = 0.5f)
-                        .height(textStyle = TextStyles.titleSmall)
-                )
+                        .fillMaxWidth()
+                        .padding(Spacings.medium),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    CircleShimmerEffect(modifier = Modifier.size(Sizes.Icon.medium))
+
+                    Column(modifier = Modifier.padding(Spacings.small)) {
+                        RectangleShimmerEffect(
+                            modifier = Modifier
+                                .fillMaxWidth(fraction = 0.8f)
+                                .height(textStyle = TextStyles.titleLarge)
+                        )
+                        VerticalSpacer()
+                        RectangleShimmerEffect(
+                            modifier = Modifier
+                                .fillMaxWidth(fraction = 0.5f)
+                                .height(textStyle = TextStyles.titleSmall)
+                        )
+                    }
+                }
             }
         }
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun LoadingMedicationSectionPreview() {
+    SpeziTheme(isPreview = true) {
+        LoadingMedicationSection()
     }
 }
 

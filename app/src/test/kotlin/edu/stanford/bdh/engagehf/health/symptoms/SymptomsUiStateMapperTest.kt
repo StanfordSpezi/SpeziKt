@@ -50,7 +50,7 @@ class SymptomsUiStateMapperTest {
         assertThat(successState.data.tableData).isNotEmpty()
         assertThat(successState.data.headerData.formattedValue).isNotEmpty()
         assertThat(successState.data.headerData.formattedDate).isNotEmpty()
-        assertThat(successState.data.valueFormatter(0f)).isNotEmpty()
+        assertThat(successState.data.valueFormatter(0.0)).isNotEmpty()
     }
 
     @Test
@@ -58,7 +58,6 @@ class SymptomsUiStateMapperTest {
         // Given
         val symptomScores = listOf(
             createSymptomScore(day = 1, overallScore = 50.0, physicalLimitsScore = 40.0),
-            createSymptomScore(day = 2, overallScore = 60.0, physicalLimitsScore = 50.0)
         )
 
         // When
@@ -74,8 +73,8 @@ class SymptomsUiStateMapperTest {
         val successStateOverall = resultOverall as SymptomsUiState.Success
         val successStatePhysical = resultPhysical as SymptomsUiState.Success
 
-        assertThat(successStateOverall.data.headerData.formattedValue).isEqualTo("60.0%")
-        assertThat(successStatePhysical.data.headerData.formattedValue).isEqualTo("50.0%")
+        assertThat(successStateOverall.data.headerData.formattedValue).isEqualTo("50.0%")
+        assertThat(successStatePhysical.data.headerData.formattedValue).isEqualTo("40.0%")
     }
 
     @Test

@@ -28,6 +28,7 @@ class AppScreenEvents @Inject constructor(
         data object WeightDescriptionBottomSheet : Event
         data object BloodPressureDescriptionBottomSheet : Event
         data object HeartRateDescriptionBottomSheet : Event
+        data object BLEDevicePairingBottomSheet : Event
         data object AddWeightRecord : Event
         data object AddBloodPressureRecord : Event
         data object AddHeartRateRecord : Event
