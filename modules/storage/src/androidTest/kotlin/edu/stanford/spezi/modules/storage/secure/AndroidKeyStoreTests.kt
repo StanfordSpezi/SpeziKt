@@ -59,4 +59,16 @@ class AndroidKeyStoreTests {
         assertThat(publicKey).isNull()
         assertThat(aliases).doesNotContain(keyName)
     }
+
+    @Test
+    fun `it should handle clear correctly`() {
+        // given
+        androidKeyStore.createKey(keyName)
+
+        // when
+        androidKeyStore.clear()
+
+        // then
+        assertThat(androidKeyStore.retrieveKeyPair(keyName)).isNull()
+    }
 }

@@ -37,7 +37,7 @@ class SecureStorageTest {
 
     @After
     fun tearDown() {
-        secureStorage.deleteAllCredentials(SecureStorageItemTypes.all)
+        secureStorage.deleteAllCredentials(SecureStorageItemTypes.ALL)
     }
 
     @Test
@@ -207,7 +207,7 @@ class SecureStorageTest {
         listOf(serverCredential, nonServerCredential).forEach { secureStorage.store(it) }
 
         // when
-        secureStorage.deleteAllCredentials(SecureStorageItemTypes.serverCredentials)
+        secureStorage.deleteAllCredentials(SecureStorageItemTypes.SERVER_CREDENTIALS)
         val storedServerCredential = secureStorage.retrieveUserCredentials(
             username = serverCredential.username,
         )
@@ -226,7 +226,7 @@ class SecureStorageTest {
         listOf(serverCredential, nonServerCredential).forEach { secureStorage.store(it) }
 
         // when
-        secureStorage.deleteAllCredentials(SecureStorageItemTypes.nonServerCredentials)
+        secureStorage.deleteAllCredentials(SecureStorageItemTypes.NON_SERVER_CREDENTIALS)
         val storedServerCredential = secureStorage.retrieveUserCredentials(
             username = serverCredential.username,
         )
@@ -245,7 +245,7 @@ class SecureStorageTest {
         listOf(serverCredential, nonServerCredential).forEach { secureStorage.store(it) }
 
         // when
-        secureStorage.deleteAllCredentials(SecureStorageItemTypes.all)
+        secureStorage.deleteAllCredentials(SecureStorageItemTypes.ALL)
         val storedServerCredential = secureStorage.retrieveUserCredentials(
             username = serverCredential.username,
         )

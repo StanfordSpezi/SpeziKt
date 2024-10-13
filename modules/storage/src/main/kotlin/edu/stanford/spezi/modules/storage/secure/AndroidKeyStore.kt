@@ -20,6 +20,8 @@ interface AndroidKeyStore {
 
     fun deleteEntry(tag: String)
 
+    fun clear()
+
     fun getCipher(): Cipher
 
     fun aliases(): List<String>
@@ -81,6 +83,10 @@ internal class AndroidKeyStoreImpl @Inject constructor() : AndroidKeyStore {
         }.onFailure {
             logger.e(it) { "Failed to delete entry with $tag" }
         }
+    }
+
+    override fun clear() {
+        aliases().forEach { deleteEntry(it) }
     }
 
     override fun aliases(): List<String> = keyStore.aliases().toList()

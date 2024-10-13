@@ -39,7 +39,7 @@ class LocalStorageTests {
     @After
     fun tearDown() = runTestUnconfined {
         localStorage.delete(key = key)
-        androidKeyStore.deleteEntry(key)
+        androidKeyStore.clear()
     }
 
     @Serializable
@@ -192,7 +192,8 @@ class LocalStorageTests {
     fun `it should handle Encrypted with custom key pair setting correctly`() = runTestUnconfined {
         // given
         val value = UUID().toString()
-        val keyPair = androidKeyStore.createKey(key).getOrThrow()
+        val androidKeyStoreKey = "androidKeyStoreKey"
+        val keyPair = androidKeyStore.createKey(androidKeyStoreKey).getOrThrow()
         localStorage.store(
             key = key,
             value = value,
