@@ -145,19 +145,14 @@ internal class LocalStorageImpl @Inject constructor(
             is Unencrypted -> null
             is Encrypted -> settings.keyPair
             is EncryptedUsingKeyStore -> with(androidKeyStore) {
-                val privateKey = retrievePrivateKey(ANDROID_KEYSTORE_TAG)
-                val publicKey = retrievePublicKey(ANDROID_KEYSTORE_TAG)
-                if (privateKey != null && publicKey != null) {
-                    KeyPair(publicKey, privateKey)
-                } else {
-                    createKey(ANDROID_KEYSTORE_TAG).getOrThrow()
-                }
+                retrieveKeyPair(ANDROID_KEYSTORE_TAG)
+                    ?: createKey(ANDROID_KEYSTORE_TAG).getOrThrow()
             }
         }
     }
 
     private fun createCipher(mode: Int, key: Key): Cipher =
-        Cipher.getInstance(CIPHER_TRANSFORMATION).apply { init(mode, key) }
+        androidKeyStore.getCipher().apply { init(mode, key) }
 
     private suspend fun <T> execute(block: suspend () -> T) = withContext(ioDispatcher) {
         runCatching { block() }
@@ -167,7 +162,6 @@ internal class LocalStorageImpl @Inject constructor(
     }
 
     private companion object {
-        const val ANDROID_KEYSTORE_TAG = "${AndroidKeyStore.PROVIDER}.LocalStorage"
-        const val CIPHER_TRANSFORMATION = "RSA/ECB/PKCS1Padding"
+        const val ANDROID_KEYSTORE_TAG = "LocalStorageTag"
     }
 }

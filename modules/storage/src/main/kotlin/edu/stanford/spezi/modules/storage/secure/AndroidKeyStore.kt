@@ -8,18 +8,26 @@ import java.security.KeyPairGenerator
 import java.security.KeyStore
 import java.security.PrivateKey
 import java.security.PublicKey
+import javax.crypto.Cipher
 import javax.inject.Inject
 
 interface AndroidKeyStore {
     fun createKey(tag: String, size: Int = DEFAULT_KEY_SIZE): Result<KeyPair>
+
+    fun retrieveKeyPair(tag: String): KeyPair?
     fun retrievePrivateKey(tag: String): PrivateKey?
     fun retrievePublicKey(tag: String): PublicKey?
+
     fun deleteEntry(tag: String)
+
+    fun getCipher(): Cipher
+
     fun aliases(): List<String>
 
     companion object {
         const val DEFAULT_KEY_SIZE = 2048
         const val PROVIDER = "AndroidKeyStore"
+        const val CIPHER_TRANSFORMATION = "RSA/ECB/OAEPWithSHA-1AndMGF1Padding"
     }
 }
 
@@ -35,14 +43,25 @@ internal class AndroidKeyStoreImpl @Inject constructor() : AndroidKeyStore {
             tag,
             KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
         )
+            .setBlockModes(KeyProperties.BLOCK_MODE_ECB)
             .setKeySize(size)
-            .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
-            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
+            .setDigests(KeyProperties.DIGEST_SHA1)
+            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_OAEP)
             .build()
         val keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA)
         keyPairGenerator.initialize(keyGenParameterSpec)
         keyPairGenerator.genKeyPair()
     }
+
+    override fun retrieveKeyPair(tag: String): KeyPair? = runCatching {
+        val publicKey = retrievePublicKey(tag)
+        val privateKey = retrievePrivateKey(tag)
+        if (publicKey != null && privateKey != null) {
+            KeyPair(publicKey, privateKey)
+        } else {
+            null
+        }
+    }.getOrNull()
 
     override fun retrievePrivateKey(tag: String): PrivateKey? = runCatching {
         keyStore.getKey(tag, null) as? PrivateKey
@@ -65,4 +84,8 @@ internal class AndroidKeyStoreImpl @Inject constructor() : AndroidKeyStore {
     }
 
     override fun aliases(): List<String> = keyStore.aliases().toList()
+
+    override fun getCipher(): Cipher {
+        return Cipher.getInstance(AndroidKeyStore.CIPHER_TRANSFORMATION)
+    }
 }

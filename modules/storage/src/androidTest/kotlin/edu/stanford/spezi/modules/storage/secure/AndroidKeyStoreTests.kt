@@ -25,18 +25,21 @@ class AndroidKeyStoreTests {
     }
 
     @Test
-    fun `it should create key correctly`() {
+    fun `it should create keys correctly`() {
         // given
         val key = androidKeyStore.createKey(keyName).getOrThrow()
 
         // when
+        val keyPair = androidKeyStore.retrieveKeyPair(keyName)
         val privateKey = androidKeyStore.retrievePrivateKey(keyName)
         val publicKey = androidKeyStore.retrievePublicKey(keyName)
         val aliases = androidKeyStore.aliases()
 
         // then
         assertThat(privateKey).isEqualTo(key.private)
+        assertThat(privateKey).isEqualTo(keyPair?.private)
         assertThat(publicKey).isEqualTo(key.public)
+        assertThat(publicKey).isEqualTo(keyPair?.public)
         assertThat(aliases).contains(keyName)
     }
 
