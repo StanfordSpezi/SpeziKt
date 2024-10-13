@@ -1,147 +1,113 @@
 package edu.stanford.spezi.modules.storage.secure
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.security.keystore.KeyGenParameterSpec
-import android.security.keystore.KeyProperties
-import androidx.core.content.edit
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
-import dagger.hilt.android.qualifiers.ApplicationContext
-import java.security.KeyPair
-import java.security.KeyPairGenerator
-import java.security.KeyStore
-import java.security.PrivateKey
-import java.security.PublicKey
+import edu.stanford.spezi.modules.storage.di.Storage
+import edu.stanford.spezi.modules.storage.key.KeyValueStorageFactory
+import edu.stanford.spezi.modules.storage.key.KeyValueStorageType
+import edu.stanford.spezi.modules.storage.key.getSerializable
+import edu.stanford.spezi.modules.storage.key.putSerializable
+import javax.inject.Inject
 
-class SecureStorage(
-    @ApplicationContext val context: Context,
-) {
-    private val provider = "AndroidKeyStore"
-    private val keyStore: KeyStore = KeyStore.getInstance(provider).apply { load(null) }
-    private val preferencesKey = MasterKey.Builder(context)
-        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-        .build()
-    private val preferences: SharedPreferences = EncryptedSharedPreferences.create(
-        context,
-        "Spezi_SecureStoragePrefs",
-        preferencesKey,
-        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+interface SecureStorage {
+    fun store(credentials: Credentials)
+
+    fun retrieveCredentials(username: String, server: String?): Credentials?
+    fun retrieveUserCredentials(username: String): List<Credentials>
+    fun retrieveServerCredentials(server: String): List<Credentials>
+
+    fun updateCredentials(username: String, server: String?, newCredentials: Credentials)
+
+    fun deleteCredentials(username: String, server: String?)
+    fun deleteUserCredentials(username: String)
+    fun deleteServerCredentials(server: String)
+    fun deleteAllCredentials(itemTypes: SecureStorageItemTypes)
+}
+
+internal class SecureStorageImpl @Inject constructor(
+    storageFactory: KeyValueStorageFactory,
+) : SecureStorage {
+
+    private val storage = storageFactory.create(
+        fileName = SECURE_STORAGE_FILE_NAME,
+        type = KeyValueStorageType.ENCRYPTED,
     )
 
-    fun createKey(
-        tag: String,
-        size: Int = 2048, // TODO: Should we just use RSA here instead of what iOS uses?
-    ): KeyPair {
-        val keyGenParameterSpec = KeyGenParameterSpec.Builder(
-            tag,
-            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+    override fun store(credentials: Credentials) {
+        storage.putSerializable(
+            key = storageKey(credentials.server, credentials.username),
+            value = credentials
         )
-            .setKeySize(size)
-            .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
-            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
-            .build()
-        val keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA)
-        keyPairGenerator.initialize(keyGenParameterSpec)
-        return keyPairGenerator.genKeyPair()
     }
 
-    fun retrievePrivateKey(tag: String): PrivateKey? {
-        return keyStore.getKey(tag, null) as? PrivateKey
-    }
-
-    fun retrievePublicKey(tag: String): PublicKey? {
-        return keyStore.getCertificate(tag)?.publicKey
-    }
-
-    fun deleteKeys(tag: String) {
-        keyStore.deleteEntry(tag)
-    }
-
-    fun store(
-        credentials: Credentials,
-        server: String? = null,
-    ) {
-        preferences.edit {
-            putString(sharedPreferencesKey(server, credentials.username), credentials.password)
-        }
-    }
-
-    fun deleteCredentials(
+    override fun retrieveCredentials(
         username: String,
-        server: String? = null,
-    ) {
-        val key = sharedPreferencesKey(server, username)
-        preferences.edit { remove(key) }
+        server: String?,
+    ): Credentials? {
+        return storage.getSerializable(storageKey(server, username))
     }
 
-    fun deleteAllCredentials(itemTypes: SecureStorageItemTypes) {
-        val containsServerCredentials = itemTypes.types.contains(SecureStorageItemType.SERVER_CREDENTIALS)
-        val containsNonServerCredentials = itemTypes.types.contains(SecureStorageItemType.NON_SERVER_CREDENTIALS)
-        if (containsServerCredentials || containsNonServerCredentials) {
-            preferences.edit {
-                preferences.all.forEach {
-                    if (it.key.startsWith(" ")) { // non-server credential
-                        if (containsNonServerCredentials) {
-                            remove(it.key)
-                        }
-                    } else {
-                        if (containsServerCredentials) {
-                            remove(it.key)
-                        }
-                    }
-                }
-            }
+    override fun retrieveServerCredentials(server: String): List<Credentials> {
+        return storage.allKeys().mapNotNull { key ->
+            val credential = storage.getSerializable<Credentials>(key)
+            credential.takeIf { it?.server == server }
         }
+    }
 
-        if (itemTypes.types.contains(SecureStorageItemType.KEYS)) {
-            for (tag in keyStore.aliases()) {
-                keyStore.deleteEntry(tag)
+    override fun retrieveUserCredentials(username: String): List<Credentials> {
+        return storage.allKeys().mapNotNull { key ->
+            if (key.substringAfter(SERVER_USERNAME_SEPARATOR) == username) {
+                storage.getSerializable(key)
+            } else {
+                null
             }
         }
     }
 
-    fun updateCredentials(
+    override fun deleteCredentials(
         username: String,
-        server: String? = null,
+        server: String?,
+    ) {
+        storage.delete(key = storageKey(server, username))
+    }
+
+    override fun deleteUserCredentials(username: String) {
+        storage.allKeys().forEach { key ->
+            if (key.substringAfter(SERVER_USERNAME_SEPARATOR) == username) storage.delete(key)
+        }
+    }
+
+    override fun deleteServerCredentials(server: String) {
+        storage.allKeys().forEach { key ->
+            if (key.substringBefore(SERVER_USERNAME_SEPARATOR) == server) storage.delete(key)
+        }
+    }
+
+    override fun deleteAllCredentials(itemTypes: SecureStorageItemTypes) {
+        if (itemTypes == SecureStorageItemTypes.ALL) return storage.clear()
+        val deleteServer = itemTypes == SecureStorageItemTypes.SERVER_CREDENTIALS
+        val deleteNonServer = itemTypes == SecureStorageItemTypes.NON_SERVER_CREDENTIALS
+        storage.allKeys().forEach { key ->
+            val isServerKey = key.substringBefore(SERVER_USERNAME_SEPARATOR).isNotEmpty()
+            when {
+                isServerKey && deleteServer -> storage.delete(key)
+                !isServerKey && deleteNonServer -> storage.delete(key)
+            }
+        }
+    }
+
+    override fun updateCredentials(
+        username: String,
+        server: String?,
         newCredentials: Credentials,
-        newServer: String? = null,
     ) {
         deleteCredentials(username, server)
-        store(newCredentials, newServer)
+        store(newCredentials)
     }
 
-    fun retrieveCredentials(
-        username: String,
-        server: String? = null,
-    ): Credentials? {
-        val key = sharedPreferencesKey(server, username)
-        return preferences.getString(key, null)?.let {
-            Credentials(username, it)
-        }
+    private fun storageKey(server: String?, username: String): String =
+        "${server ?: ""}$SERVER_USERNAME_SEPARATOR$username"
+
+    private companion object {
+        const val SECURE_STORAGE_FILE_NAME = "${Storage.STORAGE_FILE_PREFIX}SecureStorage"
+        const val SERVER_USERNAME_SEPARATOR = "__@__"
     }
-
-    fun retrieveAllCredentials(
-        server: String? = null,
-    ): List<Credentials> {
-        return preferences.all.mapNotNull { entry ->
-            val password = server?.let {
-                if (entry.key.startsWith("$server ")) {
-                    entry.value as? String
-                } else {
-                    null
-                }
-            } ?: entry.value as? String
-
-            password?.let {
-                val separatorIndex = entry.key.indexOf(" ")
-                Credentials(entry.key.drop(separatorIndex + 1), password)
-            }
-        }
-    }
-
-    // TODO: Check for potential key collisions
-    private fun sharedPreferencesKey(server: String?, username: String): String =
-        "${server ?: ""} $username"
 }
