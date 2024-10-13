@@ -1,108 +1,53 @@
 package edu.stanford.spezi.modules.storage.secure
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.security.keystore.KeyGenParameterSpec
-import android.security.keystore.KeyProperties
-import androidx.core.content.edit
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
-import dagger.hilt.android.qualifiers.ApplicationContext
-import java.security.KeyPair
-import java.security.KeyPairGenerator
-import java.security.KeyStore
-import java.security.PrivateKey
-import java.security.PublicKey
+import edu.stanford.spezi.modules.storage.key.EncryptedKeyValueStorage
+import javax.inject.Inject
 
-class SecureStorage(
-    @ApplicationContext val context: Context,
+class SecureStorage @Inject constructor(
+    storageFactory: EncryptedKeyValueStorage.Factory,
+    private val androidKeyStore: AndroidKeyStore,
 ) {
-    private val provider = "AndroidKeyStore"
-    private val keyStore: KeyStore = KeyStore.getInstance(provider).apply { load(null) }
-    private val preferencesKey = MasterKey.Builder(context)
-        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-        .build()
-    private val preferences: SharedPreferences = EncryptedSharedPreferences.create(
-        context,
-        "Spezi_SecureStoragePrefs",
-        preferencesKey,
-        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+
+    private val encryptedKeyValueStorage = storageFactory.create(
+        fileName = "spezi_credentials_secure_storage"
     )
 
-    fun createKey(
-        tag: String,
-        size: Int = 2048, // TODO: Should we just use RSA here instead of what iOS uses?
-    ): KeyPair {
-        val keyGenParameterSpec = KeyGenParameterSpec.Builder(
-            tag,
-            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
-        )
-            .setKeySize(size)
-            .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
-            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
-            .build()
-        val keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA)
-        keyPairGenerator.initialize(keyGenParameterSpec)
-        return keyPairGenerator.genKeyPair()
-    }
-
-    fun retrievePrivateKey(tag: String): PrivateKey? {
-        return keyStore.getKey(tag, null) as? PrivateKey
-    }
-
-    fun retrievePublicKey(tag: String): PublicKey? {
-        return keyStore.getCertificate(tag)?.publicKey
-    }
-
-    fun deleteKeys(tag: String) {
-        keyStore.deleteEntry(tag)
-    }
-
-    fun store(
+    suspend fun store(
         credentials: Credentials,
         server: String? = null,
     ) {
-        preferences.edit {
-            putString(sharedPreferencesKey(server, credentials.username), credentials.password)
-        }
+        encryptedKeyValueStorage.putString(
+            key = storageKey(server, credentials.username),
+            value = credentials.password
+        )
     }
 
-    fun deleteCredentials(
+    suspend fun deleteCredentials(
         username: String,
         server: String? = null,
     ) {
-        val key = sharedPreferencesKey(server, username)
-        preferences.edit { remove(key) }
+        encryptedKeyValueStorage.deleteString(key = storageKey(server, username))
     }
 
-    fun deleteAllCredentials(itemTypes: SecureStorageItemTypes) {
+    suspend fun deleteAllCredentials(itemTypes: SecureStorageItemTypes) {
         val containsServerCredentials = itemTypes.types.contains(SecureStorageItemType.SERVER_CREDENTIALS)
         val containsNonServerCredentials = itemTypes.types.contains(SecureStorageItemType.NON_SERVER_CREDENTIALS)
         if (containsServerCredentials || containsNonServerCredentials) {
-            preferences.edit {
-                preferences.all.forEach {
-                    if (it.key.startsWith(" ")) { // non-server credential
-                        if (containsNonServerCredentials) {
-                            remove(it.key)
-                        }
-                    } else {
-                        if (containsServerCredentials) {
-                            remove(it.key)
-                        }
-                    }
+            encryptedKeyValueStorage.allKeys().forEach { key ->
+                if (key.startsWith(" ") && containsNonServerCredentials) { // non-server credential
+                    encryptedKeyValueStorage.deleteString(key)
+                } else if (key.startsWith(" ").not() && containsServerCredentials) { // server credential
+                    encryptedKeyValueStorage.deleteString(key)
                 }
             }
         }
 
         if (itemTypes.types.contains(SecureStorageItemType.KEYS)) {
-            for (tag in keyStore.aliases()) {
-                keyStore.deleteEntry(tag)
-            }
+            androidKeyStore.aliases().forEach { androidKeyStore.deleteEntry(tag = it) }
         }
     }
 
-    fun updateCredentials(
+    suspend fun updateCredentials(
         username: String,
         server: String? = null,
         newCredentials: Credentials,
@@ -112,36 +57,34 @@ class SecureStorage(
         store(newCredentials, newServer)
     }
 
-    fun retrieveCredentials(
+    suspend fun retrieveCredentials(
         username: String,
         server: String? = null,
     ): Credentials? {
-        val key = sharedPreferencesKey(server, username)
-        return preferences.getString(key, null)?.let {
-            Credentials(username, it)
-        }
+        val key = storageKey(server, username)
+        return encryptedKeyValueStorage.getString(key)?.let { Credentials(username, it) }
     }
 
-    fun retrieveAllCredentials(
+    suspend fun retrieveAllCredentials(
         server: String? = null,
     ): List<Credentials> {
-        return preferences.all.mapNotNull { entry ->
+        return encryptedKeyValueStorage.allKeys().mapNotNull { key ->
             val password = server?.let {
-                if (entry.key.startsWith("$server ")) {
-                    entry.value as? String
+                if (key.startsWith("$it ")) {
+                    encryptedKeyValueStorage.getString(key)
                 } else {
                     null
                 }
-            } ?: entry.value as? String
+            } ?: encryptedKeyValueStorage.getString(key)
 
             password?.let {
-                val separatorIndex = entry.key.indexOf(" ")
-                Credentials(entry.key.drop(separatorIndex + 1), password)
+                val separatorIndex = key.indexOf(" ")
+                Credentials(key.drop(separatorIndex + 1), password)
             }
         }
     }
 
     // TODO: Check for potential key collisions
-    private fun sharedPreferencesKey(server: String?, username: String): String =
+    private fun storageKey(server: String?, username: String): String =
         "${server ?: ""} $username"
 }

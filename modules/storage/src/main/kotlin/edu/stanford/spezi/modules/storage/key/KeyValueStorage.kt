@@ -2,6 +2,7 @@ package edu.stanford.spezi.modules.storage.key
 
 @Suppress("TooManyFunctions")
 interface KeyValueStorage {
+
     suspend fun getString(key: String, default: String): String
     suspend fun putString(key: String, value: String)
     suspend fun deleteString(key: String)

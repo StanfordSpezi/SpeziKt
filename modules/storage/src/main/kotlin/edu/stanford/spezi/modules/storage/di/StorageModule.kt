@@ -1,7 +1,7 @@
 package edu.stanford.spezi.modules.storage.di
 
-import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import edu.stanford.spezi.modules.storage.key.EncryptedKeyValueStorage
@@ -9,11 +9,11 @@ import edu.stanford.spezi.modules.storage.key.KeyValueStorage
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class StorageModule {
+class StorageModule {
 
-    @Binds
+    @Provides
     @Storage.Encrypted
-    abstract fun bindLocalKeyValueStorage(
-        encryptedKeyValueStorage: EncryptedKeyValueStorage,
-    ): KeyValueStorage
+    fun bindLocalKeyValueStorage(
+        encryptedKeyValueStorage: EncryptedKeyValueStorage.Factory,
+    ): KeyValueStorage = encryptedKeyValueStorage.create("default")
 }

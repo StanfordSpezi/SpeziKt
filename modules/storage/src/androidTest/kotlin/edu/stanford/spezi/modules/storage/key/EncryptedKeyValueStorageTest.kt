@@ -12,7 +12,7 @@ class EncryptedKeyValueStorageTest {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private var storage: EncryptedKeyValueStorage =
-        EncryptedKeyValueStorage(context, UnconfinedTestDispatcher())
+        EncryptedKeyValueStorage("test", context, UnconfinedTestDispatcher())
 
     private val key = "test_key"
 

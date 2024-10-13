@@ -6,14 +6,17 @@ import android.util.Base64
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
-class EncryptedKeyValueStorage @Inject constructor(
+class EncryptedKeyValueStorage @AssistedInject constructor(
+    @Assisted fileName: String,
     @ApplicationContext private val context: Context,
     @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
 ) : KeyValueStorage {
@@ -24,11 +27,17 @@ class EncryptedKeyValueStorage @Inject constructor(
     private val sharedPreferences: SharedPreferences =
         EncryptedSharedPreferences.create(
             context,
-            "spezi_shared_preferences",
+            fileName,
             masterKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
+
+    fun allKeys(): Set<String> = sharedPreferences.all.keys
+
+    suspend fun getString(key: String): String? {
+        return execute { sharedPreferences.getString(key, null) }
+    }
 
     override suspend fun getString(key: String, default: String): String {
         return execute { sharedPreferences.getString(key, default) ?: default }
@@ -113,4 +122,9 @@ class EncryptedKeyValueStorage @Inject constructor(
     }
 
     private suspend fun <T> execute(block: suspend () -> T) = withContext(ioDispatcher) { block() }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(fileName: String): EncryptedKeyValueStorage
+    }
 }
