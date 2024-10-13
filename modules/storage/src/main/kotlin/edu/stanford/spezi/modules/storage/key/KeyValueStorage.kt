@@ -1,31 +1,75 @@
 package edu.stanford.spezi.modules.storage.key
 
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
+
 @Suppress("TooManyFunctions")
-interface KeyValueStorage {
+sealed interface KeyValueStorage {
 
-    suspend fun getString(key: String, default: String): String
-    suspend fun putString(key: String, value: String)
-    suspend fun deleteString(key: String)
+    fun getString(key: String): String?
+    fun getString(key: String, default: String): String
+    fun putString(key: String, value: String)
 
-    suspend fun getBoolean(key: String, default: Boolean): Boolean
-    suspend fun putBoolean(key: String, value: Boolean)
-    suspend fun deleteBoolean(key: String)
+    fun getBoolean(key: String, default: Boolean): Boolean
+    fun putBoolean(key: String, value: Boolean)
 
-    suspend fun getLong(key: String, default: Long): Long
-    suspend fun putLong(key: String, value: Long)
-    suspend fun deleteLong(key: String)
+    fun getLong(key: String, default: Long): Long
+    fun putLong(key: String, value: Long)
 
-    suspend fun getInt(key: String, default: Int): Int
-    suspend fun putInt(key: String, value: Int)
-    suspend fun deleteInt(key: String)
+    fun getInt(key: String, default: Int): Int
+    fun putInt(key: String, value: Int)
 
-    suspend fun getFloat(key: String, default: Float): Float
-    suspend fun putFloat(key: String, value: Float)
-    suspend fun deleteFloat(key: String)
+    fun getFloat(key: String, default: Float): Float
+    fun putFloat(key: String, value: Float)
 
-    suspend fun getByteArray(key: String, default: ByteArray): ByteArray
-    suspend fun putByteArray(key: String, value: ByteArray)
-    suspend fun deleteByteArray(key: String)
+    fun getByteArray(key: String, default: ByteArray): ByteArray
+    fun putByteArray(key: String, value: ByteArray)
 
-    suspend fun clear()
+    fun allKeys(): Set<String>
+
+    fun delete(key: String)
+
+    fun clear()
 }
+
+inline fun <reified T : Any> KeyValueStorage.getSerializable(key: String): T? =
+    when (this) {
+        is KeyValueStorageImpl -> {
+            val jsonString = getString(key, "")
+            runCatching {
+                Json.decodeFromString(serializer<T>(), jsonString)
+            }.getOrNull()
+        }
+
+        is InMemoryKeyValueStorage -> getValue(key) as? T
+    }
+
+inline fun <reified T : Any> KeyValueStorage.putSerializable(key: String, value: T) {
+    when (this) {
+        is KeyValueStorageImpl -> {
+            runCatching {
+                putString(key = key, Json.encodeToString(value))
+            }
+        }
+        is InMemoryKeyValueStorage -> putValue(key, value)
+    }
+}
+
+inline fun <reified T : Any> KeyValueStorage.getSerializable(key: String, default: T): T =
+    getSerializable(key) ?: default
+
+inline fun <reified T : Any> KeyValueStorage.getSerializableList(
+    key: String,
+): List<T> =
+    when (this) {
+        is KeyValueStorageImpl -> {
+            val jsonString = getString(key, "")
+            runCatching {
+                Json.decodeFromString(ListSerializer(serializer<T>()), jsonString)
+            }.getOrNull() ?: emptyList()
+        }
+
+        is InMemoryKeyValueStorage -> getSerializable<List<T>>(key, emptyList())
+    }

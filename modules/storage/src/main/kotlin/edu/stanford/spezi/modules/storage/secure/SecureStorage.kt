@@ -1,90 +1,117 @@
 package edu.stanford.spezi.modules.storage.secure
 
-import edu.stanford.spezi.modules.storage.key.EncryptedKeyValueStorage
+import edu.stanford.spezi.modules.storage.di.Storage
+import edu.stanford.spezi.modules.storage.key.KeyValueStorageFactory
+import edu.stanford.spezi.modules.storage.key.KeyValueStorageType
+import edu.stanford.spezi.modules.storage.key.getSerializable
+import edu.stanford.spezi.modules.storage.key.putSerializable
 import javax.inject.Inject
 
-class SecureStorage @Inject constructor(
-    storageFactory: EncryptedKeyValueStorage.Factory,
-    private val androidKeyStore: AndroidKeyStore,
-) {
+interface SecureStorage {
+    fun store(credentials: Credentials)
 
-    private val encryptedKeyValueStorage = storageFactory.create(
-        fileName = "spezi_credentials_secure_storage"
+    fun retrieveCredentials(username: String, server: String?): Credentials?
+    fun retrieveUserCredentials(username: String): List<Credentials>
+    fun retrieveServerCredentials(server: String?): List<Credentials>
+
+    fun updateCredentials(username: String, server: String?, newCredentials: Credentials)
+
+    fun deleteCredentials(username: String, server: String?)
+    fun deleteUserCredentials(username: String)
+    fun deleteServerCredentials(server: String)
+    fun deleteAllCredentials(itemTypes: SecureStorageItemTypes)
+}
+
+internal class SecureStorageImpl @Inject constructor(
+    storageFactory: KeyValueStorageFactory,
+) : SecureStorage {
+
+    private val storage = storageFactory.create(
+        fileName = SECURE_STORAGE_FILE_NAME,
+        type = KeyValueStorageType.ENCRYPTED,
     )
 
-    suspend fun store(
-        credentials: Credentials,
-        server: String? = null,
-    ) {
-        encryptedKeyValueStorage.putString(
-            key = storageKey(server, credentials.username),
-            value = credentials.password
+    override fun store(credentials: Credentials) {
+        storage.putSerializable(
+            key = storageKey(credentials.server, credentials.username),
+            value = credentials
         )
     }
 
-    suspend fun deleteCredentials(
+    override fun retrieveCredentials(
         username: String,
-        server: String? = null,
-    ) {
-        encryptedKeyValueStorage.deleteString(key = storageKey(server, username))
+        server: String?,
+    ): Credentials? {
+        return storage.getSerializable(storageKey(server, username))
     }
 
-    suspend fun deleteAllCredentials(itemTypes: SecureStorageItemTypes) {
-        val containsServerCredentials = itemTypes.types.contains(SecureStorageItemType.SERVER_CREDENTIALS)
-        val containsNonServerCredentials = itemTypes.types.contains(SecureStorageItemType.NON_SERVER_CREDENTIALS)
-        if (containsServerCredentials || containsNonServerCredentials) {
-            encryptedKeyValueStorage.allKeys().forEach { key ->
-                if (key.startsWith(" ") && containsNonServerCredentials) { // non-server credential
-                    encryptedKeyValueStorage.deleteString(key)
-                } else if (key.startsWith(" ").not() && containsServerCredentials) { // server credential
-                    encryptedKeyValueStorage.deleteString(key)
-                }
+    override fun retrieveServerCredentials(
+        server: String?,
+    ): List<Credentials> {
+        return storage.allKeys().mapNotNull { key ->
+            val credential = storage.getSerializable<Credentials>(key)
+            if (server == null) credential else credential.takeIf { it?.server == server }
+        }
+    }
+
+    override fun retrieveUserCredentials(username: String): List<Credentials> {
+        return storage.allKeys().mapNotNull { key ->
+            if (key.substringAfter(SERVER_USERNAME_SEPARATOR) == username) {
+                storage.getSerializable(key)
+            } else {
+                null
             }
         }
+    }
 
-        if (itemTypes.types.contains(SecureStorageItemType.KEYS)) {
-            androidKeyStore.aliases().forEach { androidKeyStore.deleteEntry(tag = it) }
+    override fun deleteCredentials(
+        username: String,
+        server: String?,
+    ) {
+        storage.delete(key = storageKey(server, username))
+    }
+
+    override fun deleteUserCredentials(username: String) {
+        storage.allKeys().forEach { key ->
+            if (key.substringAfter(SERVER_USERNAME_SEPARATOR) == username) storage.delete(key)
         }
     }
 
-    suspend fun updateCredentials(
+    override fun deleteServerCredentials(server: String) {
+        storage.allKeys().forEach { key ->
+            if (key.substringBefore(SERVER_USERNAME_SEPARATOR) == server) storage.delete(key)
+        }
+    }
+
+    override fun deleteAllCredentials(itemTypes: SecureStorageItemTypes) {
+        val shouldDeleteServerCredentials =
+            itemTypes.contains(SecureStorageItemType.SERVER_CREDENTIALS)
+        val shouldDeleteNonServerCredentials =
+            itemTypes.contains(SecureStorageItemType.NON_SERVER_CREDENTIALS)
+        storage.allKeys().forEach { key ->
+            val keyContainsServer = key.substringBefore(SERVER_USERNAME_SEPARATOR).isNotEmpty()
+            if (keyContainsServer && shouldDeleteServerCredentials) {
+                storage.delete(key)
+            } else if (keyContainsServer.not() && shouldDeleteNonServerCredentials) {
+                storage.delete(key)
+            }
+        }
+    }
+
+    override fun updateCredentials(
         username: String,
-        server: String? = null,
+        server: String?,
         newCredentials: Credentials,
-        newServer: String? = null,
     ) {
         deleteCredentials(username, server)
-        store(newCredentials, newServer)
+        store(newCredentials)
     }
 
-    suspend fun retrieveCredentials(
-        username: String,
-        server: String? = null,
-    ): Credentials? {
-        val key = storageKey(server, username)
-        return encryptedKeyValueStorage.getString(key)?.let { Credentials(username, it) }
-    }
-
-    suspend fun retrieveAllCredentials(
-        server: String? = null,
-    ): List<Credentials> {
-        return encryptedKeyValueStorage.allKeys().mapNotNull { key ->
-            val password = server?.let {
-                if (key.startsWith("$it ")) {
-                    encryptedKeyValueStorage.getString(key)
-                } else {
-                    null
-                }
-            } ?: encryptedKeyValueStorage.getString(key)
-
-            password?.let {
-                val separatorIndex = key.indexOf(" ")
-                Credentials(key.drop(separatorIndex + 1), password)
-            }
-        }
-    }
-
-    // TODO: Check for potential key collisions
     private fun storageKey(server: String?, username: String): String =
-        "${server ?: ""} $username"
+        "${server ?: ""}$SERVER_USERNAME_SEPARATOR$username"
+
+    private companion object {
+        const val SECURE_STORAGE_FILE_NAME = "${Storage.STORAGE_FILE_PREFIX}SecureStorage"
+        const val SERVER_USERNAME_SEPARATOR = "__@__"
+    }
 }

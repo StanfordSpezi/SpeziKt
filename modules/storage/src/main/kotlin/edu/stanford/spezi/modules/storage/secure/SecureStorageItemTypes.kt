@@ -3,18 +3,16 @@ package edu.stanford.spezi.modules.storage.secure
 import java.util.EnumSet
 
 enum class SecureStorageItemType {
-    KEYS,
     SERVER_CREDENTIALS,
     NON_SERVER_CREDENTIALS,
 }
 
-data class SecureStorageItemTypes(val types: EnumSet<SecureStorageItemType>) {
+class SecureStorageItemTypes private constructor(
+    private val types: EnumSet<SecureStorageItemType>,
+) {
+    fun contains(type: SecureStorageItemType) = types.contains(type)
+
     companion object {
-        val keys = SecureStorageItemTypes(
-            EnumSet.of(
-                SecureStorageItemType.KEYS
-            )
-        )
         val serverCredentials = SecureStorageItemTypes(
             EnumSet.of(
                 SecureStorageItemType.SERVER_CREDENTIALS
@@ -25,14 +23,11 @@ data class SecureStorageItemTypes(val types: EnumSet<SecureStorageItemType>) {
                 SecureStorageItemType.NON_SERVER_CREDENTIALS
             )
         )
-        val credentials = SecureStorageItemTypes(
+        val all = SecureStorageItemTypes(
             EnumSet.of(
                 SecureStorageItemType.SERVER_CREDENTIALS,
                 SecureStorageItemType.NON_SERVER_CREDENTIALS
             )
-        )
-        val all = SecureStorageItemTypes(
-            EnumSet.allOf(SecureStorageItemType::class.java)
         )
     }
 }

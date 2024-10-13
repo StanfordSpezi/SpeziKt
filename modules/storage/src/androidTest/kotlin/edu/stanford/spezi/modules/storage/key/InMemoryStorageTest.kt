@@ -42,7 +42,7 @@ class InMemoryStorageTest {
         storage.putString(key, value)
 
         // when
-        storage.deleteString(key)
+        storage.delete(key)
 
         // then
         val actualValue = storage.getString(key, "default")
@@ -81,7 +81,7 @@ class InMemoryStorageTest {
         storage.putInt(key, value)
 
         // when
-        storage.deleteInt(key)
+        storage.delete(key)
 
         // then
         val actualValue = storage.getInt(key, 0)
@@ -119,7 +119,7 @@ class InMemoryStorageTest {
         storage.putBoolean(key, true)
 
         // when
-        storage.deleteBoolean(key)
+        storage.delete(key)
 
         // then
         val actualValue = storage.getBoolean(key, false)
@@ -158,7 +158,7 @@ class InMemoryStorageTest {
         storage.putFloat(key, value)
 
         // when
-        storage.deleteFloat(key)
+        storage.delete(key)
 
         // then
         val actualValue = storage.getFloat(key, 0f)
@@ -197,7 +197,7 @@ class InMemoryStorageTest {
         storage.putLong(key, value)
 
         // when
-        storage.deleteLong(key)
+        storage.delete(key)
 
         // then
         val actualValue = storage.getLong(key, 0L)
@@ -236,7 +236,7 @@ class InMemoryStorageTest {
         storage.putByteArray(key, value)
 
         // when
-        storage.deleteByteArray(key)
+        storage.delete(key)
 
         // then
         val actualValue = storage.getByteArray(key, byteArrayOf())
@@ -251,7 +251,7 @@ class InMemoryStorageTest {
 
         // when
         val contains = storage.getSerializable<Complex>(key) == data
-        storage.deleteSerializable<Complex>(key)
+        storage.delete(key)
         val deleted = storage.getSerializable<Complex>(key) == null
 
         // then
@@ -267,7 +267,7 @@ class InMemoryStorageTest {
 
         // when
         val contains = storage.getSerializableList<Complex>(key) == data
-        storage.deleteSerializable<List<Complex>>(key)
+        storage.delete(key)
         val deleted = storage.getSerializable<List<Complex>>(key) == null
 
         // then
