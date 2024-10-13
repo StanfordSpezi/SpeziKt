@@ -39,7 +39,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should save and read string data correctly`() = runStorageTest {
+    fun `it should save and read string data correctly`() = runAllStoragesTest {
         // given
         val expectedValue = "Test String"
 
@@ -52,7 +52,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should return default when reading non-existent string data`() = runStorageTest {
+    fun `it should return default when reading non-existent string data`() = runAllStoragesTest {
         // given
         val default = "default"
 
@@ -64,7 +64,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should delete string data correctly`() = runStorageTest {
+    fun `it should delete string data correctly`() = runAllStoragesTest {
         // given
         val value = "Test String"
         putString(key, value)
@@ -78,7 +78,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should save and read int data correctly`() = runStorageTest {
+    fun `it should save and read int data correctly`() = runAllStoragesTest {
         // given
         val expectedValue = 42
 
@@ -91,7 +91,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should return default when reading non-existent int data`() = runStorageTest {
+    fun `it should return default when reading non-existent int data`() = runAllStoragesTest {
         // given
         val default = 0
 
@@ -103,7 +103,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should delete int data correctly`() = runStorageTest {
+    fun `it should delete int data correctly`() = runAllStoragesTest {
         // given
         val value = 42
         putInt(key, value)
@@ -117,7 +117,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should save and read boolean data correctly`() = runStorageTest {
+    fun `it should save and read boolean data correctly`() = runAllStoragesTest {
         // given
         val expectedValue = true
 
@@ -130,7 +130,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should return default when reading non-existent boolean data`() = runStorageTest {
+    fun `it should return default when reading non-existent boolean data`() = runAllStoragesTest {
         // given
         val default = false
 
@@ -142,7 +142,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should delete boolean data correctly`() = runStorageTest {
+    fun `it should delete boolean data correctly`() = runAllStoragesTest {
         // given
         putBoolean(key, true)
 
@@ -155,7 +155,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should save and read float data correctly`() = runStorageTest {
+    fun `it should save and read float data correctly`() = runAllStoragesTest {
         // given
         val expectedValue = 3.14f
 
@@ -168,7 +168,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should return default when reading non-existent float data`() = runStorageTest {
+    fun `it should return default when reading non-existent float data`() = runAllStoragesTest {
         // given
         val default = 0f
 
@@ -180,7 +180,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should delete float data correctly`() = runStorageTest {
+    fun `it should delete float data correctly`() = runAllStoragesTest {
         // given
         val value = 3.14f
         putFloat(key, value)
@@ -194,7 +194,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should save and read long data correctly`() = runStorageTest {
+    fun `it should save and read long data correctly`() = runAllStoragesTest {
         // given
         val expectedValue = 123456789L
 
@@ -207,7 +207,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should return default when reading non-existent long data`() = runStorageTest {
+    fun `it should return default when reading non-existent long data`() = runAllStoragesTest {
         // given
         val default = 0L
 
@@ -219,7 +219,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should delete long data correctly`() = runStorageTest {
+    fun `it should delete long data correctly`() = runAllStoragesTest {
         // given
         val value = 123456789L
         putLong(key, value)
@@ -233,7 +233,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should save and read byte array data correctly`() = runStorageTest {
+    fun `it should save and read byte array data correctly`() = runAllStoragesTest {
         // given
         val expectedValue = byteArrayOf(0x01, 0x02, 0x03, 0x04)
 
@@ -246,7 +246,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should return default when reading non-existent byte array data`() = runStorageTest {
+    fun `it should return default when reading non-existent byte array data`() = runAllStoragesTest {
         // given
         val default = byteArrayOf()
 
@@ -258,7 +258,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should delete byte array data correctly`() = runStorageTest {
+    fun `it should delete byte array data correctly`() = runAllStoragesTest {
         // given
         val value = byteArrayOf(0x01, 0x02, 0x03, 0x04)
         putByteArray(key, value)
@@ -272,7 +272,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should handle serializable type correctly`() = runStorageTest {
+    fun `it should handle serializable type correctly`() = runAllStoragesTest {
         // given
         val data = Complex()
         putSerializable(key, data)
@@ -288,7 +288,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should handle serializable list read correctly`() = runStorageTest {
+    fun `it should handle serializable list read correctly`() = runAllStoragesTest {
         // given
         val data = listOf(Complex())
         putSerializable(key, data)
@@ -304,7 +304,7 @@ class KeyValueStorageTest {
     }
 
     @Test
-    fun `it should handle clear correctly`() = runStorageTest {
+    fun `it should handle clear correctly`() = runAllStoragesTest {
         // given
         val initialValue = 1234
         putInt(key, initialValue)
@@ -316,7 +316,7 @@ class KeyValueStorageTest {
         assertThat(getInt(key, -1)).isNotEqualTo(initialValue)
     }
 
-    private fun runStorageTest(block: KeyValueStorage.() -> Unit) {
+    private fun runAllStoragesTest(block: KeyValueStorage.() -> Unit) {
         listOf(encryptedStorage, unencryptedStorage).forEach { block(it) }
     }
 

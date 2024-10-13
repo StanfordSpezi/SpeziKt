@@ -12,9 +12,9 @@ import javax.inject.Inject
 
 interface AndroidKeyStore {
     fun createKey(tag: String, size: Int = DEFAULT_KEY_SIZE): Result<KeyPair>
-    fun deleteEntry(tag: String)
     fun retrievePrivateKey(tag: String): PrivateKey?
     fun retrievePublicKey(tag: String): PublicKey?
+    fun deleteEntry(tag: String)
     fun aliases(): List<String>
 
     companion object {
@@ -30,12 +30,18 @@ internal class AndroidKeyStoreImpl @Inject constructor() : AndroidKeyStore {
         KeyStore.getInstance(AndroidKeyStore.PROVIDER).apply { load(null) }
     }
 
-    override fun deleteEntry(tag: String) {
-        runCatching {
-            keyStore.deleteEntry(tag)
-        }.onFailure {
-            logger.e(it) { "Failed to delete entry with $tag" }
-        }
+    override fun createKey(tag: String, size: Int): Result<KeyPair> = runCatching {
+        val keyGenParameterSpec = KeyGenParameterSpec.Builder(
+            tag,
+            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+        )
+            .setKeySize(size)
+            .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
+            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
+            .build()
+        val keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA)
+        keyPairGenerator.initialize(keyGenParameterSpec)
+        keyPairGenerator.genKeyPair()
     }
 
     override fun retrievePrivateKey(tag: String): PrivateKey? = runCatching {
@@ -50,19 +56,13 @@ internal class AndroidKeyStoreImpl @Inject constructor() : AndroidKeyStore {
         logger.e(it) { "Failure during retrieval of public key with $tag" }
     }.getOrNull()
 
-    override fun aliases(): List<String> = keyStore.aliases().toList()
-
-    override fun createKey(tag: String, size: Int): Result<KeyPair> = runCatching {
-        val keyGenParameterSpec = KeyGenParameterSpec.Builder(
-            tag,
-            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
-        )
-            .setKeySize(size)
-            .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
-            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
-            .build()
-        val keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA)
-        keyPairGenerator.initialize(keyGenParameterSpec)
-        keyPairGenerator.genKeyPair()
+    override fun deleteEntry(tag: String) {
+        runCatching {
+            keyStore.deleteEntry(tag)
+        }.onFailure {
+            logger.e(it) { "Failed to delete entry with $tag" }
+        }
     }
+
+    override fun aliases(): List<String> = keyStore.aliases().toList()
 }

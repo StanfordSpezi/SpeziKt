@@ -12,7 +12,7 @@ interface SecureStorage {
 
     fun retrieveCredentials(username: String, server: String?): Credentials?
     fun retrieveUserCredentials(username: String): List<Credentials>
-    fun retrieveServerCredentials(server: String?): List<Credentials>
+    fun retrieveServerCredentials(server: String): List<Credentials>
 
     fun updateCredentials(username: String, server: String?, newCredentials: Credentials)
 
@@ -45,12 +45,10 @@ internal class SecureStorageImpl @Inject constructor(
         return storage.getSerializable(storageKey(server, username))
     }
 
-    override fun retrieveServerCredentials(
-        server: String?,
-    ): List<Credentials> {
+    override fun retrieveServerCredentials(server: String): List<Credentials> {
         return storage.allKeys().mapNotNull { key ->
             val credential = storage.getSerializable<Credentials>(key)
-            if (server == null) credential else credential.takeIf { it?.server == server }
+            credential.takeIf { it?.server == server }
         }
     }
 

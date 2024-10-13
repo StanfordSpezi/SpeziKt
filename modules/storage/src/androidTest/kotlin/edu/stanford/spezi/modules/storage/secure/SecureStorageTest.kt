@@ -46,7 +46,7 @@ class SecureStorageTest {
         secureStorage.store(serverCredential)
 
         // when
-        val serverCredentials = secureStorage.retrieveServerCredentials(server = serverCredential.server)
+        val serverCredentials = secureStorage.retrieveServerCredentials(server = serverCredential.server!!)
         val userServerCredential = secureStorage.retrieveCredentials(
             username = serverCredential.username,
             server = serverCredential.server,
@@ -65,7 +65,6 @@ class SecureStorageTest {
         secureStorage.store(nonServerCredential)
 
         // when
-        val serverCredentials = secureStorage.retrieveServerCredentials(server = nonServerCredential.server)
         val userServerCredential = secureStorage.retrieveCredentials(
             username = nonServerCredential.username,
             server = nonServerCredential.server,
@@ -73,7 +72,6 @@ class SecureStorageTest {
         val userCredentials = secureStorage.retrieveUserCredentials(nonServerCredential.username)
 
         // then
-        assertThat(serverCredentials).containsExactly(nonServerCredential)
         assertThat(userCredentials).containsExactly(nonServerCredential)
         assertThat(userServerCredential).isEqualTo(nonServerCredential)
     }

@@ -22,17 +22,6 @@ import javax.crypto.Cipher
 import javax.inject.Inject
 
 interface LocalStorage {
-    suspend fun <T : Any> read(
-        key: String,
-        settings: LocalStorageSetting,
-        serializer: DeserializationStrategy<T>,
-    ): T?
-
-    suspend fun <T : Any> read(
-        key: String,
-        settings: LocalStorageSetting,
-        decoding: (ByteArray) -> T,
-    ): T?
 
     suspend fun <T : Any> store(
         key: String,
@@ -48,6 +37,18 @@ interface LocalStorage {
         encoding: (T) -> ByteArray,
     )
 
+    suspend fun <T : Any> read(
+        key: String,
+        settings: LocalStorageSetting,
+        serializer: DeserializationStrategy<T>,
+    ): T?
+
+    suspend fun <T : Any> read(
+        key: String,
+        settings: LocalStorageSetting,
+        decoding: (ByteArray) -> T,
+    ): T?
+
     suspend fun delete(key: String)
 }
 
@@ -58,35 +59,6 @@ internal class LocalStorageImpl @Inject constructor(
 ) : LocalStorage {
 
     private val logger by speziLogger()
-
-    override suspend fun <T : Any> read(
-        key: String,
-        settings: LocalStorageSetting,
-        serializer: DeserializationStrategy<T>,
-    ): T? {
-        return read(
-            key = key,
-            settings = settings,
-            decoding = { data ->
-                Json.decodeFromString(serializer, String(data, StandardCharsets.UTF_8))
-            }
-        )
-    }
-
-    override suspend fun <T : Any> read(
-        key: String,
-        settings: LocalStorageSetting,
-        decoding: (ByteArray) -> T,
-    ): T? = execute {
-        val keys = keys(settings)
-        val bytes = file(key).readBytes()
-        val data = if (keys == null) {
-            bytes
-        } else {
-            createCipher(Cipher.DECRYPT_MODE, keys.private).doFinal(bytes)
-        }
-        decoding(data)
-    }
 
     override suspend fun <T : Any> store(
         key: String,
@@ -120,6 +92,35 @@ internal class LocalStorageImpl @Inject constructor(
             }
             file(key).writeBytes(writeData)
         }
+    }
+
+    override suspend fun <T : Any> read(
+        key: String,
+        settings: LocalStorageSetting,
+        serializer: DeserializationStrategy<T>,
+    ): T? {
+        return read(
+            key = key,
+            settings = settings,
+            decoding = { data ->
+                Json.decodeFromString(serializer, String(data, StandardCharsets.UTF_8))
+            }
+        )
+    }
+
+    override suspend fun <T : Any> read(
+        key: String,
+        settings: LocalStorageSetting,
+        decoding: (ByteArray) -> T,
+    ): T? = execute {
+        val keys = keys(settings)
+        val bytes = file(key).readBytes()
+        val data = if (keys == null) {
+            bytes
+        } else {
+            createCipher(Cipher.DECRYPT_MODE, keys.private).doFinal(bytes)
+        }
+        decoding(data)
     }
 
     override suspend fun delete(key: String) {

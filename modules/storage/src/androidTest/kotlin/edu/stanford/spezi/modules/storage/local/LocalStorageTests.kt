@@ -58,10 +58,10 @@ class LocalStorageTests {
         )
 
         // when
-        val storedLetter = localStorage.read(
+        val storedLetter = localStorage.read<Letter>(
             key = key,
             settings = LocalStorageSetting.EncryptedUsingKeyStore,
-            serializer = serializer<Letter>(),
+            serializer = serializer(),
         )
 
         // then
@@ -73,21 +73,18 @@ class LocalStorageTests {
         // given
         val greeting = "Hello Paul 👋 ${"🚀".repeat(Random.nextInt(10))}"
         val letter = Letter(greeting = greeting)
-        val serializer = Letter.serializer()
         localStorage.store(
             key = key,
             value = letter,
             settings = LocalStorageSetting.EncryptedUsingKeyStore,
-            encoding = { Json.encodeToString(serializer, it).toByteArray(StandardCharsets.UTF_8) }
+            encoding = { Json.encodeToString(serializer(), it).toByteArray(StandardCharsets.UTF_8) }
         )
 
         // when
-        val storedLetter = localStorage.read(
+        val storedLetter = localStorage.read<Letter>(
             key = key,
             settings = LocalStorageSetting.EncryptedUsingKeyStore,
-            decoding = { data ->
-                Json.decodeFromString(serializer, String(data, StandardCharsets.UTF_8))
-            }
+            decoding = { Json.decodeFromString(serializer(), String(it, StandardCharsets.UTF_8)) }
         )
 
         // then
@@ -115,10 +112,10 @@ class LocalStorageTests {
         localStorage.delete(key)
 
         // then
-        val afterDelete = localStorage.read(
+        val afterDelete = localStorage.read<Letter>(
             key = key,
             settings = LocalStorageSetting.EncryptedUsingKeyStore,
-            serializer = serializer<Letter>(),
+            serializer = serializer(),
         )
         assertThat(letter).isEqualTo(storedLetter)
         assertThat(afterDelete).isNull()
