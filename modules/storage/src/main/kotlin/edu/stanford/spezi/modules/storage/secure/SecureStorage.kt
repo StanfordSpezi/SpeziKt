@@ -82,18 +82,14 @@ internal class SecureStorageImpl @Inject constructor(
     }
 
     override fun deleteAllCredentials(itemTypes: SecureStorageItemTypes) {
-        when (itemTypes) {
-            SecureStorageItemTypes.ALL -> storage.clear()
-            else -> {
-                val deleteServer = itemTypes == SecureStorageItemTypes.SERVER_CREDENTIALS
-                val deleteNonServer = itemTypes == SecureStorageItemTypes.NON_SERVER_CREDENTIALS
-                storage.allKeys().forEach { key ->
-                    val isServerKey = key.substringBefore(SERVER_USERNAME_SEPARATOR).isNotEmpty()
-                    when {
-                        isServerKey && deleteServer -> storage.delete(key)
-                        !isServerKey && deleteNonServer -> storage.delete(key)
-                    }
-                }
+        if (itemTypes == SecureStorageItemTypes.ALL) return storage.clear()
+        val deleteServer = itemTypes == SecureStorageItemTypes.SERVER_CREDENTIALS
+        val deleteNonServer = itemTypes == SecureStorageItemTypes.NON_SERVER_CREDENTIALS
+        storage.allKeys().forEach { key ->
+            val isServerKey = key.substringBefore(SERVER_USERNAME_SEPARATOR).isNotEmpty()
+            when {
+                isServerKey && deleteServer -> storage.delete(key)
+                !isServerKey && deleteNonServer -> storage.delete(key)
             }
         }
     }
