@@ -1,5 +1,6 @@
 package edu.stanford.spezi.modules.storage.local
 
+import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.modules.storage.secure.SecureStorage
 import edu.stanford.spezi.modules.storage.secure.SecureStorageScope
 import java.security.KeyPair
@@ -9,9 +10,10 @@ sealed class LocalStorageSetting {
 
     data class Encrypted(val keyPair: KeyPair) : LocalStorageSetting()
 
-    data object EncryptedUsingKeyStore : LocalStorageSetting()
+    data object EncryptedUsingKeyStore : LocalStorageSetting() {
+        val logger by speziLogger()
+    }
 
-    @Suppress("detekt:TooGenericExceptionCaught")
     fun keys(secureStorage: SecureStorage): KeyPair? {
         return when (this) {
             is Unencrypted -> null
@@ -19,16 +21,17 @@ sealed class LocalStorageSetting {
             is EncryptedUsingKeyStore -> {
                 val identifier = SecureStorageScope.KeyStore.identifier
                 val tag = "LocalStorage.$identifier"
-                try {
+                return runCatching {
                     val privateKey = secureStorage.retrievePrivateKey(tag)
                     val publicKey = secureStorage.retrievePublicKey(tag)
-                    if (privateKey != null && publicKey != null) {
-                        return KeyPair(publicKey, privateKey)
+                    return if (privateKey != null && publicKey != null) {
+                        KeyPair(publicKey, privateKey)
+                    } else {
+                        null
                     }
-                } catch (error: Throwable) {
-                    println("Retrieving private or public key from SecureStorage failed due to `$error`.")
-                }
-                secureStorage.createKey(tag)
+                }.onFailure { failure ->
+                    logger.e(failure) { "Retrieving private or public key from SecureStorage failed" }
+                }.getOrNull() ?: secureStorage.createKey(tag)
             }
         }
     }
