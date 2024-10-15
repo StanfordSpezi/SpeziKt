@@ -23,6 +23,7 @@ import edu.stanford.spezi.core.design.component.DefaultElevatedCard
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
+import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.modules.contact.model.formatted
 import java.net.URLEncoder
 import java.util.Locale
@@ -71,9 +72,9 @@ internal fun AddressCard(address: Address, modifier: Modifier = Modifier) {
 }
 
 @Composable
-@Preview
+@ThemePreviews
 private fun AddressCardPreview() {
-    SpeziTheme {
+    SpeziTheme(isPreview = true) {
         AddressCard(Address(Locale.US).apply {
             setAddressLine(0, "1234 Main Street")
             postalCode = "12345"

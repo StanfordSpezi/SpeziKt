@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.core.design.component.DefaultElevatedCard
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
+import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.modules.contact.model.ContactOption
 import edu.stanford.spezi.modules.contact.model.email
 
@@ -49,9 +50,9 @@ internal fun ContactOptionCard(option: ContactOption, modifier: Modifier = Modif
 }
 
 @Composable
-@Preview
+@ThemePreviews
 private fun ContactOptionCardPreview() {
-    SpeziTheme {
+    SpeziTheme(isPreview = true) {
         ContactOptionCard(
             ContactOption.email(
                 addresses = listOf("test@test.de"),

@@ -20,7 +20,7 @@ fun ContactOption.Companion.email(addresses: List<String>, subject: String? = nu
                 }
                 context.startActivity(intent)
             }.onFailure {
-                println("Failed to open intent for email to `$addresses` with subject `$subject` due to `$it`.")
+                logger.e(it) { "Failed to open intent for email to `$addresses` with subject `$subject`." }
             }
         }
     )

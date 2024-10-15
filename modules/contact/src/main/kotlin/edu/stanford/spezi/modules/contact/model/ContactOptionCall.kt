@@ -17,7 +17,7 @@ fun ContactOption.Companion.call(number: String) =
                 }
                 context.startActivity(intent)
             }.onFailure {
-                println("Failed to open intent for phone call to `$number` due to `$it`.")
+                logger.e(it) { "Failed to open intent for phone call to `$number`." }
             }
         }
     )

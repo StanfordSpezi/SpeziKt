@@ -17,7 +17,7 @@ fun ContactOption.Companion.text(number: String): ContactOption =
                 }
                 context.startActivity(intent)
             }.onFailure {
-                println("Failed to open intent for text message to `$number` due to `$it`.")
+                logger.e(it) { "Failed to open intent for text message to `$number`." }
             }
         }
     )

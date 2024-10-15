@@ -16,7 +16,7 @@ fun ContactOption.Companion.website(uriString: String): ContactOption =
                     Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
                 context.startActivity(browserIntent)
             }.onFailure {
-                println("Failed to open intent for website at `$uriString` due to `$it`.")
+                logger.e(it) { "Failed to open intent for website at `$uriString`." }
             }
         }
     )

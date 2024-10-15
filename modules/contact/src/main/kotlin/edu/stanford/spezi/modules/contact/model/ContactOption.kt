@@ -3,6 +3,7 @@ package edu.stanford.spezi.modules.contact.model
 import android.content.Context
 import androidx.compose.ui.graphics.vector.ImageVector
 import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.utils.UUID
 import java.util.UUID
 
@@ -20,5 +21,7 @@ data class ContactOption(
     val title: StringResource,
     val action: (Context) -> Unit,
 ) {
-    companion object
+    companion object {
+        internal val logger by speziLogger()
+    }
 }
