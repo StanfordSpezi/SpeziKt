@@ -9,7 +9,7 @@ class ContactListSimulator(
     private val composeTestRule: ComposeTestRule,
 ) {
     private fun contactComposable(contact: Contact) =
-        composeTestRule.onNodeWithIdentifier(ContactsListTestIdentifier.CONTACT, contact.name.formatted().replace(" ", "_"))
+        composeTestRule.onNodeWithIdentifier(ContactsListTestIdentifier.CONTACT, contact.id.toString())
 
     fun assertHasContact(contact: Contact) {
         contactComposable(contact).assertExists()

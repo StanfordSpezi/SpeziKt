@@ -15,7 +15,7 @@ fun ContactsList(contacts: List<Contact>, modifier: Modifier = Modifier) {
                 it,
                 modifier = Modifier.testIdentifier(
                     ContactsListTestIdentifier.CONTACT,
-                    suffix = it.title?.text()
+                    suffix = it.id.toString()
                 )
             )
         }
