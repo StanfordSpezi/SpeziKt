@@ -33,7 +33,8 @@ fun MedicationList(
                 title = stringResource(R.string.medication_you_are_taking),
                 onToggleExpand = {
                     onAction(MedicationViewModel.Action.ToggleSectionExpand(MedicationViewModel.Section.MEDICATIONS_TAKING))
-                }
+                },
+                isExpanded = uiState.medicationsTaking.expanded,
             )
         }
         medicationItems(
@@ -46,7 +47,8 @@ fun MedicationList(
                 title = stringResource(R.string.medications_that_may_help),
                 onToggleExpand = {
                     onAction(MedicationViewModel.Action.ToggleSectionExpand(MedicationViewModel.Section.MEDICATIONS_THAT_MAY_HELP))
-                }
+                },
+                isExpanded = uiState.medicationsThatMayHelp.expanded,
             )
         }
         medicationItems(
@@ -59,7 +61,8 @@ fun MedicationList(
                 title = stringResource(R.string.color_key),
                 onToggleExpand = {
                     onAction(MedicationViewModel.Action.ToggleSectionExpand(MedicationViewModel.Section.COLOR_KEY))
-                }
+                },
+                isExpanded = uiState.colorKeyExpanded,
             )
         }
         if (uiState.colorKeyExpanded) {
