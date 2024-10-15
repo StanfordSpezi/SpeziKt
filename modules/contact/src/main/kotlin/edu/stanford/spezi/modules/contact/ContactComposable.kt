@@ -28,6 +28,7 @@ import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
+import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.modules.contact.component.AddressCard
 import edu.stanford.spezi.modules.contact.component.ContactOptionCard
@@ -141,10 +142,10 @@ enum class ContactComposableTestIdentifier {
     NAME, IMAGE, SUBTITLE, DESCRIPTION, ADDRESS, OPTION
 }
 
-@Preview
+@ThemePreviews
 @Composable
 private fun ContactComposablePreview() {
-    SpeziTheme {
+    SpeziTheme(isPreview = true) {
         ContactComposable(
             Contact(
                 name = PersonNameComponents(givenName = "Leland", familyName = "Stanford"),
