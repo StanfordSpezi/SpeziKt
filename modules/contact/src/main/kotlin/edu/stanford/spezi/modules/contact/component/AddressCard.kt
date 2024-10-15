@@ -23,6 +23,7 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.core.logging.SpeziLogger
 import edu.stanford.spezi.modules.contact.model.formatted
 import java.net.URLEncoder
 import java.util.Locale
@@ -56,7 +57,7 @@ internal fun AddressCard(address: Address, modifier: Modifier = Modifier) {
                         mapIntent.setPackage("com.google.android.apps.maps")
                         context.startActivity(mapIntent)
                     }.onFailure {
-                        println("Failed to open intent for address `$addressText` due to `$it`.")
+                        SpeziLogger.e(it) { "Failed to open intent for address `$addressText`." }
                     }
                 },
                 modifier = Modifier.align(Alignment.Top)
