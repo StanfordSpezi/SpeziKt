@@ -52,9 +52,13 @@ class KeyValueStorageImpl @AssistedInject internal constructor(
         sharedPreferences.edit { putFloat(key, value) }
     }
 
-    override fun getByteArray(key: String, default: ByteArray): ByteArray {
+    override fun getByteArray(key: String): ByteArray? = runCatching {
         val encoded = sharedPreferences.getString(key, null)
-        return encoded?.let { Base64.decode(it, Base64.DEFAULT) } ?: default
+        encoded?.let { Base64.decode(it, Base64.DEFAULT) }
+    }.getOrNull()
+
+    override fun getByteArray(key: String, default: ByteArray): ByteArray {
+        return getByteArray(key) ?: default
     }
 
     override fun delete(key: String) {

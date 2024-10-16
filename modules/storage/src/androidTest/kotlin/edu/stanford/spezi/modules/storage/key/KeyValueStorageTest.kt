@@ -258,6 +258,18 @@ class KeyValueStorageTest {
     }
 
     @Test
+    fun `it should return null when reading non-existent byte array data`() = runAllStoragesTest {
+        // given
+        clear()
+
+        // when
+        val actualValue = getByteArray(key)
+
+        // then
+        assertThat(actualValue).isNull()
+    }
+
+    @Test
     fun `it should delete byte array data correctly`() = runAllStoragesTest {
         // given
         val value = byteArrayOf(0x01, 0x02, 0x03, 0x04)

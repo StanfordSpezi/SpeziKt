@@ -88,7 +88,7 @@ internal class LocalStorageImpl @Inject constructor(
             val writeData = if (keys == null) {
                 jsonData
             } else {
-                createCipher(Cipher.ENCRYPT_MODE, keys.public).doFinal(jsonData)
+                getInitializedCipher(Cipher.ENCRYPT_MODE, keys.public).doFinal(jsonData)
             }
             file(key).writeBytes(writeData)
         }
@@ -118,7 +118,7 @@ internal class LocalStorageImpl @Inject constructor(
         val data = if (keys == null) {
             bytes
         } else {
-            createCipher(Cipher.DECRYPT_MODE, keys.private).doFinal(bytes)
+            getInitializedCipher(Cipher.DECRYPT_MODE, keys.private).doFinal(bytes)
         }
         decoding(data)
     }
@@ -151,7 +151,7 @@ internal class LocalStorageImpl @Inject constructor(
         }
     }
 
-    private fun createCipher(mode: Int, key: Key): Cipher =
+    private fun getInitializedCipher(mode: Int, key: Key): Cipher =
         androidKeyStore.getCipher().apply { init(mode, key) }
 
     private suspend fun <T> execute(block: suspend () -> T) = withContext(ioDispatcher) {

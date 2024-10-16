@@ -1,7 +1,6 @@
 package edu.stanford.spezi.modules.storage.key
 
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.spezi.core.testing.runTestUnconfined
 import kotlinx.serialization.Serializable
 import org.junit.Test
 
@@ -11,7 +10,7 @@ class InMemoryStorageTest {
     private val key = "local_storage_test_key"
 
     @Test
-    fun `it should save and read string data correctly`() = runTestUnconfined {
+    fun `it should save and read string data correctly`() {
         // given
         val expectedValue = "Test String"
 
@@ -24,7 +23,7 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should return default when reading non-existent string data`() = runTestUnconfined {
+    fun `it should return default when reading non-existent string data`() {
         // given
         val default = "default"
 
@@ -36,7 +35,7 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should delete string data correctly`() = runTestUnconfined {
+    fun `it should delete string data correctly`() {
         // given
         val value = "Test String"
         storage.putString(key, value)
@@ -50,7 +49,7 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should save and read int data correctly`() = runTestUnconfined {
+    fun `it should save and read int data correctly`() {
         // given
         val expectedValue = 42
 
@@ -63,7 +62,7 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should return default when reading non-existent int data`() = runTestUnconfined {
+    fun `it should return default when reading non-existent int data`() {
         // given
         val default = 0
 
@@ -75,7 +74,7 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should delete int data correctly`() = runTestUnconfined {
+    fun `it should delete int data correctly`() {
         // given
         val value = 42
         storage.putInt(key, value)
@@ -89,7 +88,7 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should save and read boolean data correctly`() = runTestUnconfined {
+    fun `it should save and read boolean data correctly`() {
         // given
         val expectedValue = true
 
@@ -102,7 +101,7 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should return default when reading non-existent boolean data`() = runTestUnconfined {
+    fun `it should return default when reading non-existent boolean data`() {
         // given
         val default = false
 
@@ -114,7 +113,7 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should delete boolean data correctly`() = runTestUnconfined {
+    fun `it should delete boolean data correctly`() {
         // given
         storage.putBoolean(key, true)
 
@@ -127,7 +126,7 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should save and read float data correctly`() = runTestUnconfined {
+    fun `it should save and read float data correctly`() {
         // given
         val expectedValue = 3.14f
 
@@ -140,7 +139,7 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should return default when reading non-existent float data`() = runTestUnconfined {
+    fun `it should return default when reading non-existent float data`() {
         // given
         val default = 0f
 
@@ -152,7 +151,7 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should delete float data correctly`() = runTestUnconfined {
+    fun `it should delete float data correctly`() {
         // given
         val value = 3.14f
         storage.putFloat(key, value)
@@ -166,7 +165,7 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should save and read long data correctly`() = runTestUnconfined {
+    fun `it should save and read long data correctly`() {
         // given
         val expectedValue = 123456789L
 
@@ -179,7 +178,7 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should return default when reading non-existent long data`() = runTestUnconfined {
+    fun `it should return default when reading non-existent long data`() {
         // given
         val default = 0L
 
@@ -191,7 +190,7 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should delete long data correctly`() = runTestUnconfined {
+    fun `it should delete long data correctly`() {
         // given
         val value = 123456789L
         storage.putLong(key, value)
@@ -205,7 +204,7 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should save and read byte array data correctly`() = runTestUnconfined {
+    fun `it should save and read byte array data correctly`() {
         // given
         val expectedValue = byteArrayOf(0x01, 0x02, 0x03, 0x04)
 
@@ -218,7 +217,7 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should return default when reading non-existent byte array data`() = runTestUnconfined {
+    fun `it should return default when reading non-existent byte array data`() {
         // given
         val default = byteArrayOf()
 
@@ -230,7 +229,19 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should delete byte array data correctly`() = runTestUnconfined {
+    fun `it should return null when reading non-existent byte array data`() {
+        // given
+        storage.clear()
+
+        // when
+        val actualValue = storage.getByteArray(key)
+
+        // then
+        assertThat(actualValue).isNull()
+    }
+
+    @Test
+    fun `it should delete byte array data correctly`() {
         // given
         val value = byteArrayOf(0x01, 0x02, 0x03, 0x04)
         storage.putByteArray(key, value)
@@ -244,7 +255,7 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should handle serializable type correctly`() = runTestUnconfined {
+    fun `it should handle serializable type correctly`() {
         // given
         val data = Complex()
         storage.putSerializable(key, data)
@@ -260,7 +271,7 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should handle serializable list read correctly`() = runTestUnconfined {
+    fun `it should handle serializable list read correctly`() {
         // given
         val data = listOf(Complex())
         storage.putSerializable(key, data)
@@ -276,7 +287,7 @@ class InMemoryStorageTest {
     }
 
     @Test
-    fun `it should handle clear correctly`() = runTestUnconfined {
+    fun `it should handle clear correctly`() {
         // given
         val initialValue = 1234
         storage.putInt(key, initialValue)

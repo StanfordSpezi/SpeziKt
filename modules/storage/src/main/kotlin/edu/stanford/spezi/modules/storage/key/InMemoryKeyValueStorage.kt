@@ -51,8 +51,12 @@ class InMemoryKeyValueStorage @Inject constructor() : KeyValueStorage {
         putValue(key, value)
     }
 
+    override fun getByteArray(key: String): ByteArray? {
+        return getValue(key) as? ByteArray
+    }
+
     override fun getByteArray(key: String, default: ByteArray): ByteArray {
-        return getValue(key) as? ByteArray ?: default
+        return getByteArray(key) ?: default
     }
 
     override fun putByteArray(key: String, value: ByteArray) {

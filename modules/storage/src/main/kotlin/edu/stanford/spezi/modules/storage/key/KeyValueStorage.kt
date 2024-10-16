@@ -24,6 +24,7 @@ sealed interface KeyValueStorage {
     fun getFloat(key: String, default: Float): Float
     fun putFloat(key: String, value: Float)
 
+    fun getByteArray(key: String): ByteArray?
     fun getByteArray(key: String, default: ByteArray): ByteArray
     fun putByteArray(key: String, value: ByteArray)
 

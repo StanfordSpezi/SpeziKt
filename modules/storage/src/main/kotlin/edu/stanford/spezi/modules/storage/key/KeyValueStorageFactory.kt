@@ -6,6 +6,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
 interface KeyValueStorageFactory {
     fun create(
@@ -14,10 +15,17 @@ interface KeyValueStorageFactory {
     ): KeyValueStorage
 }
 
+@Singleton
 internal class KeyValueStorageFactoryImpl @Inject constructor(
     private val storageFactory: KeyValueStorageImpl.Factory,
     @ApplicationContext private val context: Context,
 ) : KeyValueStorageFactory {
+
+    private val masterKey: MasterKey by lazy {
+        MasterKey.Builder(context)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+    }
 
     override fun create(fileName: String, type: KeyValueStorageType): KeyValueStorage {
         val preferences = createSharedPreferences(fileName = fileName, type = type)
@@ -36,14 +44,10 @@ internal class KeyValueStorageFactoryImpl @Inject constructor(
                 )
 
                 KeyValueStorageType.ENCRYPTED -> {
-                    val masterKey = MasterKey
-                        .Builder(context)
-                        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-
                     EncryptedSharedPreferences.create(
                         context,
                         fileName,
-                        masterKey.build(),
+                        masterKey,
                         EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
                     )
