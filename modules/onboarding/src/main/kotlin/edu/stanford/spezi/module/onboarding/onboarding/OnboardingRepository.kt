@@ -2,6 +2,7 @@ package edu.stanford.spezi.module.onboarding.onboarding
 
 /**
  * Repository for fetching onboarding data.
+ * @see edu.stanford.bdh.engagehf.onboarding.EngageOnboardingRepository
  */
 interface OnboardingRepository {
 

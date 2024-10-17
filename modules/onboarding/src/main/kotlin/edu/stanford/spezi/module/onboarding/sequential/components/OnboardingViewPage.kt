@@ -29,7 +29,7 @@ import edu.stanford.spezi.core.design.theme.TextStyles
  * @sample edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreen
  */
 @Composable
-fun OnboardingViewPage(
+internal fun OnboardingViewPage(
     modifier: Modifier = Modifier,
     backgroundColor: Color,
     onColor: Color,
