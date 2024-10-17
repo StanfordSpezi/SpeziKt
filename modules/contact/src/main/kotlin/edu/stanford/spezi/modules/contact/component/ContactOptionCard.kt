@@ -13,32 +13,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.core.design.component.DefaultElevatedCard
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.modules.contact.OnAction
+import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.modules.contact.model.ContactOption
-import edu.stanford.spezi.modules.contact.model.ContactOptionType
-import java.util.UUID
+import edu.stanford.spezi.modules.contact.model.email
 
-/**
- * A card that displays a contact option.
- * @param option The contact option to display.
- * @sample edu.stanford.spezi.modules.contact.component.ContactOptionCardPreview
- * @see ContactOption
- * @see ContactOptionType
- * @see edu.stanford.spezi.modules.contact.ContactScreen
- */
 @Composable
-fun ContactOptionCard(option: ContactOption, publisher: (OnAction) -> Unit) {
+internal fun ContactOptionCard(option: ContactOption, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
     DefaultElevatedCard(
-        modifier = Modifier
+        modifier = modifier
             .wrapContentSize(Alignment.Center)
             .width(90.dp)
             .clickable {
-                publisher(OnAction.CardClicked(option = option))
+                option.action(context)
             }
     ) {
         Column(
@@ -48,29 +40,22 @@ fun ContactOptionCard(option: ContactOption, publisher: (OnAction) -> Unit) {
                 .fillMaxWidth()
         ) {
             Icon(
-                option.icon ?: Icons.Default.Email,
-                contentDescription = option.name
+                option.image ?: Icons.Default.Email,
+                contentDescription = option.title.text()
             )
-            Text(
-                text = option.name,
-            )
+            Text(option.title.text())
         }
     }
 }
 
 @Composable
-@Preview
-fun ContactOptionCardPreview() {
-    SpeziTheme {
+@ThemePreviews
+private fun ContactOptionCardPreview() {
+    SpeziTheme(isPreview = true) {
         ContactOptionCard(
-            option = ContactOption(
-                id = UUID.randomUUID(),
-                name = "Email",
-                value = "test@test.de",
-                icon = Icons.Default.Email,
-                optionType = ContactOptionType.EMAIL
+            ContactOption.email(
+                addresses = listOf("test@test.de"),
             ),
-            publisher = { action -> println(action) }
         )
     }
 }
