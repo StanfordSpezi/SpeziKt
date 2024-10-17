@@ -12,7 +12,7 @@ import javax.inject.Inject
  * ViewModel for the [edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreen].
  */
 @HiltViewModel
-class SequentialOnboardingViewModel @Inject internal constructor(
+internal class SequentialOnboardingViewModel @Inject internal constructor(
     private val repository: SequentialOnboardingRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SequentialOnboardingUiState())

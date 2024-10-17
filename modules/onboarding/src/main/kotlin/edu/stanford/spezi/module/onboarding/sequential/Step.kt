@@ -7,7 +7,7 @@ package edu.stanford.spezi.module.onboarding.sequential
  * @property description The description of the step.
  * @property icon The icon associated with the step.
  * @see edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingRepository
- * @sample edu.stanford.bdh.engagehf.onboarding.DefaultSequentialOnboardingRepository
+ * @see edu.stanford.bdh.engagehf.onboarding.EngageSequentialOnboardingRepository
  */
 data class Step(
     val title: String,
