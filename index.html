@@ -60,6 +60,46 @@
 <div class="main-content" id="content" pageIds="Spezi Documentation::.ext/allModules///PointingToDeclaration//0">
   <div class="breadcrumbs"></div>
   <div class="cover ">
+    <div class="cover ">
+      <p class="paragraph"><a href="https://github.com/StanfordSpezi/SpeziKt/actions/workflows/main.yml"><img alt="Main" src="https://github.com/StanfordSpezi/SpeziKt/actions/workflows/main.yml/badge.svg"></a> <a href="https://github.com/StanfordSpezi/SpeziKt/actions/workflows/pages/pages-build-deployment"></a> <a href="https://app.codecov.io/gh/StanfordSpezi/SpeziKt"><img alt="Codecov" src="https://codecov.io/gh/StanfordSpezi/SpeziKt/branch/main/graph/badge.svg"></a></p>
+      <h1 class="">Spezi</h1>
+      <p class="paragraph">Kotlin & Android Version of the Stanford Spezi Framework</p>
+      <h3 class="">An Ecosystem of Modules</h3>
+      <p class="paragraph">Spezi is a collection of modules that can be used to build Android applications</p>
+      <h3 class="">Modules</h3>
+      <ul>
+        <li>
+          <p class="paragraph"><strong>Design System</strong>: Provides a cohesive user interface and user experience   components. ./core/design/README.md</p>
+        </li>
+        <li>
+          <p class="paragraph"><strong>Account</strong>: Provides Account management components. ./modules/account/README.md</p>
+        </li>
+        <li>
+          <p class="paragraph"><strong>Onboarding</strong>: Provides Onboarding screens for the   application. ./modules/onboarding/README.md</p>
+        </li>
+        <li>
+          <p class="paragraph"><strong>Contact</strong>: Provides Contact screens. ./modules/contact/README.md</p>
+        </li>
+      </ul>
+      <h3 class="">Continuous Integration and Delivery Setup</h3>
+      <h4 class="">Google Play Internal Deployment</h4>
+      <p class="paragraph">First, create a Google Cloud Services Account and corresponding JSON secrets key in accordance to the <a href="https://docs.fastlane.tools/actions/supply/">fastlane supply</a> documentation. Store the JSON representation of the key in a <code class="lang-kotlin">SERVICE_ACCOUNT_JSON_KEY</code> secret available to the GitHub action.</p>
+      <p class="paragraph">Follow along the <a href="https://developer.android.com/identity/sign-in/credential-manager-siwg#set-google">Set up your Google APIs console</a> documentation to create a OAuth client ID. Store secrets.xml representation of the key in a <code class="lang-kotlin">SECRETS_XML</code> secret available to the GitHub action.</p>
+      <p class="paragraph">This is the secrets.xml representation of the key:</p>
+      <div class="sample-container">
+        <pre><code class="block lang-xml" theme="idea">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;<br>&lt;resources&gt;<br>  &lt;string name=&quot;serverClientId&quot; translatable=&quot;false&quot;&gt;replace-with-actual-id&lt;/string&gt;<br>&lt;/resources&gt;</code></pre>
+<span class="top-right-position"><span class="copy-icon"></span>
+          <div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div>
+        </span></div>
+      <p class="paragraph">In Firebase, the provider Google must also be added in the project in the Authentication menu item in the Login method tab.</p>
+      <p class="paragraph">It is recommended to sign your APK before uploading it to the Google Play store. Setup your signing setup as detailed in the <a href="https://developer.android.com/studio/publish/app-signing.html">Sign your app</a> documentation.</p>
+      <p class="paragraph">Create a base64 representation of your keystore (<code class="lang-kotlin">base64 -i ./filetokeystore/keystore.jks</code>) and save it in the <code class="lang-kotlin">KEY_STORE</code> secret available to the GitHub action. Save the keystore password and key password in the <code class="lang-kotlin">KEY_PASSWORD</code> secret and save the key alias in the <code class="lang-kotlin">KEY_ALIAS</code> secret, both available to the GitHub action.</p>
+      <h2 class="">Contributing</h2>
+      <p class="paragraph">Contributions to this project are welcome. Please make sure to read the <a href="https://github.com/StanfordSpezi/.github/blob/main/CONTRIBUTING.md">contribution guidelines</a> and the <a href="https://github.com/StanfordSpezi/.github/blob/main/CODE_OF_CONDUCT.md">contributor covenant code of conduct</a> first.</p>
+      <h2 class="">License</h2>
+      <p class="paragraph">This project is licensed under the MIT License. See <a href="https://github.com/StanfordSpezi/Spezi/tree/main/LICENSES">Licenses</a> for more information.</p>
+      <p class="paragraph"> </p>
+    </div>
     <h2 class="">All modules:</h2>
     <div class="table"><a data-name="-47371264%2FMain%2F0" anchor-label="account" id="-47371264%2FMain%2F0" data-filterable-set=""></a>
       <div class="table-row">
@@ -207,7 +247,7 @@
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div><span class="brief-comment">
-              <p class="paragraph">This module provides a simple onboarding screen.</p>
+              <p class="paragraph">This module provides multiple onboarding screens:</p>
             </span></div>
         </div>
       </div>

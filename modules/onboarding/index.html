@@ -62,7 +62,7 @@
   <div class="breadcrumbs"></div>
   <div class="cover ">
     <h1 class="cover"><span><span>onboarding</span></span></h1>
-    <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:onboarding:dokkaHtmlPartial/release"><p class="paragraph">This module provides a simple onboarding screen.</p></div></div>
+    <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:onboarding:dokkaHtmlPartial/release"><p class="paragraph">This module provides multiple onboarding screens:</p><img src="screens/consent.jpg" width="300" alt="Consent Screen"><img src="screens/invitation.jpg" width="300" alt="Invitation Screen"><img src="screens/onboarding.jpg" width="300" alt="Onboarding Screen"><img src="screens/sequential_step_1.jpg" width="300" alt="Sequential Onboarding Screen Step 1"><img src="screens/sequential_step_2.jpg" width="300" alt="Sequential Onboarding Screen Step 2"></div></div>
   </div>
   <h2 class="">Packages</h2>
   <div class="table"><a data-name="-890427525%2FPackages%2F-1157368219" anchor-label="edu.stanford.spezi.module.onboarding" id="-890427525%2FPackages%2F-1157368219" data-filterable-set=":modules:onboarding:dokkaHtmlPartial/release"></a>
@@ -80,7 +80,9 @@
             </div>
           </div>
         </div>
-        <div></div>
+        <div><span class="brief-comment"><a data-name="-890427525%2FPackages%2F-1157368219" anchor-label="edu.stanford.spezi.module.onboarding" id="-890427525%2FPackages%2F-1157368219" data-filterable-set=":modules:onboarding:dokkaHtmlPartial/release"></a>
+            <p class="paragraph">The <code class="lang-kotlin">onboarding</code> package provides the <code class="lang-kotlin">OnboardingNavigationEvent</code> sealed class, which defines the possible navigation events for the onboarding module. The <code class="lang-kotlin">OnboardingNavigationEvent</code> class is used to navigate between the different onboarding screens.</p>
+          </span></div>
       </div>
     </div>
 <a data-name="1025322919%2FPackages%2F-1157368219" anchor-label="edu.stanford.spezi.module.onboarding.consent" id="1025322919%2FPackages%2F-1157368219" data-filterable-set=":modules:onboarding:dokkaHtmlPartial/release"></a>
@@ -98,7 +100,9 @@
             </div>
           </div>
         </div>
-        <div></div>
+        <div><span class="brief-comment"><a data-name="1025322919%2FPackages%2F-1157368219" anchor-label="edu.stanford.spezi.module.onboarding.consent" id="1025322919%2FPackages%2F-1157368219" data-filterable-set=":modules:onboarding:dokkaHtmlPartial/release"></a>
+            <p class="paragraph">The <code class="lang-kotlin">consent</code> package handles user consent screens, ensuring that users agree to the necessary terms and conditions before proceeding. The consent document gets build by a Markdown Text. The text can be provided via an implementation of the <code class="lang-kotlin">ConsentManager</code> interface. This interface also provides functions to handle the case when the user has consented as well as a consent failure. The Screen can be used anywhere after providing this interface.</p>
+          </span></div>
       </div>
     </div>
 <a data-name="1593760816%2FPackages%2F-1157368219" anchor-label="edu.stanford.spezi.module.onboarding.invitation" id="1593760816%2FPackages%2F-1157368219" data-filterable-set=":modules:onboarding:dokkaHtmlPartial/release"></a>
@@ -116,7 +120,9 @@
             </div>
           </div>
         </div>
-        <div></div>
+        <div><span class="brief-comment"><a data-name="1593760816%2FPackages%2F-1157368219" anchor-label="edu.stanford.spezi.module.onboarding.invitation" id="1593760816%2FPackages%2F-1157368219" data-filterable-set=":modules:onboarding:dokkaHtmlPartial/release"></a>
+            <p class="paragraph">The <code class="lang-kotlin">invitation</code> package manages the invitation process, allowing users to join an app. The <code class="lang-kotlin">InvitationCodeScreenData</code> provides all necessary data for the view like the title, the description and the redeem Action. It is provided via a implementation of the <code class="lang-kotlin">InvitationCodeScreen</code> interface. The Screen can be used anywhere after providing this interface.</p>
+          </span></div>
       </div>
     </div>
 <a data-name="1743922%2FPackages%2F-1157368219" anchor-label="edu.stanford.spezi.module.onboarding.onboarding" id="1743922%2FPackages%2F-1157368219" data-filterable-set=":modules:onboarding:dokkaHtmlPartial/release"></a>
@@ -134,7 +140,9 @@
             </div>
           </div>
         </div>
-        <div></div>
+        <div><span class="brief-comment"><a data-name="1743922%2FPackages%2F-1157368219" anchor-label="edu.stanford.spezi.module.onboarding.onboarding" id="1743922%2FPackages%2F-1157368219" data-filterable-set=":modules:onboarding:dokkaHtmlPartial/release"></a>
+            <p class="paragraph">The <code class="lang-kotlin">onboarding</code> package contains the main onboarding screens, guiding users through the initial setup and introduction to the app. The Screen can be used anywhere after providing the <code class="lang-kotlin">OnboardingData</code> via an implementation of the <code class="lang-kotlin">OnboardingRepository</code> interface.</p>
+          </span></div>
       </div>
     </div>
 <a data-name="2000957974%2FPackages%2F-1157368219" anchor-label="edu.stanford.spezi.module.onboarding.sequential" id="2000957974%2FPackages%2F-1157368219" data-filterable-set=":modules:onboarding:dokkaHtmlPartial/release"></a>
@@ -152,7 +160,9 @@
             </div>
           </div>
         </div>
-        <div></div>
+        <div><span class="brief-comment"><a data-name="2000957974%2FPackages%2F-1157368219" anchor-label="edu.stanford.spezi.module.onboarding.sequential" id="2000957974%2FPackages%2F-1157368219" data-filterable-set=":modules:onboarding:dokkaHtmlPartial/release"></a>
+            <p class="paragraph">The <code class="lang-kotlin">sequential</code> package ensures that the onboarding steps are followed in a specific sequence, providing a smooth and logical flow for the user. The Screen can be used anywhere after providing the <code class="lang-kotlin">SequentialOnboardingData</code> via an implementation of the <code class="lang-kotlin">SequentialOnboardingRepository</code> interface.</p>
+          </span></div>
       </div>
     </div>
 <a data-name="-177263630%2FPackages%2F-1157368219" anchor-label="edu.stanford.spezi.module.onboarding.sequential.components" id="-177263630%2FPackages%2F-1157368219" data-filterable-set=":modules:onboarding:dokkaHtmlPartial/release"></a>
