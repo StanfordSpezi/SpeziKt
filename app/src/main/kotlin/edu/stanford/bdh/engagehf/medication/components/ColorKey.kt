@@ -53,7 +53,7 @@ fun ColorKeyRow(color: MedicationColor) {
     ) {
         Box(
             modifier = Modifier
-                .size(Sizes.Icon.medium)
+                .size(Sizes.Icon.small)
                 .background(
                     color.value.copy(alpha = MEDICATION_ICON_ALPHA_COLOR_FACTOR),
                     shape = CircleShape

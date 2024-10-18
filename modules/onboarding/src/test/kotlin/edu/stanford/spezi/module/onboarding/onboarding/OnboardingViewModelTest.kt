@@ -39,7 +39,11 @@ class OnboardingViewModelTest {
     fun `it should invoke continueButtonAction on ContinueButtonAction`() = runTestUnconfined {
         // given
         val continueButtonAction: () -> Unit = mockk(relaxed = true)
-        coEvery { repository.getOnboardingData() } returns Result.success(onboardingData.copy(continueButtonAction = continueButtonAction))
+        coEvery { repository.getOnboardingData() } returns Result.success(
+            onboardingData.copy(
+                continueButtonAction = continueButtonAction
+            )
+        )
         val onboardingViewModel = OnboardingViewModel(repository)
         val action = OnboardingAction.Continue
 
@@ -64,5 +68,20 @@ class OnboardingViewModelTest {
             assertThat(onboardingData.subTitle).isEqualTo(uiState.subtitle)
             assertThat(onboardingData.continueButtonText).isEqualTo(uiState.continueButtonText)
             assertThat(onboardingData.continueButtonAction).isEqualTo(uiState.continueAction)
+        }
+
+    @Test
+    fun `it should update uiState with error on init when getOnboardingData is failed`() =
+        runTestUnconfined {
+            // given
+            coEvery { repository.getOnboardingData() } returns Result.failure(Throwable("Error"))
+
+            // when
+            val onboardingViewModel = OnboardingViewModel(repository)
+
+            // then
+            val uiState = onboardingViewModel.uiState.first()
+            assertThat(uiState.error).isNotNull()
+            assertThat(uiState.error).isEqualTo("Error")
         }
 }

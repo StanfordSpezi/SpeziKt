@@ -54,6 +54,21 @@ class ConsentViewModelTest {
     }
 
     @Test
+    fun `it should update lastName on TextFieldUpdate action correctly`() = runTestUnconfined {
+        // Given
+        val lastName = "Lastname"
+        val action =
+            ConsentAction.TextFieldUpdate(newValue = lastName, type = TextFieldType.LAST_NAME)
+
+        // When
+        viewModel.onAction(action)
+
+        // Then
+        val uiState = viewModel.uiState.first()
+        assertThat(lastName).isEqualTo(uiState.lastName.value)
+    }
+
+    @Test
     fun `it should handle AddPath action correctly`() = runTestUnconfined {
         // Given
         val action = ConsentAction.AddPath(Path())
