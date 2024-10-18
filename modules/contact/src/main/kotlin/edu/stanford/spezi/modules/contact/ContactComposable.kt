@@ -22,7 +22,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
@@ -36,6 +40,7 @@ import edu.stanford.spezi.modules.contact.model.ContactOption
 import edu.stanford.spezi.modules.contact.model.PersonNameComponents
 import edu.stanford.spezi.modules.contact.model.call
 import edu.stanford.spezi.modules.contact.model.email
+import edu.stanford.spezi.modules.contact.model.text
 import edu.stanford.spezi.modules.contact.model.website
 import java.util.Locale
 
@@ -74,7 +79,8 @@ fun ContactComposable(contact: Contact, modifier: Modifier = Modifier) {
                 val image = contact.image ?: Icons.Default.AccountBox
                 Icon(
                     image,
-                    contentDescription = "Profile Picture",
+                    contentDescription = stringResource(R.string.profile_picture),
+                    tint = Colors.primary,
                     modifier = Modifier
                         .size(Sizes.Icon.medium)
                         .testIdentifier(ContactComposableTestIdentifier.IMAGE, image.name)
@@ -111,22 +117,24 @@ fun ContactComposable(contact: Contact, modifier: Modifier = Modifier) {
                 )
             }
             Spacer(modifier = Modifier.height(Spacings.large))
-            FlowRow( // TODO: Fix layout to be more flexible, dynamic and nice
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(Spacings.small),
+                verticalArrangement = Arrangement.spacedBy(Spacings.small)
             ) {
                 contact.options.forEach { option ->
                     ContactOptionCard(
                         option = option,
-                        modifier = Modifier.testIdentifier(
-                            ContactComposableTestIdentifier.OPTION,
-                            suffix = option.title.text(),
-                        )
+                        modifier = Modifier
+                            .weight(1f)
+                            .testIdentifier(
+                                ContactComposableTestIdentifier.OPTION,
+                                suffix = option.title.text(),
+                            )
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(Spacings.large))
+            Spacer(modifier = Modifier.height(Spacings.small))
             contact.address?.let { address ->
                 AddressCard(
                     address = address,
@@ -143,30 +151,62 @@ enum class ContactComposableTestIdentifier {
 
 @ThemePreviews
 @Composable
-private fun ContactComposablePreview() {
+private fun ContactComposablePreview(@PreviewParameter(ContactProvider::class) contact: Contact) {
     SpeziTheme(isPreview = true) {
-        ContactComposable(
-            Contact(
-                name = PersonNameComponents(givenName = "Leland", familyName = "Stanford"),
-                image = Icons.Default.AccountBox,
-                title = StringResource("University Founder"),
-                description = StringResource("""
-Amasa Leland Stanford (March 9, 1824 – June 21, 1893) was an American industrialist and politician. [...] \
-He and his wife Jane were also the founders of Stanford University, which they named after their late son.
-[https://en.wikipedia.org/wiki/Leland_Stanford]
-"""),
-                organization = StringResource("Stanford University"),
-                address = Address(Locale.US).apply {
-                    setAddressLine(0, "450 Jane Stanford Way")
-                    locality = "Stanford"
-                    adminArea = "CA"
-                },
-                options = listOf(
-                    ContactOption.call("+49 123 456 789"),
-                    ContactOption.email(listOf("test@gmail.com")),
-                    ContactOption.website("https://www.google.com")
-                )
-            )
+        ContactComposable(contact = contact)
+    }
+}
+
+private class ContactProvider : PreviewParameterProvider<Contact> {
+    override val values: Sequence<Contact> = sequenceOf(
+        ContactFactory.create(),
+        ContactFactory.create(
+            options = listOf(
+                ContactOption.call("+49 123 456 789"),
+                ContactOption.email(listOf("test@gmail.com")),
+                ContactOption.website("https://www.google.com"),
+                ContactOption.text("+49 123 456 789"),
+            ),
+        ),
+        ContactFactory.create(
+            options = listOf(
+                ContactOption.call("+49 123 456 789"),
+                ContactOption.email(listOf("test@gmail.com")),
+                ContactOption.website("https://www.google.com"),
+                ContactOption.text("+49 123 456 789"),
+                ContactOption.text("+49 123 456 789"),
+            ),
+        )
+    )
+}
+
+private object ContactFactory {
+    fun create(
+        title: StringResource = StringResource("University Founder"),
+        description: StringResource = StringResource(
+            """Amasa Leland Stanford (March 9, 1824 – June 21, 1893) was an American industrialist and politician. 
+                He and his wife Jane were also the founders of Stanford University, which they named after their late son.
+                """
+        ),
+        address: Address = Address(Locale.US).apply {
+            setAddressLine(0, "450 Jane Stanford Way")
+            locality = "Stanford"
+            adminArea = "CA"
+        },
+        options: List<ContactOption> = listOf(
+            ContactOption.call("+49 123 456 789"),
+            ContactOption.email(listOf("test@gmail.com")),
+            ContactOption.website("https://www.test.test")
+        ),
+    ): Contact {
+        return Contact(
+            name = PersonNameComponents(givenName = "Leland", familyName = "Stanford"),
+            image = Icons.Default.AccountBox,
+            title = title,
+            description = description,
+            organization = StringResource("Stanford University"),
+            address = address,
+            options = options
         )
     }
 }
