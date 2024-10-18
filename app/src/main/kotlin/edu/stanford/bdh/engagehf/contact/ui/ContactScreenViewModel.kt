@@ -1,4 +1,4 @@
-package edu.stanford.bdh.engagehf.contact
+package edu.stanford.bdh.engagehf.contact.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,12 +28,12 @@ internal class ContactScreenViewModel @Inject constructor(
     }
 
     private fun loadContact() {
-        logger.i { "Loading contact" }
         viewModelScope.launch {
             engageContactRepository.getContact().fold(onSuccess = { contact ->
                 _uiState.value = UiState.ContactLoaded(contact)
             }, onFailure = { error ->
                 _uiState.value = UiState.Error(error.message ?: "Failed to load contact")
+                logger.e(error) { "Failed to load contact" }
             })
         }
     }
