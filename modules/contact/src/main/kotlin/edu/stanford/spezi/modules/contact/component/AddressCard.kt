@@ -18,14 +18,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import edu.stanford.spezi.core.design.component.DefaultElevatedCard
+import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.logging.SpeziLogger
+import edu.stanford.spezi.modules.contact.R
 import edu.stanford.spezi.modules.contact.model.formatted
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.Locale
 
 @Composable
@@ -51,7 +55,8 @@ internal fun AddressCard(address: Address, modifier: Modifier = Modifier) {
             IconButton(
                 onClick = {
                     runCatching {
-                        val addressQuery = URLEncoder.encode(addressText, "utf-8")
+                        val addressQuery =
+                            URLEncoder.encode(addressText, StandardCharsets.UTF_8.toString())
                         val gmmIntentUri = Uri.parse("geo:0,0?q=$addressQuery")
                         val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
                         mapIntent.setPackage("com.google.android.apps.maps")
@@ -64,7 +69,8 @@ internal fun AddressCard(address: Address, modifier: Modifier = Modifier) {
             ) {
                 Icon(
                     Icons.Default.Place,
-                    contentDescription = "Address",
+                    contentDescription = stringResource(R.string.address),
+                    tint = Colors.primary,
                 )
             }
         }
