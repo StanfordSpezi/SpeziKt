@@ -24,6 +24,7 @@ import androidx.navigation.toRoute
 import dagger.hilt.android.AndroidEntryPoint
 import edu.stanford.bdh.engagehf.bluetooth.BluetoothViewModel
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
+import edu.stanford.bdh.engagehf.contact.ui.ContactScreen
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.RegisterParams
 import edu.stanford.bdh.engagehf.navigation.Routes
@@ -33,7 +34,6 @@ import edu.stanford.bdh.engagehf.questionnaire.QuestionnaireScreen
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.notification.NotificationNavigationEvent
 import edu.stanford.spezi.core.notification.NotificationRoutes
@@ -60,8 +60,6 @@ class MainActivity : FragmentActivity() {
     private val viewModel by viewModels<MainActivityViewModel>()
 
     private val bluetoothViewModel by viewModels<BluetoothViewModel>()
-
-    private val logger by speziLogger()
 
     @Inject
     @Dispatching.Main
@@ -149,6 +147,10 @@ class MainActivity : FragmentActivity() {
             NotificationSettingScreen()
         }
 
+        composable<Routes.ContactScreen> {
+            ContactScreen()
+        }
+
         composable<Routes.AppScreen> {
             AppScreen()
         }
@@ -191,6 +193,10 @@ class MainActivity : FragmentActivity() {
 
                         is AppNavigationEvent.QuestionnaireScreen -> navHostController.navigate(
                             Routes.QuestionnaireScreen(event.questionnaireId)
+                        )
+
+                        is AppNavigationEvent.ContactScreen -> navHostController.navigate(
+                            Routes.ContactScreen
                         )
 
                         is AccountNavigationEvent.LoginScreen -> navHostController.navigate(

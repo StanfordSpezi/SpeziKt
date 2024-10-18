@@ -105,4 +105,5 @@
     <string name="on_medication_but_may_benefit_from_a_higher_dose">On medication but may benefit from a higher dose</string>
     <string name="not_on_this_medication_that_may_help_your_heart">Not on this medication that may help your heart</string>
     <string name="sign_out_failed">Sign out failed.</string>
+    <string name="contact">Contact</string>
 </resources>
