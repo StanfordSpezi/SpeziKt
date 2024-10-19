@@ -159,8 +159,8 @@ private fun ContactComposablePreview(@PreviewParameter(ContactProvider::class) c
 
 private class ContactProvider : PreviewParameterProvider<Contact> {
     override val values: Sequence<Contact> = sequenceOf(
-        ContactFactory.create(),
-        ContactFactory.create(
+        ContactComposableFactory.create(),
+        ContactComposableFactory.create(
             options = listOf(
                 ContactOption.call("+49 123 456 789"),
                 ContactOption.email(listOf("test@gmail.com")),
@@ -168,7 +168,7 @@ private class ContactProvider : PreviewParameterProvider<Contact> {
                 ContactOption.text("+49 123 456 789"),
             ),
         ),
-        ContactFactory.create(
+        ContactComposableFactory.create(
             options = listOf(
                 ContactOption.call("+49 123 456 789"),
                 ContactOption.email(listOf("test@gmail.com")),
@@ -180,7 +180,7 @@ private class ContactProvider : PreviewParameterProvider<Contact> {
     )
 }
 
-private object ContactFactory {
+private object ContactComposableFactory {
     fun create(
         title: StringResource = StringResource("University Founder"),
         description: StringResource = StringResource(
