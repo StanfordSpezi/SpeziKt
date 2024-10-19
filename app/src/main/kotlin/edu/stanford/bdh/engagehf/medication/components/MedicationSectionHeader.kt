@@ -5,7 +5,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -19,6 +20,7 @@ import edu.stanford.spezi.core.design.theme.ThemePreviews
 @Composable
 fun SectionHeader(
     title: String,
+    isExpanded: Boolean,
     onToggleExpand: () -> Unit,
 ) {
     Row(
@@ -36,7 +38,7 @@ fun SectionHeader(
             onClick = onToggleExpand
         ) {
             Icon(
-                Icons.Default.ArrowDropDown,
+                if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                 contentDescription = null,
             )
         }
@@ -48,6 +50,7 @@ fun SectionHeader(
 private fun SectionHeaderPreview() {
     SectionHeader(
         title = "Section Header",
+        isExpanded = true,
         onToggleExpand = {},
     )
 }

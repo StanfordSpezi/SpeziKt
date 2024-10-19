@@ -30,6 +30,8 @@ import edu.stanford.bdh.engagehf.navigation.RegisterParams
 import edu.stanford.bdh.engagehf.navigation.Routes
 import edu.stanford.bdh.engagehf.navigation.screens.AppScreen
 import edu.stanford.bdh.engagehf.navigation.serializableType
+import edu.stanford.bdh.engagehf.onboarding.InvitationCodeScreen
+import edu.stanford.bdh.engagehf.onboarding.OnboardingScreen
 import edu.stanford.bdh.engagehf.questionnaire.QuestionnaireScreen
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.design.theme.Sizes
@@ -42,8 +44,6 @@ import edu.stanford.spezi.module.account.AccountNavigationEvent
 import edu.stanford.spezi.module.account.login.LoginScreen
 import edu.stanford.spezi.module.account.register.RegisterScreen
 import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
-import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeScreen
-import edu.stanford.spezi.module.onboarding.onboarding.OnboardingScreen
 import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreen
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.EducationRoutes
