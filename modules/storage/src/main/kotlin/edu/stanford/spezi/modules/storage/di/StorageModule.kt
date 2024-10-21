@@ -15,8 +15,6 @@ import edu.stanford.spezi.modules.storage.secure.CredentialStorage
 import edu.stanford.spezi.modules.storage.secure.CredentialStorageImpl
 import edu.stanford.spezi.modules.storage.secure.KeyStorage
 import edu.stanford.spezi.modules.storage.secure.KeyStorageImpl
-import edu.stanford.spezi.modules.storage.secure.SecureStorage
-import edu.stanford.spezi.modules.storage.secure.SecureStorageImpl
 import javax.inject.Singleton
 
 @Module
@@ -74,11 +72,6 @@ class StorageModule {
         internal abstract fun bindKeyStorage(
             impl: KeyStorageImpl,
         ): KeyStorage
-
-        @Binds
-        internal abstract fun bindSecureStorage(
-            impl: SecureStorageImpl,
-        ): SecureStorage
 
         @Binds
         internal abstract fun bindLocalStorage(
