@@ -2,88 +2,166 @@ package edu.stanford.spezi.modules.storage.local
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
-import edu.stanford.spezi.modules.storage.secure.SecureStorage
+import edu.stanford.spezi.core.coroutines.di.Dispatching
+import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.modules.storage.di.Storage
+import edu.stanford.spezi.modules.storage.local.LocalStorageSetting.Encrypted
+import edu.stanford.spezi.modules.storage.local.LocalStorageSetting.EncryptedUsingKeyStore
+import edu.stanford.spezi.modules.storage.local.LocalStorageSetting.Unencrypted
+import edu.stanford.spezi.modules.storage.secure.KeyStorage
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.SerializationStrategy
+import kotlinx.serialization.json.Json
 import java.io.File
+import java.nio.charset.StandardCharsets
 import java.security.Key
+import java.security.KeyPair
 import javax.crypto.Cipher
 import javax.inject.Inject
-import kotlin.reflect.KClass
 
-class LocalStorage @Inject constructor(
-    @ApplicationContext val context: Context,
-) {
-    private val secureStorage = SecureStorage(context)
+interface LocalStorage {
 
-    private fun createCipher(mode: Int, key: Key): Cipher =
-        // TODO: Supported values: https://developer.android.com/reference/kotlin/javax/crypto/Cipher
-        Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding").apply { init(mode, key) }
-
-    fun store(storageKey: String, data: ByteArray, settings: LocalStorageSetting) =
-        store(file(storageKey, ByteArray::class), data, settings)
-
-    fun <C : Any> store(
-        value: C,
-        storageKey: String? = null,
-        type: KClass<C>,
+    suspend fun <T : Any> store(
+        key: String,
+        value: T,
         settings: LocalStorageSetting,
-        encode: (C) -> ByteArray,
-    ) = store(file(storageKey, type), encode(value), settings)
+        serializer: SerializationStrategy<T>,
+    )
 
-    private fun store(
-        file: File,
-        data: ByteArray,
+    suspend fun <T : Any> store(
+        key: String,
+        value: T,
         settings: LocalStorageSetting,
+        encoding: (T) -> ByteArray,
+    )
+
+    suspend fun <T : Any> read(
+        key: String,
+        settings: LocalStorageSetting,
+        serializer: DeserializationStrategy<T>,
+    ): T?
+
+    suspend fun <T : Any> read(
+        key: String,
+        settings: LocalStorageSetting,
+        decoding: (ByteArray) -> T,
+    ): T?
+
+    suspend fun delete(key: String)
+}
+
+internal class LocalStorageImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
+    @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
+    private val keyStorage: KeyStorage,
+) : LocalStorage {
+
+    private val logger by speziLogger()
+
+    override suspend fun <T : Any> store(
+        key: String,
+        value: T,
+        settings: LocalStorageSetting,
+        serializer: SerializationStrategy<T>,
     ) {
-        val keys = settings.keys(secureStorage) ?: run {
-            file.writeBytes(data)
-            return
-        }
-        val encryptedData = createCipher(Cipher.ENCRYPT_MODE, keys.public)
-            .doFinal(data)
-        file.writeBytes(encryptedData)
+        store(
+            key = key,
+            value = value,
+            settings = settings,
+            encoding = { instance ->
+                Json.encodeToString(serializer, instance).toByteArray(StandardCharsets.UTF_8)
+            }
+        )
     }
 
-    fun <C : Any> read(
-        storageKey: String? = null,
-        type: KClass<C>,
+    override suspend fun <T : Any> store(
+        key: String,
+        value: T,
         settings: LocalStorageSetting,
-        decode: (ByteArray) -> C,
-    ): C = read(file(storageKey, type), settings, decode)
-
-    fun read(storageKey: String, settings: LocalStorageSetting): ByteArray =
-        read(file(storageKey, ByteArray::class), settings) { it }
-
-    private fun <C : Any> read(
-        file: File,
-        settings: LocalStorageSetting,
-        decode: (ByteArray) -> C,
-    ): C {
-        val keys = settings.keys(secureStorage = secureStorage)
-            ?: return decode(file.readBytes())
-        val data = createCipher(Cipher.DECRYPT_MODE, keys.private)
-            .doFinal(file.readBytes())
-        return decode(data)
-    }
-
-    fun delete(storageKey: String) = delete(file(storageKey, String::class))
-
-    fun <C : Any> delete(type: KClass<C>) = delete(file(null, type))
-
-    private fun delete(file: File) {
-        if (file.exists()) {
-            file.delete()
+        encoding: (T) -> ByteArray,
+    ) {
+        execute {
+            val jsonData = encoding(value)
+            val keys = keys(settings)
+            val writeData = if (keys == null) {
+                jsonData
+            } else {
+                getInitializedCipher(Cipher.ENCRYPT_MODE, keys.public).doFinal(jsonData)
+            }
+            file(key).writeBytes(writeData)
         }
     }
 
-    private fun file(storageKey: String?, type: KClass<*>): File {
-        val filename = storageKey
-            ?: type.qualifiedName
-            ?: type.simpleName
-            ?: throw LocalStorageError.FileNameCouldNotBeIdentified
-        val directory = File(context.filesDir, "edu.stanford.spezi/LocalStorage")
+    override suspend fun <T : Any> read(
+        key: String,
+        settings: LocalStorageSetting,
+        serializer: DeserializationStrategy<T>,
+    ): T? {
+        return read(
+            key = key,
+            settings = settings,
+            decoding = { data ->
+                Json.decodeFromString(serializer, String(data, StandardCharsets.UTF_8))
+            }
+        )
+    }
+
+    override suspend fun <T : Any> read(
+        key: String,
+        settings: LocalStorageSetting,
+        decoding: (ByteArray) -> T,
+    ): T? = execute {
+        val keys = keys(settings)
+        val bytes = file(key).readBytes()
+        val data = if (keys == null) {
+            bytes
+        } else {
+            getInitializedCipher(Cipher.DECRYPT_MODE, keys.private).doFinal(bytes)
+        }
+        decoding(data)
+    }
+
+    override suspend fun delete(key: String) {
+        execute {
+            val file = file(key)
+            if (file.exists()) {
+                file.delete()
+            }
+        }
+    }
+
+    private fun file(key: String): File {
+        val directory = File(context.filesDir, "${Storage.STORAGE_FILE_PREFIX}LocalStorage")
         if (!directory.exists()) {
             directory.mkdirs()
         }
-        return File(context.filesDir, "edu.stanford.spezi/LocalStorage/$filename.localstorage")
+        return File(directory, "$key.localstorage")
+    }
+
+    private fun keys(settings: LocalStorageSetting): KeyPair? {
+        return when (settings) {
+            is Unencrypted -> null
+            is Encrypted -> settings.keyPair
+            is EncryptedUsingKeyStore -> with(keyStorage) {
+                retrieveKeyPair(ANDROID_KEYSTORE_TAG)
+                    ?: create(ANDROID_KEYSTORE_TAG).getOrThrow()
+            }
+        }
+    }
+
+    private fun getInitializedCipher(mode: Int, key: Key): Cipher =
+        Cipher.getInstance(KeyStorage.CIPHER_TRANSFORMATION).apply { init(mode, key) }
+
+    private suspend fun <T> execute(block: suspend () -> T) = withContext(ioDispatcher) {
+        runCatching { block() }
+            .onFailure {
+                logger.e(it) { "Error executing local storage operation" }
+            }.getOrNull()
+    }
+
+    private companion object {
+        const val ANDROID_KEYSTORE_TAG = "LocalStorageTag"
     }
 }
