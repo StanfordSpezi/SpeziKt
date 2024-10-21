@@ -3,6 +3,7 @@ package edu.stanford.bdh.engagehf.navigation.screens
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.messages.HealthSummaryService
+import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
@@ -227,6 +228,18 @@ class AppScreenViewModelTest {
             // Then
             coVerify { healthSummaryService.generateHealthSummaryPdf() }
         }
+
+    @Test
+    fun `given ShowContact is received then navigate to contact`() = runTestUnconfined {
+        // Given
+        val event = Action.ShowContact
+
+        // When
+        viewModel.onAction(event)
+
+        // Then
+        coVerify { navigator.navigateTo(AppNavigationEvent.ContactScreen) }
+    }
 
     @Test
     fun `given BloodPressureDescriptionBottomSheet is received then uiState should be updated`() =

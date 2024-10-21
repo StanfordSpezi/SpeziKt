@@ -2,10 +2,9 @@ package edu.stanford.spezi.modules.contact.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Icon
@@ -16,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.core.design.component.DefaultElevatedCard
+import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
@@ -27,8 +27,8 @@ internal fun ContactOptionCard(option: ContactOption, modifier: Modifier = Modif
     val context = LocalContext.current
     DefaultElevatedCard(
         modifier = modifier
-            .wrapContentSize(Alignment.Center)
-            .width(90.dp)
+            .defaultMinSize(80.dp)
+            .fillMaxWidth()
             .clickable {
                 option.action(context)
             }
@@ -41,9 +41,13 @@ internal fun ContactOptionCard(option: ContactOption, modifier: Modifier = Modif
         ) {
             Icon(
                 option.image ?: Icons.Default.Email,
-                contentDescription = option.title.text()
+                contentDescription = option.title.text(),
+                tint = Colors.primary,
             )
-            Text(option.title.text())
+            Text(
+                text = option.title.text(),
+                maxLines = 1,
+            )
         }
     }
 }
