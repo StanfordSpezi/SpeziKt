@@ -5,7 +5,6 @@ import edu.stanford.spezi.modules.storage.key.KeyValueStorageFactory
 import edu.stanford.spezi.modules.storage.key.KeyValueStorageType
 import edu.stanford.spezi.modules.storage.key.getSerializable
 import edu.stanford.spezi.modules.storage.key.putSerializable
-import java.util.EnumSet
 import javax.inject.Inject
 
 interface CredentialStorage {
@@ -21,7 +20,7 @@ interface CredentialStorage {
     fun retrieveAll(server: String? = null): List<Credential>
 
     fun delete(username: String, server: String? = null)
-    fun deleteAll(types: EnumSet<CredentialType>)
+    fun deleteAll(types: CredentialTypes)
 }
 
 internal class CredentialStorageImpl @Inject constructor(
@@ -64,11 +63,11 @@ internal class CredentialStorageImpl @Inject constructor(
         storage.delete(key = storageKey(server, username))
     }
 
-    override fun deleteAll(types: EnumSet<CredentialType>) {
-        if (types.isEmpty()) return
-        if (types == CredentialType.All) return storage.clear()
-        val deleteServer = types.contains(CredentialType.SERVER)
-        val deleteNonServer = types.contains(CredentialType.NON_SERVER)
+    override fun deleteAll(types: CredentialTypes) {
+        if (types.set.isEmpty()) return
+        if (types.set == CredentialTypes.All.set) return storage.clear()
+        val deleteServer = types.set.contains(CredentialType.SERVER)
+        val deleteNonServer = types.set.contains(CredentialType.NON_SERVER)
         storage.allKeys().forEach { key ->
             val isServerKey = key.substringBefore(SERVER_USERNAME_SEPARATOR).isNotEmpty()
             when {
