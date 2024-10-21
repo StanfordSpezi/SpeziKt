@@ -12,7 +12,7 @@ import java.util.EnumSet
 import javax.inject.Inject
 
 @HiltAndroidTest
-class SecureStorageTests {
+class CredentialStorageTests {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
@@ -51,12 +51,10 @@ class SecureStorageTests {
             username = serverCredential.username,
             server = serverCredential.server,
         )
-        val userCredentials = credentialStorage.retrieve(serverCredential.username)
 
         // then
         assertThat(serverCredentials).containsExactly(serverCredential)
         assertThat(userServerCredential).isEqualTo(serverCredential)
-        assertThat(userCredentials).isEqualTo(serverCredential)
     }
 
     @Test
@@ -146,25 +144,6 @@ class SecureStorageTests {
     }
 
     @Test
-    fun `it should delete all user credentials correctly`() {
-        // given
-        val user = "@SpeziUser"
-        val credentials = List(10) {
-            serverCredential.copy(username = user, server = "com.server.$it")
-        }
-        credentials.forEach { credentialStorage.store(it) }
-        val beforeDeleteCredentials = credentialStorage.retrieveAll()
-
-        // when
-        credentialStorage.delete(user)
-        val afterDeleteCredentials = credentialStorage.retrieveAll()
-
-        // then
-        assertThat(beforeDeleteCredentials).containsExactlyElementsIn(credentials)
-        assertThat(afterDeleteCredentials).isEmpty()
-    }
-
-    @Test
     fun `it should handle deleting all server credentials correctly`() {
         // given
         listOf(serverCredential, nonServerCredential).forEach { credentialStorage.store(it) }
@@ -192,6 +171,7 @@ class SecureStorageTests {
         credentialStorage.deleteAll(EnumSet.of(CredentialType.NON_SERVER))
         val storedServerCredential = credentialStorage.retrieve(
             username = serverCredential.username,
+            server = serverCredential.server,
         )
         val storedNonServerCredential = credentialStorage.retrieve(
             username = nonServerCredential.username,
