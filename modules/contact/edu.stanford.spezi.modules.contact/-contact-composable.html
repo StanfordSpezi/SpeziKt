@@ -85,7 +85,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
@@ -99,36 +103,15 @@ import edu.stanford.spezi.modules.contact.model.ContactOption
 import edu.stanford.spezi.modules.contact.model.PersonNameComponents
 import edu.stanford.spezi.modules.contact.model.call
 import edu.stanford.spezi.modules.contact.model.email
+import edu.stanford.spezi.modules.contact.model.text
 import edu.stanford.spezi.modules.contact.model.website
 import java.util.Locale
 
 fun main() { 
    //sampleStart 
-       SpeziTheme(isPreview = true) {
-        ContactComposable(
-            Contact(
-                name = PersonNameComponents(givenName = "Leland", familyName = "Stanford"),
-                image = Icons.Default.AccountBox,
-                title = StringResource("University Founder"),
-                description = StringResource("""
-Amasa Leland Stanford (March 9, 1824 – June 21, 1893) was an American industrialist and politician. [...] \
-He and his wife Jane were also the founders of Stanford University, which they named after their late son.
-[https://en.wikipedia.org/wiki/Leland_Stanford]
-"""),
-                organization = StringResource("Stanford University"),
-                address = Address(Locale.US).apply {
-                    setAddressLine(0, "450 Jane Stanford Way")
-                    locality = "Stanford"
-                    adminArea = "CA"
-                },
-                options = listOf(
-                    ContactOption.call("+49 123 456 789"),
-                    ContactOption.email(listOf("test@gmail.com")),
-                    ContactOption.website("https://www.google.com")
-                )
-            )
-        )
-    } 
+   SpeziTheme(isPreview = true) {
+    ContactComposable(contact = contact)
+} 
    //sampleEnd
 }</code></pre></div></div></div>
 </div>
