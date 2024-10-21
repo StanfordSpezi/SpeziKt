@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.component.markdown.MarkdownComponent
 import edu.stanford.spezi.core.design.component.markdown.MarkdownElement
 import edu.stanford.spezi.core.design.theme.Spacings
@@ -22,7 +23,13 @@ import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 
 @Composable
-fun ConsentScreen() {
+fun OnboardingConsentComposable(
+    markdown: suspend () -> ByteArray,
+    action: suspend () -> Unit,
+    title: StringResource? = StringResource("Consent"),
+    identifier: String = "ConsentDocument",
+    exportConfiguration: ConsentDocumentExportConfiguration = ConsentDocumentExportConfiguration(),
+) {
     val viewModel: ConsentViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
