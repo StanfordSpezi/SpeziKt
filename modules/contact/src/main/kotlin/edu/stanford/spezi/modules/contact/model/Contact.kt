@@ -22,10 +22,10 @@ import java.util.UUID
 data class Contact(
     val id: UUID = UUID.randomUUID(),
     val name: PersonNameComponents,
-    val image: ImageVector?,
-    val title: StringResource?,
-    val description: StringResource?,
-    val organization: StringResource?,
-    val address: Address?,
+    val image: ImageVector? = null,
+    val title: StringResource? = null,
+    val description: StringResource? = null,
+    val organization: StringResource? = null,
+    val address: Address? = null,
     val options: List<ContactOption>,
 )

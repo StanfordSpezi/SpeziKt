@@ -23,15 +23,16 @@ class ContactScreenViewModelTest {
     private val engageContactRepository: EngageContactRepository = mockk(relaxed = true)
     private val navigator: Navigator = mockk(relaxed = true)
 
-    private lateinit var viewModel: ContactScreenViewModel
+    private val viewModel by lazy {
+        ContactScreenViewModel(
+            engageContactRepository = engageContactRepository,
+            navigator = navigator,
+        )
+    }
 
     @Before
     fun setup() {
         coEvery { engageContactRepository.getContact() } returns Result.success(mockk(relaxed = true))
-        viewModel = ContactScreenViewModel(
-            engageContactRepository = engageContactRepository,
-            navigator = navigator,
-        )
     }
 
     @Test
@@ -41,10 +42,6 @@ class ContactScreenViewModelTest {
         coEvery { engageContactRepository.getContact() } returns Result.success(contact)
 
         // When
-        viewModel = ContactScreenViewModel(
-            engageContactRepository = engageContactRepository,
-            navigator = navigator,
-        )
 
         // Then
         val uiState = viewModel.uiState.first()
@@ -64,10 +61,6 @@ class ContactScreenViewModelTest {
         )
 
         // When
-        viewModel = ContactScreenViewModel(
-            engageContactRepository = engageContactRepository,
-            navigator = navigator,
-        )
 
         // Then
         val uiState = viewModel.uiState.first()

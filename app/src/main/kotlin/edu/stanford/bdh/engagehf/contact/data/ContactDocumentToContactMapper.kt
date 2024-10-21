@@ -12,29 +12,25 @@ import javax.inject.Inject
 class ContactDocumentToContactMapper @Inject constructor() {
 
     fun map(document: DocumentSnapshot): Result<Contact> = runCatching {
-        val (givenName, familyName, title) = document.getString(CONTACT_NAME_FIELD)
-            ?.split(", ")
-            ?.let {
-                it[0].split(" ")
-                    .let { nameParts -> Triple(nameParts[0], nameParts[1], it.getOrNull(1)) }
-            }
-            ?: error("Contact name not found")
-        val organisationName =
-            document.getString(ORGANISATION_NAME_FIELD) ?: error("Organization name not found")
-        val contactEmail =
-            document.getString(CONTACT_EMAIL_FIELD)
+        val contactName = document.getString(CONTACT_NAME_FIELD)
+        val organisationName = document.getString(ORGANISATION_NAME_FIELD)
+        if (contactName == null || organisationName == null) {
+            error("Missing required data, contactName: $contactName, organisation: $organisationName")
+        }
+        val components = contactName.split(", ")
+        val nameComponents = components.firstOrNull()?.split(" ")
+        val personNameComponents = PersonNameComponents(
+            givenName = nameComponents?.getOrNull(0),
+            familyName = nameComponents?.drop(1)
+                ?.joinToString { " " } // assigning everything besides given name here
+        )
+        val title = components.lastOrNull()
+        val contactEmail = document.getString(CONTACT_EMAIL_FIELD)
         val phone = document.getString(CONTACT_PHONE_FIELD)
-
         Contact(
-            name = PersonNameComponents(
-                givenName = givenName,
-                familyName = familyName,
-            ),
-            image = null,
+            name = personNameComponents,
             title = title?.let { StringResource(it) },
-            description = null,
             organization = StringResource(organisationName),
-            address = null,
             options = listOfNotNull(
                 phone?.let { ContactOption.call(it) },
                 contactEmail?.let { ContactOption.email(listOf(contactEmail)) },
