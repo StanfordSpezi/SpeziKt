@@ -66,7 +66,7 @@ internal class CredentialStorageImpl @Inject constructor(
 
     override fun deleteAll(types: EnumSet<CredentialType>) {
         if (types.isEmpty()) return
-        if (types == CredentialType.ALL) return storage.clear()
+        if (types == CredentialType.All) return storage.clear()
         val deleteServer = types.contains(CredentialType.SERVER)
         val deleteNonServer = types.contains(CredentialType.NON_SERVER)
         storage.allKeys().forEach { key ->

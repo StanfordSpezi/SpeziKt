@@ -37,7 +37,7 @@ class CredentialStorageTests {
 
     @After
     fun tearDown() {
-        credentialStorage.deleteAll(CredentialType.ALL)
+        credentialStorage.deleteAll(CredentialType.All)
     }
 
     @Test
@@ -149,7 +149,7 @@ class CredentialStorageTests {
         listOf(serverCredential, nonServerCredential).forEach { credentialStorage.store(it) }
 
         // when
-        credentialStorage.deleteAll(EnumSet.of(CredentialType.SERVER))
+        credentialStorage.deleteAll(CredentialType.Server)
         val storedServerCredential = credentialStorage.retrieve(
             username = serverCredential.username,
         )
@@ -168,7 +168,7 @@ class CredentialStorageTests {
         listOf(serverCredential, nonServerCredential).forEach { credentialStorage.store(it) }
 
         // when
-        credentialStorage.deleteAll(EnumSet.of(CredentialType.NON_SERVER))
+        credentialStorage.deleteAll(CredentialType.NonServer)
         val storedServerCredential = credentialStorage.retrieve(
             username = serverCredential.username,
             server = serverCredential.server,
@@ -188,7 +188,7 @@ class CredentialStorageTests {
         listOf(serverCredential, nonServerCredential).forEach { credentialStorage.store(it) }
 
         // when
-        credentialStorage.deleteAll(CredentialType.ALL)
+        credentialStorage.deleteAll(CredentialType.All)
         val storedServerCredential = credentialStorage.retrieve(
             username = serverCredential.username,
         )
