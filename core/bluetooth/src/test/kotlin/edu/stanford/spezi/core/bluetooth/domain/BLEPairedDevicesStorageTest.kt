@@ -32,7 +32,7 @@ class BLEPairedDevicesStorageTest {
     private val pairedDevicesStorage by lazy {
         BLEPairedDevicesStorage(
             bluetoothAdapter = adapter,
-            encryptedKeyValueStorage = storage,
+            storage = storage,
             ioScope = SpeziTestScope(),
             bleDevicePairingNotifier = bleDevicePairingNotifier,
             timeProvider = timeProvider,
