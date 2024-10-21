@@ -13,21 +13,18 @@ interface SecureStorage {
     fun retrievePublicKey(tag: String): PublicKey?
     fun deleteKeyPair(tag: String)
 
-    fun storeCredential(
-        credential: Credential
-    )
+    fun storeCredential(credential: Credential)
     fun updateCredential(
         username: String,
         server: String? = null,
-        newCredential: Credential
+        newCredential: Credential,
     )
     fun retrieveCredential(username: String, server: String? = null): Credential?
     fun retrieveAllCredentials(server: String? = null): List<Credential>
     fun deleteCredential(username: String, server: String? = null)
-
     fun deleteAll(
         includingKeys: Boolean = true,
-        credentialTypes: EnumSet<CredentialType> = CredentialType.ALL
+        credentialTypes: EnumSet<CredentialType> = CredentialType.ALL,
     )
 }
 
@@ -61,7 +58,7 @@ internal class SecureStorageImpl @Inject constructor(
 
     override fun deleteAll(
         includingKeys: Boolean,
-        credentialTypes: EnumSet<CredentialType>
+        credentialTypes: EnumSet<CredentialType>,
     ) {
         if (includingKeys) {
             keyStorage.deleteAll()

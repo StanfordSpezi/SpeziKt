@@ -81,7 +81,7 @@ internal class CredentialStorageImpl @Inject constructor(
     override fun update(
         username: String,
         server: String?,
-        newCredential: Credential
+        newCredential: Credential,
     ) {
         delete(username, server)
         store(newCredential)
