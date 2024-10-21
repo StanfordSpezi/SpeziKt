@@ -22,7 +22,7 @@ class ContactDocumentToContactMapper @Inject constructor() {
         val personNameComponents = PersonNameComponents(
             givenName = nameComponents?.getOrNull(0),
             familyName = nameComponents?.drop(1)
-                ?.joinToString { " " } // assigning everything besides given name here
+                ?.joinToString(" ") // assigning everything besides given name here
         )
         val title = components.lastOrNull()
         val contactEmail = document.getString(CONTACT_EMAIL_FIELD)
