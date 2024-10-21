@@ -8,7 +8,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.EnumSet
 import javax.inject.Inject
 
 @HiltAndroidTest
@@ -37,7 +36,7 @@ class CredentialStorageTests {
 
     @After
     fun tearDown() {
-        credentialStorage.deleteAll(CredentialType.All)
+        credentialStorage.deleteAll(CredentialTypes.All)
     }
 
     @Test
@@ -149,7 +148,7 @@ class CredentialStorageTests {
         listOf(serverCredential, nonServerCredential).forEach { credentialStorage.store(it) }
 
         // when
-        credentialStorage.deleteAll(CredentialType.Server)
+        credentialStorage.deleteAll(CredentialTypes.Server)
         val storedServerCredential = credentialStorage.retrieve(
             username = serverCredential.username,
         )
@@ -168,7 +167,7 @@ class CredentialStorageTests {
         listOf(serverCredential, nonServerCredential).forEach { credentialStorage.store(it) }
 
         // when
-        credentialStorage.deleteAll(CredentialType.NonServer)
+        credentialStorage.deleteAll(CredentialTypes.NonServer)
         val storedServerCredential = credentialStorage.retrieve(
             username = serverCredential.username,
             server = serverCredential.server,
@@ -188,7 +187,7 @@ class CredentialStorageTests {
         listOf(serverCredential, nonServerCredential).forEach { credentialStorage.store(it) }
 
         // when
-        credentialStorage.deleteAll(CredentialType.All)
+        credentialStorage.deleteAll(CredentialTypes.All)
         val storedServerCredential = credentialStorage.retrieve(
             username = serverCredential.username,
         )
