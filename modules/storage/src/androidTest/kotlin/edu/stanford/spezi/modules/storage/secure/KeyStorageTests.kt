@@ -9,13 +9,13 @@ import org.junit.Test
 import javax.inject.Inject
 
 @HiltAndroidTest
-class AndroidKeyStoreTests {
+class KeyStorageTests {
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
     @Inject
-    lateinit var androidKeyStore: AndroidKeyStore
+    lateinit var keyStorage: KeyStorage
 
     private val keyName = "TestKey"
 
@@ -27,48 +27,44 @@ class AndroidKeyStoreTests {
     @Test
     fun `it should create keys correctly`() {
         // given
-        val key = androidKeyStore.createKey(keyName).getOrThrow()
+        val key = keyStorage.create(keyName).getOrThrow()
 
         // when
-        val keyPair = androidKeyStore.retrieveKeyPair(keyName)
-        val privateKey = androidKeyStore.retrievePrivateKey(keyName)
-        val publicKey = androidKeyStore.retrievePublicKey(keyName)
-        val aliases = androidKeyStore.aliases()
+        val keyPair = keyStorage.retrieveKeyPair(keyName)
+        val privateKey = keyStorage.retrievePrivateKey(keyName)
+        val publicKey = keyStorage.retrievePublicKey(keyName)
 
         // then
         assertThat(privateKey).isEqualTo(key.private)
         assertThat(privateKey).isEqualTo(keyPair?.private)
         assertThat(publicKey).isEqualTo(key.public)
         assertThat(publicKey).isEqualTo(keyPair?.public)
-        assertThat(aliases).contains(keyName)
     }
 
     @Test
     fun `it should handle key deletion correctly`() {
         // given
-        androidKeyStore.createKey(keyName)
+        keyStorage.create(keyName)
 
         // when
-        androidKeyStore.deleteEntry(keyName)
-        val privateKey = androidKeyStore.retrievePrivateKey(keyName)
-        val publicKey = androidKeyStore.retrievePublicKey(keyName)
-        val aliases = androidKeyStore.aliases()
+        keyStorage.delete(keyName)
+        val privateKey = keyStorage.retrievePrivateKey(keyName)
+        val publicKey = keyStorage.retrievePublicKey(keyName)
 
         // then
         assertThat(privateKey).isNull()
         assertThat(publicKey).isNull()
-        assertThat(aliases).doesNotContain(keyName)
     }
 
     @Test
     fun `it should handle clear correctly`() {
         // given
-        androidKeyStore.createKey(keyName)
+        keyStorage.create(keyName)
 
         // when
-        androidKeyStore.clear()
+        keyStorage.deleteAll()
 
         // then
-        assertThat(androidKeyStore.retrieveKeyPair(keyName)).isNull()
+        assertThat(keyStorage.retrieveKeyPair(keyName)).isNull()
     }
 }

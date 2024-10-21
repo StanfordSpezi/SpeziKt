@@ -9,13 +9,12 @@ import java.util.EnumSet
 import javax.inject.Inject
 
 interface CredentialStorage {
-    fun store(credential: Credential, server: String? = null)
+    fun store(credential: Credential)
 
     fun update(
         username: String,
         server: String? = null,
         newCredential: Credential,
-        newServer: String? = null
     )
 
     fun retrieve(username: String, server: String? = null): Credential?
@@ -34,9 +33,9 @@ internal class CredentialStorageImpl @Inject constructor(
         type = KeyValueStorageType.ENCRYPTED,
     )
 
-    override fun store(credential: Credential, server: String?) {
+    override fun store(credential: Credential) {
         storage.putSerializable(
-            key = storageKey(server, credential.username),
+            key = storageKey(credential.server, credential.username),
             value = credential
         )
     }
@@ -82,11 +81,10 @@ internal class CredentialStorageImpl @Inject constructor(
     override fun update(
         username: String,
         server: String?,
-        newCredential: Credential,
-        newServer: String?
+        newCredential: Credential
     ) {
         delete(username, server)
-        store(newCredential, newServer)
+        store(newCredential)
     }
 
     private fun storageKey(server: String?, username: String): String =

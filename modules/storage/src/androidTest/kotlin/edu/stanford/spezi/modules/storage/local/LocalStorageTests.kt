@@ -5,7 +5,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.core.utils.UUID
-import edu.stanford.spezi.modules.storage.secure.AndroidKeyStore
+import edu.stanford.spezi.modules.storage.secure.KeyStorage
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
@@ -27,7 +27,7 @@ class LocalStorageTests {
     lateinit var localStorage: LocalStorage
 
     @Inject
-    lateinit var androidKeyStore: AndroidKeyStore
+    lateinit var keyStorage: KeyStorage
 
     private val key = "storage_key"
 
@@ -39,7 +39,7 @@ class LocalStorageTests {
     @After
     fun tearDown() = runTestUnconfined {
         localStorage.delete(key = key)
-        androidKeyStore.clear()
+        keyStorage.deleteAll()
     }
 
     @Serializable
@@ -193,7 +193,7 @@ class LocalStorageTests {
         // given
         val value = UUID().toString()
         val androidKeyStoreKey = "androidKeyStoreKey"
-        val keyPair = androidKeyStore.createKey(androidKeyStoreKey).getOrThrow()
+        val keyPair = keyStorage.create(androidKeyStoreKey).getOrThrow()
         localStorage.store(
             key = key,
             value = value,

@@ -14,14 +14,12 @@ interface SecureStorage {
     fun deleteKeyPair(tag: String)
 
     fun storeCredential(
-        credential: Credential,
-        server: String? = null
+        credential: Credential
     )
     fun updateCredential(
         username: String,
         server: String? = null,
-        newCredential: Credential,
-        newServer: String? = null
+        newCredential: Credential
     )
     fun retrieveCredential(username: String, server: String? = null): Credential?
     fun retrieveAllCredentials(server: String? = null): List<Credential>
@@ -44,15 +42,14 @@ internal class SecureStorageImpl @Inject constructor(
     override fun retrievePublicKey(tag: String) = keyStorage.retrievePublicKey(tag)
     override fun deleteKeyPair(tag: String) = keyStorage.delete(tag)
 
-    override fun storeCredential(credential: Credential, server: String?) =
-        credentialStorage.store(credential, server)
+    override fun storeCredential(credential: Credential) =
+        credentialStorage.store(credential)
 
     override fun updateCredential(
         username: String,
         server: String?,
         newCredential: Credential,
-        newServer: String?
-    ) = credentialStorage.update(username, server, newCredential, newServer)
+    ) = credentialStorage.update(username, server, newCredential)
 
     override fun retrieveCredential(username: String, server: String?) =
         credentialStorage.retrieve(username, server)
