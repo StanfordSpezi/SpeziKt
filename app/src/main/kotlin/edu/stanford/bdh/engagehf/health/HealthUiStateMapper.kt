@@ -6,6 +6,8 @@ import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
+import edu.stanford.bdh.engagehf.R
+import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.utils.LocaleProvider
 import edu.stanford.spezi.core.utils.extensions.roundToDecimalPlaces
 import java.time.DayOfWeek
@@ -50,7 +52,8 @@ class HealthUiStateMapper @Inject constructor(
     ): HealthUiData {
         val filteredRecords: List<EngageRecord> =
             filterRecordsByTimeRange(records, selectedTimeRange)
-        val pairs: List<Pair<Float, Float>> = groupAndMapRecords(filteredRecords, selectedTimeRange)
+        val pairs: List<Pair<Double, Double>> =
+            groupAndMapRecords(filteredRecords, selectedTimeRange)
         val title: String = when (records.first()) {
             is EngageRecord.HeartRate -> "Heart Rate"
             is EngageRecord.BloodPressure -> "Blood Pressure"
@@ -60,7 +63,7 @@ class HealthUiStateMapper @Inject constructor(
 
         val chartDataList = mutableListOf(chartData)
         if (records.any { it is EngageRecord.BloodPressure }) {
-            val diastolicPairs: List<Pair<Float, Float>> =
+            val diastolicPairs: List<Pair<Double, Double>> =
                 groupAndMapRecords(filteredRecords, selectedTimeRange, true)
             val diastolicChartData = createAggregatedHealthData(title, diastolicPairs)
             chartDataList.add(diastolicChartData)
@@ -96,23 +99,23 @@ class HealthUiStateMapper @Inject constructor(
         records: List<EngageRecord>,
         selectedTimeRange: TimeRange,
         diastolic: Boolean = false,
-    ): List<Pair<Float, Float>> {
+    ): List<Pair<Double, Double>> {
         val groupedRecords = groupRecordsByTimeRange(records, selectedTimeRange)
         return groupedRecords.values.map { entries ->
             val averageValue = entries.map { getValue(it, diastolic).value }.average()
             Pair(
-                averageValue.toFloat(),
-                mapXValue(selectedTimeRange, entries.first().zonedDateTime)
+                averageValue.roundToDecimalPlaces(2),
+                mapXValue(selectedTimeRange, entries.first().zonedDateTime).roundToDecimalPlaces(2)
             )
         }
     }
 
-    private fun mapXValue(selectedTimeRange: TimeRange, zonedDateTime: ZonedDateTime): Float {
+    private fun mapXValue(selectedTimeRange: TimeRange, zonedDateTime: ZonedDateTime): Double {
         return when (selectedTimeRange) {
-            TimeRange.DAILY -> (zonedDateTime.year.toFloat() + (zonedDateTime.dayOfYear - 1) / 365f) * 10
-            TimeRange.WEEKLY -> (zonedDateTime.toEpochSecond() / (7 * 24 * 60 * 60)).toFloat()
-            TimeRange.MONTHLY -> zonedDateTime.year.toFloat() + (zonedDateTime.monthValue - 1) / 12f
-        }.roundToDecimalPlaces(places = 2)
+            TimeRange.DAILY -> (zonedDateTime.year.toDouble() + (zonedDateTime.dayOfYear - 1) / 365.0) * 10
+            TimeRange.WEEKLY -> (zonedDateTime.toEpochSecond() / (7 * 24 * 60 * 60)).toDouble()
+            TimeRange.MONTHLY -> zonedDateTime.year.toDouble() + (zonedDateTime.monthValue - 1) / 12f
+        }
     }
 
     private fun groupRecordsByTimeRange(
@@ -205,7 +208,7 @@ class HealthUiStateMapper @Inject constructor(
 
     private fun createAggregatedHealthData(
         title: String,
-        pairs: List<Pair<Float, Float>>,
+        pairs: List<Pair<Double, Double>>,
     ): AggregatedHealthData {
         return AggregatedHealthData(
             yValues = pairs.map { it.first },
@@ -240,7 +243,7 @@ class HealthUiStateMapper @Inject constructor(
 
             val tableEntryData = TableEntryData(
                 id = currentRecord.clientRecordId,
-                value = currentRecordValue.value.toFloat(),
+                value = currentRecordValue.value,
                 secondValue = if (currentRecord is EngageRecord.BloodPressure) {
                     getValue(currentRecord, true).value.toFloat()
                 } else {
@@ -248,7 +251,7 @@ class HealthUiStateMapper @Inject constructor(
                 },
                 date = currentRecord.zonedDateTime,
                 formattedDate = currentRecord.zonedDateTime.format(monthDayTimeFormatter),
-                trend = trend.toFloat(),
+                trend = trend,
                 formattedTrend = formattedTrend,
                 formattedValues = if (currentRecord is EngageRecord.BloodPressure) {
                     getBloodPressureFormatRecord(currentRecord.record)
@@ -266,7 +269,7 @@ class HealthUiStateMapper @Inject constructor(
 
     private fun getAverageData(tableData: List<TableEntryData>) =
         AverageHealthData(
-            value = tableData.mapNotNull { it.value }.average().toFloat(),
+            value = tableData.mapNotNull { it.value }.average(),
             formattedValue = "Average " + formatValue(tableData.mapNotNull { it.value }.average()),
         )
 
@@ -315,9 +318,19 @@ class HealthUiStateMapper @Inject constructor(
         uiState
     }
 
+    fun mapDeleteRecordAlertData(
+        action: HealthAction.RequestDeleteRecord,
+    ) = DeleteRecordAlertData(
+        recordId = action.recordId,
+        title = StringResource(R.string.delete_health_record),
+        description = StringResource(R.string.health_record_deletion_description),
+        dismissButton = StringResource(R.string.dismiss_button_text),
+        confirmButton = StringResource(R.string.confirm_button_text),
+    )
+
     private fun getDefaultLocale() = localeProvider.getDefaultLocale()
 
-    private fun valueFormatter(value: Float, timeRange: TimeRange): String {
+    private fun valueFormatter(value: Double, timeRange: TimeRange): String {
         val date = when (timeRange) {
             TimeRange.DAILY -> {
                 val actualValue = value * 10

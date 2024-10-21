@@ -8,6 +8,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.messages.HealthSummaryService
+import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
+import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.notification.NotificationNavigationEvent
 import edu.stanford.spezi.module.account.manager.UserSessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +24,9 @@ class AppScreenViewModel @Inject constructor(
     private val appScreenEvents: AppScreenEvents,
     private val userSessionManager: UserSessionManager,
     private val healthSummaryService: HealthSummaryService,
+    private val navigator: Navigator,
 ) : ViewModel() {
+
     private val _uiState = MutableStateFlow(
         AppUiState(
             items = BottomBarItem.entries,
@@ -56,17 +61,44 @@ class AppScreenViewModel @Inject constructor(
                     }
                 } else {
                     val bottomSheetContent = when (event) {
-                        AppScreenEvents.Event.NewMeasurementAction ->
+                        AppScreenEvents.Event.NewMeasurementAction -> {
                             BottomSheetContent.NEW_MEASUREMENT_RECEIVED
+                        }
 
-                        AppScreenEvents.Event.DoNewMeasurement ->
+                        AppScreenEvents.Event.DoNewMeasurement -> {
                             BottomSheetContent.DO_NEW_MEASUREMENT
+                        }
 
-                        AppScreenEvents.Event.WeightDescriptionBottomSheet ->
+                        AppScreenEvents.Event.WeightDescriptionBottomSheet -> {
                             BottomSheetContent.WEIGHT_DESCRIPTION_INFO
+                        }
 
-                        AppScreenEvents.Event.AddWeightRecord ->
+                        AppScreenEvents.Event.AddWeightRecord -> {
                             BottomSheetContent.ADD_WEIGHT_RECORD
+                        }
+
+                        AppScreenEvents.Event.AddBloodPressureRecord -> {
+                            BottomSheetContent.ADD_BLOOD_PRESSURE_RECORD
+                        }
+
+                        AppScreenEvents.Event.AddHeartRateRecord -> {
+                            BottomSheetContent.ADD_HEART_RATE_RECORD
+                        }
+
+                        AppScreenEvents.Event.BloodPressureDescriptionBottomSheet -> {
+                            BottomSheetContent.BLOOD_PRESSURE_DESCRIPTION_INFO
+                        }
+
+                        AppScreenEvents.Event.CloseBottomSheet -> {
+                            null
+                        }
+
+                        AppScreenEvents.Event.HeartRateDescriptionBottomSheet -> {
+                            BottomSheetContent.HEART_RATE_DESCRIPTION_INFO
+                        }
+
+                        AppScreenEvents.Event.BLEDevicePairingBottomSheet ->
+                            BottomSheetContent.BLUETOOTH_DEVICE_PAIRING
 
                         else -> null
                     }
@@ -111,11 +143,21 @@ class AppScreenViewModel @Inject constructor(
 
             Action.SignOut -> {
                 _uiState.update { it.copy(accountUiState = it.accountUiState.copy(showDialog = false)) }
-                /* TODO: Implement sign out */
+                userSessionManager.signOut()
             }
 
             Action.DismissBottomSheet -> {
-                _uiState.update { it.copy(bottomSheetContent = null) }
+                appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet)
+            }
+
+            Action.ShowNotificationSettings -> {
+                _uiState.update { it.copy(accountUiState = it.accountUiState.copy(showDialog = false)) }
+                navigator.navigateTo(NotificationNavigationEvent.NotificationSettings)
+            }
+
+            Action.ShowContact -> {
+                _uiState.update { it.copy(accountUiState = it.accountUiState.copy(showDialog = false)) }
+                navigator.navigateTo(AppNavigationEvent.ContactScreen)
             }
         }
     }
@@ -145,11 +187,14 @@ enum class BottomSheetContent {
     ADD_WEIGHT_RECORD,
     ADD_BLOOD_PRESSURE_RECORD,
     ADD_HEART_RATE_RECORD,
+    BLUETOOTH_DEVICE_PAIRING,
 }
 
 sealed interface Action {
     data class UpdateSelectedBottomBarItem(val selectedBottomBarItem: BottomBarItem) : Action
     data object ShowHealthSummary : Action
+    data object ShowNotificationSettings : Action
+    data object ShowContact : Action
     data object SignOut : Action
     data class ShowAccountDialog(val showDialog: Boolean) : Action
     data object DismissBottomSheet : Action

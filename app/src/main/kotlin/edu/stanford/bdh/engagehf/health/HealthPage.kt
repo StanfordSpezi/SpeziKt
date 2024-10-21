@@ -11,12 +11,15 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -26,13 +29,17 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.units.Mass
 import edu.stanford.bdh.engagehf.R
+import edu.stanford.bdh.engagehf.bluetooth.screen.MeasurementDialogTestIdentifier
 import edu.stanford.bdh.engagehf.health.components.HealthChart
 import edu.stanford.bdh.engagehf.health.components.SwipeBox
 import edu.stanford.bdh.engagehf.health.components.TimeRangeDropdown
+import edu.stanford.spezi.core.design.component.AsyncTextButton
 import edu.stanford.spezi.core.design.component.CenteredBoxContent
+import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
@@ -94,7 +101,7 @@ fun HealthPage(
                 itemsIndexed(data) { index, entry ->
                     SwipeBox(
                         onDelete = {
-                            entry.id?.let { onAction(HealthAction.DeleteRecord(it)) }
+                            entry.id?.let { onAction(HealthAction.RequestDeleteRecord(it)) }
                         },
                         content = {
                             HealthTableItem(entry)
@@ -102,6 +109,11 @@ fun HealthPage(
                     if (index != data.size - 1) HorizontalDivider()
                 }
             }
+
+            DeleteRecordConfirmationAlert(
+                uiData = uiState.data,
+                onAction = onAction
+            )
         }
     }
 }
@@ -176,6 +188,53 @@ private fun InfoRow(
     }
 }
 
+@Composable
+private fun DeleteRecordConfirmationAlert(
+    uiData: HealthUiData,
+    onAction: (HealthAction) -> Unit,
+) {
+    val dialogData = uiData.deleteRecordAlertData ?: return
+    val deleteAction = remember(dialogData.recordId) {
+        HealthAction.Async.DeleteRecord(dialogData.recordId)
+    }
+    AlertDialog(
+        onDismissRequest = {
+            onAction(HealthAction.DismissConfirmationAlert)
+        },
+        title = {
+            Text(
+                text = dialogData.title.text(),
+                style = TextStyles.titleMedium,
+                modifier = Modifier.testIdentifier(MeasurementDialogTestIdentifier.TITLE)
+            )
+        },
+        text = {
+            Text(
+                text = dialogData.description.text(),
+                style = TextStyles.titleSmall,
+                modifier = Modifier.testIdentifier(MeasurementDialogTestIdentifier.TITLE)
+            )
+        },
+        confirmButton = {
+            AsyncTextButton(
+                text = dialogData.confirmButton.text(),
+                isLoading = uiData.pendingActions.contains(action = deleteAction),
+                onClick = { onAction(deleteAction) }
+            )
+        },
+        dismissButton = {
+            FilledTonalButton(
+                enabled = uiData.pendingActions.contains(action = deleteAction).not(),
+                onClick = {
+                    onAction(HealthAction.DismissConfirmationAlert)
+                }
+            ) {
+                Text(dialogData.dismissButton.text())
+            }
+        }
+    )
+}
+
 enum class HealthPageTestIdentifier {
     ROOT,
     ERROR_MESSAGE,
@@ -188,38 +247,50 @@ enum class HealthPageTestIdentifier {
 }
 
 private class HealthPagePreviewProvider : PreviewParameterProvider<HealthUiState> {
+    val success = HealthUiState.Success(
+        data = HealthUiData(
+            valueFormatter = { "Jan 24" },
+            infoRowData = InfoRowData(
+                selectedTimeRange = TimeRange.MONTHLY,
+                formattedValue = "70.0 kg",
+                formattedDate = "Jan 2022",
+                isSelectedTimeRangeDropdownExpanded = false
+            ),
+            records = listOf(
+                WeightRecord(
+                    time = ZonedDateTime.now().toInstant(),
+                    zoneOffset = ZonedDateTime.now().offset,
+                    weight = @Suppress("MagicNumber") Mass.pounds(154.0)
+                )
+            ),
+            tableData = listOf(
+                TableEntryData(
+                    value = 70.0,
+                    formattedValues = "70.0 kg",
+                    date = ZonedDateTime.now(),
+                    formattedDate = "Jan 2022",
+                    trend = 0.0,
+                    formattedTrend = "0.0 kg",
+                    secondValue = null,
+                    id = "null"
+                )
+            )
+        )
+    )
     override val values: Sequence<HealthUiState>
         get() = sequenceOf(
             HealthUiState.Loading,
             HealthUiState.Error("An error occurred"),
             HealthUiState.NoData("No data available"),
-            HealthUiState.Success(
-                data = HealthUiData(
-                    valueFormatter = { "Jan 24" },
-                    infoRowData = InfoRowData(
-                        selectedTimeRange = TimeRange.MONTHLY,
-                        formattedValue = "70.0 kg",
-                        formattedDate = "Jan 2022",
-                        isSelectedTimeRangeDropdownExpanded = false
-                    ),
-                    records = listOf(
-                        WeightRecord(
-                            time = ZonedDateTime.now().toInstant(),
-                            zoneOffset = ZonedDateTime.now().offset,
-                            weight = @Suppress("MagicNumber") Mass.pounds(154.0)
-                        )
-                    ),
-                    tableData = listOf(
-                        TableEntryData(
-                            value = 70.0f,
-                            formattedValues = "70.0 kg",
-                            date = ZonedDateTime.now(),
-                            formattedDate = "Jan 2022",
-                            trend = 0f,
-                            formattedTrend = "0.0 kg",
-                            secondValue = null,
-                            id = null
-                        )
+            success,
+            success.copy(
+                data = success.data.copy(
+                    deleteRecordAlertData = DeleteRecordAlertData(
+                        recordId = "",
+                        title = StringResource(R.string.delete_health_record),
+                        description = StringResource(R.string.health_record_deletion_description),
+                        confirmButton = StringResource(R.string.confirm_button_text),
+                        dismissButton = StringResource(R.string.dismiss_button_text),
                     )
                 )
             )
@@ -229,8 +300,10 @@ private class HealthPagePreviewProvider : PreviewParameterProvider<HealthUiState
 @ThemePreviews
 @Composable
 private fun HealthPagePreview(@PreviewParameter(HealthPagePreviewProvider::class) uiState: HealthUiState) {
-    HealthPage(
-        uiState = uiState,
-        onAction = {}
-    )
+    SpeziTheme(isPreview = true) {
+        HealthPage(
+            uiState = uiState,
+            onAction = {}
+        )
+    }
 }

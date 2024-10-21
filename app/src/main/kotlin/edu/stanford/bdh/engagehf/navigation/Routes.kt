@@ -30,7 +30,10 @@ sealed class Routes {
 
     @Serializable
     data object ConsentScreen : Routes()
+
+    @Serializable
+    data object ContactScreen : Routes()
 }
 
 @Serializable
-data class RegisterParams(val isGoogleSignUp: Boolean, val email: String, val password: String)
+data class RegisterParams(val email: String, val password: String)

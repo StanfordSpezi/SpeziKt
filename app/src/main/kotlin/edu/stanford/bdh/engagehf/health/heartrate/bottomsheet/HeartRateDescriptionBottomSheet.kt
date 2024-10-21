@@ -7,7 +7,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
@@ -28,20 +30,17 @@ fun HeartRateDescriptionBottomSheet() {
         )
         VerticalSpacer()
         Text(
-            text = "Your heart rate is the number of times your heart beats per minute. " +
-                "It is a good indicator of your overall health and fitness level.",
+            text = stringResource(R.string.heart_rate_description_part_1),
             style = TextStyles.bodyMedium.copy(textAlign = TextAlign.Center)
         )
         VerticalSpacer(height = Spacings.small)
         Text(
-            text = "A normal resting heart rate for adults ranges from 60 to 100 beats per minute. " +
-                "Factors such as age, fitness level, and medications can affect your heart rate.",
+            text = stringResource(R.string.heart_rate_description_part_2),
             style = TextStyles.bodyMedium.copy(textAlign = TextAlign.Center)
         )
         VerticalSpacer(height = Spacings.small)
         Text(
-            text = "Regular physical activity, a healthy diet, and stress management can help maintain a healthy heart rate. " +
-                "Consult with a healthcare provider to understand your target heart rate and how to monitor it.",
+            text = stringResource(R.string.heart_rate_description_part_3),
             style = TextStyles.bodyMedium.copy(textAlign = TextAlign.Center)
         )
         VerticalSpacer()

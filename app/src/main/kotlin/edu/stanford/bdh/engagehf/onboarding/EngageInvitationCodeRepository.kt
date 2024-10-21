@@ -1,9 +1,9 @@
 package edu.stanford.bdh.engagehf.onboarding
 
+import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.module.account.AccountNavigationEvent
 import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeRepository
-import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeScreenData
+import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeViewData
 import javax.inject.Inject
 
 // TODO: Clarify / unify repositories or content provider apis
@@ -14,12 +14,11 @@ class EngageInvitationCodeRepository @Inject constructor(
     private val navigator: Navigator,
 ) : InvitationCodeRepository {
 
-    override fun getScreenData(): InvitationCodeScreenData {
-        return InvitationCodeScreenData(
+    override fun getScreenData(): InvitationCodeViewData {
+        return InvitationCodeViewData(
             title = "Invitation Code",
             description = "Please enter your invitation code to join the ENGAGE-HF study.",
-            redeemAction = { navigator.navigateTo(AccountNavigationEvent.LoginScreen(false)) },
-            gotAnAccountAction = { navigator.navigateTo(AccountNavigationEvent.LoginScreen(true)) }
+            redeemAction = { navigator.navigateTo(AppNavigationEvent.AppScreen(true)) },
         )
     }
 }

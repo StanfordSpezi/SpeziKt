@@ -1,21 +1,24 @@
 package edu.stanford.spezi.module.account.manager
 
-import com.google.android.gms.tasks.Task
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageMetadata
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import edu.stanford.spezi.core.testing.SpeziTestScope
+import edu.stanford.spezi.core.testing.mockTask
 import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.module.account.AccountEvents
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
+import io.mockk.verify
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
@@ -27,6 +30,8 @@ import java.util.UUID
 class UserSessionManagerTest {
     private val firebaseStorage: FirebaseStorage = mockk()
     private val firebaseAuth: FirebaseAuth = mockk()
+    private val firestore: FirebaseFirestore = mockk()
+    private val accountEvents: AccountEvents = mockk(relaxed = true)
 
     private lateinit var userSessionManager: UserSessionManager
 
@@ -50,23 +55,6 @@ class UserSessionManagerTest {
     }
 
     @Test
-    fun `it should reflect the correct anonymous user state`() = runTestUnconfined {
-        // given
-        val firebaseUser: FirebaseUser = mockk {
-            every { isAnonymous } returns true
-        }
-        every { firebaseAuth.currentUser } returns firebaseUser
-        createUserSessionManager()
-        val expectedUserState = UserState.Anonymous
-
-        // when
-        val state = userSessionManager.getUserState()
-
-        // then
-        assertThat(state).isEqualTo(expectedUserState)
-    }
-
-    @Test
     fun `it should reflect registered user without uid state correctly`() = runTestUnconfined {
         // given
         val firebaseUser: FirebaseUser = mockk {
@@ -75,7 +63,7 @@ class UserSessionManagerTest {
         every { firebaseAuth.currentUser } returns firebaseUser
         every { firebaseAuth.uid } returns null
         createUserSessionManager()
-        val expectedUserState = UserState.Registered(hasConsented = false)
+        val expectedUserState = UserState.Registered(hasInvitationCodeConfirmed = false)
 
         // when
         val state = userSessionManager.getUserState()
@@ -85,18 +73,19 @@ class UserSessionManagerTest {
     }
 
     @Test
-    fun `it should reflect registered user consented state correctly`() = runTestUnconfined {
-        // given
-        setupConsented()
-        createUserSessionManager()
-        val expectedUserState = UserState.Registered(hasConsented = true)
+    fun `it should reflect registered user has confirmed invitation code state correctly`() =
+        runTestUnconfined {
+            // given
+            setupHasConfirmedInvitationCode()
+            createUserSessionManager()
+            val expectedUserState = UserState.Registered(hasInvitationCodeConfirmed = true)
 
-        // when
-        val state = userSessionManager.getUserState()
+            // when
+            val state = userSessionManager.getUserState()
 
-        // then
-        assertThat(state).isEqualTo(expectedUserState)
-    }
+            // then
+            assertThat(state).isEqualTo(expectedUserState)
+        }
 
     @Test
     fun `it should not upload consent pdf if current user is not available`() = runTestUnconfined {
@@ -109,6 +98,32 @@ class UserSessionManagerTest {
 
         // then
         assertThat(result.isFailure).isTrue()
+    }
+
+    @Test
+    fun `it should emit SignOutSuccess when signOut is successful`() = runTestUnconfined {
+        // given
+        every { firebaseAuth.signOut() } just Runs
+        createUserSessionManager()
+
+        // when
+        userSessionManager.signOut()
+
+        // then
+        verify { accountEvents.emit(AccountEvents.Event.SignOutSuccess) }
+    }
+
+    @Test
+    fun `it should emit SignOutFailure when signOut is unsuccessful`() = runTestUnconfined {
+        // given
+        every { firebaseAuth.signOut() } throws Exception()
+        createUserSessionManager()
+
+        // when
+        userSessionManager.signOut()
+
+        // then
+        verify { accountEvents.emit(AccountEvents.Event.SignOutFailure) }
     }
 
     @Test
@@ -150,7 +165,7 @@ class UserSessionManagerTest {
     }
 
     @Test
-    fun `it should emit Anonymous when currentUser is anonymous`() = runTestUnconfined {
+    fun `it should emit NotInitialized when currentUser is anonymous`() = runTestUnconfined {
         // given
         val firebaseUser: FirebaseUser = mockk {
             every { isAnonymous } returns true
@@ -161,36 +176,43 @@ class UserSessionManagerTest {
         createUserSessionManager()
 
         // then
-        assertObservedState(userState = UserState.Anonymous, scope = this)
+        assertObservedState(userState = UserState.NotInitialized, scope = this)
     }
 
     @Test
-    fun `it should emit Registered with hasConsented false when uid is null`() = runTestUnconfined {
-        // given
-        val firebaseUser: FirebaseUser = mockk {
-            every { isAnonymous } returns false
-        }
-        every { firebaseAuth.currentUser } returns firebaseUser
-        every { firebaseAuth.uid } returns null
-
-        // when
-        createUserSessionManager()
-
-        // then
-        assertObservedState(userState = UserState.Registered(hasConsented = false), scope = this)
-    }
-
-    @Test
-    fun `it should emit Registered with hasConsented true when user has consented`() =
+    fun `it should emit Registered with hasInvitationCodeConfirmed false when uid is null`() =
         runTestUnconfined {
             // given
-            setupConsented()
+            val firebaseUser: FirebaseUser = mockk {
+                every { isAnonymous } returns false
+            }
+            every { firebaseAuth.currentUser } returns firebaseUser
+            every { firebaseAuth.uid } returns null
 
             // when
             createUserSessionManager()
 
             // then
-            assertObservedState(userState = UserState.Registered(hasConsented = true), scope = this)
+            assertObservedState(
+                userState = UserState.Registered(hasInvitationCodeConfirmed = false),
+                scope = this
+            )
+        }
+
+    @Test
+    fun `it should emit Registered with hasInvitationCodeConfirmed true when user has consented`() =
+        runTestUnconfined {
+            // given
+            setupHasConfirmedInvitationCode()
+
+            // when
+            createUserSessionManager()
+
+            // then
+            assertObservedState(
+                userState = UserState.Registered(hasInvitationCodeConfirmed = true),
+                scope = this
+            )
         }
 
     @Test
@@ -243,6 +265,7 @@ class UserSessionManagerTest {
         job.join()
     }
 
+    @Suppress("UnusedPrivateMember")
     private fun setupConsented() {
         val uid = "uid"
         val location = "users/$uid/consent/consent.pdf"
@@ -250,16 +273,23 @@ class UserSessionManagerTest {
             every { isAnonymous } returns false
         }
         val storageReference: StorageReference = mockk()
-        val metadataTask: Task<StorageMetadata> = mockk {
-            every { isComplete } returns true
-            every { isCanceled } returns false
-            every { exception } returns null
-            every { result } returns mockk()
-        }
-        every { storageReference.metadata } returns metadataTask
+        every { storageReference.metadata } returns mockTask(mockk())
         every { firebaseAuth.currentUser } returns firebaseUser
         every { firebaseAuth.uid } returns uid
         every { firebaseStorage.getReference(location) } returns storageReference
+    }
+
+    private fun setupHasConfirmedInvitationCode() {
+        val uid = "uid"
+        val document: DocumentSnapshot = mockk {
+            every { getString("invitationCode") } returns "1234"
+        }
+        val firebaseUser: FirebaseUser = mockk {
+            every { isAnonymous } returns false
+        }
+        every { firebaseAuth.currentUser } returns firebaseUser
+        every { firebaseAuth.uid } returns uid
+        every { firestore.collection("users").document(uid).get() } returns mockTask(document)
     }
 
     private fun setupPDFUpload(successful: Boolean) {
@@ -290,6 +320,8 @@ class UserSessionManagerTest {
             firebaseAuth = firebaseAuth,
             ioDispatcher = UnconfinedTestDispatcher(),
             coroutineScope = SpeziTestScope(),
+            firestore = firestore,
+            accountEvents = accountEvents,
         )
     }
 }

@@ -4,6 +4,8 @@ import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.units.Mass
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.R
+import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.utils.LocaleProvider
 import io.mockk.every
 import io.mockk.mockk
@@ -62,6 +64,27 @@ class HealthUiStateMapperTest {
     }
 
     @Test
+    fun `mapToHealthData with precise data will round the value to at most 2 decimal places`() {
+        // Given
+        val weightInKg = 70.123456789
+        val records = listOf(
+            createWeightRecord(
+                weightInKg = weightInKg,
+            ),
+        )
+
+        // When
+        val result = healthUiStateMapper.map(records)
+
+        // Then
+        assertThat(result.chartData).isNotEmpty()
+        assertThat(
+            result.chartData[0].xValues[0].toBigDecimal().stripTrailingZeros().scale()
+        ).isAtMost(2)
+        assertThat(result.chartData[0].yValues[0]).isEqualTo(154.60)
+    }
+
+    @Test
     fun `mapToHealthData with non-empty records and selectedTimeRange WEEKLY returns correct HealthUiData`() {
         // Given
         val records = listOf(
@@ -87,6 +110,27 @@ class HealthUiStateMapperTest {
         assertThat(result.newestData).isNotNull()
         assertThat(result.infoRowData.formattedValue).isNotEmpty()
         assertThat(result.infoRowData.formattedDate).isNotEmpty()
+    }
+
+    @Test
+    fun `it should map delete record alert data correctly`() {
+        // given
+        val recordId = "some-record-id"
+        val action = HealthAction.RequestDeleteRecord(recordId = recordId)
+
+        // when
+        val result = healthUiStateMapper.mapDeleteRecordAlertData(action)
+
+        // then
+        assertThat(result).isEqualTo(
+            DeleteRecordAlertData(
+                recordId = recordId,
+                title = StringResource(R.string.delete_health_record),
+                description = StringResource(R.string.health_record_deletion_description),
+                confirmButton = StringResource(R.string.confirm_button_text),
+                dismissButton = StringResource(R.string.dismiss_button_text),
+            )
+        )
     }
 
     @Test
@@ -147,6 +191,8 @@ class HealthUiStateMapperTest {
         )
     }
 
-    private fun HealthUiStateMapper.map(records: List<Record>, timeRange: TimeRange = TimeRange.DAILY) =
-        (mapToHealthData(records, timeRange) as HealthUiState.Success).data
+    private fun HealthUiStateMapper.map(
+        records: List<Record>,
+        timeRange: TimeRange = TimeRange.DAILY,
+    ) = (mapToHealthData(records, timeRange) as HealthUiState.Success).data
 }

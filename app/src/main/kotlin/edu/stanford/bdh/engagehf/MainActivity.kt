@@ -1,5 +1,6 @@
 package edu.stanford.bdh.engagehf
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -21,23 +22,28 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import dagger.hilt.android.AndroidEntryPoint
+import edu.stanford.bdh.engagehf.bluetooth.BluetoothViewModel
+import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
+import edu.stanford.bdh.engagehf.contact.ui.ContactScreen
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.RegisterParams
 import edu.stanford.bdh.engagehf.navigation.Routes
 import edu.stanford.bdh.engagehf.navigation.screens.AppScreen
 import edu.stanford.bdh.engagehf.navigation.serializableType
+import edu.stanford.bdh.engagehf.onboarding.InvitationCodeScreen
+import edu.stanford.bdh.engagehf.onboarding.OnboardingScreen
 import edu.stanford.bdh.engagehf.questionnaire.QuestionnaireScreen
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.navigation.NavigationEvent
+import edu.stanford.spezi.core.notification.NotificationNavigationEvent
+import edu.stanford.spezi.core.notification.NotificationRoutes
+import edu.stanford.spezi.core.notification.setting.NotificationSettingScreen
 import edu.stanford.spezi.module.account.AccountNavigationEvent
 import edu.stanford.spezi.module.account.login.LoginScreen
 import edu.stanford.spezi.module.account.register.RegisterScreen
 import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
-import edu.stanford.spezi.module.onboarding.consent.ConsentScreen
-import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeScreen
-import edu.stanford.spezi.module.onboarding.onboarding.OnboardingScreen
 import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreen
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.EducationRoutes
@@ -53,9 +59,16 @@ class MainActivity : FragmentActivity() {
 
     private val viewModel by viewModels<MainActivityViewModel>()
 
+    private val bluetoothViewModel by viewModels<BluetoothViewModel>()
+
     @Inject
     @Dispatching.Main
     lateinit var mainDispatcher: CoroutineDispatcher
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        bluetoothViewModel.onAction(Action.NewIntent(intent))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen().apply {
@@ -113,15 +126,13 @@ class MainActivity : FragmentActivity() {
         ) {
             val args = it.toRoute<Routes.RegisterScreen>()
             RegisterScreen(
-                args.registerParams.isGoogleSignUp,
                 args.registerParams.email,
                 args.registerParams.password
             )
         }
 
         composable<Routes.LoginScreen> {
-            val args = it.toRoute<Routes.LoginScreen>()
-            LoginScreen(isAlreadyRegistered = args.isAlreadyRegistered)
+            LoginScreen()
         }
 
         composable<EducationRoutes.VideoDetail>(
@@ -130,6 +141,14 @@ class MainActivity : FragmentActivity() {
             )
         ) {
             VideoScreen()
+        }
+
+        composable<NotificationRoutes.NotificationSetting> {
+            NotificationSettingScreen()
+        }
+
+        composable<Routes.ContactScreen> {
+            ContactScreen()
         }
 
         composable<Routes.AppScreen> {
@@ -155,10 +174,6 @@ class MainActivity : FragmentActivity() {
         composable<Routes.SequentialOnboardingScreen> {
             SequentialOnboardingScreen()
         }
-
-        composable<Routes.ConsentScreen> {
-            ConsentScreen()
-        }
     }
 
     @Composable
@@ -170,7 +185,6 @@ class MainActivity : FragmentActivity() {
                         is AccountNavigationEvent.RegisterScreen -> navHostController.navigate(
                             Routes.RegisterScreen(
                                 registerParams = RegisterParams(
-                                    isGoogleSignUp = event.isGoogleSignUp,
                                     email = event.email,
                                     password = event.password
                                 ),
@@ -181,18 +195,20 @@ class MainActivity : FragmentActivity() {
                             Routes.QuestionnaireScreen(event.questionnaireId)
                         )
 
+                        is AppNavigationEvent.ContactScreen -> navHostController.navigate(
+                            Routes.ContactScreen
+                        )
+
                         is AccountNavigationEvent.LoginScreen -> navHostController.navigate(
-                            Routes.LoginScreen(
-                                isAlreadyRegistered = event.isAlreadyRegistered
-                            )
+                            Routes.LoginScreen()
                         )
 
                         is OnboardingNavigationEvent.InvitationCodeScreen -> navHostController.navigate(
                             Routes.InvitationCodeScreen
                         )
 
-                        is OnboardingNavigationEvent.OnboardingScreen -> navHostController.navigate(
-                            Routes.OnboardingScreen
+                        is OnboardingNavigationEvent.OnboardingScreen -> navHostController.navigateTo(
+                            Routes.OnboardingScreen, event.clearBackStack
                         )
 
                         is OnboardingNavigationEvent.SequentialOnboardingScreen -> navHostController.navigate(
@@ -203,7 +219,11 @@ class MainActivity : FragmentActivity() {
                             Routes.ConsentScreen
                         )
 
-                        is AppNavigationEvent.AppScreen -> navHostController.navigate(Routes.AppScreen)
+                        is AppNavigationEvent.AppScreen -> navHostController.navigateTo(
+                            route = Routes.AppScreen,
+                            clearBackStack = event.clearBackStack
+                        )
+
                         is NavigationEvent.PopBackStack -> navHostController.popBackStack()
                         is NavigationEvent.NavigateUp -> navHostController.navigateUp()
 
@@ -212,8 +232,21 @@ class MainActivity : FragmentActivity() {
                                 video = event.video
                             )
                         )
+
+                        is NotificationNavigationEvent.NotificationSettings -> navHostController.navigate(
+                            NotificationRoutes.NotificationSetting
+                        )
                     }
                 }
+            }
+        }
+    }
+
+    private fun NavHostController.navigateTo(route: Routes, clearBackStack: Boolean = false) {
+        navigate(route) {
+            if (clearBackStack) {
+                popUpTo(graph.startDestinationId) { inclusive = true }
+                launchSingleTop = true
             }
         }
     }

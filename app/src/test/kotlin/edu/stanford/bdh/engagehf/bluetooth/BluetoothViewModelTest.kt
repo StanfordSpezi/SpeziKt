@@ -66,6 +66,7 @@ class BluetoothViewModelTest {
         every { action } returns messageAction
         every { id } returns messageId
         every { isExpanded } returns false
+        every { isDismissible } returns true
     }
 
     @get:Rule
@@ -328,6 +329,19 @@ class BluetoothViewModelTest {
     }
 
     @Test
+    fun `it should handle BLEDevicePairing correctly`() {
+        // given
+        val action = Action.BLEDevicePairing
+        createViewModel()
+
+        // when
+        bluetoothViewModel.onAction(action = action)
+
+        // then
+        verify { appScreenEvents.emit(AppScreenEvents.Event.BLEDevicePairingBottomSheet) }
+    }
+
+    @Test
     fun `it should navigate to questionnaire screen on QuestionnaireAction`() {
         // given
         val questionnaireId = "1"
@@ -459,6 +473,25 @@ class BluetoothViewModelTest {
 
         // then
         verify(exactly = 2) { bleService.start() }
+    }
+
+    @Test
+    fun `it should handle VitalsCardClicked action correctly`() {
+        // given
+        val action = Action.VitalsCardClicked
+        createViewModel()
+
+        // when
+        bluetoothViewModel.onAction(action)
+
+        // then
+        verify {
+            appScreenEvents.emit(
+                AppScreenEvents.Event.NavigateToTab(
+                    BottomBarItem.HEART_HEALTH
+                )
+            )
+        }
     }
 
     private fun assertBluetoothUiState(state: BluetoothUiState) {
