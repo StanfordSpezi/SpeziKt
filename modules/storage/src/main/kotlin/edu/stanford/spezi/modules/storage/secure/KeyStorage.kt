@@ -8,39 +8,33 @@ import java.security.KeyPairGenerator
 import java.security.KeyStore
 import java.security.PrivateKey
 import java.security.PublicKey
-import javax.crypto.Cipher
 import javax.inject.Inject
 
-interface AndroidKeyStore {
-    fun createKey(tag: String, size: Int = DEFAULT_KEY_SIZE): Result<KeyPair>
+interface KeyStorage {
+    fun create(tag: String, size: Int = DEFAULT_KEY_SIZE): Result<KeyPair>
 
     fun retrieveKeyPair(tag: String): KeyPair?
     fun retrievePrivateKey(tag: String): PrivateKey?
     fun retrievePublicKey(tag: String): PublicKey?
 
-    fun deleteEntry(tag: String)
-
-    fun clear()
-
-    fun getCipher(): Cipher
-
-    fun aliases(): List<String>
+    fun delete(tag: String)
+    fun deleteAll()
 
     companion object {
-        const val DEFAULT_KEY_SIZE = 2048
-        const val PROVIDER = "AndroidKeyStore"
+        internal const val DEFAULT_KEY_SIZE = 2048
+        internal const val PROVIDER = "AndroidKeyStore"
         const val CIPHER_TRANSFORMATION = "RSA/ECB/OAEPWithSHA-1AndMGF1Padding"
     }
 }
 
-internal class AndroidKeyStoreImpl @Inject constructor() : AndroidKeyStore {
+internal class KeyStorageImpl @Inject constructor() : KeyStorage {
     private val logger by speziLogger()
 
     private val keyStore: KeyStore by lazy {
-        KeyStore.getInstance(AndroidKeyStore.PROVIDER).apply { load(null) }
+        KeyStore.getInstance(KeyStorage.PROVIDER).apply { load(null) }
     }
 
-    override fun createKey(tag: String, size: Int): Result<KeyPair> = runCatching {
+    override fun create(tag: String, size: Int): Result<KeyPair> = runCatching {
         val keyGenParameterSpec = KeyGenParameterSpec.Builder(
             tag,
             KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
@@ -77,21 +71,15 @@ internal class AndroidKeyStoreImpl @Inject constructor() : AndroidKeyStore {
         logger.e(it) { "Failure during retrieval of public key with $tag" }
     }.getOrNull()
 
-    override fun deleteEntry(tag: String) {
-        runCatching {
-            keyStore.deleteEntry(tag)
-        }.onFailure {
-            logger.e(it) { "Failed to delete entry with $tag" }
+    override fun delete(tag: String) = runCatching {
+        keyStore.deleteEntry(tag)
+    }.onFailure {
+        logger.e(it) { "Failed to delete entry with $tag" }
+    }.getOrDefault(Unit)
+
+    override fun deleteAll() {
+        for (tag in keyStore.aliases()) {
+            delete(tag)
         }
-    }
-
-    override fun clear() {
-        aliases().forEach { deleteEntry(it) }
-    }
-
-    override fun aliases(): List<String> = keyStore.aliases().toList()
-
-    override fun getCipher(): Cipher {
-        return Cipher.getInstance(AndroidKeyStore.CIPHER_TRANSFORMATION)
     }
 }

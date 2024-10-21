@@ -8,7 +8,7 @@ import edu.stanford.spezi.modules.storage.di.Storage
 import edu.stanford.spezi.modules.storage.local.LocalStorageSetting.Encrypted
 import edu.stanford.spezi.modules.storage.local.LocalStorageSetting.EncryptedUsingKeyStore
 import edu.stanford.spezi.modules.storage.local.LocalStorageSetting.Unencrypted
-import edu.stanford.spezi.modules.storage.secure.AndroidKeyStore
+import edu.stanford.spezi.modules.storage.secure.KeyStorage
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.DeserializationStrategy
@@ -55,7 +55,7 @@ interface LocalStorage {
 internal class LocalStorageImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
-    private val androidKeyStore: AndroidKeyStore,
+    private val keyStorage: KeyStorage,
 ) : LocalStorage {
 
     private val logger by speziLogger()
@@ -144,15 +144,15 @@ internal class LocalStorageImpl @Inject constructor(
         return when (settings) {
             is Unencrypted -> null
             is Encrypted -> settings.keyPair
-            is EncryptedUsingKeyStore -> with(androidKeyStore) {
+            is EncryptedUsingKeyStore -> with(keyStorage) {
                 retrieveKeyPair(ANDROID_KEYSTORE_TAG)
-                    ?: createKey(ANDROID_KEYSTORE_TAG).getOrThrow()
+                    ?: create(ANDROID_KEYSTORE_TAG).getOrThrow()
             }
         }
     }
 
     private fun getInitializedCipher(mode: Int, key: Key): Cipher =
-        androidKeyStore.getCipher().apply { init(mode, key) }
+        Cipher.getInstance(KeyStorage.CIPHER_TRANSFORMATION).apply { init(mode, key) }
 
     private suspend fun <T> execute(block: suspend () -> T) = withContext(ioDispatcher) {
         runCatching { block() }

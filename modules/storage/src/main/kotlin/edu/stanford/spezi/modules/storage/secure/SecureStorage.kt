@@ -1,113 +1,74 @@
 package edu.stanford.spezi.modules.storage.secure
 
-import edu.stanford.spezi.modules.storage.di.Storage
-import edu.stanford.spezi.modules.storage.key.KeyValueStorageFactory
-import edu.stanford.spezi.modules.storage.key.KeyValueStorageType
-import edu.stanford.spezi.modules.storage.key.getSerializable
-import edu.stanford.spezi.modules.storage.key.putSerializable
+import edu.stanford.spezi.core.logging.speziLogger
+import java.security.KeyPair
+import java.security.PrivateKey
+import java.security.PublicKey
+import java.util.EnumSet
 import javax.inject.Inject
 
 interface SecureStorage {
-    fun store(credentials: Credentials)
+    fun createKey(tag: String, size: Int): Result<KeyPair>
+    fun retrievePrivateKey(tag: String): PrivateKey?
+    fun retrievePublicKey(tag: String): PublicKey?
+    fun deleteKeyPair(tag: String)
 
-    fun retrieveCredentials(username: String, server: String?): Credentials?
-    fun retrieveUserCredentials(username: String): List<Credentials>
-    fun retrieveServerCredentials(server: String): List<Credentials>
+    fun storeCredential(
+        credential: Credential,
+        server: String? = null
+    )
+    fun updateCredential(
+        username: String,
+        server: String? = null,
+        newCredential: Credential,
+        newServer: String? = null
+    )
+    fun retrieveCredential(username: String, server: String? = null): Credential?
+    fun retrieveAllCredentials(server: String? = null): List<Credential>
+    fun deleteCredential(username: String, server: String? = null)
 
-    fun updateCredentials(username: String, server: String?, newCredentials: Credentials)
-
-    fun deleteCredentials(username: String, server: String?)
-    fun deleteUserCredentials(username: String)
-    fun deleteServerCredentials(server: String)
-    fun deleteAllCredentials(itemTypes: SecureStorageItemTypes)
+    fun deleteAll(
+        includingKeys: Boolean = true,
+        credentialTypes: EnumSet<CredentialType> = CredentialType.ALL
+    )
 }
 
 internal class SecureStorageImpl @Inject constructor(
-    storageFactory: KeyValueStorageFactory,
+    private val credentialStorage: CredentialStorage,
+    private val keyStorage: KeyStorage,
 ) : SecureStorage {
+    private val logger by speziLogger()
 
-    private val storage = storageFactory.create(
-        fileName = SECURE_STORAGE_FILE_NAME,
-        type = KeyValueStorageType.ENCRYPTED,
-    )
+    override fun createKey(tag: String, size: Int) = keyStorage.create(tag, size)
+    override fun retrievePrivateKey(tag: String) = keyStorage.retrievePrivateKey(tag)
+    override fun retrievePublicKey(tag: String) = keyStorage.retrievePublicKey(tag)
+    override fun deleteKeyPair(tag: String) = keyStorage.delete(tag)
 
-    override fun store(credentials: Credentials) {
-        storage.putSerializable(
-            key = storageKey(credentials.server, credentials.username),
-            value = credentials
-        )
-    }
+    override fun storeCredential(credential: Credential, server: String?) =
+        credentialStorage.store(credential, server)
 
-    override fun retrieveCredentials(
+    override fun updateCredential(
         username: String,
         server: String?,
-    ): Credentials? {
-        return storage.getSerializable(storageKey(server, username))
-    }
+        newCredential: Credential,
+        newServer: String?
+    ) = credentialStorage.update(username, server, newCredential, newServer)
 
-    override fun retrieveServerCredentials(server: String): List<Credentials> {
-        return storage.allKeys().mapNotNull { key ->
-            val credential = storage.getSerializable<Credentials>(key)
-            credential.takeIf { it?.server == server }
-        }
-    }
+    override fun retrieveCredential(username: String, server: String?) =
+        credentialStorage.retrieve(username, server)
+    override fun retrieveAllCredentials(server: String?) =
+        credentialStorage.retrieveAll(server)
 
-    override fun retrieveUserCredentials(username: String): List<Credentials> {
-        return storage.allKeys().mapNotNull { key ->
-            if (key.substringAfter(SERVER_USERNAME_SEPARATOR) == username) {
-                storage.getSerializable(key)
-            } else {
-                null
-            }
-        }
-    }
+    override fun deleteCredential(username: String, server: String?) =
+        credentialStorage.delete(username, server)
 
-    override fun deleteCredentials(
-        username: String,
-        server: String?,
+    override fun deleteAll(
+        includingKeys: Boolean,
+        credentialTypes: EnumSet<CredentialType>
     ) {
-        storage.delete(key = storageKey(server, username))
-    }
-
-    override fun deleteUserCredentials(username: String) {
-        storage.allKeys().forEach { key ->
-            if (key.substringAfter(SERVER_USERNAME_SEPARATOR) == username) storage.delete(key)
+        if (includingKeys) {
+            keyStorage.deleteAll()
         }
-    }
-
-    override fun deleteServerCredentials(server: String) {
-        storage.allKeys().forEach { key ->
-            if (key.substringBefore(SERVER_USERNAME_SEPARATOR) == server) storage.delete(key)
-        }
-    }
-
-    override fun deleteAllCredentials(itemTypes: SecureStorageItemTypes) {
-        if (itemTypes == SecureStorageItemTypes.ALL) return storage.clear()
-        val deleteServer = itemTypes == SecureStorageItemTypes.SERVER_CREDENTIALS
-        val deleteNonServer = itemTypes == SecureStorageItemTypes.NON_SERVER_CREDENTIALS
-        storage.allKeys().forEach { key ->
-            val isServerKey = key.substringBefore(SERVER_USERNAME_SEPARATOR).isNotEmpty()
-            when {
-                isServerKey && deleteServer -> storage.delete(key)
-                !isServerKey && deleteNonServer -> storage.delete(key)
-            }
-        }
-    }
-
-    override fun updateCredentials(
-        username: String,
-        server: String?,
-        newCredentials: Credentials,
-    ) {
-        deleteCredentials(username, server)
-        store(newCredentials)
-    }
-
-    private fun storageKey(server: String?, username: String): String =
-        "${server ?: ""}$SERVER_USERNAME_SEPARATOR$username"
-
-    private companion object {
-        const val SECURE_STORAGE_FILE_NAME = "${Storage.STORAGE_FILE_PREFIX}SecureStorage"
-        const val SERVER_USERNAME_SEPARATOR = "__@__"
+        credentialStorage.deleteAll(credentialTypes)
     }
 }

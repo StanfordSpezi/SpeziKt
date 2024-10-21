@@ -3,8 +3,7 @@ package edu.stanford.spezi.modules.storage.secure
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Credentials(
+data class Credential(
     val username: String,
     val password: String,
-    val server: String?,
 )
