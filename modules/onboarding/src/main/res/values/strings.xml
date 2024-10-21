@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="edit_icon">Edit Icon</string>
+    <string name="invitation_code">Invitation Code</string>
+    <string name="redeem_invitation_code">Redeem Invitation Code</string>
+    <string name="area_icon">Area Icon</string>
+</resources>

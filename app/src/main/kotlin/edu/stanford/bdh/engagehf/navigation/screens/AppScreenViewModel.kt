@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.messages.HealthSummaryService
+import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.notification.NotificationNavigationEvent
 import edu.stanford.spezi.module.account.manager.UserSessionManager
@@ -153,6 +154,11 @@ class AppScreenViewModel @Inject constructor(
                 _uiState.update { it.copy(accountUiState = it.accountUiState.copy(showDialog = false)) }
                 navigator.navigateTo(NotificationNavigationEvent.NotificationSettings)
             }
+
+            Action.ShowContact -> {
+                _uiState.update { it.copy(accountUiState = it.accountUiState.copy(showDialog = false)) }
+                navigator.navigateTo(AppNavigationEvent.ContactScreen)
+            }
         }
     }
 }
@@ -188,6 +194,7 @@ sealed interface Action {
     data class UpdateSelectedBottomBarItem(val selectedBottomBarItem: BottomBarItem) : Action
     data object ShowHealthSummary : Action
     data object ShowNotificationSettings : Action
+    data object ShowContact : Action
     data object SignOut : Action
     data class ShowAccountDialog(val showDialog: Boolean) : Action
     data object DismissBottomSheet : Action

@@ -91,4 +91,5 @@
     <string name="your_devices_header_title">Deine Geräte</string>
     <string name="last_seen_on">Zuletzt gesehen am %1$s</string>
     <string name="sign_out_failed">Abmeldung fehlgeschlagen.</string>
+    <string name="contact">Kontakt</string>
 </resources>

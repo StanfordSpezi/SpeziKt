@@ -169,6 +169,18 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
                         style = bodyMedium,
                     )
                 }
+                TextButton(
+                    onClick = {
+                        onAction(Action.ShowContact)
+                    },
+                    modifier = Modifier
+                        .align(Alignment.Start),
+                ) {
+                    Text(
+                        text = stringResource(R.string.contact),
+                        style = bodyMedium,
+                    )
+                }
                 HorizontalDivider()
                 VerticalSpacer()
                 TextButton(

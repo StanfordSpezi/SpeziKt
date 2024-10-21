@@ -5,7 +5,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.spezi.core.design.component.ComposeContentActivity
 import edu.stanford.spezi.module.onboarding.fakes.FakeOnboardingRepository
-import edu.stanford.spezi.module.onboarding.onboarding.OnboardingScreen
+import edu.stanford.spezi.module.onboarding.onboarding.OnboardingView
 import edu.stanford.spezi.module.onboarding.simulator.OnboardingScreenSimulator
 import io.mockk.mockk
 import io.mockk.verify
@@ -16,7 +16,7 @@ import org.junit.Test
 import javax.inject.Inject
 
 @HiltAndroidTest
-class OnboardingScreenTest {
+class OnboardingViewTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
@@ -29,7 +29,7 @@ class OnboardingScreenTest {
     @Before
     fun setup() {
         hiltRule.inject()
-        composeTestRule.activity.setScreen { OnboardingScreen() }
+        composeTestRule.activity.setScreen { OnboardingView() }
     }
 
     @Test
