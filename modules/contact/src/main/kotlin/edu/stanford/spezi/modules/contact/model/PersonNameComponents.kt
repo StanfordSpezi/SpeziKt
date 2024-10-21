@@ -9,7 +9,7 @@ data class PersonNameComponents(
     val nickname: String? = null,
 ) {
     fun formatted(): String {
-        val components = listOf(
+        val components = listOfNotNull(
             namePrefix,
             givenName,
             nickname?.let { "\"$it\"" },
@@ -17,6 +17,6 @@ data class PersonNameComponents(
             familyName,
             nameSuffix
         )
-        return components.mapNotNull { it }.joinToString(" ")
+        return components.joinToString(" ")
     }
 }
