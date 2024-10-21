@@ -11,8 +11,10 @@ import edu.stanford.spezi.modules.storage.key.KeyValueStorageFactoryImpl
 import edu.stanford.spezi.modules.storage.key.KeyValueStorageType
 import edu.stanford.spezi.modules.storage.local.LocalStorage
 import edu.stanford.spezi.modules.storage.local.LocalStorageImpl
-import edu.stanford.spezi.modules.storage.secure.AndroidKeyStore
-import edu.stanford.spezi.modules.storage.secure.AndroidKeyStoreImpl
+import edu.stanford.spezi.modules.storage.secure.CredentialStorage
+import edu.stanford.spezi.modules.storage.secure.CredentialStorageImpl
+import edu.stanford.spezi.modules.storage.secure.KeyStorage
+import edu.stanford.spezi.modules.storage.secure.KeyStorageImpl
 import edu.stanford.spezi.modules.storage.secure.SecureStorage
 import edu.stanford.spezi.modules.storage.secure.SecureStorageImpl
 import javax.inject.Singleton
@@ -64,9 +66,14 @@ class StorageModule {
         ): KeyValueStorageFactory
 
         @Binds
-        internal abstract fun bindAndroidKeyStore(
-            impl: AndroidKeyStoreImpl,
-        ): AndroidKeyStore
+        internal abstract fun bindCredentialStorage(
+            impl: CredentialStorageImpl,
+        ): CredentialStorage
+
+        @Binds
+        internal abstract fun bindKeyStorage(
+            impl: KeyStorageImpl,
+        ): KeyStorage
 
         @Binds
         internal abstract fun bindSecureStorage(
