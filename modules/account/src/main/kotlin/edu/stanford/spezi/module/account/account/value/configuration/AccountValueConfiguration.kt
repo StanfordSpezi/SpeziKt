@@ -1,5 +1,6 @@
 package edu.stanford.spezi.module.account.account.value.configuration
 
+import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.collections.AccountKey
 import kotlin.reflect.KClass
@@ -73,6 +74,16 @@ data class AccountValueConfiguration internal constructor(
     // TODO: Figure out whether dynamic member access exists in Kotlin
 
     companion object {
+        val default: AccountValueConfiguration get() = AccountValueConfiguration(
+            listOf(
+                ConfiguredAccountKey.requires(AccountKeys::userId),
+                ConfiguredAccountKey.requires(AccountKeys::password),
+                ConfiguredAccountKey.requires(AccountKeys::name),
+                ConfiguredAccountKey.collects(AccountKeys::dateOfBirth),
+                ConfiguredAccountKey.collects(AccountKeys::genderIdentity)
+            )
+        )
+
         internal operator fun invoke(configuration: List<ConfiguredAccountKey>): AccountValueConfiguration {
             return AccountValueConfiguration(
                 configuration

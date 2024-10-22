@@ -24,13 +24,11 @@ data class FirebaseEmulatorSettings(
 
 class FirebaseAccountService(
     private val emulatorSettings: FirebaseEmulatorSettings? = null,
-    val authProviders: Set<FirebaseAuthProvider>,
+    val authProviders: FirebaseAuthProviders,
 ) : AccountService {
     private val logger by speziLogger()
 
     @Inject private lateinit var configureFirebaseApp: ConfigureFirebaseApp
-    // TODO: @Inject private lateinit var localStorage: LocalStorage
-    // TODO: @Inject private lateinit var secureStorage: SecureStorage
 
     @Inject private lateinit var account: Account
     @Inject private lateinit var notifications: AccountNotifications
@@ -100,7 +98,7 @@ class FirebaseAccountService(
             if (account.signedIn) {
                 notifyUserRemoval()
             } else {
-                throw Error() // TODO: FirebaseAccountError.NotSignedIn
+                TODO("FirebaseAccountError.NotSignedIn")
             }
         }
     }
@@ -116,7 +114,7 @@ class FirebaseAccountService(
             if (account.signedIn) {
                 notifyUserRemoval()
             }
-            throw Error() // TODO: FirebaseAccountError.NotSignedIn
+            TODO("FirebaseAccountError.NotSignedIn")
         }
     }
 
