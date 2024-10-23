@@ -46,6 +46,7 @@ dependencies {
     implementation(project(":core:navigation"))
     implementation(project(":core:notification"))
     implementation(project(":modules:account"))
+    implementation(project(":modules:contact"))
     implementation(project(":modules:education"))
     implementation(project(":modules:healthconnectonfhir"))
     implementation(project(":modules:onboarding"))
