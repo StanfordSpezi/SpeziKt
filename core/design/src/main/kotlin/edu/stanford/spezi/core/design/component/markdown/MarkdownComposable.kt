@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -13,6 +14,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
+
+@Composable
+fun MarkdownComposable(data: suspend () -> ByteArray) {
+    // TODO: Figure out why hiltViewModel is not working and how one would do that anyways
+    val viewModel = remember { MarkdownViewModel(data, MarkdownParser()) }
+    val uiState = viewModel.uiState.collectAsState()
+
+    MarkdownComponent(uiState.value.elements ?: emptyList())
+}
 
 @Composable
 fun MarkdownComponent(markdownElements: List<MarkdownElement>) {

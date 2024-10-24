@@ -7,7 +7,6 @@ import dagger.hilt.testing.TestInstallIn
 import edu.stanford.spezi.module.account.di.AccountModule
 import edu.stanford.spezi.module.account.manager.InvitationAuthManager
 import edu.stanford.spezi.module.account.manager.UserSessionManager
-import edu.stanford.spezi.module.onboarding.consent.ConsentManager
 import edu.stanford.spezi.module.onboarding.fakes.FakeOnboardingRepository
 import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeRepository
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingRepository

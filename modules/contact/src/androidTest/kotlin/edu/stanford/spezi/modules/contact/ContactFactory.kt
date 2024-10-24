@@ -4,9 +4,9 @@ import android.location.Address
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.utils.foundation.PersonNameComponents
 import edu.stanford.spezi.modules.contact.model.Contact
 import edu.stanford.spezi.modules.contact.model.ContactOption
-import edu.stanford.spezi.modules.contact.model.PersonNameComponents
 import edu.stanford.spezi.modules.contact.model.call
 import edu.stanford.spezi.modules.contact.model.email
 import edu.stanford.spezi.modules.contact.model.text
