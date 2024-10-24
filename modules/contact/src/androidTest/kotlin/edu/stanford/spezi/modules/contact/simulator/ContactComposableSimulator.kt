@@ -10,9 +10,9 @@ import androidx.compose.ui.test.onChildAt
 import androidx.test.platform.app.InstrumentationRegistry
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.testing.onNodeWithIdentifier
+import edu.stanford.spezi.core.utils.foundation.PersonNameComponents
 import edu.stanford.spezi.modules.contact.ContactComposableTestIdentifier
 import edu.stanford.spezi.modules.contact.model.ContactOption
-import edu.stanford.spezi.modules.contact.model.PersonNameComponents
 import edu.stanford.spezi.modules.contact.model.formatted
 
 class ContactComposableSimulator(

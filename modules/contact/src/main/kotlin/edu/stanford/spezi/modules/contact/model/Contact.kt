@@ -3,6 +3,7 @@ package edu.stanford.spezi.modules.contact.model
 import android.location.Address
 import androidx.compose.ui.graphics.vector.ImageVector
 import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.utils.foundation.PersonNameComponents
 import java.util.UUID
 
 /**

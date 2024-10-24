@@ -1,4 +1,4 @@
-package edu.stanford.spezi.modules.contact.model
+package edu.stanford.spezi.core.utils.foundation
 
 data class PersonNameComponents(
     val namePrefix: String? = null,

@@ -3,7 +3,6 @@ package edu.stanford.bdh.engagehf.onboarding
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.utils.MessageNotifier
-import edu.stanford.spezi.module.onboarding.consent.ConsentManager
 import javax.inject.Inject
 
 class EngageConsentManager @Inject internal constructor(

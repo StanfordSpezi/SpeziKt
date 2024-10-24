@@ -7,7 +7,6 @@ private const val HEADING_LEVEL_2 = 2
 private const val HEADING_LEVEL_3 = 3
 
 class MarkdownParser @Inject constructor() {
-
     fun parse(text: String): List<MarkdownElement> = buildList {
         text.lines().forEach { line ->
             when {

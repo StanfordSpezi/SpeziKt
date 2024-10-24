@@ -22,15 +22,17 @@ data class ConsentDocumentExportConfiguration(
             private const val US_LETTER_WIDTH_IN_INCHES = 8.5
             private const val US_LETTER_HEIGHT_IN_INCHES = 11.0
 
+            private const val DEFAULT_POINTS_PER_INCH = 72.0
+
             val usLetter get() = usLetter()
             val dinA4 get() = dinA4()
 
-            fun dinA4(pointsPerInch: Double = 72.0) = PaperSize(
+            fun dinA4(pointsPerInch: Double = DEFAULT_POINTS_PER_INCH) = PaperSize(
                 width = A4_WIDTH_IN_INCHES * pointsPerInch,
                 height = A4_HEIGHT_IN_INCHES * pointsPerInch
             )
 
-            fun usLetter(pointsPerInch: Double = 72.0) = PaperSize(
+            fun usLetter(pointsPerInch: Double = DEFAULT_POINTS_PER_INCH) = PaperSize(
                 width = US_LETTER_WIDTH_IN_INCHES * pointsPerInch,
                 height = US_LETTER_HEIGHT_IN_INCHES * pointsPerInch
             )
