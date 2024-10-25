@@ -271,12 +271,12 @@ fun SymptomsChart(
 }
 
 @Composable
-fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewModel.Action) -> Unit) {
+private fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewModel.Action) -> Unit) {
     Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
         TextButton(onClick = {
             onAction(SymptomsViewModel.Action.ToggleSymptomTypeDropdown(true))
         }) {
-            SymptomTypeText(headerData.selectedSymptomType)
+            SymptomTypeTitleText(headerData.selectedSymptomType)
             Icon(Icons.Default.ArrowDropDown, contentDescription = "ArrowDropDown")
         }
         DropdownMenu(
@@ -308,7 +308,7 @@ fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewModel.Action
 }
 
 @Composable
-fun SymptomTypeText(symptomType: SymptomType) {
+private fun SymptomTypeText(symptomType: SymptomType) {
     Text(
         text =
         when (symptomType) {
@@ -318,6 +318,21 @@ fun SymptomTypeText(symptomType: SymptomType) {
             SymptomType.QUALITY_OF_LIFE -> stringResource(R.string.symptom_type_quality)
             SymptomType.SYMPTOMS_FREQUENCY -> stringResource(R.string.symptom_type_specific)
             SymptomType.DIZZINESS -> stringResource(R.string.symptom_type_dizziness)
+        }
+    )
+}
+
+@Composable
+private fun SymptomTypeTitleText(symptomType: SymptomType) {
+    Text(
+        text =
+        when (symptomType) {
+            SymptomType.OVERALL -> stringResource(R.string.overall_score_title)
+            SymptomType.PHYSICAL_LIMITS -> stringResource(R.string.physical_limits_score_title)
+            SymptomType.SOCIAL_LIMITS -> stringResource(R.string.social_limits_score_title)
+            SymptomType.QUALITY_OF_LIFE -> stringResource(R.string.quality_of_life_score_title)
+            SymptomType.SYMPTOMS_FREQUENCY -> stringResource(R.string.symptoms_frequency_score_title)
+            SymptomType.DIZZINESS -> stringResource(R.string.dizziness_score_title)
         }
     )
 }
