@@ -5,6 +5,7 @@ package edu.stanford.bdh.engagehf.health.symptoms
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.TableEntryData
@@ -23,6 +24,7 @@ import javax.inject.Inject
 class SymptomsViewModel @Inject internal constructor(
     private val symptomsUiStateMapper: SymptomsUiStateMapper,
     private val healthRepository: HealthRepository,
+    private val appScreenEvents: AppScreenEvents,
 ) : ViewModel() {
     private val logger by speziLogger()
 
@@ -56,7 +58,16 @@ class SymptomsViewModel @Inject internal constructor(
 
     fun onAction(action: Action) {
         when (action) {
-            Action.Info -> {}
+            is Action.Info -> {
+                val selectedSymptomType =
+                    (uiState.value as? SymptomsUiState.Success)?.data?.headerData?.selectedSymptomType
+                if (selectedSymptomType != null) {
+                    appScreenEvents.emit(
+                        AppScreenEvents.Event.SymptomsDescriptionBottomSheet
+                    )
+                }
+            }
+
             is Action.SelectSymptomType -> {
                 _uiState.update {
                     (it as? SymptomsUiState.Success)?.let { success ->
