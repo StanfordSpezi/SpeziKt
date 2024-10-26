@@ -1,14 +1,16 @@
 package edu.stanford.spezi.modules.contact.simulator
 
 import android.location.Address
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertContentDescriptionContains
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onChildAt
 import androidx.test.platform.app.InstrumentationRegistry
+import edu.stanford.spezi.core.design.component.ImageResource
 import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.testing.hasIconIdentifier
 import edu.stanford.spezi.core.testing.onNodeWithIdentifier
 import edu.stanford.spezi.modules.contact.ContactComposableTestIdentifier
 import edu.stanford.spezi.modules.contact.model.ContactOption
@@ -18,8 +20,11 @@ import edu.stanford.spezi.modules.contact.model.formatted
 class ContactComposableSimulator(
     private val composeTestRule: ComposeTestRule,
 ) {
-    private fun image(image: ImageVector) =
-        composeTestRule.onNodeWithIdentifier(ContactComposableTestIdentifier.IMAGE, image.name)
+    private fun image(image: ImageResource) =
+        composeTestRule.onNodeWithIdentifier(
+            ContactComposableTestIdentifier.IMAGE,
+            image.identifier
+        )
 
     private val name =
         composeTestRule.onNodeWithIdentifier(ContactComposableTestIdentifier.NAME)
@@ -37,13 +42,17 @@ class ContactComposableSimulator(
         InstrumentationRegistry.getInstrumentation().targetContext
 
     private fun option(title: StringResource) =
-        composeTestRule.onNodeWithIdentifier(ContactComposableTestIdentifier.OPTION, title.get(targetContext))
+        composeTestRule.onNodeWithIdentifier(
+            ContactComposableTestIdentifier.OPTION,
+            title.get(targetContext)
+        )
 
-    fun assertHasImage(vector: ImageVector?) {
-        vector?.let {
-            image(vector)
+    fun assertHasImage(imageResource: ImageResource?) {
+        imageResource?.let {
+            image(imageResource)
                 .assertExists()
                 .assertContentDescriptionContains("Profile Picture")
+                .assert(hasIconIdentifier(imageResource.identifier))
         }
     }
 

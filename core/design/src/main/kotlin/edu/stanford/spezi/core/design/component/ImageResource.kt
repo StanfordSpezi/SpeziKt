@@ -1,0 +1,19 @@
+package edu.stanford.spezi.core.design.component
+
+import androidx.annotation.DrawableRes
+import androidx.compose.ui.graphics.vector.ImageVector
+import edu.stanford.spezi.core.utils.UUID
+
+/**
+ * A sealed class to represent an image resource. It can be either a vector image or a drawable.
+ * This is useful to abstract the image resource type and use it in a composable function. The identifier can be used for tests.
+ * @see ImageResource.Vector
+ * @see ImageResource.Drawable
+ * @see ImageResourceIcon
+ */
+sealed class ImageResource(open val identifier: String = UUID().toString()) {
+
+    data class Vector(val image: ImageVector) : ImageResource()
+
+    data class Drawable(@DrawableRes val resId: Int) : ImageResource()
+}
