@@ -23,7 +23,7 @@ data class VideoSection(
 @Serializable
 data class Video(
     val title: String,
-    val description: String? = null,
+    val description: String,
     val orderIndex: Int = 0,
     val youtubeId: String,
 ) {
