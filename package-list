@@ -94,6 +94,7 @@ edu.stanford.spezi.module.onboarding.onboarding
 edu.stanford.spezi.module.onboarding.sequential
 edu.stanford.spezi.module.onboarding.sequential.components
 module:storage
+edu.stanford.spezi.modules.storage.credential
 edu.stanford.spezi.modules.storage.di
-edu.stanford.spezi.modules.storage.file
 edu.stanford.spezi.modules.storage.key
+edu.stanford.spezi.modules.storage.local
