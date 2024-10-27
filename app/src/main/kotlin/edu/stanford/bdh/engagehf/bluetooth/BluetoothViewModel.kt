@@ -27,7 +27,9 @@ import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.notification.notifier.FirebaseMessage
 import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.FIREBASE_MESSAGE_KEY
+import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
+import edu.stanford.spezi.modules.education.videos.Video
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -45,6 +47,7 @@ class BluetoothViewModel @Inject internal constructor(
     private val navigator: Navigator,
     private val engageEducationRepository: EngageEducationRepository,
     private val healthSummaryService: HealthSummaryService,
+    private val messageNotifier: MessageNotifier,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
     private val logger by speziLogger()
@@ -245,7 +248,12 @@ class BluetoothViewModel @Inject internal constructor(
 
             is MessagesAction.VideoSectionAction -> {
                 viewModelScope.launch {
-                    handleVideoSectionAction(messagesAction)
+                    handleVideoSectionAction(messagesAction).onFailure {
+                        messageNotifier.notify(
+                            message = "Error while handling message action."
+                        )
+                        return@launch // on failure, we don't want to dismiss the message
+                    }
                 }
             }
         }
@@ -254,16 +262,14 @@ class BluetoothViewModel @Inject internal constructor(
         }
     }
 
-    private suspend fun handleVideoSectionAction(messageAction: MessagesAction.VideoSectionAction) {
-        engageEducationRepository.getVideoBySectionAndVideoId(
+    private suspend fun handleVideoSectionAction(messageAction: MessagesAction.VideoSectionAction): Result<Video> {
+        return engageEducationRepository.getVideoBySectionAndVideoId(
             messageAction.videoSectionVideo.videoSectionId,
             messageAction.videoSectionVideo.videoId
-        ).getOrNull()?.let { video ->
-            navigator.navigateTo(
-                EducationNavigationEvent.VideoSectionClicked(
-                    video = video
-                )
-            )
+        ).onSuccess { video ->
+            navigator.navigateTo(EducationNavigationEvent.VideoSectionClicked(video))
+        }.onFailure {
+            logger.e(it) { "Error while getting video by section and video id" }
         }
     }
 
