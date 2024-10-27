@@ -25,7 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.core.design.component.ImageResource
-import edu.stanford.spezi.core.design.component.ImageResourceIcon
+import edu.stanford.spezi.core.design.component.ImageResourceComposable
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
@@ -77,7 +77,7 @@ fun ContactComposable(contact: Contact, modifier: Modifier = Modifier) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 val image = contact.image ?: ImageResource.Vector(Icons.Default.AccountBox)
-                ImageResourceIcon(
+                ImageResourceComposable(
                     imageResource = image,
                     contentDescription = stringResource(R.string.profile_picture),
                     modifier = Modifier

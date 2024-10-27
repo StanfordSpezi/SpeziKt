@@ -10,7 +10,7 @@ import javax.annotation.concurrent.Immutable
  * This is useful to abstract the image resource type and use it in a composable function. The identifier can be used for tests.
  * @see ImageResource.Vector
  * @see ImageResource.Drawable
- * @see ImageResourceIcon
+ * @see ImageResourceComposable
  */
 @Immutable
 sealed class ImageResource {
