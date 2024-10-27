@@ -4,7 +4,7 @@ import edu.stanford.bdh.engagehf.bluetooth.spezi.model.BluetoothService
 import edu.stanford.bdh.engagehf.bluetooth.spezi.model.properties.Characteristic
 import edu.stanford.bdh.engagehf.bluetooth.spezi.utils.BTUUID
 
-data class DeviceInformationService(override val id: BTUUID = BTUUID("180A")): BluetoothService {
+data class DeviceInformationService(override val id: BTUUID = BTUUID("180A")) : BluetoothService {
     val manufacturerName by Characteristic<String>("2A29")
     val modelNumber by Characteristic<String>("2A24")
     val serialNumber by Characteristic<String>("2A25")

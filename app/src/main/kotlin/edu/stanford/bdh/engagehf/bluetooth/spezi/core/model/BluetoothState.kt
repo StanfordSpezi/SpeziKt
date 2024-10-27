@@ -5,5 +5,5 @@ enum class BluetoothState(private val rawValue: UByte) {
     POWERED_OFF(1u),
     UNSUPPORTED(2u),
     UNAUTHORIZED(3u),
-    POWERED_ON(4u)
+    POWERED_ON(4u),
 }

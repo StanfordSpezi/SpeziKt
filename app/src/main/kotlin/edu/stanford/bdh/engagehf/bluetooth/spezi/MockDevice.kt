@@ -6,7 +6,7 @@ import edu.stanford.bdh.engagehf.bluetooth.spezi.model.properties.DeviceAction
 import edu.stanford.bdh.engagehf.bluetooth.spezi.model.properties.DeviceState
 import edu.stanford.bdh.engagehf.bluetooth.spezi.model.properties.Service
 
-class MockDevice: BluetoothDevice {
+class MockDevice : BluetoothDevice {
     val id by DeviceState(BluetoothPeripheral::id)
     val name by DeviceState(BluetoothPeripheral::name)
     val state by DeviceState(BluetoothPeripheral::state)

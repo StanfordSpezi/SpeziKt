@@ -10,7 +10,7 @@ data class AdvertisementData(
     val overflowServiceIdentifiers: List<BTUUID>?,
     val txPowerLevel: Int?,
     val isConnectable: Boolean?,
-    val solicitedServiceIdentifiers: List<BTUUID>?
+    val solicitedServiceIdentifiers: List<BTUUID>?,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

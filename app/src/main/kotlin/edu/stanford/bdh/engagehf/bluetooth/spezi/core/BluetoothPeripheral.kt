@@ -1,37 +1,34 @@
 package edu.stanford.bdh.engagehf.bluetooth.spezi.core
 
 import android.annotation.SuppressLint
-import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothManager
 import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.os.ParcelUuid
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import edu.stanford.bdh.engagehf.bluetooth.spezi.utils.BTUUID
+import edu.stanford.bdh.engagehf.bluetooth.spezi.core.model.AdvertisementData
 import edu.stanford.bdh.engagehf.bluetooth.spezi.core.model.GATTCharacteristic
 import edu.stanford.bdh.engagehf.bluetooth.spezi.core.model.GATTService
-import edu.stanford.bdh.engagehf.bluetooth.spezi.core.model.AdvertisementData
 import edu.stanford.bdh.engagehf.bluetooth.spezi.core.model.OnChangeRegistration
 import edu.stanford.bdh.engagehf.bluetooth.spezi.core.model.PeripheralState
+import edu.stanford.bdh.engagehf.bluetooth.spezi.utils.BTUUID
 import java.util.Date
 
 class BluetoothPeripheral(
     private val manager: BluetoothManager,
     private val result: ScanResult,
 ) {
-    class Storage {
-
-    }
+    class Storage
 
     private var gatt: BluetoothGatt? = null
     private val storage = Storage()
 
-    val id: BTUUID @SuppressLint("MissingPermission")
+    val id: BTUUID
+        @SuppressLint("MissingPermission")
         get() = BTUUID(result.device.uuids.first())
 
-    val name: String? @SuppressLint("MissingPermission")
+    val name: String?
+        @SuppressLint("MissingPermission")
         get() = result.device.name
 
     val rssi: Int get() = result.rssi
@@ -45,7 +42,11 @@ class BluetoothPeripheral(
             overflowServiceIdentifiers = null, // TODO: Figure out whether this exists or how it is set on iOS
             txPowerLevel = result.scanRecord?.txPowerLevel,
             isConnectable = result.isConnectable,
-            solicitedServiceIdentifiers = result.scanRecord?.serviceSolicitationUuids?.map { BTUUID(it) }
+            solicitedServiceIdentifiers = result.scanRecord?.serviceSolicitationUuids?.map {
+                BTUUID(
+                    it
+                )
+            }
         )
 
     val services: List<GATTService>? get() = TODO()
@@ -56,33 +57,37 @@ class BluetoothPeripheral(
     suspend fun connect(context: Context) {
         gatt = result.device.connectGatt(context, true, null)
     }
+
     fun disconnect(): Unit = TODO()
 
     fun getService(id: BTUUID): GATTService? = TODO()
-    fun getCharacteristic(characteristicId: BTUUID, serviceId: ParcelUuid): GATTCharacteristic? = TODO()
+    fun getCharacteristic(characteristicId: BTUUID, serviceId: ParcelUuid): GATTCharacteristic? =
+        TODO()
 
     fun registerOnChangeHandler(
         characteristic: GATTCharacteristic,
-        onChange: (ByteArray) -> Unit
+        onChange: (ByteArray) -> Unit,
     ): OnChangeRegistration = TODO()
 
     fun registerOnChangeHandler(
         service: ParcelUuid,
         characteristic: ParcelUuid,
-        onChange: (ByteArray) -> Unit
+        onChange: (ByteArray) -> Unit,
     ): OnChangeRegistration = TODO()
 
     fun enableNotifications(
         enabled: Boolean = true,
         serviceId: ParcelUuid,
-        characteristicId: ParcelUuid
+        characteristicId: ParcelUuid,
     ): Unit = TODO()
 
-    suspend fun setNotifications(enabled: Boolean, characteristic: GATTCharacteristic): Unit = TODO()
+    suspend fun setNotifications(enabled: Boolean, characteristic: GATTCharacteristic): Unit =
+        TODO()
 
     suspend fun write(data: ByteArray, characteristic: GATTCharacteristic): Unit = TODO()
 
-    suspend fun writeWithoutResponse(data: ByteArray, characteristic: GATTCharacteristic): Unit = TODO()
+    suspend fun writeWithoutResponse(data: ByteArray, characteristic: GATTCharacteristic): Unit =
+        TODO()
 
     suspend fun read(characteristic: GATTCharacteristic): ByteArray = TODO()
 

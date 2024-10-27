@@ -13,7 +13,7 @@ import kotlin.time.Duration
 
 class Bluetooth(
     @ApplicationContext val context: Context,
-    val configuration: Set<DeviceDiscoveryDescriptor>
+    val configuration: Set<DeviceDiscoveryDescriptor>,
 ) {
 
     private class Storage {
@@ -43,13 +43,13 @@ class Bluetooth(
         manager.powerOff()
     }
 
-    fun <Device: BluetoothDevice> nearbyDevices(type: KClass<Device>): List<Device> {
-        return storage.nearbyDevices.mapNotNull { it as? Device }   // TODO
+    fun <Device : BluetoothDevice> nearbyDevices(type: KClass<Device>): List<Device> {
+        return storage.nearbyDevices.mapNotNull { it as? Device } // TODO
     }
 
-    suspend fun <Device: BluetoothDevice> retrieveDevice(
+    suspend fun <Device : BluetoothDevice> retrieveDevice(
         uuid: BTUUID,
-        type: KClass<Device>
+        type: KClass<Device>,
     ): Device? {
         TODO()
     }
@@ -57,7 +57,7 @@ class Bluetooth(
     fun scanNearbyDevices(
         minimumRssi: Int? = null,
         advertisementStaleInterval: Duration? = null,
-        autoConnect: Boolean = false
+        autoConnect: Boolean = false,
     ) {
         TODO()
         /*
@@ -74,3 +74,5 @@ class Bluetooth(
         manager.stopScanning()
     }
 }
+
+class BluetoothError(message: String, cause: Throwable? = null) : Exception(message, cause)

@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
 
 private var localConnectedDevices = mutableMapOf<KClass<*>, Any>()
 
-fun <Device: BluetoothDevice> localConnectedDevices(type: KClass<Device>): ProvidableCompositionLocal<ConnectedDevices<Device>> {
+fun <Device : BluetoothDevice> localConnectedDevices(type: KClass<Device>): ProvidableCompositionLocal<ConnectedDevices<Device>> {
     @Suppress("UNCHECKED_CAST") // TODO: Think about whether we can get rid of this.
     val existingValue = localConnectedDevices[type]?.let { return@let it as? ProvidableCompositionLocal<ConnectedDevices<Device>> }
     if (existingValue != null) return existingValue
@@ -16,3 +16,7 @@ fun <Device: BluetoothDevice> localConnectedDevices(type: KClass<Device>): Provi
     localConnectedDevices[type] = newValue
     return newValue
 }
+
+val localAdvertisementStaleInterval = compositionLocalOf { null as Double? }
+
+val localMinimumRSSI = compositionLocalOf { null as Int? }

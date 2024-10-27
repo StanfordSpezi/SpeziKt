@@ -1,24 +1,25 @@
 package edu.stanford.bdh.engagehf.bluetooth.spezi.model.properties
 
-import edu.stanford.bdh.engagehf.bluetooth.spezi.model.BluetoothDevice
+import edu.stanford.bdh.engagehf.bluetooth.spezi.BluetoothError
 import edu.stanford.bdh.engagehf.bluetooth.spezi.core.BluetoothPeripheral
+import edu.stanford.bdh.engagehf.bluetooth.spezi.model.BluetoothDevice
 import edu.stanford.bdh.engagehf.bluetooth.spezi.model.actions.BluetoothConnectAction
 import edu.stanford.bdh.engagehf.bluetooth.spezi.model.actions.BluetoothDisconnectAction
 import edu.stanford.bdh.engagehf.bluetooth.spezi.model.actions.ReadRSSIAction
 import kotlin.reflect.KProperty
 
-data class DeviceAction<Action: BluetoothPeripheralAction>(val createAction: (BluetoothPeripheral) -> Action) {
+data class DeviceAction<Action : BluetoothPeripheralAction>(val createAction: (BluetoothPeripheral) -> Action) {
     class Storage(var peripheral: BluetoothPeripheral? = null)
 
     private val storage: Storage = Storage()
 
-    operator fun <Device: BluetoothDevice> getValue(
+    operator fun <Device : BluetoothDevice> getValue(
         thisRef: Device,
-        property: KProperty<*>
+        property: KProperty<*>,
     ): Action {
         return storage.peripheral?.let {
             createAction(it)
-        } ?: throw Error()
+        } ?: throw BluetoothError("Not found")
     }
 
     fun inject(peripheral: BluetoothPeripheral?) {
