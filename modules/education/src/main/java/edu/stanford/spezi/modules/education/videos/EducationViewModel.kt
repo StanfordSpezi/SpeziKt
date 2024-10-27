@@ -3,6 +3,7 @@ package edu.stanford.spezi.modules.education.videos
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.videos.data.repository.EducationRepository
@@ -17,6 +18,7 @@ internal class EducationViewModel @Inject constructor(
     private val educationRepository: EducationRepository,
     private val navigator: Navigator,
 ) : ViewModel() {
+    private val logger by speziLogger()
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
@@ -27,11 +29,11 @@ internal class EducationViewModel @Inject constructor(
     private fun loadVideoSections() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-            val result = educationRepository.getVideoSections()
-            _uiState.value = if (result.isSuccess) {
-                UiState.Success(EducationUiState(videoSections = result.getOrNull() ?: emptyList()))
-            } else {
-                UiState.Error("Failed to load video sections")
+            educationRepository.getVideoSections().onFailure {
+                logger.e(it) { "Failed to load video sections" }
+                _uiState.value = UiState.Error("Failed to load video sections")
+            }.onSuccess { videoSections ->
+                _uiState.value = UiState.Success(EducationUiState(videoSections = videoSections))
             }
         }
     }
