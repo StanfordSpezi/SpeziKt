@@ -229,6 +229,12 @@ class BluetoothViewModel @Inject internal constructor(
                 }
             }
 
+            is MessagesAction.VideoSectionAction -> {
+                handleVideoSectionAction(messagesAction).onFailure {
+                    return // on failure, we don't want to dismiss the message
+                }
+            }
+
             is MessagesAction.MeasurementsAction -> {
                 appScreenEvents.emit(AppScreenEvents.Event.DoNewMeasurement)
             }
@@ -247,12 +253,6 @@ class BluetoothViewModel @Inject internal constructor(
                         messagesAction.questionnaireId
                     )
                 )
-            }
-
-            is MessagesAction.VideoSectionAction -> {
-                handleVideoSectionAction(messagesAction).onFailure {
-                    return // on failure, we don't want to dismiss the message
-                }
             }
         }
         if (isDismissible) {
