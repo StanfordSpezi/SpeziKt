@@ -10,7 +10,6 @@ import edu.stanford.spezi.modules.storage.di.Storage
 import edu.stanford.spezi.modules.storage.key.KeyValueStorage
 import edu.stanford.spezi.modules.storage.key.getSerializableList
 import edu.stanford.spezi.modules.storage.key.putSerializable
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,14 +22,11 @@ internal class BLEPairedDevicesStorage @Inject constructor(
     private val bluetoothAdapter: BluetoothAdapter,
     private val bleDevicePairingNotifier: BLEDevicePairingNotifier,
     @Storage.Encrypted
-    private val encryptedKeyValueStorage: KeyValueStorage,
+    private val storage: KeyValueStorage,
     private val timeProvider: TimeProvider,
     @Dispatching.IO private val ioScope: CoroutineScope,
 ) {
     private val logger by speziLogger()
-    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
-        logger.e(error) { "Error executing paired devices storage operations" }
-    }
 
     private val _pairedDevices = MutableStateFlow(emptyList<BLEDevice>())
     val pairedDevices = _pairedDevices.asStateFlow()
@@ -40,8 +36,8 @@ internal class BLEPairedDevicesStorage @Inject constructor(
         observeUnpairingEvents()
     }
 
-    fun updateDeviceConnection(device: BluetoothDevice, connected: Boolean) = execute {
-        if (isPaired(device).not()) return@execute
+    fun updateDeviceConnection(device: BluetoothDevice, connected: Boolean) {
+        if (isPaired(device).not()) return
         val currentDevices = getCurrentStoredDevices()
         currentDevices.removeAll { it.address == device.address }
         val newDevice = BLEDevice(
@@ -54,8 +50,8 @@ internal class BLEPairedDevicesStorage @Inject constructor(
         update(devices = currentDevices + newDevice)
     }
 
-    private fun refreshState() = execute {
-        val systemBoundDevices = bluetoothAdapter.bondedDevices ?: return@execute
+    private fun refreshState() {
+        val systemBoundDevices = bluetoothAdapter.bondedDevices ?: return
         val newDevices = getCurrentStoredDevices().filter { storedDevice ->
             systemBoundDevices.any { it.address == storedDevice.address }
         }
@@ -63,15 +59,15 @@ internal class BLEPairedDevicesStorage @Inject constructor(
         update(devices = newDevices)
     }
 
-    fun onStopped() = execute {
+    fun onStopped() {
         val devices = getCurrentStoredDevices().map {
             it.copy(connected = false, lastSeenTimeStamp = timeProvider.currentTimeMillis())
         }
         update(devices = devices)
     }
 
-    private fun update(devices: List<BLEDevice>) = execute {
-        encryptedKeyValueStorage.putSerializable(key = KEY, devices)
+    private fun update(devices: List<BLEDevice>) {
+        storage.putSerializable(key = KEY, devices)
         _pairedDevices.update { devices }
         logger.i { "Updating local storage with $devices" }
     }
@@ -112,12 +108,8 @@ internal class BLEPairedDevicesStorage @Inject constructor(
         }
     }
 
-    private suspend fun getCurrentStoredDevices() =
-        encryptedKeyValueStorage.getSerializableList<BLEDevice>(key = KEY).toMutableList()
-
-    private fun execute(block: suspend () -> Unit) {
-        ioScope.launch(coroutineExceptionHandler) { block() }
-    }
+    private fun getCurrentStoredDevices() =
+        storage.getSerializableList<BLEDevice>(key = KEY).toMutableList()
 
     private companion object {
         const val KEY = "paired_ble_devices"
