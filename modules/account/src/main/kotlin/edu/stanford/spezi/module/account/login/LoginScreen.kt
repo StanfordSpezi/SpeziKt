@@ -97,10 +97,7 @@ internal fun LoginScreen(
         )
         Spacer(modifier = Modifier.height(Spacings.large))
         Text(
-            text = """
-The ENGAGE-HF demonstrates the usage of the Firebase Account Module. 
-                
-You may login to your existing account or create a new one if you don't have one already.""",
+            text = stringResource(R.string.login_screen_description),
             style = bodyLarge,
         )
         Spacer(modifier = Modifier.height(Spacings.large))
