@@ -123,7 +123,10 @@ internal fun ExpandableVideoSection(
                 enter = expandVertically(),
                 exit = shrinkVertically()
             ) {
-                Column {
+                Column(
+                    modifier = Modifier.padding(bottom = Spacings.small),
+                    verticalArrangement = Arrangement.spacedBy(Spacings.small)
+                ) {
                     videos.forEach { video ->
                         VideoItem(video,
                             onVideoClick = {

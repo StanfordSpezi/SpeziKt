@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -62,13 +61,7 @@ fun ImageResourceComposable(
                 val state = painter.state
                 val painter = painter
                 if (state is AsyncImagePainter.State.Loading) {
-                    Box(Modifier.matchParentSize()) {
-                        CircularProgressIndicator(
-                            Modifier
-                                .align(Alignment.Center),
-                            color = Colors.primary
-                        )
-                    }
+                    ShimmerEffectBox(modifier = Modifier.matchParentSize())
                 }
 
                 if (state is AsyncImagePainter.State.Error) {
