@@ -82,7 +82,6 @@ fun ContactComposable(contact: Contact, modifier: Modifier = Modifier) {
                     contentDescription = stringResource(R.string.profile_picture),
                     modifier = Modifier
                         .size(Sizes.Icon.medium)
-                        .testIdentifier(ContactComposableTestIdentifier.IMAGE, image.identifier)
                 )
                 Column {
                     Text(
@@ -145,7 +144,7 @@ fun ContactComposable(contact: Contact, modifier: Modifier = Modifier) {
 }
 
 enum class ContactComposableTestIdentifier {
-    NAME, IMAGE, SUBTITLE, DESCRIPTION, ADDRESS, OPTION
+    NAME, SUBTITLE, DESCRIPTION, ADDRESS, OPTION
 }
 
 @ThemePreviews
