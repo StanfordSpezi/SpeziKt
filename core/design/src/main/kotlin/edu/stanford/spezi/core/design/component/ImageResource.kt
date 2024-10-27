@@ -3,6 +3,7 @@ package edu.stanford.spezi.core.design.component
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.vector.ImageVector
 import edu.stanford.spezi.core.utils.UUID
+import javax.annotation.concurrent.Immutable
 
 /**
  * A sealed class to represent an image resource. It can be either a vector image or a drawable.
@@ -11,9 +12,13 @@ import edu.stanford.spezi.core.utils.UUID
  * @see ImageResource.Drawable
  * @see ImageResourceIcon
  */
-sealed class ImageResource(open val identifier: String = UUID().toString()) {
+@Immutable
+sealed class ImageResource {
+    val identifier: String = UUID().toString()
 
     data class Vector(val image: ImageVector) : ImageResource()
 
     data class Drawable(@DrawableRes val resId: Int) : ImageResource()
+
+    data class Remote(val url: String) : ImageResource()
 }
