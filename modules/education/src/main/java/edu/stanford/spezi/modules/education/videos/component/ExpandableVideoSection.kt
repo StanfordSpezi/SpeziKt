@@ -188,7 +188,6 @@ private fun VideoItem(video: Video, onVideoClick: () -> Unit) {
     }
 }
 
-
 @Composable
 fun LoadingVideoCard() {
     VideoElevatedCard(
