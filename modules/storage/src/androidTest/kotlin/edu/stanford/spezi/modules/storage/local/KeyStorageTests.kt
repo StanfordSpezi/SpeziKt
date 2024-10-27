@@ -1,4 +1,4 @@
-package edu.stanford.spezi.modules.storage.secure
+package edu.stanford.spezi.modules.storage.local
 
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule

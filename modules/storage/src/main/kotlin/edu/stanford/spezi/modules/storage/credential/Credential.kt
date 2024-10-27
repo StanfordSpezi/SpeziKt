@@ -1,4 +1,4 @@
-package edu.stanford.spezi.modules.storage.secure
+package edu.stanford.spezi.modules.storage.credential
 
 import kotlinx.serialization.Serializable
 

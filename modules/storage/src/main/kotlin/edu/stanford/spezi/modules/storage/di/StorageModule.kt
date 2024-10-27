@@ -5,16 +5,16 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import edu.stanford.spezi.modules.storage.credential.CredentialStorage
+import edu.stanford.spezi.modules.storage.credential.CredentialStorageImpl
 import edu.stanford.spezi.modules.storage.key.KeyValueStorage
 import edu.stanford.spezi.modules.storage.key.KeyValueStorageFactory
 import edu.stanford.spezi.modules.storage.key.KeyValueStorageFactoryImpl
 import edu.stanford.spezi.modules.storage.key.KeyValueStorageType
+import edu.stanford.spezi.modules.storage.local.KeyStorage
+import edu.stanford.spezi.modules.storage.local.KeyStorageImpl
 import edu.stanford.spezi.modules.storage.local.LocalStorage
 import edu.stanford.spezi.modules.storage.local.LocalStorageImpl
-import edu.stanford.spezi.modules.storage.secure.CredentialStorage
-import edu.stanford.spezi.modules.storage.secure.CredentialStorageImpl
-import edu.stanford.spezi.modules.storage.secure.KeyStorage
-import edu.stanford.spezi.modules.storage.secure.KeyStorageImpl
 import javax.inject.Singleton
 
 @Module

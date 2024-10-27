@@ -1,4 +1,4 @@
-package edu.stanford.spezi.modules.storage.secure
+package edu.stanford.spezi.modules.storage.credential
 
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -45,7 +45,7 @@ class CredentialStorageTests {
         credentialStorage.store(serverCredential)
 
         // when
-        val serverCredentials = credentialStorage.retrieveAll(server = serverCredential.server)
+        val serverCredentials = credentialStorage.retrieveAll(server = serverCredential.server!!)
         val userServerCredential = credentialStorage.retrieve(
             username = serverCredential.username,
             server = serverCredential.server,

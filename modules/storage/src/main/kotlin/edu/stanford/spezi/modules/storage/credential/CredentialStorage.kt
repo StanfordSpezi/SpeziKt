@@ -1,4 +1,4 @@
-package edu.stanford.spezi.modules.storage.secure
+package edu.stanford.spezi.modules.storage.credential
 
 import edu.stanford.spezi.modules.storage.di.Storage
 import edu.stanford.spezi.modules.storage.key.KeyValueStorageFactory
@@ -17,7 +17,7 @@ interface CredentialStorage {
     )
 
     fun retrieve(username: String, server: String? = null): Credential?
-    fun retrieveAll(server: String? = null): List<Credential>
+    fun retrieveAll(server: String): List<Credential>
 
     fun delete(username: String, server: String? = null)
     fun deleteAll(types: CredentialTypes)
@@ -46,9 +46,10 @@ internal class CredentialStorageImpl @Inject constructor(
         return storage.getSerializable(storageKey(server, username))
     }
 
-    override fun retrieveAll(server: String?): List<Credential> {
+    override fun retrieveAll(server: String): List<Credential> {
+        val serverKey = storageKey(server, "")
         return storage.allKeys().mapNotNull { key ->
-            if (key.startsWith(storageKey(server, ""))) {
+            if (key.startsWith(serverKey)) {
                 storage.getSerializable(key)
             } else {
                 null
@@ -90,7 +91,7 @@ internal class CredentialStorageImpl @Inject constructor(
         "${server ?: ""}$SERVER_USERNAME_SEPARATOR$username"
 
     private companion object {
-        const val SECURE_STORAGE_FILE_NAME = "${Storage.STORAGE_FILE_PREFIX}SecureStorage"
+        const val SECURE_STORAGE_FILE_NAME = "${Storage.STORAGE_FILE_PREFIX}CredentialStorage"
         const val SERVER_USERNAME_SEPARATOR = "__@__"
     }
 }

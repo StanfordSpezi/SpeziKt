@@ -5,7 +5,6 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.core.utils.UUID
-import edu.stanford.spezi.modules.storage.secure.KeyStorage
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json

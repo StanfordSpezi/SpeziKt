@@ -1,4 +1,4 @@
-package edu.stanford.spezi.modules.storage.secure
+package edu.stanford.spezi.modules.storage.local
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties

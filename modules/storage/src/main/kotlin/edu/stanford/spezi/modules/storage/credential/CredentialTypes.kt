@@ -1,7 +1,7 @@
-package edu.stanford.spezi.modules.storage.secure
+package edu.stanford.spezi.modules.storage.credential
 
-import edu.stanford.spezi.modules.storage.secure.CredentialType.NON_SERVER
-import edu.stanford.spezi.modules.storage.secure.CredentialType.SERVER
+import edu.stanford.spezi.modules.storage.credential.CredentialType.NON_SERVER
+import edu.stanford.spezi.modules.storage.credential.CredentialType.SERVER
 import java.util.EnumSet
 
 data class CredentialTypes(
