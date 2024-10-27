@@ -1,27 +1,31 @@
 package edu.stanford.spezi.module.account.account.value.configuration
 
+import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
-import edu.stanford.spezi.module.account.account.value.collections.AccountKey
-import kotlin.reflect.KClass
+import edu.stanford.spezi.module.account.account.value.keys.dateOfBirth
+import edu.stanford.spezi.module.account.account.value.keys.genderIdentity
+import edu.stanford.spezi.module.account.account.value.keys.name
+import edu.stanford.spezi.module.account.account.value.keys.password
+import edu.stanford.spezi.module.account.account.value.keys.userId
 
 data class AccountValueConfiguration internal constructor(
-    val configuration: Map<KClass<out AccountKey<*>>, AccountKeyConfiguration<*>>,
-) {
+    val configuration: Map<AccountKey<*>, AccountKeyConfiguration<*>>,
+): Iterable<AccountKeyConfiguration<*>> {
     internal enum class IncludeCollectedType {
         ONLY_REQUIRED, INCLUDE_COLLECTED, INCLUDE_COLLECTED_AT_LEAST_ONE_REQUIRED
     }
 
     val keys: List<AccountKey<*>> get() =
-        configuration.values.map { it.keyWithDescription }
+        configuration.values.map { it.key }
 
-    internal fun all(filters: Set<AccountKeyRequirement>? = null): List<KClass<out AccountKey<*>>> {
+    internal fun all(filters: Set<AccountKeyRequirement>? = null): List<AccountKey<*>> {
         return configuration.values
             .filter { filters?.contains(it.requirement) ?: true }
             .map { it.key }
     }
 
-    internal fun allCategorized(filters: Set<AccountKeyRequirement>? = null): Map<AccountKeyRequirement, List<KClass<out AccountKey<*>>>> {
+    internal fun allCategorized(filters: Set<AccountKeyRequirement>? = null): Map<AccountKeyRequirement, List<AccountKey<*>>> {
         return configuration.values
             .filter { filters?.contains(it.requirement) ?: true }
             .groupBy { it.requirement }
@@ -31,8 +35,8 @@ data class AccountValueConfiguration internal constructor(
     internal fun missingRequiredKeys(
         details: AccountDetails,
         includeCollected: IncludeCollectedType = IncludeCollectedType.ONLY_REQUIRED,
-        ignore: List<KClass<out AccountKey<*>>> = emptyList()
-    ): List<KClass<out AccountKey<*>>> {
+        ignore: List<AccountKey<*>> = emptyList()
+    ): List<AccountKey<*>> {
         val keysPresent = details.storage.storage.keys
             .union(ignore)
 
@@ -68,7 +72,7 @@ data class AccountValueConfiguration internal constructor(
         return result.map { it.key }
     }
 
-    operator fun get(key: KClass<out AccountKey<*>>): AccountKeyConfiguration<*>? =
+    operator fun get(key: AccountKey<*>): AccountKeyConfiguration<*>? =
         configuration[key]
 
     // TODO: Figure out whether dynamic member access exists in Kotlin
@@ -91,5 +95,9 @@ data class AccountValueConfiguration internal constructor(
                     .associateBy { it.key }
             )
         }
+    }
+
+    override fun iterator(): Iterator<AccountKeyConfiguration<*>> {
+        return this.configuration.values.iterator()
     }
 }

@@ -1,14 +1,45 @@
 package edu.stanford.spezi.module.account
 
-import androidx.annotation.MainThread
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import kotlin.reflect.KClass
-import kotlin.reflect.KProperty1
+import edu.stanford.spezi.core.utils.UUID
+import edu.stanford.spezi.module.account.account.value.collections.AccountAnchor
+import edu.stanford.spezi.module.account.foundation.RepositoryAnchor
+import java.util.UUID
 
 // SpeziAccount
+
+/*
+interface KnowledgeSource<Value, Anchor: RepositoryAnchor> {
+    val id: UUID
+}
+
+typealias AccountKey<Value> = KnowledgeSource<Value, AccountAnchor>
+
+data class OptionalKnowledgeSource<Value>(
+    override val id: UUID = UUID()
+) : KnowledgeSource<Value>
+
+val accountId = OptionalKnowledgeSource<String>()
+
+val repository = SharedRepository()
+
+data class ComputedKnowledgeSource<Value>(
+    override val id: UUID = UUID(),
+    val compute: () -> Value
+) : KnowledgeSource<Value>
+
+data class SharedRepository(
+    private val map: MutableMap<UUID, Any> = mutableMapOf()
+) {
+    @Suppress("UNCHECKED_CAST")
+    operator fun <Value> get(key: KnowledgeSource<Value>): Value? {
+        return map[key.id] as? Value
+    }
+
+    operator fun <Value> set(key: KnowledgeSource<Value>, value: Value) {
+        map[key.id] = value as Any
+    }
+}
+*/
 
 /*
 

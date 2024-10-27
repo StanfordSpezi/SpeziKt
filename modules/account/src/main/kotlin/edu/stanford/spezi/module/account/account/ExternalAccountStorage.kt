@@ -1,7 +1,8 @@
 package edu.stanford.spezi.module.account.account
 
+import edu.stanford.spezi.core.utils.UUID
+import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
-import edu.stanford.spezi.module.account.account.value.collections.AccountKey
 import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
 import edu.stanford.spezi.module.account.account.value.keys.isIncomplete
 import edu.stanford.spezi.module.account.spezi.Module
@@ -10,10 +11,8 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
 import java.util.UUID
-import kotlin.reflect.KClass
 
-class ExternalAccountStorage: Module {
-
+class ExternalAccountStorage : Module {
     data class ExternallyStoredDetails(
         val accountId: String,
         val details: AccountDetails,
@@ -22,14 +21,11 @@ class ExternalAccountStorage: Module {
     private var subscriptions = mutableMapOf<UUID, FlowCollector<ExternallyStoredDetails>>()
     private var storageProvider: AccountStorageProvider? = null
 
-    val updatedDetails: Flow<ExternallyStoredDetails> get() {
-        val id = UUID.randomUUID()
-        return flow {
-            subscriptions[id] = this
-        }.onCompletion {
-            subscriptions.remove(id)
+    val updatedDetails: Flow<ExternallyStoredDetails>
+        get() = UUID().let { id ->
+            flow { subscriptions[id] = this }
+                .onCompletion { subscriptions.remove(id) }
         }
-    }
 
     suspend fun notifyAboutUpdatedDetails(accountId: String, details: AccountDetails) {
         val newDetails = details.copy()
@@ -45,7 +41,7 @@ class ExternalAccountStorage: Module {
         storageProvider?.store(accountId, details)
     }
 
-    suspend fun retrieveExternalStorage(accountId: String, keys: List<KClass<AccountKey<*>>>): AccountDetails {
+    suspend fun retrieveExternalStorage(accountId: String, keys: List<AccountKey<*>>): AccountDetails {
         if (keys.isEmpty()) return AccountDetails()
 
         storageProvider?.let { storageProvider ->
@@ -55,11 +51,11 @@ class ExternalAccountStorage: Module {
             val details = AccountDetails()
             details.isIncomplete = true
             return details
-        } ?: throw Error("")
+        } ?: error("")
     }
 
     suspend fun updateExternalStorage(accountId: String, modifications: AccountModifications) {
-        val storageProvider = storageProvider ?: throw Error("")
+        val storageProvider = storageProvider ?: error("")
         storageProvider.store(accountId, modifications)
     }
 
@@ -70,5 +66,4 @@ class ExternalAccountStorage: Module {
     suspend fun userWillDisassociate(accountId: String) {
         storageProvider?.disassociate(accountId)
     }
-
 }

@@ -8,8 +8,8 @@ import com.google.firebase.firestore.ListenerRegistration
 import edu.stanford.spezi.module.account.account.AccountDetailsCache
 import edu.stanford.spezi.module.account.account.AccountStorageProvider
 import edu.stanford.spezi.module.account.account.ExternalAccountStorage
+import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
-import edu.stanford.spezi.module.account.account.value.collections.AccountKey
 import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
 import edu.stanford.spezi.module.account.firebase.firestore.Firestore
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -17,11 +17,10 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
-import kotlin.reflect.KClass
 
 class FirestoreAccountStorage(
     val collection: () -> CollectionReference,
-    val identifierMapping: Map<String, KClass<AccountKey<*>>>,
+    val identifierMapping: Map<String, AccountKey<*>>,
 ) : AccountStorageProvider {
 
     @Inject private lateinit var firestore: Firestore
@@ -29,13 +28,13 @@ class FirestoreAccountStorage(
     @Inject private lateinit var externalStorage: ExternalAccountStorage
 
     private val listenerRegistration = mutableMapOf<String, ListenerRegistration>()
-    private val registeredKeys = mutableMapOf<String, Set<KClass<AccountKey<*>>>>()
+    private val registeredKeys = mutableMapOf<String, List<AccountKey<*>>>()
 
     private fun userDocument(accountId: String): DocumentReference =
         collection().document(accountId)
 
     @OptIn(DelicateCoroutinesApi::class) // TODO: Check if the GlobalScope.launch is the right call here...
-    private fun snapshotListener(accountId: String, keys: Set<KClass<AccountKey<*>>>) {
+    private fun snapshotListener(accountId: String, keys: List<AccountKey<*>>) {
         listenerRegistration.remove(accountId)
         val document = userDocument(accountId)
 
@@ -69,7 +68,7 @@ class FirestoreAccountStorage(
         externalStorage.notifyAboutUpdatedDetails(accountId, details)
     }
 
-    private fun buildAccountDetails(snapshot: DocumentSnapshot, keys: Set<KClass<AccountKey<*>>>): AccountDetails {
+    private fun buildAccountDetails(snapshot: DocumentSnapshot, keys: List<AccountKey<*>>): AccountDetails {
         if (!snapshot.exists()) return AccountDetails()
 
         TODO("Figure out how to decode this solely based on the identifierMapping")
@@ -77,7 +76,7 @@ class FirestoreAccountStorage(
 
     override suspend fun load(
         accountId: String,
-        keys: Set<KClass<AccountKey<*>>>,
+        keys: List<AccountKey<*>>,
     ): AccountDetails? {
         val cached = localCache.loadEntry(accountId, keys)
 

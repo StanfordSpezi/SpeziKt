@@ -1,8 +1,6 @@
 package edu.stanford.spezi.module.account.account.service.identityProvider
 
 import androidx.compose.runtime.Composable
-import edu.stanford.spezi.core.logging.SpeziLogger
-import edu.stanford.spezi.core.logging.models.LoggerConfig
 import java.util.UUID
 import kotlin.reflect.KProperty
 

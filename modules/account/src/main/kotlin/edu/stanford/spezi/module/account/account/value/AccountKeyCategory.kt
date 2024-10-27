@@ -1,13 +1,19 @@
 package edu.stanford.spezi.module.account.account.value
 
-typealias LocalizedStringResource = String
+import edu.stanford.spezi.core.design.component.StringResource
 
-data class AccountKeyCategory(val title: LocalizedStringResource) {
+data class AccountKeyCategory internal constructor(
+    val categoryTitle: StringResource? = null
+) {
     companion object {
-        val credentials = AccountKeyCategory("Credentials")
-        val name = AccountKeyCategory("Name")
-        val contactDetails = AccountKeyCategory("Contact Details")
-        val personalDetails = AccountKeyCategory("Personal Details")
-        val other = AccountKeyCategory("")
+        val credentials = AccountKeyCategory(StringResource("UP_CREDENTIALS"))
+        val name = AccountKeyCategory(StringResource("UP_NAME"))
+        val contactDetails = AccountKeyCategory(StringResource("UP_CONTACT_DETAILS"))
+        val personalDetails = AccountKeyCategory(StringResource("UP_PERSONAL_DETAILS"))
+        val other = AccountKeyCategory()
+
+        operator fun invoke(title: StringResource): AccountKeyCategory {
+            return AccountKeyCategory(categoryTitle = title)
+        }
     }
 }

@@ -4,7 +4,7 @@ import edu.stanford.spezi.module.account.account.service.configuration.AccountSe
 import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
 import edu.stanford.spezi.module.account.spezi.Module
 
-interface AccountService: Module {
+interface AccountService : Module {
     val configuration: AccountServiceConfiguration
     suspend fun logout()
     suspend fun delete()

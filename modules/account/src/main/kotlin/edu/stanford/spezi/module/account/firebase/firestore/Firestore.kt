@@ -7,7 +7,7 @@ import edu.stanford.spezi.module.account.spezi.Module
 class Firestore( // TODO: Add dependency to ConfigureFirebaseApp
     private val settings: FirebaseFirestoreSettings = FirebaseFirestoreSettings.Builder().build(),
 ) : Module {
-    override fun configure() {
+    init {
         FirebaseFirestore.getInstance().firestoreSettings = settings
 
         // TODO: Figure out why iOS is accessing the FirebaseFirestore instance again right after this.

@@ -1,27 +1,29 @@
 package edu.stanford.spezi.module.account.account.value.configuration
 
-import edu.stanford.spezi.module.account.account.value.AccountKeys
-import edu.stanford.spezi.module.account.account.value.collections.AccountKey
-import kotlin.reflect.KClass
-import kotlin.reflect.KProperty1
+import edu.stanford.spezi.module.account.account.value.AccountKey
+import kotlin.reflect.KProperty0
 
-interface AccountKeyConfiguration<Key: AccountKey<*>> {
-    val key: KClass<Key>
+interface AccountKeyConfiguration<Key : AccountKey<*>> {
+    val key: Key
     val requirement: AccountKeyRequirement
-    val keyPathDescription: String
+    val propertyName: String
 }
 
-data class AccountKeyConfigurationImpl<Key: AccountKey<*>>(
-    override val key: KClass<Key>,
+internal data class AccountKeyConfigurationImpl<Key : AccountKey<*>>(
+    override val key: Key,
     override val requirement: AccountKeyRequirement,
-    override val keyPathDescription: String
-): AccountKeyConfiguration<Key> {
+    override val propertyName: String
+) : AccountKeyConfiguration<Key> {
     companion object {
-        inline operator fun <reified K: AccountKey<*>> invoke(
-            property: KProperty1<AccountKeys, KClass<K>>,
+        operator fun <Key : AccountKey<*>> invoke(
+            property: KProperty0<Key>,
             requirement: AccountKeyRequirement
-        ): AccountKeyConfigurationImpl<K> {
-            return AccountKeyConfigurationImpl(K::class, requirement, property.name)
+        ): AccountKeyConfigurationImpl<Key> {
+            return AccountKeyConfigurationImpl(
+                property.invoke(),
+                requirement,
+                property.name
+            )
         }
     }
 }

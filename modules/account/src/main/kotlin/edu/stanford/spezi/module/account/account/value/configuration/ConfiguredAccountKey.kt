@@ -1,9 +1,7 @@
 package edu.stanford.spezi.module.account.account.value.configuration
 
-import edu.stanford.spezi.module.account.account.value.AccountKeys
-import edu.stanford.spezi.module.account.account.value.collections.AccountKey
-import kotlin.reflect.KClass
-import kotlin.reflect.KProperty1
+import edu.stanford.spezi.module.account.account.value.AccountKey
+import kotlin.reflect.KProperty0
 
 // TODO: Possibly add the disfavoredOverload funs as well to make sure one doesn't create a non-required required AccountKey
 
@@ -11,9 +9,7 @@ data class ConfiguredAccountKey(
     val configuration: AccountKeyConfiguration<*>,
 ) {
     companion object {
-        inline fun <reified Key : AccountKey<*>> requires(
-            property: KProperty1<AccountKeys, KClass<Key>>
-        ): ConfiguredAccountKey {
+        fun <Key : AccountKey<*>> requires(property: KProperty0<Key>): ConfiguredAccountKey {
             return ConfiguredAccountKey(
                 AccountKeyConfigurationImpl(
                     property,
@@ -22,9 +18,7 @@ data class ConfiguredAccountKey(
             )
         }
 
-        inline fun <reified Key : AccountKey<*>> collects(
-            property: KProperty1<AccountKeys, KClass<Key>>
-        ): ConfiguredAccountKey {
+        fun <Key : AccountKey<*>> collects(property: KProperty0<Key>): ConfiguredAccountKey {
             return ConfiguredAccountKey(
                 AccountKeyConfigurationImpl(
                     property,
@@ -33,9 +27,7 @@ data class ConfiguredAccountKey(
             )
         }
 
-        inline fun <reified Key : AccountKey<*>> supports(
-            property: KProperty1<AccountKeys, KClass<Key>>
-        ): ConfiguredAccountKey {
+        fun <Key : AccountKey<*>> supports(property: KProperty0<Key>): ConfiguredAccountKey {
             return ConfiguredAccountKey(
                 AccountKeyConfigurationImpl(
                     property,
@@ -44,9 +36,7 @@ data class ConfiguredAccountKey(
             )
         }
 
-        inline fun <reified Key : AccountKey<*>> manual(
-            property: KProperty1<AccountKeys, KClass<Key>>
-        ): ConfiguredAccountKey {
+        fun <Key : AccountKey<*>> manual(property: KProperty0<Key>): ConfiguredAccountKey {
             return ConfiguredAccountKey(
                 AccountKeyConfigurationImpl(
                     property,

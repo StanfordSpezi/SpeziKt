@@ -31,7 +31,9 @@ class FirebaseAccountService(
     @Inject private lateinit var configureFirebaseApp: ConfigureFirebaseApp
 
     @Inject private lateinit var account: Account
+
     @Inject private lateinit var notifications: AccountNotifications
+
     @Inject private lateinit var externalStorage: ExternalAccountStorage
 
     override val configuration: AccountServiceConfiguration = AccountServiceConfiguration(
@@ -40,7 +42,7 @@ class FirebaseAccountService(
 
     private val auth get() = FirebaseAuth.getInstance()
 
-    override fun configure() {
+    init {
         emulatorSettings?.let {
             auth.useEmulator(it.host, it.port)
         }

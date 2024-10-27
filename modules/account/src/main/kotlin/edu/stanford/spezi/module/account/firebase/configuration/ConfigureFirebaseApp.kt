@@ -11,7 +11,7 @@ class ConfigureFirebaseApp @Inject constructor(
     // TODO: Think of possibly providing context in configure functions
     // TODO: Also think about simply doing configure inside the init
 ) : Module {
-    override fun configure() {
+    init {
         FirebaseApp.initializeApp(context)
     }
 }

@@ -1,21 +1,28 @@
 package edu.stanford.spezi.module.account.account.value.collections
 
-import edu.stanford.spezi.module.account.foundation.KnowledgeSource
-import kotlin.reflect.KClass
+import android.accounts.Account
+import edu.stanford.spezi.module.account.account.value.AccountKey
 
+data class AccountDetails(
+    val storage: AccountStorage = AccountStorage()
+) {
+    fun isEmpty(): Boolean = !storage.any()
 
-data class AccountDetails(val storage: AccountStorage = AccountStorage()) {
-    fun isEmpty(): Boolean = storage.storage.isEmpty()
-
-    inline operator fun <reified Value : Any, reified Key: KnowledgeSource<AccountAnchor, Value>> get(key: KClass<Key>): Value? {
+    operator fun <Value : Any> get(key: AccountKey<Value>): Value? {
         return storage[key]
     }
 
-    inline operator fun <reified Value : Any, reified Key: KnowledgeSource<AccountAnchor, Value>> set(key: KClass<Key>, value: Value?) {
+    operator fun <Value : Any> set(key: AccountKey<Value>, value: Value?) {
         storage[key] = value
     }
+
+    fun update(modifications: AccountModifications) {
+        for (entry in modifications.modifiedDetails.storage.storage) {
+            storage.storage[entry.key] = entry.value
+        }
+
+        for (key in modifications.removedAccountDetails.storage.storage.keys) {
+            storage.storage.remove(key)
+        }
+    }
 }
-
-interface AccountKey<Value>: KnowledgeSource<AccountAnchor, Value>
-
-interface RequiredAccountKey<Value>: AccountKey<Value>

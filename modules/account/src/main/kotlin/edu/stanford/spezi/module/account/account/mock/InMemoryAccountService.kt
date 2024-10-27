@@ -2,6 +2,7 @@ package edu.stanford.spezi.module.account.account.mock
 
 import android.accounts.Account
 import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.core.utils.UUID
 import edu.stanford.spezi.module.account.account.AccountNotifications
 import edu.stanford.spezi.module.account.account.ExternalAccountStorage
 import edu.stanford.spezi.module.account.account.model.GenderIdentity
@@ -9,12 +10,28 @@ import edu.stanford.spezi.module.account.account.service.AccountService
 import edu.stanford.spezi.module.account.account.service.configuration.AccountServiceConfiguration
 import edu.stanford.spezi.module.account.account.service.identityProvider.AccountSetupSection
 import edu.stanford.spezi.module.account.account.service.identityProvider.IdentityProvider
+import edu.stanford.spezi.module.account.account.service.identityProvider.SecurityRelatedModifier
 import edu.stanford.spezi.module.account.account.value.AccountKeys
+import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
+import edu.stanford.spezi.module.account.account.value.keys.accountId
+import edu.stanford.spezi.module.account.account.value.keys.dateOfBirth
+import edu.stanford.spezi.module.account.account.value.keys.genderIdentity
+import edu.stanford.spezi.module.account.account.value.keys.isAnonymous
+import edu.stanford.spezi.module.account.account.value.keys.isAnonymousUser
+import edu.stanford.spezi.module.account.account.value.keys.isNewUser
+import edu.stanford.spezi.module.account.account.value.keys.name
+import edu.stanford.spezi.module.account.account.value.keys.password
+import edu.stanford.spezi.module.account.account.value.keys.userId
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.subscribe
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.Date
 import java.util.UUID
 import javax.inject.Inject
 
-class InMemoryAccountService: AccountService {
+class InMemoryAccountService : AccountService {
     companion object {
         private val supportedKeys = listOf(
             AccountKeys::accountId,
@@ -36,7 +53,7 @@ class InMemoryAccountService: AccountService {
     private val testButton2 by IdentityProvider(composable = {})
     private val signInWithApple by IdentityProvider(section = AccountSetupSection.singleSignOn, composable = {})
 
-    @SecurityRelatedModifier private var securityAlert = MockSecurityAlert()
+    private val securityAlert by SecurityRelatedModifier(MockSecurityAlert())
 
     val configuration: AccountServiceConfiguration
     val state = State()
@@ -51,9 +68,9 @@ class InMemoryAccountService: AccountService {
         val accountId: UUID,
         var userId: String?,
         var password: String?,
-        var name: String?, // TODO: PersonNameComponents
-        var genderIdentity: GenderIdentity?,
-        var dateOfBirth: Date?
+        var name: String? = null, // TODO: PersonNameComponents
+        var genderIdentity: GenderIdentity? = null,
+        var dateOfBirth: Date? = null,
     )
 
     constructor(type: UserIdConfiguration)
@@ -82,26 +99,37 @@ class InMemoryAccountService: AccountService {
         }
     }
 
-    public func configure() {
-        let subscription = externalStorage.updatedDetails
-            Task { [weak self] in
-                for await updatedDetails in subscription {
-                    guard let self else {
-                    return
-                }
+    init {
+        val detailsFlow = externalStorage.updatedDetails
+        runBlocking {
+            launch {
+                detailsFlow
+                    .onEach { details ->
+                        runCatching {
+                            val accountId = UUID(details.accountId)
+                            val storage = registeredUsers[accountId] ?: run { return@runCatching }
 
-                    guard let accountId = UUID(uuidString: updatedDetails.accountId),
-                    let storage = registeredUsers[accountId] else {
-                    continue
-                }
-
-                    try await access.waitCheckingCancellation()
-                        var details = _buildUser(from: storage, isNew: false)
-                        details.add(contentsOf: updatedDetails.details)
-                        account.supplyUserDetails(details)
-                        access.signal()
+                            access.waitCheckingCancellation()
+                            var details = _buildUser(storage, isNew = false)
+                            account.supplyUserDetails(details)
+                            access.signal()
+                        }
                     }
+                    .launchIn(this)
             }
+        }
+    }
+
+    fun signInAnonymously() {
+        val id = UUID()
+
+        val details = AccountDetails()
+        details.accountId = id.toString()
+        details.isAnonymous = true
+        details.isNewUser = true
+
+        registeredUsers[id] = UserStorage(id, null, null)
+        account.supplyUserDetails(details)
     }
 
     public func signInAnonymously() {

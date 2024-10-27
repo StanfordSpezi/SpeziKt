@@ -1,18 +1,24 @@
 package edu.stanford.spezi.module.account.firebase.account
 
+import edu.stanford.spezi.core.utils.UUID
 import edu.stanford.spezi.module.account.account.value.collections.AccountAnchor
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
-import edu.stanford.spezi.module.account.foundation.KnowledgeSource
+import edu.stanford.spezi.module.account.foundation.knowledgesource.KnowledgeSource
 import java.util.Date
+import java.util.UUID
 
-private enum class CreationDateKey : KnowledgeSource<AccountAnchor, Date>
+private object CreationDateKey : KnowledgeSource<AccountAnchor, Date> {
+    override val uuid = UUID()
+}
 
 var AccountDetails.creationDate: Date?
-    get() = this[CreationDateKey::class]
-    set(value) { this[CreationDateKey::class] = value }
+    get() = this.storage[CreationDateKey]
+    set(value) { this.storage[CreationDateKey] = value }
 
-private enum class LastSignInDateKey : KnowledgeSource<AccountAnchor, Date>
+private object LastSignInDateKey : KnowledgeSource<AccountAnchor, Date> {
+    override val uuid = UUID()
+}
 
 var AccountDetails.lastSignInDate: Date?
-    get() = this[LastSignInDateKey::class]
-    set(value) { this[LastSignInDateKey::class] = value }
+    get() = this.storage[LastSignInDateKey]
+    set(value) { this.storage[LastSignInDateKey] = value }

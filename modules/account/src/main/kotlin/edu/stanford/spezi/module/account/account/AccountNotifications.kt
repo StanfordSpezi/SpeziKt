@@ -13,10 +13,10 @@ import java.util.UUID
 
 class AccountNotifications {
     sealed interface Event {
-        data class DeletingAccount(val accountId: String): Event
-        data class AssociatedAccount(val details: AccountDetails): Event
-        data class DetailsChanged(val previous: AccountDetails, val new: AccountDetails): Event
-        data class DisassociatingAccount(val details: AccountDetails): Event
+        data class DeletingAccount(val accountId: String) : Event
+        data class AssociatedAccount(val details: AccountDetails) : Event
+        data class DetailsChanged(val previous: AccountDetails, val new: AccountDetails) : Event
+        data class DisassociatingAccount(val details: AccountDetails) : Event
     }
 
     private val standard: Standard = TODO()
@@ -26,7 +26,7 @@ class AccountNotifications {
 
     val events: Flow<Event> get() = newSubscription()
 
-    suspend fun respondToEvent(event: Event) {
+    suspend fun reportEvent(event: Event) {
         (standard as? AccountNotifyConstraint)?.respondToEvent(event)
 
         when (event) {
