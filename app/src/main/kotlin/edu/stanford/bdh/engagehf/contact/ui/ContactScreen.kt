@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.core.design.component.AppTopAppBar
 import edu.stanford.spezi.core.design.component.CenteredBoxContent
+import edu.stanford.spezi.core.design.component.ImageResource
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Spacings
@@ -109,7 +110,7 @@ private class ContactUiStateProvider : PreviewParameterProvider<ContactScreenVie
         ContactScreenViewModel.UiState.ContactLoaded(
             contact = Contact(
                 name = PersonNameComponents(givenName = "Leland", familyName = "Stanford"),
-                image = Icons.Default.AccountBox,
+                image = ImageResource.Vector(Icons.Default.AccountBox),
                 title = StringResource("University Founder"),
                 description = StringResource(
                     """Leland Stanford (March 9, 1824 – June 21, 1893) was an American industrialist and politician."""
