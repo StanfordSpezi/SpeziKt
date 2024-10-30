@@ -3,7 +3,6 @@ package edu.stanford.spezi.modules.education.videos.component
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,7 +22,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,13 +32,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImagePainter
-import coil.compose.SubcomposeAsyncImage
 import edu.stanford.spezi.core.design.component.DefaultElevatedCard
+import edu.stanford.spezi.core.design.component.ImageResource
+import edu.stanford.spezi.core.design.component.ImageResourceComposable
 import edu.stanford.spezi.core.design.component.RectangleShimmerEffect
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.component.height
@@ -127,7 +123,10 @@ internal fun ExpandableVideoSection(
                 enter = expandVertically(),
                 exit = shrinkVertically()
             ) {
-                Column {
+                Column(
+                    modifier = Modifier.padding(bottom = Spacings.small),
+                    verticalArrangement = Arrangement.spacedBy(Spacings.small)
+                ) {
                     videos.forEach { video ->
                         VideoItem(video,
                             onVideoClick = {
@@ -154,66 +153,39 @@ private fun VideoItem(video: Video, onVideoClick: () -> Unit) {
 
         VerticalSpacer(height = Spacings.small)
 
-        SubcomposeAsyncImage(
+        Box(
             modifier = Modifier
                 .clickable { onVideoClick() }
                 .height(IMAGE_HEIGHT.dp)
                 .padding(Spacings.small)
-                .fillMaxWidth(),
-            model = video.thumbnailUrl,
-
-            contentDescription = "Video thumbnail",
+                .fillMaxWidth()
         ) {
-            val state = painter.state
-            val painter = painter
-            if (state is AsyncImagePainter.State.Loading) {
-                Box(Modifier.matchParentSize()) {
-                    CircularProgressIndicator(
-                        Modifier
-                            .align(Alignment.Center)
+            ImageResourceComposable(
+                imageResource = ImageResource.Remote(video.thumbnailUrl),
+                contentDescription = "Video thumbnail",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(ASPECT_16_9)
+                    .border(Sizes.Border.medium, Colors.primary),
+            )
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .background(
+                        color = Colors.primary,
+                        shape = CircleShape
                     )
-                }
-            }
-
-            if (state is AsyncImagePainter.State.Error) {
-                Box(Modifier.matchParentSize()) {
-                    Text("Error loading image", Modifier.align(Alignment.Center))
-                }
-            }
-
-            if (state is AsyncImagePainter.State.Success) {
-                Box(
+                    .padding(Spacings.medium)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = "Play button",
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(ASPECT_16_9)
-                        .border(Sizes.Border.medium, Colors.primary),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        modifier = Modifier.fillMaxSize(),
-                        painter = painter,
-                        contentDescription = "Video thumbnail",
-                        contentScale = ContentScale.Crop,
-                    )
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .background(
-                                color = Colors.primary,
-                                shape = CircleShape
-                            )
-                            .padding(Spacings.medium)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.PlayArrow,
-                            contentDescription = "Play button",
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .size(Sizes.Icon.medium),
-                            tint = Colors.onPrimary
-                        )
-                    }
-                }
+                        .align(Alignment.Center)
+                        .size(Sizes.Icon.medium),
+                    tint = Colors.onPrimary
+                )
             }
         }
     }
@@ -221,7 +193,11 @@ private fun VideoItem(video: Video, onVideoClick: () -> Unit) {
 
 @Composable
 fun LoadingVideoCard() {
-    VideoElevatedCard(modifier = Modifier.fillMaxWidth().padding(bottom = Spacings.medium)) {
+    VideoElevatedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = Spacings.medium)
+    ) {
         Column(
             modifier = Modifier.padding(Spacings.medium),
             verticalArrangement = Arrangement.spacedBy(Spacings.large + Spacings.medium)
