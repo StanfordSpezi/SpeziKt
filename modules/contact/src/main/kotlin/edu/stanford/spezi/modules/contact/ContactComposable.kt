@@ -76,9 +76,8 @@ fun ContactComposable(contact: Contact, modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.spacedBy(Spacings.small),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val image = contact.image ?: ImageResource.Vector(Icons.Default.AccountBox)
                 ImageResourceComposable(
-                    imageResource = image,
+                    imageResource = contact.image,
                     contentDescription = stringResource(R.string.profile_picture),
                     modifier = Modifier
                         .size(Sizes.Icon.medium)
