@@ -143,7 +143,7 @@ internal class BLEServiceImpl @Inject constructor(
 
     private fun startPairedDevicesStorageCollection() {
         scope.launch {
-            pairedDevicesStorage.pairedDevices.collect { devices ->
+            pairedDevicesStorage.observePairedDevices().collect { devices ->
                 _state.update { BLEServiceState.Scanning(devices) }
             }
         }

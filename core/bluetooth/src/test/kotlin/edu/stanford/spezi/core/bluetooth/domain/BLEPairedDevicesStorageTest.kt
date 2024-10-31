@@ -10,6 +10,7 @@ import edu.stanford.spezi.core.utils.TimeProvider
 import edu.stanford.spezi.modules.storage.key.InMemoryKeyValueStorage
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.junit.Before
 import org.junit.Test
@@ -59,7 +60,7 @@ class BLEPairedDevicesStorageTest {
         )
 
         // then
-        assertThat(pairedDevicesStorage.pairedDevices.value).containsExactly(expectedDevice)
+        assertThat(pairedDevicesStorage.observePairedDevices().value).containsExactly(expectedDevice)
         assertThat(storage.getValue(storageKey)).isEqualTo(listOf(expectedDevice))
     }
 
@@ -70,7 +71,7 @@ class BLEPairedDevicesStorageTest {
         pairedDevicesStorage.updateDeviceConnection(bluetoothDevice, false)
 
         // then
-        assertThat(pairedDevicesStorage.pairedDevices.value).isEmpty()
+        assertThat(pairedDevicesStorage.observePairedDevices().value).isEmpty()
         assertThat(storage.getValue(storageKey)).isEqualTo(listOf<BLEDevice>())
     }
 
@@ -87,13 +88,13 @@ class BLEPairedDevicesStorageTest {
         storage.putValue(storageKey, listOf(device))
 
         // then
-        assertThat(pairedDevicesStorage.pairedDevices.value).isEmpty()
+        assertThat(pairedDevicesStorage.observePairedDevices().value).isEmpty()
         assertThat(storage.getValue(storageKey)).isEqualTo(emptyList<BLEDevice>())
     }
 
     @Test
     fun `it should handle on stopped correctly`() = runTestUnconfined {
-        // when
+        // given
         val device = BLEDevice(
             address = address,
             name = name,
@@ -107,7 +108,7 @@ class BLEPairedDevicesStorageTest {
         pairedDevicesStorage.onStopped()
 
         // then
-        assertThat(pairedDevicesStorage.pairedDevices.value).isEqualTo(expectedList)
+        assertThat(pairedDevicesStorage.observePairedDevices().value).isEqualTo(expectedList)
         assertThat(storage.getValue(storageKey)).isEqualTo(expectedList)
     }
 
@@ -127,8 +128,19 @@ class BLEPairedDevicesStorageTest {
     }
 
     @Test
+    fun `it should start observing notifier events when paired devices are requested`() =
+        runTestUnconfined {
+            // when
+            pairedDevicesStorage.observePairedDevices()
+
+            // then
+            verify { bleDevicePairingNotifier.events }
+        }
+
+    @Test
     fun `it should add device on paired event`() = runTestUnconfined {
         // given
+        pairedDevicesStorage.observePairedDevices()
         val expectedList = listOf(
             BLEDevice(
                 address = address,
@@ -136,32 +148,31 @@ class BLEPairedDevicesStorageTest {
                 connected = true,
             )
         )
-        pairedDevicesStorage // init
 
         // when
         notifierEvents.emit(BLEDevicePairingNotifier.Event.DevicePaired(bluetoothDevice))
 
         // then
-        assertThat(pairedDevicesStorage.pairedDevices.value).isEqualTo(expectedList)
+        assertThat(pairedDevicesStorage.observePairedDevices().value).isEqualTo(expectedList)
         assertThat(storage.getValue(storageKey)).isEqualTo(expectedList)
     }
 
     @Test
     fun `it should remove device on unpaired event`() = runTestUnconfined {
-        // when
+        // given
+        pairedDevicesStorage.observePairedDevices()
         val device = BLEDevice(
             address = address,
             name = name,
             connected = true,
         )
         storage.putValue(storageKey, listOf(device))
-        pairedDevicesStorage // init
 
         // when
         notifierEvents.emit(BLEDevicePairingNotifier.Event.DeviceUnpaired(bluetoothDevice))
 
         // then
-        assertThat(pairedDevicesStorage.pairedDevices.value).isEmpty()
+        assertThat(pairedDevicesStorage.observePairedDevices().value).isEmpty()
         assertThat(storage.getValue(storageKey)).isEqualTo(emptyList<BLEDevice>())
     }
 }
