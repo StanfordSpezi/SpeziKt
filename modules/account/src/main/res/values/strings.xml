@@ -20,5 +20,6 @@
     <string name="e_mail_address">E-Mail Address</string>
     <string name="signup">Signup</string>
     <string name="login">Login</string>
-    <string name="login_screen_description">You may login to your existing account or create a new one if you don\'t have one already. You can also sign in with your Google Account.</string>
+    <string name="login_screen_description">You may login to your existing account or create a new one if you don\'t have one already. You can also sign in with your Google Account. If you are having  difficulty logging in or resetting your password, you can reach out to:\u00A0</string>
+    <string name="engage_support_email">engage-hf-team@stanford.edu</string>
 </resources>

@@ -22,6 +22,7 @@ sealed interface Action {
     data class TextFieldUpdate(val newValue: String, val type: TextFieldType) : Action
     data object TogglePasswordVisibility : Action
     data object NavigateToRegister : Action
+    data class EmailClicked(val email: String) : Action
 
     sealed interface Async : Action {
         data object ForgotPassword : Async

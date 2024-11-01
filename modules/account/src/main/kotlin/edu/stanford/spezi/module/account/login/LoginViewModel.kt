@@ -1,8 +1,12 @@
 package edu.stanford.spezi.module.account.login
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.module.account.AccountEvents
@@ -24,6 +28,7 @@ internal class LoginViewModel @Inject constructor(
     private val accountEvents: AccountEvents,
     private val messageNotifier: MessageNotifier,
     private val authValidator: AuthValidator,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
     private var hasAttemptedSubmit: Boolean = false
     private val email: String
@@ -62,6 +67,14 @@ internal class LoginViewModel @Inject constructor(
 
             is Action.Async.PasswordSignIn -> {
                 execute(action = action, block = ::onPasswordSignIn)
+            }
+
+            is Action.EmailClicked -> {
+                val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
+                    data = Uri.parse("mailto:${action.email}")
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                context.startActivity(emailIntent)
             }
         }
     }
