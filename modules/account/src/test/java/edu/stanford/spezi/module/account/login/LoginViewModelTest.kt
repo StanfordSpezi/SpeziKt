@@ -1,5 +1,6 @@
 package edu.stanford.spezi.module.account.login
 
+import android.content.Context
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
@@ -30,6 +31,7 @@ class LoginViewModelTest {
     private val accountEvents: AccountEvents = mockk(relaxed = true)
     private val validator: AuthValidator = mockk()
     private val navigator: Navigator = mockk()
+    private val context: Context = mockk()
 
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
@@ -48,7 +50,8 @@ class LoginViewModelTest {
             messageNotifier = messageNotifier,
             accountEvents = accountEvents,
             navigator = navigator,
-            authValidator = validator
+            authValidator = validator,
+            context = context,
         )
     }
 
