@@ -12,6 +12,7 @@ import edu.stanford.spezi.modules.storage.key.getSerializableList
 import edu.stanford.spezi.modules.storage.key.putSerializable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -29,11 +30,11 @@ internal class BLEPairedDevicesStorage @Inject constructor(
     private val logger by speziLogger()
 
     private val _pairedDevices = MutableStateFlow(emptyList<BLEDevice>())
-    val pairedDevices = _pairedDevices.asStateFlow()
 
-    init {
+    fun observePairedDevices(): StateFlow<List<BLEDevice>> {
         refreshState()
         observeUnpairingEvents()
+        return _pairedDevices.asStateFlow()
     }
 
     fun updateDeviceConnection(device: BluetoothDevice, connected: Boolean) {
