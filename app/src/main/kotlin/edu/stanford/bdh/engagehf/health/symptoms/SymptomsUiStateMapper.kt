@@ -1,8 +1,10 @@
 package edu.stanford.bdh.engagehf.health.symptoms
 
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.NewestHealthData
 import edu.stanford.bdh.engagehf.health.TableEntryData
+import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.utils.LocaleProvider
 import edu.stanford.spezi.core.utils.extensions.roundToDecimalPlaces
 import java.time.ZoneId
@@ -40,11 +42,23 @@ class SymptomsUiStateMapper @Inject constructor(
                     formattedValue = newestHealthData.formattedValue,
                     formattedDate = newestHealthData.formattedDate,
                     selectedSymptomType = selectedSymptomType,
-                    isSelectedSymptomTypeDropdownExpanded = false
+                    isSelectedSymptomTypeDropdownExpanded = false,
+                    selectedSymptomTypeText = getSelectedSymptomTypeText(selectedSymptomType),
                 ),
                 valueFormatter = ::valueFormatter
             )
         )
+    }
+
+    private fun getSelectedSymptomTypeText(selectedSymptomType: SymptomType): StringResource {
+        return when (selectedSymptomType) {
+            SymptomType.OVERALL -> StringResource(R.string.symptom_type_overall)
+            SymptomType.PHYSICAL_LIMITS -> StringResource(R.string.symptom_type_physical)
+            SymptomType.SOCIAL_LIMITS -> StringResource(R.string.symptom_type_social)
+            SymptomType.QUALITY_OF_LIFE -> StringResource(R.string.symptom_type_quality)
+            SymptomType.SYMPTOMS_FREQUENCY -> StringResource(R.string.symptom_type_specific)
+            SymptomType.DIZZINESS -> StringResource(R.string.symptom_type_dizziness)
+        }
     }
 
     private fun valueFormatter(value: Double): String {

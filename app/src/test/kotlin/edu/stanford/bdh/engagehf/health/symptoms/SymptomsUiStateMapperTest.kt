@@ -1,6 +1,8 @@
 package edu.stanford.bdh.engagehf.health.symptoms
 
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.R
+import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.utils.LocaleProvider
 import io.mockk.every
 import io.mockk.mockk
@@ -123,6 +125,61 @@ class SymptomsUiStateMapperTest {
         assertThat(successStateOverall.data.tableData.size).isEqualTo(2)
         assertThat(successStateOverall.data.chartData.size).isEqualTo(1)
         assertThat(successStateOverall.data.chartData[0].xValues.size).isEqualTo(0)
+    }
+
+    @Test
+    fun `mapSymptomsUiState when different symptomTypes returns correct selectedSymptomTypeText`() {
+        // Given
+        val symptomScores = listOf(
+            createSymptomScore(),
+        )
+
+        // When
+        val resultOverall =
+            symptomsUiStateMapper.mapSymptomsUiState(SymptomType.OVERALL, symptomScores)
+        val resultPhysical =
+            symptomsUiStateMapper.mapSymptomsUiState(SymptomType.PHYSICAL_LIMITS, symptomScores)
+        val resultSocial =
+            symptomsUiStateMapper.mapSymptomsUiState(SymptomType.SOCIAL_LIMITS, symptomScores)
+        val resultQuality =
+            symptomsUiStateMapper.mapSymptomsUiState(SymptomType.QUALITY_OF_LIFE, symptomScores)
+        val resultSpecific =
+            symptomsUiStateMapper.mapSymptomsUiState(SymptomType.SYMPTOMS_FREQUENCY, symptomScores)
+        val resultDizziness =
+            symptomsUiStateMapper.mapSymptomsUiState(SymptomType.DIZZINESS, symptomScores)
+
+        // Then
+        assertThat(resultOverall).isInstanceOf(SymptomsUiState.Success::class.java)
+        assertThat(resultPhysical).isInstanceOf(SymptomsUiState.Success::class.java)
+        assertThat(resultSocial).isInstanceOf(SymptomsUiState.Success::class.java)
+        assertThat(resultQuality).isInstanceOf(SymptomsUiState.Success::class.java)
+        assertThat(resultSpecific).isInstanceOf(SymptomsUiState.Success::class.java)
+        assertThat(resultDizziness).isInstanceOf(SymptomsUiState.Success::class.java)
+        val successStateOverall = resultOverall as SymptomsUiState.Success
+        val successStatePhysical = resultPhysical as SymptomsUiState.Success
+        val successStateSocial = resultSocial as SymptomsUiState.Success
+        val successStateQuality = resultQuality as SymptomsUiState.Success
+        val successStateSpecific = resultSpecific as SymptomsUiState.Success
+        val successStateDizziness = resultDizziness as SymptomsUiState.Success
+        assertThat(successStateOverall.data.headerData.selectedSymptomTypeText).isEqualTo(
+            StringResource(R.string.symptom_type_overall)
+        )
+        assertThat(successStatePhysical.data.headerData.selectedSymptomTypeText).isEqualTo(
+            StringResource(R.string.symptom_type_physical)
+        )
+
+        assertThat(successStateSocial.data.headerData.selectedSymptomTypeText).isEqualTo(
+            StringResource(R.string.symptom_type_social)
+        )
+        assertThat(successStateQuality.data.headerData.selectedSymptomTypeText).isEqualTo(
+            StringResource(R.string.symptom_type_quality)
+        )
+        assertThat(successStateSpecific.data.headerData.selectedSymptomTypeText).isEqualTo(
+            StringResource(R.string.symptom_type_specific)
+        )
+        assertThat(successStateDizziness.data.headerData.selectedSymptomTypeText).isEqualTo(
+            StringResource(R.string.symptom_type_dizziness)
+        )
     }
 
     private fun createSymptomScore(

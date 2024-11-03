@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -25,8 +24,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import edu.stanford.spezi.core.design.component.ImageResource
+import edu.stanford.spezi.core.design.component.ImageResourceComposable
 import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
@@ -76,14 +76,11 @@ fun ContactComposable(contact: Contact, modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.spacedBy(Spacings.small),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val image = contact.image ?: Icons.Default.AccountBox
-                Icon(
-                    image,
+                ImageResourceComposable(
+                    imageResource = contact.image,
                     contentDescription = stringResource(R.string.profile_picture),
-                    tint = Colors.primary,
                     modifier = Modifier
                         .size(Sizes.Icon.medium)
-                        .testIdentifier(ContactComposableTestIdentifier.IMAGE, image.name)
                 )
                 Column {
                     Text(
@@ -146,7 +143,7 @@ fun ContactComposable(contact: Contact, modifier: Modifier = Modifier) {
 }
 
 enum class ContactComposableTestIdentifier {
-    NAME, IMAGE, SUBTITLE, DESCRIPTION, ADDRESS, OPTION
+    NAME, SUBTITLE, DESCRIPTION, ADDRESS, OPTION
 }
 
 @ThemePreviews
@@ -201,7 +198,7 @@ private object ContactComposableFactory {
     ): Contact {
         return Contact(
             name = PersonNameComponents(givenName = "Leland", familyName = "Stanford"),
-            image = Icons.Default.AccountBox,
+            image = ImageResource.Vector(Icons.Default.AccountBox),
             title = title,
             description = description,
             organization = StringResource("Stanford University"),
