@@ -33,5 +33,6 @@ class AppScreenEvents @Inject constructor(
         data object AddBloodPressureRecord : Event
         data object AddHeartRateRecord : Event
         data class NavigateToTab(val bottomBarItem: BottomBarItem) : Event
+        data object SymptomsDescriptionBottomSheet : Event
     }
 }

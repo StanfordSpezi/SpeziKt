@@ -1,11 +1,15 @@
 package edu.stanford.bdh.engagehf.health.symptoms
 
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.R
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
+import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Before
 import org.junit.Rule
@@ -21,6 +25,7 @@ class SymptomsViewModelTest {
     private val symptomsUiStateMapper: SymptomsUiStateMapper = mockk()
     private val symptomScores = getSymptomScores()
     private val successState = SymptomsUiState.Success(getSymptomsUiData())
+    private val appScreenEvents: AppScreenEvents = mockk(relaxed = true)
 
     private lateinit var viewModel: SymptomsViewModel
 
@@ -99,6 +104,18 @@ class SymptomsViewModelTest {
         assertThat(uiState).isEqualTo(newState)
     }
 
+    @Test
+    fun `it should handle SymptomsDescriptionBottomSheet correctly`() {
+        // given
+        createViewModel()
+
+        // when
+        viewModel.onAction(SymptomsViewModel.Action.Info)
+
+        // then
+        verify { appScreenEvents.emit(AppScreenEvents.Event.SymptomsDescriptionBottomSheet) }
+    }
+
     private fun getSymptomScores() = listOf(
         SymptomScore(
             overallScore = 80.0,
@@ -117,10 +134,15 @@ class SymptomsViewModelTest {
             formattedDate = "",
             formattedValue = "",
             selectedSymptomType = SymptomType.SYMPTOMS_FREQUENCY,
+            selectedSymptomTypeText = StringResource(R.string.symptom_type_overall),
         )
     )
 
     private fun createViewModel() {
-        viewModel = SymptomsViewModel(symptomsUiStateMapper, healthRepository)
+        viewModel = SymptomsViewModel(
+            symptomsUiStateMapper = symptomsUiStateMapper,
+            healthRepository = healthRepository,
+            appScreenEvents = appScreenEvents,
+        )
     }
 }
