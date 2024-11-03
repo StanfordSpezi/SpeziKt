@@ -288,7 +288,7 @@ private fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewMode
                 val isSelected = headerData.selectedSymptomType == symptomType
                 DropdownMenuItem(
                     text = {
-                        SymptomTypeText(symptomType)
+                        headerData.selectedSymptomTypeText
                     },
                     onClick = {
                         onAction(SymptomsViewModel.Action.ToggleSymptomTypeDropdown(false))
@@ -305,21 +305,6 @@ private fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewMode
             }
         }
     }
-}
-
-@Composable
-private fun SymptomTypeText(symptomType: SymptomType) {
-    Text(
-        text =
-        when (symptomType) {
-            SymptomType.OVERALL -> stringResource(R.string.symptom_type_overall)
-            SymptomType.PHYSICAL_LIMITS -> stringResource(R.string.symptom_type_physical)
-            SymptomType.SOCIAL_LIMITS -> stringResource(R.string.symptom_type_social)
-            SymptomType.QUALITY_OF_LIFE -> stringResource(R.string.symptom_type_quality)
-            SymptomType.SYMPTOMS_FREQUENCY -> stringResource(R.string.symptom_type_specific)
-            SymptomType.DIZZINESS -> stringResource(R.string.symptom_type_dizziness)
-        }
-    )
 }
 
 @Composable
