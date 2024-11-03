@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
@@ -27,7 +28,9 @@ import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.notification.notifier.FirebaseMessage
 import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.FIREBASE_MESSAGE_KEY
+import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
+import edu.stanford.spezi.modules.education.videos.Video
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -45,6 +48,7 @@ class BluetoothViewModel @Inject internal constructor(
     private val navigator: Navigator,
     private val engageEducationRepository: EngageEducationRepository,
     private val healthSummaryService: HealthSummaryService,
+    private val messageNotifier: MessageNotifier,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
     private val logger by speziLogger()
@@ -79,6 +83,7 @@ class BluetoothViewModel @Inject internal constructor(
                             it.copy(measurementDialog = dialog)
                         }
                     }
+
                     is EngageBLEServiceEvent.DeviceDiscovered,
                     is EngageBLEServiceEvent.DeviceConnected,
                     is EngageBLEServiceEvent.DevicePaired,
@@ -218,9 +223,18 @@ class BluetoothViewModel @Inject internal constructor(
         messageId: String,
         isDismissible: Boolean,
     ) {
+        var shouldDismissMessage = isDismissible
         when (messagesAction) {
             is MessagesAction.HealthSummaryAction -> {
-                handleHealthSummaryAction(messageId)
+                handleHealthSummaryAction(messageId).onFailure {
+                    shouldDismissMessage = false
+                }
+            }
+
+            is MessagesAction.VideoSectionAction -> {
+                handleVideoSectionAction(messagesAction).onFailure {
+                    shouldDismissMessage = false
+                }
             }
 
             is MessagesAction.MeasurementsAction -> {
@@ -242,32 +256,27 @@ class BluetoothViewModel @Inject internal constructor(
                     )
                 )
             }
-
-            is MessagesAction.VideoSectionAction -> {
-                viewModelScope.launch {
-                    handleVideoSectionAction(messagesAction)
-                }
-            }
         }
-        if (isDismissible) {
+        if (shouldDismissMessage) {
             messageRepository.completeMessage(messageId = messageId)
         }
     }
 
-    private suspend fun handleVideoSectionAction(messageAction: MessagesAction.VideoSectionAction) {
-        engageEducationRepository.getVideoBySectionAndVideoId(
+    private suspend fun handleVideoSectionAction(messageAction: MessagesAction.VideoSectionAction): Result<Video> {
+        return engageEducationRepository.getVideoBySectionAndVideoId(
             messageAction.videoSectionVideo.videoSectionId,
             messageAction.videoSectionVideo.videoId
-        ).getOrNull()?.let { video ->
-            navigator.navigateTo(
-                EducationNavigationEvent.VideoSectionClicked(
-                    video = video
-                )
+        ).onSuccess { video ->
+            navigator.navigateTo(EducationNavigationEvent.VideoSectionClicked(video))
+        }.onFailure {
+            messageNotifier.notify(
+                messageId = R.string.error_while_handling_message_action
             )
+            logger.e(it) { "Error while getting video by section and video id" }
         }
     }
 
-    private fun handleHealthSummaryAction(messageId: String) {
+    private suspend fun handleHealthSummaryAction(messageId: String): Result<Unit> {
         val setLoading = { loading: Boolean ->
             _uiState.update {
                 it.copy(
@@ -281,11 +290,10 @@ class BluetoothViewModel @Inject internal constructor(
                 )
             }
         }
-        viewModelScope.launch {
-            setLoading(true)
-            healthSummaryService.generateHealthSummaryPdf()
-            setLoading(false)
-        }
+        setLoading(true)
+        val result = healthSummaryService.generateHealthSummaryPdf()
+        setLoading(false)
+        return result
     }
 
     public override fun onCleared() {
