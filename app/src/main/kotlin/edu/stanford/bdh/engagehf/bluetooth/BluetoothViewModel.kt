@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
@@ -268,7 +269,7 @@ class BluetoothViewModel @Inject internal constructor(
             navigator.navigateTo(EducationNavigationEvent.VideoSectionClicked(video))
         }.onFailure {
             messageNotifier.notify(
-                message = "Error while handling message action."
+                messageId = R.string.error_while_handling_message_action
             )
             logger.e(it) { "Error while getting video by section and video id" }
         }

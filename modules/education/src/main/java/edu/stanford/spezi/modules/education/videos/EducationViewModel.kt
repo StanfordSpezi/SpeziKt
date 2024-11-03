@@ -3,9 +3,11 @@ package edu.stanford.spezi.modules.education.videos
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
+import edu.stanford.spezi.modules.education.R
 import edu.stanford.spezi.modules.education.videos.data.repository.EducationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,7 +33,8 @@ internal class EducationViewModel @Inject constructor(
             _uiState.value = UiState.Loading
             educationRepository.getVideoSections().onFailure {
                 logger.e(it) { "Failed to load video sections" }
-                _uiState.value = UiState.Error("Failed to load video sections")
+                _uiState.value =
+                    UiState.Error(StringResource(R.string.failed_to_load_video_sections))
             }.onSuccess { videoSections ->
                 _uiState.value = UiState.Success(EducationUiState(videoSections = videoSections))
             }

@@ -108,4 +108,5 @@
     <string name="invitation_code">Invitation Code</string>
     <string name="onboarding">Onboarding</string>
     <string name="contact">Contact</string>
+    <string name="error_while_handling_message_action">Error while handling message action.</string>
 </resources>
