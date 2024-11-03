@@ -59,13 +59,9 @@ class SymptomsViewModel @Inject internal constructor(
     fun onAction(action: Action) {
         when (action) {
             is Action.Info -> {
-                val selectedSymptomType =
-                    (uiState.value as? SymptomsUiState.Success)?.data?.headerData?.selectedSymptomType
-                if (selectedSymptomType != null) {
-                    appScreenEvents.emit(
-                        AppScreenEvents.Event.SymptomsDescriptionBottomSheet
-                    )
-                }
+                appScreenEvents.emit(
+                    AppScreenEvents.Event.SymptomsDescriptionBottomSheet
+                )
             }
 
             is Action.SelectSymptomType -> {
