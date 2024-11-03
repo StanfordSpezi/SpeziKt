@@ -91,5 +91,20 @@
     <string name="your_devices_header_title">Deine Geräte</string>
     <string name="last_seen_on">Zuletzt gesehen am %1$s</string>
     <string name="sign_out_failed">Abmeldung fehlgeschlagen.</string>
+    <string name="invitation_code">Einladungscode</string>
+    <string name="onboarding">Onboarding</string>
     <string name="contact">Kontakt</string>
+    <string name="symptoms_description_title">Ihre Symptome verstehen</string>
+    <string name="overall_score_title">Gesamt Score</string>
+    <string name="overall_score_description">Dieser Wert zeigt, wie sich Ihre Herzinsuffizienz insgesamt auf Sie auswirkt. Sie können einen Wert zwischen 0 und 100 erreichen. Ein höherer Wert bedeutet, dass es Ihnen besser geht. Ein Wert über 80 wird oft als gut angesehen. Ein Ziel der Herzmedikamente ist es, diesen Wert im Laufe der Zeit zu verbessern oder zu verhindern, dass er sich verringert.</string>
+    <string name="physical_limits_score_title">Physikalische Grenzen Score</string>
+    <string name="physical_limits_score_description">Dieser Wert gibt an, wie sehr Ihr Herz Ihre Fähigkeit, sich zu betätigen, beeinträchtigt. Höhere Werte bedeuten, dass Sie weniger eingeschränkt sind, und ein Wert über 80 wird oft als gut angesehen.</string>
+    <string name="social_limits_score_title">Soziale Grenzen Score</string>
+    <string name="social_limits_score_description">Dieser Wert gibt an, wie Ihr Herz Ihre Fähigkeit zu sozialen Aktivitäten beeinflusst. Höhere Werte bedeuten, dass Sie mehr tun können, während niedrigere Werte bedeuten, dass Sie durch Ihr Herz stärker eingeschränkt sind.</string>
+    <string name="quality_of_life_score_title">Bewertung der Lebensqualität</string>
+    <string name="quality_of_life_score_description">Dieser Wert gibt an, wie zufrieden Sie mit Ihren Herzsymptomen sind. Höhere Werte bedeuten, dass Sie insgesamt zufriedener sind, während niedrigere Werte bedeuten, dass Sie weniger zufrieden mit Ihrer Situation sind.</string>
+    <string name="symptoms_frequency_score_title">Symptom Häufigkeit</string>
+    <string name="specific_symptoms_score_description">Dieser Wert gibt die Häufigkeit an, mit der Sie herzbezogene Symptome verspüren. Höhere Werte bedeuten weniger häufige Symptome und niedrigere Werte bedeuten häufigere Symptome.</string>
+    <string name="dizziness_score_title">Schwindel Score</string>
+    <string name="dizziness_score_description">Es ist wichtig, Ihren Schwindel im Auge zu behalten, denn Schwindel kann eine Nebenwirkung Ihres Herzens oder Ihrer Herzmedikamente sein.</string>
 </resources>

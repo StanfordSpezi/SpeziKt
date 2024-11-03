@@ -39,6 +39,7 @@ import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.AddBloodPressu
 import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.BloodPressureDescriptionBottomSheet
 import edu.stanford.bdh.engagehf.health.heartrate.bottomsheet.AddHeartRateBottomSheet
 import edu.stanford.bdh.engagehf.health.heartrate.bottomsheet.HeartRateDescriptionBottomSheet
+import edu.stanford.bdh.engagehf.health.symptoms.SymptomsDescriptionBottomSheet
 import edu.stanford.bdh.engagehf.health.weight.bottomsheet.AddWeightBottomSheet
 import edu.stanford.bdh.engagehf.health.weight.bottomsheet.WeightDescriptionBottomSheet
 import edu.stanford.bdh.engagehf.medication.ui.MedicationScreen
@@ -209,6 +210,7 @@ private fun BottomSheetContent(
         BottomSheetContent.BLOOD_PRESSURE_DESCRIPTION_INFO -> BloodPressureDescriptionBottomSheet()
         BottomSheetContent.HEART_RATE_DESCRIPTION_INFO -> HeartRateDescriptionBottomSheet()
         BottomSheetContent.BLUETOOTH_DEVICE_PAIRING -> BLEDevicePairingBottomSheet()
+        BottomSheetContent.SYMPTOMS_DESCRIPTION_INFO -> SymptomsDescriptionBottomSheet()
     }
 }
 

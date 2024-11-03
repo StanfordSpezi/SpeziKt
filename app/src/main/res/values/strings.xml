@@ -26,7 +26,7 @@
     <string name="symptom_type_physical">Physical</string>
     <string name="symptom_type_social">Social</string>
     <string name="symptom_type_quality">Quality</string>
-    <string name="symptom_type_specific">Specific</string>
+    <string name="symptom_type_specific">Symptoms</string>
     <string name="symptom_type_dizziness">Dizziness</string>
     <string name="medications_no_recommendations">No medication recommendations</string>
     <string name="dosage_information_dose_row_current_dose">Current Dose:</string>
@@ -108,5 +108,18 @@
     <string name="invitation_code">Invitation Code</string>
     <string name="onboarding">Onboarding</string>
     <string name="contact">Contact</string>
+    <string name="symptoms_description_title">Understanding Your Symptoms</string>
+    <string name="overall_score_title">Overall Score</string>
+    <string name="overall_score_description">This score shows how your heart failure affects you overall. You can score 0 to 100. A higher score means you are doing better. Over 80 is often considered doing well. A goal of heart medicines is to improve this score over time or keep it from decreasing.</string>
+    <string name="physical_limits_score_title">Physical Limits Score</string>
+    <string name="physical_limits_score_description">This represents how your heart affects your ability to do activity. Higher scores mean you are less limited, and over 80 is often considered doing well.</string>
+    <string name="social_limits_score_title">Social Limits Score</string>
+    <string name="social_limits_score_description">This score represents how your heart affects your ability to do social activities. Higher scores mean you are able to do more, while lower scores mean you are more limited by your heart.</string>
+    <string name="quality_of_life_score_title">Quality of Life Score</string>
+    <string name="quality_of_life_score_description">This score represents how content you are with your heart symptoms. Higher scores mean you are overall more content, while lower scores mean you are less satisfied with how you are doing.</string>
+    <string name="symptoms_frequency_score_title">Symptom Frequency</string>
+    <string name="specific_symptoms_score_description">This represents the frequency you are experiencing heart-related symptoms. Higher scores mean less frequent symptoms and lower scores mean more frequent symptoms.</string>
+    <string name="dizziness_score_title">Dizziness Score</string>
+    <string name="dizziness_score_description">Your dizziness is important to keep track of because dizziness can be a side effect of your heart or your heart medicines.</string>
     <string name="error_while_handling_message_action">Error while handling message action.</string>
 </resources>
