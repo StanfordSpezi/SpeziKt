@@ -100,7 +100,7 @@ internal class BluetoothManagerScanCallback(
     @RequiresPermission(android.Manifest.permission.BLUETOOTH_SCAN)
     override fun onScanResult(callbackType: Int, result: ScanResult?) {
         if (result == null) return
-
+        result.rssi
         when (callbackType) {
             ScanSettings.CALLBACK_TYPE_MATCH_LOST -> {
                 println("onScanResult: Lost result")
