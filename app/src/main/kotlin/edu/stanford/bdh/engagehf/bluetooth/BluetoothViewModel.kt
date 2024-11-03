@@ -223,16 +223,19 @@ class BluetoothViewModel @Inject internal constructor(
         messageId: String,
         isDismissible: Boolean,
     ) {
+        var shouldDismissMessage = isDismissible
         when (messagesAction) {
             is MessagesAction.HealthSummaryAction -> {
                 handleHealthSummaryAction(messageId).onFailure {
-                    return // on failure, we don't want to dismiss the message
+                    shouldDismissMessage = false
+                    return
                 }
             }
 
             is MessagesAction.VideoSectionAction -> {
                 handleVideoSectionAction(messagesAction).onFailure {
-                    return // on failure, we don't want to dismiss the message
+                    shouldDismissMessage = false
+                    return
                 }
             }
 
@@ -256,7 +259,7 @@ class BluetoothViewModel @Inject internal constructor(
                 )
             }
         }
-        if (isDismissible) {
+        if (shouldDismissMessage) {
             messageRepository.completeMessage(messageId = messageId)
         }
     }
