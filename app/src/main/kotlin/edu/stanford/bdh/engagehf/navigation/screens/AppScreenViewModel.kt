@@ -89,6 +89,8 @@ class AppScreenViewModel @Inject constructor(
                             BottomSheetContent.BLOOD_PRESSURE_DESCRIPTION_INFO
                         }
 
+                        AppScreenEvents.Event.SymptomsDescriptionBottomSheet -> BottomSheetContent.SYMPTOMS_DESCRIPTION_INFO
+
                         AppScreenEvents.Event.CloseBottomSheet -> {
                             null
                         }
@@ -187,6 +189,7 @@ enum class BottomSheetContent {
     ADD_WEIGHT_RECORD,
     ADD_BLOOD_PRESSURE_RECORD,
     ADD_HEART_RATE_RECORD,
+    SYMPTOMS_DESCRIPTION_INFO,
     BLUETOOTH_DEVICE_PAIRING,
 }
 
