@@ -58,11 +58,11 @@ internal class LoginViewModel @Inject constructor(
             }
 
             is Action.EmailClicked -> {
-                val emailIntent = Intent().run {
-                    this.action = Intent.ACTION_SENDTO
-                    data = Uri.parse("mailto:${action.email}")
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
+                val data = Uri.parse("mailto:${action.email}")
+                val emailIntent = Intent()
+                    .setAction(Intent.ACTION_SENDTO)
+                    .setData(data)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(emailIntent)
             }
 

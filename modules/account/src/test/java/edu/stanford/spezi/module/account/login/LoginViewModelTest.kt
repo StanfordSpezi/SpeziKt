@@ -146,18 +146,19 @@ class LoginViewModelTest {
         val email = "some@email.com"
         val uri: Uri = mockk()
         every { Uri.parse("mailto:$email") } returns uri
-        val intent = mockk<Intent>(relaxed = true)
+        val intent = mockk<Intent>()
         every { anyConstructed<Intent>().setAction(Intent.ACTION_SENDTO) } returns intent
-        every { anyConstructed<Intent>().setData(uri) } returns intent
-        every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns intent
-
+        every { intent.setData(uri) } returns intent
+        every { intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns intent
         every { context.startActivity(intent) } just Runs
-        val action = Action.EmailClicked(email)
 
         // when
-        loginViewModel.onAction(action)
+        loginViewModel.onAction(Action.EmailClicked(email))
 
         // then
+        verify { anyConstructed<Intent>().setAction(Intent.ACTION_SENDTO) }
+        verify { intent.setData(uri) }
+        verify { intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
         verify { context.startActivity(intent) }
     }
 
