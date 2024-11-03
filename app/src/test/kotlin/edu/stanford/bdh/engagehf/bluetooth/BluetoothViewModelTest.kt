@@ -5,6 +5,7 @@ import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.WeightRecord
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
@@ -356,7 +357,7 @@ class BluetoothViewModelTest {
         ) { messageRepository.completeMessage(messageId = messageId) }
         coVerify {
             messageNotifier.notify(
-                message = "Error while handling message action.",
+                messageId = R.string.error_while_handling_message_action
             )
         }
     }
