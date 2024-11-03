@@ -228,14 +228,12 @@ class BluetoothViewModel @Inject internal constructor(
             is MessagesAction.HealthSummaryAction -> {
                 handleHealthSummaryAction(messageId).onFailure {
                     shouldDismissMessage = false
-                    return
                 }
             }
 
             is MessagesAction.VideoSectionAction -> {
                 handleVideoSectionAction(messagesAction).onFailure {
                     shouldDismissMessage = false
-                    return
                 }
             }
 
