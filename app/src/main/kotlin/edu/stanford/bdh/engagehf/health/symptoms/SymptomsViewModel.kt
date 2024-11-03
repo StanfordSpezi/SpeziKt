@@ -5,9 +5,11 @@ package edu.stanford.bdh.engagehf.health.symptoms
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.TableEntryData
+import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,6 +25,7 @@ import javax.inject.Inject
 class SymptomsViewModel @Inject internal constructor(
     private val symptomsUiStateMapper: SymptomsUiStateMapper,
     private val healthRepository: HealthRepository,
+    private val appScreenEvents: AppScreenEvents,
 ) : ViewModel() {
     private val logger by speziLogger()
 
@@ -56,7 +59,12 @@ class SymptomsViewModel @Inject internal constructor(
 
     fun onAction(action: Action) {
         when (action) {
-            Action.Info -> {}
+            is Action.Info -> {
+                appScreenEvents.emit(
+                    AppScreenEvents.Event.SymptomsDescriptionBottomSheet
+                )
+            }
+
             is Action.SelectSymptomType -> {
                 _uiState.update {
                     (it as? SymptomsUiState.Success)?.let { success ->
@@ -110,6 +118,7 @@ data class SymptomsUiData(
 )
 
 data class HeaderData(
+    val selectedSymptomTypeText: StringResource,
     val formattedValue: String,
     val formattedDate: String,
     val selectedSymptomType: SymptomType,
