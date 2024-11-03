@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -34,9 +35,12 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -96,12 +100,33 @@ internal fun LoginScreen(
             text = stringResource(R.string.your_account), style = titleLarge
         )
         Spacer(modifier = Modifier.height(Spacings.large))
-        Text(
-            text = """
-The ENGAGE-HF demonstrates the usage of the Firebase Account Module. 
-                
-You may login to your existing account or create a new one if you don't have one already.""",
-            style = bodyLarge,
+        val annotatedText = buildAnnotatedString {
+            append(stringResource(R.string.login_screen_description))
+            pushStringAnnotation(
+                tag = "EMAIL",
+                annotation = stringResource(R.string.engage_support_email)
+            )
+            withStyle(
+                style = SpanStyle(
+                    color = Colors.primary
+                )
+            ) {
+                append(stringResource(R.string.engage_support_email))
+            }
+            pop()
+        }
+        ClickableText(
+            text = annotatedText,
+            style = bodyLarge.copy(color = Colors.onBackground),
+            onClick = { offset ->
+                annotatedText.getStringAnnotations(
+                    tag = "EMAIL",
+                    start = offset,
+                    end = offset
+                ).firstOrNull()?.let {
+                    onAction(Action.EmailClicked(it.item))
+                }
+            }
         )
         Spacer(modifier = Modifier.height(Spacings.large))
         IconLeadingContent(
