@@ -74,7 +74,7 @@ class BLEServiceTest {
             every { startScanning(services = services) } just Runs
             every { stopScanning() } just Runs
         }
-        every { pairedDevicesStorage.pairedDevices } returns pairedDevicesState
+        every { pairedDevicesStorage.observePairedDevices() } returns pairedDevicesState
         every { pairedDevicesStorage.isPaired(any()) } returns true
         every { bleDevicePairingNotifier.events } returns notifierEvents
     }
@@ -149,7 +149,7 @@ class BLEServiceTest {
         // then
         verify { bleDevicePairingNotifier.events }
         verify { bleDevicePairingNotifier.start() }
-        verify { pairedDevicesStorage.pairedDevices }
+        verify { pairedDevicesStorage.observePairedDevices() }
         verify { deviceScanner.events }
         verify { deviceScanner.startScanning(services = services) }
     }

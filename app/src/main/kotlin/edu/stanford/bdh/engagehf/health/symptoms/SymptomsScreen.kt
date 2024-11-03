@@ -1,6 +1,5 @@
 package edu.stanford.bdh.engagehf.health.symptoms
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,9 +11,9 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -31,9 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -71,7 +68,6 @@ import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.HealthTableItem
 import edu.stanford.spezi.core.design.component.CenteredBoxContent
 import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Colors.secondary
 import edu.stanford.spezi.core.design.theme.Sizes
@@ -163,14 +159,9 @@ private fun LazyListScope.listHeader(
                 onClick = { onAction(SymptomsViewModel.Action.Info) }
             ) {
                 Icon(
-                    painter = painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_info),
+                    imageVector = Icons.Filled.Info,
                     contentDescription = stringResource(R.string.info_icon_content_description),
-                    modifier = Modifier
-                        .size(Sizes.Icon.medium)
-                        .background(primary, shape = CircleShape)
-                        .shadow(Spacings.small, CircleShape)
-                        .padding(Spacings.small),
-                    tint = onPrimary
+                    tint = primary
                 )
             }
         }
@@ -280,12 +271,12 @@ fun SymptomsChart(
 }
 
 @Composable
-fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewModel.Action) -> Unit) {
+private fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewModel.Action) -> Unit) {
     Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
         TextButton(onClick = {
             onAction(SymptomsViewModel.Action.ToggleSymptomTypeDropdown(true))
         }) {
-            SymptomTypeText(headerData.selectedSymptomType)
+            SymptomTypeTitleText(headerData.selectedSymptomType)
             Icon(Icons.Default.ArrowDropDown, contentDescription = "ArrowDropDown")
         }
         DropdownMenu(
@@ -297,7 +288,7 @@ fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewModel.Action
                 val isSelected = headerData.selectedSymptomType == symptomType
                 DropdownMenuItem(
                     text = {
-                        SymptomTypeText(symptomType)
+                        headerData.selectedSymptomTypeText
                     },
                     onClick = {
                         onAction(SymptomsViewModel.Action.ToggleSymptomTypeDropdown(false))
@@ -317,16 +308,16 @@ fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewModel.Action
 }
 
 @Composable
-fun SymptomTypeText(symptomType: SymptomType) {
+private fun SymptomTypeTitleText(symptomType: SymptomType) {
     Text(
         text =
         when (symptomType) {
-            SymptomType.OVERALL -> stringResource(R.string.symptom_type_overall)
-            SymptomType.PHYSICAL_LIMITS -> stringResource(R.string.symptom_type_physical)
-            SymptomType.SOCIAL_LIMITS -> stringResource(R.string.symptom_type_social)
-            SymptomType.QUALITY_OF_LIFE -> stringResource(R.string.symptom_type_quality)
-            SymptomType.SYMPTOMS_FREQUENCY -> stringResource(R.string.symptom_type_specific)
-            SymptomType.DIZZINESS -> stringResource(R.string.symptom_type_dizziness)
+            SymptomType.OVERALL -> stringResource(R.string.overall_score_title)
+            SymptomType.PHYSICAL_LIMITS -> stringResource(R.string.physical_limits_score_title)
+            SymptomType.SOCIAL_LIMITS -> stringResource(R.string.social_limits_score_title)
+            SymptomType.QUALITY_OF_LIFE -> stringResource(R.string.quality_of_life_score_title)
+            SymptomType.SYMPTOMS_FREQUENCY -> stringResource(R.string.symptoms_frequency_score_title)
+            SymptomType.DIZZINESS -> stringResource(R.string.dizziness_score_title)
         }
     )
 }
