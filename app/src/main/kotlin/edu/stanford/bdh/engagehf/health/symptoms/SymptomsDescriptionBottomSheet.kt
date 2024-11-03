@@ -74,7 +74,8 @@ fun TitleDescriptionItem(title: String, description: String) {
         )
         Text(
             text = description,
-            style = TextStyles.bodyMedium.copy(textAlign = TextAlign.Center)
+            style = TextStyles.bodyMedium,
+            textAlign = TextAlign.Center
         )
     }
 }
