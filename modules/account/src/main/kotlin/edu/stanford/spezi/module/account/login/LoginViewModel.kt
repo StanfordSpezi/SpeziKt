@@ -57,6 +57,15 @@ internal class LoginViewModel @Inject constructor(
                 navigateToRegister()
             }
 
+            is Action.EmailClicked -> {
+                val emailIntent = Intent().run {
+                    this.action = Intent.ACTION_SENDTO
+                    data = Uri.parse("mailto:${action.email}")
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                context.startActivity(emailIntent)
+            }
+
             is Action.Async.GoogleSignInOrSignUp -> {
                 execute(action = action, block = ::onGoogleSignInOrSignUp)
             }
@@ -67,14 +76,6 @@ internal class LoginViewModel @Inject constructor(
 
             is Action.Async.PasswordSignIn -> {
                 execute(action = action, block = ::onPasswordSignIn)
-            }
-
-            is Action.EmailClicked -> {
-                val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-                    data = Uri.parse("mailto:${action.email}")
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
-                context.startActivity(emailIntent)
             }
         }
     }

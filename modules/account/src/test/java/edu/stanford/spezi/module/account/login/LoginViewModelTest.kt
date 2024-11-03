@@ -1,6 +1,8 @@
 package edu.stanford.spezi.module.account.login
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
@@ -18,7 +20,12 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkConstructor
+import io.mockk.mockkStatic
+import io.mockk.unmockkConstructor
+import io.mockk.unmockkStatic
 import io.mockk.verify
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -45,6 +52,10 @@ class LoginViewModelTest {
         }
 
         every { navigator.navigateTo(any()) } just Runs
+
+        mockkStatic(Uri::class)
+        mockkConstructor(Intent::class)
+
         loginViewModel = LoginViewModel(
             authenticationManager = authenticationManager,
             messageNotifier = messageNotifier,
@@ -53,6 +64,12 @@ class LoginViewModelTest {
             authValidator = validator,
             context = context,
         )
+    }
+
+    @After
+    fun tearDown() {
+        unmockkStatic(Uri::class)
+        unmockkConstructor(Intent::class)
     }
 
     @Test
@@ -122,6 +139,27 @@ class LoginViewModelTest {
             // Then
             verify { navigator.navigateTo(expectedNavigationEvent) }
         }
+
+    @Test
+    fun `it should handle Email clicked correctly`() {
+        // given
+        val email = "some@email.com"
+        val uri: Uri = mockk()
+        every { Uri.parse("mailto:$email") } returns uri
+        val intent = mockk<Intent>(relaxed = true)
+        every { anyConstructed<Intent>().setAction(Intent.ACTION_SENDTO) } returns intent
+        every { anyConstructed<Intent>().setData(uri) } returns intent
+        every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns intent
+
+        every { context.startActivity(intent) } just Runs
+        val action = Action.EmailClicked(email)
+
+        // when
+        loginViewModel.onAction(action)
+
+        // then
+        verify { context.startActivity(intent) }
+    }
 
     @Test
     fun `it should handle successful google sign in correctly`() = runTestUnconfined {
