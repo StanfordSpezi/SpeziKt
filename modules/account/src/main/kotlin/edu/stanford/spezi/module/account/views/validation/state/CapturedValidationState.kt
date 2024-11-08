@@ -18,9 +18,12 @@ data class CapturedValidationState internal constructor(
 
     // TODO: Find out whether we can dynamically expose members of ValidationEngine
 
+    override fun hashCode(): Int {
+        return super.hashCode()
+    }
+
     override fun equals(other: Any?): Boolean =
         (other as? CapturedValidationState)?.let {
             it.engine === engine && it.input == input
         } ?: false
 }
-
