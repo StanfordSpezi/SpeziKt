@@ -1,5 +1,6 @@
 package edu.stanford.spezi.core.utils
 
+import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.utils.foundation.RepositoryAnchor
 import edu.stanford.spezi.core.utils.foundation.SharedRepository
 import edu.stanford.spezi.core.utils.foundation.builtin.ValueRepository
@@ -84,8 +85,6 @@ data class ComputedTestDataClass(override val value: Int) : TestTypes {
 
 data class OptionalComputedTestDataClass(override val value: Int) : TestTypes {
     companion object {
-        const val TRUE = true
-
         val alwaysComputeKey = object : OptionalComputedKnowledgeSource<
             TestAnchor,
             OptionalComputedTestDataClass,
@@ -123,9 +122,9 @@ class SharedRepositoryTest {
         repository[TestDataClass.key] = TestDataClass(3)
 
         for (value in repository) {
-            assert(value.anySource === TestDataClass.key)
-            assert(value.anyValue is TestDataClass)
-            assert((value.anyValue as? TestDataClass) == TestDataClass(3))
+            assertThat(value.anySource).isSameInstanceAs(TestDataClass.key)
+            assertThat(value.anyValue is TestDataClass).isEqualTo(true)
+            assertThat(value.anyValue as? TestDataClass).isEqualTo(TestDataClass(3))
         }
     }
 
@@ -134,7 +133,7 @@ class SharedRepositoryTest {
         repository[TestDataClass.key, TestDataClass(35)].value = 23
 
         val value = repository[TestDataClass.key]
-        assert(value?.value == 23)
+        assertThat(value?.value).isEqualTo(23)
     }
 
     @Test
@@ -142,16 +141,16 @@ class SharedRepositoryTest {
         val testDataClass = TestDataClass(42)
         repository[TestDataClass.key] = testDataClass
         val contentOfDataClass = repository[TestDataClass.key]
-        assert(contentOfDataClass === testDataClass)
+        assertThat(contentOfDataClass).isEqualTo(testDataClass)
 
         val newTestDataClass = TestDataClass(24)
         repository[TestDataClass.key] = newTestDataClass
         val newContentOfDataClass = repository[TestDataClass.key]
-        assert(newContentOfDataClass == newTestDataClass)
+        assertThat(newContentOfDataClass).isEqualTo(newTestDataClass)
 
         repository[TestDataClass.key] = null
         val newerContentOfDataClass = repository[TestDataClass.key]
-        assert(newerContentOfDataClass == null)
+        assertThat(newerContentOfDataClass).isNull()
     }
 
     @Test
@@ -159,23 +158,23 @@ class SharedRepositoryTest {
         val testDataClass = DefaultedTestDataClass(42)
 
         val defaultDataClass = repository[DefaultedTestDataClass.key]
-        assert(defaultDataClass == DefaultedTestDataClass(0))
+        assertThat(defaultDataClass).isEqualTo(DefaultedTestDataClass(0))
 
         // The cast is necessary, since it would otherwise not use the non-defaulted one
         val regularGet = repository[DefaultedTestDataClass.key as KnowledgeSource<TestAnchor, DefaultedTestDataClass>] ?: testDataClass
-        assert(regularGet == testDataClass)
+        assertThat(regularGet).isEqualTo(testDataClass)
     }
 
     @Test
     fun testContains() {
         val testDataClass = TestDataClass(42)
-        assert(!repository.contains(TestDataClass.key))
+        assertThat(repository.contains(TestDataClass.key)).isFalse()
 
         repository[TestDataClass.key] = testDataClass
-        assert(repository.contains(TestDataClass.key))
+        assertThat(repository.contains(TestDataClass.key)).isTrue()
 
         repository[TestDataClass.key] = null
-        assert(!repository.contains(TestDataClass.key))
+        assertThat(!repository.contains(TestDataClass.key)).isFalse()
     }
 
     @Test
@@ -186,8 +185,8 @@ class SharedRepositoryTest {
         repository[TestClass.key] = testClass
 
         val testTypes = repository.collect(allOf = TestTypes::class)
-        assert(testTypes.count() == 2)
-        assert(testTypes.all { it.value == 42 })
+        assertThat(testTypes).hasSize(2)
+        assertThat(testTypes.all { it.value == 42 }).isTrue()
     }
 
     @Test
@@ -198,8 +197,8 @@ class SharedRepositoryTest {
         val contentOfDataClass = repository[TestDataClass.key]
         contentOfDataClass?.value = 24
         // This is different than on iOS - here, data classes use reference semantics!
-        assert(testDataClass.value == 24)
-        assert(contentOfDataClass?.value == 24)
+        assertThat(testDataClass.value).isEqualTo(24)
+        assertThat(contentOfDataClass?.value).isEqualTo(24)
     }
 
     @Test
@@ -208,7 +207,7 @@ class SharedRepositoryTest {
         repository[KeyLike] = testClass
 
         val contentOfClass = repository[KeyLike]
-        assert(contentOfClass == testClass)
+        assertThat(contentOfClass).isEqualTo(testClass)
     }
 
     @Test
@@ -216,16 +215,16 @@ class SharedRepositoryTest {
         val value = repository[ComputedTestDataClass.alwaysComputeKey]
         val optionalValue = repository[OptionalComputedTestDataClass.alwaysComputeKey]
 
-        assert(value.value == computedValue)
-        assert(optionalValue?.value == optionalComputedValue)
+        assertThat(value.value).isEqualTo(computedValue)
+        assertThat(optionalValue?.value).isEqualTo(optionalComputedValue)
 
         computedValue = 5
         optionalComputedValue = 4
 
         val newValue = repository[ComputedTestDataClass.alwaysComputeKey]
         val newOptionalValue = repository[OptionalComputedTestDataClass.alwaysComputeKey]
-        assert(newValue.value == computedValue)
-        assert(newOptionalValue?.value == optionalComputedValue)
+        assertThat(newValue.value).isEqualTo(computedValue)
+        assertThat(newOptionalValue?.value).isEqualTo(optionalComputedValue)
     }
 
     @Test
@@ -233,15 +232,15 @@ class SharedRepositoryTest {
         val value = repository[ComputedTestDataClass.storeKey]
         val optionalValue = repository[OptionalComputedTestDataClass.storeKey]
 
-        assert(value.value == computedValue)
-        assert(optionalValue?.value == optionalComputedValue)
+        assertThat(value.value).isEqualTo(computedValue)
+        assertThat(optionalValue?.value).isEqualTo(optionalComputedValue)
 
         // get call bypasses the compute call, so tests if it's really stored
         val getValue = repository[ComputedTestDataClass.alwaysComputeKey]
         val getOptionalValue = repository[OptionalComputedTestDataClass.alwaysComputeKey]
 
-        assert(getValue.value == computedValue)
-        assert(getOptionalValue?.value == optionalComputedValue) // this is nil
+        assertThat(getValue.value).isEqualTo(computedValue)
+        assertThat(getOptionalValue?.value).isEqualTo(optionalComputedValue) // this is nil
 
         // make sure computed knowledge sources with `Store` policy are not re-computed
         computedValue = 5
@@ -250,16 +249,16 @@ class SharedRepositoryTest {
         val newValue = repository[ComputedTestDataClass.alwaysComputeKey]
         val newOptionalValue = repository[OptionalComputedTestDataClass.alwaysComputeKey]
 
-        assert(newValue.value == value.value)
-        assert(newOptionalValue?.value == optionalComputedValue) // never stored as it was nil
+        assertThat(newValue.value).isEqualTo(value.value)
+        assertThat(newOptionalValue?.value).isEqualTo(optionalComputedValue) // never stored as it was nil
 
         // last check if its really written now
         val writtenOptionalValue = repository[OptionalComputedTestDataClass.alwaysComputeKey]
-        assert(writtenOptionalValue?.value == optionalComputedValue)
+        assertThat(writtenOptionalValue?.value).isEqualTo(optionalComputedValue)
 
         // check again that it doesn't change
         optionalComputedValue = null
-        assert(repository[OptionalComputedTestDataClass.storeKey]?.value == 4)
+        assertThat(repository[OptionalComputedTestDataClass.storeKey]?.value).isEqualTo(4)
     }
 
     // TODO: fun testComputedKnowledgeSourcePreferred() has not been copied from iOS due to accessing the
