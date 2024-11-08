@@ -174,7 +174,7 @@ class SharedRepositoryTest {
         assertThat(repository.contains(TestDataClass.key)).isTrue()
 
         repository[TestDataClass.key] = null
-        assertThat(!repository.contains(TestDataClass.key)).isFalse()
+        assertThat(repository.contains(TestDataClass.key)).isFalse()
     }
 
     @Test
