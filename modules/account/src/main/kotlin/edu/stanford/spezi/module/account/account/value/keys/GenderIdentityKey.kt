@@ -11,7 +11,6 @@ import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.InitialValue
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.value
-import java.util.UUID
 
 private object AccountGenderIdentityKey : AccountKey<GenderIdentity> {
     override val uuid = UUID()

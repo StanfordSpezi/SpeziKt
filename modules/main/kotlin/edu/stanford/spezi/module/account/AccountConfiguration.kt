@@ -1,10 +1,5 @@
 package edu.stanford.spezi.module.account
 
-import edu.stanford.spezi.core.utils.UUID
-import edu.stanford.spezi.module.account.account.value.collections.AccountAnchor
-import edu.stanford.spezi.module.account.foundation.RepositoryAnchor
-import java.util.UUID
-
 // SpeziAccount
 
 /*

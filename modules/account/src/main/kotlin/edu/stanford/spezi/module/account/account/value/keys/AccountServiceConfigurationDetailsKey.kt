@@ -3,6 +3,8 @@ package edu.stanford.spezi.module.account.account.value.keys
 import edu.stanford.spezi.core.utils.UUID
 import edu.stanford.spezi.module.account.account.service.configuration.AccountServiceConfiguration
 import edu.stanford.spezi.module.account.account.service.configuration.SupportedAccountKeys
+import edu.stanford.spezi.module.account.account.service.configuration.UserIdType
+import edu.stanford.spezi.module.account.account.service.configuration.userIdConfiguration
 import edu.stanford.spezi.module.account.account.value.collections.AccountAnchor
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.foundation.knowledgesource.DefaultProvidingKnowledgeSource
@@ -15,3 +17,6 @@ private object AccountServiceConfigurationDetailsKey : DefaultProvidingKnowledge
 var AccountDetails.accountServiceConfiguration: AccountServiceConfiguration
     get() = this.storage[AccountServiceConfigurationDetailsKey]
     set(value) { this.storage[AccountServiceConfigurationDetailsKey] = value }
+
+val AccountDetails.userIdType: UserIdType
+    get() = this.accountServiceConfiguration.userIdConfiguration.idType

@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.onCompletion
 import java.util.UUID
 
 class ExternalAccountStorage : Module {
-    data class ExternallyStoredDetails(
+    data class ExternallyStoredDetails internal constructor(
         val accountId: String,
         val details: AccountDetails,
     )
@@ -37,8 +37,9 @@ class ExternalAccountStorage : Module {
     }
 
     suspend fun requestExternalStorage(accountId: String, details: AccountDetails) {
-        // TODO: Check for emptiness and making sure storageProvider exists
+        if (details.isEmpty()) return
         storageProvider?.store(accountId, details)
+            ?: error("An External AccountStorageProvider was assumed to be present. However no provider was configured.")
     }
 
     suspend fun retrieveExternalStorage(accountId: String, keys: List<AccountKey<*>>): AccountDetails {
@@ -55,8 +56,8 @@ class ExternalAccountStorage : Module {
     }
 
     suspend fun updateExternalStorage(accountId: String, modifications: AccountModifications) {
-        val storageProvider = storageProvider ?: error("")
-        storageProvider.store(accountId, modifications)
+        storageProvider?.store(accountId, modifications)
+            ?: error("An External AccountStorageProvider was assumed to be present. However no provider was configured.")
     }
 
     suspend fun willDeleteAccount(accountId: String) {

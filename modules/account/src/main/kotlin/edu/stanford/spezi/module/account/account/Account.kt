@@ -22,15 +22,15 @@ class Account(
     var details: AccountDetails?
         private set
 
-    private val accountService: AccountService
+    public val accountService: AccountService
 
     @Inject lateinit var notifications: AccountNotifications // TODO: Actually this should be providing, right?
 
     var signedIn: Boolean = details != null
         private set
 
-    private val accountSetupComponents: List<IdentityProvider>
-    private val securityRelatedModifiers: List<SecurityRelatedModifier>
+    internal val accountSetupComponents: List<IdentityProvider>
+    internal val securityRelatedModifiers: List<SecurityRelatedModifier>
 
     init {
         this.details = details

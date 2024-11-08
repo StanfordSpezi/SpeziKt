@@ -30,6 +30,10 @@ data class ValueRepository<Anchor : RepositoryAnchor>(
         return storage.values.mapNotNull { it.anyValue as? Value }
     }
 
+    internal fun remove(key: KnowledgeSource<Anchor, *>) {
+        storage.remove(key.uuid)
+    }
+
     override fun iterator(): Iterator<AnyRepositoryValue> {
         return storage.values.iterator()
     }

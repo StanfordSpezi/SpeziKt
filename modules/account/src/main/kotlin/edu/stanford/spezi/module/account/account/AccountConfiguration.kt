@@ -18,13 +18,13 @@ class AccountConfiguration<Service : AccountService> : Module {
 
     @Inject lateinit var account: Account
 
-    @Inject private lateinit var externalStorage: ExternalAccountStorage
+    @Inject internal lateinit var externalStorage: ExternalAccountStorage
 
-    @Inject private lateinit var accountService: Service
+    @Inject internal lateinit var accountService: Service
 
-    @Inject private lateinit var storageProvider: List<Module> // TODO: This is never going to work
+    @Inject internal lateinit var storageProvider: List<Module> // TODO: This is never going to work
 
-    @Inject private lateinit var standard: Standard
+    @Inject internal lateinit var standard: Standard
 
     init {
         verify(account.configuration, accountService)

@@ -52,7 +52,7 @@ class AccountDetailsCache(
 
     private val localCache = mutableMapOf<String, AccountDetails>()
 
-    @Inject private lateinit var localStorage: LocalStorage
+    @Inject internal lateinit var localStorage: LocalStorage
 
     fun loadEntry(accountId: String, keys: List<AccountKey<*>>): AccountDetails? {
         localCache[accountId]?.let {

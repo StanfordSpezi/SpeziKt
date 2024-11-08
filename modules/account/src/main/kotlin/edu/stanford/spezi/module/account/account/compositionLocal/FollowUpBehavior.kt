@@ -10,4 +10,4 @@ enum class FollowUpBehavior {
     }
 }
 
-val LocalFollowUpBehaviorAfterSetup = compositionLocalOf { FollowUpBehavior.automatic }
+val LocalFollowUpBehavior = compositionLocalOf { FollowUpBehavior.automatic }

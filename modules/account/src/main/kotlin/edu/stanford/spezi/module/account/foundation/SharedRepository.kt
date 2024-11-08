@@ -23,6 +23,7 @@ interface SharedRepository<Anchor : RepositoryAnchor> {
         ) ?: source.defaultValue
     }
 
+    /*
     operator fun <Value : Any> get(
         source: ComputedKnowledgeSource<
             Anchor,
@@ -31,8 +32,9 @@ interface SharedRepository<Anchor : RepositoryAnchor> {
             in SharedRepository<Anchor>
             >
     ): Value = getOrComputed(source)
+     */
 
-    fun <Value : Any> getOrComputed(
+    fun <Value : Any> getOrComputeStored(
         source: ComputedKnowledgeSource<
             Anchor,
             Value,
@@ -49,16 +51,18 @@ interface SharedRepository<Anchor : RepositoryAnchor> {
         }
     }
 
+    /*
     operator fun <Value : Any> get(
-        source: ComputedKnowledgeSource<
-            Anchor,
-            Value,
-            ComputedKnowledgeSourceStoragePolicy.AlwaysCompute,
-            in SharedRepository<Anchor>
-            >
+    source: ComputedKnowledgeSource<
+        Anchor,
+        Value,
+        ComputedKnowledgeSourceStoragePolicy.AlwaysCompute,
+        in SharedRepository<Anchor>
+        >
     ): Value  = getOrComputed(source)
+    */
 
-    fun <Value : Any> getOrComputed(
+    fun <Value : Any> getOrCompute(
         source: ComputedKnowledgeSource<
             Anchor,
             Value,
@@ -69,16 +73,18 @@ interface SharedRepository<Anchor : RepositoryAnchor> {
         return source.compute(this)
     }
 
+    /*
     operator fun <Value : Any> get(
-        source: OptionalComputedKnowledgeSource<
-            Anchor,
-            Value,
-            ComputedKnowledgeSourceStoragePolicy.Store,
-            in SharedRepository<Anchor>
-            >
+    source: OptionalComputedKnowledgeSource<
+    Anchor,
+    Value,
+    ComputedKnowledgeSourceStoragePolicy.Store,
+    in SharedRepository<Anchor>
+    >
     ): Value?  = getOrOptionalComputed(source)
+    */
 
-    fun <Value : Any> getOrOptionalComputed(
+    fun <Value : Any> getOrOptionalComputeStored(
         source: OptionalComputedKnowledgeSource<
             Anchor,
             Value,
@@ -95,16 +101,18 @@ interface SharedRepository<Anchor : RepositoryAnchor> {
         }
     }
 
+    /*
     operator fun <Value : Any> get(
-        source: OptionalComputedKnowledgeSource<
-            Anchor,
-            Value,
-            ComputedKnowledgeSourceStoragePolicy.AlwaysCompute,
-            in SharedRepository<Anchor>
-            >
+    source: OptionalComputedKnowledgeSource<
+    Anchor,
+    Value,
+    ComputedKnowledgeSourceStoragePolicy.AlwaysCompute,
+    in SharedRepository<Anchor>
+    >
     ): Value? = getOrOptionalComputed(source)
+    */
 
-    fun <Value : Any> getOrOptionalComputed(
+    fun <Value : Any> getOrOptionalCompute(
         source: OptionalComputedKnowledgeSource<
             Anchor,
             Value,

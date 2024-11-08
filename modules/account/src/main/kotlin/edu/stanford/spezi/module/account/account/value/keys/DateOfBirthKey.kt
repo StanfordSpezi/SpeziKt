@@ -11,10 +11,9 @@ import edu.stanford.spezi.module.account.account.value.InitialValue
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.value
 import java.util.Date
-import java.util.UUID
 
 private object AccountDateOfBirthKey : AccountKey<Date> {
-    override val uuid: UUID = UUID()
+    override val uuid = UUID()
     override val identifier = "dateOfBirth"
     override val name = StringResource("UAP_SIGNUP_DATE_OF_BIRTH_TITLE")
     override val category = AccountKeyCategory.personalDetails

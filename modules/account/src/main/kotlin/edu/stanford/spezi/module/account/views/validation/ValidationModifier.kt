@@ -9,6 +9,8 @@ import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.module.account.views.validation.configuration.LocalValidationDebounce
 import edu.stanford.spezi.module.account.views.validation.configuration.LocalValidationEngine
 import edu.stanford.spezi.module.account.views.validation.configuration.LocalValidationEngineConfiguration
+import edu.stanford.spezi.module.account.views.validation.state.CapturedValidationState
+import edu.stanford.spezi.module.account.views.validation.state.LocalCapturedValidationStateEntries
 import kotlin.time.Duration
 
 @Composable
@@ -56,10 +58,13 @@ fun Validate(
         previousValidationEngineConfiguration.value = validationEngineConfiguration
     }
 
+    val hasFocus = remember { mutableStateOf(false) }
+    LocalCapturedValidationStateEntries.current
+        .add(CapturedValidationState(engine, input, hasFocus))
+
     CompositionLocalProvider(LocalValidationEngine provides engine) {
         content()
         // TODO: onSubmit missing
         // TODO: focused missing
-        // TODO: preference for CapturedValidationStateKey missing
     }
 }

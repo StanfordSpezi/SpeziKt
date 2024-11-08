@@ -12,10 +12,9 @@ import edu.stanford.spezi.module.account.account.value.OptionalComputedAccountKe
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.collections.AccountStorage
 import edu.stanford.spezi.module.account.foundation.knowledgesource.ComputedKnowledgeSourceStoragePolicy
-import java.util.UUID
 
 private object AccountEmailKey : OptionalComputedAccountKey<String, ComputedKnowledgeSourceStoragePolicy.AlwaysCompute> {
-    override val uuid: UUID = UUID()
+    override val uuid = UUID()
     override val identifier = "email"
     override val name = StringResource("UAP_SIGNUP_DATE_OF_BIRTH_TITLE")
     override val category = AccountKeyCategory.personalDetails

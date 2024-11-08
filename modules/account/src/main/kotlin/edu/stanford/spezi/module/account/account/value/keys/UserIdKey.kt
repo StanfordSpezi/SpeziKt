@@ -11,10 +11,9 @@ import edu.stanford.spezi.module.account.account.value.InitialValue
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.collections.AccountStorage
 import edu.stanford.spezi.module.account.foundation.knowledgesource.ComputedKnowledgeSourceStoragePolicy
-import java.util.UUID
 
 private object AccountUserIdKey : ComputedAccountKey<String, ComputedKnowledgeSourceStoragePolicy.AlwaysCompute> {
-    override val uuid: UUID = UUID()
+    override val uuid = UUID()
     override val identifier: String = "userId"
     override val name = StringResource("USER_ID")
     override val category = AccountKeyCategory.personalDetails

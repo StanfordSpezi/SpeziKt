@@ -1,5 +1,6 @@
 package edu.stanford.spezi.module.account.account.mock
 
+/*
 import android.accounts.Account
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.utils.UUID
@@ -17,14 +18,12 @@ import edu.stanford.spezi.module.account.account.value.keys.accountId
 import edu.stanford.spezi.module.account.account.value.keys.dateOfBirth
 import edu.stanford.spezi.module.account.account.value.keys.genderIdentity
 import edu.stanford.spezi.module.account.account.value.keys.isAnonymous
-import edu.stanford.spezi.module.account.account.value.keys.isAnonymousUser
 import edu.stanford.spezi.module.account.account.value.keys.isNewUser
 import edu.stanford.spezi.module.account.account.value.keys.name
 import edu.stanford.spezi.module.account.account.value.keys.password
 import edu.stanford.spezi.module.account.account.value.keys.userId
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.subscribe
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.Date
@@ -49,9 +48,9 @@ class InMemoryAccountService : AccountService {
     @Inject private lateinit var notifications: AccountNotifications
     @Inject private lateinit var externalStorage: ExternalAccountStorage
 
-    private val loginView by IdentityProvider(section = AccountSetupSection.primary, composable = {})
-    private val testButton2 by IdentityProvider(composable = {})
-    private val signInWithApple by IdentityProvider(section = AccountSetupSection.singleSignOn, composable = {})
+    private val loginView by IdentityProvider(section = AccountSetupSection.primary, content = {})
+    private val testButton2 by IdentityProvider(content = {})
+    private val signInWithApple by IdentityProvider(section = AccountSetupSection.singleSignOn, content = {})
 
     private val securityAlert by SecurityRelatedModifier(MockSecurityAlert())
 
@@ -434,3 +433,4 @@ extension InMemoryAccountService.UserStorage {
         }
     }
 }
+ */

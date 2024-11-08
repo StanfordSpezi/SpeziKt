@@ -2,7 +2,7 @@ package edu.stanford.spezi.module.account.views.validation.state
 
 data class ValidationContext internal constructor(
     private val entries: List<CapturedValidationState> = emptyList()
-): Iterable<CapturedValidationState> {
+) : Iterable<CapturedValidationState> {
     val allInputValid: Boolean get() =
         entries.all { it.engine.inputValid }
 
@@ -16,6 +16,9 @@ data class ValidationContext internal constructor(
         entries.any { it.engine.isDisplayingValidationErrors }
 
     override fun iterator(): Iterator<CapturedValidationState> = entries.iterator()
+
+    val isEmpty: Boolean
+        get() = entries.isEmpty()
 
     private fun collectFailedValidations(): List<CapturedValidationState> {
         return mapNotNull { state ->

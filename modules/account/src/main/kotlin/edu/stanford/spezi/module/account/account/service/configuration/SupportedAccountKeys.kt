@@ -4,7 +4,6 @@ import edu.stanford.spezi.core.utils.UUID
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.configuration.AccountKeyConfiguration
 import edu.stanford.spezi.module.account.account.value.configuration.AccountValueConfiguration
-import java.util.UUID
 
 sealed interface SupportedAccountKeys {
     data object Arbitrary : SupportedAccountKeys
@@ -24,16 +23,16 @@ sealed interface SupportedAccountKeys {
     }
 
     companion object {
-        val key: AccountServiceConfigurationKey<SupportedAccountKeys> = SupportedAccountKeysKey()
+        val key: AccountServiceConfigurationKey<SupportedAccountKeys> = SupportedAccountKeysKey
     }
 }
 
-private data class SupportedAccountKeysKey(
-    override val uuid: UUID = UUID(),
-) : AccountServiceConfigurationKey<SupportedAccountKeys>
+private object SupportedAccountKeysKey : AccountServiceConfigurationKey<SupportedAccountKeys> {
+    override val uuid = UUID()
+}
 
 var AccountServiceConfiguration.supportedAccountKeys: SupportedAccountKeys
-    get() = this.storage[SupportedAccountKeys.key] ?: TODO("Figure out how to translate preconditionFailure.")
+    get() = this.storage[SupportedAccountKeys.key] ?: error("Figure out how to translate preconditionFailure.")
     set(value) { this.storage[SupportedAccountKeys.key] = value }
 
 fun AccountServiceConfiguration.unsupportedAccountKeys(configuration: AccountValueConfiguration): List<AccountKeyConfiguration<*>> {

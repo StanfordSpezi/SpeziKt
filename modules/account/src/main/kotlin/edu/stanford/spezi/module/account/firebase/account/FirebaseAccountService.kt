@@ -28,13 +28,13 @@ class FirebaseAccountService(
 ) : AccountService {
     private val logger by speziLogger()
 
-    @Inject private lateinit var configureFirebaseApp: ConfigureFirebaseApp
+    @Inject internal lateinit var configureFirebaseApp: ConfigureFirebaseApp
 
-    @Inject private lateinit var account: Account
+    @Inject internal lateinit var account: Account
 
-    @Inject private lateinit var notifications: AccountNotifications
+    @Inject internal lateinit var notifications: AccountNotifications
 
-    @Inject private lateinit var externalStorage: ExternalAccountStorage
+    @Inject internal lateinit var externalStorage: ExternalAccountStorage
 
     override val configuration: AccountServiceConfiguration = AccountServiceConfiguration(
         AccountServiceConfigurationStorage()

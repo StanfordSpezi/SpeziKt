@@ -23,3 +23,4 @@ data class CapturedValidationState internal constructor(
             it.engine === engine && it.input == input
         } ?: false
 }
+

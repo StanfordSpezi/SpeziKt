@@ -14,7 +14,7 @@ class InMemoryAccountStorageProvider : AccountStorageProvider {
     private var records = mutableMapOf<String, AccountDetails>()
     private var cache = mutableMapOf<String, AccountDetails>() // simulates an in-memory cache
 
-    @Inject private lateinit var storage: ExternalAccountStorage
+    @Inject internal lateinit var storage: ExternalAccountStorage
 
     override suspend fun load(accountId: String, keys: List<AccountKey<*>>): AccountDetails? {
         cache[accountId]?.let { cached ->

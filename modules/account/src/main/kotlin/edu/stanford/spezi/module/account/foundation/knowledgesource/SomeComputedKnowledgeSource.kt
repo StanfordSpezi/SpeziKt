@@ -9,6 +9,6 @@ sealed interface ComputedKnowledgeSourceStoragePolicy {
 
 interface SomeComputedKnowledgeSource<
     Anchor : RepositoryAnchor,
-    Value,
+    Value : Any,
     StoragePolicy : ComputedKnowledgeSourceStoragePolicy,
     > : KnowledgeSource<Anchor, Value>

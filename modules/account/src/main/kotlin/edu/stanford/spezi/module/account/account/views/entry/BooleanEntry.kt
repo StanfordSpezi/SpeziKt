@@ -9,7 +9,7 @@ import edu.stanford.spezi.module.account.account.value.AccountKey
 @Composable
 fun BooleanEntry(
     key: AccountKey<Boolean>,
-    state: MutableState<Boolean>
+    state: MutableState<Boolean>,
 ) {
     ListRow(key.name) {
         Switch(

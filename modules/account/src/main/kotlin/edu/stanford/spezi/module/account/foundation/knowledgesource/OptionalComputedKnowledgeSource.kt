@@ -4,7 +4,7 @@ import edu.stanford.spezi.module.account.foundation.RepositoryAnchor
 
 interface OptionalComputedKnowledgeSource<
     Anchor : RepositoryAnchor,
-    Value,
+    Value : Any,
     StoragePolicy : ComputedKnowledgeSourceStoragePolicy,
     Repository
     > : SomeComputedKnowledgeSource<Anchor, Value, StoragePolicy> {

@@ -1,0 +1,12 @@
+package edu.stanford.spezi.module.account
+
+import edu.stanford.spezi.core.navigation.NavigationEvent
+
+sealed class AccountNavigationEvent : NavigationEvent {
+    data class RegisterScreen(
+        val email: String = "",
+        val password: String = "",
+    ) : AccountNavigationEvent()
+
+    data object LoginScreen : AccountNavigationEvent()
+}
