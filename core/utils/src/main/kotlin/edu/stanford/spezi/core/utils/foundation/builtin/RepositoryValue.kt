@@ -10,7 +10,7 @@ interface AnyRepositoryValue {
 
 data class RepositoryValue<Anchor : RepositoryAnchor, Value : Any>(
     val source: KnowledgeSource<Anchor, Value>,
-    val value: Value
+    val value: Value,
 ) : AnyRepositoryValue {
     override val anySource: KnowledgeSource<*, *> get() = source
     override val anyValue: Any get() = value

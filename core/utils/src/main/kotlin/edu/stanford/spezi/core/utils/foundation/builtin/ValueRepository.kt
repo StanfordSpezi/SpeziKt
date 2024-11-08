@@ -7,7 +7,7 @@ import java.util.UUID
 import kotlin.reflect.KClass
 
 data class ValueRepository<Anchor : RepositoryAnchor>(
-    internal var storage: MutableMap<UUID, AnyRepositoryValue> = mutableMapOf()
+    internal var storage: MutableMap<UUID, AnyRepositoryValue> = mutableMapOf(),
 ) : SharedRepository<Anchor>, Sequence<AnyRepositoryValue> {
     @Suppress("UNCHECKED_CAST")
     override operator fun <Value : Any> get(

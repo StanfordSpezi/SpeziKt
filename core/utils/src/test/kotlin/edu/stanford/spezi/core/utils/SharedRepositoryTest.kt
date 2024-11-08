@@ -9,7 +9,6 @@ import edu.stanford.spezi.core.utils.foundation.knowledgesource.DefaultProviding
 import edu.stanford.spezi.core.utils.foundation.knowledgesource.KnowledgeSource
 import edu.stanford.spezi.core.utils.foundation.knowledgesource.OptionalComputedKnowledgeSource
 import org.junit.Test
-import java.util.UUID
 
 object TestAnchor : RepositoryAnchor
 
@@ -63,8 +62,8 @@ data class ComputedTestDataClass(override val value: Int) : TestTypes {
             SharedRepository<TestAnchor>
             > {
             override val uuid = UUID()
-            override val storagePolicy: ComputedKnowledgeSourceStoragePolicy
-                = ComputedKnowledgeSourceStoragePolicy.AlwaysCompute
+            override val storagePolicy: ComputedKnowledgeSourceStoragePolicy =
+                ComputedKnowledgeSourceStoragePolicy.AlwaysCompute
             override fun compute(repository: SharedRepository<TestAnchor>) =
                 ComputedTestDataClass(computedValue)
         }
@@ -75,8 +74,8 @@ data class ComputedTestDataClass(override val value: Int) : TestTypes {
             SharedRepository<TestAnchor>
             > {
             override val uuid = UUID()
-            override val storagePolicy: ComputedKnowledgeSourceStoragePolicy
-                = ComputedKnowledgeSourceStoragePolicy.Store
+            override val storagePolicy: ComputedKnowledgeSourceStoragePolicy =
+                ComputedKnowledgeSourceStoragePolicy.Store
             override fun compute(repository: SharedRepository<TestAnchor>) =
                 ComputedTestDataClass(computedValue)
         }
@@ -93,8 +92,8 @@ data class OptionalComputedTestDataClass(override val value: Int) : TestTypes {
             SharedRepository<TestAnchor>
             > {
             override val uuid = UUID()
-            override val storagePolicy: ComputedKnowledgeSourceStoragePolicy
-                = ComputedKnowledgeSourceStoragePolicy.AlwaysCompute
+            override val storagePolicy: ComputedKnowledgeSourceStoragePolicy =
+                ComputedKnowledgeSourceStoragePolicy.AlwaysCompute
             override fun compute(repository: SharedRepository<TestAnchor>): OptionalComputedTestDataClass? =
                 optionalComputedValue?.let { OptionalComputedTestDataClass(it) }
         }
@@ -105,8 +104,8 @@ data class OptionalComputedTestDataClass(override val value: Int) : TestTypes {
             SharedRepository<TestAnchor>
             > {
             override val uuid = UUID()
-            override val storagePolicy: ComputedKnowledgeSourceStoragePolicy
-                = ComputedKnowledgeSourceStoragePolicy.Store
+            override val storagePolicy: ComputedKnowledgeSourceStoragePolicy =
+                ComputedKnowledgeSourceStoragePolicy.Store
             override fun compute(repository: SharedRepository<TestAnchor>): OptionalComputedTestDataClass? =
                 optionalComputedValue?.let { OptionalComputedTestDataClass(it) }
         }
@@ -265,5 +264,4 @@ class SharedRepositoryTest {
 
     // TODO: fun testComputedKnowledgeSourcePreferred() has not been copied from iOS due to accessing the
     //  operator fun get will result in ambiguity compiler error, so this behavior would not be possible anyways
-
 }

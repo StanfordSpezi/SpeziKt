@@ -79,13 +79,13 @@ interface SharedRepository<Anchor : RepositoryAnchor> {
             source as KnowledgeSource<Anchor, Value>,
         ) ?: when (source.storagePolicy) {
             ComputedKnowledgeSourceStoragePolicy.AlwaysCompute -> {
-                    source.compute(this)
-                }
+                source.compute(this)
+            }
             ComputedKnowledgeSourceStoragePolicy.Store -> {
-                    val value = source.compute(this)
-                    this[source] = value
-                    value
-                }
+                val value = source.compute(this)
+                this[source] = value
+                value
+            }
         }
     }
 
