@@ -19,12 +19,14 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.core.design.component.Button
 import edu.stanford.spezi.core.design.component.RepeatingLazyColumn
+import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.modules.education.R
 import edu.stanford.spezi.modules.education.videos.component.ExpandableVideoSection
 import edu.stanford.spezi.modules.education.videos.component.LoadingVideoCard
 
@@ -64,7 +66,7 @@ fun EducationScreen(
             ) {
                 Column {
                     Text(
-                        text = uiState.message,
+                        text = uiState.message.text(),
                         modifier = Modifier.align(Alignment.CenterHorizontally),
                         color = Colors.error
                     )
@@ -114,7 +116,7 @@ private class EducationUiStatePreviewProvider :
     PreviewParameterProvider<Pair<UiState, (Action) -> Unit>> {
     override val values: Sequence<Pair<UiState, (Action) -> Unit>> = sequenceOf(
         Pair(UiState.Loading) {},
-        Pair(UiState.Error("An error occurred")) {},
+        Pair(UiState.Error(StringResource(R.string.failed_to_load_video_sections))) {},
         Pair(
             UiState.Success(
                 EducationUiState(
