@@ -41,11 +41,12 @@ class VideoSectionDocumentToVideoSectionMapper @Inject constructor(
         val jsonMap = document.data
 
         val videoTitle = localizedMapReader.get(key = "title", jsonMap = jsonMap)
+        val videoDescription = localizedMapReader.get(key = "description", jsonMap = jsonMap)
         val youtubeId = document.get("youtubeId") as? String
-        return if (videoTitle != null && youtubeId != null) {
+        return if (videoTitle != null && youtubeId != null && videoDescription != null) {
             Video(
                 title = videoTitle,
-                description = localizedMapReader.get(key = "description", jsonMap = jsonMap),
+                description = videoDescription,
                 orderIndex = document.get("orderIndex") as? Int ?: 0,
                 youtubeId = youtubeId
             )
