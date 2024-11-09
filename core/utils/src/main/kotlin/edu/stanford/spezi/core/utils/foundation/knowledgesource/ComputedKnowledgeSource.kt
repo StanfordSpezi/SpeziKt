@@ -4,7 +4,7 @@ import edu.stanford.spezi.core.utils.foundation.RepositoryAnchor
 
 interface ComputedKnowledgeSource<
     Anchor : RepositoryAnchor,
-    Value,
+    Value : Any,
     Repository,
     > : SomeComputedKnowledgeSource<Anchor, Value> {
 

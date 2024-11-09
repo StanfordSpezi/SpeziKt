@@ -7,6 +7,6 @@ sealed interface ComputedKnowledgeSourceStoragePolicy {
     data object Store : ComputedKnowledgeSourceStoragePolicy
 }
 
-interface SomeComputedKnowledgeSource<Anchor : RepositoryAnchor, Value> : KnowledgeSource<Anchor, Value> {
+interface SomeComputedKnowledgeSource<Anchor : RepositoryAnchor, Value : Any> : KnowledgeSource<Anchor, Value> {
     val storagePolicy: ComputedKnowledgeSourceStoragePolicy
 }
