@@ -8,7 +8,7 @@ import edu.stanford.spezi.core.utils.foundation.knowledgesource.OptionalComputed
 import kotlin.reflect.KClass
 
 @Suppress("detekt:TooManyFunctions")
-interface SharedRepository<Anchor : RepositoryAnchor> {
+interface Repository<Anchor : RepositoryAnchor> {
     operator fun <Value : Any> get(source: KnowledgeSource<Anchor, Value>): Value?
     operator fun <Value : Any> set(source: KnowledgeSource<Anchor, Value>, value: Value?)
 
@@ -32,19 +32,11 @@ interface SharedRepository<Anchor : RepositoryAnchor> {
     }
 
     operator fun <Value : Any> get(
-        source: ComputedKnowledgeSource<
-            Anchor,
-            Value,
-            in SharedRepository<Anchor>,
-            >,
+        source: ComputedKnowledgeSource<Anchor, Value>,
     ): Value = getOrComputed(source)
 
     fun <Value : Any> getOrComputed(
-        source: ComputedKnowledgeSource<
-            Anchor,
-            Value,
-            in SharedRepository<Anchor>,
-            >,
+        source: ComputedKnowledgeSource<Anchor, Value>,
     ): Value {
         return get(
             source as KnowledgeSource<Anchor, Value>,
@@ -61,19 +53,11 @@ interface SharedRepository<Anchor : RepositoryAnchor> {
     }
 
     operator fun <Value : Any> get(
-        source: OptionalComputedKnowledgeSource<
-            Anchor,
-            Value,
-            in SharedRepository<Anchor>,
-            >,
+        source: OptionalComputedKnowledgeSource<Anchor, Value>,
     ): Value? = getOrOptionalComputed(source)
 
     fun <Value : Any> getOrOptionalComputed(
-        source: OptionalComputedKnowledgeSource<
-            Anchor,
-            Value,
-            in SharedRepository<Anchor>,
-            >,
+        source: OptionalComputedKnowledgeSource<Anchor, Value>,
     ): Value? {
         return get(
             source as KnowledgeSource<Anchor, Value>,

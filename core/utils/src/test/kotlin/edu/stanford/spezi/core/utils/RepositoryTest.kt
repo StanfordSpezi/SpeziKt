@@ -1,8 +1,8 @@
 package edu.stanford.spezi.core.utils
 
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.spezi.core.utils.foundation.Repository
 import edu.stanford.spezi.core.utils.foundation.RepositoryAnchor
-import edu.stanford.spezi.core.utils.foundation.SharedRepository
 import edu.stanford.spezi.core.utils.foundation.builtin.ValueRepository
 import edu.stanford.spezi.core.utils.foundation.knowledgesource.ComputedKnowledgeSource
 import edu.stanford.spezi.core.utils.foundation.knowledgesource.ComputedKnowledgeSourceStoragePolicy
@@ -19,9 +19,7 @@ interface TestTypes {
 
 data class TestDataClass(override var value: Int) : TestTypes {
     companion object {
-        val key = object : KnowledgeSource<TestAnchor, TestDataClass> {
-            override val uuid = UUID()
-        }
+        val key = object : KnowledgeSource<TestAnchor, TestDataClass> {}
     }
 }
 
@@ -36,20 +34,15 @@ class TestClass(override val value: Int) : TestTypes {
     }
 
     companion object {
-        val key = object : KnowledgeSource<TestAnchor, TestClass> {
-            override val uuid = UUID()
-        }
+        val key = object : KnowledgeSource<TestAnchor, TestClass> {}
     }
 }
 
-object KeyLike : KnowledgeSource<TestAnchor, TestClass> {
-    override val uuid = UUID()
-}
+object KeyLike : KnowledgeSource<TestAnchor, TestClass>
 
 data class DefaultedTestDataClass(override val value: Int) : TestTypes {
     companion object {
         val key = object : DefaultProvidingKnowledgeSource<TestAnchor, DefaultedTestDataClass> {
-            override val uuid = UUID()
             override val defaultValue get() = DefaultedTestDataClass(0)
         }
     }
@@ -60,24 +53,17 @@ data class ComputedTestDataClass(override val value: Int) : TestTypes {
         val alwaysComputeKey = object : ComputedKnowledgeSource<
             TestAnchor,
             ComputedTestDataClass,
-            SharedRepository<TestAnchor>
             > {
-            override val uuid = UUID()
             override val storagePolicy: ComputedKnowledgeSourceStoragePolicy =
                 ComputedKnowledgeSourceStoragePolicy.AlwaysCompute
-            override fun compute(repository: SharedRepository<TestAnchor>) =
+            override fun compute(repository: Repository<TestAnchor>) =
                 ComputedTestDataClass(computedValue)
         }
 
-        val storeKey = object : ComputedKnowledgeSource<
-            TestAnchor,
-            ComputedTestDataClass,
-            SharedRepository<TestAnchor>
-            > {
-            override val uuid = UUID()
+        val storeKey = object : ComputedKnowledgeSource<TestAnchor, ComputedTestDataClass> {
             override val storagePolicy: ComputedKnowledgeSourceStoragePolicy =
                 ComputedKnowledgeSourceStoragePolicy.Store
-            override fun compute(repository: SharedRepository<TestAnchor>) =
+            override fun compute(repository: Repository<TestAnchor>) =
                 ComputedTestDataClass(computedValue)
         }
     }
@@ -85,27 +71,17 @@ data class ComputedTestDataClass(override val value: Int) : TestTypes {
 
 data class OptionalComputedTestDataClass(override val value: Int) : TestTypes {
     companion object {
-        val alwaysComputeKey = object : OptionalComputedKnowledgeSource<
-            TestAnchor,
-            OptionalComputedTestDataClass,
-            SharedRepository<TestAnchor>
-            > {
-            override val uuid = UUID()
+        val alwaysComputeKey = object : OptionalComputedKnowledgeSource<TestAnchor, OptionalComputedTestDataClass> {
             override val storagePolicy: ComputedKnowledgeSourceStoragePolicy =
                 ComputedKnowledgeSourceStoragePolicy.AlwaysCompute
-            override fun compute(repository: SharedRepository<TestAnchor>): OptionalComputedTestDataClass? =
+            override fun compute(repository: Repository<TestAnchor>): OptionalComputedTestDataClass? =
                 optionalComputedValue?.let { OptionalComputedTestDataClass(it) }
         }
 
-        val storeKey = object : OptionalComputedKnowledgeSource<
-            TestAnchor,
-            OptionalComputedTestDataClass,
-            SharedRepository<TestAnchor>
-            > {
-            override val uuid = UUID()
+        val storeKey = object : OptionalComputedKnowledgeSource<TestAnchor, OptionalComputedTestDataClass> {
             override val storagePolicy: ComputedKnowledgeSourceStoragePolicy =
                 ComputedKnowledgeSourceStoragePolicy.Store
-            override fun compute(repository: SharedRepository<TestAnchor>): OptionalComputedTestDataClass? =
+            override fun compute(repository: Repository<TestAnchor>): OptionalComputedTestDataClass? =
                 optionalComputedValue?.let { OptionalComputedTestDataClass(it) }
         }
     }
@@ -122,9 +98,9 @@ class SharedRepositoryTest {
         repository[TestDataClass.key] = TestDataClass(3)
 
         for (value in repository) {
-            assertThat(value.anySource).isSameInstanceAs(TestDataClass.key)
-            assertThat(value.anyValue is TestDataClass).isEqualTo(true)
-            assertThat(value.anyValue as? TestDataClass).isEqualTo(TestDataClass(3))
+            assertThat(value.key).isSameInstanceAs(TestDataClass.key)
+            assertThat(value.value is TestDataClass).isEqualTo(true)
+            assertThat(value.value as? TestDataClass).isEqualTo(TestDataClass(3))
         }
     }
 
