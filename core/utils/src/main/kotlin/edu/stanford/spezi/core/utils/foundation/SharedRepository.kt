@@ -12,13 +12,6 @@ interface SharedRepository<Anchor : RepositoryAnchor> {
     operator fun <Value : Any> get(source: KnowledgeSource<Anchor, Value>): Value?
     operator fun <Value : Any> set(source: KnowledgeSource<Anchor, Value>, value: Value?)
 
-    operator fun <Value : Any> get(source: KnowledgeSource<Anchor, Value>, default: Value): Value =
-        this[source] ?: default.also { this[source] = it }
-
-    operator fun <Value : Any> set(source: KnowledgeSource<Anchor, Value>, default: Value, value: Value) {
-        this[source] = value
-    }
-
     operator fun <Value : Any> get(
         source: DefaultProvidingKnowledgeSource<Anchor, Value>,
     ): Value = getOrDefault(source)

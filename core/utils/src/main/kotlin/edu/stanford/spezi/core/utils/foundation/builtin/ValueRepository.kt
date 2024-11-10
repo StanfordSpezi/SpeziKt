@@ -23,9 +23,8 @@ data class ValueRepository<Anchor : RepositoryAnchor>(
         } ?: storage.remove(source)
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun <Value : Any> collect(allOf: KClass<Value>) =
-        storage.values.mapNotNull { it as? Value }
+        storage.values.filterIsInstance(allOf.java)
 
     override fun iterator() = storage.iterator()
 }
