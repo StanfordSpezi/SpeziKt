@@ -7,9 +7,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import edu.stanford.spezi.core.design.component.Button
+import edu.stanford.spezi.core.design.views.views.compositionLocal.LocalProcessingDebounceDuration
 import edu.stanford.spezi.core.design.views.views.model.ViewState
 import edu.stanford.spezi.core.utils.UUID
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
@@ -26,17 +28,22 @@ fun SuspendButton(
     val buttonState = remember { mutableStateOf(SuspendButtonState.IDLE) }
     val coroutineScope = rememberCoroutineScope()
     val debounceScope = rememberCoroutineScope()
-
-    DisposableEffect(remember { UUID() }) {
-        onDispose {
-            coroutineScope.cancel()
-        }
-    }
+    val processingDebounceDuration = LocalProcessingDebounceDuration.current
+    val externallyProcessing = buttonState.value == SuspendButtonState.IDLE && state.value == ViewState.Processing
 
     Button(
+        enabled = buttonState.value == SuspendButtonState.IDLE && !externallyProcessing,
         onClick = {
             if (state.value == ViewState.Processing) return@Button
             buttonState.value = SuspendButtonState.DISABLED
+
+            val debounceJob = debounceScope.launch {
+                delay(processingDebounceDuration)
+
+                if (isActive) {
+                    buttonState.value = SuspendButtonState.DISABLED_AND_PROCESSING
+                }
+            }
 
             // TODO: iOS animates this assignment specifically - is this possible in Jetpack Compose?
             state.value = ViewState.Processing
@@ -44,19 +51,23 @@ fun SuspendButton(
             coroutineScope.launch {
                 runCatching {
                     action()
+                    debounceJob.cancel()
+
                     if (state.value != ViewState.Idle) {
                         // TODO: iOS animates this assignment specifically - is this possible in Jetpack Compose?
                         state.value = ViewState.Idle
                     }
                 }.onFailure {
+                    debounceJob.cancel()
                     state.value = ViewState.Error(it)
                 }
 
                 buttonState.value = SuspendButtonState.IDLE
             }
         },
-        enabled = !coroutineScope.isActive
     ) {
-        label()
+        ProcessingOverlay(buttonState.value == SuspendButtonState.DISABLED_AND_PROCESSING || externallyProcessing) {
+            label()
+        }
     }
 }
