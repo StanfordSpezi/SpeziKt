@@ -1,14 +1,14 @@
 package edu.stanford.spezi.core.utils.foundation.builtin
 
-import edu.stanford.spezi.core.utils.foundation.Repository
 import edu.stanford.spezi.core.utils.foundation.RepositoryAnchor
+import edu.stanford.spezi.core.utils.foundation.SharedRepository
 import edu.stanford.spezi.core.utils.foundation.knowledgesource.KnowledgeSource
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 data class ValueRepository<Anchor : RepositoryAnchor>(
     internal var storage: ConcurrentHashMap<KnowledgeSource<Anchor, *>, Any> = ConcurrentHashMap(),
-) : Repository<Anchor>, Sequence<Map.Entry<KnowledgeSource<Anchor, *>, Any>> {
+) : SharedRepository<Anchor>, Sequence<Map.Entry<KnowledgeSource<Anchor, *>, Any>> {
     @Suppress("UNCHECKED_CAST")
     override operator fun <Value : Any> get(
         source: KnowledgeSource<Anchor, Value>,

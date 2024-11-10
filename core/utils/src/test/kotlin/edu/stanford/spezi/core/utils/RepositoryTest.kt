@@ -1,8 +1,8 @@
 package edu.stanford.spezi.core.utils
 
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.spezi.core.utils.foundation.Repository
 import edu.stanford.spezi.core.utils.foundation.RepositoryAnchor
+import edu.stanford.spezi.core.utils.foundation.SharedRepository
 import edu.stanford.spezi.core.utils.foundation.builtin.ValueRepository
 import edu.stanford.spezi.core.utils.foundation.knowledgesource.ComputedKnowledgeSource
 import edu.stanford.spezi.core.utils.foundation.knowledgesource.ComputedKnowledgeSourceStoragePolicy
@@ -56,14 +56,14 @@ data class ComputedTestDataClass(override val value: Int) : TestTypes {
             > {
             override val storagePolicy: ComputedKnowledgeSourceStoragePolicy =
                 ComputedKnowledgeSourceStoragePolicy.AlwaysCompute
-            override fun compute(repository: Repository<TestAnchor>) =
+            override fun compute(repository: SharedRepository<TestAnchor>) =
                 ComputedTestDataClass(computedValue)
         }
 
         val storeKey = object : ComputedKnowledgeSource<TestAnchor, ComputedTestDataClass> {
             override val storagePolicy: ComputedKnowledgeSourceStoragePolicy =
                 ComputedKnowledgeSourceStoragePolicy.Store
-            override fun compute(repository: Repository<TestAnchor>) =
+            override fun compute(repository: SharedRepository<TestAnchor>) =
                 ComputedTestDataClass(computedValue)
         }
     }
@@ -74,14 +74,14 @@ data class OptionalComputedTestDataClass(override val value: Int) : TestTypes {
         val alwaysComputeKey = object : OptionalComputedKnowledgeSource<TestAnchor, OptionalComputedTestDataClass> {
             override val storagePolicy: ComputedKnowledgeSourceStoragePolicy =
                 ComputedKnowledgeSourceStoragePolicy.AlwaysCompute
-            override fun compute(repository: Repository<TestAnchor>): OptionalComputedTestDataClass? =
+            override fun compute(repository: SharedRepository<TestAnchor>): OptionalComputedTestDataClass? =
                 optionalComputedValue?.let { OptionalComputedTestDataClass(it) }
         }
 
         val storeKey = object : OptionalComputedKnowledgeSource<TestAnchor, OptionalComputedTestDataClass> {
             override val storagePolicy: ComputedKnowledgeSourceStoragePolicy =
                 ComputedKnowledgeSourceStoragePolicy.Store
-            override fun compute(repository: Repository<TestAnchor>): OptionalComputedTestDataClass? =
+            override fun compute(repository: SharedRepository<TestAnchor>): OptionalComputedTestDataClass? =
                 optionalComputedValue?.let { OptionalComputedTestDataClass(it) }
         }
     }

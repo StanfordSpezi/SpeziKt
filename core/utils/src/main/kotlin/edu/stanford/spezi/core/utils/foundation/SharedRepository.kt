@@ -8,7 +8,7 @@ import edu.stanford.spezi.core.utils.foundation.knowledgesource.OptionalComputed
 import kotlin.reflect.KClass
 
 @Suppress("detekt:TooManyFunctions")
-interface Repository<Anchor : RepositoryAnchor> {
+interface SharedRepository<Anchor : RepositoryAnchor> {
     operator fun <Value : Any> get(source: KnowledgeSource<Anchor, Value>): Value?
     operator fun <Value : Any> set(source: KnowledgeSource<Anchor, Value>, value: Value?)
 
