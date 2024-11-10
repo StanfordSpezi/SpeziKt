@@ -12,4 +12,7 @@ data class FailedValidationResult(
         operator fun invoke(rule: ValidationRule) =
             FailedValidationResult(rule.id, rule.message)
     }
+
+    override fun equals(other: Any?) = (other as? FailedValidationResult)?.id == id
+    override fun hashCode() = id.hashCode()
 }

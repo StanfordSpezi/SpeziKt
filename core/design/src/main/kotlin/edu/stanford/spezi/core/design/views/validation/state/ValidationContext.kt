@@ -4,16 +4,16 @@ data class ValidationContext internal constructor(
     private val entries: List<CapturedValidationState> = emptyList()
 ) : Iterable<CapturedValidationState> {
     val allInputValid: Boolean get() =
-        entries.all { it.engine.inputValid }
+        entries.all { it.inputValid }
 
     val allValidationResults: List<FailedValidationResult> get() =
-        entries.fold(emptyList()) { acc, entry -> acc + entry.engine.validationResults }
+        entries.fold(emptyList()) { acc, entry -> acc + entry.validationResults }
 
     val allDisplayedValidationResults: List<FailedValidationResult> get() =
-        entries.fold(emptyList()) { acc, entry -> acc + entry.engine.displayedValidationResults }
+        entries.fold(emptyList()) { acc, entry -> acc + entry.displayedValidationResults }
 
     val isDisplayingValidationErrors: Boolean get() =
-        entries.any { it.engine.isDisplayingValidationErrors }
+        entries.any { it.isDisplayingValidationErrors }
 
     override fun iterator(): Iterator<CapturedValidationState> = entries.iterator()
 
@@ -24,7 +24,7 @@ data class ValidationContext internal constructor(
         return mapNotNull { state ->
             state.runValidation()
 
-            if (state.engine.inputValid) state else null
+            if (!state.inputValid) state else null
         }
     }
 
@@ -40,4 +40,11 @@ data class ValidationContext internal constructor(
             false
         } ?: true
     }
+
+    override fun hashCode(): Int {
+        return super.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean =
+        (other as? ValidationContext)?.entries == entries
 }

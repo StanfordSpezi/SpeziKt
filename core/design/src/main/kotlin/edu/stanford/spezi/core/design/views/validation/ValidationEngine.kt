@@ -1,58 +1,69 @@
 package edu.stanford.spezi.core.design.views.validation
 
-import android.provider.Settings.Global
+import androidx.compose.runtime.mutableStateOf
 import edu.stanford.spezi.core.design.views.validation.configuration.DEFAULT_VALIDATION_DEBOUNCE_DURATION
 import edu.stanford.spezi.core.design.views.validation.state.FailedValidationResult
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.util.EnumSet
 import kotlin.time.Duration
 
-typealias ValidationEngineConfiguration = EnumSet<ValidationEngine.ConfigurationOption>
+internal typealias ValidationEngineConfiguration = EnumSet<ValidationEngine.ConfigurationOption>
 
-class ValidationEngine(
-    val rules: List<ValidationRule>,
-    var debounceDuration: Duration = DEFAULT_VALIDATION_DEBOUNCE_DURATION,
-    var configuration: ValidationEngineConfiguration = ValidationEngineConfiguration.noneOf(ConfigurationOption::class.java),
-) {
-    private enum class Source {
-        SUBMIT, MANUAL
-    }
-
+interface ValidationEngine {
     enum class ConfigurationOption {
         HIDE_FAILED_VALIDATION_ON_EMPTY_SUBMIT,
         CONSIDER_NO_INPUT_AS_VALID,
     }
 
-    var validationResults: List<FailedValidationResult> = emptyList()
-        private set
+    val rules: List<ValidationRule>
+    val inputValid: Boolean
+    val validationResults: List<FailedValidationResult>
+    val isDisplayingValidationErrors: Boolean
+    val displayedValidationResults: List<FailedValidationResult>
+    var debounceDuration: Duration
+
+    fun submit(input: String, debounce: Boolean = false)
+    fun runValidation(input: String)
+}
+
+internal class ValidationEngineImpl(
+    override val rules: List<ValidationRule>,
+    override var debounceDuration: Duration = DEFAULT_VALIDATION_DEBOUNCE_DURATION,
+    var configuration: ValidationEngineConfiguration =
+        ValidationEngineConfiguration.noneOf(ValidationEngine.ConfigurationOption::class.java),
+) : ValidationEngine {
+    private enum class Source {
+        SUBMIT, MANUAL
+    }
+
+    private var validationResultsState = mutableStateOf(emptyList<FailedValidationResult>())
+
+    override val validationResults get() = validationResultsState.value
 
     private var computedInputValid: Boolean? = null
 
-    val inputValid: Boolean get() =
-        computedInputValid ?: configuration.contains(ConfigurationOption.CONSIDER_NO_INPUT_AS_VALID)
+    override val inputValid: Boolean get() =
+        computedInputValid ?: configuration.contains(ValidationEngine.ConfigurationOption.CONSIDER_NO_INPUT_AS_VALID)
 
     private var source: Source? = null
     private var inputWasEmpty = true
 
-    val isDisplayingValidationErrors: Boolean get() {
+    override val isDisplayingValidationErrors: Boolean get() {
         val gotResults = validationResults.isNotEmpty()
 
-        if (configuration.contains(ConfigurationOption.HIDE_FAILED_VALIDATION_ON_EMPTY_SUBMIT)) {
+        if (configuration.contains(ValidationEngine.ConfigurationOption.HIDE_FAILED_VALIDATION_ON_EMPTY_SUBMIT)) {
             return gotResults && (source == Source.MANUAL || !inputWasEmpty)
         }
 
         return gotResults
     }
 
-    val displayedValidationResults: List<FailedValidationResult> get() =
+    override val displayedValidationResults: List<FailedValidationResult> get() =
         if (isDisplayingValidationErrors) validationResults else emptyList()
 
     private var debounceJob: Job? = null
@@ -75,11 +86,11 @@ class ValidationEngine(
         this.source = source
         this.inputWasEmpty = input.isEmpty()
 
-        this.validationResults = computeFailedValidations(input)
+        this.validationResultsState.value = computeFailedValidations(input)
         this.computedInputValid = validationResults.isEmpty()
     }
 
-    fun submit(input: String, debounce: Boolean = false) {
+    override fun submit(input: String, debounce: Boolean) {
         if (!debounce || computedInputValid == false) {
             computeValidation(input, Source.SUBMIT)
         } else {
@@ -89,7 +100,7 @@ class ValidationEngine(
         }
     }
 
-    fun runValidation(input: String) {
+    override fun runValidation(input: String) {
         computeValidation(input, Source.MANUAL)
     }
 

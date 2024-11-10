@@ -5,9 +5,11 @@ import androidx.compose.runtime.compositionLocalOf
 internal val LocalCapturedValidationStateEntries = compositionLocalOf { CapturedValidationStateEntries() }
 
 internal data class CapturedValidationStateEntries(
-    internal var entries: MutableList<CapturedValidationState> = mutableListOf()
+    private var _entries: MutableList<CapturedValidationState> = mutableListOf()
 ) {
+    val entries: List<CapturedValidationState> get() = _entries
+
     fun add(state: CapturedValidationState) {
-        entries.add(state)
+        _entries.add(state)
     }
 }

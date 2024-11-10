@@ -2,10 +2,11 @@ package edu.stanford.spezi.core.design.views.validation
 
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.views.validation.state.FailedValidationResult
+import edu.stanford.spezi.core.utils.UUID
 import java.util.UUID
 
 data class ValidationRule internal constructor(
-    val id: UUID = UUID.randomUUID(),
+    val id: UUID = UUID(),
     val rule: (String) -> Boolean,
     val message: StringResource,
     val effect: CascadingValidationEffect = CascadingValidationEffect.CONTINUE

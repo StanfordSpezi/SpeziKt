@@ -3,6 +3,7 @@ package edu.stanford.spezi.core.design.views.validation
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import edu.stanford.spezi.core.design.component.StringResource
@@ -37,23 +38,22 @@ fun Validate(
     rules: List<ValidationRule>,
     content: @Composable () -> Unit,
 ) {
-    val previousInput = remember { mutableStateOf(input) }
     val validationDebounce = LocalValidationDebounce.current
     val previousValidationDebounce = remember { mutableStateOf<Duration?>(null) }
     val validationEngineConfiguration = LocalValidationEngineConfiguration.current
     val previousValidationEngineConfiguration = remember { mutableStateOf<ValidationEngineConfiguration?>(null) }
-    val engine = remember { ValidationEngine(rules, validationDebounce, validationEngineConfiguration) }
+    val engine = remember { ValidationEngineImpl(rules, validationDebounce, validationEngineConfiguration) }
 
-    if (input != previousInput.value) {
+    LaunchedEffect(input) {
         engine.submit(input, debounce = true)
     }
 
-    if (validationDebounce != previousValidationDebounce.value) {
+    LaunchedEffect(validationDebounce) {
         engine.debounceDuration = validationDebounce
         previousValidationDebounce.value = validationDebounce
     }
 
-    if (validationEngineConfiguration != previousValidationEngineConfiguration.value) {
+    LaunchedEffect(validationEngineConfiguration) {
         engine.configuration = validationEngineConfiguration
         previousValidationEngineConfiguration.value = validationEngineConfiguration
     }

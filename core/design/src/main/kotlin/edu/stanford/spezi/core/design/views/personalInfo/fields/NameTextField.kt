@@ -1,6 +1,5 @@
 package edu.stanford.spezi.core.design.views.personalInfo.fields
 
-import android.app.Person
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField

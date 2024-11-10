@@ -20,6 +20,8 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import edu.stanford.spezi.core.design.component.ImageResource
+import edu.stanford.spezi.core.design.component.ImageResourceComposable
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.lighten
 import kotlin.math.min
@@ -28,9 +30,9 @@ import kotlin.math.min
 fun UserProfileComposable(
     modifier: Modifier = Modifier,
     name: PersonNameComponents,
-    imageLoader: suspend () -> ImageVector? = { null }, // TODO: Use ImageResource instead!
+    imageLoader: suspend () -> ImageResource? = { null },
 ) {
-    val image = remember { mutableStateOf<ImageVector?>(null) }
+    val image = remember { mutableStateOf<ImageResource?>(null) }
     val size = remember { mutableStateOf(IntSize.Zero) }
 
     LaunchedEffect(Unit) {
@@ -41,9 +43,9 @@ fun UserProfileComposable(
         val sideLength = min(size.value.height, size.value.width).dp
         Box(modifier.size(sideLength, sideLength), contentAlignment = Alignment.Center) {
             image.value?.let {
-                Image(
+                ImageResourceComposable(
                     it,
-                    null,
+                    "", // TODO: Add contentDescription to ImageResource directly?
                     Modifier
                         .clip(CircleShape)
                         .background(Colors.background, CircleShape)

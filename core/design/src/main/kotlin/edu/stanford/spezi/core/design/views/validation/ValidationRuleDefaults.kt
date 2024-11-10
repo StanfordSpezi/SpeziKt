@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets
 val ValidationRule.Companion.nonEmpty: ValidationRule
     get() = ValidationRule(
         regex = Regex(".*\\S+.*"),
-        message = StringResource("VALIDATION_RULE_NON_EMPTY")
+        message = StringResource("This field cannot be empty.")
     )
 
 val ValidationRule.Companion.unicodeLettersOnly: ValidationRule
@@ -30,7 +30,7 @@ val ValidationRule.Companion.minimalEmail: ValidationRule
 val ValidationRule.Companion.minimalPassword: ValidationRule
     get() = ValidationRule(
         regex = Regex(".{8,}"),
-        message = StringResource("VALIDATION_RULE_PASSWORD_LENGTH 8")
+        message = StringResource("Your password must be at least 8 characters long.")
     )
 
 val ValidationRule.Companion.mediumPassword: ValidationRule

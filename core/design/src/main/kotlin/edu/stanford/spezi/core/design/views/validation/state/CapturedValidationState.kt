@@ -4,10 +4,10 @@ import androidx.compose.runtime.MutableState
 import edu.stanford.spezi.core.design.views.validation.ValidationEngine
 
 data class CapturedValidationState internal constructor(
-    internal val engine: ValidationEngine,
+    private val engine: ValidationEngine,
     private val input: String,
     private val isFocused: MutableState<Boolean>,
-) {
+) : ValidationEngine by engine {
     internal fun moveFocus() {
         isFocused.value = true
     }
