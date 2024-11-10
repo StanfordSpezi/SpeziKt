@@ -106,7 +106,11 @@ class SharedRepositoryTest {
 
     @Test
     fun testDefaultSubscript() {
-        repository[TestDataClass.key, TestDataClass(35)].value = 23
+        // This test is mostly just kept in here to showcase how the access is different on Android
+        // due to data classes having reference semantics.
+        val initialValue = repository[TestDataClass.key] ?: TestDataClass(35)
+        initialValue.value = 23
+        repository[TestDataClass.key] = initialValue
 
         val value = repository[TestDataClass.key]
         assertThat(value?.value).isEqualTo(23)
