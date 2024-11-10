@@ -67,6 +67,9 @@ module:utils
 edu.stanford.spezi.core.utils
 edu.stanford.spezi.core.utils.di
 edu.stanford.spezi.core.utils.extensions
+edu.stanford.spezi.core.utils.foundation
+edu.stanford.spezi.core.utils.foundation.builtin
+edu.stanford.spezi.core.utils.foundation.knowledgesource
 module:account
 edu.stanford.spezi.module.account
 edu.stanford.spezi.module.account.di
