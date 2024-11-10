@@ -5,7 +5,7 @@ import edu.stanford.spezi.core.utils.foundation.SharedRepository
 
 interface OptionalComputedKnowledgeSource<
     Anchor : RepositoryAnchor,
-    Value : Any
+    Value : Any,
     > : SomeComputedKnowledgeSource<Anchor, Value> {
 
     fun compute(repository: SharedRepository<Anchor>): Value?
