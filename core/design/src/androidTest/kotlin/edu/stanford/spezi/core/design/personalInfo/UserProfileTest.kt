@@ -23,7 +23,8 @@ class UserProfileTest {
     fun testUserProfile() {
         userProfile {
             assertUserInitialsExists(true, "PS")
-            assertUserInitialsExists(false, "LS")
+            assertUserInitialsExists(true, "LS")
+            waitUntilUserInitialsDisappear("LS")
             assertImageExists()
         }
     }

@@ -1,9 +1,9 @@
 package edu.stanford.spezi.core.design
 
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.spezi.core.design.views.validation.ValidationEngineImpl
-import edu.stanford.spezi.core.design.views.validation.ValidationRule
-import edu.stanford.spezi.core.design.views.validation.nonEmpty
+import edu.stanford.spezi.core.design.validation.validation.ValidationEngineImpl
+import edu.stanford.spezi.core.design.validation.validation.ValidationRule
+import edu.stanford.spezi.core.design.validation.validation.nonEmpty
 import org.junit.Test
 
 class SpeziValidationTest {

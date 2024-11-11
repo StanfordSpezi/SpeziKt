@@ -3,6 +3,7 @@ package edu.stanford.spezi.core.design.personalInfo.simulators
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 
 class UserProfileTestSimulator(
@@ -16,6 +17,13 @@ class UserProfileTestSimulator(
             node.assertExists()
         } else {
             node.assertDoesNotExist()
+        }
+    }
+
+    fun waitUntilUserInitialsDisappear(text: String, timeoutMillis: Long = 1_000) {
+        composeTestRule.waitUntil(timeoutMillis = timeoutMillis) {
+            composeTestRule.onAllNodesWithText(text)
+                .fetchSemanticsNodes().isEmpty()
         }
     }
 
