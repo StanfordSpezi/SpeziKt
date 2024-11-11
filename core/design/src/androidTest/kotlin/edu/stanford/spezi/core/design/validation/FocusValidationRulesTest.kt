@@ -7,7 +7,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class ValidationTest {
+class FocusValidationRulesTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -20,7 +20,7 @@ class ValidationTest {
     }
 
     @Test
-    fun testValidationWithFocus() {
+    fun testFocusValidationRules() {
         focusValidationRules {
             assertHasEngines(true)
             assertInputValid(false)
