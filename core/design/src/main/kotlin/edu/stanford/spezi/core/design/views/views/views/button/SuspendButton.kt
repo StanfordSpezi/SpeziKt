@@ -1,7 +1,6 @@
 package edu.stanford.spezi.core.design.views.views.views.button
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -9,7 +8,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import edu.stanford.spezi.core.design.component.Button
 import edu.stanford.spezi.core.design.views.views.compositionLocal.LocalProcessingDebounceDuration
 import edu.stanford.spezi.core.design.views.views.model.ViewState
-import edu.stanford.spezi.core.utils.UUID
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -23,7 +21,7 @@ private enum class SuspendButtonState {
 fun SuspendButton(
     state: MutableState<ViewState>,
     action: suspend () -> Unit,
-    label: @Composable () -> Unit
+    label: @Composable () -> Unit,
 ) {
     val buttonState = remember { mutableStateOf(SuspendButtonState.IDLE) }
     val coroutineScope = rememberCoroutineScope()

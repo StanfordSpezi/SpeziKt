@@ -10,7 +10,7 @@ import edu.stanford.spezi.core.design.views.validation.state.FailedValidationRes
 
 @Composable
 fun ValidationResultsComposable(
-    results: List<FailedValidationResult>
+    results: List<FailedValidationResult>,
 ) {
     Column(
         horizontalAlignment = Alignment.Start

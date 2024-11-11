@@ -1,8 +1,6 @@
-package edu.stanford.spezi.core.design.simulator
+package edu.stanford.spezi.core.design.views.simulators
 
-import androidx.compose.material3.Text
 import androidx.compose.ui.test.assertHasClickAction
-import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick

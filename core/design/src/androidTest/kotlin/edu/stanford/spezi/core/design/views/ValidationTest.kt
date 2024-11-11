@@ -1,12 +1,8 @@
-package edu.stanford.spezi.core.design
+package edu.stanford.spezi.core.design.views
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithText
-import edu.stanford.spezi.core.design.composables.FocusValidationRules
-import edu.stanford.spezi.core.design.simulator.FocusValidationRulesSimulator
-import edu.stanford.spezi.core.design.views.validation.state.ValidationContext
-import kotlinx.coroutines.delay
+import edu.stanford.spezi.core.design.views.composables.FocusValidationRules
+import edu.stanford.spezi.core.design.views.simulators.FocusValidationRulesSimulator
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -33,12 +29,11 @@ class ValidationTest {
             clickValidateButton()
             assertLastState(false)
             assertPasswordMessageExists(true)
-            // assertEmptyMessageExists(true)
+            assertEmptyMessageExists(true)
         }
     }
 
     private fun focusValidationRules(block: FocusValidationRulesSimulator.() -> Unit) {
         FocusValidationRulesSimulator(composeTestRule).apply(block)
     }
-
 }

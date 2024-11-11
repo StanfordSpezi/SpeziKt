@@ -1,4 +1,4 @@
-package edu.stanford.spezi.core.design.composables
+package edu.stanford.spezi.core.design.views.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,7 +8,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.views.validation.Validate
 import edu.stanford.spezi.core.design.views.validation.ValidationRule

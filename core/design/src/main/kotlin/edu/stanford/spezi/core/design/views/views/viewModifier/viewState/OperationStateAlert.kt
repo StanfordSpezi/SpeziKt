@@ -8,7 +8,7 @@ import edu.stanford.spezi.core.design.views.views.model.OperationState
 
 @Composable
 fun <State : OperationState> OperationStateAlert(
-    state: MutableState<State>
+    state: MutableState<State>,
 ) {
     val viewState = remember { mutableStateOf(state.value.representation) }
     MapOperationStateToViewState(state.value, viewState)

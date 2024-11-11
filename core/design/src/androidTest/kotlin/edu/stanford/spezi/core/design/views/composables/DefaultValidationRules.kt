@@ -1,4 +1,4 @@
-package edu.stanford.spezi.core.design.composables
+package edu.stanford.spezi.core.design.views.composables
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf

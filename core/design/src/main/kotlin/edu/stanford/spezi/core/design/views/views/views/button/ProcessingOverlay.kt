@@ -25,7 +25,7 @@ fun ProcessingOverlay(
     isProcessing: Boolean,
     processingContent: @Composable () -> Unit = { CircularProgressIndicator() },
     content: @Composable () -> Unit,
-    ) {
+) {
     Box {
         Box(Modifier.alpha(if (isProcessing) 0f else 1f)) {
             content()

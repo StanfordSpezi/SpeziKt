@@ -9,7 +9,7 @@ data class ValidationRule internal constructor(
     val id: UUID = UUID(),
     val rule: (String) -> Boolean,
     val message: StringResource,
-    val effect: CascadingValidationEffect = CascadingValidationEffect.CONTINUE
+    val effect: CascadingValidationEffect = CascadingValidationEffect.CONTINUE,
 ) {
     companion object {
         operator fun invoke(regex: Regex, message: StringResource): ValidationRule =

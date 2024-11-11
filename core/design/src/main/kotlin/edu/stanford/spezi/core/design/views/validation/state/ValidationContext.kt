@@ -1,7 +1,7 @@
 package edu.stanford.spezi.core.design.views.validation.state
 
 data class ValidationContext internal constructor(
-    private val entries: List<CapturedValidationState> = emptyList()
+    private val entries: List<CapturedValidationState> = emptyList(),
 ) : Iterable<CapturedValidationState> {
     val allInputValid: Boolean get() =
         entries.all { it.inputValid }

@@ -1,17 +1,16 @@
 package edu.stanford.spezi.core.design
 
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.spezi.core.design.views.validation.ValidationEngine
+import edu.stanford.spezi.core.design.views.validation.ValidationEngineImpl
 import edu.stanford.spezi.core.design.views.validation.ValidationRule
 import edu.stanford.spezi.core.design.views.validation.nonEmpty
-import kotlinx.coroutines.CoroutineScope
 import org.junit.Test
 
 class SpeziValidationTest {
 
     @Test
     fun testValidationDebounce() {
-        val engine = ValidationEngine(rules = listOf(ValidationRule.nonEmpty))
+        val engine = ValidationEngineImpl(rules = listOf(ValidationRule.nonEmpty))
 
         engine.submit("Valid")
         assertThat(engine.inputValid).isTrue()
@@ -30,5 +29,4 @@ class SpeziValidationTest {
         assertThat(engine.inputValid).isTrue() // valid state is reported instantly
         assertThat(engine.validationResults).isEmpty()
     }
-
 }

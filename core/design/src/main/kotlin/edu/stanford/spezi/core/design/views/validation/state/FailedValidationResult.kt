@@ -6,7 +6,7 @@ import java.util.UUID
 
 data class FailedValidationResult(
     val id: UUID,
-    val message: StringResource
+    val message: StringResource,
 ) {
     companion object {
         operator fun invoke(rule: ValidationRule) =

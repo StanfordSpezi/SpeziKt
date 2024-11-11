@@ -25,7 +25,7 @@ fun VerifiableTextField(
     text: MutableState<String>,
     type: TextFieldType = TextFieldType.TEXT,
     disableAutocorrection: Boolean = false,
-    footer: @Composable () -> Unit = {}
+    footer: @Composable () -> Unit = {},
 ) {
     VerifiableTextField(
         text,
@@ -42,7 +42,7 @@ fun VerifiableTextField(
     type: TextFieldType = TextFieldType.TEXT,
     disableAutocorrection: Boolean = false,
     label: @Composable () -> Unit,
-    footer: @Composable () -> Unit = {}
+    footer: @Composable () -> Unit = {},
 ) {
     val validationEngine = LocalValidationEngine.current
 

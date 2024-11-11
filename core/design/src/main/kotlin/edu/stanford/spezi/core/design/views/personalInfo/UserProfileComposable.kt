@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -28,19 +27,14 @@ import kotlin.math.min
 fun UserProfileComposable(
     modifier: Modifier = Modifier,
     name: PersonNameComponents,
-    imageLoader: suspend () -> ImageResource? = { null },
+    image: ImageResource? = null,
 ) {
-    val image = remember { mutableStateOf<ImageResource?>(null) }
     val size = remember { mutableStateOf(IntSize.Zero) }
-
-    LaunchedEffect(Unit) {
-        image.value = imageLoader()
-    }
 
     Box(modifier.onSizeChanged { size.value = it }.aspectRatio(1f)) {
         val sideLength = min(size.value.height, size.value.width).dp
         Box(modifier.size(sideLength, sideLength), contentAlignment = Alignment.Center) {
-            image.value?.let {
+            image?.let {
                 ImageResourceComposable(
                     it,
                     "", // TODO: Add contentDescription to ImageResource directly?
