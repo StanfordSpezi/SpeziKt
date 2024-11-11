@@ -114,7 +114,7 @@ private class UserProfileProvider : PreviewParameterProvider<UserProfilePreviewD
 @ThemePreviews
 @Composable
 private fun UserProfileComposablePreview(
-    @PreviewParameter(UserProfileProvider::class) profileData: UserProfilePreviewData
+    @PreviewParameter(UserProfileProvider::class) profileData: UserProfilePreviewData,
 ) {
     SpeziTheme(isPreview = true) {
         UserProfileComposable(
