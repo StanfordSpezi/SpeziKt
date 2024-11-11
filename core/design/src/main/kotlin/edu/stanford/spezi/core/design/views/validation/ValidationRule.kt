@@ -1,7 +1,7 @@
 package edu.stanford.spezi.core.design.views.validation
 
 import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.validation.validation.state.FailedValidationResult
+import edu.stanford.spezi.core.design.views.validation.state.FailedValidationResult
 import edu.stanford.spezi.core.utils.UUID
 import java.util.UUID
 

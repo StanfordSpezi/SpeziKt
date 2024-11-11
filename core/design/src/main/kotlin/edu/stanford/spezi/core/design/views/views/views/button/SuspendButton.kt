@@ -8,8 +8,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import edu.stanford.spezi.core.design.component.Button
 import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.validation.views.compositionLocal.LocalProcessingDebounceDuration
-import edu.stanford.spezi.core.design.validation.views.model.ViewState
+import edu.stanford.spezi.core.design.views.views.compositionLocal.LocalProcessingDebounceDuration
+import edu.stanford.spezi.core.design.views.views.model.ViewState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch

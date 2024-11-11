@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.validation.validation.state.FailedValidationResult
+import edu.stanford.spezi.core.design.views.validation.state.FailedValidationResult
 
 @Composable
 fun ValidationResultsComposable(

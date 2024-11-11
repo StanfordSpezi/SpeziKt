@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import edu.stanford.spezi.core.design.validation.views.model.OperationState
+import edu.stanford.spezi.core.design.views.views.model.OperationState
 
 @Composable
 fun <State : OperationState> OperationStateAlert(

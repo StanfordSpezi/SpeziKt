@@ -197,7 +197,7 @@ private object ContactComposableFactory {
         ),
     ): Contact {
         return Contact(
-            name = edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents(
+            name = PersonNameComponents(
                 givenName = "Leland",
                 familyName = "Stanford"
             ),

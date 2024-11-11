@@ -6,7 +6,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.validation.views.model.ViewState
+import edu.stanford.spezi.core.design.views.views.model.ViewState
 
 @Composable
 fun ViewStateAlert(state: MutableState<ViewState>) {

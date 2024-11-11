@@ -7,11 +7,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.validation.validation.configuration.LocalValidationDebounce
-import edu.stanford.spezi.core.design.validation.validation.configuration.LocalValidationEngine
-import edu.stanford.spezi.core.design.validation.validation.configuration.LocalValidationEngineConfiguration
-import edu.stanford.spezi.core.design.validation.validation.state.CapturedValidationState
-import edu.stanford.spezi.core.design.validation.validation.state.LocalCapturedValidationStateEntries
+import edu.stanford.spezi.core.design.views.validation.configuration.LocalValidationDebounce
+import edu.stanford.spezi.core.design.views.validation.configuration.LocalValidationEngine
+import edu.stanford.spezi.core.design.views.validation.configuration.LocalValidationEngineConfiguration
+import edu.stanford.spezi.core.design.views.validation.state.CapturedValidationState
+import edu.stanford.spezi.core.design.views.validation.state.LocalCapturedValidationStateEntries
 
 @Composable
 fun Validate(

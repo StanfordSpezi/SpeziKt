@@ -24,7 +24,7 @@ import java.util.UUID
  */
 data class Contact(
     val id: UUID = UUID.randomUUID(),
-    val name: edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents,
+    val name: PersonNameComponents,
     val image: ImageResource = ImageResource.Vector(Icons.Default.AccountBox),
     val title: StringResource? = null,
     val description: StringResource? = null,

@@ -11,7 +11,7 @@ import androidx.compose.runtime.setValue
 import edu.stanford.spezi.core.design.component.markdown.MarkdownComponent
 import edu.stanford.spezi.core.design.component.markdown.MarkdownElement
 import edu.stanford.spezi.core.design.component.markdown.MarkdownParser
-import edu.stanford.spezi.core.design.validation.views.model.ViewState
+import edu.stanford.spezi.core.design.views.views.model.ViewState
 import java.nio.charset.StandardCharsets
 
 @Composable

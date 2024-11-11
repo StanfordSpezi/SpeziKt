@@ -1,7 +1,7 @@
 package edu.stanford.spezi.core.design.views.validation.state
 
 import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.validation.validation.ValidationRule
+import edu.stanford.spezi.core.design.views.validation.ValidationRule
 import java.util.UUID
 
 data class FailedValidationResult(

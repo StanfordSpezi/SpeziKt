@@ -12,9 +12,9 @@ data class PersonNameComponents(
         ABBREVIATED, SHORT, MEDIUM, LONG
     }
 
-    fun formatted(style: edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents.FormatStyle = edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents.FormatStyle.LONG): String {
+    fun formatted(style: FormatStyle = FormatStyle.LONG): String {
         return when (style) {
-            edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents.FormatStyle.LONG -> listOfNotNull(
+            FormatStyle.LONG -> listOfNotNull(
                 namePrefix,
                 givenName,
                 nickname?.let { "\"$it\"" },
@@ -22,11 +22,11 @@ data class PersonNameComponents(
                 familyName,
                 nameSuffix
             ).joinToString(" ")
-            edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents.FormatStyle.MEDIUM ->
+            FormatStyle.MEDIUM ->
                 TODO("Not yet implemented.")
-            edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents.FormatStyle.SHORT ->
+            FormatStyle.SHORT ->
                 TODO("Not yet implemented.")
-            edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents.FormatStyle.ABBREVIATED -> listOfNotNull(
+            FormatStyle.ABBREVIATED -> listOfNotNull(
                 givenName,
                 middleName,
                 familyName,

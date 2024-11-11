@@ -53,7 +53,7 @@ class ContactComposableSimulator(
         }
     }
 
-    fun assertHasName(text: edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents?) {
+    fun assertHasName(text: PersonNameComponents?) {
         text?.let {
             name.assertExists()
                 .assertTextEquals(it.formatted())

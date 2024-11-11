@@ -13,14 +13,14 @@ import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents
-import edu.stanford.spezi.core.design.validation.views.layout.DescriptionGridRow
+import edu.stanford.spezi.core.design.views.views.layout.DescriptionGridRow
 import kotlin.reflect.KMutableProperty1
 
 @Composable
 fun NameFieldRow(
     description: StringResource,
-    name: MutableState<edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents>,
-    component: KMutableProperty1<edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents, String?>,
+    name: MutableState<PersonNameComponents>,
+    component: KMutableProperty1<PersonNameComponents, String?>,
     label: @Composable () -> Unit,
 ) {
     NameFieldRow(
@@ -33,8 +33,8 @@ fun NameFieldRow(
 
 @Composable
 fun NameFieldRow(
-    name: MutableState<edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents>,
-    component: KMutableProperty1<edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents, String?>,
+    name: MutableState<PersonNameComponents>,
+    component: KMutableProperty1<PersonNameComponents, String?>,
     description: @Composable () -> Unit,
     label: @Composable () -> Unit,
 ) {
@@ -51,7 +51,7 @@ fun NameFieldRow(
 @ThemePreviews
 @Composable
 private fun NameFieldRowPreview() {
-    val name = remember { mutableStateOf(edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents()) }
+    val name = remember { mutableStateOf(PersonNameComponents()) }
 
     Column {
         NameFieldRow(

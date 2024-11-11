@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.validation.validation.configuration.LocalValidationEngine
+import edu.stanford.spezi.core.design.views.validation.configuration.LocalValidationEngine
 
 enum class TextFieldType {
     TEXT, SECURE

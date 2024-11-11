@@ -2,8 +2,8 @@ package edu.stanford.spezi.core.design.views.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import edu.stanford.spezi.core.design.validation.views.views.text.MarkdownBytes
-import edu.stanford.spezi.core.design.validation.views.views.text.MarkdownString
+import edu.stanford.spezi.core.design.views.views.views.text.MarkdownBytes
+import edu.stanford.spezi.core.design.views.views.views.text.MarkdownString
 import kotlinx.coroutines.delay
 import java.nio.charset.StandardCharsets
 import kotlin.time.Duration.Companion.milliseconds

@@ -20,7 +20,7 @@ class ContactDocumentToContactMapper @Inject constructor() {
         val components = contactName.split(", ")
         val nameComponents = components.firstOrNull()?.split(" ")
         val personNameComponents =
-            edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents(
+            PersonNameComponents(
                 givenName = nameComponents?.getOrNull(0),
                 familyName = nameComponents?.drop(1)
                     ?.joinToString(" ") // assigning everything besides given name here

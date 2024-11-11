@@ -1,7 +1,7 @@
 package edu.stanford.spezi.core.design.views.validation.state
 
 import androidx.compose.runtime.MutableState
-import edu.stanford.spezi.core.design.validation.validation.ValidationEngine
+import edu.stanford.spezi.core.design.views.validation.ValidationEngine
 
 data class CapturedValidationState internal constructor(
     private val engine: ValidationEngine,

@@ -30,7 +30,7 @@ import kotlin.math.min
 @Composable
 fun UserProfileComposable(
     modifier: Modifier = Modifier,
-    name: edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents,
+    name: PersonNameComponents,
     imageLoader: suspend () -> ImageResource? = { null },
 ) {
     var size by remember { mutableStateOf(IntSize.Zero) }
@@ -43,7 +43,7 @@ fun UserProfileComposable(
     }
 
     val formattedName = remember(name) {
-        name.formatted(edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents.FormatStyle.ABBREVIATED)
+        name.formatted(PersonNameComponents.FormatStyle.ABBREVIATED)
     }
 
     Box(modifier.onSizeChanged { size = it }.aspectRatio(1f)) {

@@ -9,7 +9,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import edu.stanford.spezi.core.design.validation.views.model.ViewState
+import edu.stanford.spezi.core.design.views.views.model.ViewState
 
 @Composable
 fun ProcessingOverlay(

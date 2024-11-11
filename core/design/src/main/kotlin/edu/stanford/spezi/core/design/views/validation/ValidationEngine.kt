@@ -1,8 +1,8 @@
 package edu.stanford.spezi.core.design.views.validation
 
 import androidx.compose.runtime.mutableStateOf
-import edu.stanford.spezi.core.design.validation.validation.configuration.DEFAULT_VALIDATION_DEBOUNCE_DURATION
-import edu.stanford.spezi.core.design.validation.validation.state.FailedValidationResult
+import edu.stanford.spezi.core.design.views.validation.configuration.DEFAULT_VALIDATION_DEBOUNCE_DURATION
+import edu.stanford.spezi.core.design.views.validation.state.FailedValidationResult
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job

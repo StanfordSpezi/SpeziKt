@@ -109,7 +109,7 @@ private class ContactUiStateProvider : PreviewParameterProvider<ContactScreenVie
         ContactScreenViewModel.UiState.Error("An error occurred"),
         ContactScreenViewModel.UiState.ContactLoaded(
             contact = Contact(
-                name = edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents(
+                name = PersonNameComponents(
                     givenName = "Leland",
                     familyName = "Stanford"
                 ),

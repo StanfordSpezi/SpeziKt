@@ -15,8 +15,8 @@ import kotlin.reflect.KMutableProperty1
 @Composable
 fun NameTextField(
     label: StringResource,
-    name: MutableState<edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents>,
-    component: KMutableProperty1<edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents, String?>,
+    name: MutableState<PersonNameComponents>,
+    component: KMutableProperty1<PersonNameComponents, String?>,
     prompt: StringResource? = null,
 ) {
     NameTextField(name, component, prompt) {
@@ -26,8 +26,8 @@ fun NameTextField(
 
 @Composable
 fun NameTextField(
-    name: MutableState<edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents>,
-    component: KMutableProperty1<edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents, String?>,
+    name: MutableState<PersonNameComponents>,
+    component: KMutableProperty1<PersonNameComponents, String?>,
     prompt: StringResource? = null,
     label: @Composable () -> Unit,
 ) {
@@ -53,9 +53,9 @@ fun NameTextField(
 @ThemePreviews
 @Composable
 private fun NameTextFieldPreview() {
-    val name = remember { mutableStateOf(edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents()) }
+    val name = remember { mutableStateOf(PersonNameComponents()) }
 
-    NameTextField(name, edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents::givenName) {
+    NameTextField(name, PersonNameComponents::givenName) {
         Text("Enter first name")
     }
 }
