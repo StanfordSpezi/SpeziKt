@@ -60,7 +60,7 @@ class ContactDocumentToContactMapperTest {
         // then
         with(result) {
             assertThat(name).isEqualTo(
-                edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents(
+                PersonNameComponents(
                     givenName = givenGivenName,
                     familyName = givenFamilyName,
                 )

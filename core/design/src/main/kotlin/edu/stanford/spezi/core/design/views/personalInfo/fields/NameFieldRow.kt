@@ -56,7 +56,7 @@ private fun NameFieldRowPreview() {
     Column {
         NameFieldRow(
             name,
-            edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents::givenName,
+            PersonNameComponents::givenName,
             description = { Text("First") }
         ) {
             Text("enter first name")
@@ -67,7 +67,7 @@ private fun NameFieldRowPreview() {
         // Last Name Field
         NameFieldRow(
             name,
-            edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents::familyName,
+            PersonNameComponents::familyName,
             description = { Text("Last") }
         ) {
             Text("enter last name")

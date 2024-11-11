@@ -16,7 +16,7 @@ import java.util.Locale
 
 object ContactFactory {
     val leland = Contact(
-        name = edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents(
+        name = PersonNameComponents(
             givenName = "Leland",
             familyName = "Stanford"
         ),
@@ -45,7 +45,7 @@ He and his wife Jane were also the founders of Stanford University, which they n
     )
 
     val mock = Contact(
-        name = edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents(
+        name = PersonNameComponents(
             givenName = "Paul",
             familyName = "Schmiedmayer"
         ),
