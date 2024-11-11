@@ -17,10 +17,11 @@ import edu.stanford.spezi.core.design.theme.ThemePreviews
 @Composable
 fun DescriptionGridRow(
     description: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),

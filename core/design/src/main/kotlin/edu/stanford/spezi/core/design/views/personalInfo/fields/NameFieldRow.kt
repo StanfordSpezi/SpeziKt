@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents
 import edu.stanford.spezi.core.design.views.views.layout.DescriptionGridRow
@@ -21,6 +22,7 @@ fun NameFieldRow(
     description: StringResource,
     name: MutableState<PersonNameComponents>,
     component: KMutableProperty1<PersonNameComponents, String?>,
+    modifier: Modifier = Modifier,
     label: @Composable () -> Unit,
 ) {
     NameFieldRow(
@@ -36,6 +38,7 @@ fun NameFieldRow(
     name: MutableState<PersonNameComponents>,
     component: KMutableProperty1<PersonNameComponents, String?>,
     description: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
     label: @Composable () -> Unit,
 ) {
     DescriptionGridRow(
@@ -53,24 +56,26 @@ fun NameFieldRow(
 private fun NameFieldRowPreview() {
     val name = remember { mutableStateOf(PersonNameComponents()) }
 
-    Column {
-        NameFieldRow(
-            name,
-            PersonNameComponents::givenName,
-            description = { Text("First") }
-        ) {
-            Text("enter first name")
-        }
+    SpeziTheme(isPreview = true) {
+        Column {
+            NameFieldRow(
+                name,
+                PersonNameComponents::givenName,
+                description = { Text("First") }
+            ) {
+                Text("enter first name")
+            }
 
-        HorizontalDivider(Modifier.padding(vertical = 15.dp))
+            HorizontalDivider(Modifier.padding(vertical = 15.dp))
 
-        // Last Name Field
-        NameFieldRow(
-            name,
-            PersonNameComponents::familyName,
-            description = { Text("Last") }
-        ) {
-            Text("enter last name")
+            // Last Name Field
+            NameFieldRow(
+                name,
+                PersonNameComponents::familyName,
+                description = { Text("Last") }
+            ) {
+                Text("enter last name")
+            }
         }
     }
 }

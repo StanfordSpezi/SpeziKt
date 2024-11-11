@@ -11,6 +11,8 @@ import androidx.compose.runtime.setValue
 import edu.stanford.spezi.core.design.component.markdown.MarkdownComponent
 import edu.stanford.spezi.core.design.component.markdown.MarkdownElement
 import edu.stanford.spezi.core.design.component.markdown.MarkdownParser
+import edu.stanford.spezi.core.design.theme.SpeziTheme
+import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.design.views.views.model.ViewState
 import java.nio.charset.StandardCharsets
 
@@ -79,4 +81,12 @@ fun Markdown(
     markdownContent?.let {
         MarkdownComponent(it)
     } ?: CircularProgressIndicator()
+}
+
+@ThemePreviews
+@Composable
+private fun MarkdownPreview() {
+    SpeziTheme(isPreview = true) {
+        MarkdownString("This is a markdown **example**!")
+    }
 }

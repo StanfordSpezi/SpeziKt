@@ -8,6 +8,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import edu.stanford.spezi.core.design.component.Button
 import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.design.theme.SpeziTheme
+import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.design.views.views.compositionLocal.LocalProcessingDebounceDuration
 import edu.stanford.spezi.core.design.views.views.model.ViewState
 import kotlinx.coroutines.delay
@@ -75,6 +77,17 @@ fun SuspendButton(
     ) {
         ProcessingOverlay(buttonState.value == SuspendButtonState.DISABLED_AND_PROCESSING || externallyProcessing) {
             label()
+        }
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun SuspendButtonPreview() {
+    val state = remember { mutableStateOf<ViewState>(ViewState.Idle) }
+    SpeziTheme(isPreview = true) {
+        SuspendButton(StringResource("Test Button"), state) {
+            throw NotImplementedError()
         }
     }
 }

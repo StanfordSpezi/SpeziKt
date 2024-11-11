@@ -9,11 +9,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.design.theme.SpeziTheme
+import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.core.design.views.validation.Validate
+import edu.stanford.spezi.core.design.views.validation.ValidationRule
 import edu.stanford.spezi.core.design.views.validation.configuration.LocalValidationEngine
+import edu.stanford.spezi.core.design.views.validation.nonEmpty
 
 enum class TextFieldType {
     TEXT, SECURE
@@ -23,12 +30,14 @@ enum class TextFieldType {
 fun VerifiableTextField(
     label: StringResource,
     text: MutableState<String>,
+    modifier: Modifier = Modifier,
     type: TextFieldType = TextFieldType.TEXT,
     disableAutocorrection: Boolean = false,
     footer: @Composable () -> Unit = {},
 ) {
     VerifiableTextField(
         text,
+        modifier,
         type,
         disableAutocorrection = disableAutocorrection,
         { Text(label.text()) },
@@ -39,14 +48,15 @@ fun VerifiableTextField(
 @Composable
 fun VerifiableTextField(
     text: MutableState<String>,
+    modifier: Modifier = Modifier,
     type: TextFieldType = TextFieldType.TEXT,
     disableAutocorrection: Boolean = false,
-    label: @Composable () -> Unit,
     footer: @Composable () -> Unit = {},
+    label: @Composable () -> Unit,
 ) {
     val validationEngine = LocalValidationEngine.current
 
-    Column {
+    Column(modifier) {
         // TODO: Check if this is really equivalent,
         //  since iOS specifies this as a completely separate type
         //  and there we only have this visualTransformation property
@@ -59,6 +69,7 @@ fun VerifiableTextField(
                     keyboardOptions = KeyboardOptions(
                         autoCorrect = !disableAutocorrection
                     ),
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
             TextFieldType.SECURE -> {
@@ -70,19 +81,35 @@ fun VerifiableTextField(
                         keyboardType = KeyboardType.Password,
                         autoCorrect = !disableAutocorrection
                     ),
-                    visualTransformation = PasswordVisualTransformation()
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }
 
         Row {
-            validationEngine?.let {
-                ValidationResultsComposable(it.displayedValidationResults)
+            ValidationResultsComposable(validationEngine?.displayedValidationResults ?: emptyList())
 
-                Spacer(Modifier.fillMaxWidth())
-            }
+            Spacer(Modifier.fillMaxWidth())
 
             footer()
+        }
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun VerifiableTextFieldPreview() {
+    val text = remember { mutableStateOf("") }
+
+    SpeziTheme(isPreview = true) {
+        Validate(text.value, rules = listOf(ValidationRule.nonEmpty)) {
+            VerifiableTextField(
+                text,
+                footer = { Text("Some Hint") },
+            ) {
+                Text("Password Text")
+            }
         }
     }
 }

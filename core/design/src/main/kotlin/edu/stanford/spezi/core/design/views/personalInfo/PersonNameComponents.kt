@@ -28,7 +28,6 @@ data class PersonNameComponents(
                 TODO("Not yet implemented.")
             FormatStyle.ABBREVIATED -> listOfNotNull(
                 givenName,
-                middleName,
                 familyName,
             ).joinToString("")
                 .filter { it.isUpperCase() }

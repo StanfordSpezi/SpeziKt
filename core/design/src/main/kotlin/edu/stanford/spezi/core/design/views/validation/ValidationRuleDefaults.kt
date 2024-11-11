@@ -36,11 +36,11 @@ val ValidationRule.Companion.minimalPassword: ValidationRule
 val ValidationRule.Companion.mediumPassword: ValidationRule
     get() = ValidationRule(
         regex = Regex(".{10,}"),
-        message = StringResource("VALIDATION_RULE_PASSWORD_LENGTH 10")
+        message = StringResource("Your password must be at least 10 characters long.")
     )
 
 val ValidationRule.Companion.strongPassword: ValidationRule
     get() = ValidationRule(
         regex = Regex(".{12,}"),
-        message = StringResource("VALIDATION_RULE_PASSWORD_LENGTH 12")
+        message = StringResource("Your password must be at least 12 characters long.")
     )
