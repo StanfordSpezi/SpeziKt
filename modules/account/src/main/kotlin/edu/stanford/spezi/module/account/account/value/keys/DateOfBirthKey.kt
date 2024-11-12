@@ -9,6 +9,12 @@ import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.InitialValue
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.value
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import java.time.Instant
 import java.util.Date
 
 private object AccountDateOfBirthKey : AccountKey<Date> {
@@ -16,6 +22,18 @@ private object AccountDateOfBirthKey : AccountKey<Date> {
     override val name = StringResource("UAP_SIGNUP_DATE_OF_BIRTH_TITLE")
     override val category = AccountKeyCategory.personalDetails
     override val initialValue: InitialValue<Date> = InitialValue.Empty(Date())
+    override val serializer = object : KSerializer<Date> {
+        override val descriptor: SerialDescriptor
+            get() = String.serializer().descriptor
+
+        override fun serialize(encoder: Encoder, value: Date) {
+            encoder.encodeString(value.toInstant().toString())
+        }
+
+        override fun deserialize(decoder: Decoder): Date {
+            return Date.from(Instant.parse(decoder.decodeString()))
+        }
+    }
 
     @Composable
     override fun DisplayComposable(value: Date) {
@@ -31,6 +49,6 @@ private object AccountDateOfBirthKey : AccountKey<Date> {
 val AccountKeys.dateOfBirth: AccountKey<Date>
     get() = AccountDateOfBirthKey
 
-var AccountDetails.dateOfBirth: Date
-    get() = this.storage[AccountKeys.dateOfBirth] ?: AccountKeys.dateOfBirth.initialValue.value
+var AccountDetails.dateOfBirth: Date?
+    get() = this.storage[AccountKeys.dateOfBirth]
     set(value) { this.storage[AccountKeys.dateOfBirth] = value }

@@ -10,12 +10,14 @@ import edu.stanford.spezi.core.utils.foundation.knowledgesource.OptionalComputed
 import edu.stanford.spezi.module.account.account.value.collections.AccountAnchor
 import edu.stanford.spezi.module.account.account.value.keys.accountId
 import edu.stanford.spezi.module.account.account.value.keys.userId
+import kotlinx.serialization.KSerializer
 
 interface AccountKey<Value : Any> : KnowledgeSource<AccountAnchor, Value> {
     val identifier: String
     val name: StringResource
     val category: AccountKeyCategory get() = AccountKeyCategory.other
     val initialValue: InitialValue<Value>
+    val serializer: KSerializer<Value>
 
     @Composable
     fun DisplayComposable(value: Value)
@@ -23,6 +25,9 @@ interface AccountKey<Value : Any> : KnowledgeSource<AccountAnchor, Value> {
     @Composable
     fun EntryComposable(state: MutableState<Value>)
 }
+
+internal val <Value : Any> AccountKey<Value>.isRequired: Boolean
+    get() = this is RequiredAccountKey<Value>
 
 internal val <Value : Any> AccountKey<Value>.isHiddenCredential: Boolean
     get() = this == AccountKeys.accountId || this == AccountKeys.userId

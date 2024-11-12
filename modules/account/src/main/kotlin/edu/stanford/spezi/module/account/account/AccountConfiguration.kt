@@ -6,21 +6,29 @@ import edu.stanford.spezi.module.account.account.service.configuration.Supported
 import edu.stanford.spezi.module.account.account.service.configuration.supportedAccountKeys
 import edu.stanford.spezi.module.account.account.service.configuration.unsupportedAccountKeys
 import edu.stanford.spezi.module.account.account.value.AccountKeys
+import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.configuration.AccountValueConfiguration
 import edu.stanford.spezi.module.account.account.value.keys.accountId
 import javax.inject.Inject
 import kotlin.system.exitProcess
 
-class AccountConfiguration<Service : AccountService> {
+interface Standard
+
+// TODO: Expose those properties!!!!
+class AccountConfiguration<Service : AccountService>(
+    private val accountService: Service,
+    private val storageProvider: AccountStorageProvider? = null,
+    configuration: AccountValueConfiguration = AccountValueConfiguration.default,
+    defaultActiveDetails: AccountDetails? = null,
+) {
     private val logger by speziLogger()
 
-    @Inject lateinit var account: Account
-
-    @Inject internal lateinit var externalStorage: ExternalAccountStorage
-
-    @Inject internal lateinit var accountService: Service
-
-    @Inject internal lateinit var storageProvider: List<Module> // TODO: This is never going to work
+    val account = Account(
+        accountService,
+        configuration,
+        defaultActiveDetails
+    )
+    val externalStorage = ExternalAccountStorage(storageProvider)
 
     @Inject internal lateinit var standard: Standard
 
@@ -44,7 +52,7 @@ class AccountConfiguration<Service : AccountService> {
 
         if (unmappedAccountKeys.isEmpty()) return // we are fine, nothing unsupported
 
-        storageProvider.firstOrNull()?.let {
+        storageProvider?.let {
             logger.w {
                 """
                     The storage provider $it is used to store the following account values that

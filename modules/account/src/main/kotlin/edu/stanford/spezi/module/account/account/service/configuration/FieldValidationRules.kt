@@ -11,6 +11,7 @@ import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.keys.email
 import edu.stanford.spezi.module.account.account.value.keys.password
 import edu.stanford.spezi.module.account.account.value.keys.userId
+import kotlin.reflect.KProperty0
 
 data class FieldValidationRules(
     val key: AccountKey<String>,
@@ -56,3 +57,9 @@ private data class FieldValidationRulesKey(
         }
     }
 }
+
+fun AccountServiceConfiguration.fieldValidationRules(key: AccountKey<String>): List<ValidationRule>? =
+    storage[FieldValidationRules.key(key)]?.rules
+
+fun AccountServiceConfiguration.fieldValidationRules(property: KProperty0<AccountKey<String>>): List<ValidationRule>? =
+    storage[FieldValidationRules.key(property.get())]?.rules

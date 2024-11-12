@@ -10,12 +10,28 @@ import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.InitialValue
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.value
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 private object AccountGenderIdentityKey : AccountKey<GenderIdentity> {
     override val identifier = "genderIdentity"
     override val name = StringResource("GENDER_IDENTITY_TITLE")
     override val category = AccountKeyCategory.personalDetails
     override val initialValue: InitialValue<GenderIdentity> = InitialValue.Default(GenderIdentity.PREFER_NOT_TO_STATE)
+    override val serializer = object : KSerializer<GenderIdentity> {
+        override val descriptor = String.serializer().descriptor
+
+        override fun serialize(encoder: Encoder, value: GenderIdentity) {
+            encoder.encodeString(value.name)
+        }
+
+        override fun deserialize(decoder: Decoder): GenderIdentity {
+            val string = decoder.decodeString()
+            return GenderIdentity.entries.first { it.name == string }
+        }
+    }
 
     @Composable
     override fun DisplayComposable(value: GenderIdentity) {
@@ -31,6 +47,6 @@ private object AccountGenderIdentityKey : AccountKey<GenderIdentity> {
 val AccountKeys.genderIdentity: AccountKey<GenderIdentity>
     get() = AccountGenderIdentityKey
 
-var AccountDetails.genderIdentity: GenderIdentity
-    get() = this.storage[AccountKeys.genderIdentity] ?: AccountKeys.genderIdentity.initialValue.value
+var AccountDetails.genderIdentity: GenderIdentity?
+    get() = this.storage[AccountKeys.genderIdentity]
     set(value) { this.storage[AccountKeys.genderIdentity] = value }

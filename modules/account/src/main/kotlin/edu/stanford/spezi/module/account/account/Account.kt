@@ -13,8 +13,8 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class Account(
-    val configuration: AccountValueConfiguration = AccountValueConfiguration.default,
     service: AccountService,
+    val configuration: AccountValueConfiguration = AccountValueConfiguration.default,
     details: AccountDetails? = null,
 ) {
     val logger by speziLogger()

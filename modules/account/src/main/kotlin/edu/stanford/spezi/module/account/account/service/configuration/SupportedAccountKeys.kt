@@ -2,11 +2,13 @@ package edu.stanford.spezi.module.account.account.service.configuration
 
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.configuration.AccountKeyConfiguration
+import edu.stanford.spezi.module.account.account.value.configuration.AccountKeyRequirement
 import edu.stanford.spezi.module.account.account.value.configuration.AccountValueConfiguration
+import edu.stanford.spezi.module.account.account.value.isRequired
 
 sealed interface SupportedAccountKeys {
     data object Arbitrary : SupportedAccountKeys
-    data class Exactly(val keys: Collection<AccountKey<*>>) : SupportedAccountKeys
+    data class Exactly(val keys: List<AccountKey<*>>) : SupportedAccountKeys
 
     fun canStore(value: AccountKeyConfiguration<*>): Boolean {
         return when (this) {
@@ -14,9 +16,9 @@ sealed interface SupportedAccountKeys {
                 true
             }
             is Exactly -> {
-                val key = keys.first { it == value }
-
-                TODO("Not implemented yet")
+                keys.firstOrNull { it === value.key }?.let { key ->
+                    !key.isRequired || value.requirement == AccountKeyRequirement.REQUIRED
+                } ?: false
             }
         }
     }
@@ -27,7 +29,8 @@ sealed interface SupportedAccountKeys {
 }
 
 var AccountServiceConfiguration.supportedAccountKeys: SupportedAccountKeys
-    get() = this.storage[SupportedAccountKeys.key] ?: error("Figure out how to translate preconditionFailure.")
+    get() = this.storage[SupportedAccountKeys.key]
+        ?: error("Reached illegal state where SupportedAccountKeys configuration was never supplied!")
     set(value) { this.storage[SupportedAccountKeys.key] = value }
 
 fun AccountServiceConfiguration.unsupportedAccountKeys(configuration: AccountValueConfiguration): List<AccountKeyConfiguration<*>> {

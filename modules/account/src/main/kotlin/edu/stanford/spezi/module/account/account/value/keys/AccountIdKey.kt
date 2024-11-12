@@ -9,12 +9,14 @@ import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.InitialValue
 import edu.stanford.spezi.module.account.account.value.RequiredAccountKey
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
+import kotlinx.serialization.builtins.serializer
 
 private object AccountIdKey : RequiredAccountKey<String> {
     override val identifier = "id"
     override val name = StringResource("ACCOUNT_ID")
     override val category = AccountKeyCategory.credentials
     override val initialValue: InitialValue<String> = InitialValue.Empty("")
+    override val serializer = String.serializer()
 
     @Composable
     override fun DisplayComposable(value: String) {

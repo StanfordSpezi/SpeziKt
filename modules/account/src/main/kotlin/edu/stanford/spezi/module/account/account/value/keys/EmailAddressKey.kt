@@ -3,8 +3,11 @@ package edu.stanford.spezi.module.account.account.value.keys
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.design.views.validation.views.VerifiableTextField
 import edu.stanford.spezi.core.utils.foundation.SharedRepository
 import edu.stanford.spezi.core.utils.foundation.knowledgesource.ComputedKnowledgeSourceStoragePolicy
+import edu.stanford.spezi.module.account.account.service.configuration.UserIdType
+import edu.stanford.spezi.module.account.account.service.configuration.userIdConfiguration
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.AccountKeyCategory
 import edu.stanford.spezi.module.account.account.value.AccountKeys
@@ -12,38 +15,38 @@ import edu.stanford.spezi.module.account.account.value.InitialValue
 import edu.stanford.spezi.module.account.account.value.OptionalComputedAccountKey
 import edu.stanford.spezi.module.account.account.value.collections.AccountAnchor
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
+import edu.stanford.spezi.module.account.account.views.display.StringDisplay
+import kotlinx.serialization.builtins.serializer
 
 private object AccountEmailKey : OptionalComputedAccountKey<String> {
     override val identifier = "email"
-    override val name = StringResource("UAP_SIGNUP_DATE_OF_BIRTH_TITLE")
+    override val name = StringResource("USER_ID_EMAIL")
     override val category = AccountKeyCategory.personalDetails
     override val storagePolicy: ComputedKnowledgeSourceStoragePolicy
         get() = ComputedKnowledgeSourceStoragePolicy.AlwaysCompute
     override val initialValue: InitialValue<String> = InitialValue.Empty("")
+    override val serializer = String.serializer()
 
     @Composable
     override fun DisplayComposable(value: String) {
-        TODO("Not yet implemented")
+        StringDisplay(this, value)
     }
 
     @Composable
     override fun EntryComposable(state: MutableState<String>) {
-        TODO("Not yet implemented")
+        VerifiableTextField(name, state)
+        // TODO: Set content type, disable field assistants
     }
 
     override fun compute(repository: SharedRepository<AccountAnchor>): String? {
-        repository[this]?.let {
-            return it
-        } ?: TODO("""
-        guard let configuration = repository[AccountDetails.AccountServiceConfigurationDetailsKey.self],
-        case .emailAddress = configuration.userIdConfiguration.idType else {
-            return nil
+        return repository[this] ?: run {
+            val idType = repository[AccountServiceConfigurationDetailsKey].userIdConfiguration.idType
+            if (idType == UserIdType.EmailAddress) {
+                repository[AccountKeys.userId]
+            } else {
+                null
+            }
         }
-
-        // return the userId if it's a email address
-        return repository[AccountKeys.userId]
-        """.trimIndent()
-        )
     }
 }
 

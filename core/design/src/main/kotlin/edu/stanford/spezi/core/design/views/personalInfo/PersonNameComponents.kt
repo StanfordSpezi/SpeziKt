@@ -33,4 +33,15 @@ data class PersonNameComponents(
                 .filter { it.isUpperCase() }
         }
     }
+
+    companion object {
+        operator fun invoke(string: String): PersonNameComponents {
+            val components = string.split(" ")
+            // TODO: Vastly improve this implementation!
+            return PersonNameComponents(
+                givenName = components.firstOrNull(),
+                familyName = components.drop(1).joinToString(" ")
+            )
+        }
+    }
 }

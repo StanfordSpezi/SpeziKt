@@ -8,7 +8,7 @@ import edu.stanford.spezi.module.account.account.service.configuration.userIdCon
 import edu.stanford.spezi.module.account.account.value.collections.AccountAnchor
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 
-private object AccountServiceConfigurationDetailsKey : DefaultProvidingKnowledgeSource<AccountAnchor, AccountServiceConfiguration> {
+internal object AccountServiceConfigurationDetailsKey : DefaultProvidingKnowledgeSource<AccountAnchor, AccountServiceConfiguration> {
     override val defaultValue = AccountServiceConfiguration(supportedKeys = SupportedAccountKeys.Exactly(emptyList()))
 }
 

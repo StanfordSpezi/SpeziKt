@@ -11,14 +11,15 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
 import java.util.UUID
 
-class ExternalAccountStorage {
+class ExternalAccountStorage internal constructor(
+    private var storageProvider: AccountStorageProvider?
+) {
     data class ExternallyStoredDetails internal constructor(
         val accountId: String,
         val details: AccountDetails,
     )
 
     private var subscriptions = mutableMapOf<UUID, FlowCollector<ExternallyStoredDetails>>()
-    private var storageProvider: AccountStorageProvider? = null
 
     val updatedDetails: Flow<ExternallyStoredDetails>
         get() = UUID().let { id ->

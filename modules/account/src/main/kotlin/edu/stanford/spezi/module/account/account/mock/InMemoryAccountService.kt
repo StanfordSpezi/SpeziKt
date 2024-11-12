@@ -1,19 +1,33 @@
 package edu.stanford.spezi.module.account.account.mock
 
-/*
-import android.accounts.Account
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents
+import edu.stanford.spezi.core.design.views.views.views.button.SuspendButton
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.utils.UUID
+import edu.stanford.spezi.module.account.account.Account
 import edu.stanford.spezi.module.account.account.AccountNotifications
 import edu.stanford.spezi.module.account.account.ExternalAccountStorage
+import edu.stanford.spezi.module.account.account.compositionLocal.LocalAccount
 import edu.stanford.spezi.module.account.account.model.GenderIdentity
 import edu.stanford.spezi.module.account.account.service.AccountService
 import edu.stanford.spezi.module.account.account.service.configuration.AccountServiceConfiguration
+import edu.stanford.spezi.module.account.account.service.configuration.AccountServiceConfigurationPair
+import edu.stanford.spezi.module.account.account.service.configuration.RequiredAccountKeys
+import edu.stanford.spezi.module.account.account.service.configuration.SupportedAccountKeys
+import edu.stanford.spezi.module.account.account.service.configuration.UserIdConfiguration
 import edu.stanford.spezi.module.account.account.service.identityProvider.AccountSetupSection
+import edu.stanford.spezi.module.account.account.service.identityProvider.ComposableModifier
 import edu.stanford.spezi.module.account.account.service.identityProvider.IdentityProvider
 import edu.stanford.spezi.module.account.account.service.identityProvider.SecurityRelatedModifier
 import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
+import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
 import edu.stanford.spezi.module.account.account.value.keys.accountId
 import edu.stanford.spezi.module.account.account.value.keys.dateOfBirth
 import edu.stanford.spezi.module.account.account.value.keys.genderIdentity
@@ -22,415 +36,365 @@ import edu.stanford.spezi.module.account.account.value.keys.isNewUser
 import edu.stanford.spezi.module.account.account.value.keys.name
 import edu.stanford.spezi.module.account.account.value.keys.password
 import edu.stanford.spezi.module.account.account.value.keys.userId
-import kotlinx.coroutines.flow.launchIn
+import edu.stanford.spezi.module.account.account.views.setup.provider.AccountServiceButton
+import edu.stanford.spezi.module.account.account.views.setup.provider.AccountSetupProviderComposable
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.util.Date
+import java.util.EnumSet
 import java.util.UUID
 import javax.inject.Inject
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.cancellation.CancellationException
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
+import kotlin.time.Duration.Companion.milliseconds
 
-class InMemoryAccountService : AccountService {
+@Composable
+private fun MockUserIdPasswordEmbeddedComposable(
+    service: InMemoryAccountService
+) {
+    AccountSetupProviderComposable(
+        login = {
+            service.login(it.userId, it.password)
+        },
+        signup = {
+            service.signUp(it)
+        },
+        resetPassword = {
+            service.resetPassword(it)
+        }
+    )
+}
+
+@Composable
+private fun AnonymousSignupButton(service: InMemoryAccountService) {
+    // TODO: Coloring
+    AccountServiceButton(action = {
+        service.signInAnonymously()
+    }) {
+        Text("Stanford SUNet")
+    }
+}
+
+@Composable
+private fun MockSignInWithGoogleButton() {
+    val account = LocalAccount.current
+
+    // TODO: Missing component in general, I think
+}
+
+data class MockSecurityAlert(val service: InMemoryAccountService) : ComposableModifier {
+    @Composable
+    override fun Body(content: @Composable () -> Unit) {
+        if (service.state.presentingSecurityAlert.value) {
+            AlertDialog(
+                onDismissRequest = {
+                    service.state.presentingSecurityAlert.value = false
+                },
+                title = {
+                    Text("Security Alert")
+                },
+                confirmButton = {
+                    SuspendButton(StringResource("Continue")) {
+                        service.state.securityContinuation?.resume(Unit)
+                    }
+                },
+                dismissButton = {
+                    SuspendButton(StringResource("Cancel")) {
+                        service.state.securityContinuation?.resumeWithException(CancellationException())
+                    }
+                }
+            )
+        }
+    }
+}
+
+class InMemoryAccountService(
+    type: UserIdConfiguration = UserIdConfiguration.emailAddress,
+    configured: EnumSet<ConfiguredIdentityProvider> = EnumSet.allOf(ConfiguredIdentityProvider::class.java)
+) : AccountService {
     companion object {
-        private val supportedKeys = listOf(
-            AccountKeys::accountId,
-            AccountKeys::userId,
-            AccountKeys::password,
-            AccountKeys::name,
-            AccountKeys::genderIdentity,
-            AccountKeys::dateOfBirth
+        val supportedKeys = listOf(
+            AccountKeys.accountId,
+            AccountKeys.userId,
+            AccountKeys.password,
+            AccountKeys.name,
+            AccountKeys.genderIdentity,
+            AccountKeys.dateOfBirth,
         )
     }
 
-    private val logger by speziLogger()
+    val logger by speziLogger()
 
     @Inject private lateinit var account: Account
+
     @Inject private lateinit var notifications: AccountNotifications
+
     @Inject private lateinit var externalStorage: ExternalAccountStorage
 
-    private val loginView by IdentityProvider(section = AccountSetupSection.primary, content = {})
-    private val testButton2 by IdentityProvider(content = {})
-    private val signInWithApple by IdentityProvider(section = AccountSetupSection.singleSignOn, content = {})
+    private val loginViewDelegate = IdentityProvider(section = AccountSetupSection.primary) {
+        MockUserIdPasswordEmbeddedComposable(this)
+    }
+    private val loginView by loginViewDelegate
 
-    private val securityAlert by SecurityRelatedModifier(MockSecurityAlert())
+    private val testButton2Delegate = IdentityProvider { AnonymousSignupButton(this) }
+    private val testButton2 by testButton2Delegate
 
-    val configuration: AccountServiceConfiguration
+    private val signInWithGoogleDelegate = IdentityProvider(section = AccountSetupSection.singleSignOn) {
+        MockSignInWithGoogleButton()
+    }
+    private val signInWithGoogle by signInWithGoogleDelegate
+
+    private val securityAlertDelegate = SecurityRelatedModifier { MockSecurityAlert(this) }
+    private val securityAlert by securityAlertDelegate
+
+    override val configuration = AccountServiceConfiguration(
+        SupportedAccountKeys.Exactly(supportedKeys),
+        listOf(
+            AccountServiceConfigurationPair(UserIdConfiguration.key, type),
+            AccountServiceConfigurationPair(
+                RequiredAccountKeys.key,
+                RequiredAccountKeys(listOf(AccountKeys.userId, AccountKeys.password))
+            )
+        ),
+    )
     val state = State()
-
 
     private var userIdToAccountId = mutableMapOf<String, UUID>()
     private var registeredUsers = mutableMapOf<UUID, UserStorage>()
 
-    data class State(val id: String = "") // TODO
+    enum class ConfiguredIdentityProvider {
+        UserIdPassword, Custom, SignInWithGoogle
+    }
 
-    data class UserStorage(
-        val accountId: UUID,
-        var userId: String?,
-        var password: String?,
-        var name: String? = null, // TODO: PersonNameComponents
-        var genderIdentity: GenderIdentity? = null,
-        var dateOfBirth: Date? = null,
-    )
+    init {
 
-    constructor(type: UserIdConfiguration)
-
-    /// Create a new userId- and password-based account service.
-    /// - Parameters:
-    ///   - type: The ``UserIdType`` to use for the account service.
-    ///   - configured: The set of identity providers to enable.
-    public init(_ type: UserIdConfiguration = .emailAddress, configure configured: ConfiguredIdentityProvider = .all) {
-        self.configuration = AccountServiceConfiguration(supportedKeys: .exactly(Self.supportedKeys)) {
-            type
-            RequiredAccountKeys {
-                \.userId
-                \.password
-            }
+        if (!configured.contains(ConfiguredIdentityProvider.UserIdPassword)) {
+            loginViewDelegate.isEnabled = false
         }
-
-        if !configured.contains(.userIdPassword) {
-            $loginView.isEnabled = false
+        if (!configured.contains(ConfiguredIdentityProvider.Custom)) {
+            testButton2Delegate.isEnabled = false
         }
-        if !configured.contains(.customIdentityProvider) {
-            $testButton2.isEnabled = false
-        }
-        if !configured.contains(.signInWithApple) {
-            $signInWithApple.isEnabled = false
+        if (!configured.contains(ConfiguredIdentityProvider.SignInWithGoogle)) {
+            signInWithGoogleDelegate.isEnabled = false
         }
     }
 
     init {
-        val detailsFlow = externalStorage.updatedDetails
-        runBlocking {
-            launch {
-                detailsFlow
-                    .onEach { details ->
-                        runCatching {
-                            val accountId = UUID(details.accountId)
-                            val storage = registeredUsers[accountId] ?: run { return@runCatching }
-
-                            access.waitCheckingCancellation()
-                            var details = _buildUser(storage, isNew = false)
-                            account.supplyUserDetails(details)
-                            access.signal()
-                        }
-                    }
-                    .launchIn(this)
+        val subscription = externalStorage.updatedDetails
+        GlobalScope.launch { // TODO: Figure out how to do weak reference logic here
+            subscription.onEach { updatedDetails ->
+                val accountId = UUID(updatedDetails.accountId)
+                registeredUsers[accountId]?.let { storage ->
+                    val details = _buildUser(storage, isNew = false)
+                    details.addContentsOf(updatedDetails.details)
+                    account.supplyUserDetails(details)
+                }
             }
         }
     }
 
     fun signInAnonymously() {
-        val id = UUID()
+        val accountId = UUID()
 
         val details = AccountDetails()
-        details.accountId = id.toString()
+        details.accountId = accountId.toString()
         details.isAnonymous = true
         details.isNewUser = true
 
-        registeredUsers[id] = UserStorage(id, null, null)
-        account.supplyUserDetails(details)
-    }
-
-    public func signInAnonymously() {
-        let id = UUID()
-
-        var details = AccountDetails()
-        details.accountId = id.uuidString
-        details.isAnonymous = true
-        details.isNewUser = true
-
-        registeredUsers[id] = UserStorage(accountId: id, userId: nil, password: nil)
+        registeredUsers[accountId] = UserStorage(accountId = accountId, userId = null, password = null)
         account.supplyUserDetails(details)
     }
 
 
-    public func login(userId: String, password: String) async throws {
-        logger.debug("Trying to login \(userId) with password \(password)")
-        try await Task.sleep(for: .milliseconds(500))
+    suspend fun login(userId: String, password: String) {
+        logger.w { "Trying to login $userId with password $password" }
+        delay(500.milliseconds)
 
-            guard let accountId = userIdToAccountId[userId],
-            let user = registeredUsers[accountId],
-            user.password == password else {
-                throw AccountError.wrongCredentials
-            }
+        val user = userIdToAccountId[userId]?.let { registeredUsers[it] }
+        if (user == null || user.password != password) error("WRONG_CREDENTIALS")
 
-            try await loadUser(user)
-            }
+        loadUser(user)
+    }
 
-    public func signUp(with signupDetails: AccountDetails) async throws {
-        logger.debug("Signing up user account \(signupDetails.userId)")
-        try await Task.sleep(for: .milliseconds(500))
+    suspend fun signUp(signUpDetails: AccountDetails) {
+        logger.w { "Signing up user account ${signUpDetails.userId}" }
+        delay(500.milliseconds)
 
-            guard userIdToAccountId[signupDetails.userId] == nil else {
-                throw AccountError.credentialsTaken
-            }
-
-            guard let password = signupDetails.password else {
-                throw AccountError.internalError
-            }
-
-            var storage: UserStorage
-            if let details = account.details,
-            let registered = registeredUsers[details.accountId.assumeUUID] {
-                guard details.isAnonymous else {
-                    throw AccountError.internalError
-                }
-
-                // do account linking for anonymous accounts!´
-                storage = registered
-                storage.userId = signupDetails.userId
-                storage.password = password
-                if let name = signupDetails.name {
-                    storage.name = name
-                }
-                if let genderIdentity = signupDetails.genderIdentity {
-                    storage.genderIdentity = genderIdentity
-                }
-                if let dateOfBirth = signupDetails.dateOfBirth {
-                    storage.dateOfBirth = dateOfBirth
-                }
-            } else {
-                storage = UserStorage(
-                    userId: signupDetails.userId,
-                password: password,
-                name: signupDetails.name,
-                genderIdentity: signupDetails.genderIdentity,
-                dateOfBirth: signupDetails.dateOfBirth
-                )
-            }
-
-            userIdToAccountId[signupDetails.userId] = storage.accountId
-            registeredUsers[storage.accountId] = storage
-
-            var externallyStored = signupDetails
-            externallyStored.removeAll(Self.supportedKeys)
-            if !externallyStored.isEmpty {
-                let externalStorage = externalStorage
-                    try await externalStorage.requestExternalStorage(of: externallyStored, for: storage.accountId.uuidString)
-                    }
-
-            try await loadUser(storage, isNew: true)
-            }
-
-    public func resetPassword(userId: String) async throws {
-        logger.debug("Sending password reset e-mail for \(userId)")
-        try await Task.sleep(for: .milliseconds(500))
+        if (userIdToAccountId[signUpDetails.userId] != null) {
+            error("Credentials taken")
         }
 
-    public func logout() async throws {
-        logger.debug("Logging out user")
-        try await Task.sleep(for: .milliseconds(500))
-            account.removeUserDetails()
+        val password = signUpDetails.password ?: error("Internal error")
+
+        val storage: UserStorage
+        val details = account.details
+        val registered = details?.accountId?.let { registeredUsers[UUID(it)] }
+        if (details != null && registered != null) {
+            if (details.isAnonymous) error("Internal error")
+
+            // do account linking for anonymous accounts!´
+            storage = registered
+            storage.userId = signUpDetails.userId
+            storage.password = password
+            signUpDetails.name?.let { storage.name = it }
+            storage.genderIdentity = signUpDetails.genderIdentity
+            storage.dateOfBirth = signUpDetails.dateOfBirth
+        } else {
+            storage = UserStorage(
+                userId = signUpDetails.userId,
+                password = password,
+                name = signUpDetails.name,
+                genderIdentity = signUpDetails.genderIdentity,
+                dateOfBirth = signUpDetails.dateOfBirth
+            )
         }
 
-    public func delete() async throws {
-        guard let details = account.details else {
-            return
+        userIdToAccountId[signUpDetails.userId] = storage.accountId
+        registeredUsers[storage.accountId] = storage
+
+        val externallyStored = signUpDetails.copy()
+        for (key in supportedKeys) {
+            externallyStored.remove(key)
+        }
+        if (!externallyStored.isEmpty()) {
+            externalStorage.requestExternalStorage(storage.accountId.toString(), externallyStored)
+        }
+        loadUser(storage, isNew = true)
+    }
+
+    suspend fun resetPassword(userId: String) {
+        logger.w { "Sending password reset e-mail for $userId" }
+        delay(500.milliseconds)
+    }
+
+    override suspend fun logout() {
+        logger.w { "Logging out user" }
+        delay(500.milliseconds)
+        account.removeUserDetails()
+    }
+
+    override suspend fun delete() {
+        val details = account.details ?: return
+
+        logger.w { "Deleting user account for ${details.userId}" }
+        delay(500.milliseconds)
+
+        suspendCoroutine {
+            state.securityContinuation = it
+            state.presentingSecurityAlert.value = true
         }
 
-        logger.debug("Deleting user account for \(details.userId)")
-        try await Task.sleep(for: .milliseconds(500))
+        notifications.reportEvent(AccountNotifications.Event.DeletingAccount(details.accountId))
 
-            try await withCheckedThrowingContinuation { continuation in
-                state.presentingSecurityAlert = true
-                state.securityContinuation = continuation
+        registeredUsers.remove(UUID(details.accountId))
+        userIdToAccountId.remove(details.userId)
+
+        account.removeUserDetails()
+    }
+
+    override suspend fun updateAccountDetails(modifications: AccountModifications) {
+        val details = account.details ?: error("Internal Error")
+        val accountId = UUID(details.accountId)
+
+        var storage = registeredUsers[accountId] ?: error("Internal Error")
+
+        logger.w { "Updating user details for ${details.userId}: $modifications" }
+        delay(500.milliseconds)
+
+        if (modifications.modifiedDetails.contains(AccountKeys.userId) ||
+            modifications.modifiedDetails.contains(AccountKeys.password)) {
+            suspendCoroutine {
+                state.securityContinuation = it
+                state.presentingSecurityAlert.value = true
             }
-
-                let notifications = notifications
-                    try await notifications.reportEvent(.deletingAccount(details.accountId))
-
-                        registeredUsers.removeValue(forKey: details.accountId.assumeUUID)
-                        userIdToAccountId.removeValue(forKey: details.userId)
-
-                        account.removeUserDetails()
-                    }
-
-    @MainActor
-    public func updateAccountDetails(_ modifications: AccountModifications) async throws {
-        guard let details = account.details else {
-            throw AccountError.internalError
         }
 
-        guard let accountId = UUID(uuidString: details.accountId) else {
-            preconditionFailure("Invalid accountId format \(details.accountId)")
+        storage.update(modifications)
+        registeredUsers[accountId] = storage
+
+        val externalModifications = modifications
+        externalModifications.removeModifications(supportedKeys)
+        if (!externalModifications.isEmpty()) {
+            externalStorage.updateExternalStorage(accountId.toString(), externalModifications)
+        }
+        loadUser(storage)
+    }
+
+
+    private suspend fun loadUser(user: UserStorage, isNew: Boolean = false) {
+        val details = _buildUser(user, isNew = isNew)
+
+        val unsupportedKeys = account.configuration.keys.filter {
+            !supportedKeys.contains(it)
+        }
+        if (unsupportedKeys.isNotEmpty()) {
+            val externalStorage = externalStorage
+            val externallyStored = externalStorage.retrieveExternalStorage(user.accountId.toString(), unsupportedKeys)
+            details.addContentsOf(externallyStored)
         }
 
-        guard var storage = registeredUsers[accountId] else {
-            throw AccountError.internalError
-        }
+        account.supplyUserDetails(details)
+    }
 
-        logger.debug("Updating user details for \(details.userId): \(String(describing: modifications))")
-        try await Task.sleep(for: .milliseconds(500))
-
-            if modifications.modifiedDetails.contains(AccountKeys.userId) || modifications.modifiedDetails.contains(AccountKeys.password) {
-                try await withCheckedThrowingContinuation { continuation in
-                    state.presentingSecurityAlert = true
-                    state.securityContinuation = continuation
-                }
-                }
-
-            storage.update(modifications)
-            registeredUsers[accountId] = storage
-
-            var externalModifications = modifications
-            externalModifications.removeModifications(for: Self.supportedKeys)
-            if !externalModifications.isEmpty {
-                let externalStorage = externalStorage
-                    try await externalStorage.updateExternalStorage(with: externalModifications, for: accountId.uuidString)
-                    }
-
-            try await loadUser(storage)
-            }
-
-
-    private func loadUser(_ user: UserStorage, isNew: Bool = false) async throws {
-        try await access.waitCheckingCancellation()
-            defer {
-                access.signal()
-            }
-            var details = _buildUser(from: user, isNew: isNew)
-
-            var unsupportedKeys = account.configuration.keys
-            unsupportedKeys.removeAll(Self.supportedKeys)
-            if !unsupportedKeys.isEmpty {
-                let externalStorage = externalStorage
-                    let externallyStored = await externalStorage.retrieveExternalStorage(for: user.accountId.uuidString, unsupportedKeys)
-                details.add(contentsOf: externallyStored)
-            }
-
-            account.supplyUserDetails(details)
-        }
-
-    private func _buildUser(from storage: UserStorage, isNew: Bool) -> AccountDetails {
-        var details = AccountDetails()
-        details.accountId = storage.accountId.uuidString
+    private fun _buildUser(storage: UserStorage, isNew: Boolean): AccountDetails {
+        val details = AccountDetails()
+        details.accountId = storage.accountId.toString()
         details.name = storage.name
-        details.genderIdentity = storage.genderIdentity
-        details.dateOfBirth = storage.dateOfBirth
+        storage.genderIdentity?.let { details.genderIdentity = it }
+        storage.dateOfBirth?.let { details.dateOfBirth = it }
         details.isNewUser = isNew
 
-        if let userId = storage.userId {
-            details.userId = userId
+        storage.userId?.let {
+            details.userId = it
         }
 
-        if storage.password == nil {
+        if (storage.password == null) {
             details.isAnonymous = true
         }
         return details
     }
+
+    internal data class UserStorage(
+        val accountId: UUID = UUID(),
+        var userId: String? = null,
+        var password: String? = null,
+        var name: PersonNameComponents? = null,
+        var genderIdentity: GenderIdentity? = null,
+        var dateOfBirth: Date? = null
+    )
+
+    data class State(
+        var presentingSecurityAlert: MutableState<Boolean> = mutableStateOf(false),
+        var securityContinuation: Continuation<Unit>? = null,
+    )
 }
 
+private fun InMemoryAccountService.UserStorage.update(modifications: AccountModifications) {
+    val modifiedDetails = modifications.modifiedDetails
+    val removedKeys = modifications.removedAccountDetails
 
-extension InMemoryAccountService {
-    public enum AccountError: LocalizedError {
-        case credentialsTaken
-            case wrongCredentials
-            case internalError
-            case cancelled
-
-
-            public var errorDescription: String? {
-        switch self {
-            case .credentialsTaken:
-            return "User Identifier is already taken"
-            case .wrongCredentials:
-            return "Credentials do not match"
-            case .internalError:
-            return "Internal Error"
-            case .cancelled:
-            return "Cancelled"
-        }
+    if (modifiedDetails.contains(AccountKeys.userId)) {
+        userId = modifiedDetails.userId
     }
+    password = modifiedDetails.password
+    name = modifiedDetails.name
+    genderIdentity = modifiedDetails.genderIdentity
+    dateOfBirth = modifiedDetails.dateOfBirth
 
-        public var failureReason: String? {
-        errorDescription
+    // user Id cannot be removed!
+
+    if (removedKeys.name != null) {
+        name = null
     }
-
-        public var recoverySuggestion: String? {
-        switch self {
-            case .credentialsTaken:
-            return "Please provide a different user identifier."
-            case .wrongCredentials:
-            return "Please ensure that the entered credentials are correct."
-            case .internalError:
-            return "Something went wrong."
-            case .cancelled:
-            return "The user cancelled the operation."
-        }
+    if (removedKeys.genderIdentity != null) {
+        genderIdentity = null
     }
-    }
-
-    public struct ConfiguredIdentityProvider: OptionSet, Sendable {
-        public static let userIdPassword = ConfiguredIdentityProvider(rawValue: 1 << 0)
-        public static let customIdentityProvider = ConfiguredIdentityProvider(rawValue: 1 << 1)
-        public static let signInWithApple = ConfiguredIdentityProvider(rawValue: 1 << 2)
-        public static let all: ConfiguredIdentityProvider = [.userIdPassword, .customIdentityProvider, .signInWithApple]
-
-        public let rawValue: UInt8
-
-        public init(rawValue: UInt8) {
-        self.rawValue = rawValue
-    }
-    }
-
-    @Observable
-    @MainActor
-    final class State {
-        var presentingSecurityAlert = false
-        var securityContinuation: CheckedContinuation<Void, Error>?
-    }
-
-    fileprivate struct UserStorage {
-        let accountId: UUID
-        var userId: String?
-        var password: String?
-        var name: PersonNameComponents?
-        var genderIdentity: GenderIdentity?
-        var dateOfBirth: Date?
-
-        init( // swiftlint:disable:this function_default_parameter_at_end
-            accountId: UUID = UUID(),
-        userId: String?,
-        password: String?,
-        name: PersonNameComponents? = nil,
-        genderIdentity: GenderIdentity? = nil,
-        dateOfBirth: Date? = nil
-        ) {
-        self.accountId = accountId
-        self.userId = userId
-        self.password = password
-        self.name = name
-        self.genderIdentity = genderIdentity
-        self.dateOfBirth = dateOfBirth
-    }
+    if (removedKeys.dateOfBirth != null) {
+        dateOfBirth = null
     }
 }
-
-
-extension InMemoryAccountService.UserStorage {
-    mutating func update(_ modifications: AccountModifications) {
-        let modifiedDetails = modifications.modifiedDetails
-            let removedKeys = modifications.removedAccountDetails
-
-            if modifiedDetails.contains(AccountKeys.userId) {
-                self.userId = modifiedDetails.userId
-            }
-        self.password = modifiedDetails.password ?? password
-        self.name = modifiedDetails.name ?? name
-        self.genderIdentity = modifiedDetails.genderIdentity ?? genderIdentity
-        self.dateOfBirth = modifiedDetails.dateOfBirth ?? dateOfBirth
-
-        // user Id cannot be removed!
-
-        if removedKeys.name != nil {
-            self.name = nil
-        }
-        if removedKeys.genderIdentity != nil {
-            self.genderIdentity = nil
-        }
-        if removedKeys.dateOfBirth != nil {
-            self.dateOfBirth = nil
-        }
-    }
-}
- */
