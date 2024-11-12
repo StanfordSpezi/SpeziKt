@@ -32,12 +32,12 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.modules.contact.component.AddressCard
 import edu.stanford.spezi.modules.contact.component.ContactOptionCard
 import edu.stanford.spezi.modules.contact.model.Contact
 import edu.stanford.spezi.modules.contact.model.ContactOption
-import edu.stanford.spezi.modules.contact.model.PersonNameComponents
 import edu.stanford.spezi.modules.contact.model.call
 import edu.stanford.spezi.modules.contact.model.email
 import edu.stanford.spezi.modules.contact.model.text
@@ -197,7 +197,10 @@ private object ContactComposableFactory {
         ),
     ): Contact {
         return Contact(
-            name = PersonNameComponents(givenName = "Leland", familyName = "Stanford"),
+            name = PersonNameComponents(
+                givenName = "Leland",
+                familyName = "Stanford"
+            ),
             image = ImageResource.Vector(Icons.Default.AccountBox),
             title = title,
             description = description,

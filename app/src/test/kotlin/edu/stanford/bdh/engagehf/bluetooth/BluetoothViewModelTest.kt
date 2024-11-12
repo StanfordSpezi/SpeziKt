@@ -5,6 +5,7 @@ import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.WeightRecord
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
@@ -28,6 +29,7 @@ import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.videos.Video
 import io.mockk.Runs
@@ -53,6 +55,7 @@ class BluetoothViewModelTest {
     private val engageEducationRepository = mockk<EngageEducationRepository>(relaxed = true)
     private val healthSummaryService = mockk<HealthSummaryService>(relaxed = true)
     private val context: Context = mockk(relaxed = true)
+    private val messageNotifier = mockk<MessageNotifier>(relaxed = true)
 
     private val bleServiceState =
         MutableStateFlow<EngageBLEServiceState>(EngageBLEServiceState.Idle)
@@ -313,6 +316,53 @@ class BluetoothViewModelTest {
     }
 
     @Test
+    fun `it should not dismiss health summary message on error result`() {
+        // given
+        val action = Action.MessageItemClicked(message = message)
+        every {
+            uiStateMapper.mapMessagesAction(messageAction)
+        } returns Result.success(MessagesAction.HealthSummaryAction)
+        coEvery {
+            healthSummaryService.generateHealthSummaryPdf()
+        } returns Result.failure(Throwable())
+        createViewModel()
+
+        // when
+        bluetoothViewModel.onAction(action = action)
+
+        // then
+        coVerify(
+            exactly = 0
+        ) { messageRepository.completeMessage(messageId = messageId) }
+    }
+
+    @Test
+    fun `it should not dismiss video section message on error result`() {
+        // given
+        val action = Action.MessageItemClicked(message = message)
+        every {
+            uiStateMapper.mapMessagesAction(messageAction)
+        } returns Result.success(MessagesAction.VideoSectionAction(VideoSectionVideo("1", "2")))
+        coEvery {
+            engageEducationRepository.getVideoBySectionAndVideoId(any(), any())
+        } returns Result.failure(Throwable())
+        createViewModel()
+
+        // when
+        bluetoothViewModel.onAction(action = action)
+
+        // then
+        coVerify(
+            exactly = 0
+        ) { messageRepository.completeMessage(messageId = messageId) }
+        coVerify {
+            messageNotifier.notify(
+                messageId = R.string.error_while_handling_message_action
+            )
+        }
+    }
+
+    @Test
     fun `it should handle MeasurementsAction correctly`() {
         // given
         val action = Action.MessageItemClicked(message = message)
@@ -509,6 +559,7 @@ class BluetoothViewModelTest {
             engageEducationRepository = engageEducationRepository,
             healthSummaryService = healthSummaryService,
             context = context,
+            messageNotifier = messageNotifier
         )
     }
 }

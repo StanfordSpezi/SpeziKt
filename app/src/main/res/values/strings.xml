@@ -121,4 +121,5 @@
     <string name="specific_symptoms_score_description">This represents the frequency you are experiencing heart-related symptoms. Higher scores mean less frequent symptoms and lower scores mean more frequent symptoms.</string>
     <string name="dizziness_score_title">Dizziness Score</string>
     <string name="dizziness_score_description">Your dizziness is important to keep track of because dizziness can be a side effect of your heart or your heart medicines.</string>
+    <string name="error_while_handling_message_action">Error while handling message action.</string>
 </resources>

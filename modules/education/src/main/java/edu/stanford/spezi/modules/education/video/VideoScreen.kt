@@ -71,15 +71,13 @@ fun VideoScreen(
                         .testIdentifier(VideoScreenTestIdentifier.VIDEO_PLAYER)
                 )
 
-                video.description?.let {
-                    Text(
-                        text = it,
-                        style = TextStyles.bodyMedium,
-                        modifier = Modifier
-                            .padding(Spacings.medium)
-                            .testIdentifier(VideoScreenTestIdentifier.VIDEO_DESCRIPTION)
-                    )
-                }
+                Text(
+                    text = video.description,
+                    style = TextStyles.bodyMedium,
+                    modifier = Modifier
+                        .padding(Spacings.medium)
+                        .testIdentifier(VideoScreenTestIdentifier.VIDEO_DESCRIPTION)
+                )
             }
         }
     )
