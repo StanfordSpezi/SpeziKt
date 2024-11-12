@@ -7,12 +7,12 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.design.views.validation.Validate
+import edu.stanford.spezi.core.design.views.validation.state.ReceiveValidation
+import edu.stanford.spezi.core.design.views.validation.state.ValidationContext
+import edu.stanford.spezi.core.design.views.validation.views.ValidationResultsComposable
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
-import edu.stanford.spezi.module.account.views.validation.Validate
-import edu.stanford.spezi.module.account.views.validation.state.ReceiveValidation
-import edu.stanford.spezi.module.account.views.validation.state.ValidationContext
-import edu.stanford.spezi.module.account.views.validation.views.ValidationResultsComposable
 
 val LocalModifiedDetails = compositionLocalOf { AccountDetails() }
 

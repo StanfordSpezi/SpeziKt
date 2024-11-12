@@ -12,12 +12,12 @@ interface AccountKeyConfiguration<Key : AccountKey<*>> {
 internal data class AccountKeyConfigurationImpl<Key : AccountKey<*>>(
     override val key: Key,
     override val requirement: AccountKeyRequirement,
-    override val propertyName: String
+    override val propertyName: String,
 ) : AccountKeyConfiguration<Key> {
     companion object {
         operator fun <Key : AccountKey<*>> invoke(
             property: KProperty0<Key>,
-            requirement: AccountKeyRequirement
+            requirement: AccountKeyRequirement,
         ): AccountKeyConfigurationImpl<Key> {
             return AccountKeyConfigurationImpl(
                 property.invoke(),

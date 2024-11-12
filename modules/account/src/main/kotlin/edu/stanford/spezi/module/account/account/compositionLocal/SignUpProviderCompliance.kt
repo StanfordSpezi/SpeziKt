@@ -5,7 +5,7 @@ import java.util.Date
 
 data class SignUpProviderCompliance internal constructor(
     private val creationDate: Date = Date(),
-    val visualizedAccountKeys: VisualizedAccountKeys
+    val visualizedAccountKeys: VisualizedAccountKeys,
 ) {
     sealed interface VisualizedAccountKeys {
         data object All : VisualizedAccountKeys

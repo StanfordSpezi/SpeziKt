@@ -10,18 +10,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents
+import edu.stanford.spezi.core.design.views.personalInfo.UserProfileComposable
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.keys.name
 import edu.stanford.spezi.module.account.account.value.keys.userId
 import edu.stanford.spezi.module.account.account.viewModel.AccountDisplayModel
-import edu.stanford.spezi.module.account.views.personalInfo.UserProfileComposable
 
 @Composable
 internal fun AccountOverviewHeader(details: AccountDetails) {
@@ -55,7 +55,7 @@ private fun AccountOverviewHeaderPreview() {
     SpeziTheme(isPreview = true) {
         val details = AccountDetails()
         details.userId = "lelandstanford@stanford.edu"
-        details.name = "Leland Stanford"
+        details.name = PersonNameComponents(givenName = "Leland", familyName = "Stanford")
         AccountOverviewHeader(details)
     }
 }

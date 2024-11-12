@@ -3,7 +3,6 @@ package edu.stanford.spezi.module.account.account.value.keys
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.utils.UUID
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.AccountKeyCategory
 import edu.stanford.spezi.module.account.account.value.AccountKeys
@@ -11,7 +10,6 @@ import edu.stanford.spezi.module.account.account.value.InitialValue
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 
 private object AccountPasswordKey : AccountKey<String> {
-    override val uuid = UUID()
     override val identifier = "password"
     override val name = StringResource("UP_PASSWORD")
     override val category = AccountKeyCategory.credentials

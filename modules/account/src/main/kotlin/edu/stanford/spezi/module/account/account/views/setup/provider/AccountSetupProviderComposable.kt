@@ -7,7 +7,7 @@ import edu.stanford.spezi.module.account.account.model.UserIdPasswordCredential
 fun AccountSetupProviderComposable(
     login: (suspend (UserIdPasswordCredential) -> Unit)? = null,
     signUp: @Composable () -> Unit = {},
-    passwordReset: @Composable () -> Unit = {}
+    passwordReset: @Composable () -> Unit = {},
 ) {
     TODO("Not implemented yet")
 }

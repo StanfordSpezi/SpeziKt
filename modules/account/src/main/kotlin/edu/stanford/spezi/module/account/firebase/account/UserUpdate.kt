@@ -4,7 +4,7 @@ import com.google.firebase.auth.AuthResult
 
 internal data class UserUpdate(
     val change: UserChange,
-    var authResult: AuthResult? = null
+    var authResult: AuthResult? = null,
 ) {
     fun describesSameUpdate(other: UserUpdate): Boolean =
         when (change) {

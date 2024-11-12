@@ -31,7 +31,7 @@ import javax.inject.Inject
 @HiltViewModel
 internal class AccountOverviewFormViewModel @Inject constructor(
     valueConfiguration: AccountValueConfiguration,
-    serviceConfiguration: AccountServiceConfiguration
+    serviceConfiguration: AccountServiceConfiguration,
 ) : ViewModel() {
     private val logger by speziLogger()
 
@@ -50,7 +50,7 @@ internal class AccountOverviewFormViewModel @Inject constructor(
         val presentingRemovalAlert: Boolean = false,
         val addedAccountKeys: MutableMap<AccountKeyCategory, MutableList<AccountKey<*>>> = mutableMapOf(),
         val modifiedDetails: AccountDetails = AccountDetails(),
-        val removedAccountKeys: MutableMap<AccountKeyCategory, MutableList<AccountKey<*>>> = mutableMapOf()
+        val removedAccountKeys: MutableMap<AccountKeyCategory, MutableList<AccountKey<*>>> = mutableMapOf(),
     ) {
         val hasUnsavedChanges: Boolean
             get() = !modifiedDetails.isEmpty()
@@ -79,7 +79,6 @@ internal class AccountOverviewFormViewModel @Inject constructor(
     val defaultErrorDescription: StringResource
         get() = StringResource("ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR")
 
-
     fun accountKeys(category: AccountKeyCategory, details: AccountDetails): List<AccountKey<*>> {
         val result = (categorizedAccountKeys[category] ?: emptyList())
             .sortedWith(
@@ -104,7 +103,6 @@ internal class AccountOverviewFormViewModel @Inject constructor(
         val results = categorizedAccountKeys
             .mapValues { it.value.toMutableList() }
             .toMutableMap()
-
 
         for (describedKey in accountServiceConfiguration.requiredAccountKeys) {
             results[describedKey.category]?.add(describedKey) ?: run {
@@ -136,7 +134,7 @@ internal class AccountOverviewFormViewModel @Inject constructor(
 
         if (details.isAnonymous) {
             result.remove(AccountKeyCategory.credentials)
-        } else if (result[AccountKeyCategory.credentials]?.any { it.isEqualTo(AccountKeys.userId) } == true) {
+        } else if (result[AccountKeyCategory.credentials]?.any { it === AccountKeys.userId } == true) {
             result[AccountKeyCategory.credentials] = listOf(AccountKeys.userId)
         }
 
@@ -210,7 +208,7 @@ internal class AccountOverviewFormViewModel @Inject constructor(
     suspend fun updateAccountDetails(
         details: AccountDetails,
         account: Account,
-        isEditing: MutableState<Boolean>? = null
+        isEditing: MutableState<Boolean>? = null,
     ) {
         val removedAccountKeys =
             removedAccountKeys.values.fold(emptyList<AccountKey<*>>()) { acc, keys -> acc + keys }
@@ -274,6 +272,3 @@ internal class AccountOverviewFormViewModel @Inject constructor(
 private fun <Value : Any> AccountKey<Value>.setEmpty(details: AccountDetails) {
     details[this] = this.initialValue.value
 }
-
-
-

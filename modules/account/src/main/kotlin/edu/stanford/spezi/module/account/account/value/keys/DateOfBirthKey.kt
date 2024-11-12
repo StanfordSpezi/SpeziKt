@@ -3,7 +3,6 @@ package edu.stanford.spezi.module.account.account.value.keys
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.utils.UUID
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.AccountKeyCategory
 import edu.stanford.spezi.module.account.account.value.AccountKeys
@@ -13,7 +12,6 @@ import edu.stanford.spezi.module.account.account.value.value
 import java.util.Date
 
 private object AccountDateOfBirthKey : AccountKey<Date> {
-    override val uuid = UUID()
     override val identifier = "dateOfBirth"
     override val name = StringResource("UAP_SIGNUP_DATE_OF_BIRTH_TITLE")
     override val category = AccountKeyCategory.personalDetails

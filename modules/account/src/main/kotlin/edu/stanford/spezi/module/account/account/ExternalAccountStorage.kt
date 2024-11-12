@@ -5,14 +5,13 @@ import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
 import edu.stanford.spezi.module.account.account.value.keys.isIncomplete
-import edu.stanford.spezi.module.account.spezi.Module
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
 import java.util.UUID
 
-class ExternalAccountStorage : Module {
+class ExternalAccountStorage {
     data class ExternallyStoredDetails internal constructor(
         val accountId: String,
         val details: AccountDetails,

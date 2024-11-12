@@ -8,7 +8,7 @@ import edu.stanford.spezi.module.account.account.value.AccountKey
 @Composable
 fun StringDisplay(
     key: AccountKey<String>,
-    value: String
+    value: String,
 ) {
     ListRow(key.name) {
         Text(value)

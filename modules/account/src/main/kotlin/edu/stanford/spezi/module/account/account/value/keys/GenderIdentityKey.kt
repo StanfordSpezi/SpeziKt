@@ -3,7 +3,6 @@ package edu.stanford.spezi.module.account.account.value.keys
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.utils.UUID
 import edu.stanford.spezi.module.account.account.model.GenderIdentity
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.AccountKeyCategory
@@ -13,7 +12,6 @@ import edu.stanford.spezi.module.account.account.value.collections.AccountDetail
 import edu.stanford.spezi.module.account.account.value.value
 
 private object AccountGenderIdentityKey : AccountKey<GenderIdentity> {
-    override val uuid = UUID()
     override val identifier = "genderIdentity"
     override val name = StringResource("GENDER_IDENTITY_TITLE")
     override val category = AccountKeyCategory.personalDetails

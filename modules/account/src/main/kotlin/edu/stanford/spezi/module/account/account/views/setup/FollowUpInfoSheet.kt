@@ -12,7 +12,7 @@ enum class FollowUpInfoSheetCancelBehavior {
 fun FollowUpInfoSheet(
     keys: List<AccountKey<*>>,
     cancelBehavior: FollowUpInfoSheetCancelBehavior = FollowUpInfoSheetCancelBehavior.REQUIRE_LOGOUT,
-    onComplete: (AccountModifications) -> Unit = {}
+    onComplete: (AccountModifications) -> Unit = {},
 ) {
     TODO("Implement UI")
 }

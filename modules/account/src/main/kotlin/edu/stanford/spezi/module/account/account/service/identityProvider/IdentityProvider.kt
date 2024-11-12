@@ -8,7 +8,7 @@ import kotlin.reflect.KProperty
 data class AccountSetupComponent internal constructor(
     val uuid: UUID = UUID(),
     val configuration: IdentityProviderConfiguration,
-    val content: @Composable () -> Unit
+    val content: @Composable () -> Unit,
 )
 
 data class IdentityProvider internal constructor(

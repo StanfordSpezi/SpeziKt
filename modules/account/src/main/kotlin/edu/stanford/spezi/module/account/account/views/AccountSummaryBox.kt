@@ -12,41 +12,18 @@ import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.module.account.account.service.configuration.UserIdType
-import edu.stanford.spezi.module.account.account.value.AccountKeys
+import edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents
+import edu.stanford.spezi.core.design.views.personalInfo.UserProfileComposable
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
-import edu.stanford.spezi.module.account.account.value.keys.email
 import edu.stanford.spezi.module.account.account.value.keys.name
 import edu.stanford.spezi.module.account.account.value.keys.userId
-import edu.stanford.spezi.module.account.account.value.keys.userIdType
-import edu.stanford.spezi.module.account.views.personalInfo.UserProfileComposable
+import edu.stanford.spezi.module.account.account.viewModel.AccountDisplayModel
 
 @Composable
 internal fun AccountSummaryBox(details: AccountDetails) {
-    val profileViewName = details.name
-    val headline = run {
-        details.name?.let { return@run it }
-        if (details.contains(AccountKeys.userId)) {
-            return@run details.userId
-        } else {
-            return@run null
-        }
-    }
-
-    val subHeadline = run {
-        if (details.name != null) {
-            if (!details.contains(AccountKeys.userId)) {
-                return@run null
-            }
-            return@run details.userId
-        } else if (details.userIdType != UserIdType.EmailAddress) {
-            return@run details.email
-        }
-        return@run null
-    }
-
+    val model = AccountDisplayModel(details)
     Row {
-        profileViewName?.let {
+        model.profileViewName?.let {
             UserProfileComposable(
                 name = it,
                 modifier = Modifier.height(40.dp)
@@ -66,9 +43,9 @@ internal fun AccountSummaryBox(details: AccountDetails) {
         }
 
         Column {
-            Text(headline ?: StringResource("Anonymous User").text())
-            subHeadline?.let {
-                Text(subHeadline) // TODO: subheadline font, foreground color .secondary
+            Text(model.headline ?: StringResource("Anonymous User").text())
+            model.subHeadline?.let {
+                Text(it) // TODO: subheadline font, foreground color .secondary
             }
         }
     }
@@ -78,11 +55,11 @@ class AccountDetailsProvider : PreviewParameterProvider<AccountDetails> {
     override val values: Sequence<AccountDetails> = sequenceOf(
         AccountDetails().also {
             it.userId = "lelandstanford@stanford.edu"
-            it.name = "Leland Stanford"
+            it.name = PersonNameComponents(givenName = "Leland", familyName = "Stanford")
         },
         AccountDetails().also {
             it.userId = "leland.stanford"
-            it.name = "Leland Stanford"
+            it.name = PersonNameComponents(givenName = "Leland", familyName = "Stanford")
         },
         AccountDetails().also {
             it.userId = "leland.stanford"
@@ -98,7 +75,7 @@ class AccountDetailsProvider : PreviewParameterProvider<AccountDetails> {
 fun AccountDialogPreview(
     @PreviewParameter(AccountDetailsProvider::class) details: AccountDetails,
 ) {
-    SpeziTheme {
+    SpeziTheme(isPreview = true) {
         AccountSummaryBox(
             details = details
         )

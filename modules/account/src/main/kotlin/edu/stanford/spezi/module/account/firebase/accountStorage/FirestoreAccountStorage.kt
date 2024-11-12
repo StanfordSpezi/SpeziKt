@@ -24,7 +24,9 @@ class FirestoreAccountStorage(
 ) : AccountStorageProvider {
 
     @Inject internal lateinit var firestore: Firestore
+
     @Inject internal lateinit var localCache: AccountDetailsCache
+
     @Inject internal lateinit var externalStorage: ExternalAccountStorage
 
     private val listenerRegistration = mutableMapOf<String, ListenerRegistration>()

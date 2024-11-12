@@ -1,9 +1,8 @@
 package edu.stanford.spezi.module.account.account.value.keys
 
-import edu.stanford.spezi.core.utils.UUID
+import edu.stanford.spezi.core.utils.foundation.knowledgesource.DefaultProvidingKnowledgeSource
 import edu.stanford.spezi.module.account.account.value.collections.AccountAnchor
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
-import edu.stanford.spezi.module.account.foundation.knowledgesource.DefaultProvidingKnowledgeSource
 import java.util.BitSet
 
 private object AccountDetailsFlagsKey : DefaultProvidingKnowledgeSource<AccountAnchor, BitSet> {
@@ -13,7 +12,6 @@ private object AccountDetailsFlagsKey : DefaultProvidingKnowledgeSource<AccountA
     const val BIT_OFFSET_IS_VERIFIED = 2
     const val BIT_OFFSET_IS_INCOMPLETE = 3
 
-    override val uuid = UUID()
     override val defaultValue = BitSet(BIT_COUNT)
 }
 

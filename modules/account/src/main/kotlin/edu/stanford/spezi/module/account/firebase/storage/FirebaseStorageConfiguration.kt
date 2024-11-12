@@ -1,7 +1,6 @@
 package edu.stanford.spezi.module.account.firebase.storage
 
 import com.google.firebase.storage.FirebaseStorage
-import edu.stanford.spezi.module.account.spezi.Module
 import javax.inject.Inject
 
 data class EmulatorSettings(
@@ -9,9 +8,9 @@ data class EmulatorSettings(
     val port: Int,
 )
 
-class FirebaseStorageConfiguration @Inject constructor(
+data class FirebaseStorageConfiguration @Inject constructor(
     private val emulatorSettings: EmulatorSettings? = null,
-) : Module {
+) {
     // TODO: Figure out how to specify dependency on ConfigureFirebaseApp
 
     init {

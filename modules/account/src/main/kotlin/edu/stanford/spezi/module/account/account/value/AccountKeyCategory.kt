@@ -3,7 +3,7 @@ package edu.stanford.spezi.module.account.account.value
 import edu.stanford.spezi.core.design.component.StringResource
 
 data class AccountKeyCategory internal constructor(
-    val categoryTitle: StringResource? = null
+    val categoryTitle: StringResource? = null,
 ) {
     companion object {
         val credentials = AccountKeyCategory(StringResource("UP_CREDENTIALS"))

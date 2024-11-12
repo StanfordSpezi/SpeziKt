@@ -12,7 +12,7 @@ fun <N : Number> NumberDisplay(
     key: AccountKey<N>,
     value: N,
     format: NumberFormat = NumberFormat.getInstance(),
-    unit: StringResource = StringResource("")
+    unit: StringResource = StringResource(""),
 ) {
     ListRow(key.name) {
         Text(format.format(value) + unit.text())

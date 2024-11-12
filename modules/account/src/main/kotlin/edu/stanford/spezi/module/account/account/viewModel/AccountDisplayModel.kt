@@ -1,5 +1,6 @@
 package edu.stanford.spezi.module.account.account.viewModel
 
+import edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents
 import edu.stanford.spezi.module.account.account.service.configuration.UserIdType
 import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
@@ -9,17 +10,17 @@ import edu.stanford.spezi.module.account.account.value.keys.userId
 import edu.stanford.spezi.module.account.account.value.keys.userIdType
 
 data class AccountDisplayModel(
-    val details: AccountDetails
+    val details: AccountDetails,
 ) {
-    val profileViewName: String? get() = details.name
+    val profileViewName: PersonNameComponents? get() = details.name
 
     val headline: String? get() {
-        return details.name
+        return details.name?.formatted()
             ?: if (details.contains(AccountKeys.userId)) {
-            details.userId
-        } else {
-            null
-        }
+                details.userId
+            } else {
+                null
+            }
     }
 
     val subHeadline: String? get() {

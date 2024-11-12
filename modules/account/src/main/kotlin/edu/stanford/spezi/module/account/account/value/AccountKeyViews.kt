@@ -25,8 +25,10 @@ internal fun <Value : Any> AccountKey<Value>.DisplayComposableWithStored(details
     } ?: false
 }
 
-
 @Composable
-internal fun <Value : Any> AccountKey<Value>.SingleEntryComposable(model: AccountOverviewFormViewModel, details: AccountDetails) {
+internal fun <Value : Any> AccountKey<Value>.SingleEntryComposable(
+    model: AccountOverviewFormViewModel,
+    details: AccountDetails,
+) {
     SingleEntryComposable(this, model = model, details = details)
 }

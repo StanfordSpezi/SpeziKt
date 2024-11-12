@@ -12,7 +12,7 @@ internal fun AccountOverviewSections(
     details: AccountDetails,
     closeBehavior: AccountOverviewCloseBehavior,
     deletionBehavior: AccountDeletionBehavior,
-    additionalSections: @Composable () -> Unit
+    additionalSections: @Composable () -> Unit,
 ) {
     val isEditing = remember { mutableStateOf(false) }
 
@@ -23,11 +23,7 @@ internal fun AccountOverviewSections(
     }
 
     val showLogoutButton =
-        if (deletionBehavior == AccountDeletionBehavior.EDIT_MODE) !isEditing.value
-        else { true }
-
-
-
+        if (deletionBehavior == AccountDeletionBehavior.EDIT_MODE) {
+            !isEditing.value
+        } else { true }
 }
-
-

@@ -15,7 +15,7 @@ import javax.inject.Inject
 class Account(
     val configuration: AccountValueConfiguration = AccountValueConfiguration.default,
     service: AccountService,
-    details: AccountDetails? = null
+    details: AccountDetails? = null,
 ) {
     val logger by speziLogger()
 

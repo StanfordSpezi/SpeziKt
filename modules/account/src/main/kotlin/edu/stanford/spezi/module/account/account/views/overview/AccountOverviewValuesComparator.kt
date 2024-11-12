@@ -7,7 +7,7 @@ import edu.stanford.spezi.module.account.account.value.collections.AccountDetail
 data class AccountOverviewValuesComparator(
     val accountDetails: AccountDetails,
     val addedDetails: Map<AccountKeyCategory, List<AccountKey<*>>>,
-    val removedDetails: Map<AccountKeyCategory, List<AccountKey<*>>>
+    val removedDetails: Map<AccountKeyCategory, List<AccountKey<*>>>,
 ) : Comparator<AccountKey<*>> {
     override fun compare(lhs: AccountKey<*>, rhs: AccountKey<*>): Int {
         val lhsContained = accountDetails.contains(lhs) && !(removedDetails[lhs.category]?.contains(lhs) ?: false)

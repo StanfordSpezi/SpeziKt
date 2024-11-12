@@ -17,7 +17,7 @@ import edu.stanford.spezi.module.account.views.views.ViewState
 internal fun <Value : Any> SingleEntryComposable(
     key: AccountKey<Value>,
     model: AccountOverviewFormViewModel,
-    details: AccountDetails
+    details: AccountDetails,
 ) {
     val viewState = remember { mutableStateOf<ViewState>(ViewState.Idle) }
     val validation = remember { mutableStateOf(ValidationContext()) }

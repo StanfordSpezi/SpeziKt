@@ -1,6 +1,5 @@
 package edu.stanford.spezi.module.account.account.service.configuration
 
-import edu.stanford.spezi.core.utils.UUID
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.configuration.AccountKeyConfiguration
 import edu.stanford.spezi.module.account.account.value.configuration.AccountValueConfiguration
@@ -27,9 +26,7 @@ sealed interface SupportedAccountKeys {
     }
 }
 
-private object SupportedAccountKeysKey : AccountServiceConfigurationKey<SupportedAccountKeys> {
-    override val uuid = UUID()
-}
+private object SupportedAccountKeysKey : AccountServiceConfigurationKey<SupportedAccountKeys>
 
 var AccountServiceConfiguration.supportedAccountKeys: SupportedAccountKeys
     get() = this.storage[SupportedAccountKeys.key] ?: error("Figure out how to translate preconditionFailure.")

@@ -8,32 +8,30 @@ data class AccountDetails(
     fun isEmpty(): Boolean = !storage.any()
 
     val keys: List<AccountKey<*>>
-        get() = storage.mapNotNull { it.anySource as? AccountKey<*> }.toList()
+        get() = storage.mapNotNull { it.key as? AccountKey<*> }.toList()
 
-    fun contains(key: AccountKey<*>): Boolean {
-        return storage.any { it.anySource.uuid == key.uuid }
-    }
+    fun contains(key: AccountKey<*>) =
+        storage.any { it.key === key }
 
-    operator fun <Value : Any> get(key: AccountKey<Value>): Value? {
-        return storage[key]
-    }
+    operator fun <Value : Any> get(key: AccountKey<Value>): Value? =
+        storage[key]
 
     operator fun <Value : Any> set(key: AccountKey<Value>, value: Value?) {
         storage[key] = value
     }
 
     fun update(modifications: AccountModifications) {
-        for (entry in modifications.modifiedDetails.storage.storage) {
-            storage.storage[entry.key] = entry.value
+        for (entry in modifications.modifiedDetails.storage) {
+            storage[entry.key] = entry.value
         }
 
-        for (key in modifications.removedAccountDetails.storage.storage.keys) {
-            storage.storage.remove(key)
+        for (entry in modifications.removedAccountDetails.storage) {
+            storage[entry.key] = null
         }
     }
 
     fun remove(key: AccountKey<*>) {
-        storage.remove(key)
+        storage[key] = null
     }
 
     fun addContentsOf(details: AccountDetails, filter: List<AccountKey<*>>, merge: Boolean = false) {

@@ -39,8 +39,8 @@ data class AccountValueConfiguration internal constructor(
         includeCollected: IncludeCollectedType = IncludeCollectedType.ONLY_REQUIRED,
         ignore: List<AccountKey<*>> = emptyList(),
     ): List<AccountKey<*>> {
-        val keysPresent = details.storage.storage.keys
-            .union(ignore.map { it.uuid })
+        val keysPresent = Set(details.storage.map { it.key })
+            .union(ignore)
 
         val missingKeys = filter { entry ->
             // generally, don't collect credentials!
@@ -48,7 +48,7 @@ data class AccountValueConfiguration internal constructor(
                 // not interested in supported keys
                 (entry.requirement != AccountKeyRequirement.REQUIRED || entry.requirement != AccountKeyRequirement.COLLECTED) &&
                 // missing on the current details
-                !keysPresent.contains(entry.key.uuid)
+                !keysPresent.contains(entry.key)
         }
 
         val result = when (includeCollected) {

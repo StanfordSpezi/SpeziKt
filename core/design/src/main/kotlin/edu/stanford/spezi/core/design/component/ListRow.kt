@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 @Composable
 fun ListRow(
     label: StringResource,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     ListRow({ Text(label.text()) }) { }
 }
@@ -14,7 +14,7 @@ fun ListRow(
 @Composable
 fun ListRow(
     label: @Composable () -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     TODO("Not implemented yet")
 }

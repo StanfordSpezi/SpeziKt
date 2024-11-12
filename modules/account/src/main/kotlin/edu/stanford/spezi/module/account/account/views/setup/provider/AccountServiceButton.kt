@@ -10,8 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
 import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.module.account.views.views.ViewState
-
+import edu.stanford.spezi.core.design.views.views.model.ViewState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -19,7 +18,7 @@ fun AccountServiceButton(
     title: StringResource,
     image: ImageVector,
     state: MutableState<ViewState> = remember { mutableStateOf(ViewState.Idle) },
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) {
     AccountServiceButton(state, action) {
         Label(label = {
@@ -34,7 +33,7 @@ fun AccountServiceButton(
 fun AccountServiceButton(
     state: MutableState<ViewState> = remember { mutableStateOf(ViewState.Idle) },
     action: suspend () -> Unit,
-    label: @Composable () -> Unit
+    label: @Composable () -> Unit,
 ) {
     TODO("Not implemented yet")
 }

@@ -3,12 +3,12 @@ package edu.stanford.spezi.module.account.account.views.entry
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import edu.stanford.spezi.core.design.views.validation.Validate
 import edu.stanford.spezi.module.account.account.compositionLocal.LocalAccount
 import edu.stanford.spezi.module.account.account.modifier.ValidateRequired
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.InitialValue
 import edu.stanford.spezi.module.account.account.value.configuration.AccountKeyRequirement
-import edu.stanford.spezi.module.account.views.validation.Validate
 
 @Composable
 fun <Value : Any> GeneralizedEntryComposable(

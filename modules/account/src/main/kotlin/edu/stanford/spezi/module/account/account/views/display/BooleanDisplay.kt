@@ -24,11 +24,10 @@ enum class BooleanDisplayLabel {
 fun BooleanDisplay(
     label: BooleanDisplayLabel = BooleanDisplayLabel.ON_OFF,
     key: AccountKey<Boolean>,
-    value: Boolean
+    value: Boolean,
 ) {
     ListRow(key.name) {
         val stringResource = if (value) label.trueLabel else label.falseLabel
         Text(stringResource.text())
     }
 }
-

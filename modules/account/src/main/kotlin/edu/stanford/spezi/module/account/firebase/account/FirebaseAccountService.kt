@@ -7,19 +7,19 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.module.account.account.Account
 import edu.stanford.spezi.module.account.account.AccountNotifications
-import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
-import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
+import edu.stanford.spezi.module.account.account.ExternalAccountStorage
 import edu.stanford.spezi.module.account.account.service.AccountService
 import edu.stanford.spezi.module.account.account.service.configuration.AccountServiceConfiguration
 import edu.stanford.spezi.module.account.account.service.configuration.AccountServiceConfigurationStorage
-import edu.stanford.spezi.module.account.account.ExternalAccountStorage
+import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
+import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
 import edu.stanford.spezi.module.account.firebase.configuration.ConfigureFirebaseApp
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 data class FirebaseEmulatorSettings(
     val host: String,
-    val port: Int
+    val port: Int,
 )
 
 class FirebaseAccountService(
@@ -66,15 +66,12 @@ class FirebaseAccountService(
             if (it.isAnonymous) {
                 return@let null
             } else {
-
             }
         } ?: run {
-
         }
     }
 
     suspend fun signUp(credential: OAuthCredential) {
-
     }
 
     suspend fun login(userId: String, password: String) {
@@ -111,7 +108,6 @@ class FirebaseAccountService(
 
     override suspend fun updateAccountDetails(modifications: AccountModifications) {
         auth.currentUser?.let {
-
         } ?: run {
             if (account.signedIn) {
                 notifyUserRemoval()

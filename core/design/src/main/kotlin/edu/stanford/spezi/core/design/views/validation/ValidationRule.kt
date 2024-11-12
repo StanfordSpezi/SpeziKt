@@ -5,7 +5,7 @@ import edu.stanford.spezi.core.design.views.validation.state.FailedValidationRes
 import edu.stanford.spezi.core.utils.UUID
 import java.util.UUID
 
-data class ValidationRule internal constructor(
+data class ValidationRule(
     val id: UUID = UUID(),
     val rule: (String) -> Boolean,
     val message: StringResource,

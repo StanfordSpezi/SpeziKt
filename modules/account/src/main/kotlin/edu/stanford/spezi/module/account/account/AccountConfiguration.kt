@@ -8,12 +8,10 @@ import edu.stanford.spezi.module.account.account.service.configuration.unsupport
 import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.configuration.AccountValueConfiguration
 import edu.stanford.spezi.module.account.account.value.keys.accountId
-import edu.stanford.spezi.module.account.spezi.Module
-import edu.stanford.spezi.module.account.spezi.Standard
 import javax.inject.Inject
 import kotlin.system.exitProcess
 
-class AccountConfiguration<Service : AccountService> : Module {
+class AccountConfiguration<Service : AccountService> {
     private val logger by speziLogger()
 
     @Inject lateinit var account: Account

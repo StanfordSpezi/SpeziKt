@@ -2,11 +2,10 @@ package edu.stanford.spezi.module.account.firebase.firestore
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
-import edu.stanford.spezi.module.account.spezi.Module
 
-class Firestore( // TODO: Add dependency to ConfigureFirebaseApp
+data class Firestore( // TODO: Add dependency to ConfigureFirebaseApp
     private val settings: FirebaseFirestoreSettings = FirebaseFirestoreSettings.Builder().build(),
-) : Module {
+) {
     init {
         FirebaseFirestore.getInstance().firestoreSettings = settings
 

@@ -34,7 +34,7 @@ val LocalAccountSetupState = compositionLocalOf<AccountSetupState> { AccountSetu
 fun AccountSetup(
     setupComplete: suspend (AccountDetails) -> Unit = {},
     header: @Composable () -> Unit,
-    done: @Composable () -> Unit
+    done: @Composable () -> Unit,
 ) {
     val setupState = remember { mutableStateOf(AccountSetupState.Generic) }
     val compliance = remember { mutableStateOf(null as SignUpProviderCompliance?) }

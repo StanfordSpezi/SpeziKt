@@ -3,15 +3,14 @@ package edu.stanford.spezi.module.account.account.value.keys
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.utils.UUID
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.AccountKeyCategory
 import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.InitialValue
+import edu.stanford.spezi.module.account.account.value.RequiredAccountKey
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 
-private object AccountIdKey : AccountKey<String> {
-    override val uuid = UUID()
+private object AccountIdKey : RequiredAccountKey<String> {
     override val identifier = "id"
     override val name = StringResource("ACCOUNT_ID")
     override val category = AccountKeyCategory.credentials

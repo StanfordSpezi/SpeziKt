@@ -15,7 +15,7 @@ import edu.stanford.spezi.core.design.theme.Spacings
 @Composable
 fun DocumentationInfoView(
     infoText: StringResource,
-    uri: String
+    uri: String,
 ) {
     Column {
         Text(

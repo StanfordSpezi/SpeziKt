@@ -1,8 +1,6 @@
 package edu.stanford.spezi.module.account.account.service.configuration
 
 import androidx.compose.ui.text.input.KeyboardType
-import edu.stanford.spezi.core.utils.UUID
-import java.util.UUID
 
 data class UserIdConfiguration(
     val idType: UserIdType,
@@ -11,18 +9,13 @@ data class UserIdConfiguration(
     val keyboardType: KeyboardType,
 ) {
     companion object {
-        val key: DefaultProvidingAccountServiceConfigurationKey<UserIdConfiguration> = UserIdConfigurationKey()
+        val key = object : DefaultProvidingAccountServiceConfigurationKey<UserIdConfiguration> {
+            override val defaultValue = UserIdConfiguration.emailAddress
+        }
 
         val emailAddress = UserIdConfiguration(UserIdType.EmailAddress, KeyboardType.Email)
         val username = UserIdConfiguration(UserIdType.Username, KeyboardType.Text)
     }
-}
-
-private data class UserIdConfigurationKey(
-    override val uuid: UUID = UUID(),
-) : DefaultProvidingAccountServiceConfigurationKey<UserIdConfiguration> {
-    override val defaultValue: UserIdConfiguration
-        get() = UserIdConfiguration.emailAddress
 }
 
 val AccountServiceConfiguration.userIdConfiguration: UserIdConfiguration

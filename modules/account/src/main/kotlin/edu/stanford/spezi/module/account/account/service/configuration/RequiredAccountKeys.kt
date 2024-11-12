@@ -6,7 +6,7 @@ import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.keys.userId
 
 data class RequiredAccountKeys(
-    val keys: Collection<AccountKey<*>>
+    val keys: Collection<AccountKey<*>>,
 ) {
     companion object {
         val key: DefaultProvidingAccountServiceConfigurationKey<RequiredAccountKeys> = RequiredAccountKeysKey
