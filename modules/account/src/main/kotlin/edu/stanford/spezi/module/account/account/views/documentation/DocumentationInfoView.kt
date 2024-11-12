@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import edu.stanford.spezi.core.design.component.Button
 import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
 
 @Composable
@@ -21,7 +22,7 @@ fun DocumentationInfoView(
         Text(
             infoText.text(),
             textAlign = TextAlign.Center,
-            color = Color.Gray // TODO: Using .secondary color on iOS, is there an equivalent on Android?
+            color = Colors.secondary
         )
 
         val uriHandler = LocalUriHandler.current

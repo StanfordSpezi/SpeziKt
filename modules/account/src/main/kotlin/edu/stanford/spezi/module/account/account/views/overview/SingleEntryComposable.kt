@@ -5,13 +5,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import edu.stanford.spezi.core.design.views.validation.state.ReceiveValidation
+import edu.stanford.spezi.core.design.views.validation.state.ValidationContext
+import edu.stanford.spezi.core.design.views.views.model.ViewState
 import edu.stanford.spezi.module.account.account.compositionLocal.LocalAccount
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.EntryComposableWithStoredOrInitialValue
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
-import edu.stanford.spezi.module.account.views.validation.state.ReceiveValidation
-import edu.stanford.spezi.module.account.views.validation.state.ValidationContext
-import edu.stanford.spezi.module.account.views.views.ViewState
 
 @Composable
 internal fun <Value : Any> SingleEntryComposable(

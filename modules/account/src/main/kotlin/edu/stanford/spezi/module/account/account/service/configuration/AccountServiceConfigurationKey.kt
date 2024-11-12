@@ -4,13 +4,10 @@ import edu.stanford.spezi.core.utils.foundation.knowledgesource.DefaultProviding
 import edu.stanford.spezi.core.utils.foundation.knowledgesource.KnowledgeSource
 import edu.stanford.spezi.core.utils.foundation.knowledgesource.OptionalComputedKnowledgeSource
 
-interface AccountServiceConfigurationKey<Value : Any> :
-    KnowledgeSource<AccountServiceConfigurationStorageAnchor, Value>
+typealias AccountServiceConfigurationKey<Value> = KnowledgeSource<AccountServiceConfigurationStorageAnchor, Value>
 
-interface DefaultProvidingAccountServiceConfigurationKey<Value : Any> :
-    AccountServiceConfigurationKey<Value>,
+typealias DefaultProvidingAccountServiceConfigurationKey<Value> =
     DefaultProvidingKnowledgeSource<AccountServiceConfigurationStorageAnchor, Value>
 
-interface OptionalComputedAccountServiceConfigurationKey<Value : Any> :
-    AccountServiceConfigurationKey<Value>,
+typealias OptionalComputedAccountServiceConfigurationKey<Value> =
     OptionalComputedKnowledgeSource<AccountServiceConfigurationStorageAnchor, Value>

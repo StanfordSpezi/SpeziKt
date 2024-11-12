@@ -22,11 +22,9 @@ sealed interface SupportedAccountKeys {
     }
 
     companion object {
-        val key: AccountServiceConfigurationKey<SupportedAccountKeys> = SupportedAccountKeysKey
+        val key = object : AccountServiceConfigurationKey<SupportedAccountKeys> {}
     }
 }
-
-private object SupportedAccountKeysKey : AccountServiceConfigurationKey<SupportedAccountKeys>
 
 var AccountServiceConfiguration.supportedAccountKeys: SupportedAccountKeys
     get() = this.storage[SupportedAccountKeys.key] ?: error("Figure out how to translate preconditionFailure.")

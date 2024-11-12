@@ -6,7 +6,6 @@ import edu.stanford.spezi.core.design.views.validation.minimalPassword
 import edu.stanford.spezi.core.design.views.validation.nonEmpty
 import edu.stanford.spezi.core.utils.foundation.SharedRepository
 import edu.stanford.spezi.core.utils.foundation.knowledgesource.ComputedKnowledgeSourceStoragePolicy
-import edu.stanford.spezi.core.utils.foundation.knowledgesource.OptionalComputedKnowledgeSource
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.keys.email
@@ -32,11 +31,7 @@ data class FieldValidationRules(
 
 private data class FieldValidationRulesKey(
     val key: AccountKey<String>,
-) : OptionalComputedAccountServiceConfigurationKey<FieldValidationRules>,
-    OptionalComputedKnowledgeSource<
-        AccountServiceConfigurationStorageAnchor,
-        FieldValidationRules,
-        > {
+) : OptionalComputedAccountServiceConfigurationKey<FieldValidationRules> {
 
     override val storagePolicy: ComputedKnowledgeSourceStoragePolicy
         get() = ComputedKnowledgeSourceStoragePolicy.AlwaysCompute

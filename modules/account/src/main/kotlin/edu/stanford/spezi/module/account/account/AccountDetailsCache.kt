@@ -4,6 +4,8 @@ import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
+import edu.stanford.spezi.modules.storage.local.LocalStorage
+import edu.stanford.spezi.modules.storage.local.LocalStorageSetting
 import javax.inject.Inject
 
 class AccountDetailsCache(

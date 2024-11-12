@@ -18,14 +18,6 @@ internal fun <Value : Any> AccountKey<Value>.EntryComposableWithStoredOrInitialV
 }
 
 @Composable
-internal fun <Value : Any> AccountKey<Value>.DisplayComposableWithStored(details: AccountDetails): Boolean {
-    return details[this]?.let {
-        DisplayComposable(it)
-        true
-    } ?: false
-}
-
-@Composable
 internal fun <Value : Any> AccountKey<Value>.SingleEntryComposable(
     model: AccountOverviewFormViewModel,
     details: AccountDetails,
