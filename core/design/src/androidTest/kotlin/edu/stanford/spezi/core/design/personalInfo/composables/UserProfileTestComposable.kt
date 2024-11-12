@@ -17,21 +17,21 @@ import kotlin.time.Duration.Companion.seconds
 fun UserProfileTestComposable() {
     Column {
         UserProfileComposable(
-            Modifier.height(100.dp),
             PersonNameComponents(
                 givenName = "Paul",
                 familyName = "Schmiedmayer"
-            )
+            ),
+            Modifier.height(100.dp),
         )
         UserProfileComposable(
-            Modifier.height(200.dp),
             PersonNameComponents(
                 givenName = "Leland",
                 familyName = "Stanford"
-            )
+            ),
+            Modifier.height(200.dp),
         ) {
             delay(0.5.seconds)
-            return@UserProfileComposable ImageResource.Vector(Icons.Default.Person)
+            ImageResource.Vector(Icons.Default.Person)
         }
     }
 }
