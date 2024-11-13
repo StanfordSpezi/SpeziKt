@@ -9,6 +9,7 @@ import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.InitialValue
 import edu.stanford.spezi.module.account.account.views.display.NumberDisplay
 import edu.stanford.spezi.module.account.account.views.entry.NumberEntry
+import kotlinx.serialization.builtins.serializer
 import java.text.NumberFormat
 
 private object MockDoubleKey : AccountKey<Double> {
@@ -16,6 +17,7 @@ private object MockDoubleKey : AccountKey<Double> {
     override val identifier = "mockDouble"
     override val category = AccountKeyCategory.other
     override val initialValue = InitialValue.Default(0.0)
+    override val serializer = Double.serializer()
 
     @Composable
     override fun DisplayComposable(value: Double) {

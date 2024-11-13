@@ -36,7 +36,21 @@ fun Validate(
     )
 }
 
-@SuppressLint("MutableCollectionMutableState") // TODO: Get rid of this
+@Composable
+fun Validate(
+    input: String,
+    rule: ValidationRule,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    Validate(
+        input,
+        listOf(rule),
+        modifier,
+        content
+    )
+}
+
 @Composable
 fun Validate(
     input: String,

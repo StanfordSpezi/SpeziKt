@@ -1,9 +1,12 @@
 package edu.stanford.spezi.core.design.views.validation.views
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -11,10 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
@@ -41,8 +46,8 @@ fun VerifiableTextField(
         modifier,
         type,
         disableAutocorrection = disableAutocorrection,
-        { Text(label.text()) },
-        footer
+        footer,
+        label = { Text(label.text()) },
     )
 }
 
@@ -88,11 +93,12 @@ fun VerifiableTextField(
             }
         }
 
-        Row {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp)
+        ) {
             ValidationResultsComposable(validationEngine?.displayedValidationResults ?: emptyList())
-
-            Spacer(Modifier.fillMaxWidth())
-
             footer()
         }
     }

@@ -1,5 +1,6 @@
 package edu.stanford.spezi.module.account.account.mock
 
+/*
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,6 +40,7 @@ import edu.stanford.spezi.module.account.account.value.keys.userId
 import edu.stanford.spezi.module.account.account.views.setup.provider.AccountServiceButton
 import edu.stanford.spezi.module.account.account.views.setup.provider.AccountSetupProviderComposable
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -54,9 +56,7 @@ import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
-private fun MockUserIdPasswordEmbeddedComposable(
-    service: InMemoryAccountService
-) {
+private fun MockUserIdPasswordEmbeddedComposable(service: InMemoryAccountService) {
     AccountSetupProviderComposable(
         login = {
             service.login(it.userId, it.password)
@@ -87,7 +87,7 @@ private fun MockSignInWithGoogleButton() {
     // TODO: Missing component in general, I think
 }
 
-data class MockSecurityAlert(val service: InMemoryAccountService) : ComposableModifier {
+private data class MockSecurityAlert(val service: InMemoryAccountService) : ComposableModifier {
     @Composable
     override fun Body(content: @Composable () -> Unit) {
         if (service.state.presentingSecurityAlert.value) {
@@ -115,7 +115,7 @@ data class MockSecurityAlert(val service: InMemoryAccountService) : ComposableMo
 
 class InMemoryAccountService(
     type: UserIdConfiguration = UserIdConfiguration.emailAddress,
-    configured: EnumSet<ConfiguredIdentityProvider> = EnumSet.allOf(ConfiguredIdentityProvider::class.java)
+    configured: EnumSet<ConfiguredIdentityProvider> = EnumSet.allOf(ConfiguredIdentityProvider::class.java),
 ) : AccountService {
     companion object {
         val supportedKeys = listOf(
@@ -190,7 +190,7 @@ class InMemoryAccountService(
             subscription.onEach { updatedDetails ->
                 val accountId = UUID(updatedDetails.accountId)
                 registeredUsers[accountId]?.let { storage ->
-                    val details = _buildUser(storage, isNew = false)
+                    val details = buildUser(storage, isNew = false)
                     details.addContentsOf(updatedDetails.details)
                     account.supplyUserDetails(details)
                 }
@@ -209,7 +209,6 @@ class InMemoryAccountService(
         registeredUsers[accountId] = UserStorage(accountId = accountId, userId = null, password = null)
         account.supplyUserDetails(details)
     }
-
 
     suspend fun login(userId: String, password: String) {
         logger.w { "Trying to login $userId with password $password" }
@@ -300,8 +299,7 @@ class InMemoryAccountService(
     override suspend fun updateAccountDetails(modifications: AccountModifications) {
         val details = account.details ?: error("Internal Error")
         val accountId = UUID(details.accountId)
-
-        var storage = registeredUsers[accountId] ?: error("Internal Error")
+        val storage = registeredUsers[accountId] ?: error("Internal Error")
 
         logger.w { "Updating user details for ${details.userId}: $modifications" }
         delay(500.milliseconds)
@@ -317,7 +315,7 @@ class InMemoryAccountService(
         storage.update(modifications)
         registeredUsers[accountId] = storage
 
-        val externalModifications = modifications
+        val externalModifications = modifications.copy()
         externalModifications.removeModifications(supportedKeys)
         if (!externalModifications.isEmpty()) {
             externalStorage.updateExternalStorage(accountId.toString(), externalModifications)
@@ -325,9 +323,8 @@ class InMemoryAccountService(
         loadUser(storage)
     }
 
-
     private suspend fun loadUser(user: UserStorage, isNew: Boolean = false) {
-        val details = _buildUser(user, isNew = isNew)
+        val details = buildUser(user, isNew = isNew)
 
         val unsupportedKeys = account.configuration.keys.filter {
             !supportedKeys.contains(it)
@@ -341,7 +338,7 @@ class InMemoryAccountService(
         account.supplyUserDetails(details)
     }
 
-    private fun _buildUser(storage: UserStorage, isNew: Boolean): AccountDetails {
+    private fun buildUser(storage: UserStorage, isNew: Boolean): AccountDetails {
         val details = AccountDetails()
         details.accountId = storage.accountId.toString()
         details.name = storage.name
@@ -398,3 +395,4 @@ private fun InMemoryAccountService.UserStorage.update(modifications: AccountModi
         dateOfBirth = null
     }
 }
+*/

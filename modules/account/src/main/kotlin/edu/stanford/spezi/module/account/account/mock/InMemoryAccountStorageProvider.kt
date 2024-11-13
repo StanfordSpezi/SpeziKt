@@ -5,9 +5,9 @@ import edu.stanford.spezi.module.account.account.ExternalAccountStorage
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class InMemoryAccountStorageProvider : AccountStorageProvider {
@@ -22,14 +22,12 @@ class InMemoryAccountStorageProvider : AccountStorageProvider {
         } ?: run {
             records[accountId]?.let {
                 // TODO: Is there a nicer way to start a coroutine and then forget about it? It feels like I'm doing double the work here...
-                runBlocking {
-                    launch {
-                        @Suppress("detekt:MagicNumber")
-                        delay(1_000L)
-                        records[accountId]?.let { details ->
-                            cache[accountId] = details
-                            storage.notifyAboutUpdatedDetails(accountId, details)
-                        }
+                GlobalScope.launch {
+                    @Suppress("detekt:MagicNumber")
+                    delay(1_000L)
+                    records[accountId]?.let { details ->
+                        cache[accountId] = details
+                        storage.notifyAboutUpdatedDetails(accountId, details)
                     }
                 }
             }

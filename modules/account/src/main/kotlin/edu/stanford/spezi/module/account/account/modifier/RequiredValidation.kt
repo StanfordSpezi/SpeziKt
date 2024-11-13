@@ -17,7 +17,7 @@ import edu.stanford.spezi.module.account.account.value.collections.AccountDetail
 val LocalModifiedDetails = compositionLocalOf { AccountDetails() }
 
 @Composable
-fun <Value : Any> ValidateRequired(
+internal fun <Value : Any> ValidateRequired(
     key: AccountKey<Value>,
     value: MutableState<Value>,
     content: @Composable () -> Unit,
