@@ -1,7 +1,9 @@
 package edu.stanford.spezi.module.account.account.views.setup.provider
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -83,22 +85,31 @@ internal fun LoginSetup(
                     login(credential)
                 },
                 enabled = validation.value.allInputValid,
-                modifier = Modifier.padding(top = 8.dp, bottom = 12.dp)
+                modifier = Modifier.padding(top = 8.dp, bottom = 12.dp).fillMaxWidth()
             ) {
                 Text(
                     StringResource("UP_LOGIN").text(),
-                    Modifier.padding(8.dp).fillMaxWidth()
+                    Modifier.padding(8.dp),
+                    color = Colors.primary,
                 )
             }
 
             if (supportsSignup) {
-                Row {
-                    Text(StringResource("UP_NO_ACCOUNT_YET").text(), style = TextStyles.bodySmall)
-                    Button(onClick = {
-                        presentingSignup.value = true
-                    }) {
-                        Text(StringResource("UP_SIGNUP").text(), style = TextStyles.bodySmall)
-                    }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        StringResource("No account yet?").text(),
+                        style = TextStyles.bodySmall
+                    )
+                    Text(" ")
+                    Text(
+                        StringResource("Sign Up").text(),
+                        style = TextStyles.bodySmall,
+                        color = Colors.secondary,
+                        modifier = Modifier.clickable { presentingSignup.value = true }
+                    )
                 }
             }
         }
@@ -121,42 +132,48 @@ private fun LoginSetupFields(
                 .HIDE_FAILED_VALIDATION_ON_EMPTY_SUBMIT
         )
     }
-    CompositionLocalProvider(LocalValidationEngineConfiguration provides configuration) { }
-    Column { // swiftlint:disable:this closure_body_length
-        Validate(userId.value, ValidationRule.nonEmpty) {
-            VerifiableTextField(
-                userIdConfiguration.idType.stringResource,
-                userId,
-                Modifier.padding(bottom = 0.5.dp)
-            )
-            // TODO: focused
-            // TODO: TextContentType
-            // TODO: KeyboardType
-        }
+    CompositionLocalProvider(LocalValidationEngineConfiguration provides configuration) {
+        Column { // swiftlint:disable:this closure_body_length
+            Validate(userId.value, ValidationRule.nonEmpty) {
+                VerifiableTextField(
+                    userIdConfiguration.idType.stringResource,
+                    userId,
+                    Modifier.padding(bottom = 0.5.dp)
+                )
+                // TODO: focused
+                // TODO: TextContentType
+                // TODO: KeyboardType
+            }
 
-        Validate(password.value, ValidationRule.nonEmpty) {
-            VerifiableTextField(StringResource("UP_PASSWORD"), password, type = TextFieldType.SECURE)
-            // TODO: .focused($focusedField, equals: .userId)
-            // TODO: .textContentType(.password)
-        }
+            Validate(password.value, ValidationRule.nonEmpty) {
+                VerifiableTextField(
+                    StringResource("UP_PASSWORD"),
+                    password,
+                    type = TextFieldType.SECURE
+                )
+                // TODO: .focused($focusedField, equals: .userId)
+                // TODO: .textContentType(.password)
+            }
 
-        if (hasPasswordReset) {
-            Row(horizontalArrangement = Arrangement.End) {
-                TextButton(onClick = { presentingPasswordReset.value = true }) {
-                    Text(
-                        StringResource("UP_FORGOT_PASSWORD").text(),
-                        style = TextStyles.bodyLarge,
-                        color = Colors.surface, // iOS: systemGray
-                    )
+            if (hasPasswordReset) {
+                Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+                    TextButton(onClick = { presentingPasswordReset.value = true }) {
+                        Text(
+                            StringResource("Forgot password?").text(),
+                            style = TextStyles.bodySmall,
+                            color = Colors.secondary, // iOS: systemGray
+                        )
+                    }
                 }
             }
+
+            if (!hasPasswordReset) {
+                Spacer(Modifier.fillMaxWidth().heightIn(max = 10.dp))
+            }
+            // TODO: .disableFieldAssistants()
+            // TODO: .textFieldStyle(.roundedBorder)
+            // TODO: .font(.title3)
         }
-        if (!hasPasswordReset) {
-            Spacer(Modifier.fillMaxWidth().heightIn(max = 10.dp))
-        }
-        // TODO: .disableFieldAssistants()
-        // TODO: .textFieldStyle(.roundedBorder)
-        // TODO: .font(.title3)
     }
 }
 

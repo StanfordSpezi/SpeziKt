@@ -10,7 +10,7 @@ data class UserIdConfiguration(
 ) {
     companion object {
         val key = object : DefaultProvidingAccountServiceConfigurationKey<UserIdConfiguration> {
-            override val defaultValue = UserIdConfiguration.emailAddress
+            override val defaultValue get() = UserIdConfiguration.emailAddress
         }
 
         val emailAddress = UserIdConfiguration(UserIdType.EmailAddress, KeyboardType.Email)

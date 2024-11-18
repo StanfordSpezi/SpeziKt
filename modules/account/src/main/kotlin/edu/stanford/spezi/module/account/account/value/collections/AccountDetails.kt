@@ -3,6 +3,8 @@ package edu.stanford.spezi.module.account.account.value.collections
 import edu.stanford.spezi.core.utils.foundation.SharedRepository
 import edu.stanford.spezi.core.utils.foundation.knowledgesource.KnowledgeSource
 import edu.stanford.spezi.module.account.account.value.AccountKey
+import edu.stanford.spezi.module.account.account.value.configuration.AccountKeyRequirement
+import edu.stanford.spezi.module.account.account.value.configuration.AccountValueConfiguration
 
 data class AccountDetails(
     internal val storage: AccountStorage = AccountStorage(),
@@ -41,6 +43,19 @@ data class AccountDetails(
             if ((filter?.contains(key) != false) && (merge || !contains(key))) {
                 key.copy(details, this)
             }
+        }
+    }
+
+    fun validateAgainstSignupRequirements(configuration: AccountValueConfiguration) {
+        val missing = configuration.filter {
+            it.requirement == AccountKeyRequirement.REQUIRED && !contains(it.key)
+        }
+
+        if (missing.isNotEmpty()) {
+            val keyNames = missing.map { it.toString() } // TODO: KeyPathDescription
+
+            // TODO: Create AccountOperationError
+            error("AccountOperationError.missingAccountValue(${keyNames.joinToString(", ")})")
         }
     }
 

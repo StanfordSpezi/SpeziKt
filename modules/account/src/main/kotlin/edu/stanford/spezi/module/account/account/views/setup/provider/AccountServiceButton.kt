@@ -26,11 +26,12 @@ import edu.stanford.spezi.core.design.views.views.views.button.SuspendButton
 @Composable
 fun AccountServiceButton(
     title: StringResource,
+    modifier: Modifier = Modifier,
     image: ImageResource = remember { ImageResource.Vector(Icons.Default.Person) },
     state: MutableState<ViewState> = remember { mutableStateOf(ViewState.Idle) },
     action: suspend () -> Unit,
 ) {
-    AccountServiceButton(state, action) {
+    AccountServiceButton(modifier, state, action) {
         Row(horizontalArrangement = Arrangement.Start) {
             ImageResourceComposable(
                 image,
@@ -44,11 +45,12 @@ fun AccountServiceButton(
 
 @Composable
 fun AccountServiceButton(
+    modifier: Modifier = Modifier,
     state: MutableState<ViewState> = remember { mutableStateOf(ViewState.Idle) },
     action: suspend () -> Unit,
     label: @Composable () -> Unit,
 ) {
-    SuspendButton(state = state, action = action) {
+    SuspendButton(modifier = modifier, state = state, action = action) {
         Row(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.padding(vertical = 10.dp).fillMaxWidth()

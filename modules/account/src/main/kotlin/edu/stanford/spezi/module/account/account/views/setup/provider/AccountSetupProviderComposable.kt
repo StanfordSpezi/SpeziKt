@@ -16,7 +16,7 @@ import edu.stanford.spezi.module.account.account.value.collections.AccountDetail
 // Generic constraint doesn't seem to be used at all (SignUpView is generic, but internal and only used with UserIdCredential).
 internal sealed interface PresentedSetupStyle {
     data object SignUp : PresentedSetupStyle
-    data class Login(val block: suspend (UserIdPasswordCredential) -> Unit) : PresentedSetupStyle
+    data class Login(val login: suspend (UserIdPasswordCredential) -> Unit) : PresentedSetupStyle
 }
 
 @Composable
@@ -28,9 +28,7 @@ fun AccountSetupProviderComposable(
     AccountSetupProviderComposable(
         login = login,
         signup = {
-            SignupSetup(
 
-            )
         },
         passwordReset = {
             Text("Password Reset")
@@ -75,7 +73,8 @@ fun AccountSetupProviderComposable(
         Text("Signup Sheet")
     }
 
-    when (presentedStyle.value) {
+    val presentedStyleValue = presentedStyle.value
+    when (presentedStyleValue) {
         PresentedSetupStyle.SignUp -> {
             /*
             SignupSetup(
@@ -86,15 +85,12 @@ fun AccountSetupProviderComposable(
              */
         }
         is PresentedSetupStyle.Login -> {
-            /*
             LoginSetup(
-                login,
-                passwordReset,
-                signup != null,
-                presentingSignup
+                login = presentedStyleValue.login,
+                passwordReset = passwordReset,
+                supportsSignup = signup != null,
+                presentingSignup = presentingSignup
             )
-
-             */
         }
     }
 

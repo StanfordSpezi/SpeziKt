@@ -8,7 +8,7 @@ import androidx.compose.runtime.remember
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import java.util.Date
 
-data class SignUpProviderCompliance internal constructor(
+data class SignupProviderCompliance internal constructor(
     private val creationDate: Date = Date(),
     val visualizedAccountKeys: VisualizedAccountKeys,
 ) {
@@ -18,11 +18,11 @@ data class SignUpProviderCompliance internal constructor(
     }
 
     companion object {
-        val compliant: SignUpProviderCompliance
-            get() = SignUpProviderCompliance(visualizedAccountKeys = VisualizedAccountKeys.All)
+        val compliant: SignupProviderCompliance
+            get() = SignupProviderCompliance(visualizedAccountKeys = VisualizedAccountKeys.All)
 
         fun askedFor(keys: List<AccountKey<*>>) =
-            SignUpProviderCompliance(visualizedAccountKeys = VisualizedAccountKeys.Only(keys))
+            SignupProviderCompliance(visualizedAccountKeys = VisualizedAccountKeys.Only(keys))
     }
 }
 
@@ -30,7 +30,7 @@ private data class SignupProviderComplianceReader(
     var entry: Entry? = null,
 ) {
     data class Entry(
-        val compliance: SignUpProviderCompliance,
+        val compliance: SignupProviderCompliance,
         val date: Date = Date(),
     )
 }
@@ -38,7 +38,7 @@ private data class SignupProviderComplianceReader(
 private val LocalSignupProviderComplianceReaders = compositionLocalOf { emptyList<SignupProviderComplianceReader>() }
 
 @Composable
-fun ReportSignupProviderCompliance(compliance: SignUpProviderCompliance?) {
+fun ReportSignupProviderCompliance(compliance: SignupProviderCompliance?) {
     compliance?.let {
         val newEntry = SignupProviderComplianceReader.Entry(it)
         LocalSignupProviderComplianceReaders.current.forEach { reader ->
@@ -52,7 +52,7 @@ fun ReportSignupProviderCompliance(compliance: SignUpProviderCompliance?) {
 
 @Composable
 internal fun ReceiveSignupProviderCompliance(
-    action: (SignUpProviderCompliance?) -> Unit,
+    action: (SignupProviderCompliance?) -> Unit,
     content: @Composable () -> Unit
 ) {
     val newReader = remember { SignupProviderComplianceReader() }

@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.module.account.account.compositionLocal.LocalAccount
 import edu.stanford.spezi.module.account.account.compositionLocal.LocalFollowUpBehavior
-import edu.stanford.spezi.module.account.account.compositionLocal.SignUpProviderCompliance
+import edu.stanford.spezi.module.account.account.compositionLocal.SignupProviderCompliance
 import edu.stanford.spezi.module.account.account.service.identityProvider.AccountSetupComponent
 import edu.stanford.spezi.module.account.account.service.identityProvider.AccountSetupSection
 import edu.stanford.spezi.module.account.account.value.AccountKey
@@ -37,7 +37,7 @@ fun AccountSetup(
     done: @Composable () -> Unit,
 ) {
     val setupState = remember { mutableStateOf(AccountSetupState.Generic) }
-    val compliance = remember { mutableStateOf(null as SignUpProviderCompliance?) }
+    val compliance = remember { mutableStateOf(null as SignupProviderCompliance?) }
     val followUpSheet = remember { mutableStateOf(false) }
     val isCompletingSetup = remember { mutableStateOf(false) }
 
