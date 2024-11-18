@@ -12,11 +12,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
-
-private const val DESCRIPTION_GRID_ROW_COMPONENT_WIDTH_FACTOR = 0.5f
 
 @Composable
 fun DescriptionGridRow(
@@ -27,14 +25,13 @@ fun DescriptionGridRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+            .padding(vertical = Spacings.small),
+        horizontalArrangement = Arrangement.spacedBy(Spacings.medium),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
                 .alignByBaseline()
-                .weight(DESCRIPTION_GRID_ROW_COMPONENT_WIDTH_FACTOR, fill = false)
         ) {
             description()
         }
@@ -43,7 +40,6 @@ fun DescriptionGridRow(
             modifier = Modifier
                 .alignByBaseline()
                 .fillMaxWidth()
-                .weight(DESCRIPTION_GRID_ROW_COMPONENT_WIDTH_FACTOR)
         ) {
             content()
         }

@@ -46,10 +46,9 @@ fun NameFieldRow(
         content = {
             NameTextField(
                 builder = builder,
-                component = component
-            ) {
-                label()
-            }
+                component = component,
+                label = label,
+            )
         }
     )
 }

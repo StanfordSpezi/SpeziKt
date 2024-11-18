@@ -19,24 +19,22 @@ fun NameTextField(
     builder: PersonNameComponents.Builder,
     component: KMutableProperty1<PersonNameComponents.Builder, String?>,
     modifier: Modifier = Modifier,
-    prompt: String? = null,
 ) {
     NameTextField(
         builder = builder,
         component = component,
         modifier = modifier,
-        prompt = prompt
     ) {
         Text(label)
     }
 }
 
+// TODO: We got rid of "prompt" property here
 @Composable
 fun NameTextField(
     builder: PersonNameComponents.Builder,
     component: KMutableProperty1<PersonNameComponents.Builder, String?>,
     modifier: Modifier = Modifier,
-    prompt: String? = null,
     label: @Composable () -> Unit,
 ) {
     val textState = remember(builder) {
@@ -53,9 +51,7 @@ fun NameTextField(
         keyboardOptions = KeyboardOptions(
             autoCorrect = false,
         ),
-        // TODO: Check if placeholder is the right fit for the prompt property here.
-        placeholder = prompt?.let { { Text(it) } },
-        label = label,
+        placeholder = label,
         modifier = modifier.fillMaxWidth()
     )
 }
