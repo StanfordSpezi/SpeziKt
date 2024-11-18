@@ -7,8 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents
-import edu.stanford.spezi.core.design.views.personalInfo.fields.NameFieldRow
+import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
+import edu.stanford.spezi.core.design.views.personalinfo.fields.NameFieldRow
 
 @Composable
 fun NameFieldsTestComposable() {

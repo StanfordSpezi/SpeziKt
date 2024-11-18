@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
@@ -29,25 +30,68 @@ enum class TextFieldType {
 @Composable
 fun VerifiableTextField(
     label: StringResource,
-    text: MutableState<String>,
+    state: MutableState<String>,
     modifier: Modifier = Modifier,
     type: TextFieldType = TextFieldType.TEXT,
     disableAutocorrection: Boolean = false,
     footer: @Composable () -> Unit = {},
 ) {
     VerifiableTextField(
-        text,
-        modifier,
-        type,
+        value = state.value,
+        onValueChanged = { state.value = it },
+        modifier = modifier,
+        type = type,
         disableAutocorrection = disableAutocorrection,
-        { Text(label.text()) },
-        footer
+        footer = footer,
+        label = { Text(label.text()) },
     )
 }
 
 @Composable
 fun VerifiableTextField(
-    text: MutableState<String>,
+    label: StringResource,
+    value: String,
+    onValueChanged: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    type: TextFieldType = TextFieldType.TEXT,
+    disableAutocorrection: Boolean = false,
+    footer: @Composable () -> Unit = {},
+) {
+    VerifiableTextField(
+        value = value,
+        onValueChanged = onValueChanged,
+        modifier = modifier,
+        type = type,
+        disableAutocorrection = disableAutocorrection,
+        footer = footer,
+        label = { Text(label.text()) },
+    )
+}
+
+@Composable
+fun VerifiableTextField(
+    state: MutableState<String>,
+    modifier: Modifier = Modifier,
+    type: TextFieldType = TextFieldType.TEXT,
+    disableAutocorrection: Boolean = false,
+    footer: @Composable () -> Unit = {},
+    label: @Composable () -> Unit,
+) {
+    VerifiableTextField(
+        value = state.value,
+        onValueChanged = { state.value = it },
+        modifier = modifier,
+        type = type,
+        disableAutocorrection = disableAutocorrection,
+        footer = footer,
+        label = label
+    )
+}
+
+@Composable
+fun VerifiableTextField(
+    value: String,
+    onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
     type: TextFieldType = TextFieldType.TEXT,
     disableAutocorrection: Boolean = false,
@@ -55,37 +99,21 @@ fun VerifiableTextField(
     label: @Composable () -> Unit,
 ) {
     val validationEngine = LocalValidationEngine.current
+    val isSecure = remember(type) { type == TextFieldType.SECURE }
 
     Column(modifier) {
-        // TODO: Check if this is really equivalent,
-        //  since iOS specifies this as a completely separate type
-        //  and there we only have this visualTransformation property
-        when (type) {
-            TextFieldType.TEXT -> {
-                TextField(
-                    text.value,
-                    onValueChange = { text.value = it },
-                    label = label,
-                    keyboardOptions = KeyboardOptions(
-                        autoCorrect = !disableAutocorrection
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-            TextFieldType.SECURE -> {
-                TextField(
-                    text.value,
-                    onValueChange = { text.value = it },
-                    label = label,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        autoCorrect = !disableAutocorrection
-                    ),
-                    visualTransformation = PasswordVisualTransformation(),
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-        }
+        // TODO: Check equality with iOS
+        TextField(
+            value = value,
+            onValueChange = onValueChanged,
+            label = label,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = if (isSecure) KeyboardType.Password else KeyboardType.Text,
+                autoCorrect = !disableAutocorrection
+            ),
+            visualTransformation = if (isSecure) PasswordVisualTransformation() else VisualTransformation.None,
+            modifier = Modifier.fillMaxWidth(),
+        )
 
         Row {
             ValidationResultsComposable(validationEngine?.displayedValidationResults ?: emptyList())

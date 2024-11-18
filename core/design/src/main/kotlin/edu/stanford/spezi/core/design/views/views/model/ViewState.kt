@@ -7,11 +7,11 @@ import edu.stanford.spezi.core.design.component.StringResource
 sealed interface ViewState {
     data object Idle : ViewState
     data object Processing : ViewState
-    data class Error(val throwable: Throwable?) : ViewState
+    data class Error(val throwable: Throwable?) : ViewState {
+        val errorTitle: String
+            @Composable @ReadOnlyComposable get() = StringResource("Error").text()
 
-    val errorTitle: String
-        @Composable @ReadOnlyComposable get() = StringResource("Error").text()
-
-    val errorDescription: String
-        @Composable @ReadOnlyComposable get() = if (this is Error) throwable?.localizedMessage ?: "" else ""
+        val errorDescription: String
+            @Composable @ReadOnlyComposable get() = throwable?.localizedMessage ?: ""
+    }
 }

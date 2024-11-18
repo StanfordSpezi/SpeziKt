@@ -28,7 +28,6 @@ data class ValidationContext internal constructor(
         }
     }
 
-    // TODO: Originally called validateSubviews, but renamed to avoid using "view" on Android
     fun validateHierarchy(switchFocus: Boolean = true): Boolean {
         val failedFields = collectFailedValidations()
 

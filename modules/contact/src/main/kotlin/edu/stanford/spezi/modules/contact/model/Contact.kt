@@ -5,7 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import edu.stanford.spezi.core.design.component.ImageResource
 import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents
+import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
 import java.util.UUID
 
 /**

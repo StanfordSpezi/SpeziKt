@@ -10,8 +10,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.views.views.model.ViewState
-import edu.stanford.spezi.core.design.views.views.viewModifier.viewState.ViewStateAlert
 import edu.stanford.spezi.core.design.views.views.views.button.SuspendButton
+import edu.stanford.spezi.core.design.views.views.viewstate.ViewStateAlert
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 

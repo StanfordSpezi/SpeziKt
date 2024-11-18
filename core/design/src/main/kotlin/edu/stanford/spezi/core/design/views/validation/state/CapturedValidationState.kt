@@ -16,8 +16,6 @@ data class CapturedValidationState internal constructor(
         engine.runValidation(input)
     }
 
-    // TODO: Find out whether we can dynamically expose members of ValidationEngine
-
     override fun hashCode(): Int {
         return super.hashCode()
     }

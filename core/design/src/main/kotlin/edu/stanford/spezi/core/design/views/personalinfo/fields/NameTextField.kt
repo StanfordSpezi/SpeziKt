@@ -1,56 +1,60 @@
-package edu.stanford.spezi.core.design.views.personalInfo.fields
+package edu.stanford.spezi.core.design.views.personalinfo.fields
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents
+import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
 import kotlin.reflect.KMutableProperty1
 
 @Composable
 fun NameTextField(
-    label: StringResource,
-    name: MutableState<PersonNameComponents>,
-    component: KMutableProperty1<PersonNameComponents, String?>,
+    label: String,
+    builder: PersonNameComponents.Builder,
+    component: KMutableProperty1<PersonNameComponents.Builder, String?>,
     modifier: Modifier = Modifier,
-    prompt: StringResource? = null,
+    prompt: String? = null,
 ) {
-    NameTextField(name, component, modifier, prompt) {
-        Text(label.text())
+    NameTextField(
+        builder = builder,
+        component = component,
+        modifier = modifier,
+        prompt = prompt
+    ) {
+        Text(label)
     }
 }
 
 @Composable
 fun NameTextField(
-    name: MutableState<PersonNameComponents>,
-    component: KMutableProperty1<PersonNameComponents, String?>,
+    builder: PersonNameComponents.Builder,
+    component: KMutableProperty1<PersonNameComponents.Builder, String?>,
     modifier: Modifier = Modifier,
-    prompt: StringResource? = null,
+    prompt: String? = null,
     label: @Composable () -> Unit,
 ) {
+    val textState = remember(builder) {
+        mutableStateOf(component.get(builder) ?: "")
+    }
+
     // TODO: Figure out which other options to set on the keyboard for names
     TextField(
-        component.get(name.value) ?: "",
+        textState.value,
         onValueChange = {
-            if (it.isBlank()) {
-                component.set(name.value, null)
-            } else {
-                component.set(name.value, it)
-            }
+            component.set(builder, it.ifBlank { null })
+            textState.value = it
         },
         keyboardOptions = KeyboardOptions(
             autoCorrect = false,
         ),
         // TODO: Check if placeholder is the right fit for the prompt property here.
-        placeholder = prompt?.let { { Text(it.text()) } },
+        placeholder = prompt?.let { { Text(it) } },
         label = label,
         modifier = modifier.fillMaxWidth()
     )
@@ -59,10 +63,10 @@ fun NameTextField(
 @ThemePreviews
 @Composable
 private fun NameTextFieldPreview() {
-    val name = remember { mutableStateOf(PersonNameComponents()) }
+    val name = remember { PersonNameComponents.Builder() }
 
     SpeziTheme(isPreview = true) {
-        NameTextField(name, PersonNameComponents::givenName) {
+        NameTextField(name, PersonNameComponents.Builder::givenName) {
             Text("Enter first name")
         }
     }

@@ -8,8 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.core.design.component.ImageResource
-import edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents
-import edu.stanford.spezi.core.design.views.personalInfo.UserProfileComposable
+import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
+import edu.stanford.spezi.core.design.views.personalinfo.UserProfileComposable
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 

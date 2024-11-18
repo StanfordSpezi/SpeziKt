@@ -29,7 +29,7 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents
+import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
 import edu.stanford.spezi.core.notification.R
 import edu.stanford.spezi.modules.contact.ContactComposable
 import edu.stanford.spezi.modules.contact.model.Contact
