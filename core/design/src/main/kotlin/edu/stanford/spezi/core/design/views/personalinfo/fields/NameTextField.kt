@@ -11,18 +11,23 @@ import androidx.compose.ui.Modifier
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import kotlin.reflect.KMutableProperty1
+
+enum class NameTextFieldTestIdentifier {
+    TEXT_FIELD,
+}
 
 @Composable
 fun NameTextField(
     label: String,
     builder: PersonNameComponents.Builder,
-    component: KMutableProperty1<PersonNameComponents.Builder, String?>,
+    property: KMutableProperty1<PersonNameComponents.Builder, String?>,
     modifier: Modifier = Modifier,
 ) {
     NameTextField(
         builder = builder,
-        component = component,
+        property = property,
         modifier = modifier,
     ) {
         Text(label)
@@ -33,26 +38,28 @@ fun NameTextField(
 @Composable
 fun NameTextField(
     builder: PersonNameComponents.Builder,
-    component: KMutableProperty1<PersonNameComponents.Builder, String?>,
+    property: KMutableProperty1<PersonNameComponents.Builder, String?>,
     modifier: Modifier = Modifier,
     label: @Composable () -> Unit,
 ) {
     val textState = remember(builder) {
-        mutableStateOf(component.get(builder) ?: "")
+        mutableStateOf(property.get(builder) ?: "")
     }
 
     // TODO: Figure out which other options to set on the keyboard for names
     TextField(
         textState.value,
         onValueChange = {
-            component.set(builder, it.ifBlank { null })
+            property.set(builder, it.ifBlank { null })
             textState.value = it
         },
         keyboardOptions = KeyboardOptions(
             autoCorrect = false,
         ),
         placeholder = label,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
+            .testIdentifier(NameTextFieldTestIdentifier.TEXT_FIELD, property.name)
     )
 }
 

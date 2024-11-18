@@ -12,16 +12,16 @@ import edu.stanford.spezi.core.design.views.personalinfo.fields.NameFieldRow
 
 @Composable
 fun NameFieldsTestComposable() {
-    val name = remember { mutableStateOf(PersonNameComponents()) }
+    val nameBuilder = remember { PersonNameComponents.Builder() }
 
     Column {
-        NameFieldRow(StringResource("First Name"), name, PersonNameComponents::givenName) {
+        NameFieldRow("First Name", nameBuilder, PersonNameComponents.Builder::givenName) {
             Text("enter your first name")
         }
 
         HorizontalDivider()
 
-        NameFieldRow(StringResource("Last Name"), name, PersonNameComponents::familyName) {
+        NameFieldRow("Last Name", nameBuilder, PersonNameComponents.Builder::familyName) {
             Text("enter your last name")
         }
     }

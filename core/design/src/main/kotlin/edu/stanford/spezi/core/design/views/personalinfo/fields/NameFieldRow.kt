@@ -19,13 +19,13 @@ import kotlin.reflect.KMutableProperty1
 fun NameFieldRow(
     description: String,
     builder: PersonNameComponents.Builder,
-    component: KMutableProperty1<PersonNameComponents.Builder, String?>,
+    property: KMutableProperty1<PersonNameComponents.Builder, String?>,
     modifier: Modifier = Modifier,
     label: @Composable () -> Unit,
 ) {
     NameFieldRow(
         builder = builder,
-        component = component,
+        property = property,
         description = { Text(description) },
         modifier = modifier,
         label = label
@@ -35,7 +35,7 @@ fun NameFieldRow(
 @Composable
 fun NameFieldRow(
     builder: PersonNameComponents.Builder,
-    component: KMutableProperty1<PersonNameComponents.Builder, String?>,
+    property: KMutableProperty1<PersonNameComponents.Builder, String?>,
     description: @Composable BoxScope.() -> Unit,
     modifier: Modifier = Modifier,
     label: @Composable () -> Unit,
@@ -46,7 +46,7 @@ fun NameFieldRow(
         content = {
             NameTextField(
                 builder = builder,
-                component = component,
+                property = property,
                 label = label,
             )
         }

@@ -33,12 +33,12 @@ fun SuspendButtonTestComposable() {
                 Text("Reset")
             }
         } else {
-            SuspendButton(StringResource("Hello World")) {
+            SuspendButton("Hello World") {
                 delay(500.milliseconds)
                 showCompleted = true
             }
 
-            SuspendButton(StringResource("Hello Throwing World"), viewState) {
+            SuspendButton("Hello Throwing World", viewState) {
                 throw CustomError()
             }
         }
