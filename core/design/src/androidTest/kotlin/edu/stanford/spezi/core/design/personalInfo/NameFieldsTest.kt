@@ -2,6 +2,7 @@ package edu.stanford.spezi.core.design.personalInfo
 
 import android.app.Person
 import androidx.compose.ui.test.junit4.createComposeRule
+import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.design.personalInfo.composables.NameFieldsTestComposable
 import edu.stanford.spezi.core.design.personalInfo.simulators.NameFieldsTestSimulator
 import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
@@ -14,21 +15,32 @@ class NameFieldsTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
+    val nameBuilder = PersonNameComponents.Builder()
+
     @Before
     fun init() {
         composeTestRule.setContent {
-            NameFieldsTestComposable()
+            NameFieldsTestComposable(nameBuilder)
         }
     }
 
     @Test
     fun testNameFields() {
+        val givenName = "Leland"
+        val familyName = "Stanford"
+
         nameFields {
             assertTextExists("First Name")
             assertTextExists("Last Name")
 
-            enterText(PersonNameComponents.Builder::givenName, "Leland")
-            enterText(PersonNameComponents.Builder::familyName, "Stanford")
+            enterText(PersonNameComponents.Builder::givenName, givenName)
+            enterText(PersonNameComponents.Builder::familyName, familyName)
+
+            assertTextExists("First Name")
+            assertTextExists("Last Name")
+
+            assertThat(nameBuilder.givenName).isEqualTo(givenName)
+            assertThat(nameBuilder.familyName).isEqualTo(familyName)
         }
     }
 

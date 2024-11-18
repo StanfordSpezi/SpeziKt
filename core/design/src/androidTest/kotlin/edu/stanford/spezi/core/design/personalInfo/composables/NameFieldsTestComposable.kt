@@ -11,9 +11,7 @@ import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
 import edu.stanford.spezi.core.design.views.personalinfo.fields.NameFieldRow
 
 @Composable
-fun NameFieldsTestComposable() {
-    val nameBuilder = remember { PersonNameComponents.Builder() }
-
+fun NameFieldsTestComposable(nameBuilder: PersonNameComponents.Builder) {
     Column {
         NameFieldRow("First Name", nameBuilder, PersonNameComponents.Builder::givenName) {
             Text("enter your first name")
