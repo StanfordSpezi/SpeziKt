@@ -37,13 +37,13 @@ fun VerifiableTextField(
     footer: @Composable () -> Unit = {},
 ) {
     VerifiableTextField(
+        label = label,
         value = state.value,
         onValueChanged = { state.value = it },
         modifier = modifier,
         type = type,
         disableAutocorrection = disableAutocorrection,
         footer = footer,
-        label = { Text(label.text()) },
     )
 }
 
