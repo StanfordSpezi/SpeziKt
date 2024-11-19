@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.AccountBox
 import edu.stanford.spezi.core.design.component.ImageResource
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
+import edu.stanford.spezi.modules.contact.R
 import java.util.UUID
 
 /**
@@ -25,7 +26,7 @@ import java.util.UUID
 data class Contact(
     val id: UUID = UUID.randomUUID(),
     val name: PersonNameComponents,
-    val image: ImageResource = ImageResource.Vector(Icons.Default.AccountBox),
+    val image: ImageResource = ImageResource.Vector(Icons.Default.AccountBox, StringResource(R.string.profile_picture)),
     val title: StringResource? = null,
     val description: StringResource? = null,
     val organization: StringResource? = null,

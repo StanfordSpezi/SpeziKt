@@ -21,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.core.design.component.ImageResource
@@ -78,7 +77,6 @@ fun ContactComposable(contact: Contact, modifier: Modifier = Modifier) {
             ) {
                 ImageResourceComposable(
                     imageResource = contact.image,
-                    contentDescription = stringResource(R.string.profile_picture),
                     modifier = Modifier
                         .size(Sizes.Icon.medium)
                 )
@@ -201,7 +199,7 @@ private object ContactComposableFactory {
                 givenName = "Leland",
                 familyName = "Stanford"
             ),
-            image = ImageResource.Vector(Icons.Default.AccountBox),
+            image = ImageResource.Vector(Icons.Default.AccountBox, StringResource(R.string.profile_picture)),
             title = title,
             description = description,
             organization = StringResource("Stanford University"),

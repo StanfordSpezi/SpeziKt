@@ -113,7 +113,10 @@ private class ContactUiStateProvider : PreviewParameterProvider<ContactScreenVie
                     givenName = "Leland",
                     familyName = "Stanford"
                 ),
-                image = ImageResource.Vector(Icons.Default.AccountBox),
+                image = ImageResource.Vector(
+                    Icons.Default.AccountBox,
+                    StringResource(edu.stanford.spezi.modules.contact.R.string.profile_picture)
+                ),
                 title = StringResource("University Founder"),
                 description = StringResource(
                     """Leland Stanford (March 9, 1824 – June 21, 1893) was an American industrialist and politician."""
