@@ -1,4 +1,4 @@
-package edu.stanford.spezi.core.design.views.views.viewModifier.viewState
+package edu.stanford.spezi.core.design.views.views.viewstate
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
@@ -18,23 +18,31 @@ fun ViewStateAlert(
     state: MutableState<ViewState>,
     modifier: Modifier = Modifier,
 ) {
-    if (state.value is ViewState.Error) {
+    ViewStateAlert(
+        state = state.value,
+        onClose = { state.value = ViewState.Idle },
+        modifier = modifier
+    )
+}
+
+@Composable
+fun ViewStateAlert(
+    state: ViewState,
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit,
+) {
+    if (state is ViewState.Error) {
         AlertDialog(
+            modifier = modifier,
             title = {
-                Text(text = state.value.errorTitle)
+                Text(text = state.errorTitle)
             },
             text = {
-                Text(text = state.value.errorDescription)
+                Text(text = state.errorDescription)
             },
-            onDismissRequest = {
-                state.value = ViewState.Idle
-            },
+            onDismissRequest = onClose,
             confirmButton = {
-                TextButton(
-                    onClick = {
-                        state.value = ViewState.Idle
-                    }
-                ) {
+                TextButton(onClick = onClose) {
                     Text(StringResource("OK").text())
                 }
             }

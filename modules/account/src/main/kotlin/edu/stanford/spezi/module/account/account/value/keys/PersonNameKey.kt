@@ -10,8 +10,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import edu.stanford.spezi.core.design.component.ListRow
 import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents
-import edu.stanford.spezi.core.design.views.personalInfo.fields.NameFieldRow
+import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
+import edu.stanford.spezi.core.design.views.personalinfo.fields.NameFieldRow
 import edu.stanford.spezi.core.design.views.validation.Validate
 import edu.stanford.spezi.core.design.views.validation.ValidationEngine
 import edu.stanford.spezi.core.design.views.validation.ValidationRule

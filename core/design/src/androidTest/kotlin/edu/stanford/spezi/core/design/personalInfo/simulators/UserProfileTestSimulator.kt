@@ -27,9 +27,9 @@ class UserProfileTestSimulator(
         }
     }
 
-    fun assertImageExists() {
+    fun assertImageExists(contentDescription: String) {
         composeTestRule
-            .onAllNodesWithContentDescription("")
+            .onAllNodesWithContentDescription(contentDescription)
             .assertCountEquals(1)
     }
 }

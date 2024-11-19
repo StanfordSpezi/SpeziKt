@@ -11,12 +11,15 @@ data class ValidationRule(
     val message: StringResource,
     val effect: CascadingValidationEffect = CascadingValidationEffect.CONTINUE,
 ) {
-    companion object {
-        operator fun invoke(regex: Regex, message: StringResource): ValidationRule =
-            ValidationRule(rule = { regex.matchEntire(it) != null }, message = message)
-        operator fun invoke(copy: ValidationRule, message: StringResource): ValidationRule =
-            ValidationRule(rule = copy.rule, message = message)
-    }
+    constructor(regex: Regex, message: StringResource) : this(
+        rule = { regex.matchEntire(it) != null },
+        message = message,
+    )
+
+    constructor(copy: ValidationRule, message: StringResource) : this(
+        rule = copy.rule,
+        message = message,
+    )
 
     val intercepting: ValidationRule
         get() = ValidationRule(id, rule, message, CascadingValidationEffect.INTERCEPT)
@@ -28,4 +31,6 @@ data class ValidationRule(
         if (rule(input)) null else FailedValidationResult(this)
 
     override fun hashCode(): Int = id.hashCode()
+
+    companion object
 }

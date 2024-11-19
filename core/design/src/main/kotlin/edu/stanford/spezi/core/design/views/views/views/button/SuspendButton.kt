@@ -8,14 +8,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import edu.stanford.spezi.core.design.component.Button
-import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.design.views.views.compositionLocal.LocalProcessingDebounceDuration
 import edu.stanford.spezi.core.design.views.views.model.ViewState
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 private enum class SuspendButtonState {
     IDLE, DISABLED, DISABLED_AND_PROCESSING
@@ -23,20 +22,33 @@ private enum class SuspendButtonState {
 
 @Composable
 fun SuspendButton(
+<<<<<<< HEAD
     title: StringResource,
     modifier: Modifier = Modifier,
+=======
+    title: String,
+>>>>>>> feature/spezi-views
     state: MutableState<ViewState> = remember { mutableStateOf(ViewState.Idle) },
     enabled: Boolean = true,
     action: suspend () -> Unit,
 ) {
+<<<<<<< HEAD
     SuspendButton(modifier, state, enabled, action) {
         Text(title.text())
+=======
+    SuspendButton(state = state, action = action) {
+        Text(title)
+>>>>>>> feature/spezi-views
     }
 }
 
 @Composable
 fun SuspendButton(
+<<<<<<< HEAD
     modifier: Modifier = Modifier,
+=======
+    processingDebounceDuration: Duration = 150.milliseconds,
+>>>>>>> feature/spezi-views
     state: MutableState<ViewState> = remember { mutableStateOf(ViewState.Idle) },
     enabled: Boolean = true,
     action: suspend () -> Unit,
@@ -44,8 +56,7 @@ fun SuspendButton(
 ) {
     val buttonState = remember { mutableStateOf(SuspendButtonState.IDLE) }
     val coroutineScope = rememberCoroutineScope()
-    val debounceScope = rememberCoroutineScope()
-    val processingDebounceDuration = LocalProcessingDebounceDuration.current
+    val debounceIsCancelled = remember { mutableStateOf(false) }
     val externallyProcessing = buttonState.value == SuspendButtonState.IDLE && state.value == ViewState.Processing
 
     Button(
@@ -54,25 +65,24 @@ fun SuspendButton(
             if (state.value == ViewState.Processing) return@Button
             buttonState.value = SuspendButtonState.DISABLED
 
-            val debounceJob = debounceScope.launch {
+            coroutineScope.launch {
                 delay(processingDebounceDuration)
 
-                if (isActive) {
-                    buttonState.value = SuspendButtonState.DISABLED_AND_PROCESSING
-                }
+                if (debounceIsCancelled.value) return@launch
+                buttonState.value = SuspendButtonState.DISABLED_AND_PROCESSING
             }
 
             state.value = ViewState.Processing
             coroutineScope.launch {
                 runCatching {
                     action()
-                    debounceJob.cancel()
+                    debounceIsCancelled.value = true
 
                     if (state.value != ViewState.Idle) {
                         state.value = ViewState.Idle
                     }
                 }.onFailure {
-                    debounceJob.cancel()
+                    debounceIsCancelled.value = true
                     state.value = ViewState.Error(it)
                 }
 
@@ -81,7 +91,9 @@ fun SuspendButton(
         },
         modifier = modifier,
     ) {
-        ProcessingOverlay(buttonState.value == SuspendButtonState.DISABLED_AND_PROCESSING || externallyProcessing) {
+        ProcessingOverlay(
+            isProcessing = buttonState.value == SuspendButtonState.DISABLED_AND_PROCESSING || externallyProcessing
+        ) {
             label()
         }
     }
@@ -92,7 +104,11 @@ fun SuspendButton(
 private fun SuspendButtonPreview() {
     val state = remember { mutableStateOf<ViewState>(ViewState.Idle) }
     SpeziTheme(isPreview = true) {
+<<<<<<< HEAD
         SuspendButton(StringResource("Test Button"), state = state) {
+=======
+        SuspendButton("Test Button", state) {
+>>>>>>> feature/spezi-views
             throw NotImplementedError()
         }
     }

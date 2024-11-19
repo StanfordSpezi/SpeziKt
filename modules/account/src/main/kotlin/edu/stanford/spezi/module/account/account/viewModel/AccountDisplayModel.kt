@@ -1,6 +1,6 @@
 package edu.stanford.spezi.module.account.account.viewModel
 
-import edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents
+import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
 import edu.stanford.spezi.module.account.account.service.configuration.UserIdType
 import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails

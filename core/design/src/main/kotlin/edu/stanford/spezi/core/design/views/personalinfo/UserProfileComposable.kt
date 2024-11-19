@@ -1,4 +1,4 @@
-package edu.stanford.spezi.core.design.views.personalInfo
+package edu.stanford.spezi.core.design.views.personalinfo
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import edu.stanford.spezi.core.design.component.ImageResource
 import edu.stanford.spezi.core.design.component.ImageResourceComposable
+import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
@@ -40,7 +41,7 @@ fun UserProfileComposable(
     imageLoader: suspend () -> ImageResource? = { null },
 ) {
     var size by remember { mutableStateOf(IntSize.Zero) }
-    var loadedImage by remember { mutableStateOf<ImageResource?>(null) }
+    var loadedImage by remember(imageLoader) { mutableStateOf<ImageResource?>(null) }
 
     LaunchedEffect(Unit) {
         loadedImage = runCatching { imageLoader() }
@@ -61,23 +62,20 @@ fun UserProfileComposable(
             loadedImage?.let {
                 ImageResourceComposable(
                     it,
-                    "", // TODO: Add contentDescription to ImageResource directly?
                     Modifier
                         .fillMaxSize()
                         .clip(CircleShape)
                         .background(Colors.background, CircleShape)
                 )
-            } ?: run {
-                Box(
-                    Modifier
-                        .background(Colors.secondary, CircleShape)
-                        .fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(
-                        formattedName,
-                        fontSize = (sideLength.value * 0.2).sp,
-                        color = Colors.secondary.lighten(),
-                    )
-                }
+            } ?: Box(
+                Modifier
+                    .background(Colors.secondary, CircleShape)
+                    .fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(
+                    formattedName,
+                    fontSize = (sideLength.value * 0.2).sp,
+                    color = Colors.secondary.lighten(),
+                )
             }
         }
     }
@@ -106,7 +104,10 @@ private class UserProfileProvider : PreviewParameterProvider<UserProfilePreviewD
                 familyName = "Ravi",
             )
         ) {
-            ImageResource.Vector(Icons.Default.Person)
+            ImageResource.Vector(
+                Icons.Default.Person,
+                StringResource("Person")
+            )
         },
     )
 }

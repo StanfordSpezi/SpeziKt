@@ -25,7 +25,7 @@ class UserProfileTest {
             assertUserInitialsExists(true, "PS")
             assertUserInitialsExists(true, "LS")
             waitUntilUserInitialsDisappear("LS")
-            assertImageExists()
+            assertImageExists("Person")
         }
     }
 

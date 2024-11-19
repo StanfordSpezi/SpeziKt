@@ -8,8 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.core.design.component.ImageResource
-import edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents
-import edu.stanford.spezi.core.design.views.personalInfo.UserProfileComposable
+import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
+import edu.stanford.spezi.core.design.views.personalinfo.UserProfileComposable
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
@@ -31,7 +32,7 @@ fun UserProfileTestComposable() {
             Modifier.height(200.dp),
         ) {
             delay(0.5.seconds)
-            ImageResource.Vector(Icons.Default.Person)
+            ImageResource.Vector(Icons.Default.Person, StringResource("Person"))
         }
     }
 }

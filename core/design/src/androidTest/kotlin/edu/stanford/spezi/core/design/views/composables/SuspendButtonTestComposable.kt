@@ -8,10 +8,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.views.views.model.ViewState
-import edu.stanford.spezi.core.design.views.views.viewModifier.viewState.ViewStateAlert
 import edu.stanford.spezi.core.design.views.views.views.button.SuspendButton
+import edu.stanford.spezi.core.design.views.views.viewstate.ViewStateAlert
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -33,12 +32,12 @@ fun SuspendButtonTestComposable() {
                 Text("Reset")
             }
         } else {
-            SuspendButton(StringResource("Hello World")) {
+            SuspendButton("Hello World") {
                 delay(500.milliseconds)
                 showCompleted = true
             }
 
-            SuspendButton(StringResource("Hello Throwing World"), viewState) {
+            SuspendButton("Hello Throwing World", viewState) {
                 throw CustomError()
             }
         }
