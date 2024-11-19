@@ -18,11 +18,13 @@ import edu.stanford.spezi.core.design.views.views.model.ViewState
 @Composable
 fun ProcessingOverlay(
     viewState: ViewState,
+    modifier: Modifier = Modifier,
     processingContent: @Composable BoxScope.() -> Unit = { CircularProgressIndicator() },
     content: @Composable BoxScope.() -> Unit,
 ) {
     ProcessingOverlay(
         isProcessing = viewState == ViewState.Processing,
+        modifier = modifier,
         processingContent = processingContent,
         content = content,
     )
@@ -31,6 +33,7 @@ fun ProcessingOverlay(
 @Composable
 fun ProcessingOverlay(
     isProcessing: Boolean,
+    modifier: Modifier = Modifier,
     processingContent: @Composable BoxScope.() -> Unit = { CircularProgressIndicator() },
     content: @Composable BoxScope.() -> Unit,
 ) {
@@ -41,7 +44,7 @@ fun ProcessingOverlay(
             alpha.floatValue = value
         }
     }
-    Box(contentAlignment = Alignment.Center) {
+    Box(contentAlignment = Alignment.Center, modifier = modifier) {
         Box(Modifier.alpha(alpha.floatValue)) {
             content()
         }
