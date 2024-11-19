@@ -8,28 +8,28 @@ import javax.annotation.concurrent.Immutable
 
 @Immutable
 sealed interface AsyncImageResource {
-    val identifier: UUID
+    val identifier: String
     val contentDescription: StringResource
 
     data class Remote(
         val url: String,
         override val contentDescription: StringResource,
     ) : AsyncImageResource {
-        override val identifier: UUID = UUID()
+        override val identifier = UUID().toString()
     }
 
     data class Vector(
         val image: ImageVector,
         override val contentDescription: StringResource,
     ) : AsyncImageResource {
-        override val identifier: UUID = UUID()
+        override val identifier = UUID().toString()
     }
 
     data class Drawable(
         @DrawableRes val resId: Int,
         override val contentDescription: StringResource,
     ) : AsyncImageResource {
-        override val identifier: UUID = UUID()
+        override val identifier = UUID().toString()
     }
 
     companion object {
