@@ -1,6 +1,5 @@
 package edu.stanford.spezi.core.design.personalInfo
 
-import android.app.Person
 import androidx.compose.ui.test.junit4.createComposeRule
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.design.personalInfo.composables.NameFieldsTestComposable
