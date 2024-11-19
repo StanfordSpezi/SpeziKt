@@ -48,7 +48,7 @@ class ContactComposableSimulator(
         imageResource?.let {
             image(imageResource)
                 .assertExists()
-                .assertContentDescriptionContains("Profile Picture")
+                .assertContentDescriptionContains("Account Box")
                 .assertImageIdentifier(it.identifier)
         }
     }
