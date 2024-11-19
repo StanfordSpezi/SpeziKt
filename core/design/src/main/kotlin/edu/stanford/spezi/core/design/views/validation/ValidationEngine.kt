@@ -3,6 +3,7 @@ package edu.stanford.spezi.core.design.views.validation
 import androidx.compose.runtime.mutableStateOf
 import edu.stanford.spezi.core.design.views.validation.configuration.DEFAULT_VALIDATION_DEBOUNCE_DURATION
 import edu.stanford.spezi.core.design.views.validation.state.FailedValidationResult
+import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -41,6 +42,8 @@ internal class ValidationEngineImpl(
         SUBMIT, MANUAL
     }
 
+    private val logger by speziLogger()
+
     private var validationResultsState = mutableStateOf(emptyList<FailedValidationResult>())
 
     override val validationResults get() = validationResultsState.value
@@ -68,14 +71,15 @@ internal class ValidationEngineImpl(
 
     private var debounceJob: Job? = null
 
-    @Suppress("detekt:LoopWithTooManyJumpStatements")
     private fun computeFailedValidations(input: String): List<FailedValidationResult> {
         val results = mutableListOf<FailedValidationResult>()
 
+        @Suppress("detekt:LoopWithTooManyJumpStatements")
         for (rule in rules) {
-            val result = rule.validate(input) ?: break
-            results.add(result)
-            // TODO: Logging
+            rule.validate(input)?.let { result ->
+                results.add(result)
+                logger.w { "Validation for input $input failed with reason: ${result.message}" }
+            } ?: continue
             if (rule.effect == CascadingValidationEffect.INTERCEPT) break
         }
 

@@ -15,20 +15,20 @@ import javax.annotation.concurrent.Immutable
  */
 @Immutable
 sealed interface ImageResource {
-    val identifier: UUID
+    val identifier: String
     val contentDescription: StringResource
 
     data class Vector(
         val image: ImageVector,
         override val contentDescription: StringResource,
     ) : ImageResource {
-        override val identifier: UUID = UUID()
+        override val identifier = UUID().toString()
     }
 
     data class Drawable(
         @DrawableRes val resId: Int,
         override val contentDescription: StringResource,
     ) : ImageResource {
-        override val identifier: UUID = UUID()
+        override val identifier = UUID().toString()
     }
 }

@@ -1,10 +1,10 @@
 package edu.stanford.spezi.core.design.views.validation.views
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -12,13 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.design.views.validation.Validate
@@ -40,13 +39,13 @@ fun VerifiableTextField(
     footer: @Composable () -> Unit = {},
 ) {
     VerifiableTextField(
+        label = label,
         value = state.value,
         onValueChanged = { state.value = it },
         modifier = modifier,
         type = type,
         disableAutocorrection = disableAutocorrection,
         footer = footer,
-        label = { Text(label.text()) },
     )
 }
 
@@ -104,29 +103,31 @@ fun VerifiableTextField(
     val validationEngine = LocalValidationEngine.current
     val isSecure = remember(type) { type == TextFieldType.SECURE }
 
-    Column(modifier) {
-        // TODO: Check equality with iOS
-        TextField(
-            value = value,
-            onValueChange = onValueChanged,
-            label = label,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = if (isSecure) KeyboardType.Password else KeyboardType.Text,
-                autoCorrect = !disableAutocorrection
-            ),
-            visualTransformation = if (isSecure) PasswordVisualTransformation() else VisualTransformation.None,
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp)
-        ) {
-            ValidationResultsComposable(validationEngine?.displayedValidationResults ?: emptyList())
-            footer()
-        }
-    }
+    // TODO: Check equality with iOS
+    TextField(
+        value = value,
+        onValueChange = onValueChanged,
+        label = label,
+        keyboardActions = KeyboardActions(
+            onDone = {
+                validationEngine?.submit(value)
+            },
+        ),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = if (isSecure) KeyboardType.Password else KeyboardType.Text,
+            autoCorrect = !disableAutocorrection
+        ),
+        supportingText = {
+            Row(Modifier.padding(vertical = Spacings.small)) {
+                ValidationResultsComposable(validationEngine?.displayedValidationResults ?: emptyList())
+                Spacer(Modifier.fillMaxWidth())
+                footer()
+            }
+        },
+        isError = validationEngine?.isDisplayingValidationErrors ?: true,
+        visualTransformation = if (isSecure) PasswordVisualTransformation() else VisualTransformation.None,
+        modifier = modifier.fillMaxWidth(),
+    )
 }
 
 @ThemePreviews
