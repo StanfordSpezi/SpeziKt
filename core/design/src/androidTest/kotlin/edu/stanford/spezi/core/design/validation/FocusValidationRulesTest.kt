@@ -30,6 +30,12 @@ class FocusValidationRulesTest {
             assertLastState(false)
             assertPasswordMessageExists(true)
             assertEmptyMessageExists(true)
+            enterEmail("leland@stanford.edu")
+            assertEmptyMessageExists(false)
+            assertPasswordMessageExists(true)
+            enterPassword("password")
+            assertEmptyMessageExists(false)
+            assertPasswordMessageExists(false)
         }
     }
 

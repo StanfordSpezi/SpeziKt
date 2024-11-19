@@ -4,6 +4,9 @@ import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
+import edu.stanford.spezi.core.design.validation.composables.FocusValidationRulesTestIdentifier
+import edu.stanford.spezi.core.testing.onNodeWithIdentifier
 
 class FocusValidationRulesSimulator(
     private val composeTestRule: ComposeTestRule,
@@ -44,5 +47,17 @@ class FocusValidationRulesSimulator(
         composeTestRule
             .onNodeWithText("Last state: ${if (valid) "valid" else "invalid"}")
             .assertExists()
+    }
+
+    fun enterEmail(text: String) {
+        composeTestRule
+            .onNodeWithIdentifier(FocusValidationRulesTestIdentifier.EMAIL_TEXTFIELD)
+            .performTextInput(text)
+    }
+
+    fun enterPassword(text: String) {
+        composeTestRule
+            .onNodeWithIdentifier(FocusValidationRulesTestIdentifier.PASSWORD_TEXTFIELD)
+            .performTextInput(text)
     }
 }

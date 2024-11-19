@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.views.validation.configuration.DEFAULT_VALIDATION_DEBOUNCE_DURATION
@@ -53,8 +55,13 @@ fun Validate(
         )
     }
 
+    var isFirstInput by remember { mutableStateOf(true) }
     LaunchedEffect(input) {
-        engine.submit(input, debounce = true)
+        if (isFirstInput) {
+            isFirstInput = false
+        } else {
+            engine.submit(input, debounce = true)
+        }
     }
 
     LaunchedEffect(validationDebounce) {

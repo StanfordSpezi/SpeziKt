@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.views.validation.Validate
 import edu.stanford.spezi.core.design.views.validation.ValidationRule
@@ -16,9 +17,14 @@ import edu.stanford.spezi.core.design.views.validation.nonEmpty
 import edu.stanford.spezi.core.design.views.validation.state.ReceiveValidation
 import edu.stanford.spezi.core.design.views.validation.state.ValidationContext
 import edu.stanford.spezi.core.design.views.validation.views.VerifiableTextField
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 
 enum class Field {
     INPUT, NON_EMPTY_INPUT
+}
+
+enum class FocusValidationRulesTestIdentifier {
+    EMAIL_TEXTFIELD, PASSWORD_TEXTFIELD
 }
 
 @Composable
@@ -50,12 +56,20 @@ fun FocusValidationRules() {
                 Switch(switchFocus.value, onCheckedChange = { switchFocus.value = it })
             }
 
-            Validate(input.value, rules = listOf(ValidationRule.minimalPassword)) {
-                VerifiableTextField(StringResource(Field.INPUT.name), input)
+            Validate(nonEmptyInput.value, rules = listOf(ValidationRule.nonEmpty)) {
+                VerifiableTextField(
+                    StringResource(Field.NON_EMPTY_INPUT.name),
+                    nonEmptyInput,
+                    Modifier.testIdentifier(FocusValidationRulesTestIdentifier.EMAIL_TEXTFIELD)
+                )
             }
 
-            Validate(nonEmptyInput.value, rules = listOf(ValidationRule.nonEmpty)) {
-                VerifiableTextField(StringResource(Field.NON_EMPTY_INPUT.name), nonEmptyInput)
+            Validate(input.value, rules = listOf(ValidationRule.minimalPassword)) {
+                VerifiableTextField(
+                    StringResource(Field.INPUT.name),
+                    input,
+                    Modifier.testIdentifier(FocusValidationRulesTestIdentifier.PASSWORD_TEXTFIELD)
+                )
             }
         }
     }
