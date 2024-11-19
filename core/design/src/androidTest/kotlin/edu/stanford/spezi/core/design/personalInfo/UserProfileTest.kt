@@ -1,6 +1,5 @@
 package edu.stanford.spezi.core.design.personalInfo
 
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.test.junit4.createComposeRule
 import edu.stanford.spezi.core.design.personalInfo.composables.UserProfileTestComposable
 import edu.stanford.spezi.core.design.personalInfo.simulators.UserProfileTestSimulator
