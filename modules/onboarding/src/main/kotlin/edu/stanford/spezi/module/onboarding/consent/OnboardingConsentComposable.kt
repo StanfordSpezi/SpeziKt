@@ -26,10 +26,11 @@ import edu.stanford.spezi.core.design.component.markdown.MarkdownComposable
 import edu.stanford.spezi.core.design.component.markdown.MarkdownElement
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
+import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
+import edu.stanford.spezi.core.design.views.views.model.ViewState
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingComposable
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingTitle
-import edu.stanford.spezi.module.onboarding.views.ViewState
 import kotlinx.coroutines.launch
 
 @Composable

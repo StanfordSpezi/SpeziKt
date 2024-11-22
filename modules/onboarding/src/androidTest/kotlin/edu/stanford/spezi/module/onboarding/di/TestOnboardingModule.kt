@@ -42,8 +42,4 @@ class TestOnboardingModule {
     @Provides
     @Singleton
     fun provideSequentialOnboardingRepository(): SequentialOnboardingRepository = mockk()
-
-    @Provides
-    @Singleton
-    fun provideOnConsentRepository(): ConsentManager = mockk()
 }

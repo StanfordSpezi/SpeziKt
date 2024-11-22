@@ -1,11 +1,14 @@
 package edu.stanford.spezi.module.onboarding.consent
 
 import android.graphics.pdf.PdfDocument
-import edu.stanford.spezi.module.onboarding.views.Standard
+import edu.stanford.spezi.core.utils.Standard
 import javax.inject.Inject
 
-class ConsentDataSource {
-    @Inject lateinit var standard: Standard
+class MyStandard : Standard
+
+class ConsentDataSource @Inject constructor() {
+    // TODO: Inject standard here
+    var standard: Standard = MyStandard()
 
     init {
         if (standard !is ConsentConstraint) {

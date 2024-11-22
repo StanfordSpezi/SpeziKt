@@ -26,7 +26,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.module.onboarding.views.ViewState
+import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
+import edu.stanford.spezi.core.design.views.views.model.ViewState
 import java.nio.charset.StandardCharsets
 
 data class ConsentDocument(

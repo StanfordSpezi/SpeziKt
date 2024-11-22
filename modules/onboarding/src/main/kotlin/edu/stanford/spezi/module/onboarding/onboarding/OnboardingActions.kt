@@ -10,16 +10,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.module.onboarding.views.SuspendButton
-import edu.stanford.spezi.module.onboarding.views.ViewState
-import edu.stanford.spezi.module.onboarding.views.ViewStateAlert
+import edu.stanford.spezi.core.design.views.views.model.ViewState
+import edu.stanford.spezi.core.design.views.views.views.button.SuspendButton
+import edu.stanford.spezi.core.design.views.views.viewstate.ViewStateAlert
 
 @Composable
 fun OnboardingActions(
-    primaryText: StringResource,
+    primaryText: String,
     primaryAction: suspend () -> Unit,
-    secondaryText: StringResource? = null,
+    secondaryText: String? = null,
     secondaryAction: (suspend () -> Unit)? = null,
 ) {
     val primaryActionState = remember { mutableStateOf<ViewState>(ViewState.Idle) }
@@ -29,9 +28,9 @@ fun OnboardingActions(
     ViewStateAlert(secondaryActionState)
 
     Column(Modifier.padding(top = 10.dp)) {
-        SuspendButton(primaryActionState, primaryAction) {
+        SuspendButton(state = primaryActionState, action = primaryAction) {
             Text(
-                primaryText.text(),
+                primaryText,
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 38.dp)
@@ -39,8 +38,8 @@ fun OnboardingActions(
         }
         secondaryText?.let { secondaryText ->
             secondaryAction?.let { secondaryAction ->
-                SuspendButton(secondaryActionState, secondaryAction) {
-                    Text(secondaryText.text())
+                SuspendButton(state = secondaryActionState, action = secondaryAction) {
+                    Text(secondaryText)
                 }
             }
         }

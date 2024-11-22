@@ -1,7 +1,7 @@
 package edu.stanford.spezi.module.onboarding.consent
 
 import android.graphics.pdf.PdfDocument
-import edu.stanford.spezi.module.onboarding.views.ViewState
+import edu.stanford.spezi.core.design.views.views.model.ViewState
 
 sealed interface ConsentViewState {
     data class Base(val viewState: ViewState) : ConsentViewState
