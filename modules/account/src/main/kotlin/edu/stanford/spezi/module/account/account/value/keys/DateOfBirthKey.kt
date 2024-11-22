@@ -41,7 +41,7 @@ private object AccountDateOfBirthKey : AccountKey<Date> {
     }
 
     @Composable
-    override fun EntryComposable(state: MutableState<Date>) {
+    override fun EntryComposable(value: Date, onValueChanged: (Date) -> Unit) {
         TODO("Not yet implemented")
     }
 }

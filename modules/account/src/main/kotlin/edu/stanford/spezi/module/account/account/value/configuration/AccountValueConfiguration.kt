@@ -14,6 +14,12 @@ import java.util.EnumSet
 data class AccountValueConfiguration internal constructor(
     val configuration: Map<AccountKey<*>, AccountKeyConfiguration<*>>,
 ) : Iterable<AccountKeyConfiguration<*>> {
+    constructor(configuration: List<ConfiguredAccountKey>) : this(
+        configuration
+            .map { it.configuration }
+            .associateBy { it.key }
+    )
+
     internal enum class IncludeCollectedType {
         ONLY_REQUIRED, INCLUDE_COLLECTED, INCLUDE_COLLECTED_AT_LEAST_ONE_REQUIRED
     }
@@ -80,7 +86,7 @@ data class AccountValueConfiguration internal constructor(
     // TODO: Figure out whether dynamic member access exists in Kotlin
 
     companion object {
-        val default: AccountValueConfiguration get() = AccountValueConfiguration(
+        val default get() = AccountValueConfiguration(
             listOf(
                 ConfiguredAccountKey.requires(AccountKeys::userId),
                 ConfiguredAccountKey.requires(AccountKeys::password),
@@ -89,14 +95,6 @@ data class AccountValueConfiguration internal constructor(
                 ConfiguredAccountKey.collects(AccountKeys::genderIdentity)
             )
         )
-
-        internal operator fun invoke(configuration: List<ConfiguredAccountKey>): AccountValueConfiguration {
-            return AccountValueConfiguration(
-                configuration
-                    .map { it.configuration }
-                    .associateBy { it.key }
-            )
-        }
     }
 
     override fun iterator() = this.configuration.values.iterator()

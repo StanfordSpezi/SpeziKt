@@ -3,7 +3,7 @@ package edu.stanford.spezi.module.account.account
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.module.account.account.service.AccountService
 import edu.stanford.spezi.module.account.account.service.identityProvider.IdentityProvider
-import edu.stanford.spezi.module.account.account.service.identityProvider.SecurityRelatedModifier
+import edu.stanford.spezi.module.account.account.service.identityProvider.SecurityRelatedComposable
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.configuration.AccountValueConfiguration
 import edu.stanford.spezi.module.account.account.value.keys.accountServiceConfiguration
@@ -30,7 +30,7 @@ class Account(
         private set
 
     internal val accountSetupComponents: List<IdentityProvider>
-    internal val securityRelatedModifiers: List<SecurityRelatedModifier>
+    internal val securityRelatedModifiers: List<SecurityRelatedComposable>
 
     init {
         this.details = details
@@ -39,7 +39,7 @@ class Account(
         this.accountSetupComponents = service.javaClass.fields.asList()
             .mapNotNull { it.get(service) as? IdentityProvider }
         this.securityRelatedModifiers = service.javaClass.fields.asList()
-            .mapNotNull { it.get(service) as? SecurityRelatedModifier }
+            .mapNotNull { it.get(service) as? SecurityRelatedComposable }
     }
 
     fun configure() {

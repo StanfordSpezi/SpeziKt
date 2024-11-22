@@ -5,6 +5,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.module.account.account.AccountDetailsCache
 import edu.stanford.spezi.module.account.account.AccountStorageProvider
 import edu.stanford.spezi.module.account.account.ExternalAccountStorage
@@ -12,6 +13,7 @@ import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
 import edu.stanford.spezi.module.account.firebase.firestore.Firestore
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -21,7 +23,8 @@ import javax.inject.Inject
 class FirestoreAccountStorage(
     val collection: () -> CollectionReference,
     val identifierMapping: Map<String, AccountKey<*>>,
-) : AccountStorageProvider {
+    @Dispatching.IO private val scope: CoroutineScope,
+    ) : AccountStorageProvider {
 
     @Inject internal lateinit var firestore: Firestore
 
@@ -35,7 +38,6 @@ class FirestoreAccountStorage(
     private fun userDocument(accountId: String): DocumentReference =
         collection().document(accountId)
 
-    @OptIn(DelicateCoroutinesApi::class) // TODO: Check if the GlobalScope.launch is the right call here...
     private fun snapshotListener(accountId: String, keys: List<AccountKey<*>>) {
         listenerRegistration.remove(accountId)
         val document = userDocument(accountId)
@@ -50,7 +52,7 @@ class FirestoreAccountStorage(
             }
 
             snapshot?.let {
-                GlobalScope.launch {
+                scope.launch {
                     processUpdatedSnapshot(accountId, it)
                 }
             }

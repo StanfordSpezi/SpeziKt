@@ -1,28 +1,21 @@
 package edu.stanford.spezi.module.account.account.service.configuration
 
-data class AccountServiceConfigurationPair<Value : Any>(
-    val key: AccountServiceConfigurationKey<Value>,
-    val value: Value,
-) {
-    fun storeIn(storage: AccountServiceConfigurationStorage) {
-        storage[key] = value
-    }
+interface AccountServiceConfigurationValue {
+    fun storeIn(storage: AccountServiceConfigurationStorage)
 }
 
 data class AccountServiceConfiguration internal constructor(
     internal val storage: AccountServiceConfigurationStorage = AccountServiceConfigurationStorage(),
 ) {
-    companion object {
-        operator fun invoke(
-            supportedKeys: SupportedAccountKeys,
-            configuration: List<AccountServiceConfigurationPair<*>> = emptyList(),
-        ): AccountServiceConfiguration {
-            val storage = AccountServiceConfigurationStorage()
-            storage[SupportedAccountKeys.key] = supportedKeys
+    constructor(
+        supportedKeys: SupportedAccountKeys,
+        configuration: List<AccountServiceConfigurationValue> = emptyList(),
+    ) : this(
+        AccountServiceConfigurationStorage().apply {
+            supportedKeys.storeIn(this)
             for (entry in configuration) {
-                entry.storeIn(storage)
+                entry.storeIn(this)
             }
-            return AccountServiceConfiguration(storage)
         }
-    }
+    )
 }

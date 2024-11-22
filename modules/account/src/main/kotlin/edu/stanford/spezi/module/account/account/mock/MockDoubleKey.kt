@@ -25,8 +25,14 @@ private object MockDoubleKey : AccountKey<Double> {
     }
 
     @Composable
-    override fun EntryComposable(state: MutableState<Double>) {
-        NumberEntry(key = this, state = state, format = NumberFormat.getInstance(), convert = { it.toDouble() })
+    override fun EntryComposable(value: Double, onValueChanged: (Double) -> Unit) {
+        NumberEntry(
+            key = this,
+            value = value,
+            onValueChanged = onValueChanged,
+            format = NumberFormat.getInstance(),
+            convert = { it.toDouble() }
+        )
     }
 }
 

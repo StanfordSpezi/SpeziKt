@@ -1,16 +1,20 @@
 package edu.stanford.spezi.module.account.account.mock
 
+import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.module.account.account.AccountStorageProvider
 import edu.stanford.spezi.module.account.account.ExternalAccountStorage
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
-class InMemoryAccountStorageProvider : AccountStorageProvider {
+class InMemoryAccountStorageProvider @Inject constructor(
+    @Dispatching.IO private val scope: CoroutineScope
+) : AccountStorageProvider {
     private var records = mutableMapOf<String, AccountDetails>()
     private var cache = mutableMapOf<String, AccountDetails>() // simulates an in-memory cache
 
@@ -21,10 +25,10 @@ class InMemoryAccountStorageProvider : AccountStorageProvider {
             return cached
         } ?: run {
             records[accountId]?.let {
-                // TODO: Is there a nicer way to start a coroutine and then forget about it? It feels like I'm doing double the work here...
-                GlobalScope.launch {
+                // TODO: This should not wait here then, right?
+                scope.launch {
                     @Suppress("detekt:MagicNumber")
-                    delay(1_000L)
+                    delay(1.seconds)
                     records[accountId]?.let { details ->
                         cache[accountId] = details
                         storage.notifyAboutUpdatedDetails(accountId, details)

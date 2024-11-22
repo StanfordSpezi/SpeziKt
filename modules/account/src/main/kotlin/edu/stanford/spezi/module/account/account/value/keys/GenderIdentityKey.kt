@@ -39,7 +39,7 @@ private object AccountGenderIdentityKey : AccountKey<GenderIdentity> {
     }
 
     @Composable
-    override fun EntryComposable(state: MutableState<GenderIdentity>) {
+    override fun EntryComposable(value: GenderIdentity, onValueChanged: (GenderIdentity) -> Unit) {
         TODO("Not yet implemented")
     }
 }

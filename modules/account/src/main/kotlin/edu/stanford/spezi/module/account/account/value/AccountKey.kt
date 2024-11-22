@@ -23,7 +23,12 @@ interface AccountKey<Value : Any> : KnowledgeSource<AccountAnchor, Value> {
     fun DisplayComposable(value: Value)
 
     @Composable
-    fun EntryComposable(state: MutableState<Value>)
+    fun EntryComposable(value: Value, onValueChanged: (Value) -> Unit)
+
+    @Composable
+    fun EntryComposable(state: MutableState<Value>) {
+        EntryComposable(state.value, onValueChanged = { state.value = it })
+    }
 }
 
 internal val <Value : Any> AccountKey<Value>.isRequired: Boolean

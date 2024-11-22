@@ -6,7 +6,11 @@ import edu.stanford.spezi.module.account.account.value.keys.userId
 
 data class RequiredAccountKeys(
     internal val keys: List<AccountKey<*>>,
-) {
+) : AccountServiceConfigurationValue {
+    override fun storeIn(storage: AccountServiceConfigurationStorage) {
+        storage[key] = this
+    }
+
     companion object {
         val key = object : DefaultProvidingAccountServiceConfigurationKey<RequiredAccountKeys> {
             override val defaultValue: RequiredAccountKeys

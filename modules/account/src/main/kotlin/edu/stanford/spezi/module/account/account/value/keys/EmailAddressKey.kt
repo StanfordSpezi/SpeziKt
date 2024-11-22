@@ -33,8 +33,12 @@ private object AccountEmailKey : OptionalComputedAccountKey<String> {
     }
 
     @Composable
-    override fun EntryComposable(state: MutableState<String>) {
-        VerifiableTextField(name, state)
+    override fun EntryComposable(value: String, onValueChanged: (String) -> Unit) {
+        VerifiableTextField(
+            name.text(),
+            value = value,
+            onValueChanged = onValueChanged,
+        )
         // TODO: Set content type, disable field assistants
     }
 

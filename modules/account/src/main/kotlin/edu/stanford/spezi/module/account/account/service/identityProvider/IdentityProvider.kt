@@ -15,6 +15,15 @@ data class IdentityProvider internal constructor(
     val configuration: IdentityProviderConfiguration,
     val content: @Composable () -> Unit,
 ) {
+    constructor(
+        isEnabled: Boolean = true,
+        section: AccountSetupSection = AccountSetupSection.default,
+        content: @Composable () -> Unit,
+    ) : this(
+        IdentityProviderConfiguration(isEnabled, section),
+        content,
+    )
+
     operator fun getValue(thisRef: Any, property: KProperty<*>) = content
 
     val component = AccountSetupComponent(configuration = configuration, content = content)
@@ -22,14 +31,4 @@ data class IdentityProvider internal constructor(
     var isEnabled: Boolean
         get() = configuration.isEnabled
         set(value) { configuration.isEnabled = value }
-
-    companion object {
-        operator fun invoke(
-            isEnabled: Boolean = true,
-            section: AccountSetupSection = AccountSetupSection.default,
-            content: @Composable () -> Unit,
-        ): IdentityProvider {
-            return IdentityProvider(IdentityProviderConfiguration(isEnabled, section), content)
-        }
-    }
 }

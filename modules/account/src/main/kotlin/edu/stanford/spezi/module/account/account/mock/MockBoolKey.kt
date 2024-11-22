@@ -24,8 +24,8 @@ private object MockBoolKey : AccountKey<Boolean> {
     }
 
     @Composable
-    override fun EntryComposable(state: MutableState<Boolean>) {
-        BooleanEntry(key = this, state = state)
+    override fun EntryComposable(value: Boolean, onValueChanged: (Boolean) -> Unit) {
+        BooleanEntry(key = this, value = value, onValueChanged = onValueChanged)
     }
 }
 

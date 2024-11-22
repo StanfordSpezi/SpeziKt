@@ -15,8 +15,8 @@ import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.design.views.validation.state.ReceiveValidation
 import edu.stanford.spezi.core.design.views.validation.state.ValidationContext
 import edu.stanford.spezi.core.design.views.views.model.ViewState
-import edu.stanford.spezi.core.design.views.views.viewModifier.viewState.ViewStateAlert
 import edu.stanford.spezi.core.design.views.views.views.button.SuspendButton
+import edu.stanford.spezi.core.design.views.views.viewstate.ViewStateAlert
 import edu.stanford.spezi.module.account.account.compositionLocal.LocalAccount
 import edu.stanford.spezi.module.account.account.compositionLocal.ReportSignupProviderCompliance
 import edu.stanford.spezi.module.account.account.compositionLocal.SignupProviderCompliance
@@ -27,6 +27,7 @@ import edu.stanford.spezi.module.account.account.value.keys.isAnonymous
 import edu.stanford.spezi.module.account.account.views.setup.SignupSectionsComposable
 import java.util.EnumSet
 
+/*
 @Composable
 fun SignupForm(
     header: @Composable () -> Unit = { SignupFormHeader() },
@@ -178,3 +179,5 @@ private fun SignupFormPreview() {
     }
 }
 
+
+ */

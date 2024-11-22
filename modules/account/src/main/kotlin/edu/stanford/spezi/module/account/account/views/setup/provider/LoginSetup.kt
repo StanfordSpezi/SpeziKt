@@ -34,8 +34,8 @@ import edu.stanford.spezi.core.design.views.validation.state.ValidationContext
 import edu.stanford.spezi.core.design.views.validation.views.TextFieldType
 import edu.stanford.spezi.core.design.views.validation.views.VerifiableTextField
 import edu.stanford.spezi.core.design.views.views.model.ViewState
-import edu.stanford.spezi.core.design.views.views.viewModifier.viewState.ViewStateAlert
 import edu.stanford.spezi.core.design.views.views.views.button.SuspendButton
+import edu.stanford.spezi.core.design.views.views.viewstate.ViewStateAlert
 import edu.stanford.spezi.module.account.account.compositionLocal.LocalAccount
 import edu.stanford.spezi.module.account.account.model.UserIdPasswordCredential
 import edu.stanford.spezi.module.account.account.service.configuration.UserIdConfiguration
@@ -77,7 +77,7 @@ internal fun LoginSetup(
 
             SuspendButton(
                 state = state,
-                action = {
+                onClick = {
                     if (!validation.value.validateHierarchy()) return@SuspendButton
                     focusedField.value = null
 
@@ -136,7 +136,7 @@ private fun LoginSetupFields(
         Column { // swiftlint:disable:this closure_body_length
             Validate(userId.value, ValidationRule.nonEmpty) {
                 VerifiableTextField(
-                    userIdConfiguration.idType.stringResource,
+                    userIdConfiguration.idType.stringResource.text(),
                     userId,
                     Modifier.padding(bottom = 0.5.dp)
                 )
@@ -147,7 +147,7 @@ private fun LoginSetupFields(
 
             Validate(password.value, ValidationRule.nonEmpty) {
                 VerifiableTextField(
-                    StringResource("UP_PASSWORD"),
+                    StringResource("UP_PASSWORD").text(),
                     password,
                     type = TextFieldType.SECURE
                 )

@@ -3,6 +3,7 @@ package edu.stanford.spezi.module.account.account.views
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -46,15 +47,14 @@ internal fun AccountSummaryBox(
             )
             .padding(8.dp)
     ) {
-        Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.padding(8.dp).fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             model.profileViewName?.let {
                 UserProfileComposable(
                     name = it,
                     modifier = Modifier.height(40.dp)
                 )
             } ?: ImageResourceComposable(
-                ImageResource.Vector(Icons.Default.Person),
-                "",
+                ImageResource.Vector(Icons.Default.Person, StringResource("User Profile")),
                 modifier = Modifier.size(40.dp),
                 tint = Colors.secondary,
             )

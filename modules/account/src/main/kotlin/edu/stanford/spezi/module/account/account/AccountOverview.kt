@@ -1,4 +1,4 @@
-package edu.stanford.spezi.module.account.account.views.overview
+package edu.stanford.spezi.module.account.account
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
@@ -7,6 +7,7 @@ import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.module.account.account.compositionLocal.LocalAccount
 import edu.stanford.spezi.module.account.account.views.documentation.MissingAccountDetailsWarning
+import edu.stanford.spezi.module.account.account.views.overview.AccountOverviewSections
 
 enum class AccountOverviewCloseBehavior {
     DISABLED, SHOW_CLOSE_BUTTON

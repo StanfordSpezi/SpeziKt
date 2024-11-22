@@ -16,7 +16,11 @@ import kotlin.reflect.KProperty0
 data class FieldValidationRules(
     val key: AccountKey<String>,
     val rules: List<ValidationRule>,
-) {
+) : AccountServiceConfigurationValue {
+    override fun storeIn(storage: AccountServiceConfigurationStorage) {
+        storage[FieldValidationRules.key(key)] = this
+    }
+
     companion object {
         private var keys = mutableMapOf<AccountKey<String>, FieldValidationRulesKey>()
 

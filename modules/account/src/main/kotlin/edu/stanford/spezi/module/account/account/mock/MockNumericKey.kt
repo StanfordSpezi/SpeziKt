@@ -25,8 +25,14 @@ private object MockNumericKey : AccountKey<Long> {
     }
 
     @Composable
-    override fun EntryComposable(state: MutableState<Long>) {
-        NumberEntry(key = this, state = state, format = NumberFormat.getInstance(), convert = { it.toLong() })
+    override fun EntryComposable(value: Long, onValueChanged: (Long) -> Unit) {
+        NumberEntry(
+            key = this,
+            value = value,
+            onValueChanged = onValueChanged,
+            format = NumberFormat.getInstance(),
+            convert = { it.toLong() }
+        )
     }
 }
 

@@ -15,13 +15,13 @@ fun <Value : Any> GeneralizedEntryComposable(
     key: AccountKey<Value>,
     initialValue: Value,
 ) {
-    val value = remember { mutableStateOf(initialValue) }
+    val state = remember { mutableStateOf(initialValue) }
     val account = LocalAccount.current
 
-    (value.value as? String)?.let { stringValue ->
+    (state.value as? String)?.let { stringValue ->
         // TODO: Figure out how to get validation rules!
         Validate(stringValue, emptyList()) {
-            key.EntryComposable(value)
+            key.EntryComposable(state.value, onValueChanged = { state.value = it })
         }
     } ?: run {
         val isRequiredNonEmpty = (
@@ -30,11 +30,11 @@ fun <Value : Any> GeneralizedEntryComposable(
             )
 
         if (isRequiredNonEmpty) {
-            ValidateRequired(key, value) {
-                key.EntryComposable(value)
+            ValidateRequired(key, state) {
+                key.EntryComposable(state)
             }
         } else {
-            key.EntryComposable(value)
+            key.EntryComposable(state)
         }
     }
 }

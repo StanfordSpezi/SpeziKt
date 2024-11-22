@@ -73,7 +73,7 @@ fun UserProfileComposable(
                     .fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
                     formattedName,
-                    fontSize = (sideLength.value * 0.2).sp,
+                    fontSize = (sideLength.value * 0.175).sp,
                     color = Colors.secondary.lighten(),
                 )
             }

@@ -16,7 +16,6 @@ import edu.stanford.spezi.core.design.views.validation.minimalPassword
 import edu.stanford.spezi.core.design.views.validation.nonEmpty
 import edu.stanford.spezi.core.design.views.validation.strongPassword
 import edu.stanford.spezi.module.account.account.service.configuration.AccountServiceConfiguration
-import edu.stanford.spezi.module.account.account.service.configuration.AccountServiceConfigurationPair
 import edu.stanford.spezi.module.account.account.service.configuration.FieldValidationRules
 import edu.stanford.spezi.module.account.account.service.configuration.SupportedAccountKeys
 import edu.stanford.spezi.module.account.account.service.configuration.fieldValidationRules
@@ -49,9 +48,9 @@ private fun PasswordValidationRuleFooterPreview() {
             AccountServiceConfiguration(
                 supportedKeys = SupportedAccountKeys.Arbitrary,
                 configuration = listOf(
-                    AccountServiceConfigurationPair(
-                        FieldValidationRules.key(AccountKeys.password),
-                        FieldValidationRules(AccountKeys.password, listOf(ValidationRule.minimalPassword, ValidationRule.strongPassword))
+                    FieldValidationRules(
+                        AccountKeys.password,
+                        listOf(ValidationRule.minimalPassword, ValidationRule.strongPassword)
                     )
                 )
             )

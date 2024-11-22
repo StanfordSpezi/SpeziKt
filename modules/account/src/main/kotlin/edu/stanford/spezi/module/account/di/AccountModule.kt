@@ -15,6 +15,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import edu.stanford.spezi.module.account.BuildConfig
+import edu.stanford.spezi.module.account.account.Account
+import edu.stanford.spezi.module.account.account.AccountConfiguration
+import edu.stanford.spezi.module.account.account.mock.InMemoryAccountService
+import edu.stanford.spezi.module.account.account.service.AccountService
 import edu.stanford.spezi.module.account.manager.FirebaseInvitationAuthManager
 import edu.stanford.spezi.module.account.manager.InvitationAuthManager
 import edu.stanford.spezi.module.account.manager.UserSessionManager

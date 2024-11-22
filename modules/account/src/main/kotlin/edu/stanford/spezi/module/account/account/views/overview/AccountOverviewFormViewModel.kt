@@ -56,10 +56,10 @@ internal class AccountOverviewFormViewModel @Inject constructor(
             get() = !modifiedDetails.isEmpty()
     }
 
-    companion object {
-        operator fun invoke(account: Account, details: AccountDetails) =
-            AccountOverviewFormViewModel(account.configuration, details.accountServiceConfiguration)
-    }
+    constructor(account: Account, details: AccountDetails) : this(
+        account.configuration,
+        details.accountServiceConfiguration
+    )
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()

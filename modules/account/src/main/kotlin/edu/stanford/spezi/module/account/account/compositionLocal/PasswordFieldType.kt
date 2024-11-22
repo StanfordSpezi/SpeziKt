@@ -8,7 +8,7 @@ import edu.stanford.spezi.module.account.account.value.keys.password
 enum class PasswordFieldType {
     PASSWORD, NEW, REPEAT;
 
-    val text: StringResource get() = when (this) {
+    val stringResource: StringResource get() = when (this) {
         PASSWORD -> AccountKeys.password.name
         NEW -> StringResource("NEW_PASSWORD")
         REPEAT -> StringResource("REPEAT_PASSWORD")

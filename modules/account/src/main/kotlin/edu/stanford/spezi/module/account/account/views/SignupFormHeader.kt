@@ -34,7 +34,6 @@ internal fun FormHeader(
         ) {
             ImageResourceComposable(
                 image,
-                "",
                 modifier = Modifier.size(50.dp, 50.dp),
                 tint = Colors.primary,
             )
@@ -59,7 +58,7 @@ internal fun FormHeader(
 internal fun SignupFormHeader() {
     FormHeader(
         // TODO: We should probably use person_add instead: https://fonts.google.com/icons?selected=Material+Icons:person_add:
-        ImageResource.Vector(Icons.Default.Person),
+        ImageResource.Vector(Icons.Default.Person, StringResource("User Profile")),
         StringResource("Create a new Account"),
         StringResource("Please fill out the details below to create your new account."),
     )

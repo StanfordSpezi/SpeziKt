@@ -26,8 +26,7 @@ fun SuccessfulPasswordResetComposable(
 
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(32.dp)) {
         ImageResourceComposable(
-            ImageResource.Vector(Icons.Default.CheckCircle),
-            "Checkmark",
+            ImageResource.Vector(Icons.Default.CheckCircle, StringResource("Checkmark")),
             modifier = Modifier.size(100.dp).padding(bottom = 32.dp),
             tint = Color.Green.copy(alpha = 0.7f),
         )

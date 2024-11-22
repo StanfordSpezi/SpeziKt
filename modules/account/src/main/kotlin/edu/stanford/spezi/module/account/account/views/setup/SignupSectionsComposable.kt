@@ -20,23 +20,25 @@ internal fun SignupSectionsComposable(
 ) {
     val account = LocalAccount.current
 
-    for (entry in sections.entries) {
-        Column {
-            entry.key.categoryTitle?.let {
-                Text(it.text()) // TODO: Section header
-            }
-
-            for (key in entry.value) {
-                Column {
-                    key.EntryComposableWithEmptyValue()
+    Column {
+        for (entry in sections.entries) {
+            Column {
+                entry.key.categoryTitle?.let {
+                    Text(it.text()) // TODO: Section header
                 }
-            }
 
-            val isCredentialsCategory = entry.key == AccountKeyCategory.credentials
-            val password = (account?.configuration?.configuration ?: emptyMap())[AccountKeys.password]
-            if (isCredentialsCategory && password != null) {
-                account?.accountService?.configuration?.let {
-                    PasswordValidationRuleFooter(it)
+                for (key in entry.value) {
+                    Column {
+                        key.EntryComposableWithEmptyValue()
+                    }
+                }
+
+                val isCredentialsCategory = entry.key == AccountKeyCategory.credentials
+                val password = (account?.configuration?.configuration ?: emptyMap())[AccountKeys.password]
+                if (isCredentialsCategory && password != null) {
+                    account?.accountService?.configuration?.let {
+                        PasswordValidationRuleFooter(it)
+                    }
                 }
             }
         }

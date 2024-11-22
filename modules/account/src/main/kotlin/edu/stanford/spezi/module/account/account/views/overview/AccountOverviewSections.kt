@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import edu.stanford.spezi.module.account.account.Account
+import edu.stanford.spezi.module.account.account.AccountDeletionBehavior
+import edu.stanford.spezi.module.account.account.AccountOverviewCloseBehavior
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 
 @Composable

@@ -1,31 +1,37 @@
 package edu.stanford.spezi.core.design.views.personalinfo.fields
 
+import android.app.Person
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
 import edu.stanford.spezi.core.design.views.views.layout.DescriptionGridRow
-import kotlin.reflect.KMutableProperty1
+import kotlin.reflect.KProperty1
 
 @Composable
 fun NameFieldRow(
     description: String,
-    builder: PersonNameComponents.Builder,
-    property: KMutableProperty1<PersonNameComponents.Builder, String?>,
+    name: PersonNameComponents,
+    property: KProperty1<PersonNameComponents, String?>,
+    onValueChanged: (String?) -> Unit,
     modifier: Modifier = Modifier,
     label: @Composable () -> Unit,
 ) {
     NameFieldRow(
-        builder = builder,
+        name = name,
         property = property,
+        onValueChanged = onValueChanged,
         description = { Text(description) },
         modifier = modifier,
         label = label
@@ -34,8 +40,9 @@ fun NameFieldRow(
 
 @Composable
 fun NameFieldRow(
-    builder: PersonNameComponents.Builder,
-    property: KMutableProperty1<PersonNameComponents.Builder, String?>,
+    name: PersonNameComponents,
+    property: KProperty1<PersonNameComponents, String?>,
+    onValueChanged: (String?) -> Unit,
     description: @Composable BoxScope.() -> Unit,
     modifier: Modifier = Modifier,
     label: @Composable () -> Unit,
@@ -45,8 +52,9 @@ fun NameFieldRow(
         modifier = modifier,
         content = {
             NameTextField(
-                builder = builder,
+                name = name,
                 property = property,
+                onValueChanged = onValueChanged,
                 label = label,
             )
         }
@@ -56,13 +64,16 @@ fun NameFieldRow(
 @ThemePreviews
 @Composable
 private fun NameFieldRowPreview() {
-    val nameBuilder = remember { PersonNameComponents.Builder() }
+    var name by remember { mutableStateOf(PersonNameComponents()) }
 
     SpeziTheme(isPreview = true) {
         Column {
             NameFieldRow(
-                nameBuilder,
-                PersonNameComponents.Builder::givenName,
+                name,
+                PersonNameComponents::givenName,
+                onValueChanged = {
+                    name = name.copy(givenName = it)
+                },
                 description = { Text("First") }
             ) {
                 Text("enter first name")
@@ -72,8 +83,11 @@ private fun NameFieldRowPreview() {
 
             // Last Name Field
             NameFieldRow(
-                nameBuilder,
-                PersonNameComponents.Builder::familyName,
+                name,
+                PersonNameComponents::familyName,
+                onValueChanged = {
+                    name = name.copy(familyName = it)
+                },
                 description = { Text("Last") }
             ) {
                 Text("enter last name")

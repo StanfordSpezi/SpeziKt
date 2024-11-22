@@ -37,17 +37,21 @@ private object AccountUserIdKey : ComputedAccountKey<String> {
     }
 
     @Composable
-    override fun EntryComposable(state: MutableState<String>) {
+    override fun EntryComposable(value: String, onValueChanged: (String) -> Unit) {
         val configuration = LocalAccountServiceConfiguration.current
 
-        VerifiableTextField(configuration.userIdConfiguration.idType.stringResource, state)
+        VerifiableTextField(
+            configuration.userIdConfiguration.idType.stringResource.text(),
+            value = value,
+            onValueChanged = onValueChanged,
+        )
         // TODO: TextContentTupe, KeyboardType, Disable field assistants
     }
 
     override fun compute(repository: SharedRepository<AccountAnchor>): String {
         return repository[this as AccountKey<String>]
             ?: repository[AccountKeys.accountId]
-            ?: TODO("This last access should actually not be nullable...")
+            ?: error("This last access should actually not be nullable...")
     }
 }
 

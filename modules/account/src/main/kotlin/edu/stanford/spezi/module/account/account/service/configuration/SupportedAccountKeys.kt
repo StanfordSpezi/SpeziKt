@@ -6,9 +6,13 @@ import edu.stanford.spezi.module.account.account.value.configuration.AccountKeyR
 import edu.stanford.spezi.module.account.account.value.configuration.AccountValueConfiguration
 import edu.stanford.spezi.module.account.account.value.isRequired
 
-sealed interface SupportedAccountKeys {
+sealed interface SupportedAccountKeys : AccountServiceConfigurationValue {
     data object Arbitrary : SupportedAccountKeys
     data class Exactly(val keys: List<AccountKey<*>>) : SupportedAccountKeys
+
+    override fun storeIn(storage: AccountServiceConfigurationStorage) {
+        storage[key] = this
+    }
 
     fun canStore(value: AccountKeyConfiguration<*>): Boolean {
         return when (this) {

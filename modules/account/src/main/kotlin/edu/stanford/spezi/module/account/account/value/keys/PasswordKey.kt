@@ -39,25 +39,25 @@ private object AccountPasswordKey : AccountKey<String> {
     }
 
     @Composable
-    override fun EntryComposable(state: MutableState<String>) {
+    override fun EntryComposable(value: String, onValueChanged: (String) -> Unit) {
         val accountViewType = LocalAccountViewType.current
         val fieldType = LocalPasswordFieldType.current
         val validation = LocalValidationEngine.current
 
         when (accountViewType) {
             null, AccountViewType.Signup -> {
-                VerifiableTextField(fieldType.text, state, type = TextFieldType.SECURE)
+                VerifiableTextField(fieldType.stringResource.text(), value, onValueChanged, type = TextFieldType.SECURE)
                 // TODO: TextContentType, Disable field assistants
             }
             is AccountViewType.Overview -> {
                 DescriptionGridRow(
                     description = {
-                        Text(fieldType.text.text())
+                        Text(fieldType.stringResource.text())
                     }
                 ) {
                     TextField(
-                        state.value,
-                        onValueChange = { state.value = it },
+                        value,
+                        onValueChange = onValueChanged,
                         visualTransformation = PasswordVisualTransformation()
                     )
                     // TODO: TextContentType, Disable field assistants

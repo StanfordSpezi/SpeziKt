@@ -2,12 +2,15 @@ package edu.stanford.spezi.module.account.account.views.setup.provider
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -27,16 +30,21 @@ import edu.stanford.spezi.core.design.views.views.views.button.SuspendButton
 fun AccountServiceButton(
     title: StringResource,
     modifier: Modifier = Modifier,
-    image: ImageResource = remember { ImageResource.Vector(Icons.Default.Person) },
+    image: ImageResource = remember { ImageResource.Vector(Icons.Default.Person, StringResource("User Profile")) },
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
     state: MutableState<ViewState> = remember { mutableStateOf(ViewState.Idle) },
-    action: suspend () -> Unit,
+    onClick: suspend () -> Unit,
 ) {
-    AccountServiceButton(modifier, state, action) {
-        Row(horizontalArrangement = Arrangement.Start) {
-            ImageResourceComposable(
-                image,
-                "" // TODO: Figure out contentDescription
-            )
+    AccountServiceButton(
+        modifier = modifier,
+        state = state,
+        colors = colors,
+        onClick = onClick,
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Start,
+        ) {
+            ImageResourceComposable(image)
             Spacer(Modifier.width(8.dp))
             Text(title.text())
         }
@@ -47,10 +55,16 @@ fun AccountServiceButton(
 fun AccountServiceButton(
     modifier: Modifier = Modifier,
     state: MutableState<ViewState> = remember { mutableStateOf(ViewState.Idle) },
-    action: suspend () -> Unit,
-    label: @Composable () -> Unit,
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
+    onClick: suspend () -> Unit,
+    label: @Composable RowScope.() -> Unit,
 ) {
-    SuspendButton(modifier = modifier, state = state, action = action) {
+    SuspendButton(
+        modifier = modifier,
+        state = state,
+        colors = colors,
+        onClick = onClick,
+    ) {
         Row(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.padding(vertical = 10.dp).fillMaxWidth()

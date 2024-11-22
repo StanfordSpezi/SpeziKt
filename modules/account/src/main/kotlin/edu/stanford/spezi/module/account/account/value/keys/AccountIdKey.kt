@@ -24,7 +24,7 @@ private object AccountIdKey : RequiredAccountKey<String> {
     }
 
     @Composable
-    override fun EntryComposable(state: MutableState<String>) {
+    override fun EntryComposable(value: String, onValueChanged: (String) -> Unit) {
         TODO("Not yet implemented")
     }
 }

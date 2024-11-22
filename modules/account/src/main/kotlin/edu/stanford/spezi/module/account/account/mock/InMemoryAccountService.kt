@@ -1,13 +1,12 @@
 package edu.stanford.spezi.module.account.account.mock
 
-/*
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.views.personalInfo.PersonNameComponents
+import edu.stanford.spezi.core.coroutines.di.Dispatching
+import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
 import edu.stanford.spezi.core.design.views.views.views.button.SuspendButton
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.utils.UUID
@@ -18,14 +17,12 @@ import edu.stanford.spezi.module.account.account.compositionLocal.LocalAccount
 import edu.stanford.spezi.module.account.account.model.GenderIdentity
 import edu.stanford.spezi.module.account.account.service.AccountService
 import edu.stanford.spezi.module.account.account.service.configuration.AccountServiceConfiguration
-import edu.stanford.spezi.module.account.account.service.configuration.AccountServiceConfigurationPair
 import edu.stanford.spezi.module.account.account.service.configuration.RequiredAccountKeys
 import edu.stanford.spezi.module.account.account.service.configuration.SupportedAccountKeys
 import edu.stanford.spezi.module.account.account.service.configuration.UserIdConfiguration
 import edu.stanford.spezi.module.account.account.service.identityProvider.AccountSetupSection
-import edu.stanford.spezi.module.account.account.service.identityProvider.ComposableModifier
 import edu.stanford.spezi.module.account.account.service.identityProvider.IdentityProvider
-import edu.stanford.spezi.module.account.account.service.identityProvider.SecurityRelatedModifier
+import edu.stanford.spezi.module.account.account.service.identityProvider.SecurityRelatedComposable
 import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
@@ -39,8 +36,7 @@ import edu.stanford.spezi.module.account.account.value.keys.password
 import edu.stanford.spezi.module.account.account.value.keys.userId
 import edu.stanford.spezi.module.account.account.views.setup.provider.AccountServiceButton
 import edu.stanford.spezi.module.account.account.views.setup.provider.AccountSetupProviderComposable
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -73,7 +69,7 @@ private fun MockUserIdPasswordEmbeddedComposable(service: InMemoryAccountService
 @Composable
 private fun AnonymousSignupButton(service: InMemoryAccountService) {
     // TODO: Coloring
-    AccountServiceButton(action = {
+    AccountServiceButton(onClick = {
         service.signInAnonymously()
     }) {
         Text("Stanford SUNet")
@@ -87,35 +83,34 @@ private fun MockSignInWithGoogleButton() {
     // TODO: Missing component in general, I think
 }
 
-private data class MockSecurityAlert(val service: InMemoryAccountService) : ComposableModifier {
-    @Composable
-    override fun Body(content: @Composable () -> Unit) {
-        if (service.state.presentingSecurityAlert.value) {
-            AlertDialog(
-                onDismissRequest = {
-                    service.state.presentingSecurityAlert.value = false
-                },
-                title = {
-                    Text("Security Alert")
-                },
-                confirmButton = {
-                    SuspendButton(StringResource("Continue")) {
-                        service.state.securityContinuation?.resume(Unit)
-                    }
-                },
-                dismissButton = {
-                    SuspendButton(StringResource("Cancel")) {
-                        service.state.securityContinuation?.resumeWithException(CancellationException())
-                    }
+@Composable
+private fun MockSecurityAlert(service: InMemoryAccountService) {
+    if (service.state.presentingSecurityAlert.value) {
+        AlertDialog(
+            onDismissRequest = {
+                service.state.presentingSecurityAlert.value = false
+            },
+            title = {
+                Text("Security Alert")
+            },
+            confirmButton = {
+                SuspendButton("Continue") {
+                    service.state.securityContinuation?.resume(Unit)
                 }
-            )
-        }
+            },
+            dismissButton = {
+                SuspendButton("Cancel") {
+                    service.state.securityContinuation?.resumeWithException(CancellationException())
+                }
+            }
+        )
     }
 }
 
 class InMemoryAccountService(
     type: UserIdConfiguration = UserIdConfiguration.emailAddress,
     configured: EnumSet<ConfiguredIdentityProvider> = EnumSet.allOf(ConfiguredIdentityProvider::class.java),
+    @Dispatching.IO private val scope: CoroutineScope,
 ) : AccountService {
     companion object {
         val supportedKeys = listOf(
@@ -130,11 +125,11 @@ class InMemoryAccountService(
 
     val logger by speziLogger()
 
-    @Inject private lateinit var account: Account
+    @Inject internal lateinit var account: Account
 
-    @Inject private lateinit var notifications: AccountNotifications
+    @Inject internal lateinit var notifications: AccountNotifications
 
-    @Inject private lateinit var externalStorage: ExternalAccountStorage
+    @Inject internal lateinit var externalStorage: ExternalAccountStorage
 
     private val loginViewDelegate = IdentityProvider(section = AccountSetupSection.primary) {
         MockUserIdPasswordEmbeddedComposable(this)
@@ -149,17 +144,14 @@ class InMemoryAccountService(
     }
     private val signInWithGoogle by signInWithGoogleDelegate
 
-    private val securityAlertDelegate = SecurityRelatedModifier { MockSecurityAlert(this) }
+    private val securityAlertDelegate = SecurityRelatedComposable { MockSecurityAlert(this) }
     private val securityAlert by securityAlertDelegate
 
     override val configuration = AccountServiceConfiguration(
         SupportedAccountKeys.Exactly(supportedKeys),
         listOf(
-            AccountServiceConfigurationPair(UserIdConfiguration.key, type),
-            AccountServiceConfigurationPair(
-                RequiredAccountKeys.key,
-                RequiredAccountKeys(listOf(AccountKeys.userId, AccountKeys.password))
-            )
+            type,
+            RequiredAccountKeys(listOf(AccountKeys.userId, AccountKeys.password)),
         ),
     )
     val state = State()
@@ -186,7 +178,7 @@ class InMemoryAccountService(
 
     init {
         val subscription = externalStorage.updatedDetails
-        GlobalScope.launch { // TODO: Figure out how to do weak reference logic here
+        scope.launch { // TODO: Figure out how to do weak reference logic here
             subscription.onEach { updatedDetails ->
                 val accountId = UUID(updatedDetails.accountId)
                 registeredUsers[accountId]?.let { storage ->
@@ -362,7 +354,7 @@ class InMemoryAccountService(
         var password: String? = null,
         var name: PersonNameComponents? = null,
         var genderIdentity: GenderIdentity? = null,
-        var dateOfBirth: Date? = null
+        var dateOfBirth: Date? = null,
     )
 
     data class State(
@@ -395,4 +387,3 @@ private fun InMemoryAccountService.UserStorage.update(modifications: AccountModi
         dateOfBirth = null
     }
 }
-*/

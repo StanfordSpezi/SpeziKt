@@ -6,10 +6,10 @@ data class AccountKeyCategory internal constructor(
     val categoryTitle: StringResource? = null,
 ) {
     companion object {
-        val credentials = AccountKeyCategory(StringResource("UP_CREDENTIALS"))
-        val name = AccountKeyCategory(StringResource("UP_NAME"))
-        val contactDetails = AccountKeyCategory(StringResource("UP_CONTACT_DETAILS"))
-        val personalDetails = AccountKeyCategory(StringResource("UP_PERSONAL_DETAILS"))
+        val credentials = AccountKeyCategory(categoryTitle = StringResource("UP_CREDENTIALS"))
+        val name = AccountKeyCategory(categoryTitle = StringResource("UP_NAME"))
+        val contactDetails = AccountKeyCategory(categoryTitle = StringResource("UP_CONTACT_DETAILS"))
+        val personalDetails = AccountKeyCategory(categoryTitle = StringResource("UP_PERSONAL_DETAILS"))
         val other = AccountKeyCategory()
 
         operator fun invoke(title: StringResource): AccountKeyCategory {

@@ -1,4 +1,4 @@
-package edu.stanford.spezi.module.account.firebase.account
+package edu.stanford.spezi.module.account.firebase.account.models
 
 import com.google.firebase.auth.FirebaseUser
 

@@ -60,7 +60,7 @@ private object AccountNameKey : AccountKey<PersonNameComponents> {
     }
 
     @Composable
-    override fun EntryComposable(state: MutableState<PersonNameComponents>) {
+    override fun EntryComposable(value: PersonNameComponents, onValueChanged: (PersonNameComponents) -> Unit) {
         val account = LocalAccount.current
         val nameIsRequired = account?.configuration?.get(AccountKeys.name)?.requirement == AccountKeyRequirement.REQUIRED
         val validationRules = if (nameIsRequired) listOf(ValidationRule.nonEmpty) else listOf(ValidationRule.acceptAll)
@@ -75,10 +75,15 @@ private object AccountNameKey : AccountKey<PersonNameComponents> {
         CompositionLocalProvider(LocalValidationEngineConfiguration provides validationConfiguration) {
             Column {
                 ReceiveValidation(givenNameValidation) {
-                    Validate(state.value.givenName ?: "", rules = validationRules) {
+                    Validate(value.givenName ?: "", rules = validationRules) {
                         NameFieldRow(
-                            state,
+                            value,
                             PersonNameComponents::givenName,
+                            onValueChanged = {
+                                onValueChanged(
+                                    value.copy(givenName = it)
+                                )
+                            },
                             description = {
                                 Text(StringResource("UAP_SIGNUP_GIVEN_NAME_TITLE").text())
                             },
@@ -93,10 +98,15 @@ private object AccountNameKey : AccountKey<PersonNameComponents> {
                 HorizontalDivider()
 
                 ReceiveValidation(familyNameValidation) {
-                    Validate(state.value.familyName ?: "", rules = validationRules) {
+                    Validate(value.familyName ?: "", rules = validationRules) {
                         NameFieldRow(
-                            state,
+                            value,
                             PersonNameComponents::familyName,
+                            onValueChanged = {
+                                onValueChanged(
+                                    value.copy(familyName = it)
+                                )
+                            },
                             description = {
                                 Text(StringResource("UAP_SIGNUP_FAMILY_NAME_TITLE").text())
                             },

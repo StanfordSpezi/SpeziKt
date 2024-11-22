@@ -1,4 +1,4 @@
-package edu.stanford.spezi.module.account.firebase.account
+package edu.stanford.spezi.module.account.firebase.account.keys
 
 import edu.stanford.spezi.core.utils.foundation.knowledgesource.KnowledgeSource
 import edu.stanford.spezi.module.account.account.value.collections.AccountAnchor

@@ -1,9 +1,8 @@
 package edu.stanford.spezi.module.account.account.value.configuration
 
 import edu.stanford.spezi.module.account.account.value.AccountKey
+import edu.stanford.spezi.module.account.account.value.RequiredAccountKey
 import kotlin.reflect.KProperty0
-
-// TODO: Possibly add the disfavoredOverload funs as well to make sure one doesn't create a non-required required AccountKey
 
 data class ConfiguredAccountKey internal constructor(
     internal val configuration: AccountKeyConfiguration<*>,

@@ -93,12 +93,15 @@ private fun PasswordResetForm(
         )
 
         Validate(userId.value, rule = ValidationRule.nonEmpty) {
-            VerifiableTextField(idTypeStringResource, userId)
+            VerifiableTextField(
+                idTypeStringResource.text(),
+                userId
+            )
         }
 
         SuspendButton(
             state = state,
-            action = {
+            onClick = {
                 if (!validation.validateHierarchy()) return@SuspendButton
                 resetPassword(userId.value)
                 asyncScope.launch {

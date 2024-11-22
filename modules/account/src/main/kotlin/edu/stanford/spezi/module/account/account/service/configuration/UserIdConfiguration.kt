@@ -7,7 +7,11 @@ data class UserIdConfiguration(
     // val autofillHint: AutofillHint, // TODO: What is the equivalent in Android?
     // val contentType: TextContentType, // TODO: What is the equivalent in Android?
     val keyboardType: KeyboardType,
-) {
+) : AccountServiceConfigurationValue {
+    override fun storeIn(storage: AccountServiceConfigurationStorage) {
+        storage[key] = this
+    }
+
     companion object {
         val key = object : DefaultProvidingAccountServiceConfigurationKey<UserIdConfiguration> {
             override val defaultValue get() = UserIdConfiguration.emailAddress
