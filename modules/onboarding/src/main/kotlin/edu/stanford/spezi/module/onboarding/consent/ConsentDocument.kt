@@ -50,7 +50,7 @@ data class ConsentDocument(
     internal fun Composable(
         modifier: Modifier = Modifier,
         uiState: ConsentUiState,
-        onAction: (ConsentAction) -> Unit
+        onAction: (ConsentAction) -> Unit,
     ) {
         val givenName = uiState.name.givenName ?: ""
         val familyName = uiState.name.familyName ?: ""
@@ -85,7 +85,6 @@ data class ConsentDocument(
                     )
                 }
             )
-
 
             if (givenName.isNotBlank() && familyName.isNotBlank()) {
                 Spacer(modifier = Modifier.height(Spacings.medium))
@@ -128,7 +127,7 @@ private fun ConsentDocumentComposablePreview(
     ConsentDocument(
         markdown = { "".toByteArray(StandardCharsets.UTF_8) },
         viewState = remember { mutableStateOf(ConsentViewState.Base(ViewState.Idle)) },
-        ).Composable(
+    ).Composable(
         uiState = ConsentUiState(
             name = data.name,
             paths = data.paths

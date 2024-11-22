@@ -5,11 +5,11 @@ import androidx.compose.runtime.Composable
 
 data class OnboardingStep(
     val identifier: String,
-    val composable: @Composable () -> Unit
+    val composable: @Composable () -> Unit,
 )
 
 data class OnboardingComposableBuilder(
-    var list: MutableList<OnboardingStep>
+    var list: MutableList<OnboardingStep>,
 ) {
     fun step(id: String, composable: @Composable () -> Unit) {
         list.add(OnboardingStep(id, composable))
@@ -17,7 +17,7 @@ data class OnboardingComposableBuilder(
 }
 
 fun buildOnboardingSteps(
-    build: OnboardingComposableBuilder.() -> Unit
+    build: OnboardingComposableBuilder.() -> Unit,
 ): List<OnboardingStep> {
     val builder = OnboardingComposableBuilder(mutableListOf())
     build(builder)

@@ -62,7 +62,7 @@ internal fun OnboardingConsentComposableContent(
     identifier: String,
     exportConfiguration: ConsentDocumentExportConfiguration,
     uiState: ConsentUiState,
-    onAction: (ConsentAction) -> Unit
+    onAction: (ConsentAction) -> Unit,
 ) {
     val actionScope = rememberCoroutineScope()
     OnboardingComposable(

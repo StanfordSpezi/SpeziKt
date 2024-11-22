@@ -20,7 +20,7 @@ fun OnboardingActions(
     primaryText: StringResource,
     primaryAction: suspend () -> Unit,
     secondaryText: StringResource? = null,
-    secondaryAction: (suspend () -> Unit)? = null
+    secondaryAction: (suspend () -> Unit)? = null,
 ) {
     val primaryActionState = remember { mutableStateOf<ViewState>(ViewState.Idle) }
     val secondaryActionState = remember { mutableStateOf<ViewState>(ViewState.Idle) }

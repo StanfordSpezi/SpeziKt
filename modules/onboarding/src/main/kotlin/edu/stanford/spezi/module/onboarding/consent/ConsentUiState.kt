@@ -29,6 +29,6 @@ sealed interface ConsentAction {
     data object Undo : ConsentAction
     data class Consent(
         val documentIdentifier: String,
-        val exportConfiguration: ConsentDocumentExportConfiguration
+        val exportConfiguration: ConsentDocumentExportConfiguration,
     ) : ConsentAction
 }

@@ -14,7 +14,6 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 
-
 @Composable
 fun OnboardingComposable(
     modifier: Modifier = Modifier,

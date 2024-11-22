@@ -13,14 +13,14 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 private enum class SuspendButtonState {
-    IDLE, DISABLED, DISABLED_AND_PROCESSING;
+    IDLE, DISABLED, DISABLED_AND_PROCESSING
 }
 
 @Composable
 fun SuspendButton(
     state: MutableState<ViewState>,
     action: suspend () -> Unit,
-    label: @Composable () -> Unit
+    label: @Composable () -> Unit,
 ) {
     val buttonState = remember { mutableStateOf(SuspendButtonState.IDLE) }
     val coroutineScope = rememberCoroutineScope()
