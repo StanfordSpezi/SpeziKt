@@ -21,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.core.design.component.ImageResource
@@ -32,8 +31,8 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
-import edu.stanford.spezi.core.utils.foundation.PersonNameComponents
 import edu.stanford.spezi.modules.contact.component.AddressCard
 import edu.stanford.spezi.modules.contact.component.ContactOptionCard
 import edu.stanford.spezi.modules.contact.model.Contact
@@ -78,7 +77,6 @@ fun ContactComposable(contact: Contact, modifier: Modifier = Modifier) {
             ) {
                 ImageResourceComposable(
                     imageResource = contact.image,
-                    contentDescription = stringResource(R.string.profile_picture),
                     modifier = Modifier
                         .size(Sizes.Icon.medium)
                 )
@@ -197,8 +195,11 @@ private object ContactComposableFactory {
         ),
     ): Contact {
         return Contact(
-            name = PersonNameComponents(givenName = "Leland", familyName = "Stanford"),
-            image = ImageResource.Vector(Icons.Default.AccountBox),
+            name = PersonNameComponents(
+                givenName = "Leland",
+                familyName = "Stanford"
+            ),
+            image = ImageResource.Vector(Icons.Default.AccountBox, StringResource(R.string.profile_picture)),
             title = title,
             description = description,
             organization = StringResource("Stanford University"),

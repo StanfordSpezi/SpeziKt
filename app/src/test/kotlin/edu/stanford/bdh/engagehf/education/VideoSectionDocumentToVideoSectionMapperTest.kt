@@ -15,11 +15,26 @@ class VideoSectionDocumentToVideoSectionMapperTest {
     private val mapper = VideoSectionDocumentToVideoSectionMapper(localizedMapReader)
 
     @Test
-    fun `it should return null if title or description is missing`() = runTest {
+    fun `it should return null if title and description is missing`() = runTest {
         // given
         val document: DocumentSnapshot = mockk()
         every { document.data } returns null
         every { localizedMapReader.get("title", null) } returns null
+        every { localizedMapReader.get("description", null) } returns null
+
+        // when
+        val result = mapper.map(document)
+
+        // then
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun `it should return null if description is missing`() = runTest {
+        // given
+        val document: DocumentSnapshot = mockk()
+        every { document.data } returns null
+        every { localizedMapReader.get("title", null) } returns "title"
         every { localizedMapReader.get("description", null) } returns null
 
         // when
@@ -101,7 +116,12 @@ class VideoSectionDocumentToVideoSectionMapperTest {
             }
         }
         every { localizedMapReader.get("title", videoSectionJsonMap) } returns "Test Title"
-        every { localizedMapReader.get("description", videoSectionJsonMap) } returns "Test Description"
+        every {
+            localizedMapReader.get(
+                "description",
+                videoSectionJsonMap
+            )
+        } returns "Test Description"
 
         // when
         val result = requireNotNull(mapper.map(document))

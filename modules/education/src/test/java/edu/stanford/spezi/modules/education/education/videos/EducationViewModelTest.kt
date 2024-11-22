@@ -55,6 +55,7 @@ class EducationViewModelTest {
                     Video(
                         youtubeId = youtubeId,
                         title = title,
+                        description = "description",
                     )
                 )
             )
@@ -65,7 +66,8 @@ class EducationViewModelTest {
             Action.VideoSectionClicked(
                 video = Video(
                     youtubeId = youtubeId,
-                    title = title
+                    title = title,
+                    description = "description",
                 )
             )
         )
@@ -76,7 +78,8 @@ class EducationViewModelTest {
                 EducationNavigationEvent.VideoSectionClicked(
                     video = Video(
                         youtubeId = youtubeId,
-                        title = title
+                        title = title,
+                        description = "description",
                     )
                 )
             )

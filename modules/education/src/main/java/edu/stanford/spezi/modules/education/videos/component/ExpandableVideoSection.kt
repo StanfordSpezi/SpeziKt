@@ -35,10 +35,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import edu.stanford.spezi.core.design.component.AsyncImageResource
+import edu.stanford.spezi.core.design.component.AsyncImageResourceComposable
 import edu.stanford.spezi.core.design.component.DefaultElevatedCard
-import edu.stanford.spezi.core.design.component.ImageResource
-import edu.stanford.spezi.core.design.component.ImageResourceComposable
 import edu.stanford.spezi.core.design.component.RectangleShimmerEffect
+import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.component.height
 import edu.stanford.spezi.core.design.theme.Colors
@@ -160,9 +161,8 @@ private fun VideoItem(video: Video, onVideoClick: () -> Unit) {
                 .padding(Spacings.small)
                 .fillMaxWidth()
         ) {
-            ImageResourceComposable(
-                imageResource = ImageResource.Remote(video.thumbnailUrl),
-                contentDescription = "Video thumbnail",
+            AsyncImageResourceComposable(
+                imageResource = AsyncImageResource.Remote(url = video.thumbnailUrl, StringResource("Video thumbnail")),
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(ASPECT_16_9)

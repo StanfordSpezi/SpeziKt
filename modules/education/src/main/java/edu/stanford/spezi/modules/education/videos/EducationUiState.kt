@@ -1,5 +1,6 @@
 package edu.stanford.spezi.modules.education.videos
 
+import edu.stanford.spezi.core.design.component.StringResource
 import kotlinx.serialization.Serializable
 
 data class EducationUiState(
@@ -9,7 +10,7 @@ data class EducationUiState(
 sealed interface UiState {
     data object Loading : UiState
     data class Success(val data: EducationUiState) : UiState
-    data class Error(val message: String) : UiState
+    data class Error(val message: StringResource) : UiState
 }
 
 data class VideoSection(
@@ -23,7 +24,7 @@ data class VideoSection(
 @Serializable
 data class Video(
     val title: String,
-    val description: String? = null,
+    val description: String,
     val orderIndex: Int = 0,
     val youtubeId: String,
 ) {

@@ -26,7 +26,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.utils.foundation.PersonNameComponents
 import edu.stanford.spezi.module.onboarding.views.ViewState
 import java.nio.charset.StandardCharsets
 

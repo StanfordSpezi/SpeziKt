@@ -2,7 +2,6 @@ package edu.stanford.spezi.module.onboarding.consent
 
 import androidx.compose.ui.graphics.Path
 import edu.stanford.spezi.core.design.component.markdown.MarkdownElement
-import edu.stanford.spezi.core.utils.foundation.PersonNameComponents
 import edu.stanford.spezi.module.onboarding.views.ViewState
 
 internal data class ConsentUiState(
