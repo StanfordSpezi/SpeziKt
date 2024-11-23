@@ -29,15 +29,15 @@ import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
 import edu.stanford.spezi.core.design.views.views.model.ViewState
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
-import edu.stanford.spezi.module.onboarding.onboarding.OnboardingComposable
-import edu.stanford.spezi.module.onboarding.onboarding.OnboardingTitle
+import edu.stanford.spezi.module.onboarding.core.OnboardingComposable
+import edu.stanford.spezi.module.onboarding.core.OnboardingTitle
 import kotlinx.coroutines.launch
 
 @Composable
 fun OnboardingConsentComposable(
     markdown: suspend () -> ByteArray,
     action: suspend () -> Unit,
-    title: StringResource? = remember { StringResource("Consent") },
+    title: String? = StringResource("Consent").text(),
     identifier: String = remember { "ConsentDocument" },
     exportConfiguration: ConsentDocumentExportConfiguration = remember { ConsentDocumentExportConfiguration() },
 ) {
@@ -59,7 +59,7 @@ fun OnboardingConsentComposable(
 internal fun OnboardingConsentComposableContent(
     markdown: suspend () -> ByteArray,
     action: suspend () -> Unit,
-    title: StringResource?,
+    title: String?,
     identifier: String,
     exportConfiguration: ConsentDocumentExportConfiguration,
     uiState: ConsentUiState,

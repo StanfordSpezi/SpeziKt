@@ -12,7 +12,7 @@ class ConsentDataSource @Inject constructor() {
 
     init {
         if (standard !is ConsentConstraint) {
-            TODO("on iOS: fatalError")
+            error("Standard does not conform to ConsentConstraint!")
         }
     }
 
@@ -20,6 +20,6 @@ class ConsentDataSource @Inject constructor() {
         (standard as? ConsentConstraint)?.let { consentConstraint ->
             val export = ConsentDocumentExport(identifier, document)
             consentConstraint.store(export)
-        } ?: TODO("on iOS: fatalError")
+        } ?: error("Standard does not conform to ConsentConstraint!")
     }
 }
