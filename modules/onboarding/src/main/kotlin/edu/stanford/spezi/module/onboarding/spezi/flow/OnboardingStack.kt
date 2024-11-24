@@ -3,13 +3,11 @@ package edu.stanford.spezi.module.onboarding.spezi.flow
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.createGraph
 import edu.stanford.spezi.core.design.component.Button
@@ -34,35 +32,26 @@ fun OnboardingStack(
 ) {
     val steps = OnboardingStackBuilder().apply { content() }.steps
     val navController = rememberNavController()
-
     val startDestination = remember(startAtStep, steps) {
         startAtStep ?: steps.firstOrNull()?.id ?: error("No step specified")
     }
-    val navigationPath = remember { OnboardingNavigationPath(navController, steps) }
+    val navigationPath = remember {
+        OnboardingNavigationPath(navController, startDestination, steps)
+    }
 
-    val navGraph = remember(startDestination, steps, content) {
-        navController.createGraph(startDestination) {
-            for (step in navigationPath.customSteps) {
-                composable(step.id) {
-                    CompositionLocalProvider(LocalOnboardingNavigationPath provides navigationPath) {
-                        step.content()
-                    }
-                }
-            }
+    LaunchedEffect(startDestination) {
+        navigationPath.startDestination = startDestination
+    }
 
-            for (step in steps) {
-                composable(step.id) {
-                    CompositionLocalProvider(LocalOnboardingNavigationPath provides navigationPath) {
-                        step.content()
-                    }
-                }
-            }
-        }
+    LaunchedEffect(steps) {
+        navigationPath.steps = steps
     }
 
     NavHost(
         navController = navController,
-        graph = navGraph,
+        graph = remember(startDestination, steps) {
+            navigationPath.createGraph()
+        },
         modifier = modifier,
     )
 

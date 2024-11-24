@@ -1,23 +1,34 @@
 package edu.stanford.spezi.module.onboarding.spezi.flow
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph
+import androidx.navigation.NavType
+import androidx.navigation.compose.composable
+import androidx.navigation.createGraph
+import androidx.navigation.navArgument
 import androidx.navigation.navOptions
 import edu.stanford.spezi.core.utils.UUID
 
 class OnboardingNavigationPath internal constructor(
     internal val navController: NavController,
+    internal var startDestination: String,
     internal var steps: List<OnboardingNavigationStep>,
 ) {
-    internal val customSteps = mutableListOf<OnboardingNavigationStep>()
+    private val customSteps = mutableListOf<OnboardingNavigationStep>()
 
-    private var currentOnboardingStep =
-        navController.backQueue
-            .firstOrNull { pathItem -> steps.any { pathItem.id == it.id } }?.id
-            ?: steps.firstOrNull()?.id
+    private val currentOnboardingStepId: String? get() {
+        val currentQueue = navController.backQueue
+        val lastStep = currentQueue.lastOrNull { queueItem ->
+            !(queueItem.destination.route ?: "").startsWith(customRoute(""))
+        }
+
+        return lastStep?.destination?.route ?: steps.firstOrNull()?.id
+    }
 
     fun nextStep() {
-        val currentOnboardingStepId = currentOnboardingStep
+        val currentOnboardingStepId = currentOnboardingStepId
         val currentStepIndex = steps.indexOfFirst { it.id == currentOnboardingStepId }
         if (currentStepIndex < 0 || currentStepIndex + 1 >= steps.size) {
             return
@@ -25,10 +36,8 @@ class OnboardingNavigationPath internal constructor(
 
         navController.navigate(
             route = steps[currentStepIndex + 1].id,
-            navOptions = navOptions {
-                // TODO: Think about what to inject here
-            },
-            navigatorExtras = null, // TODO: Think about what to inject here
+            navOptions = navOptions {}, // TODO: Anything important/relevant needed here?
+            navigatorExtras = null, // TODO: Anything important/relevant needed here?
         )
     }
 
@@ -37,10 +46,8 @@ class OnboardingNavigationPath internal constructor(
 
         navController.navigate(
             route = step.id,
-            navOptions = navOptions {
-                // TODO: Think about what to inject here
-            },
-            navigatorExtras = null, // TODO: Think about what to inject here
+            navOptions = navOptions {}, // TODO: Anything important/relevant needed here?
+            navigatorExtras = null, // TODO: Anything important/relevant needed here?
         )
     }
 
@@ -48,14 +55,41 @@ class OnboardingNavigationPath internal constructor(
         val stepId = UUID().toString()
         customSteps.add(OnboardingNavigationStep(stepId, content))
         navController.navigate(
-            route = stepId,
-            navOptions = navOptions {
-                // TODO: Think about what to inject here
-            },
+            route = customRoute(stepId),
+            navOptions = navOptions {}, // TODO: Anything important/relevant needed here?
+            navigatorExtras = null, // TODO: Anything important/relevant needed here?
         )
     }
 
     fun removeLast() {
         navController.navigateUp()
     }
+
+    internal fun createGraph(): NavGraph {
+        println("Recreating graph")
+
+        val path = this
+        return navController.createGraph(startDestination) {
+            composable(
+                route = customRoute("{id}"),
+                arguments = listOf(navArgument("id") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val stepId = backStackEntry.arguments?.getString("id") ?: error("Unknown custom route")
+                val step = customSteps.firstOrNull { it.id == stepId } ?: error("Unknown custom route")
+                CompositionLocalProvider(LocalOnboardingNavigationPath provides path) {
+                    step.content()
+                }
+            }
+
+            for (step in steps) {
+                composable(step.id) {
+                    CompositionLocalProvider(LocalOnboardingNavigationPath provides path) {
+                        step.content()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun customRoute(id: String) = "custom/$id"
 }
