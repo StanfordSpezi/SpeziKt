@@ -29,11 +29,11 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
 import edu.stanford.spezi.core.notification.R
 import edu.stanford.spezi.modules.contact.ContactComposable
 import edu.stanford.spezi.modules.contact.model.Contact
 import edu.stanford.spezi.modules.contact.model.ContactOption
-import edu.stanford.spezi.modules.contact.model.PersonNameComponents
 import edu.stanford.spezi.modules.contact.model.call
 import edu.stanford.spezi.modules.contact.model.email
 import edu.stanford.spezi.modules.contact.model.website
@@ -109,8 +109,14 @@ private class ContactUiStateProvider : PreviewParameterProvider<ContactScreenVie
         ContactScreenViewModel.UiState.Error("An error occurred"),
         ContactScreenViewModel.UiState.ContactLoaded(
             contact = Contact(
-                name = PersonNameComponents(givenName = "Leland", familyName = "Stanford"),
-                image = ImageResource.Vector(Icons.Default.AccountBox),
+                name = PersonNameComponents(
+                    givenName = "Leland",
+                    familyName = "Stanford"
+                ),
+                image = ImageResource.Vector(
+                    Icons.Default.AccountBox,
+                    StringResource(edu.stanford.spezi.modules.contact.R.string.profile_picture)
+                ),
                 title = StringResource("University Founder"),
                 description = StringResource(
                     """Leland Stanford (March 9, 1824 – June 21, 1893) was an American industrialist and politician."""

@@ -10,11 +10,11 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.platform.app.InstrumentationRegistry
 import edu.stanford.spezi.core.design.component.ImageResource
 import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
 import edu.stanford.spezi.core.testing.assertImageIdentifier
 import edu.stanford.spezi.core.testing.onNodeWithIdentifier
 import edu.stanford.spezi.modules.contact.ContactComposableTestIdentifier
 import edu.stanford.spezi.modules.contact.model.ContactOption
-import edu.stanford.spezi.modules.contact.model.PersonNameComponents
 import edu.stanford.spezi.modules.contact.model.formatted
 
 class ContactComposableSimulator(
@@ -48,7 +48,7 @@ class ContactComposableSimulator(
         imageResource?.let {
             image(imageResource)
                 .assertExists()
-                .assertContentDescriptionContains("Profile Picture")
+                .assertContentDescriptionContains("Account Box")
                 .assertImageIdentifier(it.identifier)
         }
     }
