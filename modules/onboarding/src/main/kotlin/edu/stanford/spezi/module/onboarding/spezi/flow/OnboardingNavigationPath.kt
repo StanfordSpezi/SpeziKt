@@ -74,10 +74,11 @@ class OnboardingNavigationPath internal constructor(
                 route = customRoute("{id}"),
                 arguments = listOf(navArgument("id") { type = NavType.StringType })
             ) { backStackEntry ->
-                val stepId = backStackEntry.arguments?.getString("id") ?: error("Unknown custom route")
-                val step = customSteps.firstOrNull { it.id == stepId } ?: error("Unknown custom route")
+                val step = backStackEntry.arguments?.getString("id")?.let { stepId ->
+                    customSteps.firstOrNull { it.id == stepId }
+                }
                 CompositionLocalProvider(LocalOnboardingNavigationPath provides path) {
-                    step.content()
+                    step?.content() ?: IllegalOnboardingStep()
                 }
             }
 
