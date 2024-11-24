@@ -24,7 +24,7 @@ import edu.stanford.spezi.module.onboarding.core.OnboardingComposable
 import edu.stanford.spezi.module.onboarding.core.OnboardingTitle
 
 data class SequentialOnboardingContent(
-    val title: String?,
+    val title: String? = null,
     val description: String,
 )
 
@@ -69,7 +69,7 @@ fun SequentialOnboardingComposable(
             }
         },
         action = {
-            val isDone = currentContentIndex.intValue >= content.size
+            val isDone = currentContentIndex.intValue >= content.size - 1
             OnboardingActions(
                 primaryText = if (isDone) actionText else StringResource("Next").text(),
                 primaryAction = {
