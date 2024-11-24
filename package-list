@@ -50,6 +50,17 @@ edu.stanford.spezi.core.design.component.markdown
 edu.stanford.spezi.core.design.component.validated.outlinedtextfield
 edu.stanford.spezi.core.design.component.validated.textfield
 edu.stanford.spezi.core.design.theme
+edu.stanford.spezi.core.design.views.personalinfo
+edu.stanford.spezi.core.design.views.personalinfo.fields
+edu.stanford.spezi.core.design.views.validation
+edu.stanford.spezi.core.design.views.validation.configuration
+edu.stanford.spezi.core.design.views.validation.state
+edu.stanford.spezi.core.design.views.validation.views
+edu.stanford.spezi.core.design.views.views.layout
+edu.stanford.spezi.core.design.views.views.model
+edu.stanford.spezi.core.design.views.views.views.button
+edu.stanford.spezi.core.design.views.views.views.text
+edu.stanford.spezi.core.design.views.views.viewstate
 module:logging
 edu.stanford.spezi.core.logging
 edu.stanford.spezi.core.logging.internal
