@@ -17,11 +17,6 @@ internal data class ConsentUiState(
         (name.givenName?.isNotBlank() ?: false) && (name.familyName?.isNotBlank() ?: false) && paths.isNotEmpty()
 }
 
-data class FieldState(
-    val value: String = "",
-    val error: Boolean = false,
-)
-
 enum class TextFieldType {
     FIRST_NAME, LAST_NAME
 }
