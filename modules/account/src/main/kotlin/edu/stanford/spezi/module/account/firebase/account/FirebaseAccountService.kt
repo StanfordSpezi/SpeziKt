@@ -1,6 +1,5 @@
 package edu.stanford.spezi.module.account.firebase.account
 
-import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -48,6 +47,7 @@ data class FirebaseEmulatorSettings(
     val port: Int,
 )
 
+@Suppress("detekt:TooManyFunctions")
 class FirebaseAccountService(
     emulatorSettings: FirebaseEmulatorSettings? = null,
     providers: FirebaseAuthProviders,
@@ -229,8 +229,9 @@ class FirebaseAccountService(
 
         val result = reauthenticateUser(currentUser)
 
-        if (result.result != ReauthenticationOperation.Result.SUCCESS)
+        if (result.result != ReauthenticationOperation.Result.SUCCESS) {
             throw CancellationException()
+        }
 
         result.credential?.let {
             auth.revokeAccessToken("") // TODO: Figure out how to get string
@@ -370,10 +371,10 @@ class FirebaseAccountService(
         val details = buildUser(user, isNewUser = isNewUser)
 
         val unsupportedKeys = unsupportedKeys
-            if (unsupportedKeys.isNotEmpty()) {
-                val externalDetails = externalStorage.retrieveExternalStorage(details.accountId, unsupportedKeys)
-                details.addContentsOf(externalDetails)
-            }
+        if (unsupportedKeys.isNotEmpty()) {
+            val externalDetails = externalStorage.retrieveExternalStorage(details.accountId, unsupportedKeys)
+            details.addContentsOf(externalDetails)
+        }
 
         return details
     }

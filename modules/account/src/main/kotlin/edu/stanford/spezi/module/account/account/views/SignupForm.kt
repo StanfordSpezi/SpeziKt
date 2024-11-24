@@ -1,32 +1,5 @@
 package edu.stanford.spezi.module.account.account.views
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.design.views.validation.state.ReceiveValidation
-import edu.stanford.spezi.core.design.views.validation.state.ValidationContext
-import edu.stanford.spezi.core.design.views.views.model.ViewState
-import edu.stanford.spezi.core.design.views.views.views.button.SuspendButton
-import edu.stanford.spezi.core.design.views.views.viewstate.ViewStateAlert
-import edu.stanford.spezi.module.account.account.compositionLocal.LocalAccount
-import edu.stanford.spezi.module.account.account.compositionLocal.ReportSignupProviderCompliance
-import edu.stanford.spezi.module.account.account.compositionLocal.SignupProviderCompliance
-import edu.stanford.spezi.module.account.account.service.configuration.requiredAccountKeys
-import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
-import edu.stanford.spezi.module.account.account.value.configuration.AccountKeyRequirement
-import edu.stanford.spezi.module.account.account.value.keys.isAnonymous
-import edu.stanford.spezi.module.account.account.views.setup.SignupSectionsComposable
-import java.util.EnumSet
-
 /*
 @Composable
 fun SignupForm(

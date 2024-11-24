@@ -6,7 +6,7 @@ import edu.stanford.spezi.module.account.firebase.account.FirebaseAccountService
 
 @Composable
 internal fun FirebaseLoginComposable(
-    service: FirebaseAccountService
+    service: FirebaseAccountService,
 ) {
     AccountSetupProviderComposable(
         login = {

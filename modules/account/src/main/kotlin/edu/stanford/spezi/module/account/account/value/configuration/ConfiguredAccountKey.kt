@@ -1,7 +1,6 @@
 package edu.stanford.spezi.module.account.account.value.configuration
 
 import edu.stanford.spezi.module.account.account.value.AccountKey
-import edu.stanford.spezi.module.account.account.value.RequiredAccountKey
 import kotlin.reflect.KProperty0
 
 data class ConfiguredAccountKey internal constructor(

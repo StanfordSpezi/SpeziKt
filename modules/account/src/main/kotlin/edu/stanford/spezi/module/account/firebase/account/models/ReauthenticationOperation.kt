@@ -2,7 +2,7 @@ package edu.stanford.spezi.module.account.firebase.account.models
 
 data class ReauthenticationOperation(
     val result: Result,
-    val credential: Any? = null
+    val credential: Any? = null,
 ) {
     enum class Result {
         SUCCESS, CANCELLED

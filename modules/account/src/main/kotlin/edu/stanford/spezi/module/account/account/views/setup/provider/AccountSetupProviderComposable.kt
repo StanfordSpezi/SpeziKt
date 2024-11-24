@@ -10,7 +10,6 @@ import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.module.account.account.compositionLocal.LocalPreferredSetupStyle
 import edu.stanford.spezi.module.account.account.compositionLocal.PreferredSetupStyle
 import edu.stanford.spezi.module.account.account.model.UserIdPasswordCredential
-
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 
 // Generic constraint doesn't seem to be used at all (SignUpView is generic, but internal and only used with UserIdCredential).
@@ -23,12 +22,11 @@ internal sealed interface PresentedSetupStyle {
 fun AccountSetupProviderComposable(
     login: suspend (UserIdPasswordCredential) -> Unit,
     signup: suspend (AccountDetails) -> Unit,
-    resetPassword: suspend (String) -> Unit
+    resetPassword: suspend (String) -> Unit,
 ) {
     AccountSetupProviderComposable(
         login = login,
         signup = {
-
         },
         passwordReset = {
             Text("Password Reset")

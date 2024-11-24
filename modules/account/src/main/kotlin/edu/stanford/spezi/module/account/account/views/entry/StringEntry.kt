@@ -9,7 +9,7 @@ import edu.stanford.spezi.module.account.account.value.AccountKey
 fun StringEntry(
     key: AccountKey<String>,
     value: String,
-    onValueChanged: (String) -> Unit
+    onValueChanged: (String) -> Unit,
 ) {
     ListRow(key.name) {
         VerifiableTextField(

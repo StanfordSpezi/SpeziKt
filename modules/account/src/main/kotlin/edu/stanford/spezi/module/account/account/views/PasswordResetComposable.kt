@@ -74,7 +74,7 @@ private fun PasswordResetForm(
     userId: MutableState<String>,
     validation: ValidationContext,
     requestSubmitted: MutableState<Boolean>,
-    resetPassword: suspend (String) -> Unit
+    resetPassword: suspend (String) -> Unit,
 ) {
     val account = LocalAccount.current
     val userIdConfiguration = remember {
@@ -82,7 +82,6 @@ private fun PasswordResetForm(
     }
     val idTypeStringResource = userIdConfiguration.idType.stringResource
     val asyncScope = rememberCoroutineScope()
-
 
     Column(modifier = Modifier.padding(8.dp)) {
         Text(

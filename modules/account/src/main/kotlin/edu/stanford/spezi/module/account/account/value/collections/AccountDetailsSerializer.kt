@@ -64,7 +64,7 @@ private fun <Value : Any> AccountKey<Value>.deserialize(
 private fun <Value : Any> AccountKey<Value>.serialize(
     encoder: CompositeEncoder,
     index: Int,
-    details: AccountDetails
+    details: AccountDetails,
 ) {
     details[this]?.let {
         encoder.encodeSerializableElement(serializer.descriptor, index, serializer, it)

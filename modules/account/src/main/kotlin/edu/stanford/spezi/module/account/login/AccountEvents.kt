@@ -1,4 +1,4 @@
-package edu.stanford.spezi.module.account
+package edu.stanford.spezi.module.account.login
 
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import kotlinx.coroutines.CoroutineScope

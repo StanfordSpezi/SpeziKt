@@ -7,7 +7,10 @@ import androidx.compose.ui.graphics.Color
 import edu.stanford.spezi.module.account.account.views.setup.provider.AccountServiceButton
 import edu.stanford.spezi.module.account.firebase.account.FirebaseAccountService
 
+@Suppress("detekt:MagicNumber")
 val firebaseRed = Color(255, 145, 0)
+
+@Suppress("detekt:MagicNumber")
 val firebaseYellow = Color(255, 196, 0)
 
 @Composable

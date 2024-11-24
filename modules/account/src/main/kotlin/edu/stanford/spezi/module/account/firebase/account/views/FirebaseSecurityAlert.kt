@@ -34,11 +34,7 @@ fun FirebaseSecurityAlert(
         confirmButton = {
             TextButton(
                 onClick = {
-                    if (validation.value.validateHierarchy()) {
-
-                    } else {
-
-                    }
+                    TODO()
                 }
             ) {
                 Text(StringResource("Login").text())
@@ -47,7 +43,6 @@ fun FirebaseSecurityAlert(
         modifier = Modifier,
         dismissButton = {
             TextButton(onClick = {
-
             }) {
                 Text(StringResource("Cancel").text())
             }

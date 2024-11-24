@@ -13,7 +13,7 @@ import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 class InMemoryAccountStorageProvider @Inject constructor(
-    @Dispatching.IO private val scope: CoroutineScope
+    @Dispatching.IO private val scope: CoroutineScope,
 ) : AccountStorageProvider {
     private var records = mutableMapOf<String, AccountDetails>()
     private var cache = mutableMapOf<String, AccountDetails>() // simulates an in-memory cache

@@ -1,13 +1,11 @@
 package edu.stanford.spezi.module.account.account.views.overview
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.text.rememberTextMeasurer
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.design.views.validation.Validate

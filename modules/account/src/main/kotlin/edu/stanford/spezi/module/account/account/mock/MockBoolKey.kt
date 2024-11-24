@@ -1,7 +1,6 @@
 package edu.stanford.spezi.module.account.account.mock
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.AccountKeyCategory

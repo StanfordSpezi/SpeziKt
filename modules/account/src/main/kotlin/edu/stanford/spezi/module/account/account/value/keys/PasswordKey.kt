@@ -3,7 +3,6 @@ package edu.stanford.spezi.module.account.account.value.keys
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.views.validation.configuration.LocalValidationEngine
@@ -66,7 +65,6 @@ private object AccountPasswordKey : AccountKey<String> {
                 GridValidationStateFooter(validation?.displayedValidationResults ?: emptyList())
             }
         }
-
     }
 }
 

@@ -36,7 +36,7 @@ import edu.stanford.spezi.module.account.account.value.keys.userId
 
 @Composable
 fun AccountHeader(
-    caption: String = StringResource("ACCOUNT_HEADER_CAPTION").text()
+    caption: String = StringResource("ACCOUNT_HEADER_CAPTION").text(),
 ) {
     AccountHeader(
         caption = caption,
@@ -47,7 +47,7 @@ fun AccountHeader(
 @Composable
 private fun AccountHeader(
     caption: String,
-    accountDetails: AccountDetails?
+    accountDetails: AccountDetails?,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(Spacings.medium),

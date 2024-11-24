@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.onCompletion
 import java.util.UUID
 
 class ExternalAccountStorage internal constructor(
-    private var storageProvider: AccountStorageProvider?
+    private var storageProvider: AccountStorageProvider?,
 ) {
     data class ExternallyStoredDetails internal constructor(
         val accountId: String,

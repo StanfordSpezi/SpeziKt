@@ -53,7 +53,7 @@ fun ReportSignupProviderCompliance(compliance: SignupProviderCompliance?) {
 @Composable
 internal fun ReceiveSignupProviderCompliance(
     action: (SignupProviderCompliance?) -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val newReader = remember { SignupProviderComplianceReader() }
     val existingReaders = LocalSignupProviderComplianceReaders.current

@@ -40,7 +40,7 @@ internal class AccountSetupViewModel @Inject constructor(
         data class UpdateFollowUpBehavior(val followUpBehavior: FollowUpBehavior) : Action
         data class FollowUpSheetCompleted(
             val modifications: AccountModifications,
-            val setupComplete: suspend (AccountDetails) -> Unit
+            val setupComplete: suspend (AccountDetails) -> Unit,
         ) : Action
     }
 

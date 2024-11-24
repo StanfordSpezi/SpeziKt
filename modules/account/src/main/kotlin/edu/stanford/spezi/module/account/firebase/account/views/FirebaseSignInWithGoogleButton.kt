@@ -21,7 +21,7 @@ import edu.stanford.spezi.module.account.firebase.account.FirebaseAccountService
 
 @Composable
 internal fun FirebaseSignInWithGoogleButton(
-    service: FirebaseAccountService
+    service: FirebaseAccountService,
 ) {
     val viewState = remember { mutableStateOf<ViewState>(ViewState.Idle) }
 
@@ -29,7 +29,6 @@ internal fun FirebaseSignInWithGoogleButton(
 
     SuspendButton(
         onClick = {
-
         },
         state = viewState,
     ) {

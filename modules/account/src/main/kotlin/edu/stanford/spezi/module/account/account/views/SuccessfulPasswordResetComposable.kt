@@ -20,7 +20,7 @@ import edu.stanford.spezi.core.design.theme.ThemePreviews
 
 @Composable
 fun SuccessfulPasswordResetComposable(
-    label: StringResource? = null
+    label: StringResource? = null,
 ) {
     val text = label ?: StringResource("UAP_RESET_PASSWORD_PROCESS_SUCCESSFUL_LABEL")
 

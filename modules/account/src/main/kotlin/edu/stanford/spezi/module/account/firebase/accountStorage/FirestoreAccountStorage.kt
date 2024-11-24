@@ -14,8 +14,6 @@ import edu.stanford.spezi.module.account.account.value.collections.AccountDetail
 import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
 import edu.stanford.spezi.module.account.firebase.firestore.Firestore
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -24,7 +22,7 @@ class FirestoreAccountStorage(
     val collection: () -> CollectionReference,
     val identifierMapping: Map<String, AccountKey<*>>,
     @Dispatching.IO private val scope: CoroutineScope,
-    ) : AccountStorageProvider {
+) : AccountStorageProvider {
 
     @Inject internal lateinit var firestore: Firestore
 
