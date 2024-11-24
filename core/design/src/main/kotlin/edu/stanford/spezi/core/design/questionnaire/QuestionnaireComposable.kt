@@ -26,7 +26,7 @@ import org.hl7.fhir.r4.model.Questionnaire
 fun QuestionnaireComposable(
     questionnaire: Questionnaire,
     modifier: Modifier = Modifier,
-    completionStepMessage: String? = null, // Is there a simple way to add a completion message?
+    completionStepMessage: String? = null,
     cancelBehavior: CancelBehavior = CancelBehavior.ShouldConfirmCancel,
     onResult: suspend (QuestionnaireResult) -> Unit,
 ) {
