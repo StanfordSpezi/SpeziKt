@@ -22,12 +22,10 @@ class OverallOnboardingTest {
     @Test
     fun test() {
         overallOnboarding {
-
         }
     }
 
     private fun overallOnboarding(block: OverallOnboardingSimulator.() -> Unit) {
         OverallOnboardingSimulator(composeRule).apply { block() }
     }
-
 }

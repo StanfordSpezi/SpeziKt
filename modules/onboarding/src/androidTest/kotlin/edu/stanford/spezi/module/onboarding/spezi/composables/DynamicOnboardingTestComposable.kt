@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import edu.stanford.spezi.module.onboarding.core.OnboardingTitle
 import edu.stanford.spezi.module.onboarding.spezi.flow.LocalOnboardingNavigationPath
 import edu.stanford.spezi.module.onboarding.spezi.flow.OnboardingStack
@@ -84,4 +82,3 @@ private fun DynamicOnboardingComposable(title: String) {
         }
     }
 }
-

@@ -47,5 +47,4 @@ class WelcomeOnboardingTest {
     private fun welcomeOnboarding(block: WelcomeOnboardingSimulator.() -> Unit) {
         WelcomeOnboardingSimulator(composeRule).apply { block() }
     }
-
 }

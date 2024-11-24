@@ -6,7 +6,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 
 class SequentialOnboardingSimulator(
-    private val composeTestRule: ComposeTestRule
+    private val composeTestRule: ComposeTestRule,
 ) {
     fun assertTextExists(text: String) {
         composeTestRule

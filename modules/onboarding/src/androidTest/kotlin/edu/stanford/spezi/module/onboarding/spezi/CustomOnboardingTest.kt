@@ -22,12 +22,10 @@ class CustomOnboardingTest {
     @Test
     fun test() {
         customOnboarding {
-
         }
     }
 
     private fun customOnboarding(block: CustomOnboardingSimulator.() -> Unit) {
         CustomOnboardingSimulator(composeRule).apply { block() }
     }
-
 }
