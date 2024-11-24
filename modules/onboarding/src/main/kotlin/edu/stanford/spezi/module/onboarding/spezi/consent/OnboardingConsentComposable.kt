@@ -1,4 +1,4 @@
-package edu.stanford.spezi.module.onboarding.consent
+package edu.stanford.spezi.module.onboarding.spezi.consent
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Column
@@ -22,13 +22,18 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.core.design.component.Button
 import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.component.markdown.MarkdownComposable
+import edu.stanford.spezi.core.design.component.StringResource.Companion.invoke
 import edu.stanford.spezi.core.design.component.markdown.MarkdownElement
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
 import edu.stanford.spezi.core.design.views.views.model.ViewState
+import edu.stanford.spezi.core.design.views.views.views.text.MarkdownBytes
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.module.onboarding.consent.ConsentAction
+import edu.stanford.spezi.module.onboarding.consent.ConsentUiState
+import edu.stanford.spezi.module.onboarding.consent.ConsentViewModel
+import edu.stanford.spezi.module.onboarding.consent.ConsentViewState
 import edu.stanford.spezi.module.onboarding.core.OnboardingComposable
 import edu.stanford.spezi.module.onboarding.core.OnboardingTitle
 import kotlinx.coroutines.launch
@@ -103,7 +108,7 @@ internal fun OnboardingConsentComposableContent(
     )
     Column {
         Spacer(modifier = Modifier.height(Spacings.medium))
-        MarkdownComposable(markdown)
+        MarkdownBytes(markdown)
         Spacer(
             modifier = Modifier
                 .height(Spacings.small)

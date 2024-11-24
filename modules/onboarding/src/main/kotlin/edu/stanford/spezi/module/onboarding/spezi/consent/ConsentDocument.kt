@@ -1,4 +1,4 @@
-package edu.stanford.spezi.module.onboarding.consent
+package edu.stanford.spezi.module.onboarding.spezi.consent
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
@@ -25,9 +25,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.design.component.StringResource.Companion.invoke
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
 import edu.stanford.spezi.core.design.views.views.model.ViewState
+import edu.stanford.spezi.module.onboarding.consent.ConsentAction
+import edu.stanford.spezi.module.onboarding.consent.ConsentUiState
+import edu.stanford.spezi.module.onboarding.consent.ConsentViewState
+import edu.stanford.spezi.module.onboarding.consent.SignatureCanvas
+import edu.stanford.spezi.module.onboarding.consent.TextFieldType
 import java.nio.charset.StandardCharsets
 
 data class ConsentDocument(

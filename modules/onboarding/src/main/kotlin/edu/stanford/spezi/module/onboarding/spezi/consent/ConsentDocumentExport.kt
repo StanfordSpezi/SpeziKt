@@ -1,4 +1,4 @@
-package edu.stanford.spezi.module.onboarding.consent
+package edu.stanford.spezi.module.onboarding.spezi.consent
 
 import android.graphics.pdf.PdfDocument
 

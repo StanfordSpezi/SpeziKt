@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Path
 import edu.stanford.spezi.core.design.component.markdown.MarkdownElement
 import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
 import edu.stanford.spezi.core.design.views.views.model.ViewState
+import edu.stanford.spezi.module.onboarding.spezi.consent.ConsentDocumentExportConfiguration
 
 internal data class ConsentUiState(
     val name: PersonNameComponents = PersonNameComponents(),

@@ -1,6 +1,7 @@
-package edu.stanford.spezi.module.onboarding.consent
+package edu.stanford.spezi.module.onboarding.spezi.consent
 
 import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.design.component.StringResource.Companion.invoke
 
 data class ConsentDocumentExportConfiguration(
     val paperSize: PaperSize = PaperSize.usLetter,
