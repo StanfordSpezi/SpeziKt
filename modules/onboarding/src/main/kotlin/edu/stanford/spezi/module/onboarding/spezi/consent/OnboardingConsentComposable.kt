@@ -1,6 +1,5 @@
 package edu.stanford.spezi.module.onboarding.spezi.consent
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,6 +24,7 @@ import edu.stanford.spezi.core.design.component.StringResource.Companion.invoke
 import edu.stanford.spezi.core.design.component.markdown.MarkdownElement
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
+import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
 import edu.stanford.spezi.core.design.views.views.model.ViewState
 import edu.stanford.spezi.core.design.views.views.views.text.MarkdownBytes
@@ -33,7 +32,6 @@ import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.module.onboarding.consent.ConsentAction
 import edu.stanford.spezi.module.onboarding.consent.ConsentUiState
 import edu.stanford.spezi.module.onboarding.consent.ConsentViewModel
-import edu.stanford.spezi.module.onboarding.consent.ConsentViewState
 import edu.stanford.spezi.module.onboarding.core.OnboardingComposable
 import edu.stanford.spezi.module.onboarding.core.OnboardingTitle
 import kotlinx.coroutines.launch
@@ -73,7 +71,7 @@ internal fun OnboardingConsentComposableContent(
     val actionScope = rememberCoroutineScope()
     OnboardingComposable(
         modifier = Modifier
-            .testIdentifier(ConsentScreenTestIdentifier.ROOT)
+            .testIdentifier(OnboardingConsentTestIdentifier.ROOT)
             .fillMaxSize(),
         title = {
             title?.let {
@@ -117,10 +115,10 @@ internal fun OnboardingConsentComposableContent(
     }
 }
 
-@Preview(uiMode = UI_MODE_NIGHT_YES, showBackground = true)
+@ThemePreviews
 @Composable
-private fun ConsentScreenPreview(
-    @PreviewParameter(ConsentScreenPreviewProvider::class) uiState: ConsentUiState,
+private fun OnboardingConsentPreview(
+    @PreviewParameter(OnboardingConsentPreviewProvider::class) uiState: ConsentUiState,
 ) {
     SpeziTheme {
         OnboardingConsentComposableContent(
@@ -136,7 +134,7 @@ private fun ConsentScreenPreview(
 }
 
 @Suppress("MagicNumber")
-private class ConsentScreenPreviewProvider : PreviewParameterProvider<ConsentUiState> {
+private class OnboardingConsentPreviewProvider : PreviewParameterProvider<ConsentUiState> {
     override val values: Sequence<ConsentUiState> = sequenceOf(
         ConsentUiState(
             name = PersonNameComponents(givenName = "John", familyName = "Doe"),
@@ -152,6 +150,6 @@ private class ConsentScreenPreviewProvider : PreviewParameterProvider<ConsentUiS
     )
 }
 
-enum class ConsentScreenTestIdentifier {
+enum class OnboardingConsentTestIdentifier {
     ROOT,
 }

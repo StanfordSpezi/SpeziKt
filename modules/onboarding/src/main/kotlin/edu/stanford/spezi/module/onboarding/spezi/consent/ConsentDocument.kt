@@ -31,7 +31,6 @@ import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
 import edu.stanford.spezi.core.design.views.views.model.ViewState
 import edu.stanford.spezi.module.onboarding.consent.ConsentAction
 import edu.stanford.spezi.module.onboarding.consent.ConsentUiState
-import edu.stanford.spezi.module.onboarding.consent.ConsentViewState
 import edu.stanford.spezi.module.onboarding.consent.SignatureCanvas
 import edu.stanford.spezi.module.onboarding.consent.TextFieldType
 import java.nio.charset.StandardCharsets
@@ -157,7 +156,6 @@ private class ConsentDocumentComposablePreviewProvider : PreviewParameterProvide
         ConsentDocumentComposablePreviewData(
             paths = mutableListOf(Path().apply { lineTo(100f, 100f) }.apply { lineTo(250f, 200f) }),
             name = PersonNameComponents(givenName = "Jane", familyName = "Doe")
-
         )
     )
 }
