@@ -1,6 +1,5 @@
 package edu.stanford.spezi.core.design.views.personalinfo.fields
 
-import android.app.Person
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
