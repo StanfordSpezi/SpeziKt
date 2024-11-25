@@ -1,4 +1,4 @@
-package edu.stanford.spezi.core.design.questionnaire
+package edu.stanford.bdh.engagehf.questionnaire.spezi
 
 sealed interface CancelBehavior {
     data object Disabled : CancelBehavior

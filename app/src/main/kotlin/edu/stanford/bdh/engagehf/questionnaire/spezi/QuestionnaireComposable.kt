@@ -1,4 +1,4 @@
-package edu.stanford.spezi.core.design.questionnaire
+package edu.stanford.bdh.engagehf.questionnaire.spezi
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.AlertDialog

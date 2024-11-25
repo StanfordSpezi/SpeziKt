@@ -1,8 +1,8 @@
-package edu.stanford.spezi.core.design.questionnaire
+package edu.stanford.bdh.engagehf.questionnaire
 
 import androidx.compose.ui.test.junit4.createComposeRule
-import edu.stanford.spezi.core.design.questionnaire.composables.QuestionnaireTestComposable
-import edu.stanford.spezi.core.design.questionnaire.simulators.QuestionnaireTestSimulator
+import edu.stanford.bdh.engagehf.questionnaire.composables.QuestionnaireTestComposable
+import edu.stanford.bdh.engagehf.questionnaire.simulators.QuestionnaireTestSimulator
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

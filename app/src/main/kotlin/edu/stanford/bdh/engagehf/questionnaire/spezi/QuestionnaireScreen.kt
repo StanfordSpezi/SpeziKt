@@ -1,4 +1,4 @@
-package edu.stanford.bdh.engagehf.questionnaire
+package edu.stanford.bdh.engagehf.questionnaire.spezi
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,10 +14,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import edu.stanford.bdh.engagehf.questionnaire.QuestionnaireViewModel
 import edu.stanford.spezi.core.design.component.CenteredBoxContent
 import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.questionnaire.QuestionnaireComposable
-import edu.stanford.spezi.core.design.questionnaire.QuestionnaireResult
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.SpeziTheme

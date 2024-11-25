@@ -32,7 +32,7 @@ import edu.stanford.bdh.engagehf.navigation.screens.AppScreen
 import edu.stanford.bdh.engagehf.navigation.serializableType
 import edu.stanford.bdh.engagehf.onboarding.InvitationCodeScreen
 import edu.stanford.bdh.engagehf.onboarding.OnboardingScreen
-import edu.stanford.bdh.engagehf.questionnaire.QuestionnaireScreen
+import edu.stanford.bdh.engagehf.questionnaire.spezi.QuestionnaireScreen
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.SpeziTheme

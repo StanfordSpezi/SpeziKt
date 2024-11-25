@@ -1,4 +1,4 @@
-package edu.stanford.spezi.core.design.questionnaire
+package edu.stanford.bdh.engagehf.questionnaire.spezi
 
 import org.hl7.fhir.r4.model.QuestionnaireResponse
 

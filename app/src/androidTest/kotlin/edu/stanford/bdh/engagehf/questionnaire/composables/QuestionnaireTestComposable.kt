@@ -1,4 +1,4 @@
-package edu.stanford.spezi.core.design.questionnaire.composables
+package edu.stanford.bdh.engagehf.questionnaire.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
@@ -6,12 +6,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import edu.stanford.spezi.core.design.questionnaire.QuestionnaireComposable
-import edu.stanford.spezi.core.design.questionnaire.QuestionnaireResult
+import edu.stanford.bdh.engagehf.questionnaire.spezi.QuestionnaireComposable
+import edu.stanford.bdh.engagehf.questionnaire.spezi.QuestionnaireResult
 
 @Composable
 fun QuestionnaireTestComposable() {
-    val result = remember { mutableStateOf<QuestionnaireResult?>(null) }
+    val result =
+        remember { mutableStateOf<QuestionnaireResult?>(null) }
     val resultValue = result.value
     if (resultValue != null) {
         Column {
@@ -19,9 +20,11 @@ fun QuestionnaireTestComposable() {
                 is QuestionnaireResult.Completed -> {
                     Text("Completed")
                 }
+
                 QuestionnaireResult.Failed -> {
                     Text("Failed")
                 }
+
                 QuestionnaireResult.Cancelled -> {
                     Text("Cancelled")
                 }
