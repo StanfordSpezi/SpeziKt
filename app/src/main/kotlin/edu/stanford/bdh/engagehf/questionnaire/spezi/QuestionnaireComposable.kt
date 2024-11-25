@@ -16,9 +16,7 @@ import androidx.fragment.compose.rememberFragmentState
 import ca.uhn.fhir.context.FhirContext
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.component.StringResource.Companion.invoke
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import kotlinx.coroutines.launch
 import org.hl7.fhir.r4.model.Questionnaire
 
@@ -84,7 +82,9 @@ fun QuestionnaireComposable(
     val fragmentState = rememberFragmentState()
     AndroidFragment<QuestionnaireFragment>(
         fragmentState = fragmentState,
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .testIdentifier(QuestionnaireComposableTestIdentifiers.ROOT),
         arguments = arguments,
     ) { fragment ->
         fragment.setFragmentResultListener(
@@ -115,6 +115,10 @@ fun QuestionnaireComposable(
     }
 }
 
+enum class QuestionnaireComposableTestIdentifiers {
+    ROOT,
+}
+
 @Composable
 private fun QuestionnaireCancelAlert(
     modifier: Modifier = Modifier,
@@ -135,18 +139,4 @@ private fun QuestionnaireCancelAlert(
             }
         }
     )
-}
-
-@ThemePreviews
-@Composable
-private fun QuestionnaireComposablePreview() {
-    SpeziTheme(isPreview = true) {
-        // TODO: Preview is unfortunately not working due to missing "FragmentActivity"
-        //  - is there a fix for that or simply no way to preview this?
-        QuestionnaireComposable(
-            remember { Questionnaire() }
-        ) {
-            println("Received result: $it")
-        }
-    }
 }
