@@ -19,7 +19,6 @@ dependencies {
     implementation(composeBom)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.fragment.compose)
     implementation(libs.bundles.compose)
     implementation(libs.coil.compose)
 
