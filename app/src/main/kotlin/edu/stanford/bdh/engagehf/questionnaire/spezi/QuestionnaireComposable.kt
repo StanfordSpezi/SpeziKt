@@ -5,9 +5,9 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResultListener
@@ -17,7 +17,7 @@ import ca.uhn.fhir.context.FhirContext
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
-import kotlinx.coroutines.launch
+import edu.stanford.spezi.core.design.component.StringResource.Companion.invoke
 import org.hl7.fhir.r4.model.Questionnaire
 
 @Composable
@@ -26,7 +26,7 @@ fun QuestionnaireComposable(
     modifier: Modifier = Modifier,
     completionStepMessage: String? = null,
     cancelBehavior: CancelBehavior = CancelBehavior.ShouldConfirmCancel,
-    onResult: suspend (QuestionnaireResult) -> Unit,
+    onResult: (QuestionnaireResult) -> Unit,
 ) {
     val completionItem = remember(completionStepMessage) {
         completionStepMessage?.let {
@@ -43,17 +43,26 @@ fun QuestionnaireComposable(
         } ?: questionnaire
     }
     val questionnaireJson = remember(fullQuestionnaire) {
-        FhirContext.forR4()
-            .newJsonParser()
-            .encodeResourceToString(fullQuestionnaire)
+        runCatching {
+            FhirContext.forR4()
+                .newJsonParser()
+                .encodeResourceToString(fullQuestionnaire)
+        }
+    }
+    LaunchedEffect(questionnaireJson) {
+        if (questionnaireJson.isFailure) {
+            onResult(QuestionnaireResult.Failed)
+        }
     }
 
-    QuestionnaireComposable(
-        questionnaireJson = questionnaireJson,
-        modifier = modifier,
-        cancelBehavior = cancelBehavior,
-        onResult = onResult
-    )
+    questionnaireJson.onSuccess {
+        QuestionnaireComposable(
+            questionnaireJson = it,
+            modifier = modifier,
+            cancelBehavior = cancelBehavior,
+            onResult = onResult
+        )
+    }
 }
 
 @Composable
@@ -61,15 +70,12 @@ fun QuestionnaireComposable(
     questionnaireJson: String,
     modifier: Modifier = Modifier,
     cancelBehavior: CancelBehavior = CancelBehavior.ShouldConfirmCancel,
-    onResult: suspend (QuestionnaireResult) -> Unit,
+    onResult: (QuestionnaireResult) -> Unit,
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val showsCancelAlert = remember { mutableStateOf(false) }
     if (showsCancelAlert.value) {
         QuestionnaireCancelAlert {
-            coroutineScope.launch {
-                onResult(QuestionnaireResult.Cancelled)
-            }
+            onResult(QuestionnaireResult.Cancelled)
         }
     }
 
@@ -90,25 +96,21 @@ fun QuestionnaireComposable(
         fragment.setFragmentResultListener(
             QuestionnaireFragment.SUBMIT_REQUEST_KEY
         ) { _, _ ->
-            coroutineScope.launch {
-                val response = fragment.getQuestionnaireResponse()
-                onResult(QuestionnaireResult.Completed(response))
-            }
+            val response = fragment.getQuestionnaireResponse()
+            onResult(QuestionnaireResult.Completed(response))
         }
         fragment.setFragmentResultListener(
             QuestionnaireFragment.CANCEL_REQUEST_KEY
         ) { _, _ ->
-            coroutineScope.launch {
-                when (cancelBehavior) {
-                    is CancelBehavior.Disabled -> {
-                        println("Unexpected call to cancel request with cancelBehavior set to Disabled.")
-                    }
-                    is CancelBehavior.ShouldConfirmCancel -> {
-                        showsCancelAlert.value = true
-                    }
-                    is CancelBehavior.Cancel -> {
-                        onResult(QuestionnaireResult.Cancelled)
-                    }
+            when (cancelBehavior) {
+                is CancelBehavior.Disabled -> {
+                    println("Unexpected call to cancel request with cancelBehavior set to Disabled.")
+                }
+                is CancelBehavior.ShouldConfirmCancel -> {
+                    showsCancelAlert.value = true
+                }
+                is CancelBehavior.Cancel -> {
+                    onResult(QuestionnaireResult.Cancelled)
                 }
             }
         }
