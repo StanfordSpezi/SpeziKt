@@ -1,4 +1,4 @@
-package edu.stanford.bdh.engagehf.questionnaire.spezi
+package edu.stanford.bdh.engagehf.questionnaire
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,7 +14,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.bdh.engagehf.questionnaire.QuestionnaireViewModel
+import edu.stanford.bdh.engagehf.questionnaire.spezi.QuestionnaireComposable
+import edu.stanford.bdh.engagehf.questionnaire.spezi.QuestionnaireResult
 import edu.stanford.spezi.core.design.component.CenteredBoxContent
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
@@ -100,11 +101,13 @@ private fun QuestionnaireLoaded(
                                 )
                             )
                         }
+
                         is QuestionnaireResult.Cancelled -> {
                             onAction(
                                 QuestionnaireViewModel.Action.Cancel
                             )
                         }
+
                         is QuestionnaireResult.Failed -> {
                             println("Failed")
                         }
