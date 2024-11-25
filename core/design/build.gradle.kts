@@ -10,24 +10,9 @@ android {
     buildFeatures {
         compose = true
     }
-
-    buildTypes {
-        debug {
-            // Disabling coverage due to: https://github.com/hapifhir/org.hl7.fhir.core/issues/1688
-            enableAndroidTestCoverage = false
-        }
-    }
-
-    packaging {
-        resources {
-            excludes += listOf("META-INF/INDEX.LIST")
-        }
-    }
 }
 
 dependencies {
-    api(libs.android.fhir.data.capture)
-
     implementation(project(":core:utils"))
 
     val composeBom = platform(libs.compose.bom)
