@@ -1,5 +1,6 @@
 package edu.stanford.spezi.module.account.account.value.keys
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.module.account.account.value.AccountKey
@@ -19,12 +20,12 @@ private object AccountIdKey : RequiredAccountKey<String> {
 
     @Composable
     override fun DisplayComposable(value: String) {
-        TODO("Not yet implemented")
+        Text("The internal account identifier is not meant to be user facing!")
     }
 
     @Composable
     override fun EntryComposable(value: String, onValueChanged: (String) -> Unit) {
-        TODO("Not yet implemented")
+        Text("The internal account identifier is meant to be generated!")
     }
 }
 
@@ -32,5 +33,5 @@ val AccountKeys.accountId: AccountKey<String>
     get() = AccountIdKey
 
 var AccountDetails.accountId: String
-    get() = this.storage[AccountKeys.accountId] ?: TODO()
+    get() = this.storage[AccountKeys.accountId] ?: error("There is supposed to be an accountId.")
     set(value) { this.storage[AccountKeys.accountId] = value }

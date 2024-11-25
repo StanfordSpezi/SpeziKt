@@ -14,16 +14,12 @@ internal data class AccountKeyConfigurationImpl<Key : AccountKey<*>>(
     override val requirement: AccountKeyRequirement,
     override val propertyName: String,
 ) : AccountKeyConfiguration<Key> {
-    companion object {
-        operator fun <Key : AccountKey<*>> invoke(
-            property: KProperty0<Key>,
-            requirement: AccountKeyRequirement,
-        ): AccountKeyConfigurationImpl<Key> {
-            return AccountKeyConfigurationImpl(
-                property.invoke(),
-                requirement,
-                property.name
-            )
-        }
-    }
+    constructor(
+        property: KProperty0<Key>,
+        requirement: AccountKeyRequirement,
+    ) : this(
+        property.invoke(),
+        requirement,
+        property.name
+    )
 }

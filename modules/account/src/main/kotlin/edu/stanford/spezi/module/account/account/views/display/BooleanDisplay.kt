@@ -26,7 +26,7 @@ fun BooleanDisplay(
     key: AccountKey<Boolean>,
     value: Boolean,
 ) {
-    ListRow(key.name) {
+    ListRow(key.name.text()) {
         val stringResource = if (value) label.trueLabel else label.falseLabel
         Text(stringResource.text())
     }

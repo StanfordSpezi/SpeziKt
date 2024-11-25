@@ -14,7 +14,7 @@ fun <N : Number> NumberEntry(
     value: N,
     onValueChanged: (N) -> Unit,
 ) {
-    ListRow(key.name) {
+    ListRow(key.name.text()) {
         TextField(
             format.format(value),
             onValueChange = { text ->

@@ -11,7 +11,7 @@ fun StringEntry(
     value: String,
     onValueChanged: (String) -> Unit,
 ) {
-    ListRow(key.name) {
+    ListRow(key.name.text()) {
         VerifiableTextField(
             key.name.text(),
             value = value,

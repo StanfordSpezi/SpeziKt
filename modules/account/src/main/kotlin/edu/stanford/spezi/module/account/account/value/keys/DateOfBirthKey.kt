@@ -1,18 +1,25 @@
 package edu.stanford.spezi.module.account.account.value.keys
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import edu.stanford.spezi.core.design.component.ListRow
 import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.module.account.account.compositionLocal.LocalAccount
+import edu.stanford.spezi.module.account.account.compositionLocal.LocalAccountViewType
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.AccountKeyCategory
 import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.InitialValue
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
-import edu.stanford.spezi.module.account.account.value.value
+import edu.stanford.spezi.module.account.account.value.configuration.AccountKeyRequirement
+import edu.stanford.spezi.module.account.account.views.entry.DateOfBirthPicker
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import java.text.DateFormat
 import java.time.Instant
 import java.util.Date
 
@@ -36,12 +43,22 @@ private object AccountDateOfBirthKey : AccountKey<Date> {
 
     @Composable
     override fun DisplayComposable(value: Date) {
-        TODO("Not yet implemented")
+        val format = remember { DateFormat.getDateInstance(DateFormat.MEDIUM) }
+        ListRow(AccountKeys.dateOfBirth.name.text()) {
+            Text(format.format(value))
+        }
     }
 
     @Composable
     override fun EntryComposable(value: Date, onValueChanged: (Date) -> Unit) {
-        TODO("Not yet implemented")
+        val account = LocalAccount.current
+        val accountViewType = LocalAccountViewType.current
+
+        val isRequired =
+            account?.configuration?.get(this)?.requirement == AccountKeyRequirement.REQUIRED ||
+                accountViewType?.isEnteringNewData == false
+
+        DateOfBirthPicker(name.text(), value, onValueChanged, isRequired)
     }
 }
 

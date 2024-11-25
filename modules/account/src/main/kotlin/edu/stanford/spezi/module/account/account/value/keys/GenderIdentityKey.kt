@@ -1,5 +1,6 @@
 package edu.stanford.spezi.module.account.account.value.keys
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.module.account.account.model.GenderIdentity
@@ -8,7 +9,8 @@ import edu.stanford.spezi.module.account.account.value.AccountKeyCategory
 import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.InitialValue
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
-import edu.stanford.spezi.module.account.account.value.value
+import edu.stanford.spezi.module.account.account.views.display.StringResourceDisplay
+import edu.stanford.spezi.module.account.account.views.entry.EnumEntry
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.encoding.Decoder
@@ -34,12 +36,17 @@ private object AccountGenderIdentityKey : AccountKey<GenderIdentity> {
 
     @Composable
     override fun DisplayComposable(value: GenderIdentity) {
-        TODO("Not yet implemented")
+        StringResourceDisplay(this, value)
     }
 
     @Composable
     override fun EntryComposable(value: GenderIdentity, onValueChanged: (GenderIdentity) -> Unit) {
-        TODO("Not yet implemented")
+        EnumEntry(
+            this,
+            value,
+            GenderIdentity.entries,
+            onValueChanged
+        )
     }
 }
 

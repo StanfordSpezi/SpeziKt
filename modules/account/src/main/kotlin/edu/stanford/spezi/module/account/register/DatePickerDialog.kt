@@ -19,14 +19,21 @@ import java.time.ZoneId
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerDialog(
+    date: LocalDate = LocalDate.now(),
     onDateSelected: (LocalDate) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
-        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-            return utcTimeMillis <= System.currentTimeMillis()
-        }
-    })
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = convertDateToMillis(date),
+        selectableDates = object : SelectableDates {
+            val minTimeMillis = @Suppress("detekt:MagicNumber") convertDateToMillis(LocalDate.of(1800, 1, 1))
+
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                return utcTimeMillis >= minTimeMillis &&
+                    utcTimeMillis <= System.currentTimeMillis()
+            }
+        },
+    )
 
     val selectedDate = datePickerState.selectedDateMillis?.let {
         convertMillisToDate(it)
@@ -63,4 +70,8 @@ fun DatePickerDialog(
 
 private fun convertMillisToDate(millis: Long): LocalDate {
     return Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate()
+}
+
+private fun convertDateToMillis(date: LocalDate): Long {
+    return date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }

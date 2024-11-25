@@ -30,7 +30,7 @@ private object AccountUserIdKey : ComputedAccountKey<String> {
     @Composable
     override fun DisplayComposable(value: String) {
         val configuration = LocalAccountServiceConfiguration.current
-        ListRow(configuration.userIdConfiguration.idType.stringResource) {
+        ListRow(configuration.userIdConfiguration.idType.stringResource.text()) {
             Text(value)
         }
     }

@@ -9,6 +9,11 @@ sealed interface AccountViewType {
     enum class OverviewEntryMode {
         NEW, EXISTING, DISPLAY
     }
+
+    val isEnteringNewData: Boolean get() = when (this) {
+        Signup -> true
+        is Overview -> mode == OverviewEntryMode.NEW
+    }
 }
 
 val LocalAccountViewType = compositionLocalOf<AccountViewType?> { null }

@@ -17,12 +17,12 @@ class Account(
     val configuration: AccountValueConfiguration = AccountValueConfiguration.default,
     details: AccountDetails? = null,
 ) {
-    val logger by speziLogger()
+    private val logger by speziLogger()
 
     var details: AccountDetails?
         private set
 
-    public val accountService: AccountService
+    val accountService: AccountService
 
     @Inject lateinit var notifications: AccountNotifications // TODO: Actually this should be providing, right?
 
@@ -40,9 +40,7 @@ class Account(
             .mapNotNull { it.get(service) as? IdentityProvider }
         this.securityRelatedModifiers = service.javaClass.fields.asList()
             .mapNotNull { it.get(service) as? SecurityRelatedComposable }
-    }
 
-    fun configure() {
         // TODO: Check if userID exists
     }
 

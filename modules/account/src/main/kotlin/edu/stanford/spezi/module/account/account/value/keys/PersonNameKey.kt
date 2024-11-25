@@ -53,7 +53,7 @@ private object AccountNameKey : AccountKey<PersonNameComponents> {
 
     @Composable
     override fun DisplayComposable(value: PersonNameComponents) {
-        ListRow(name) {
+        ListRow(name.text()) {
             Text(value.formatted())
         }
     }

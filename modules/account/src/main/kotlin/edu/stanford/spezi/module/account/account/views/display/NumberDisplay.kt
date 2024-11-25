@@ -14,7 +14,7 @@ fun <N : Number> NumberDisplay(
     format: NumberFormat = NumberFormat.getInstance(),
     unit: StringResource = StringResource(""),
 ) {
-    ListRow(key.name) {
+    ListRow(key.name.text()) {
         Text(format.format(value) + unit.text())
     }
 }

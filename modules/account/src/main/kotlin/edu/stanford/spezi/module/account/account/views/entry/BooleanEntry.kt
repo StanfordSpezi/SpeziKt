@@ -11,7 +11,7 @@ fun BooleanEntry(
     value: Boolean,
     onValueChanged: (Boolean) -> Unit,
 ) {
-    ListRow(key.name) {
+    ListRow(key.name.text()) {
         Switch(
             checked = value,
             onCheckedChange = onValueChanged

@@ -10,7 +10,7 @@ fun StringDisplay(
     key: AccountKey<String>,
     value: String,
 ) {
-    ListRow(key.name) {
+    ListRow(key.name.text()) {
         Text(value)
     }
 }
