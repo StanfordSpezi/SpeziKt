@@ -35,6 +35,7 @@ edu.stanford.bdh.engagehf.navigation.screens
 edu.stanford.bdh.engagehf.observations
 edu.stanford.bdh.engagehf.onboarding
 edu.stanford.bdh.engagehf.questionnaire
+edu.stanford.bdh.engagehf.questionnaire.spezi
 edu.stanford.bdh.engagehf.utils
 module:bluetooth
 edu.stanford.spezi.core.bluetooth.api
