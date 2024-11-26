@@ -215,10 +215,6 @@ class MainActivity : FragmentActivity() {
                             Routes.SequentialOnboardingScreen
                         )
 
-                        is OnboardingNavigationEvent.ConsentScreen -> navHostController.navigate(
-                            Routes.ConsentScreen
-                        )
-
                         is AppNavigationEvent.AppScreen -> navHostController.navigateTo(
                             route = Routes.AppScreen,
                             clearBackStack = event.clearBackStack
