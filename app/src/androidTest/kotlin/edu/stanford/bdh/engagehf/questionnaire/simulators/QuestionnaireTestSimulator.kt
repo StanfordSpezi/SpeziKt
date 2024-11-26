@@ -6,7 +6,7 @@ import edu.stanford.bdh.engagehf.questionnaire.spezi.QuestionnaireComposableTest
 import edu.stanford.spezi.core.testing.onNodeWithIdentifier
 
 class QuestionnaireTestSimulator(
-    composeTestRule: ComposeTestRule,
+    val composeTestRule: ComposeTestRule,
 ) {
     private val root =
         composeTestRule.onNodeWithIdentifier(QuestionnaireComposableTestIdentifiers.ROOT)
