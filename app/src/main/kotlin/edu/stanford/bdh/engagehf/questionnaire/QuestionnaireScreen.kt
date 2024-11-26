@@ -9,17 +9,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.core.os.bundleOf
-import androidx.fragment.app.setFragmentResultListener
-import androidx.fragment.compose.AndroidFragment
-import androidx.fragment.compose.rememberFragmentState
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.android.fhir.datacapture.QuestionnaireFragment
+import edu.stanford.bdh.engagehf.questionnaire.spezi.QuestionnaireComposable
+import edu.stanford.bdh.engagehf.questionnaire.spezi.QuestionnaireResult
 import edu.stanford.spezi.core.design.component.CenteredBoxContent
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
@@ -94,36 +90,30 @@ private fun QuestionnaireLoaded(
                 .fillMaxWidth()
                 .weight(1f)
         ) {
-            val fragmentState = rememberFragmentState()
-            val args = remember(key1 = uiState) {
-                bundleOf(
-                    "questionnaire" to uiState.questionnaireString,
-                    "show-cancel-button" to uiState.showCancelButton,
-                )
-            }
-            AndroidFragment<QuestionnaireFragment>(
-                fragmentState = fragmentState,
-                modifier = Modifier
-                    .fillMaxSize(),
-                arguments = args
-            ) { fragment ->
-                fragment.setFragmentResultListener(
-                    QuestionnaireFragment.SUBMIT_REQUEST_KEY
-                ) { _, _ ->
-                    onAction(
-                        QuestionnaireViewModel.Action.SaveQuestionnaireResponse(
-                            fragment.getQuestionnaireResponse()
-                        )
-                    )
+            QuestionnaireComposable(
+                questionnaireJson = uiState.questionnaireString,
+                onResult = {
+                    when (it) {
+                        is QuestionnaireResult.Completed -> {
+                            onAction(
+                                QuestionnaireViewModel.Action.SaveQuestionnaireResponse(
+                                    it.response
+                                )
+                            )
+                        }
+
+                        is QuestionnaireResult.Cancelled -> {
+                            onAction(
+                                QuestionnaireViewModel.Action.Cancel
+                            )
+                        }
+
+                        is QuestionnaireResult.Failed -> {
+                            println("Failed")
+                        }
+                    }
                 }
-                fragment.setFragmentResultListener(
-                    QuestionnaireFragment.CANCEL_REQUEST_KEY
-                ) { _, _ ->
-                    onAction(
-                        QuestionnaireViewModel.Action.Cancel
-                    )
-                }
-            }
+            )
             if (uiState.isSaving) LoadingIndicator()
         }
     }
