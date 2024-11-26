@@ -38,7 +38,7 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
-fun PasswordResetComposable(
+fun PasswordReset(
     success: @Composable () -> Unit = { SuccessfulPasswordResetComposable() },
     resetPassword: suspend (String) -> Unit,
 ) {
@@ -125,7 +125,7 @@ private fun PasswordResetForm(
 @Composable
 private fun PasswordResetComposablePreview() {
     SpeziTheme(isPreview = true) {
-        PasswordResetComposable {
+        PasswordReset {
             println("Reset password for $it")
         }
     }

@@ -18,12 +18,12 @@ private object MockBoolKey : AccountKey<Boolean> {
     override val serializer = Boolean.serializer()
 
     @Composable
-    override fun DisplayComposable(value: Boolean) {
+    override fun Display(value: Boolean) {
         BooleanDisplay(key = this, value = value)
     }
 
     @Composable
-    override fun EntryComposable(value: Boolean, onValueChanged: (Boolean) -> Unit) {
+    override fun Entry(value: Boolean, onValueChanged: (Boolean) -> Unit) {
         BooleanEntry(key = this, value = value, onValueChanged = onValueChanged)
     }
 }

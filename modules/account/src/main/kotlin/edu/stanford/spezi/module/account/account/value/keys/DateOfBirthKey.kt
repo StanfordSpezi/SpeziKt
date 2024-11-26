@@ -42,7 +42,7 @@ private object AccountDateOfBirthKey : AccountKey<Date> {
     }
 
     @Composable
-    override fun DisplayComposable(value: Date) {
+    override fun Display(value: Date) {
         val format = remember { DateFormat.getDateInstance(DateFormat.MEDIUM) }
         ListRow(AccountKeys.dateOfBirth.name.text()) {
             Text(format.format(value))
@@ -50,7 +50,7 @@ private object AccountDateOfBirthKey : AccountKey<Date> {
     }
 
     @Composable
-    override fun EntryComposable(value: Date, onValueChanged: (Date) -> Unit) {
+    override fun Entry(value: Date, onValueChanged: (Date) -> Unit) {
         val account = LocalAccount.current
         val accountViewType = LocalAccountViewType.current
 

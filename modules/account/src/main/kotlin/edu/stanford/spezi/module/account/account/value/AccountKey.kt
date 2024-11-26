@@ -20,14 +20,14 @@ interface AccountKey<Value : Any> : KnowledgeSource<AccountAnchor, Value> {
     val serializer: KSerializer<Value>
 
     @Composable
-    fun DisplayComposable(value: Value)
+    fun Display(value: Value)
 
     @Composable
-    fun EntryComposable(value: Value, onValueChanged: (Value) -> Unit)
+    fun Entry(value: Value, onValueChanged: (Value) -> Unit)
 
     @Composable
-    fun EntryComposable(state: MutableState<Value>) {
-        EntryComposable(state.value, onValueChanged = { state.value = it })
+    fun Entry(state: MutableState<Value>) {
+        Entry(state.value, onValueChanged = { state.value = it })
     }
 }
 

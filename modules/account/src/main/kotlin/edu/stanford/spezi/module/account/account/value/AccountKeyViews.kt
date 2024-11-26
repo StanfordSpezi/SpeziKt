@@ -2,25 +2,25 @@ package edu.stanford.spezi.module.account.account.value
 
 import androidx.compose.runtime.Composable
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
-import edu.stanford.spezi.module.account.account.views.entry.GeneralizedEntryComposable
+import edu.stanford.spezi.module.account.account.views.entry.GeneralizedEntry
 import edu.stanford.spezi.module.account.account.views.overview.AccountOverviewFormViewModel
-import edu.stanford.spezi.module.account.account.views.overview.SingleEntryComposable
+import edu.stanford.spezi.module.account.account.views.overview.SingleEntry
 
 @Composable
-internal fun <Value : Any> AccountKey<Value>.EntryComposableWithEmptyValue() {
-    GeneralizedEntryComposable(this, initialValue = initialValue.value)
+internal fun <Value : Any> AccountKey<Value>.EntryWithEmptyValue() {
+    GeneralizedEntry(this, initialValue = initialValue.value)
 }
 
 @Composable
-internal fun <Value : Any> AccountKey<Value>.EntryComposableWithStoredOrInitialValue(details: AccountDetails) {
+internal fun <Value : Any> AccountKey<Value>.EntryWithStoredOrInitialValue(details: AccountDetails) {
     val value = details[this] ?: initialValue.value
-    GeneralizedEntryComposable(this, initialValue = value)
+    GeneralizedEntry(this, initialValue = value)
 }
 
 @Composable
-internal fun <Value : Any> AccountKey<Value>.SingleEntryComposable(
+internal fun <Value : Any> AccountKey<Value>.SingleEntry(
     model: AccountOverviewFormViewModel,
     details: AccountDetails,
 ) {
-    SingleEntryComposable(this, model = model, details = details)
+    SingleEntry(this, model = model, details = details)
 }

@@ -1,4 +1,4 @@
-package edu.stanford.spezi.module.account.account.views.setup
+package edu.stanford.spezi.module.account.account.views.signup
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
@@ -8,14 +8,14 @@ import edu.stanford.spezi.module.account.account.compositionLocal.LocalAccount
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.AccountKeyCategory
 import edu.stanford.spezi.module.account.account.value.AccountKeys
-import edu.stanford.spezi.module.account.account.value.EntryComposableWithEmptyValue
+import edu.stanford.spezi.module.account.account.value.EntryWithEmptyValue
 import edu.stanford.spezi.module.account.account.value.keys.name
 import edu.stanford.spezi.module.account.account.value.keys.password
 import edu.stanford.spezi.module.account.account.value.keys.userId
 import edu.stanford.spezi.module.account.account.views.overview.PasswordValidationRuleFooter
 
 @Composable
-internal fun SignupSectionsComposable(
+internal fun SignupSections(
     sections: Map<AccountKeyCategory, List<AccountKey<*>>>,
 ) {
     val account = LocalAccount.current
@@ -29,7 +29,7 @@ internal fun SignupSectionsComposable(
 
                 for (key in entry.value) {
                     Column {
-                        key.EntryComposableWithEmptyValue()
+                        key.EntryWithEmptyValue()
                     }
                 }
 
@@ -47,8 +47,8 @@ internal fun SignupSectionsComposable(
 
 @ThemePreviews
 @Composable
-internal fun SignupSectionsComposablePreview() {
-    SignupSectionsComposable(
+internal fun SignupSectionsPreview() {
+    SignupSections(
         mapOf(
             AccountKeyCategory.credentials to listOf(AccountKeys.userId, AccountKeys.password),
             AccountKeyCategory.name to listOf(AccountKeys.name)

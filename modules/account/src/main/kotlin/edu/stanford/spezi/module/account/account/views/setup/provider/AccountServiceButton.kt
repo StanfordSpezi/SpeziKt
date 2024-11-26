@@ -28,7 +28,7 @@ import edu.stanford.spezi.core.design.views.views.views.button.SuspendButton
 
 @Composable
 fun AccountServiceButton(
-    title: StringResource,
+    title: String,
     modifier: Modifier = Modifier,
     image: ImageResource = remember { ImageResource.Vector(Icons.Default.Person, StringResource("User Profile")) },
     colors: ButtonColors = ButtonDefaults.buttonColors(),
@@ -46,7 +46,7 @@ fun AccountServiceButton(
         ) {
             ImageResourceComposable(image)
             Spacer(Modifier.width(8.dp))
-            Text(title.text())
+            Text(title)
         }
     }
 }
@@ -78,7 +78,7 @@ fun AccountServiceButton(
 @Composable
 private fun AccountServiceButtonPreview() {
     SpeziTheme(isPreview = true) {
-        AccountServiceButton(StringResource("E-Mail and Password")) {
+        AccountServiceButton("E-Mail and Password") {
             println("Pressed")
         }
     }

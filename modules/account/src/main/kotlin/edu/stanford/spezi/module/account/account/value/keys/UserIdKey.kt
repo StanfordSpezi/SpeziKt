@@ -28,7 +28,7 @@ private object AccountUserIdKey : ComputedAccountKey<String> {
     override val serializer = String.serializer()
 
     @Composable
-    override fun DisplayComposable(value: String) {
+    override fun Display(value: String) {
         val configuration = LocalAccountServiceConfiguration.current
         ListRow(configuration.userIdConfiguration.idType.stringResource.text()) {
             Text(value)
@@ -36,7 +36,7 @@ private object AccountUserIdKey : ComputedAccountKey<String> {
     }
 
     @Composable
-    override fun EntryComposable(value: String, onValueChanged: (String) -> Unit) {
+    override fun Entry(value: String, onValueChanged: (String) -> Unit) {
         val configuration = LocalAccountServiceConfiguration.current
 
         VerifiableTextField(

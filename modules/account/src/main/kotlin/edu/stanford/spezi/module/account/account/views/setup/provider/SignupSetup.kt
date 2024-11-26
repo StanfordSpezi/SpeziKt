@@ -44,7 +44,7 @@ internal fun SignupSetup(
                     style = TextStyles.bodyMedium,
                 )
                 Text(
-                    StringResource("UP_LOGIN").text(),
+                    StringResource("Login").text(),
                     style = TextStyles.bodyMedium,
                     modifier = Modifier.clickable { style.value = PresentedSetupStyle.Login(loginBlock) }
                 )

@@ -19,12 +19,12 @@ private object MockDoubleKey : AccountKey<Double> {
     override val serializer = Double.serializer()
 
     @Composable
-    override fun DisplayComposable(value: Double) {
+    override fun Display(value: Double) {
         NumberDisplay(key = this, value = value)
     }
 
     @Composable
-    override fun EntryComposable(value: Double, onValueChanged: (Double) -> Unit) {
+    override fun Entry(value: Double, onValueChanged: (Double) -> Unit) {
         NumberEntry(
             key = this,
             value = value,

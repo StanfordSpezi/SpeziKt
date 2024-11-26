@@ -17,7 +17,7 @@ class Account(
     val configuration: AccountValueConfiguration = AccountValueConfiguration.default,
     details: AccountDetails? = null,
 ) {
-    private val logger by speziLogger()
+    internal val logger by speziLogger()
 
     var details: AccountDetails?
         private set

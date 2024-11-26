@@ -1,10 +1,38 @@
-package edu.stanford.spezi.module.account.account.views
+package edu.stanford.spezi.module.account.account.views.signup
 
-/*
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.design.theme.SpeziTheme
+import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.core.design.views.validation.state.ReceiveValidation
+import edu.stanford.spezi.core.design.views.validation.state.ValidationContext
+import edu.stanford.spezi.core.design.views.views.model.ViewState
+import edu.stanford.spezi.core.design.views.views.views.button.SuspendButton
+import edu.stanford.spezi.core.design.views.views.viewstate.ViewStateAlert
+import edu.stanford.spezi.module.account.account.compositionLocal.AccountViewType
+import edu.stanford.spezi.module.account.account.compositionLocal.LocalAccount
+import edu.stanford.spezi.module.account.account.compositionLocal.LocalAccountServiceConfiguration
+import edu.stanford.spezi.module.account.account.compositionLocal.LocalAccountViewType
+import edu.stanford.spezi.module.account.account.compositionLocal.ReportSignupProviderCompliance
+import edu.stanford.spezi.module.account.account.compositionLocal.SignupProviderCompliance
+import edu.stanford.spezi.module.account.account.service.configuration.requiredAccountKeys
+import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
+import edu.stanford.spezi.module.account.account.value.configuration.AccountKeyRequirement
+import edu.stanford.spezi.module.account.account.value.keys.isAnonymous
+import java.util.EnumSet
+
 @Composable
 fun SignupForm(
     header: @Composable () -> Unit = { SignupFormHeader() },
-    signupBlock: suspend (AccountDetails) -> Unit,
+    signup: suspend (AccountDetails) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     val account = LocalAccount.current
@@ -20,7 +48,7 @@ fun SignupForm(
 
     ReportSignupProviderCompliance(compliance.value)
 
-    SignupFormForm(header)
+    SignupFormContent(header, signup, onDismissRequest)
 
 // TODO: .disableDismissiveActions(isProcessing: viewState)
 // .interactiveDismissDisabled(!signupDetailsBuilder.isEmpty)
@@ -58,19 +86,22 @@ fun SignupForm(
 }
 
 @Composable
-private fun SignupFormForm(
+private fun SignupFormContent(
     header: @Composable () -> Unit,
+    signup: suspend (AccountDetails) -> Unit,
+    onDismissRequest: () -> Unit,
 ) {
-    val account = LocalAccount.current
+    val account = LocalAccount.current ?: error("Account must exist")
 
     val validation = remember { mutableStateOf(ValidationContext()) }
     val viewState = remember { mutableStateOf<ViewState>(ViewState.Idle) }
+    val compliance = remember { mutableStateOf<SignupProviderCompliance?>(null) }
 
     val accountKeyByCategory = remember {
         val filters = EnumSet.of(AccountKeyRequirement.REQUIRED, AccountKeyRequirement.COLLECTED)
-        var result = account?.configuration?.allCategorized(filters)?.toMutableMap() ?: mutableMapOf()
+        var result = account.configuration.allCategorized(filters).toMutableMap()
 
-        account?.details?.let { details ->
+        account.details?.let { details ->
             if (details.isAnonymous) {
                 result = result
                     .mapValues { entry -> entry.value.filter { !details.contains(it) } }
@@ -79,7 +110,7 @@ private fun SignupFormForm(
             }
         }
 
-        val requiredAccountKeys = account?.accountService?.configuration?.requiredAccountKeys ?: emptyList()
+        val requiredAccountKeys = account.accountService.configuration.requiredAccountKeys
         for (key in requiredAccountKeys) {
             if (result[key.category]?.contains(key) != true) {
                 val list = result[key.category]?.toMutableList() ?: mutableListOf()
@@ -97,20 +128,21 @@ private fun SignupFormForm(
     header()
 
     ReceiveValidation(validation) {
-        SignupSectionsComposable(emptyMap()) // TODO: Connect to real state
-        // TODO: .environment(\.accountServiceConfiguration, account.accountService.configuration)
-        // TODO: .environment(\.accountViewType, .signup)
-        // TODO: .environment(signupDetailsBuilder)
+        CompositionLocalProvider(
+            LocalAccountServiceConfiguration provides account.accountService.configuration,
+            LocalAccountViewType provides AccountViewType.Signup
+        ) {
+            SignupSections(accountKeyByCategory)
+        }
 
-        // TODO: Add viewState
         SuspendButton(
             state = viewState,
-            action = {
+            onClick = {
                 if (!validation.value.validateHierarchy()) return@SuspendButton
 
                 val details = AccountDetails()
 
-                val anonymousDetails = account?.details
+                val anonymousDetails = account.details
 
                 if (anonymousDetails != null && anonymousDetails.isAnonymous) {
                     val combined = details.copy()
@@ -120,12 +152,12 @@ private fun SignupFormForm(
                     details.validateAgainstSignupRequirements(account.configuration)
                 }
 
-
-                val compliance = SignupProviderCompliance.compliant
+                compliance.value = SignupProviderCompliance.compliant
+                @Suppress("detekt:TooGenericExceptionCaught")
                 try {
-                    signupBlock(details)
+                    signup(details)
                 } catch (throwable: Throwable) {
-                    compliance = null
+                    compliance.value = null
                     throw throwable
                 }
 
@@ -146,11 +178,11 @@ private fun SignupFormForm(
 @Composable
 private fun SignupFormPreview() {
     SpeziTheme(isPreview = true) {
-        SignupForm { details ->
-            println("Signup Details: $details")
-        }
+        SignupForm(
+            signup = { details ->
+                println("Signup Details: $details")
+            },
+            onDismissRequest = {}
+        )
     }
 }
-
-
- */

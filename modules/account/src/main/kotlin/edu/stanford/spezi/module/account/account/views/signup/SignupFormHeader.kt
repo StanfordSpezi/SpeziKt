@@ -1,4 +1,4 @@
-package edu.stanford.spezi.module.account.account.views
+package edu.stanford.spezi.module.account.account.views.signup
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.core.design.component.ImageResource
 import edu.stanford.spezi.core.design.component.ImageResourceComposable
 import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.design.component.StringResource.Companion.invoke
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles

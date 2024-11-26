@@ -4,6 +4,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import edu.stanford.spezi.core.design.component.ListRow
 import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.module.account.account.model.GenderIdentity
 import edu.stanford.spezi.module.account.account.value.AccountKey
@@ -27,5 +28,8 @@ fun <Value> StringResourceDisplay(
 @ThemePreviews
 @Composable
 private fun StringResourceDisplayPreview() {
-    AccountKeys.genderIdentity.DisplayComposable(GenderIdentity.PREFER_NOT_TO_STATE)
+    SpeziTheme(isPreview = true) {
+        AccountKeys.genderIdentity
+            .Display(GenderIdentity.PREFER_NOT_TO_STATE)
+    }
 }

@@ -10,11 +10,11 @@ import edu.stanford.spezi.core.design.views.validation.state.ValidationContext
 import edu.stanford.spezi.core.design.views.views.model.ViewState
 import edu.stanford.spezi.module.account.account.compositionLocal.LocalAccount
 import edu.stanford.spezi.module.account.account.value.AccountKey
-import edu.stanford.spezi.module.account.account.value.EntryComposableWithStoredOrInitialValue
+import edu.stanford.spezi.module.account.account.value.EntryWithStoredOrInitialValue
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 
 @Composable
-internal fun <Value : Any> SingleEntryComposable(
+internal fun <Value : Any> SingleEntry(
     key: AccountKey<Value>,
     model: AccountOverviewFormViewModel,
     details: AccountDetails,
@@ -36,7 +36,7 @@ internal fun <Value : Any> SingleEntryComposable(
     ReceiveValidation(validation) {
         // TODO: ViewStateAlert
         Column {
-            key.EntryComposableWithStoredOrInitialValue(details)
+            key.EntryWithStoredOrInitialValue(details)
             // TODO: .focused($isFocused)
             // TODO: .environment(\.accountViewType, .overview(mode: .existing))
             // TODO: .injectEnvironmentObjects(configuration: accountDetails.accountServiceConfiguration, model: model)

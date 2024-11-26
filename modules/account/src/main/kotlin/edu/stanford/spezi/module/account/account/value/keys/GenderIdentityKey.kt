@@ -35,12 +35,12 @@ private object AccountGenderIdentityKey : AccountKey<GenderIdentity> {
     }
 
     @Composable
-    override fun DisplayComposable(value: GenderIdentity) {
+    override fun Display(value: GenderIdentity) {
         StringResourceDisplay(this, value)
     }
 
     @Composable
-    override fun EntryComposable(value: GenderIdentity, onValueChanged: (GenderIdentity) -> Unit) {
+    override fun Entry(value: GenderIdentity, onValueChanged: (GenderIdentity) -> Unit) {
         EnumEntry(
             this,
             value,

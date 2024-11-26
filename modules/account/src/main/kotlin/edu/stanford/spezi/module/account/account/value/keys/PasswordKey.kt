@@ -33,12 +33,12 @@ private object AccountPasswordKey : AccountKey<String> {
     override val serializer = String.serializer()
 
     @Composable
-    override fun DisplayComposable(value: String) {
+    override fun Display(value: String) {
         StringDisplay(this, value)
     }
 
     @Composable
-    override fun EntryComposable(value: String, onValueChanged: (String) -> Unit) {
+    override fun Entry(value: String, onValueChanged: (String) -> Unit) {
         val accountViewType = LocalAccountViewType.current
         val fieldType = LocalPasswordFieldType.current
         val validation = LocalValidationEngine.current

@@ -19,12 +19,12 @@ private object AccountIdKey : RequiredAccountKey<String> {
     override val serializer = String.serializer()
 
     @Composable
-    override fun DisplayComposable(value: String) {
+    override fun Display(value: String) {
         Text("The internal account identifier is not meant to be user facing!")
     }
 
     @Composable
-    override fun EntryComposable(value: String, onValueChanged: (String) -> Unit) {
+    override fun Entry(value: String, onValueChanged: (String) -> Unit) {
         Text("The internal account identifier is meant to be generated!")
     }
 }

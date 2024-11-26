@@ -76,7 +76,7 @@ internal fun AccountSummaryBox(
     }
 }
 
-class AccountDetailsProvider : PreviewParameterProvider<AccountDetails> {
+private class AccountSummaryBoxPreviewProvider : PreviewParameterProvider<AccountDetails> {
     override val values: Sequence<AccountDetails> = sequenceOf(
         AccountDetails().also {
             it.userId = "lelandstanford@stanford.edu"
@@ -97,8 +97,8 @@ class AccountDetailsProvider : PreviewParameterProvider<AccountDetails> {
 
 @ThemePreviews
 @Composable
-fun AccountDialogPreview(
-    @PreviewParameter(AccountDetailsProvider::class) details: AccountDetails,
+private fun AccountSummaryBoxPreviews(
+    @PreviewParameter(AccountSummaryBoxPreviewProvider::class) details: AccountDetails,
 ) {
     SpeziTheme(isPreview = true) {
         Box(Modifier.padding(8.dp)) {

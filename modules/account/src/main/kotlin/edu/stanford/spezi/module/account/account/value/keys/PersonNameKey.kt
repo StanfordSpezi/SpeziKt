@@ -52,14 +52,14 @@ private object AccountNameKey : AccountKey<PersonNameComponents> {
     }
 
     @Composable
-    override fun DisplayComposable(value: PersonNameComponents) {
+    override fun Display(value: PersonNameComponents) {
         ListRow(name.text()) {
             Text(value.formatted())
         }
     }
 
     @Composable
-    override fun EntryComposable(value: PersonNameComponents, onValueChanged: (PersonNameComponents) -> Unit) {
+    override fun Entry(value: PersonNameComponents, onValueChanged: (PersonNameComponents) -> Unit) {
         val account = LocalAccount.current
         val nameIsRequired = account?.configuration?.get(AccountKeys.name)?.requirement == AccountKeyRequirement.REQUIRED
         val validationRules = if (nameIsRequired) listOf(ValidationRule.nonEmpty) else listOf(ValidationRule.acceptAll)

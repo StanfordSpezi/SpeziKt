@@ -51,7 +51,7 @@ internal fun PasswordChangeSheet(
                 .fieldValidationRules(AccountKeys.password) ?: emptyList()
         }
         Validate(newPassword.value, rules = newPasswordRules) {
-            AccountKeys.password.EntryComposable(newPassword)
+            AccountKeys.password.Entry(newPassword)
         }
 
         val validationEngineConfiguration = remember {
@@ -70,7 +70,7 @@ internal fun PasswordChangeSheet(
             LocalValidationEngineConfiguration provides validationEngineConfiguration,
         ) {
             Validate(newPasswordRepeat.value, rules = newPasswordRepeatRules) {
-                AccountKeys.password.EntryComposable(newPasswordRepeat)
+                AccountKeys.password.Entry(newPasswordRepeat)
             }
         }
 

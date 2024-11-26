@@ -11,7 +11,7 @@ import edu.stanford.spezi.module.account.account.value.InitialValue
 import edu.stanford.spezi.module.account.account.value.configuration.AccountKeyRequirement
 
 @Composable
-fun <Value : Any> GeneralizedEntryComposable(
+fun <Value : Any> GeneralizedEntry(
     key: AccountKey<Value>,
     initialValue: Value,
 ) {
@@ -21,7 +21,7 @@ fun <Value : Any> GeneralizedEntryComposable(
     (state.value as? String)?.let { stringValue ->
         // TODO: Figure out how to get validation rules!
         Validate(stringValue, emptyList()) {
-            key.EntryComposable(state.value, onValueChanged = { state.value = it })
+            key.Entry(state.value, onValueChanged = { state.value = it })
         }
     } ?: run {
         val isRequiredNonEmpty = (
@@ -31,10 +31,10 @@ fun <Value : Any> GeneralizedEntryComposable(
 
         if (isRequiredNonEmpty) {
             ValidateRequired(key, state) {
-                key.EntryComposable(state)
+                key.Entry(state)
             }
         } else {
-            key.EntryComposable(state)
+            key.Entry(state)
         }
     }
 }
