@@ -10,7 +10,7 @@ import edu.stanford.spezi.module.account.account.views.display.BooleanDisplay
 import edu.stanford.spezi.module.account.account.views.entry.BooleanEntry
 import kotlinx.serialization.builtins.serializer
 
-private object MockBoolKey : AccountKey<Boolean> {
+object MockBoolKey : AccountKey<Boolean> {
     override val name = StringResource("Toggle")
     override val identifier = "mockBool"
     override val category = AccountKeyCategory.other

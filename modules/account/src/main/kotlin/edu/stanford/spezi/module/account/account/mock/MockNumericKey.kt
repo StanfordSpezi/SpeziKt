@@ -11,7 +11,7 @@ import edu.stanford.spezi.module.account.account.views.entry.NumberEntry
 import kotlinx.serialization.builtins.serializer
 import java.text.NumberFormat
 
-private object MockNumericKey : AccountKey<Long> {
+object MockNumericKey : AccountKey<Long> {
     override val name = StringResource("Numeric Key")
     override val identifier = "mockNumeric"
     override val category = AccountKeyCategory.other
