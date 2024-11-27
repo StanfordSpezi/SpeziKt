@@ -3,7 +3,6 @@ package edu.stanford.spezi.module.account
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.testing.SpeziTestScope
 import edu.stanford.spezi.core.testing.runTestUnconfined
-import edu.stanford.spezi.module.account.account.AccountEvents
 import kotlinx.coroutines.flow.first
 import org.junit.Test
 

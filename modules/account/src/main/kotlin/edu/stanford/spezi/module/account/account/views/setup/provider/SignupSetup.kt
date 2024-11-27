@@ -27,7 +27,7 @@ internal fun SignupSetup(
 ) {
     Column {
         AccountServiceButton(
-            StringResource("UP_SIGNUP"),
+            "UP_SIGNUP",
             Modifier.padding(bottom = 12.dp)
         ) {
             presentingSetup.value = true

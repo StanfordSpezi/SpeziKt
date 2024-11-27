@@ -1,6 +1,5 @@
 package edu.stanford.spezi.module.account.account.views.signup
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.spezi.core.design.views.validation.state.ValidationContext
@@ -16,7 +15,7 @@ internal class SignupViewModel @Inject constructor() : ViewModel() {
     @Inject internal lateinit var account: Account
 
     data class UiState(
-        val validation: ValidationContext = ValidationContext()
+        val validation: ValidationContext = ValidationContext(),
     )
 
     sealed interface Action {
@@ -32,5 +31,4 @@ internal class SignupViewModel @Inject constructor() : ViewModel() {
                 _uiState.update { it.copy(validation = action.context) }
         }
     }
-
 }

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.spezi.library)
     alias(libs.plugins.spezi.hilt)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.spezi.serialization)
 }
 
 android {
@@ -21,6 +22,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.bundles.compose)
     implementation(libs.coil.compose)
+    implementation(libs.kotlinx.serialization.json)
 
     androidTestImplementation(libs.bundles.compose.androidTest)
     androidTestImplementation(composeBom)

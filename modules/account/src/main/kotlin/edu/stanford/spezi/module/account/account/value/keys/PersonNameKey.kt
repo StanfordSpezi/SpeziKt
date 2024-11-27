@@ -27,10 +27,6 @@ import edu.stanford.spezi.module.account.account.value.InitialValue
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.configuration.AccountKeyRequirement
 import edu.stanford.spezi.module.account.account.views.display.GridValidationStateFooter
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
 import java.util.EnumSet
 
 private object AccountNameKey : AccountKey<PersonNameComponents> {
@@ -39,17 +35,7 @@ private object AccountNameKey : AccountKey<PersonNameComponents> {
     override val category = AccountKeyCategory.credentials
     override val initialValue: InitialValue<PersonNameComponents> = InitialValue.Empty(
         PersonNameComponents())
-    override val serializer = object : KSerializer<PersonNameComponents> {
-        override val descriptor = String.serializer().descriptor
-
-        override fun serialize(encoder: Encoder, value: PersonNameComponents) {
-            encoder.encodeString(value.formatted())
-        }
-
-        override fun deserialize(decoder: Decoder): PersonNameComponents {
-            return PersonNameComponents(decoder.decodeString())
-        }
-    }
+    override val serializer = kotlinx.serialization.serializer<PersonNameComponents>()
 
     @Composable
     override fun Display(value: PersonNameComponents) {

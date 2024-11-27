@@ -12,7 +12,7 @@ private object AccountDetailsFlagsKey : DefaultProvidingKnowledgeSource<AccountA
     const val BIT_OFFSET_IS_VERIFIED = 2
     const val BIT_OFFSET_IS_INCOMPLETE = 3
 
-    override val defaultValue = BitSet(BIT_COUNT)
+    override val defaultValue get() = BitSet(BIT_COUNT)
 }
 
 private var AccountDetails.flags: BitSet

@@ -12,7 +12,7 @@ import com.google.firebase.storage.UploadTask
 import edu.stanford.spezi.core.testing.SpeziTestScope
 import edu.stanford.spezi.core.testing.mockTask
 import edu.stanford.spezi.core.testing.runTestUnconfined
-import edu.stanford.spezi.module.account.account.AccountEvents
+import edu.stanford.spezi.module.account.AccountEvents
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just

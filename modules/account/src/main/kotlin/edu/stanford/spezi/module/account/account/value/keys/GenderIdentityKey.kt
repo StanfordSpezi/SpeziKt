@@ -1,6 +1,5 @@
 package edu.stanford.spezi.module.account.account.value.keys
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.module.account.account.model.GenderIdentity
@@ -25,12 +24,12 @@ private object AccountGenderIdentityKey : AccountKey<GenderIdentity> {
         override val descriptor = String.serializer().descriptor
 
         override fun serialize(encoder: Encoder, value: GenderIdentity) {
-            encoder.encodeString(value.name)
+            encoder.encodeString(value.value)
         }
 
         override fun deserialize(decoder: Decoder): GenderIdentity {
             val string = decoder.decodeString()
-            return GenderIdentity.entries.first { it.name == string }
+            return GenderIdentity.entries.first { it.value == string }
         }
     }
 

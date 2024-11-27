@@ -12,7 +12,7 @@ import edu.stanford.spezi.module.account.account.value.collections.AccountDetail
 import kotlinx.serialization.builtins.serializer
 
 private object AccountIdKey : RequiredAccountKey<String> {
-    override val identifier = "id"
+    override val identifier = "accountId"
     override val name = StringResource("ACCOUNT_ID")
     override val category = AccountKeyCategory.credentials
     override val initialValue: InitialValue<String> = InitialValue.Empty("")

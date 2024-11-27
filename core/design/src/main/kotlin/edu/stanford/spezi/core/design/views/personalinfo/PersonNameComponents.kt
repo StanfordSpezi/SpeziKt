@@ -1,5 +1,8 @@
 package edu.stanford.spezi.core.design.views.personalinfo
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class PersonNameComponents(
     val namePrefix: String? = null,
     val givenName: String? = null,
@@ -8,6 +11,17 @@ data class PersonNameComponents(
     val nameSuffix: String? = null,
     val nickname: String? = null,
 ) {
+    companion object {
+        fun parse(string: String): PersonNameComponents {
+            // TODO: Improve this logic!
+            val split = string.split(" ")
+            return PersonNameComponents(
+                givenName = split.firstOrNull(),
+                familyName = split.drop(1).joinToString(" ")
+            )
+        }
+    }
+
     constructor(builder: Builder) : this(
         namePrefix = builder.namePrefix,
         givenName = builder.givenName,

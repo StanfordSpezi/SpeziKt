@@ -5,7 +5,9 @@ import edu.stanford.spezi.core.utils.foundation.knowledgesource.KnowledgeSource
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.configuration.AccountKeyRequirement
 import edu.stanford.spezi.module.account.account.value.configuration.AccountValueConfiguration
+import kotlinx.serialization.Serializable
 
+@Serializable(with = AccountDetailsEmptySerializer::class)
 data class AccountDetails(
     internal val storage: AccountStorage = AccountStorage(),
 ) : SharedRepository<AccountAnchor> by storage, Iterable<Map.Entry<KnowledgeSource<AccountAnchor, *>, Any>> {

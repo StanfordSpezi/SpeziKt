@@ -40,12 +40,6 @@ fun SignupForm(
 
     val compliance = remember { mutableStateOf<SignupProviderCompliance?>(null) }
 
-    val presentingCloseConfirmation = remember { mutableStateOf(false) }
-
-    if (presentingCloseConfirmation.value) {
-
-    }
-
     ReportSignupProviderCompliance(compliance.value)
 
     SignupFormContent(header, signup, onDismissRequest)
@@ -121,7 +115,6 @@ private fun SignupFormContent(
 
         result
     }
-
 
     ViewStateAlert(viewState)
 
