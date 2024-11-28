@@ -27,7 +27,7 @@ internal fun SignupSetup(
 ) {
     Column {
         AccountServiceButton(
-            "UP_SIGNUP",
+            StringResource("UP_SIGNUP").text(),
             Modifier.padding(bottom = 12.dp)
         ) {
             presentingSetup.value = true
@@ -36,7 +36,7 @@ internal fun SignupSetup(
         login?.let { loginBlock ->
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 Text(
-                    StringResource("Already got an Account?").text(),
+                    "Already got an Account?",
                     style = TextStyles.bodyMedium,
                 )
                 Text(
@@ -44,7 +44,7 @@ internal fun SignupSetup(
                     style = TextStyles.bodyMedium,
                 )
                 Text(
-                    StringResource("Login").text(),
+                    "Login",
                     style = TextStyles.bodyMedium,
                     modifier = Modifier.clickable { style.value = PresentedSetupStyle.Login(loginBlock) }
                 )

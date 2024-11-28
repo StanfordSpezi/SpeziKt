@@ -14,6 +14,7 @@ import edu.stanford.spezi.module.account.account.Account
 import edu.stanford.spezi.module.account.account.AccountNotifications
 import edu.stanford.spezi.module.account.account.ExternalAccountStorage
 import edu.stanford.spezi.module.account.account.compositionLocal.LocalAccount
+import edu.stanford.spezi.module.account.account.mock.InMemoryAccountService.ConfiguredIdentityProvider
 import edu.stanford.spezi.module.account.account.model.GenderIdentity
 import edu.stanford.spezi.module.account.account.service.AccountService
 import edu.stanford.spezi.module.account.account.service.configuration.AccountServiceConfiguration
@@ -38,14 +39,13 @@ import edu.stanford.spezi.module.account.account.views.setup.provider.AccountSer
 import edu.stanford.spezi.module.account.account.views.setup.provider.AccountSetupProviderComposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.EnumSet
 import java.util.UUID
+import java.util.concurrent.CancellationException
 import javax.inject.Inject
 import kotlin.coroutines.Continuation
-import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -107,9 +107,9 @@ private fun MockSecurityAlert(service: InMemoryAccountService) {
     }
 }
 
-class InMemoryAccountService(
+class InMemoryAccountService @Inject constructor(
     type: UserIdConfiguration = UserIdConfiguration.emailAddress,
-    configured: EnumSet<ConfiguredIdentityProvider> = EnumSet.allOf(ConfiguredIdentityProvider::class.java),
+    providers: EnumSet<ConfiguredIdentityProvider> = EnumSet.allOf(ConfiguredIdentityProvider::class.java),
     @Dispatching.IO private val scope: CoroutineScope,
 ) : AccountService {
     companion object {
@@ -165,20 +165,21 @@ class InMemoryAccountService(
 
     init {
 
-        if (!configured.contains(ConfiguredIdentityProvider.UserIdPassword)) {
+        if (!providers.contains(ConfiguredIdentityProvider.UserIdPassword)) {
             loginViewDelegate.isEnabled = false
         }
-        if (!configured.contains(ConfiguredIdentityProvider.Custom)) {
+        if (!providers.contains(ConfiguredIdentityProvider.Custom)) {
             testButton2Delegate.isEnabled = false
         }
-        if (!configured.contains(ConfiguredIdentityProvider.SignInWithGoogle)) {
+        if (!providers.contains(ConfiguredIdentityProvider.SignInWithGoogle)) {
             signInWithGoogleDelegate.isEnabled = false
         }
     }
 
     init {
-        val subscription = externalStorage.updatedDetails
         scope.launch { // TODO: Figure out how to do weak reference logic here
+            /*
+            val subscription = externalStorage.updatedDetails
             subscription.onEach { updatedDetails ->
                 val accountId = UUID(updatedDetails.accountId)
                 registeredUsers[accountId]?.let { storage ->
@@ -187,6 +188,7 @@ class InMemoryAccountService(
                     account.supplyUserDetails(details)
                 }
             }
+             */
         }
     }
 

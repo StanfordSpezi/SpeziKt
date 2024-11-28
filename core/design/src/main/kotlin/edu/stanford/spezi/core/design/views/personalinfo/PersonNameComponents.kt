@@ -1,7 +1,9 @@
 package edu.stanford.spezi.core.design.views.personalinfo
 
+import android.annotation.SuppressLint
 import kotlinx.serialization.Serializable
 
+@SuppressLint("UnsafeOptInUsageError")
 @Serializable
 data class PersonNameComponents(
     val namePrefix: String? = null,

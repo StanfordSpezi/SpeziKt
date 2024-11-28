@@ -42,7 +42,7 @@ private object AccountEmailKey : OptionalComputedAccountKey<String> {
     }
 
     override fun compute(repository: SharedRepository<AccountAnchor>): String? {
-        return repository[this] ?: run {
+        return repository[this as AccountKey<String>] ?: run {
             val idType = repository[AccountServiceConfigurationDetailsKey].userIdConfiguration.idType
             if (idType == UserIdType.EmailAddress) {
                 repository[AccountKeys.userId]
@@ -53,7 +53,7 @@ private object AccountEmailKey : OptionalComputedAccountKey<String> {
     }
 }
 
-val AccountKeys.email: AccountKey<String>
+val AccountKeys.email: OptionalComputedAccountKey<String>
     get() = AccountEmailKey
 
 var AccountDetails.email: String?

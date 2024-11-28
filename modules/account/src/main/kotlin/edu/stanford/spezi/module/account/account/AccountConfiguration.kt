@@ -14,29 +14,28 @@ import kotlin.system.exitProcess
 
 interface Standard
 
-// TODO: Expose those properties!!!!
-class AccountConfiguration<Service : AccountService>(
-    private val accountService: Service,
+class AccountConfiguration(
+    service: AccountService,
     private val storageProvider: AccountStorageProvider? = null,
     configuration: AccountValueConfiguration = AccountValueConfiguration.default,
-    defaultActiveDetails: AccountDetails? = null,
+    activeDetails: AccountDetails? = null,
 ) {
     private val logger by speziLogger()
 
     val account = Account(
-        accountService,
+        service,
         configuration,
-        defaultActiveDetails
+        activeDetails
     )
     val externalStorage = ExternalAccountStorage(storageProvider)
 
     @Inject internal lateinit var standard: Standard
 
     init {
-        verify(account.configuration, accountService)
+        verify(account.configuration, service)
     }
 
-    private fun verify(configuration: AccountValueConfiguration, service: Service) {
+    private fun verify(configuration: AccountValueConfiguration, service: AccountService) {
         logger.w { "Checking $service against the configured account keys." }
 
         when (val supportedKeys = service.configuration.supportedAccountKeys) {

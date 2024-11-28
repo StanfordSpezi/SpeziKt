@@ -63,7 +63,7 @@ class AccountDetailsTest {
         details.userId = "username@example.org"
         details[AccountServiceConfigurationDetailsKey] = AccountServiceConfiguration(
             supportedKeys = SupportedAccountKeys.Arbitrary,
-            listOf(UserIdConfiguration.emailAddress)
+            listOf(UserIdConfiguration.emailAddress),
         )
         details.email = "example@example.org"
 

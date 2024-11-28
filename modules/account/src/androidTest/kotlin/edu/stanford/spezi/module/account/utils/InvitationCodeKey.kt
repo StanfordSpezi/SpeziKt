@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.InitialValue
+import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.views.display.StringDisplay
 import edu.stanford.spezi.module.account.account.views.entry.StringEntry
 import kotlinx.serialization.builtins.serializer
@@ -25,3 +26,7 @@ private object InvitationCodeKey : AccountKey<String> {
         StringEntry(this, value, onValueChanged)
     }
 }
+
+var AccountDetails.invitationCode: String?
+    get() = this[InvitationCodeKey]
+    set(value) { this[InvitationCodeKey] = value }

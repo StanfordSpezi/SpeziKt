@@ -10,7 +10,6 @@ import edu.stanford.spezi.module.account.account.value.keys.accountServiceConfig
 import edu.stanford.spezi.module.account.account.value.keys.password
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import javax.inject.Inject
 
 class Account(
     service: AccountService,
@@ -24,7 +23,7 @@ class Account(
 
     val accountService: AccountService
 
-    @Inject lateinit var notifications: AccountNotifications // TODO: Actually this should be providing, right?
+    val notifications = AccountNotifications()
 
     var signedIn: Boolean = details != null
         private set
