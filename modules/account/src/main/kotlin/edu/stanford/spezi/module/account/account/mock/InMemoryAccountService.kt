@@ -11,6 +11,7 @@ import edu.stanford.spezi.core.design.views.views.views.button.SuspendButton
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.utils.UUID
 import edu.stanford.spezi.module.account.account.Account
+import edu.stanford.spezi.module.account.account.AccountConfiguration
 import edu.stanford.spezi.module.account.account.AccountNotifications
 import edu.stanford.spezi.module.account.account.ExternalAccountStorage
 import edu.stanford.spezi.module.account.account.compositionLocal.LocalAccount
@@ -45,6 +46,7 @@ import java.util.EnumSet
 import java.util.UUID
 import java.util.concurrent.CancellationException
 import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -107,9 +109,14 @@ private fun MockSecurityAlert(service: InMemoryAccountService) {
     }
 }
 
+data class InMemoryAccountServiceConfiguration(
+    val type: UserIdConfiguration = UserIdConfiguration.emailAddress,
+    val providers: EnumSet<ConfiguredIdentityProvider> = EnumSet.allOf(ConfiguredIdentityProvider::class.java),
+)
+
+@Singleton
 class InMemoryAccountService @Inject constructor(
-    type: UserIdConfiguration = UserIdConfiguration.emailAddress,
-    providers: EnumSet<ConfiguredIdentityProvider> = EnumSet.allOf(ConfiguredIdentityProvider::class.java),
+    config: InMemoryAccountServiceConfiguration,
     @Dispatching.IO private val scope: CoroutineScope,
 ) : AccountService {
     companion object {
@@ -125,11 +132,9 @@ class InMemoryAccountService @Inject constructor(
 
     val logger by speziLogger()
 
-    @Inject internal lateinit var account: Account
-
-    @Inject internal lateinit var notifications: AccountNotifications
-
-    @Inject internal lateinit var externalStorage: ExternalAccountStorage
+    private lateinit var account: Account
+    private lateinit var notifications: AccountNotifications
+    private lateinit var externalStorage: ExternalAccountStorage
 
     private val loginViewDelegate = IdentityProvider(section = AccountSetupSection.primary) {
         MockUserIdPasswordEmbeddedComposable(this)
@@ -150,7 +155,7 @@ class InMemoryAccountService @Inject constructor(
     override val configuration = AccountServiceConfiguration(
         SupportedAccountKeys.Exactly(supportedKeys),
         listOf(
-            type,
+            config.type,
             RequiredAccountKeys(listOf(AccountKeys.userId, AccountKeys.password)),
         ),
     )
@@ -164,14 +169,13 @@ class InMemoryAccountService @Inject constructor(
     }
 
     init {
-
-        if (!providers.contains(ConfiguredIdentityProvider.UserIdPassword)) {
+        if (!config.providers.contains(ConfiguredIdentityProvider.UserIdPassword)) {
             loginViewDelegate.isEnabled = false
         }
-        if (!providers.contains(ConfiguredIdentityProvider.Custom)) {
+        if (!config.providers.contains(ConfiguredIdentityProvider.Custom)) {
             testButton2Delegate.isEnabled = false
         }
-        if (!providers.contains(ConfiguredIdentityProvider.SignInWithGoogle)) {
+        if (!config.providers.contains(ConfiguredIdentityProvider.SignInWithGoogle)) {
             signInWithGoogleDelegate.isEnabled = false
         }
     }
@@ -190,6 +194,12 @@ class InMemoryAccountService @Inject constructor(
             }
              */
         }
+    }
+
+    override fun inject(configuration: AccountConfiguration) {
+        account = configuration.account
+        notifications = configuration.account.notifications
+        externalStorage = configuration.externalStorage
     }
 
     fun signInAnonymously() {

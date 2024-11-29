@@ -7,6 +7,7 @@ import edu.stanford.spezi.core.design.views.validation.ValidationRule
 import edu.stanford.spezi.core.design.views.validation.minimalEmail
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.module.account.account.Account
+import edu.stanford.spezi.module.account.account.AccountConfiguration
 import edu.stanford.spezi.module.account.account.AccountNotifications
 import edu.stanford.spezi.module.account.account.ExternalAccountStorage
 import edu.stanford.spezi.module.account.account.service.AccountService
@@ -60,6 +61,10 @@ class FirebaseAccountService(
             AccountKeys.password,
             AccountKeys.name
         )
+    }
+
+    override fun inject(configuration: AccountConfiguration) {
+        TODO("Not yet implemented")
     }
 
     private val logger by speziLogger()

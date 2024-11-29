@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class Account(
-    service: AccountService,
+    val accountService: AccountService,
     val configuration: AccountValueConfiguration = AccountValueConfiguration.default,
     details: AccountDetails? = null,
 ) {
@@ -20,8 +20,6 @@ class Account(
 
     var details: AccountDetails?
         private set
-
-    val accountService: AccountService
 
     val notifications = AccountNotifications()
 
@@ -33,12 +31,11 @@ class Account(
 
     init {
         this.details = details
-        this.accountService = service
 
-        this.accountSetupComponents = service.javaClass.fields.asList()
-            .mapNotNull { it.get(service) as? IdentityProvider }
-        this.securityRelatedModifiers = service.javaClass.fields.asList()
-            .mapNotNull { it.get(service) as? SecurityRelatedComposable }
+        this.accountSetupComponents = accountService.javaClass.fields.asList()
+            .mapNotNull { it.get(accountService) as? IdentityProvider }
+        this.securityRelatedModifiers = accountService.javaClass.fields.asList()
+            .mapNotNull { it.get(accountService) as? SecurityRelatedComposable }
 
         // TODO: Check if userID exists
     }

@@ -33,6 +33,7 @@ class AccountConfiguration(
 
     init {
         verify(account.configuration, service)
+        service.inject(this)
     }
 
     private fun verify(configuration: AccountValueConfiguration, service: AccountService) {

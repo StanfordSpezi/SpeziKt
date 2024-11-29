@@ -2,6 +2,7 @@ package edu.stanford.spezi.module.account.composables.provider
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -10,6 +11,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.core.design.views.views.model.ViewState
 import edu.stanford.spezi.core.design.views.views.viewstate.ViewStateAlert
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.module.account.account.compositionLocal.LocalAccount
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -42,8 +44,11 @@ fun TestConfigurationComposable(
     ViewStateAlert(viewState)
 
     if (viewState.value == ViewState.Idle && isLoaded.value) {
-        Box(Modifier.testIdentifier(TestConfigurationIdentifier.CONTENT)) {
-            content()
+        val account = viewModel.configuration.account
+        CompositionLocalProvider(LocalAccount provides account) {
+            Box(Modifier.testIdentifier(TestConfigurationIdentifier.CONTENT)) {
+                content()
+            }
         }
     }
 }

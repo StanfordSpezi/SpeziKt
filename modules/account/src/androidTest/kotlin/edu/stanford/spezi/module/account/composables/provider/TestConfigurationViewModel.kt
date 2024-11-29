@@ -2,6 +2,7 @@ package edu.stanford.spezi.module.account.composables.provider
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.spezi.module.account.account.AccountConfiguration
 import edu.stanford.spezi.module.account.account.mock.InMemoryAccountService
 import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.keys.name
@@ -10,7 +11,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TestConfigurationViewModel @Inject constructor(
-    private val service: InMemoryAccountService,
+    val configuration: AccountConfiguration,
+    val service: InMemoryAccountService,
 ) : ViewModel() {
     suspend fun configure(configuration: TestConfiguration) {
         val details = defaultAccountDetails()

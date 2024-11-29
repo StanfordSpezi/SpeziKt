@@ -28,4 +28,6 @@ internal fun AccountOverviewSections(
         if (deletionBehavior == AccountDeletionBehavior.EDIT_MODE) {
             !isEditing.value
         } else { true }
+
+    additionalSections()
 }
