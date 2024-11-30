@@ -28,10 +28,11 @@ import kotlinx.coroutines.flow.update
 import java.util.EnumSet
 import javax.inject.Inject
 
+@Suppress("detekt:TooManyFunctions")
 @HiltViewModel
 internal class AccountOverviewFormViewModel @Inject constructor(
-    valueConfiguration: AccountValueConfiguration,
-    serviceConfiguration: AccountServiceConfiguration,
+    private val valueConfiguration: AccountValueConfiguration,
+    private val serviceConfiguration: AccountServiceConfiguration,
 ) : ViewModel() {
     private val logger by speziLogger()
 
@@ -42,7 +43,6 @@ internal class AccountOverviewFormViewModel @Inject constructor(
             AccountKeyRequirement.SUPPORTED
         )
     )
-    private val accountServiceConfiguration = serviceConfiguration
 
     data class UiState(
         val presentingCancellationDialog: Boolean = false,
@@ -90,7 +90,7 @@ internal class AccountOverviewFormViewModel @Inject constructor(
             )
             .toMutableList()
 
-        for (describedKey in accountServiceConfiguration.requiredAccountKeys) {
+        for (describedKey in serviceConfiguration.requiredAccountKeys) {
             if (describedKey.category == category && !result.contains(describedKey)) {
                 result.add(describedKey)
             }
@@ -104,7 +104,7 @@ internal class AccountOverviewFormViewModel @Inject constructor(
             .mapValues { it.value.toMutableList() }
             .toMutableMap()
 
-        for (describedKey in accountServiceConfiguration.requiredAccountKeys) {
+        for (describedKey in serviceConfiguration.requiredAccountKeys) {
             results[describedKey.category]?.add(describedKey) ?: run {
                 results[describedKey.category] = mutableListOf(describedKey)
             }
@@ -262,10 +262,22 @@ internal class AccountOverviewFormViewModel @Inject constructor(
             accountKeys(AccountKeyCategory.credentials, details).any { !it.isHiddenCredential }
     }
 
-    fun displayNameDetails(details: AccountDetails): Boolean {
+    fun displaysNameDetails(details: AccountDetails): Boolean {
         val containsUserId = categorizedAccountKeys[AccountKeyCategory.credentials]?.contains(AccountKeys.userId)
         return (containsUserId == true && !details.isAnonymous) ||
             (categorizedAccountKeys[AccountKeyCategory.name]?.isEmpty() != true)
+    }
+
+    internal fun containsAddedKey(key: AccountKey<*>): Boolean {
+        return addedAccountKeys[key.category]?.contains(key) == true
+    }
+
+    internal fun containsRemovedKey(key: AccountKey<*>): Boolean {
+        return removedAccountKeys[key.category]?.contains(key) == true
+    }
+
+    internal fun requirement(key: AccountKey<*>): AccountKeyRequirement? {
+        return valueConfiguration[key]?.requirement
     }
 }
 

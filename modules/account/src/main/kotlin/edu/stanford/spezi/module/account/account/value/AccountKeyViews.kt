@@ -7,6 +7,16 @@ import edu.stanford.spezi.module.account.account.views.overview.AccountOverviewF
 import edu.stanford.spezi.module.account.account.views.overview.SingleEntry
 
 @Composable
+internal fun <Value : Any> AccountKey<Value>.DisplayWithStoredValue(
+    details: AccountDetails,
+    placeholderContent: @Composable () -> Unit = {},
+) {
+    details[this]
+        ?.let { Display(it) }
+        ?: placeholderContent()
+}
+
+@Composable
 internal fun <Value : Any> AccountKey<Value>.EntryWithEmptyValue() {
     GeneralizedEntry(this, initialValue = initialValue.value)
 }

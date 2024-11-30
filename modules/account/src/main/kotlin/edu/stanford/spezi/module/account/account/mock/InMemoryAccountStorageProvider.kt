@@ -2,7 +2,6 @@ package edu.stanford.spezi.module.account.account.mock
 
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.module.account.account.AccountStorageProvider
-import edu.stanford.spezi.module.account.account.ExternalAccountStorage
 import edu.stanford.spezi.module.account.account.value.AccountKey
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.collections.AccountModifications
@@ -18,7 +17,7 @@ class InMemoryAccountStorageProvider @Inject constructor(
     private val records = mutableMapOf<String, AccountDetails>()
     private val cache = mutableMapOf<String, AccountDetails>() // simulates an in-memory cache
 
-    @Inject internal lateinit var storage: ExternalAccountStorage
+    // @Inject internal lateinit var storage: ExternalAccountStorage
 
     override suspend fun load(accountId: String, keys: List<AccountKey<*>>): AccountDetails? {
         cache[accountId]?.let { cached ->
@@ -31,7 +30,7 @@ class InMemoryAccountStorageProvider @Inject constructor(
                     delay(1.seconds)
                     records[accountId]?.let { details ->
                         cache[accountId] = details
-                        storage.notifyAboutUpdatedDetails(accountId, details)
+                        // storage.notifyAboutUpdatedDetails(accountId, details)
                     }
                 }
             }

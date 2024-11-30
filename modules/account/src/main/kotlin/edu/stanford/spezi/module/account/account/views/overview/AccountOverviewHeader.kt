@@ -24,10 +24,16 @@ import edu.stanford.spezi.module.account.account.value.keys.userId
 import edu.stanford.spezi.module.account.account.viewModel.AccountDisplayModel
 
 @Composable
-internal fun AccountOverviewHeader(details: AccountDetails) {
+internal fun AccountOverviewHeader(
+    details: AccountDetails,
+    modifier: Modifier = Modifier,
+) {
     val model = AccountDisplayModel(details)
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         model.profileViewName?.let {
             UserProfileComposable(
                 name = it,

@@ -3,6 +3,7 @@ package edu.stanford.spezi.module.account.utils
 import androidx.compose.runtime.Composable
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.module.account.account.value.AccountKey
+import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.InitialValue
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.views.display.StringDisplay
@@ -27,6 +28,9 @@ private object InvitationCodeKey : AccountKey<String> {
     }
 }
 
+val AccountKeys.invitationCode: AccountKey<String>
+    get() = InvitationCodeKey
+
 var AccountDetails.invitationCode: String?
-    get() = this[InvitationCodeKey]
-    set(value) { this[InvitationCodeKey] = value }
+    get() = this[AccountKeys.invitationCode]
+    set(value) { this[AccountKeys.invitationCode] = value }

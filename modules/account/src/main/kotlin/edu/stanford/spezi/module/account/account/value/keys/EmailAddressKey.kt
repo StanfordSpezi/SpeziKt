@@ -20,7 +20,7 @@ import kotlinx.serialization.builtins.serializer
 private object AccountEmailKey : OptionalComputedAccountKey<String> {
     override val identifier = "email"
     override val name = StringResource("USER_ID_EMAIL")
-    override val category = AccountKeyCategory.personalDetails
+    override val category = AccountKeyCategory.contactDetails
     override val storagePolicy: ComputedKnowledgeSourceStoragePolicy
         get() = ComputedKnowledgeSourceStoragePolicy.AlwaysCompute
     override val initialValue: InitialValue<String> = InitialValue.Empty("")

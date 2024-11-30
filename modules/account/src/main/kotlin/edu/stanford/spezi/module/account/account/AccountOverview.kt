@@ -1,6 +1,7 @@
 package edu.stanford.spezi.module.account.account
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import edu.stanford.spezi.core.design.theme.SpeziTheme
@@ -21,7 +22,7 @@ enum class AccountDeletionBehavior {
 fun AccountOverview(
     closeBehavior: AccountOverviewCloseBehavior = remember { AccountOverviewCloseBehavior.DISABLED },
     deletionBehavior: AccountDeletionBehavior = remember { AccountDeletionBehavior.EDIT_MODE },
-    additionalSections: @Composable () -> Unit,
+    additionalSections: LazyListScope.() -> Unit,
 ) {
     // val viewModel = hiltViewModel<AccountOverviewFormViewModel>()
     val account = LocalAccount.current

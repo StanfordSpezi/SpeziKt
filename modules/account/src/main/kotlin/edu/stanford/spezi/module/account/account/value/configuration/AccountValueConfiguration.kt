@@ -35,7 +35,7 @@ data class AccountValueConfiguration internal constructor(
 
     internal fun allCategorized(filters: EnumSet<AccountKeyRequirement>? = null): Map<AccountKeyCategory, List<AccountKey<*>>> {
         return configuration.values
-            .filter { filters?.contains(it.requirement) ?: true }
+            .filter { filters?.contains(it.requirement) != false }
             .groupBy { it.key.category }
             .mapValues { entry -> entry.value.map { it.key } }
     }

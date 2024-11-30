@@ -14,12 +14,15 @@ class AccountOverviewTest : AccountTest() {
 
     @Composable
     override fun Content() {
+        val account = LocalAccount.current
         AccountOverview {
-            val account = LocalAccount.current
-            Text("Spezi Account")
-
+            item {
+                Text("Spezi Account")
+            }
             account?.details?.invitationCode?.let {
-                Text("Invitation Code: $it")
+                item {
+                    Text("Invitation Code: $it")
+                }
             }
         }
     }

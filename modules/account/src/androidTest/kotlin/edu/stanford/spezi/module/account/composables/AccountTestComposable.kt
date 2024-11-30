@@ -82,10 +82,14 @@ private fun Header(
 @Composable
 private fun OverviewSheet(account: Account) {
     AccountOverview(closeBehavior = AccountOverviewCloseBehavior.SHOW_CLOSE_BUTTON) {
-        Text("License Information")
+        item {
+            Text("License Information")
+        }
 
         account.details?.invitationCode?.let {
-            Text("Invitation Code: $it")
+            item {
+                Text("Invitation Code: $it")
+            }
         }
     }
 }

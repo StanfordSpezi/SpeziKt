@@ -24,6 +24,7 @@ fun TestConfigurationComposable(
     configuration: TestConfiguration,
     content: @Composable () -> Unit,
 ) {
+    TestModule.configuration = configuration
     val isLoaded = remember { mutableStateOf(false) }
     val viewState = remember { mutableStateOf<ViewState>(ViewState.Idle) }
     val viewModel = hiltViewModel<TestConfigurationViewModel>()

@@ -6,6 +6,8 @@ import edu.stanford.spezi.core.design.component.ListRow
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.views.validation.views.VerifiableTextField
 import edu.stanford.spezi.module.account.account.value.AccountKey
+import edu.stanford.spezi.module.account.account.value.AccountKeyCategory
+import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.InitialValue
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import kotlinx.serialization.builtins.serializer
@@ -13,6 +15,8 @@ import kotlinx.serialization.builtins.serializer
 private object BiographyKey : AccountKey<String> {
     override val identifier = "biography"
     override val name = StringResource("Bio")
+    override val category: AccountKeyCategory
+        get() = AccountKeyCategory.personalDetails
     override val initialValue: InitialValue<String>
         get() = InitialValue.Empty("")
     override val serializer get() = String.serializer()
@@ -35,6 +39,9 @@ private object BiographyKey : AccountKey<String> {
     }
 }
 
+val AccountKeys.biography: AccountKey<String>
+    get() = BiographyKey
+
 var AccountDetails.biography: String?
-    get() = this[BiographyKey]
-    set(value) { this[BiographyKey] = value }
+    get() = this[AccountKeys.biography]
+    set(value) { this[AccountKeys.biography] = value }

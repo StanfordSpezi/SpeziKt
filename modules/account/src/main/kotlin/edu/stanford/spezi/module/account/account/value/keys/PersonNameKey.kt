@@ -32,7 +32,7 @@ import java.util.EnumSet
 private object AccountNameKey : AccountKey<PersonNameComponents> {
     override val identifier = "name"
     override val name = StringResource("NAME")
-    override val category = AccountKeyCategory.credentials
+    override val category = AccountKeyCategory.name
     override val initialValue: InitialValue<PersonNameComponents> = InitialValue.Empty(
         PersonNameComponents())
     override val serializer = kotlinx.serialization.serializer<PersonNameComponents>()
