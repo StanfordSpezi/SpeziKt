@@ -144,7 +144,7 @@ class HealthUiStateMapperTest {
                 day = 4,
             ),
             createWeightRecord(
-                month = zonedDateTime.monthValue + 1,
+                year = zonedDateTime.year + 1,
                 day = 5,
             ),
         )
