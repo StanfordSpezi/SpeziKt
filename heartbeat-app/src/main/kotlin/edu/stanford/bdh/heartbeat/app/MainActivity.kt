@@ -12,6 +12,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
+import edu.stanford.spezi.core.utils.extensions.testIdentifier
 
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
@@ -21,10 +22,13 @@ class MainActivity : FragmentActivity() {
         setContent {
             SpeziTheme {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .testIdentifier(TestIdentifier.ROOT),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
+                        modifier = Modifier.testIdentifier(TestIdentifier.TEXT),
                         text = "Hello HeartBeat App",
                         style = TextStyles.headlineLarge,
                         color = Colors.primary
@@ -32,5 +36,10 @@ class MainActivity : FragmentActivity() {
                 }
             }
         }
+    }
+
+    enum class TestIdentifier {
+        ROOT,
+        TEXT,
     }
 }
