@@ -20,7 +20,10 @@ platform :android do
   end
 
   desc "Deploy a new version to the Google Play (Internal)"
-  lane :internal do
+  lane :internal do |options|
+    environment = options[:environment] || "staging"
+    applicationid = options[:applicationid] || "edu.stanford.bdh.engagehf"
+
     version_codes = google_play_track_version_codes(
       track: "internal",
       json_key_data: ENV['SERVICE_ACCOUNT_JSON_KEY']
@@ -41,16 +44,20 @@ platform :android do
       task: "clean bundle",
       build_type: 'Release',
       properties: {
+        "android.injected.application.id" => applicationid,
         "android.injected.version.code" => current_version_code,
-        "android.injected.version.name" => "1.0.0",
+        "android.injected.version.name" => "2.0.0",
         "android.injected.signing.store.file" => "keystore.jks",
         "android.injected.signing.store.password" => ENV['KEY_PASSWORD'],
         "android.injected.signing.key.alias" => ENV['KEY_ALIAS'],
         "android.injected.signing.key.password" => ENV['KEY_PASSWORD'],
       }
     )
+
+    track = environment == "production" ? 'production' : 'internal'
     upload_to_play_store(
-      track: 'internal',
+      package_name: 'edu.stanford.bdh.engagehf',
+      track: track,
       json_key_data: ENV['SERVICE_ACCOUNT_JSON_KEY']
     )
   end

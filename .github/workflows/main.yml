@@ -13,12 +13,58 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      environment:
+        description: |
+          The GitHub deployment environment.
+        required: true
+        default: 'internal'
+        type: choice
+        options:
+          - internal
+          - staging
+          - production
+  workflow_call:
+    inputs:
+      environment:
+        description: |
+          The GitHub deployment environment.
+        required: false
+        type: string
+        default: staging
 
 concurrency:
   group: main
   cancel-in-progress: false
 
 jobs:
+  determineenvironment:
+    name: Determine Environment
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.determineenvironment.outputs.environment }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Determine Environment
+        id: determineenvironment
+        run: |
+          if [[ -z "${{ inputs.environment }}" ]]; then
+            echo "environment=staging" >> $GITHUB_OUTPUT
+          else
+            echo "environment=${{ inputs.environment }}" >> $GITHUB_OUTPUT
+          fi
+  vars:
+    name: Inject Environment Variables In Deployment Workflow
+    needs: determineenvironment
+    runs-on: ubuntu-latest
+    environment: ${{ needs.determineenvironment.outputs.environment }}
+    outputs:
+      appidentifier: ${{ vars.APP_IDENTIFIER }}
+    steps:
+      - run: |
+          echo "Injecting Environment Variables In Deployment Workflow:"
+          echo "appidentifier: ${{ vars.APP_IDENTIFIER }}"
   buildtestandanalyze:
     uses: ./.github/workflows/build-test-analyze.yml
     secrets: inherit
@@ -26,7 +72,7 @@ jobs:
     name: Upload App to Google Play - Internal
     runs-on: ubuntu-latest
     needs: buildtestandanalyze
-    environment: internal
+    environment: ${{ needs.determineenvironment.outputs.environment }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -46,7 +92,7 @@ jobs:
         run: echo $GOOGLE_SERVICES_JSON | base64 --decode >./app/google-services.json
       - name: Decode and Write Secrets
         env:
-          SECRETS_XML: ${{ secrets. SECRETS_XML }}
+          SECRETS_XML: ${{ secrets.SECRETS_XML }}
         run: echo $SECRETS_XML | base64 --decode >./modules/account/src/main/res/values/secrets.xml
       - name: Setup keystore file
         env:
@@ -59,4 +105,4 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           SERVICE_ACCOUNT_JSON_KEY: ${{ secrets.SERVICE_ACCOUNT_JSON_KEY }}
-        run: bundle exec fastlane internal
+        run: bundle exec fastlane internal environment:"${{ needs.determineenvironment.outputs.environment }}" applicationid:"${{ needs.determineenvironment.outputs.appidentifier }}"
