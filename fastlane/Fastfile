@@ -56,7 +56,7 @@ platform :android do
 
     track = environment == "production" ? 'production' : 'internal'
     upload_to_play_store(
-      package_name: 'edu.stanford.bdh.engagehf',
+      package_name: applicationid,
       track: track,
       json_key_data: ENV['SERVICE_ACCOUNT_JSON_KEY']
     )
