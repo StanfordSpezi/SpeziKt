@@ -3,6 +3,7 @@ package edu.stanford.spezi.core.design.component
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.vector.ImageVector
 import edu.stanford.spezi.core.utils.UUID
+import java.util.UUID
 import javax.annotation.concurrent.Immutable
 
 /**
@@ -13,12 +14,21 @@ import javax.annotation.concurrent.Immutable
  * @see ImageResourceComposable
  */
 @Immutable
-sealed class ImageResource {
-    val identifier: String = UUID().toString()
+sealed interface ImageResource {
+    val identifier: String
+    val contentDescription: StringResource
 
-    data class Vector(val image: ImageVector) : ImageResource()
+    data class Vector(
+        val image: ImageVector,
+        override val contentDescription: StringResource,
+    ) : ImageResource {
+        override val identifier = UUID().toString()
+    }
 
-    data class Drawable(@DrawableRes val resId: Int) : ImageResource()
-
-    data class Remote(val url: String) : ImageResource()
+    data class Drawable(
+        @DrawableRes val resId: Int,
+        override val contentDescription: StringResource,
+    ) : ImageResource {
+        override val identifier = UUID().toString()
+    }
 }
