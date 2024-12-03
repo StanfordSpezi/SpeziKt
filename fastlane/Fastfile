@@ -25,6 +25,7 @@ platform :android do
     applicationid = options[:applicationid] || "edu.stanford.bdh.engagehf"
 
     version_codes = google_play_track_version_codes(
+      package_name: applicationid,
       track: "internal",
       json_key_data: ENV['SERVICE_ACCOUNT_JSON_KEY']
     )
