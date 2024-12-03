@@ -24,6 +24,9 @@ platform :android do
     environment = options[:environment] || "staging"
     applicationid = options[:applicationid] || "edu.stanford.bdh.engagehf"
 
+    UI.message("Using environment: #{environment}")
+    UI.message("Using application id: #{applicationid}")
+
     version_codes = google_play_track_version_codes(
       package_name: applicationid,
       track: "internal",
