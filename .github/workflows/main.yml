@@ -107,4 +107,4 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           SERVICE_ACCOUNT_JSON_KEY: ${{ secrets.SERVICE_ACCOUNT_JSON_KEY }}
-        run: bundle exec fastlane internal environment:"${{ needs.determineenvironment.outputs.environment }}" applicationid:"${{ needs.determineenvironment.outputs.appidentifier }}"
+        run: bundle exec fastlane internal environment:"${{ needs.determineenvironment.outputs.environment }}" applicationid:"${{ needs.vars.outputs.appidentifier }}"
