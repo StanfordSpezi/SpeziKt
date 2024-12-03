@@ -27,19 +27,21 @@ platform :android do
     UI.message("Using environment: #{environment}")
     UI.message("Using application id: #{applicationid}")
 
-    version_codes = google_play_track_version_codes(
-      package_name: applicationid,
-      track: "internal",
-      json_key_data: ENV['SERVICE_ACCOUNT_JSON_KEY']
-    )
+    # version_codes = google_play_track_version_codes(
+    #   package_name: applicationid,
+    #   track: "internal",
+    #   json_key_data: ENV['SERVICE_ACCOUNT_JSON_KEY']
+    # )
 
-    if version_codes.nil? || version_codes.empty?
-      previous_version_code = 0
-    else
-      previous_version_code = version_codes.max
-    end
+    # if version_codes.nil? || version_codes.empty?
+    #   previous_version_code = 0
+    # else
+    #   previous_version_code = version_codes.max
+    # end
 
-    current_version_code = previous_version_code + 1
+    # current_version_code = previous_version_code + 1
+    previous_version_code = 0
+    current_version_code = 1
 
     UI.message("Previous version code: #{previous_version_code}")
     UI.message("Current version code: #{current_version_code}")
