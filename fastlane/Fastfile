@@ -39,7 +39,7 @@ platform :android do
       previous_version_code = version_codes.max
     end
 
-    current_version_code = previous_version_code + 1
+    current_version_code = 5
 
     UI.message("Previous version code: #{previous_version_code}")
     UI.message("Current version code: #{current_version_code}")
