@@ -28,18 +28,24 @@ platform :android do
     UI.message("Using environment: #{environment}")
     UI.message("Using application id: #{applicationid}")
 
-    version_codes = google_play_track_version_codes(
-      package_name: applicationid,
-      track: track,
-      json_key_data: ENV['SERVICE_ACCOUNT_JSON_KEY']
-    )
+    def fetch_max_version_code(track, applicationid)
+      version_codes = google_play_track_version_codes(
+        package_name: applicationid,
+        track: track,
+        json_key_data: ENV['SERVICE_ACCOUNT_JSON_KEY']
+      )
 
-    if version_codes.nil? || version_codes.empty?
-      previous_version_code = 0
-    else
-      previous_version_code = version_codes.max
+      if version_codes.nil? || version_codes.empty?
+        0
+      else
+        version_codes.max
+      end
     end
 
+    production_version_code = fetch_max_version_code('production', applicationid)
+    internal_version_code = fetch_max_version_code('internal', applicationid)
+
+    previous_version_code = [production_version_code, internal_version_code].max
     current_version_code = previous_version_code + 1
 
     UI.message("Previous version code: #{previous_version_code}")
