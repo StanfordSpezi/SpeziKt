@@ -32,7 +32,7 @@ on:
           The GitHub deployment environment.
         required: false
         type: string
-        default: staging
+        default: internal
 
 concurrency:
   group: main
@@ -51,7 +51,7 @@ jobs:
         id: determineenvironment
         run: |
           if [[ -z "${{ inputs.environment }}" ]]; then
-            echo "environment=staging" >> $GITHUB_OUTPUT
+            echo "environment=production" >> $GITHUB_OUTPUT
           else
             echo "environment=${{ inputs.environment }}" >> $GITHUB_OUTPUT
           fi
