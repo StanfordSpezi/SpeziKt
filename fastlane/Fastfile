@@ -68,7 +68,8 @@ platform :android do
     upload_to_play_store(
       package_name: applicationid,
       track: track,
-      json_key_data: ENV['SERVICE_ACCOUNT_JSON_KEY']
+      json_key_data: ENV['SERVICE_ACCOUNT_JSON_KEY'],
+      release_status: completed
     )
   end
 end

@@ -12,7 +12,6 @@ on:
   push:
     branches:
       - main
-      - feature/deployemnt
   workflow_dispatch:
     inputs:
       environment:
@@ -51,7 +50,7 @@ jobs:
         id: determineenvironment
         run: |
           if [[ -z "${{ inputs.environment }}" ]]; then
-            echo "environment=production" >> $GITHUB_OUTPUT
+            echo "environment=internal" >> $GITHUB_OUTPUT
           else
             echo "environment=${{ inputs.environment }}" >> $GITHUB_OUTPUT
           fi
@@ -66,14 +65,13 @@ jobs:
       - run: |
           echo "Injecting Environment Variables In Deployment Workflow:"
           echo "appidentifier: ${{ vars.APP_IDENTIFIER }}"
-  # buildtestandanalyze:
-  #   uses: ./.github/workflows/build-test-analyze.yml
-  #   secrets: inherit
+  buildtestandanalyze:
+    uses: ./.github/workflows/build-test-analyze.yml
+    secrets: inherit
   googleplayinternal:
     name: Upload App to Google Play - Internal
     runs-on: ubuntu-latest
-    # needs: buildtestandanalyze
-    needs: [determineenvironment, vars]
+    needs: [buildtestandanalyze, determineenvironment, vars]
     environment: ${{ needs.determineenvironment.outputs.environment }}
     steps:
       - name: Checkout code
