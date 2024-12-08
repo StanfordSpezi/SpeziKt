@@ -1,4 +1,4 @@
-[![Main](https://github.com/StanfordSpezi/SpeziKt/actions/workflows/main.yml/badge.svg)](https://github.com/StanfordSpezi/SpeziKt/actions/workflows/main.yml)
+[![Deployment](https://github.com/StanfordSpezi/SpeziKt/actions/workflows/deployment.yml/badge.svg)](https://github.com/StanfordSpezi/SpeziKt/actions/workflows/deployment.yml)
 [![Github Pages](https://github.com/StanfordSpezi/SpeziKt/actions/workflows/pages/pages-build-deployment/badge.svg?branch=gh-pages)](https://github.com/StanfordSpezi/SpeziKt/actions/workflows/pages/pages-build-deployment)
 [![Codecov](https://codecov.io/gh/StanfordSpezi/SpeziKt/branch/main/graph/badge.svg)](https://app.codecov.io/gh/StanfordSpezi/SpeziKt)
 
