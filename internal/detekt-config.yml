@@ -475,7 +475,7 @@ naming:
     maximumVariableNameLength: 64
   VariableMinLength:
     active: true
-    minimumVariableNameLength: 3
+    minimumVariableNameLength: 2
   VariableNaming:
     active: true
     variablePattern: '[a-z][A-Za-z0-9]*'
