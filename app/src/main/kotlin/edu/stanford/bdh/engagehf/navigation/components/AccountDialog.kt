@@ -34,15 +34,19 @@ import edu.stanford.bdh.engagehf.navigation.screens.AccountUiState
 import edu.stanford.bdh.engagehf.navigation.screens.Action
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
+import edu.stanford.spezi.core.design.theme.Colors.onBackground
 import edu.stanford.spezi.core.design.theme.Colors.onPrimary
 import edu.stanford.spezi.core.design.theme.Colors.primary
+import edu.stanford.spezi.core.design.theme.Colors.secondary
 import edu.stanford.spezi.core.design.theme.Colors.surface
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.TextStyles.bodyMedium
+import edu.stanford.spezi.core.design.theme.TextStyles.bodySmall
 import edu.stanford.spezi.core.design.theme.TextStyles.headlineMedium
+import edu.stanford.spezi.core.design.theme.TextStyles.headlineSmall
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.design.theme.lighten
 
@@ -61,10 +65,10 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
             color = surface.lighten(),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Spacings.medium)
+                .padding(Spacings.small)
         ) {
             Column(
-                modifier = Modifier.padding(Spacings.medium),
+                modifier = Modifier.padding(Spacings.small),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Row {
@@ -80,12 +84,14 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = stringResource(R.string.close_dialog_content_description),
-                                tint = MaterialTheme.colorScheme.primary,
+                                tint = primary,
                                 modifier = Modifier.size(Sizes.Icon.small)
                             )
                         }
                         Text(
-                            text = stringResource(R.string.account), style = TextStyles.titleMedium,
+                            text = stringResource(R.string.account),
+                            style = TextStyles.titleMedium,
+                            color = onBackground,
                             modifier = Modifier.align(
                                 Alignment.Center
                             )
@@ -124,10 +130,18 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
                     Column {
                         VerticalSpacer()
                         accountUiState.name?.let {
-                            Text(text = it, style = headlineMedium)
+                            Text(
+                                text = it,
+                                color = onBackground,
+                                style = headlineSmall
+                            )
                             VerticalSpacer(height = Spacings.small)
                         }
-                        Text(text = accountUiState.email, style = bodyMedium)
+                        Text(
+                            text = accountUiState.email,
+                            color = secondary,
+                            style = bodySmall
+                        )
                         VerticalSpacer()
                     }
                 }
