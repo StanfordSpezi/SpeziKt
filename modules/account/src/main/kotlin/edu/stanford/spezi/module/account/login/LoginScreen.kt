@@ -223,13 +223,13 @@ internal fun LoginScreen(
             }
         }
         Spacer(modifier = Modifier.height(Spacings.medium))
-        TextDivider(stringResource(R.string.or))
-        VerticalSpacer()
-        val googleSignInOrSignUp = Action.Async.GoogleSignInOrSignUp
-        SignInWithGoogleButton(
-            isLoading = uiState.pendingActions.contains(googleSignInOrSignUp),
-            onButtonClick = { onAction(googleSignInOrSignUp) },
-        )
+//        TextDivider(stringResource(R.string.or))
+//        VerticalSpacer()
+//        val googleSignInOrSignUp = Action.Async.GoogleSignInOrSignUp
+//        SignInWithGoogleButton(
+//            isLoading = uiState.pendingActions.contains(googleSignInOrSignUp),
+//            onButtonClick = { onAction(googleSignInOrSignUp) },
+//        )
     }
 }
 
