@@ -32,7 +32,7 @@ class MessageNotifierTest {
     }
 
     @Test
-    fun `it should not fail when toasting in a different thread than main`() = runTest(StandardTestDispatcher()) {
+    fun `it should not fail when notifying on a background thread`() = runTest(StandardTestDispatcher()) {
         messageNotifier.notify("Some message")
     }
 }
