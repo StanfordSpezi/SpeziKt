@@ -2,14 +2,15 @@ package edu.stanford.spezi.core.utils
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import java.time.Instant
 
 class TimeProviderTest {
     private val provider = TimeProvider()
 
     @Test
-    fun `it should indicate system currentTimeMillis`() {
+    fun `it should indicate now instant epoch millis`() {
         // given
-        val current = System.currentTimeMillis()
+        val current = Instant.now().toEpochMilli()
         val threshold = 1000L
 
         // when
