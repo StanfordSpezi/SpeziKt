@@ -33,6 +33,10 @@ class BluetoothUiStateMapper @Inject constructor(
         )
     }
 
+    private val systemDefaultDateFormatter by lazy {
+        dateFormatter.withZone(ZoneId.systemDefault())
+    }
+
     fun mapBleServiceState(state: EngageBLEServiceState): BluetoothUiState {
         return when (state) {
             EngageBLEServiceState.Idle -> {
@@ -81,7 +85,7 @@ class BluetoothUiStateMapper @Inject constructor(
                         name = it.device.name,
                         summary = summary,
                         connected = it.device.connected,
-                        lastSeen = StringResource(R.string.last_seen_on, dateFormatter.format(time))
+                        lastSeen = StringResource(R.string.last_seen_on, systemDefaultDateFormatter.format(time))
                     )
                 }
                 val header = if (devices.isEmpty()) {
