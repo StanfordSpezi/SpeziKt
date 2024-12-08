@@ -4,7 +4,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import edu.stanford.spezi.module.onboarding.consent.ConsentManager
 import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeRepository
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingRepository
 import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingRepository
@@ -30,9 +29,4 @@ abstract class OnboardingModule {
     abstract fun bindSequentialOnboardingRepository(
         engageSequentialOnboardingRepository: EngageSequentialOnboardingRepository,
     ): SequentialOnboardingRepository
-
-    @Binds
-    abstract fun bindOnConsentRepository(
-        engageConsentManager: EngageConsentManager,
-    ): ConsentManager
 }

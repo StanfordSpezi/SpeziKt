@@ -1,5 +1,3 @@
-@file:Suppress("MagicNumber")
-
 package edu.stanford.spezi.module.onboarding.consent
 
 import androidx.compose.foundation.layout.Column
@@ -24,6 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
+import edu.stanford.spezi.module.onboarding.spezi.consent.ConsentDocumentExportConfiguration
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -34,25 +34,23 @@ internal fun SignaturePad(
     val keyboardController = LocalSoftwareKeyboardController.current
     Column {
         OutlinedTextField(
-            value = uiState.firstName.value,
+            value = uiState.name.givenName ?: "",
             onValueChange = {
                 onAction(ConsentAction.TextFieldUpdate(it, TextFieldType.FIRST_NAME))
             },
             modifier = Modifier.fillMaxWidth(),
             label = { Text("First Name") },
             singleLine = true,
-            isError = uiState.firstName.error,
             trailingIcon = { Icon(Icons.Filled.Info, contentDescription = "Information Icon") }
         )
         Spacer(modifier = Modifier.height(Spacings.small))
         OutlinedTextField(
-            value = uiState.lastName.value,
+            value = uiState.name.familyName ?: "",
             onValueChange = {
                 onAction(ConsentAction.TextFieldUpdate(it, TextFieldType.LAST_NAME))
             },
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Last Name") },
-            isError = uiState.lastName.error,
             singleLine = true,
             trailingIcon = {
                 Icon(
@@ -62,13 +60,13 @@ internal fun SignaturePad(
             }
         )
 
-        if (uiState.firstName.value.isNotBlank() && uiState.lastName.value.isNotBlank()) {
+        if ((uiState.name.givenName ?: "").isNotBlank() && (uiState.name.familyName ?: "").isNotBlank()) {
             Spacer(modifier = Modifier.height(Spacings.medium))
             Text("Signature:")
             SignatureCanvas(
                 paths = uiState.paths.toMutableList(),
-                firstName = uiState.firstName.value,
-                lastName = uiState.lastName.value,
+                firstName = uiState.name.givenName ?: "",
+                lastName = uiState.name.familyName ?: "",
                 onPathAdd = { path ->
                     onAction(ConsentAction.AddPath(path))
                     keyboardController?.hide()
@@ -90,7 +88,10 @@ internal fun SignaturePad(
                 Spacer(modifier = Modifier.width(Spacings.medium))
                 Button(
                     onClick = {
-                        onAction(ConsentAction.Consent)
+                        onAction(ConsentAction.Consent(
+                            documentIdentifier = "consent",
+                            exportConfiguration = ConsentDocumentExportConfiguration()
+                        ))
                     },
                     enabled = uiState.isValidForm,
                     modifier = Modifier.weight(1f)
@@ -109,8 +110,10 @@ private fun SignaturePadPreview(
 ) {
     SignaturePad(
         uiState = ConsentUiState(
-            firstName = FieldState(data.firstName),
-            lastName = FieldState(data.lastName),
+            name = PersonNameComponents(
+                givenName = data.firstName,
+                familyName = data.lastName,
+            ),
             paths = data.paths
         )
     ) {}
