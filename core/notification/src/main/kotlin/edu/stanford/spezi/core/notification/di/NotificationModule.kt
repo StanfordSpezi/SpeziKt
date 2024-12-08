@@ -19,7 +19,7 @@ class NotificationModule {
 
     @Module
     @InstallIn(SingletonComponent::class)
-    internal abstract class Bindings {
+    abstract class Bindings {
         @Binds
         internal abstract fun bindNotificationPermissions(
             impl: NotificationPermissionsImpl,
