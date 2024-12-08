@@ -54,8 +54,6 @@ jobs:
     outputs:
       environment: ${{ steps.determineenvironment.outputs.environment }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
       - name: Determine Environment
         id: determineenvironment
         run: |
@@ -73,6 +71,8 @@ jobs:
       appidentifier: ${{ vars.APP_IDENTIFIER }}
       version: ${{ steps.vars.outputs.version }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - uses: actions-ecosystem/action-get-latest-tag@v1
         id: get-latest-tag
       - run: |
