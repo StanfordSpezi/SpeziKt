@@ -46,6 +46,7 @@ class BLEDeviceConnectorTest {
 
     @Before
     fun setup() {
+        every { device.createBond() } returns true
         every { device.connectGatt(context, false, any()) } returns bluetoothGatt
         every { bluetoothGatt.disconnect() } just Runs
     }
@@ -59,6 +60,7 @@ class BLEDeviceConnectorTest {
         repeat(10) { sut.connect() }
 
         // then
+        verify(exactly = 1) { device.createBond() }
         verify(exactly = 1) { device.connectGatt(context, false, any()) }
     }
 
