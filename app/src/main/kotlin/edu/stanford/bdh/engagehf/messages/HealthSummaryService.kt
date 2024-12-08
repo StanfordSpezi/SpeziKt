@@ -2,7 +2,6 @@ package edu.stanford.bdh.engagehf.messages
 
 import android.content.Context
 import android.content.Intent
-import android.os.Environment
 import androidx.core.content.FileProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.bdh.engagehf.R
@@ -49,8 +48,8 @@ class HealthSummaryService @Inject constructor(
 
     private fun savePdfToFile(pdfBytes: ByteArray): File {
         logger.i { "PDF size: ${pdfBytes.size}" }
-        val storageDir =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+
+        val storageDir = context.getExternalFilesDir(null) ?: context.filesDir
         if (!storageDir.exists()) {
             storageDir.mkdirs()
         }
