@@ -122,4 +122,6 @@
     <string name="dizziness_score_title">Dizziness Score</string>
     <string name="dizziness_score_description">Your dizziness is important to keep track of because dizziness can be a side effect of your heart or your heart medicines.</string>
     <string name="error_while_handling_message_action">Error while handling message action.</string>
+    <string name="no_pdf_reader_app_installed_error_message">Health Summary generated successfully, but no PDF reader is installed on the device</string>
+    <string name="health_summary_generate_error_message">Failed to generate Health Summary</string>
 </resources>
