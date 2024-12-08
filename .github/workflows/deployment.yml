@@ -54,15 +54,16 @@ jobs:
     outputs:
       environment: ${{ steps.determineenvironment.outputs.environment }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
       - name: Determine Environment
         id: determineenvironment
         run: |
+          echo "Determining the Environment ..."
           if [[ -z "${{ inputs.environment }}" ]]; then
             echo "environment=staging" >> $GITHUB_OUTPUT
+            echo "environment: staging"
           else
             echo "environment=${{ inputs.environment }}" >> $GITHUB_OUTPUT
+            echo "environment: ${{ inputs.environment }}"
           fi
   vars:
     name: Inject Environment Variables In Deployment Workflow
@@ -73,15 +74,22 @@ jobs:
       appidentifier: ${{ vars.APP_IDENTIFIER }}
       version: ${{ steps.vars.outputs.version }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - uses: actions-ecosystem/action-get-latest-tag@v1
         id: get-latest-tag
+        with:
+          semver_only: true
+          initial_version: "2.0.0"
       - run: |
-          echo "Injecting Environment Variables In Deployment Workflow:"
+          echo "Injecting Environment Variables In Deployment Workflow ..."
           echo "appidentifier: ${{ vars.APP_IDENTIFIER }}"
           if [[ -z "${{ inputs.version }}" ]]; then
             echo "version=${{ steps.get-latest-tag.outputs.tag }}" >> $GITHUB_OUTPUT
+            echo "version: ${{ steps.get-latest-tag.outputs.tag }}"
           else
             echo "version=${{ inputs.version }}" >> $GITHUB_OUTPUT
+            echo "version: ${{ inputs.version }}"
           fi
   buildtestandanalyze:
     uses: ./.github/workflows/build-test-analyze.yml
