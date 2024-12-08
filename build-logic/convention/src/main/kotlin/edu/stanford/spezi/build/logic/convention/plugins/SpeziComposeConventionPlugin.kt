@@ -1,8 +1,8 @@
 package edu.stanford.spezi.build.logic.convention.plugins
 
+import edu.stanford.spezi.build.logic.convention.extensions.android
 import edu.stanford.spezi.build.logic.convention.extensions.androidTestImplementation
 import edu.stanford.spezi.build.logic.convention.extensions.apply
-import edu.stanford.spezi.build.logic.convention.extensions.android
 import edu.stanford.spezi.build.logic.convention.extensions.debugImplementation
 import edu.stanford.spezi.build.logic.convention.extensions.findBundle
 import edu.stanford.spezi.build.logic.convention.extensions.findLibrary
