@@ -16,6 +16,7 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.UiState
 import edu.stanford.bdh.engagehf.bluetooth.measurements.MeasurementsRepository
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEService
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceEvent
+import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceState
 import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.messages.HealthSummaryService
 import edu.stanford.bdh.engagehf.messages.Message
@@ -26,6 +27,7 @@ import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.notification.NotificationPermissions
 import edu.stanford.spezi.core.notification.notifier.FirebaseMessage
 import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.FIREBASE_MESSAGE_KEY
 import edu.stanford.spezi.core.utils.MessageNotifier
@@ -39,7 +41,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 @Suppress("LongParameterList")
-class BluetoothViewModel @Inject internal constructor(
+class HomeViewModel @Inject internal constructor(
     private val bleService: EngageBLEService,
     private val uiStateMapper: BluetoothUiStateMapper,
     private val measurementsRepository: MeasurementsRepository,
@@ -50,10 +52,15 @@ class BluetoothViewModel @Inject internal constructor(
     private val healthSummaryService: HealthSummaryService,
     private val messageNotifier: MessageNotifier,
     @ApplicationContext private val context: Context,
+    notificationPermissions: NotificationPermissions,
 ) : ViewModel() {
     private val logger by speziLogger()
 
-    private val _uiState = MutableStateFlow(UiState())
+    private val _uiState = MutableStateFlow(
+        UiState(
+            missingPermissions = notificationPermissions.getRequiredPermissions()
+        )
+    )
 
     val uiState = _uiState.asStateFlow()
 
@@ -68,7 +75,16 @@ class BluetoothViewModel @Inject internal constructor(
         viewModelScope.launch {
             bleService.state.collect { state ->
                 logger.i { "Received EngageBLEService state $state" }
-                _uiState.update { it.copy(bluetooth = uiStateMapper.mapBleServiceState(state)) }
+                _uiState.update { currentState ->
+                    val missingPermissions = currentState.missingPermissions.toMutableSet()
+                    if (state is EngageBLEServiceState.MissingPermissions) {
+                        missingPermissions.addAll(state.permissions)
+                    }
+                    currentState.copy(
+                        bluetooth = uiStateMapper.mapBleServiceState(state),
+                        missingPermissions = missingPermissions,
+                    )
+                }
             }
         }
 
@@ -144,28 +160,22 @@ class BluetoothViewModel @Inject internal constructor(
             }
 
             is Action.MessageItemClicked -> {
-                viewModelScope.launch {
-                    uiStateMapper.mapMessagesAction(action.message.action)
-                        .onFailure { error ->
-                            logger.e(error) { "Error while mapping action: ${action.message.action}" }
-                        }
-                        .onSuccess { messagesAction ->
-                            messagesAction?.let {
-                                onMessage(
-                                    messagesAction = it,
-                                    messageId = action.message.id,
-                                    isDismissible = action.message.isDismissible,
-                                )
-                            }
-                        }
-                }
+                onMessageClicked(message = action.message)
             }
 
             is Action.ToggleExpand -> {
                 handleToggleExpandAction(action)
             }
 
-            is Action.PermissionGranted, is Action.Resumed -> {
+            is Action.Resumed -> {
+                bleService.start()
+            }
+
+            is Action.PermissionResult -> {
+                _uiState.update { state ->
+                    val missingPermission = state.missingPermissions.filterNot { it == action.permission }
+                    state.copy(missingPermissions = missingPermission.toSet())
+                }
                 bleService.start()
             }
 
@@ -186,6 +196,24 @@ class BluetoothViewModel @Inject internal constructor(
                     BottomBarItem.HEART_HEALTH
                 )
             )
+        }
+    }
+
+    private fun onMessageClicked(message: Message) {
+        viewModelScope.launch {
+            uiStateMapper.mapMessagesAction(message.action)
+                .onFailure { error ->
+                    logger.e(error) { "Error while mapping action: ${message.action}" }
+                }
+                .onSuccess { messagesAction ->
+                    messagesAction?.let {
+                        onMessage(
+                            messagesAction = it,
+                            messageId = message.id,
+                            isDismissible = message.isDismissible,
+                        )
+                    }
+                }
         }
     }
 

@@ -22,7 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import dagger.hilt.android.AndroidEntryPoint
-import edu.stanford.bdh.engagehf.bluetooth.BluetoothViewModel
+import edu.stanford.bdh.engagehf.bluetooth.HomeViewModel
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.contact.ui.ContactScreen
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
@@ -59,7 +59,7 @@ class MainActivity : FragmentActivity() {
 
     private val viewModel by viewModels<MainActivityViewModel>()
 
-    private val bluetoothViewModel by viewModels<BluetoothViewModel>()
+    private val homeViewModel by viewModels<HomeViewModel>()
 
     @Inject
     @Dispatching.Main
@@ -67,7 +67,7 @@ class MainActivity : FragmentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        bluetoothViewModel.onAction(Action.NewIntent(intent))
+        homeViewModel.onAction(Action.NewIntent(intent))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

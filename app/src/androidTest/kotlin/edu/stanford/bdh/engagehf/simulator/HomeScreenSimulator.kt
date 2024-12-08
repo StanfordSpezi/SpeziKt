@@ -3,22 +3,22 @@ package edu.stanford.bdh.engagehf.simulator
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.ComposeTestRule
-import edu.stanford.bdh.engagehf.bluetooth.screen.BluetoothScreenTestIdentifier
+import edu.stanford.bdh.engagehf.bluetooth.screen.HomeScreenTestIdentifier
 import edu.stanford.spezi.core.testing.onNodeWithIdentifier
 
-class BluetoothScreenSimulator(
+class HomeScreenSimulator(
     private val composeTestRule: ComposeTestRule,
 ) {
-    private val root = composeTestRule.onNodeWithIdentifier(BluetoothScreenTestIdentifier.ROOT)
+    private val root = composeTestRule.onNodeWithIdentifier(HomeScreenTestIdentifier.ROOT)
 
     private val messageTitle =
-        composeTestRule.onNodeWithIdentifier(BluetoothScreenTestIdentifier.MESSAGE_TITLE)
+        composeTestRule.onNodeWithIdentifier(HomeScreenTestIdentifier.MESSAGE_TITLE)
 
     private val vitalTitle =
-        composeTestRule.onNodeWithIdentifier(BluetoothScreenTestIdentifier.VITAL_TITLE)
+        composeTestRule.onNodeWithIdentifier(HomeScreenTestIdentifier.VITAL_TITLE)
 
     fun assertVital(vitalTitle: String) {
-        composeTestRule.onNodeWithIdentifier(BluetoothScreenTestIdentifier.VITALS, vitalTitle)
+        composeTestRule.onNodeWithIdentifier(HomeScreenTestIdentifier.VITALS, vitalTitle)
             .assertIsDisplayed()
     }
 

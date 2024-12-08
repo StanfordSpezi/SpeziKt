@@ -12,6 +12,7 @@ data class UiState(
     val weight: VitalDisplayData = VitalDisplayData(
         title = "Weight",
     ),
+    val missingPermissions: Set<String> = emptySet(),
     val messages: List<Message> = emptyList(),
     val bluetooth: BluetoothUiState = BluetoothUiState.Idle(),
     val measurementDialog: MeasurementDialogUiState = MeasurementDialogUiState(),

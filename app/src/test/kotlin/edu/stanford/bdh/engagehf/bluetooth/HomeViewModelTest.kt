@@ -27,6 +27,7 @@ import edu.stanford.bdh.engagehf.messages.VideoSectionVideo
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.notification.NotificationPermissions
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.core.utils.MessageNotifier
@@ -47,7 +48,7 @@ import org.junit.Rule
 import org.junit.Test
 import java.time.ZonedDateTime
 
-class BluetoothViewModelTest {
+class HomeViewModelTest {
     private val bleService: EngageBLEService = mockk()
     private val uiStateMapper: BluetoothUiStateMapper = mockk()
     private val measurementsRepository = mockk<MeasurementsRepository>(relaxed = true)
@@ -56,6 +57,7 @@ class BluetoothViewModelTest {
     private val healthSummaryService = mockk<HealthSummaryService>(relaxed = true)
     private val context: Context = mockk(relaxed = true)
     private val messageNotifier = mockk<MessageNotifier>(relaxed = true)
+    private val notificationPermissions = mockk<NotificationPermissions>(relaxed = true)
 
     private val bleServiceState =
         MutableStateFlow<EngageBLEServiceState>(EngageBLEServiceState.Idle)
@@ -75,7 +77,7 @@ class BluetoothViewModelTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
-    private lateinit var bluetoothViewModel: BluetoothViewModel
+    private lateinit var viewModel: HomeViewModel
 
     @Before
     fun setup() {
@@ -94,6 +96,20 @@ class BluetoothViewModelTest {
             every { mapMessagesAction(any()) } returns Result.failure(Throwable())
         }
         every { context.packageName } returns "some-package"
+    }
+
+    @Test
+    fun `it should indicate notification permissions in initial ui state`() {
+        // given
+        val permissions = setOf("permission1", "permission2")
+        every { notificationPermissions.getRequiredPermissions() } returns permissions
+        createViewModel()
+
+        // when
+        val uiState = viewModel.uiState.value
+
+        // then
+        assertThat(uiState.missingPermissions).isEqualTo(permissions)
     }
 
     @Test
@@ -171,7 +187,7 @@ class BluetoothViewModelTest {
             // then
             verify { appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet) }
             assertBluetoothUiState(state = readyUiState)
-            assertThat(bluetoothViewModel.uiState.value.measurementDialog).isEqualTo(
+            assertThat(viewModel.uiState.value.measurementDialog).isEqualTo(
                 measurementDialog
             )
         }
@@ -190,7 +206,7 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // Then
-        assertThat(bluetoothViewModel.uiState.value.weight).isEqualTo(uiState)
+        assertThat(viewModel.uiState.value.weight).isEqualTo(uiState)
     }
 
     @Test
@@ -207,7 +223,7 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // Then
-        assertThat(bluetoothViewModel.uiState.value.bloodPressure).isEqualTo(uiState)
+        assertThat(viewModel.uiState.value.bloodPressure).isEqualTo(uiState)
     }
 
     @Test
@@ -224,7 +240,7 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // Then
-        assertThat(bluetoothViewModel.uiState.value.heartRate).isEqualTo(uiState)
+        assertThat(viewModel.uiState.value.heartRate).isEqualTo(uiState)
     }
 
     @Test
@@ -237,7 +253,7 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // then
-        assertThat(bluetoothViewModel.uiState.value.messages).isEqualTo(messages)
+        assertThat(viewModel.uiState.value.messages).isEqualTo(messages)
     }
 
     @Test
@@ -246,7 +262,7 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // when
-        bluetoothViewModel.onCleared()
+        viewModel.onCleared()
 
         // then
         verify { bleService.stop() }
@@ -260,10 +276,10 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // when
-        bluetoothViewModel.onAction(action)
+        viewModel.onAction(action)
 
         coVerify { measurementsRepository.save(measurement = measurement) }
-        val measurementDialog = bluetoothViewModel.uiState.value.measurementDialog
+        val measurementDialog = viewModel.uiState.value.measurementDialog
         with(measurementDialog) {
             assertThat(isVisible).isFalse()
             assertThat(this.measurement).isNull()
@@ -278,10 +294,10 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // when
-        bluetoothViewModel.onAction(action)
+        viewModel.onAction(action)
 
         // then
-        assertThat(bluetoothViewModel.uiState.value.measurementDialog.isVisible).isFalse()
+        assertThat(viewModel.uiState.value.measurementDialog.isVisible).isFalse()
     }
 
     @Test
@@ -290,13 +306,13 @@ class BluetoothViewModelTest {
         val action = Action.MessageItemClicked(message = message)
         every { uiStateMapper.mapMessagesAction(messageAction) } returns Result.failure(Throwable())
         createViewModel()
-        val initialState = bluetoothViewModel.uiState.value
+        val initialState = viewModel.uiState.value
 
         // when
-        bluetoothViewModel.onAction(action = action)
+        viewModel.onAction(action = action)
 
         // then
-        assertThat(bluetoothViewModel.uiState.value).isEqualTo(initialState)
+        assertThat(viewModel.uiState.value).isEqualTo(initialState)
     }
 
     @Test
@@ -309,7 +325,7 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // when
-        bluetoothViewModel.onAction(action = action)
+        viewModel.onAction(action = action)
 
         // then
         coVerify { messageRepository.completeMessage(messageId = messageId) }
@@ -328,7 +344,7 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // when
-        bluetoothViewModel.onAction(action = action)
+        viewModel.onAction(action = action)
 
         // then
         coVerify(
@@ -349,7 +365,7 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // when
-        bluetoothViewModel.onAction(action = action)
+        viewModel.onAction(action = action)
 
         // then
         coVerify(
@@ -372,7 +388,7 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // when
-        bluetoothViewModel.onAction(action = action)
+        viewModel.onAction(action = action)
 
         // then
         verify { appScreenEvents.emit(AppScreenEvents.Event.DoNewMeasurement) }
@@ -385,7 +401,7 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // when
-        bluetoothViewModel.onAction(action = action)
+        viewModel.onAction(action = action)
 
         // then
         verify { appScreenEvents.emit(AppScreenEvents.Event.BLEDevicePairingBottomSheet) }
@@ -402,7 +418,7 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // when
-        bluetoothViewModel.onAction(action = action)
+        viewModel.onAction(action = action)
 
         // then
         verify { navigator.navigateTo(AppNavigationEvent.QuestionnaireScreen(questionnaireId)) }
@@ -427,7 +443,7 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // when
-        bluetoothViewModel.onAction(Action.MessageItemClicked(message = message))
+        viewModel.onAction(Action.MessageItemClicked(message = message))
 
         // then
         coVerify { engageEducationRepository.getVideoBySectionAndVideoId(videoSectionId, videoId) }
@@ -444,7 +460,7 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // when
-        bluetoothViewModel.onAction(action = action)
+        viewModel.onAction(action = action)
 
         // then
         coVerify { healthSummaryService.generateHealthSummaryPdf() }
@@ -460,7 +476,7 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // when
-        bluetoothViewModel.onAction(action = action)
+        viewModel.onAction(action = action)
 
         // then
         verify { appScreenEvents.emit(AppScreenEvents.Event.NavigateToTab(BottomBarItem.MEDICATION)) }
@@ -479,7 +495,7 @@ class BluetoothViewModelTest {
             type = MessageType.MedicationChange,
             isExpanded = isExpanded,
         )
-        every { this@BluetoothViewModelTest.message.id } returns "new-id"
+        every { this@HomeViewModelTest.message.id } returns "new-id"
 
         coEvery { messageRepository.observeUserMessages() } returns flowOf(
             listOf(
@@ -490,26 +506,30 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // when
-        bluetoothViewModel.onAction(Action.ToggleExpand(message))
+        viewModel.onAction(Action.ToggleExpand(message))
 
         // then
         assertThat(
-            bluetoothViewModel.uiState.value.messages.first().isExpanded
+            viewModel.uiState.value.messages.first().isExpanded
         ).isEqualTo(isExpanded.not())
     }
 
     @Test
-    fun `it should handle permission granted action correctly`() = runTestUnconfined {
+    fun `it should handle permission result action correctly`() = runTestUnconfined {
         // given
         val permissions = listOf("permission1")
         val state = EngageBLEServiceState.MissingPermissions(permissions)
         createViewModel()
         bleServiceState.emit(state)
+        val initialState = viewModel.uiState.value
 
         // when
-        bluetoothViewModel.onAction(Action.PermissionGranted(permission = permissions.first()))
+        viewModel.onAction(Action.PermissionResult(permission = permissions.first()))
+        val newState = viewModel.uiState.value
 
         // then
+        assertThat(initialState.missingPermissions).isEqualTo(permissions.toSet())
+        assertThat(newState.missingPermissions).isEmpty()
         verify(exactly = 2) { bleService.start() }
     }
 
@@ -519,7 +539,7 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // when
-        bluetoothViewModel.onAction(Action.Resumed)
+        viewModel.onAction(Action.Resumed)
 
         // then
         verify(exactly = 2) { bleService.start() }
@@ -532,7 +552,7 @@ class BluetoothViewModelTest {
         createViewModel()
 
         // when
-        bluetoothViewModel.onAction(action)
+        viewModel.onAction(action)
 
         // then
         verify {
@@ -545,11 +565,11 @@ class BluetoothViewModelTest {
     }
 
     private fun assertBluetoothUiState(state: BluetoothUiState) {
-        assertThat(bluetoothViewModel.uiState.value.bluetooth).isEqualTo(state)
+        assertThat(viewModel.uiState.value.bluetooth).isEqualTo(state)
     }
 
     private fun createViewModel() {
-        bluetoothViewModel = BluetoothViewModel(
+        viewModel = HomeViewModel(
             bleService = bleService,
             uiStateMapper = uiStateMapper,
             measurementsRepository = measurementsRepository,
@@ -559,7 +579,8 @@ class BluetoothViewModelTest {
             engageEducationRepository = engageEducationRepository,
             healthSummaryService = healthSummaryService,
             context = context,
-            messageNotifier = messageNotifier
+            messageNotifier = messageNotifier,
+            notificationPermissions = notificationPermissions,
         )
     }
 }

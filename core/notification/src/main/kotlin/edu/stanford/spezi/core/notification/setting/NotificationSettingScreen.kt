@@ -3,7 +3,6 @@ package edu.stanford.spezi.core.notification.setting
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -77,7 +76,7 @@ internal fun NotificationSettingScreen(
         Column(
             modifier = Modifier
                 .padding(paddingValues)
-                .padding(horizontal = Spacings.medium)
+                .padding(Spacings.medium)
         ) {
             when (uiState) {
                 is NotificationSettingViewModel.UiState.Error -> {
@@ -118,42 +117,31 @@ private fun MissingPermissions(
     uiState: NotificationSettingViewModel.UiState.MissingPermissions,
     onAction: (NotificationSettingViewModel.Action) -> Unit,
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(Spacings.medium)
-    ) {
-        item {
-            PermissionRequester(missingPermissions = uiState.missingPermissions,
-                onGranted = { permission ->
-                    onAction(
-                        NotificationSettingViewModel.Action.PermissionGranted(
-                            permission
-                        )
-                    )
-                })
+    PermissionRequester(
+        missingPermissions = uiState.missingPermissions,
+        onResult = { granted, permission ->
+            onAction(NotificationSettingViewModel.Action.PermissionResult(permission, granted))
         }
-        item {
-            DefaultElevatedCard(modifier = Modifier.fillMaxWidth()) {
-                Row(
-                    modifier = Modifier
-                        .padding(Spacings.small)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    SecondaryText(
-                        modifier = Modifier
-                            .padding(Spacings.small)
-                            .weight(IDLE_DESCRIPTION_WEIGHT),
-                        text = stringResource(R.string.feature_requires_notifications),
-                    )
-                    AsyncTextButton(
-                        modifier = Modifier.padding(Spacings.small),
-                        text = stringResource(R.string.settings),
-                        onClick = { onAction(NotificationSettingViewModel.Action.AppSettings) },
-                    )
-                }
-            }
+    )
+
+    DefaultElevatedCard(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .padding(Spacings.small)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SecondaryText(
+                modifier = Modifier
+                    .padding(Spacings.small)
+                    .weight(IDLE_DESCRIPTION_WEIGHT),
+                text = stringResource(R.string.feature_requires_notifications),
+            )
+            AsyncTextButton(
+                modifier = Modifier.padding(Spacings.small),
+                text = stringResource(R.string.settings),
+                onClick = { onAction(NotificationSettingViewModel.Action.AppSettings) },
+            )
         }
     }
 }
@@ -240,7 +228,7 @@ private class NotificationUiStateProvider :
     override val values = sequenceOf(
         NotificationSettingViewModel.UiState.Loading,
         NotificationSettingViewModel.UiState.Error("An error occurred"),
-        NotificationSettingViewModel.UiState.MissingPermissions(listOf("permission")),
+        NotificationSettingViewModel.UiState.MissingPermissions(setOf("permission")),
         NotificationSettingViewModel.UiState.NotificationSettingsLoaded(
             notificationSettings = NotificationSettings(
                 settings = mapOf(

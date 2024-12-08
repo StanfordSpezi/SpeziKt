@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.DoNewMeasurementBottomSheet
 import edu.stanford.bdh.engagehf.bluetooth.pairing.BLEDevicePairingBottomSheet
-import edu.stanford.bdh.engagehf.bluetooth.screen.BluetoothScreen
+import edu.stanford.bdh.engagehf.bluetooth.screen.HomeScreen
 import edu.stanford.bdh.engagehf.health.HealthScreen
 import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.AddBloodPressureBottomSheet
 import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.BloodPressureDescriptionBottomSheet
@@ -172,7 +172,7 @@ fun BottomSheetScaffoldContent(
                 modifier = Modifier.padding(innerPadding)
             ) {
                 when (uiState.selectedItem) {
-                    BottomBarItem.HOME -> BluetoothScreen()
+                    BottomBarItem.HOME -> HomeScreen()
                     BottomBarItem.HEART_HEALTH -> HealthScreen()
                     BottomBarItem.MEDICATION -> MedicationScreen()
                     BottomBarItem.EDUCATION -> EducationScreen()

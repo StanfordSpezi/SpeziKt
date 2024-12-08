@@ -53,7 +53,6 @@ class BluetoothUiStateMapper @Inject constructor(
             is EngageBLEServiceState.MissingPermissions -> {
                 BluetoothUiState.Idle(
                     description = R.string.bluetooth_permissions_not_granted_description,
-                    missingPermissions = state.permissions,
                     settingsAction = Action.Settings.AppSettings,
                 )
             }
