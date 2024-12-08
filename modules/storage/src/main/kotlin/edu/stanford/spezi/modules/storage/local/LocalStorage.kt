@@ -2,14 +2,11 @@ package edu.stanford.spezi.modules.storage.local
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
-import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.modules.storage.di.Storage
 import edu.stanford.spezi.modules.storage.local.LocalStorageSetting.Encrypted
 import edu.stanford.spezi.modules.storage.local.LocalStorageSetting.EncryptedUsingKeyStore
 import edu.stanford.spezi.modules.storage.local.LocalStorageSetting.Unencrypted
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
@@ -22,44 +19,43 @@ import javax.inject.Inject
 
 interface LocalStorage {
 
-    suspend fun <T : Any> store(
+    fun <T : Any> store(
         key: String,
         value: T,
         settings: LocalStorageSetting,
         serializer: SerializationStrategy<T>,
     )
 
-    suspend fun <T : Any> store(
+    fun <T : Any> store(
         key: String,
         value: T,
         settings: LocalStorageSetting,
         encoding: (T) -> ByteArray,
     )
 
-    suspend fun <T : Any> read(
+    fun <T : Any> read(
         key: String,
         settings: LocalStorageSetting,
         serializer: DeserializationStrategy<T>,
     ): T?
 
-    suspend fun <T : Any> read(
+    fun <T : Any> read(
         key: String,
         settings: LocalStorageSetting,
         decoding: (ByteArray) -> T,
     ): T?
 
-    suspend fun delete(key: String)
+    fun delete(key: String)
 }
 
 internal class LocalStorageImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
     private val keyStorage: KeyStorage,
 ) : LocalStorage {
 
     private val logger by speziLogger()
 
-    override suspend fun <T : Any> store(
+    override fun <T : Any> store(
         key: String,
         value: T,
         settings: LocalStorageSetting,
@@ -75,7 +71,7 @@ internal class LocalStorageImpl @Inject constructor(
         )
     }
 
-    override suspend fun <T : Any> store(
+    override fun <T : Any> store(
         key: String,
         value: T,
         settings: LocalStorageSetting,
@@ -93,7 +89,7 @@ internal class LocalStorageImpl @Inject constructor(
         }
     }
 
-    override suspend fun <T : Any> read(
+    override fun <T : Any> read(
         key: String,
         settings: LocalStorageSetting,
         serializer: DeserializationStrategy<T>,
@@ -107,7 +103,7 @@ internal class LocalStorageImpl @Inject constructor(
         )
     }
 
-    override suspend fun <T : Any> read(
+    override fun <T : Any> read(
         key: String,
         settings: LocalStorageSetting,
         decoding: (ByteArray) -> T,
@@ -122,7 +118,7 @@ internal class LocalStorageImpl @Inject constructor(
         decoding(data)
     }
 
-    override suspend fun delete(key: String) {
+    override fun delete(key: String) {
         execute {
             val file = file(key)
             if (file.exists()) {
@@ -153,12 +149,11 @@ internal class LocalStorageImpl @Inject constructor(
     private fun getInitializedCipher(mode: Int, key: Key): Cipher =
         Cipher.getInstance(KeyStorage.CIPHER_TRANSFORMATION).apply { init(mode, key) }
 
-    private suspend fun <T> execute(block: suspend () -> T) = withContext(ioDispatcher) {
+    private fun <T> execute(block: () -> T) =
         runCatching { block() }
             .onFailure {
                 logger.e(it) { "Error executing local storage operation" }
             }.getOrNull()
-    }
 
     private companion object {
         const val ANDROID_KEYSTORE_TAG = "LocalStorageTag"

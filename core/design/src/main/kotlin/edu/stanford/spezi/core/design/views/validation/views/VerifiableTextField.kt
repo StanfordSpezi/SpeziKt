@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
@@ -31,7 +30,7 @@ enum class TextFieldType {
 
 @Composable
 fun VerifiableTextField(
-    label: StringResource,
+    label: String,
     state: MutableState<String>,
     modifier: Modifier = Modifier,
     type: TextFieldType = TextFieldType.TEXT,
@@ -51,7 +50,7 @@ fun VerifiableTextField(
 
 @Composable
 fun VerifiableTextField(
-    label: StringResource,
+    label: String,
     value: String,
     onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -66,7 +65,7 @@ fun VerifiableTextField(
         type = type,
         disableAutocorrection = disableAutocorrection,
         footer = footer,
-        label = { Text(label.text()) },
+        label = { Text(label) },
     )
 }
 
