@@ -7,13 +7,13 @@ import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun PermissionRequester(
-    missingPermissions: List<String>?,
-    onGranted: (String) -> Unit,
+    missingPermissions: Set<String>,
+    onResult: (Boolean, String) -> Unit,
 ) {
-    val permission = missingPermissions?.firstOrNull() ?: return
+    val permission = missingPermissions.firstOrNull() ?: return
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
-    ) { granted -> if (granted) onGranted(permission) }
+    ) { granted -> onResult(granted, permission) }
 
     LaunchedEffect(key1 = permission) {
         launcher.launch(permission)
