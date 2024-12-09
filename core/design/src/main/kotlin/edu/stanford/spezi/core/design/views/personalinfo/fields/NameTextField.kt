@@ -5,14 +5,16 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
-import kotlin.reflect.KMutableProperty1
+import kotlin.reflect.KProperty1
 
 enum class NameTextFieldTestIdentifier {
     TEXT_FIELD,
@@ -21,13 +23,15 @@ enum class NameTextFieldTestIdentifier {
 @Composable
 fun NameTextField(
     label: String,
-    builder: PersonNameComponents.Builder,
-    property: KMutableProperty1<PersonNameComponents.Builder, String?>,
+    name: PersonNameComponents,
+    property: KProperty1<PersonNameComponents, String?>,
+    onValueChanged: (String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NameTextField(
-        builder = builder,
+        name = name,
         property = property,
+        onValueChanged = onValueChanged,
         modifier = modifier,
     ) {
         Text(label)
@@ -37,21 +41,17 @@ fun NameTextField(
 // TODO: We got rid of "prompt" property here
 @Composable
 fun NameTextField(
-    builder: PersonNameComponents.Builder,
-    property: KMutableProperty1<PersonNameComponents.Builder, String?>,
+    name: PersonNameComponents,
+    property: KProperty1<PersonNameComponents, String?>,
+    onValueChanged: (String?) -> Unit,
     modifier: Modifier = Modifier,
     label: @Composable () -> Unit,
 ) {
-    val textState = remember(builder) {
-        mutableStateOf(property.get(builder) ?: "")
-    }
-
     // TODO: Figure out which other options to set on the keyboard for names
     TextField(
-        textState.value,
+        property.get(name) ?: "",
         onValueChange = {
-            property.set(builder, it.ifBlank { null })
-            textState.value = it
+            onValueChanged(it.ifBlank { null })
         },
         keyboardOptions = KeyboardOptions(
             autoCorrect = false,
@@ -66,10 +66,14 @@ fun NameTextField(
 @ThemePreviews
 @Composable
 private fun NameTextFieldPreview() {
-    val name = remember { PersonNameComponents.Builder() }
+    var name by remember { mutableStateOf(PersonNameComponents()) }
 
     SpeziTheme(isPreview = true) {
-        NameTextField(name, PersonNameComponents.Builder::givenName) {
+        NameTextField(
+            name,
+            PersonNameComponents::givenName,
+            { name = name.copy(givenName = it) },
+        ) {
             Text("Enter first name")
         }
     }
