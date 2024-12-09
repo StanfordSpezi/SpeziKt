@@ -71,6 +71,7 @@ edu.stanford.spezi.core.navigation
 edu.stanford.spezi.core.navigation.di
 module:notification
 edu.stanford.spezi.core.notification
+edu.stanford.spezi.core.notification.di
 edu.stanford.spezi.core.notification.notifier
 edu.stanford.spezi.core.notification.setting
 module:testing
