@@ -9,7 +9,7 @@ sealed interface Action {
     data object DismissDialog : Action
     data class MessageItemClicked(val message: Message) : Action
     data class ToggleExpand(val message: Message) : Action
-    data class PermissionGranted(val permission: String) : Action
+    data class PermissionResult(val permission: String) : Action
     data object Resumed : Action
     data object BLEDevicePairing : Action
     data class NewIntent(val intent: Intent) : Action

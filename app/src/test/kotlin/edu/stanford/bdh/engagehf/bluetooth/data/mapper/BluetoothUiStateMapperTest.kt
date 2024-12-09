@@ -81,25 +81,6 @@ class BluetoothUiStateMapperTest {
     }
 
     @Test
-    fun `it should map MissingPermissions state correctly`() {
-        // given
-        val permissions = listOf("permission1", "permission2")
-        val state = EngageBLEServiceState.MissingPermissions(permissions)
-
-        // when
-        val result = mapper.mapBleServiceState(state) as BluetoothUiState.Idle
-
-        // then
-        assertThat(result).isEqualTo(
-            BluetoothUiState.Idle(
-                description = R.string.bluetooth_permissions_not_granted_description,
-                missingPermissions = permissions,
-                settingsAction = Action.Settings.AppSettings,
-            )
-        )
-    }
-
-    @Test
     fun `it should map empty sessions correctly`() {
         // given
         val state = EngageBLEServiceState.Scanning(sessions = emptyList())
