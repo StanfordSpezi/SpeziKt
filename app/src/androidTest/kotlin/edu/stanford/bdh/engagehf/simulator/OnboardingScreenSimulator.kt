@@ -22,7 +22,6 @@ class OnboardingScreenSimulator(
         composeTestRule.onNodeWithIdentifier(OnboardingScreenTestIdentifier.AREAS_LIST)
     private val button = composeTestRule.onNodeWithIdentifier(
         identifier = OnboardingScreenTestIdentifier.LEARN_MORE_BUTTON,
-        useUnmergedTree = true,
     )
 
     fun assertDisplayed() {
