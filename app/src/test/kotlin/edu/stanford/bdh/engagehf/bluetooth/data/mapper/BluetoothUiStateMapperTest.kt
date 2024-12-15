@@ -25,11 +25,8 @@ class BluetoothUiStateMapperTest {
         every { getDefaultLocale() } returns Locale.US
     }
 
-    private val messageActionMapper = mockk<MessageActionMapper>()
-
     private val mapper = BluetoothUiStateMapper(
         localeProvider = localeProvider,
-        messageActionMapper = messageActionMapper
     )
     private val bloodPressure: Measurement.BloodPressure = mockk {
         every { systolic } returns SYSTOLIC.toFloat()

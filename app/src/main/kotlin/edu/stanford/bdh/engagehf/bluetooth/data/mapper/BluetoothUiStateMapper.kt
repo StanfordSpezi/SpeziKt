@@ -13,7 +13,6 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceState
 import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
-import edu.stanford.bdh.engagehf.messages.MessagesAction
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.utils.LocaleProvider
 import java.time.Instant
@@ -24,7 +23,6 @@ import javax.inject.Inject
 
 class BluetoothUiStateMapper @Inject constructor(
     private val localeProvider: LocaleProvider,
-    private val messageActionMapper: MessageActionMapper,
 ) {
 
     private val dateFormatter by lazy {
@@ -185,10 +183,6 @@ class BluetoothUiStateMapper @Inject constructor(
                 )
             }
         )
-    }
-
-    fun mapMessagesAction(action: String?): Result<MessagesAction?> {
-        return messageActionMapper.map(action)
     }
 
     private fun <T : Record> mapRecordResult(
