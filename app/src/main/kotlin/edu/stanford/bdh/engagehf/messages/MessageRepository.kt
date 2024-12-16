@@ -70,7 +70,7 @@ class MessageRepository @Inject constructor(
 
                 logger.i { "Message completion for $messageId finished successfully" }
             }.onFailure {
-                logger.e(it) { "Error while completing message" }
+                logger.e(it) { "Error while completing message with id $messageId" }
             }
         }
     }
