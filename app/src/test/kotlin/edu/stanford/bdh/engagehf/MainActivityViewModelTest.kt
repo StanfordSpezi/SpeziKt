@@ -1,11 +1,17 @@
 package edu.stanford.bdh.engagehf
 
+import android.content.Intent
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.messages.Message
+import edu.stanford.bdh.engagehf.messages.MessageType
+import edu.stanford.bdh.engagehf.messages.MessagesHandler
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.Routes
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.notification.notifier.FirebaseMessage
 import edu.stanford.spezi.core.testing.CoroutineTestRule
+import edu.stanford.spezi.core.testing.coVerifyNever
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.module.account.AccountEvents
@@ -33,6 +39,7 @@ class MainActivityViewModelTest {
     private val accountEvents: AccountEvents = mockk(relaxed = true)
     private val navigator: Navigator = mockk(relaxed = true)
     private val userSessionManager: UserSessionManager = mockk()
+    private val messagesHandler: MessagesHandler = mockk(relaxed = true)
     private val messageNotifier: MessageNotifier = mockk(relaxed = true)
     private lateinit var viewModel: MainActivityViewModel
 
@@ -105,6 +112,56 @@ class MainActivityViewModelTest {
                 )
             }
         }
+
+    @Test
+    fun `it should handle new intent action correctly if message id available`() {
+        // given
+        val someMessageId = "some-message-id"
+        val firebaseMessage: FirebaseMessage = mockk {
+            every { messageId } returns someMessageId
+            every { action } returns "action"
+            every { isDismissible } returns true
+        }
+        val expectedMessage = Message(
+            id = someMessageId,
+            type = MessageType.Unknown,
+            title = "",
+            action = firebaseMessage.action,
+            isDismissible = firebaseMessage.isDismissible == true
+        )
+        val intent = mockk<Intent>()
+        every {
+            intent.getParcelableExtra<FirebaseMessage>(FirebaseMessage.FIREBASE_MESSAGE_KEY)
+        } returns firebaseMessage
+        createViewModel()
+
+        // when
+        viewModel.onAction(action = MainActivityAction.NewIntent(intent))
+
+        // then
+        coVerify {
+            messagesHandler.handle(message = expectedMessage)
+        }
+    }
+
+    @Test
+    fun `it should ignore handle new intent action if message id not available`() {
+        // given
+        val firebaseMessage: FirebaseMessage = mockk {
+            every { messageId } returns null
+        }
+        val intent = mockk<Intent>()
+        every {
+            intent.getParcelableExtra<FirebaseMessage>(FirebaseMessage.FIREBASE_MESSAGE_KEY)
+        } returns firebaseMessage
+        createViewModel()
+
+        // when
+        viewModel.onAction(action = MainActivityAction.NewIntent(intent))
+
+        // then
+        coVerifyNever { messagesHandler.handle(message = any()) }
+    }
 
     @Test
     fun `it should navigate to ClearBackStackOnboarding when user account event is SignOutSuccess`() =
@@ -252,6 +309,7 @@ class MainActivityViewModelTest {
             accountEvents = accountEvents,
             navigator = navigator,
             userSessionManager = userSessionManager,
+            messagesHandler = messagesHandler,
             messageNotifier = messageNotifier,
         )
     }

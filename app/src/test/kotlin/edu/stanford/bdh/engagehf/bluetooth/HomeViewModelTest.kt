@@ -5,7 +5,6 @@ import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.WeightRecord
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
@@ -17,22 +16,13 @@ import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEService
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceEvent
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceState
 import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
-import edu.stanford.bdh.engagehf.education.EngageEducationRepository
-import edu.stanford.bdh.engagehf.messages.HealthSummaryService
 import edu.stanford.bdh.engagehf.messages.Message
-import edu.stanford.bdh.engagehf.messages.MessageRepository
 import edu.stanford.bdh.engagehf.messages.MessageType
-import edu.stanford.bdh.engagehf.messages.MessagesAction
-import edu.stanford.bdh.engagehf.messages.VideoSectionVideo
-import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
+import edu.stanford.bdh.engagehf.messages.MessagesHandler
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
-import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.notification.NotificationPermissions
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
-import edu.stanford.spezi.core.utils.MessageNotifier
-import edu.stanford.spezi.modules.education.EducationNavigationEvent
-import edu.stanford.spezi.modules.education.videos.Video
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -52,11 +42,8 @@ class HomeViewModelTest {
     private val bleService: EngageBLEService = mockk()
     private val uiStateMapper: BluetoothUiStateMapper = mockk()
     private val measurementsRepository = mockk<MeasurementsRepository>(relaxed = true)
-    private val messageRepository = mockk<MessageRepository>(relaxed = true)
-    private val engageEducationRepository = mockk<EngageEducationRepository>(relaxed = true)
-    private val healthSummaryService = mockk<HealthSummaryService>(relaxed = true)
     private val context: Context = mockk(relaxed = true)
-    private val messageNotifier = mockk<MessageNotifier>(relaxed = true)
+    private val messagesHandler = mockk<MessagesHandler>(relaxed = true)
     private val notificationPermissions = mockk<NotificationPermissions>(relaxed = true)
 
     private val bleServiceState =
@@ -64,14 +51,10 @@ class HomeViewModelTest {
     private val bleServiceEvents = MutableSharedFlow<EngageBLEServiceEvent>()
     private val readyUiState: BluetoothUiState.Ready = mockk()
     private val appScreenEvents = mockk<AppScreenEvents>(relaxed = true)
-    private val navigator = mockk<Navigator>(relaxed = true)
-    private val messageAction = "some-action"
     private val messageId = "some-id"
     private val message: Message = mockk {
-        every { action } returns messageAction
         every { id } returns messageId
         every { isExpanded } returns false
-        every { isDismissible } returns true
     }
 
     @get:Rule
@@ -93,7 +76,6 @@ class HomeViewModelTest {
             every { mapHeartRate(any()) } returns mockk()
             every { mapBloodPressure(any()) } returns mockk()
             every { mapMeasurementDialog(any()) } returns mockk()
-            every { mapMessagesAction(any()) } returns Result.failure(Throwable())
         }
         every { context.packageName } returns "some-package"
     }
@@ -140,7 +122,7 @@ class HomeViewModelTest {
         createViewModel()
 
         // then
-        coVerify { messageRepository.observeUserMessages() }
+        verify { messagesHandler.observeUserMessages() }
     }
 
     @Test
@@ -247,7 +229,7 @@ class HomeViewModelTest {
     fun `it should handle message updates correctly`() {
         // given
         val messages = List(10) { mockk<Message>() }
-        coEvery { messageRepository.observeUserMessages() } returns flowOf(messages)
+        every { messagesHandler.observeUserMessages() } returns flowOf(messages)
 
         // when
         createViewModel()
@@ -301,97 +283,17 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `it should do nothing on MessageItemClicked with error result`() {
+    fun `it should invoke messages handler on message item clicked`() {
         // given
+        val message: Message = mockk()
         val action = Action.MessageItemClicked(message = message)
-        every { uiStateMapper.mapMessagesAction(messageAction) } returns Result.failure(Throwable())
-        createViewModel()
-        val initialState = viewModel.uiState.value
-
-        // when
-        viewModel.onAction(action = action)
-
-        // then
-        assertThat(viewModel.uiState.value).isEqualTo(initialState)
-    }
-
-    @Test
-    fun `it should complete message on non error result`() {
-        // given
-        val action = Action.MessageItemClicked(message = message)
-        every {
-            uiStateMapper.mapMessagesAction(messageAction)
-        } returns Result.success(MessagesAction.HealthSummaryAction)
         createViewModel()
 
         // when
         viewModel.onAction(action = action)
 
         // then
-        coVerify { messageRepository.completeMessage(messageId = messageId) }
-    }
-
-    @Test
-    fun `it should not dismiss health summary message on error result`() {
-        // given
-        val action = Action.MessageItemClicked(message = message)
-        every {
-            uiStateMapper.mapMessagesAction(messageAction)
-        } returns Result.success(MessagesAction.HealthSummaryAction)
-        coEvery {
-            healthSummaryService.generateHealthSummaryPdf()
-        } returns Result.failure(Throwable())
-        createViewModel()
-
-        // when
-        viewModel.onAction(action = action)
-
-        // then
-        coVerify(
-            exactly = 0
-        ) { messageRepository.completeMessage(messageId = messageId) }
-    }
-
-    @Test
-    fun `it should not dismiss video section message on error result`() {
-        // given
-        val action = Action.MessageItemClicked(message = message)
-        every {
-            uiStateMapper.mapMessagesAction(messageAction)
-        } returns Result.success(MessagesAction.VideoSectionAction(VideoSectionVideo("1", "2")))
-        coEvery {
-            engageEducationRepository.getVideoBySectionAndVideoId(any(), any())
-        } returns Result.failure(Throwable())
-        createViewModel()
-
-        // when
-        viewModel.onAction(action = action)
-
-        // then
-        coVerify(
-            exactly = 0
-        ) { messageRepository.completeMessage(messageId = messageId) }
-        coVerify {
-            messageNotifier.notify(
-                messageId = R.string.error_while_handling_message_action
-            )
-        }
-    }
-
-    @Test
-    fun `it should handle MeasurementsAction correctly`() {
-        // given
-        val action = Action.MessageItemClicked(message = message)
-        every {
-            uiStateMapper.mapMessagesAction(messageAction)
-        } returns Result.success(MessagesAction.MeasurementsAction)
-        createViewModel()
-
-        // when
-        viewModel.onAction(action = action)
-
-        // then
-        verify { appScreenEvents.emit(AppScreenEvents.Event.DoNewMeasurement) }
+        coVerify { messagesHandler.handle(message) }
     }
 
     @Test
@@ -405,81 +307,6 @@ class HomeViewModelTest {
 
         // then
         verify { appScreenEvents.emit(AppScreenEvents.Event.BLEDevicePairingBottomSheet) }
-    }
-
-    @Test
-    fun `it should navigate to questionnaire screen on QuestionnaireAction`() {
-        // given
-        val questionnaireId = "1"
-        val action = Action.MessageItemClicked(message = message)
-        every {
-            uiStateMapper.mapMessagesAction(messageAction)
-        } returns Result.success(MessagesAction.QuestionnaireAction(questionnaireId))
-        createViewModel()
-
-        // when
-        viewModel.onAction(action = action)
-
-        // then
-        verify { navigator.navigateTo(AppNavigationEvent.QuestionnaireScreen(questionnaireId)) }
-    }
-
-    @Test
-    fun `it should handle video section action correctly`() = runTestUnconfined {
-        val videoSectionId = "some-video-section-id"
-        val videoId = "some-video-id"
-        val videoSection: VideoSectionVideo = mockk {
-            every { this@mockk.videoSectionId } returns videoSectionId
-            every { this@mockk.videoId } returns videoId
-        }
-        val video: Video = mockk()
-        val videoSectionAction = MessagesAction.VideoSectionAction(videoSectionVideo = videoSection)
-        every { uiStateMapper.mapMessagesAction(messageAction) } returns Result.success(
-            videoSectionAction
-        )
-        coEvery {
-            engageEducationRepository.getVideoBySectionAndVideoId(videoSectionId, videoId)
-        } returns Result.success(video)
-        createViewModel()
-
-        // when
-        viewModel.onAction(Action.MessageItemClicked(message = message))
-
-        // then
-        coVerify { engageEducationRepository.getVideoBySectionAndVideoId(videoSectionId, videoId) }
-        verify { navigator.navigateTo(EducationNavigationEvent.VideoSectionClicked(video)) }
-    }
-
-    @Test
-    fun `it should handle health summary action correctly`() = runTestUnconfined {
-        // given
-        val action = Action.MessageItemClicked(message = message)
-        every {
-            uiStateMapper.mapMessagesAction(messageAction)
-        } returns Result.success(MessagesAction.HealthSummaryAction)
-        createViewModel()
-
-        // when
-        viewModel.onAction(action = action)
-
-        // then
-        coVerify { healthSummaryService.generateHealthSummaryPdf() }
-    }
-
-    @Test
-    fun `it should handle medication change action correctly`() {
-        // given
-        val action = Action.MessageItemClicked(message = message)
-        every {
-            uiStateMapper.mapMessagesAction(messageAction)
-        } returns Result.success(MessagesAction.MedicationsAction)
-        createViewModel()
-
-        // when
-        viewModel.onAction(action = action)
-
-        // then
-        verify { appScreenEvents.emit(AppScreenEvents.Event.NavigateToTab(BottomBarItem.MEDICATION)) }
     }
 
     @Test
@@ -497,7 +324,7 @@ class HomeViewModelTest {
         )
         every { this@HomeViewModelTest.message.id } returns "new-id"
 
-        coEvery { messageRepository.observeUserMessages() } returns flowOf(
+        every { messagesHandler.observeUserMessages() } returns flowOf(
             listOf(
                 message,
                 this.message
@@ -573,13 +400,9 @@ class HomeViewModelTest {
             bleService = bleService,
             uiStateMapper = uiStateMapper,
             measurementsRepository = measurementsRepository,
-            messageRepository = messageRepository,
             appScreenEvents = appScreenEvents,
-            navigator = navigator,
-            engageEducationRepository = engageEducationRepository,
-            healthSummaryService = healthSummaryService,
             context = context,
-            messageNotifier = messageNotifier,
+            messagesHandler = messagesHandler,
             notificationPermissions = notificationPermissions,
         )
     }
