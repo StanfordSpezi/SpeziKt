@@ -63,9 +63,10 @@ fun ColorKeyRow(color: MedicationColor) {
         Spacer(modifier = Modifier.width(Spacings.small))
         Text(
             text = when (color) {
-                MedicationColor.GREEN_SUCCESS -> stringResource(R.string.on_target_dose_that_best_helps_your_heart)
-                MedicationColor.YELLOW -> stringResource(R.string.on_medication_but_may_benefit_from_a_higher_dose)
-                MedicationColor.BLUE -> stringResource(R.string.not_on_this_medication_that_may_help_your_heart)
+                MedicationColor.GREEN_SUCCESS -> stringResource(R.string.you_are_on_the_target_dose)
+                MedicationColor.YELLOW -> stringResource(R.string.you_are_on_this_medication)
+                MedicationColor.BLUE -> stringResource(R.string.more_information_needed)
+                MedicationColor.GRAY -> stringResource(R.string.you_are_not_on_this_medication)
             },
             overflow = TextOverflow.Clip,
         )
