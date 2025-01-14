@@ -15,7 +15,6 @@ data class Message(
     val description: String? = null,
     val action: String?,
     val isDismissible: Boolean = true,
-    val isLoading: Boolean = false,
     val isExpanded: Boolean = false,
 ) {
 

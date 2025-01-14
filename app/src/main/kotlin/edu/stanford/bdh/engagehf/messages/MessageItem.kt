@@ -16,7 +16,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -125,17 +124,14 @@ fun MessageItem(
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                Button(
-                    modifier = Modifier.testIdentifier(MessageItemTestIdentifiers.ACTION_BUTTON),
-                    colors = ButtonDefaults.buttonColors(containerColor = primary),
-                    enabled = !message.isLoading,
-                    onClick = {
-                        onAction(Action.MessageItemClicked(message))
-                    },
-                ) {
-                    if (message.isLoading) {
-                        CircularProgressIndicator(modifier = Modifier.size(Sizes.Content.small))
-                    } else {
+                if (message.action != null || message.isDismissible) {
+                    Button(
+                        modifier = Modifier.testIdentifier(MessageItemTestIdentifiers.ACTION_BUTTON),
+                        colors = ButtonDefaults.buttonColors(containerColor = primary),
+                        onClick = {
+                            onAction(Action.MessageItemClicked(message))
+                        },
+                    ) {
                         Text(
                             text = stringResource(R.string.message_item_button_action_text),
                             color = Colors.onPrimary,
