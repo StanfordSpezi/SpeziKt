@@ -47,7 +47,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.core.design.component.AsyncTextButton
-import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.component.validated.outlinedtextfield.ValidatedOutlinedTextField
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
@@ -56,8 +55,6 @@ import edu.stanford.spezi.core.design.theme.TextStyles.bodyLarge
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.module.account.R
-import edu.stanford.spezi.module.account.login.components.SignInWithGoogleButton
-import edu.stanford.spezi.module.account.login.components.TextDivider
 import edu.stanford.spezi.module.account.register.FieldState
 import edu.stanford.spezi.module.account.register.IconLeadingContent
 import edu.stanford.spezi.core.design.R as DesignR
