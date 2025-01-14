@@ -1,6 +1,7 @@
 package edu.stanford.bdh.engagehf.messages
 
 sealed class MessagesAction {
+    data object NoAction : MessagesAction()
     data class VideoSectionAction(val videoSectionVideo: VideoSectionVideo) : MessagesAction()
     data object MedicationsAction : MessagesAction()
     data object MeasurementsAction : MessagesAction()

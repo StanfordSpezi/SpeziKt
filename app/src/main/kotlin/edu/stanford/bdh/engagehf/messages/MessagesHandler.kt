@@ -30,6 +30,7 @@ class MessagesHandler @Inject constructor(
         val actionResult = messagesActionMapper.map(action = message.action)
         var failure = actionResult.exceptionOrNull()
         when (val messagesAction = actionResult.getOrNull()) {
+            is MessagesAction.NoAction -> Unit
             is MessagesAction.HealthSummaryAction -> {
                 failure = healthSummaryService.generateHealthSummaryPdf().exceptionOrNull()
             }

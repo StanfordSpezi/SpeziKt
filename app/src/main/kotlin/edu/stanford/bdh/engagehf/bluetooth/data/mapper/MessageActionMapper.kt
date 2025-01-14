@@ -14,7 +14,7 @@ class MessageActionMapper @Inject constructor() {
     fun map(action: String?): Result<MessagesAction> {
         return runCatching {
             when {
-                action.isNullOrBlank() -> error("Invalid action type")
+                action.isNullOrBlank() -> MessagesAction.NoAction
                 videoSectionRegex.matches(action) -> {
                     mapVideoSectionAction(action).getOrThrow()
                 }
