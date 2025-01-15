@@ -4,7 +4,9 @@ import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.TimePickerState
+import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.TimePickerStateMapper
 import edu.stanford.spezi.core.testing.CoroutineTestRule
+import edu.stanford.spezi.core.utils.LocaleProvider
 import edu.stanford.spezi.core.utils.MessageNotifier
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -15,8 +17,9 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.time.LocalDate
+import java.time.Instant
 import java.time.LocalTime
+import java.util.Locale
 import kotlin.random.Random
 
 class AddWeightBottomSheetViewModelTest {
@@ -26,45 +29,57 @@ class AddWeightBottomSheetViewModelTest {
 
     private var appScreenEvents: AppScreenEvents = mockk(relaxed = true)
     private var healthRepository: HealthRepository = mockk(relaxed = true)
-    private val uiStateMapper: AddWeightBottomSheetUiStateMapper = mockk(relaxed = true)
+    private val timePickerStateMapper: TimePickerStateMapper = mockk(relaxed = true)
+    private val localeProvider: LocaleProvider = mockk()
     private val notifier: MessageNotifier = mockk(relaxed = true)
 
     private val viewModel: AddWeightBottomSheetViewModel by lazy {
         AddWeightBottomSheetViewModel(
             appScreenEvents = appScreenEvents,
             healthRepository = healthRepository,
-            uiStateMapper = uiStateMapper,
+            timePickerStateMapper = timePickerStateMapper,
+            localeProvider = localeProvider,
             notifier = notifier
         )
     }
 
     @Before
     fun setup() {
-        every { uiStateMapper.mapInitialUiState() } returns AddWeightBottomSheetUiState(
-            weight = 70.0,
-            weightUnit = WeightUnit.KG,
-            timePickerState = TimePickerState(
-                selectedDate = LocalDate.now(),
-                selectedTime = LocalTime.now(),
-                initialHour = LocalTime.now().hour,
-                initialMinute = LocalTime.now().minute,
-                selectedDateFormatted = "",
-                selectedTimeFormatted = ""
-            )
+        every { timePickerStateMapper.mapNow() } returns TimePickerState(
+            selectedDate = Instant.now(),
+            selectedTime = LocalTime.now(),
+            initialHour = LocalTime.now().hour,
+            initialMinute = LocalTime.now().minute,
+            selectedDateFormatted = "",
+            selectedTimeFormatted = ""
         )
+        every { localeProvider.getDefaultLocale() } returns Locale.US
     }
 
     @Test
     fun `it should have correct initial state`() {
         // given
-        val state: AddWeightBottomSheetUiState = mockk()
-        every { uiStateMapper.mapInitialUiState() } returns state
+        val state: TimePickerState = mockk()
+        every { timePickerStateMapper.mapNow() } returns state
 
         // when
         val uiState = viewModel.uiState.value
 
         // then
-        assertThat(state).isEqualTo(uiState)
+        assertThat(state).isEqualTo(uiState.timePickerState)
+        assertThat(WeightUnit.LBS).isEqualTo(uiState.weightUnit)
+    }
+
+    @Test
+    fun `it should have correct weight unit in non lbs`() {
+        // given
+        every { localeProvider.getDefaultLocale() } returns Locale.GERMAN
+
+        // when
+        val uiState = viewModel.uiState.value
+
+        // then
+        assertThat(WeightUnit.KG).isEqualTo(uiState.weightUnit)
     }
 
     @Test
@@ -105,18 +120,17 @@ class AddWeightBottomSheetViewModelTest {
     @Test
     fun `test UpdateDate action`() {
         // given
-        val newState: AddWeightBottomSheetUiState = mockk()
-        val date: LocalDate = LocalDate.now()
+        val newState: TimePickerState = mockk()
+        val date = Instant.now()
         val initialState = viewModel.uiState.value
-        every { uiStateMapper.mapUpdateDateAction(date, initialState) } returns newState
+        every { timePickerStateMapper.mapDate(date, initialState.timePickerState) } returns newState
 
         // when
         viewModel.onAction(AddWeightBottomSheetViewModel.Action.UpdateDate(date))
 
         // then
-        verify { uiStateMapper.mapUpdateDateAction(date, initialState) }
         val uiState = viewModel.uiState.value
-        assertThat(uiState).isEqualTo(newState)
+        assertThat(uiState.timePickerState).isEqualTo(newState)
     }
 
     @Test
@@ -135,18 +149,17 @@ class AddWeightBottomSheetViewModelTest {
     @Test
     fun `test UpdateTime action`() {
         // given
-        val newState: AddWeightBottomSheetUiState = mockk()
+        val newState: TimePickerState = mockk()
         val time: LocalTime = LocalTime.now()
         val initialState = viewModel.uiState.value
-        every { uiStateMapper.mapUpdateTimeAction(time, initialState) } returns newState
+        every { timePickerStateMapper.mapTime(time, initialState.timePickerState) } returns newState
 
         // when
         viewModel.onAction(AddWeightBottomSheetViewModel.Action.UpdateTime(time))
 
         // then
-        verify { uiStateMapper.mapUpdateTimeAction(time, initialState) }
         val uiState = viewModel.uiState.value
-        assertThat(uiState).isEqualTo(newState)
+        assertThat(uiState.timePickerState).isEqualTo(newState)
     }
 
     @Test

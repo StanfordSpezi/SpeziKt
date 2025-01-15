@@ -28,7 +28,7 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
-import java.time.LocalDate
+import java.time.Instant
 import java.time.LocalTime
 
 @Composable
@@ -108,7 +108,7 @@ private class AddWeightBottomSheetStepProvider :
             weight = 70.0,
             weightUnit = WeightUnit.KG,
             timePickerState = TimePickerState(
-                selectedDate = LocalDate.now(),
+                selectedDate = Instant.now(),
                 selectedTime = LocalTime.now(),
                 initialHour = LocalTime.now().hour,
                 initialMinute = LocalTime.now().minute,
