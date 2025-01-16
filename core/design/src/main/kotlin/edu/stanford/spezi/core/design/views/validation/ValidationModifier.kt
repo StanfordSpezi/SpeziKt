@@ -41,6 +41,23 @@ fun Validate(
 @Composable
 fun Validate(
     input: String,
+    rule: ValidationRule,
+    modifier: Modifier = Modifier,
+    validationDebounce: Duration = DEFAULT_VALIDATION_DEBOUNCE_DURATION,
+    content: @Composable () -> Unit,
+) {
+    Validate(
+        input = input,
+        rules = listOf(rule),
+        modifier = modifier,
+        validationDebounce = validationDebounce,
+        content = content
+    )
+}
+
+@Composable
+fun Validate(
+    input: String,
     rules: List<ValidationRule>,
     modifier: Modifier = Modifier,
     validationDebounce: Duration = DEFAULT_VALIDATION_DEBOUNCE_DURATION,
