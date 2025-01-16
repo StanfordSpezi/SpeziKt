@@ -24,7 +24,7 @@ class DateFormatterTest {
     @Test
     fun `it should format instant correctly`() {
         // given
-        val instant = Instant.parse("2025-01-15T18:45:00Z")
+        val instant = Instant.parse("2025-01-15T23:45:00Z")
         val expectedFormat = "01/15/2025"
 
         // when
