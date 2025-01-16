@@ -11,7 +11,7 @@ class DateFormatter @Inject constructor() {
 
     fun <T : TemporalAccessor> format(date: T, format: DateFormat): String {
         val zoned = if (date is Instant) {
-            date.atZone(ZoneId.of("UTC"))
+            date.atZone(ZoneId.systemDefault())
         } else {
             date
         }

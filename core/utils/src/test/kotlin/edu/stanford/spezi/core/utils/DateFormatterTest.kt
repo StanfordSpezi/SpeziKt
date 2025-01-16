@@ -4,6 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.time.Instant
 import java.time.LocalTime
+import java.time.ZoneId
 import java.util.Date
 
 class DateFormatterTest {
@@ -24,11 +25,28 @@ class DateFormatterTest {
     @Test
     fun `it should format instant correctly`() {
         // given
-        val instant = Instant.parse("2025-01-15T23:45:00Z")
+        val instant = Instant.parse("2025-01-15T18:45:00Z")
         val expectedFormat = "01/15/2025"
 
         // when
         val result = formatter.format(instant, DateFormat.MM_DD_YYYY)
+
+        // then
+        assertThat(result).isEqualTo(expectedFormat)
+    }
+
+    @Test
+    fun `it should format zoned date correctly`() {
+        // given
+        val instantDate = 15
+        val expectedZonedDate = instantDate - 1
+        val zoned = Instant
+            .parse("2025-01-${instantDate}T03:45:00Z")
+            .atZone(ZoneId.of("America/Los_Angeles"))
+        val expectedFormat = "01/$expectedZonedDate/2025"
+
+        // when
+        val result = formatter.format(zoned, DateFormat.MM_DD_YYYY)
 
         // then
         assertThat(result).isEqualTo(expectedFormat)
