@@ -9,9 +9,7 @@ import io.mockk.mockk
 import org.junit.Before
 import org.junit.Test
 import java.time.Instant
-import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZoneId
 
 class TimePickerStateMapperTest {
     private val dateFormatter: DateFormatter = mockk()
@@ -93,10 +91,13 @@ class TimePickerStateMapperTest {
     @Test
     fun `it should map instant correctly`() {
         // given
-        val state = mapper.mapNow()
-        val zoneId = ZoneId.systemDefault()
-        val date = state.selectedDate.atZone(zoneId).toLocalDate()
-        val expectedInstant = LocalDateTime.of(date, state.selectedTime).atZone(zoneId).toInstant()
+        val localTime = LocalTime.of(4, 12)
+        val expectedTime = "0${localTime.hour}:${localTime.minute}"
+        val state = mapper.mapNow().copy(
+            selectedDate = Instant.parse("2025-01-15T23:00:00Z"),
+            selectedTime = localTime,
+        )
+        val expectedInstant = Instant.parse("2025-01-15T$expectedTime:00Z")
 
         // when
         val result = mapper.mapInstant(state)

@@ -44,7 +44,7 @@ class TimePickerStateMapper @Inject constructor(
     )
 
     fun mapInstant(timePickerState: TimePickerState): Instant = with(timePickerState) {
-        val zoneId = ZoneId.systemDefault()
+        val zoneId = ZoneId.of("UTC")
         val date = selectedDate.atZone(zoneId).toLocalDate()
         return LocalDateTime.of(date, selectedTime).atZone(zoneId).toInstant()
     }
