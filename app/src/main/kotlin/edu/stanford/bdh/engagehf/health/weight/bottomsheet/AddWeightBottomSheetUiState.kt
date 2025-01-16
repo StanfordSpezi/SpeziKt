@@ -1,6 +1,6 @@
 package edu.stanford.bdh.engagehf.health.weight.bottomsheet
 
-import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.TimePickerState
+import edu.stanford.bdh.engagehf.health.time.TimePickerState
 
 data class AddWeightBottomSheetUiState(
     val timePickerState: TimePickerState,

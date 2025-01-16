@@ -19,10 +19,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.TimePickerState
 import edu.stanford.bdh.engagehf.health.components.AddDataHeader
 import edu.stanford.bdh.engagehf.health.components.NumberPicker
 import edu.stanford.bdh.engagehf.health.components.TimePicker
+import edu.stanford.bdh.engagehf.health.time.TimePickerState
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme

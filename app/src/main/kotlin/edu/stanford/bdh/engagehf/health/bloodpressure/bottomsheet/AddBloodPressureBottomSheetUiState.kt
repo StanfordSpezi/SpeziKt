@@ -1,8 +1,7 @@
 package edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet
 
 import androidx.health.connect.client.records.BloodPressureRecord
-import java.time.Instant
-import java.time.LocalTime
+import edu.stanford.bdh.engagehf.health.time.TimePickerState
 
 data class AddBloodPressureBottomSheetUiState(
     val timePickerState: TimePickerState,
@@ -41,11 +40,3 @@ enum class MeasurementLocations(val value: Int) {
     MEASUREMENT_LOCATION_RIGHT_UPPER_ARM(BloodPressureRecord.MEASUREMENT_LOCATION_RIGHT_UPPER_ARM),
 }
 
-data class TimePickerState(
-    val selectedDate: Instant,
-    val selectedTime: LocalTime,
-    val initialHour: Int,
-    val initialMinute: Int,
-    val selectedDateFormatted: String,
-    val selectedTimeFormatted: String,
-)

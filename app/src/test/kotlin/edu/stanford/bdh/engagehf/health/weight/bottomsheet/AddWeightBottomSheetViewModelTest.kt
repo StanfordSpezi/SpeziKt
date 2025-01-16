@@ -3,8 +3,8 @@ package edu.stanford.bdh.engagehf.health.weight.bottomsheet
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
-import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.TimePickerState
-import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.TimePickerStateMapper
+import edu.stanford.bdh.engagehf.health.time.TimePickerState
+import edu.stanford.bdh.engagehf.health.time.TimePickerStateMapper
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.utils.LocaleProvider
 import edu.stanford.spezi.core.utils.MessageNotifier

@@ -27,7 +27,7 @@ import java.time.LocalTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePicker(
-    state: edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.TimePickerState,
+    state: edu.stanford.bdh.engagehf.health.time.TimePickerState,
     updateDate: (Instant) -> Unit,
     updateTime: (LocalTime) -> Unit,
 ) {
