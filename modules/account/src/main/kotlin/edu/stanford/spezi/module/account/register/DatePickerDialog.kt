@@ -13,13 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import edu.stanford.spezi.module.account.R
 import java.time.Instant
-import java.time.LocalDate
-import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerDialog(
-    onDateSelected: (LocalDate) -> Unit,
+    onDateSelected: (Instant) -> Unit,
     onDismiss: () -> Unit,
 ) {
     val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
@@ -28,17 +26,13 @@ fun DatePickerDialog(
         }
     })
 
-    val selectedDate = datePickerState.selectedDateMillis?.let {
-        convertMillisToDate(it)
-    }
-
     DatePickerDialog(
         modifier = Modifier.fillMaxWidth(),
         onDismissRequest = { onDismiss() },
         confirmButton = {
             Button(onClick = {
-                if (selectedDate != null) {
-                    onDateSelected(selectedDate)
+                datePickerState.selectedDateMillis?.let {
+                    onDateSelected(Instant.ofEpochMilli(it))
                 }
                 onDismiss()
             }
@@ -59,8 +53,4 @@ fun DatePickerDialog(
             state = datePickerState
         )
     }
-}
-
-private fun convertMillisToDate(millis: Long): LocalDate {
-    return Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate()
 }

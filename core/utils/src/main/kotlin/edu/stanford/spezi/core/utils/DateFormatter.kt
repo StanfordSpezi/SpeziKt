@@ -1,5 +1,7 @@
 package edu.stanford.spezi.core.utils
 
+import java.time.Instant
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAccessor
 import java.util.Date
@@ -8,7 +10,12 @@ import javax.inject.Inject
 class DateFormatter @Inject constructor() {
 
     fun <T : TemporalAccessor> format(date: T, format: DateFormat): String {
-        return DateTimeFormatter.ofPattern(format.pattern).format(date)
+        val zoned = if (date is Instant) {
+            date.atZone(ZoneId.systemDefault())
+        } else {
+            date
+        }
+        return DateTimeFormatter.ofPattern(format.pattern).format(zoned)
     }
 
     fun format(date: Date, format: DateFormat) = format(date.toInstant(), format)
