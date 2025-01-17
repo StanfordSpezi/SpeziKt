@@ -22,6 +22,7 @@ edu.stanford.bdh.engagehf.health.components
 edu.stanford.bdh.engagehf.health.heartrate
 edu.stanford.bdh.engagehf.health.heartrate.bottomsheet
 edu.stanford.bdh.engagehf.health.symptoms
+edu.stanford.bdh.engagehf.health.time
 edu.stanford.bdh.engagehf.health.weight
 edu.stanford.bdh.engagehf.health.weight.bottomsheet
 edu.stanford.bdh.engagehf.localization
@@ -36,7 +37,6 @@ edu.stanford.bdh.engagehf.observations
 edu.stanford.bdh.engagehf.onboarding
 edu.stanford.bdh.engagehf.questionnaire
 edu.stanford.bdh.engagehf.questionnaire.spezi
-edu.stanford.bdh.engagehf.utils
 module:bluetooth
 edu.stanford.spezi.core.bluetooth.api
 edu.stanford.spezi.core.bluetooth.data.model
