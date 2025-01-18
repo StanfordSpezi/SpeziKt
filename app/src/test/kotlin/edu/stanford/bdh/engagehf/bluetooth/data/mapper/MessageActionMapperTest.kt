@@ -1,7 +1,7 @@
 package edu.stanford.bdh.engagehf.bluetooth.data.mapper
 
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.bdh.engagehf.messages.MessagesAction
+import edu.stanford.bdh.engagehf.messages.MessageAction
 import org.junit.Test
 
 class MessageActionMapperTest {
@@ -32,10 +32,10 @@ class MessageActionMapperTest {
         val result = mapper.map(action)
 
         // then
-        val messagesAction = result.getOrThrow() as MessagesAction.VideoSectionAction
+        val messagesAction = result.getOrThrow() as MessageAction.VideoAction
         with(messagesAction) {
-            assertThat(videoSectionVideo.videoSectionId).isEqualTo(sectionId)
-            assertThat(videoSectionVideo.videoId).isEqualTo(videoId)
+            assertThat(video.sectionId).isEqualTo(sectionId)
+            assertThat(video.videoId).isEqualTo(videoId)
         }
     }
 
@@ -50,10 +50,10 @@ class MessageActionMapperTest {
         val result = mapper.map(action)
 
         // then
-        val messagesAction = result.getOrThrow() as MessagesAction.VideoSectionAction
+        val messagesAction = result.getOrThrow() as MessageAction.VideoAction
         with(messagesAction) {
-            assertThat(videoSectionVideo.videoSectionId).isEqualTo(sectionId)
-            assertThat(videoSectionVideo.videoId).isEqualTo(videoId)
+            assertThat(video.sectionId).isEqualTo(sectionId)
+            assertThat(video.videoId).isEqualTo(videoId)
         }
     }
 
@@ -67,7 +67,7 @@ class MessageActionMapperTest {
 
         // then
         assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrThrow()).isEqualTo(MessagesAction.MedicationsAction)
+        assertThat(result.getOrThrow()).isEqualTo(MessageAction.MedicationsAction)
     }
 
     @Test
@@ -80,7 +80,7 @@ class MessageActionMapperTest {
 
         // then
         assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrThrow()).isEqualTo(MessagesAction.MeasurementsAction)
+        assertThat(result.getOrThrow()).isEqualTo(MessageAction.MeasurementsAction)
     }
 
     @Test
@@ -93,7 +93,7 @@ class MessageActionMapperTest {
         val result = mapper.map(action)
 
         // then
-        val messagesAction = result.getOrThrow() as MessagesAction.QuestionnaireAction
+        val messagesAction = result.getOrThrow() as MessageAction.QuestionnaireAction
         assertThat(messagesAction.questionnaireId).isEqualTo(questionnaireId)
     }
 
@@ -107,7 +107,7 @@ class MessageActionMapperTest {
 
         // then
         assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrThrow()).isEqualTo(MessagesAction.HealthSummaryAction)
+        assertThat(result.getOrThrow()).isEqualTo(MessageAction.HealthSummaryAction)
     }
 
     @Test

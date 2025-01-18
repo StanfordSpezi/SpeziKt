@@ -67,11 +67,11 @@ class MedicationViewModel @Inject internal constructor(
 
             is Action.InfoClicked -> {
                 viewModelScope.launch {
-                    messageActionMapper.mapVideoSectionAction(action.videoPath).let { result ->
+                    messageActionMapper.mapVideoAction(action.videoPath).let { result ->
                         result.onSuccess { mappedAction ->
                             engageEducationRepository.getVideoBySectionAndVideoId(
-                                mappedAction.videoSectionVideo.videoSectionId,
-                                mappedAction.videoSectionVideo.videoId
+                                mappedAction.video.sectionId,
+                                mappedAction.video.videoId
                             ).getOrNull()?.let { video ->
                                 navigator.navigateTo(
                                     EducationNavigationEvent.VideoSectionClicked(

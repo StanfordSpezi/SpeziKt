@@ -2,8 +2,8 @@ package edu.stanford.bdh.engagehf
 
 import android.content.Intent
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.bdh.engagehf.messages.Message
-import edu.stanford.bdh.engagehf.messages.MessageType
+import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MessageActionMapper
+import edu.stanford.bdh.engagehf.messages.MessageAction
 import edu.stanford.bdh.engagehf.messages.MessagesHandler
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.Routes
@@ -40,6 +40,7 @@ class MainActivityViewModelTest {
     private val navigator: Navigator = mockk(relaxed = true)
     private val userSessionManager: UserSessionManager = mockk()
     private val messagesHandler: MessagesHandler = mockk(relaxed = true)
+    private val messageActionMapper: MessageActionMapper = mockk(relaxed = true)
     private val messageNotifier: MessageNotifier = mockk(relaxed = true)
     private lateinit var viewModel: MainActivityViewModel
 
@@ -119,20 +120,17 @@ class MainActivityViewModelTest {
         val someMessageId = "some-message-id"
         val firebaseMessage: FirebaseMessage = mockk {
             every { messageId } returns someMessageId
-            every { action } returns "action"
+            every { action } returns "medications"
             every { isDismissible } returns true
         }
-        val expectedMessage = Message(
-            id = someMessageId,
-            type = MessageType.Unknown,
-            title = "",
-            action = firebaseMessage.action,
-            isDismissible = firebaseMessage.isDismissible == true
-        )
+        val expectedAction = MessageAction.MedicationsAction
         val intent = mockk<Intent>()
         every {
             intent.getParcelableExtra<FirebaseMessage>(FirebaseMessage.FIREBASE_MESSAGE_KEY)
         } returns firebaseMessage
+        every {
+            messageActionMapper.map("medications")
+        } returns Result.success(expectedAction)
         createViewModel()
 
         // when
@@ -140,7 +138,7 @@ class MainActivityViewModelTest {
 
         // then
         coVerify {
-            messagesHandler.handle(message = expectedMessage)
+            messagesHandler.handle(action = expectedAction)
         }
     }
 
@@ -310,6 +308,7 @@ class MainActivityViewModelTest {
             navigator = navigator,
             userSessionManager = userSessionManager,
             messagesHandler = messagesHandler,
+            messageActionMapper = messageActionMapper,
             messageNotifier = messageNotifier,
         )
     }

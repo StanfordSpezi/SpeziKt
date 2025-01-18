@@ -1,7 +1,7 @@
 package edu.stanford.bdh.engagehf.bluetooth.data.mapper
 
-import edu.stanford.bdh.engagehf.messages.MessagesAction
-import edu.stanford.bdh.engagehf.messages.VideoSectionVideo
+import edu.stanford.bdh.engagehf.messages.MessageAction
+import edu.stanford.bdh.engagehf.messages.Video
 import javax.inject.Inject
 
 class MessageActionMapper @Inject constructor() {
@@ -11,34 +11,32 @@ class MessageActionMapper @Inject constructor() {
         private val questionnaireRegex = Regex("/?questionnaires/(.+)")
     }
 
-    fun map(action: String?): Result<MessagesAction> {
+    fun map(action: String?): Result<MessageAction> {
         return runCatching {
             when {
-                action.isNullOrBlank() -> MessagesAction.NoAction
+                action.isNullOrBlank() -> MessageAction.UnknownAction
                 videoSectionRegex.matches(action) -> {
-                    mapVideoSectionAction(action).getOrThrow()
+                    mapVideoAction(action).getOrThrow()
                 }
-
-                action == "medications" -> MessagesAction.MedicationsAction
-                action == "observations" -> MessagesAction.MeasurementsAction
+                action == "medications" -> MessageAction.MedicationsAction
+                action == "observations" -> MessageAction.MeasurementsAction
                 questionnaireRegex.matches(action) -> {
                     val matchResult = questionnaireRegex.find(action)
                     val (questionnaireId) = matchResult!!.destructured
-                    MessagesAction.QuestionnaireAction(questionnaireId)
+                    MessageAction.QuestionnaireAction(questionnaireId)
                 }
-
-                action == "healthSummary" -> MessagesAction.HealthSummaryAction
+                action == "healthSummary" -> MessageAction.HealthSummaryAction
                 else -> error("Unknown action type")
             }
         }
     }
 
-    fun mapVideoSectionAction(action: String): Result<MessagesAction.VideoSectionAction> {
+    fun mapVideoAction(action: String): Result<MessageAction.VideoAction> {
         return runCatching {
             val matchResult = videoSectionRegex.find(action)
             val (videoSectionId, videoId) = matchResult!!.destructured
-            MessagesAction.VideoSectionAction(
-                VideoSectionVideo(
+            MessageAction.VideoAction(
+                Video(
                     videoSectionId,
                     videoId
                 )

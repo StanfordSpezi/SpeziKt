@@ -2,7 +2,6 @@ package edu.stanford.bdh.engagehf.messages
 
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
-import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MessageActionMapper
 import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
@@ -14,7 +13,6 @@ import javax.inject.Inject
 
 @Suppress("LongParameterList")
 class MessagesHandler @Inject constructor(
-    private val messagesActionMapper: MessageActionMapper,
     private val appScreenEvents: AppScreenEvents,
     private val healthSummaryService: HealthSummaryService,
     private val engageEducationRepository: EngageEducationRepository,
@@ -27,47 +25,51 @@ class MessagesHandler @Inject constructor(
     fun observeUserMessages() = messageRepository.observeUserMessages()
 
     suspend fun handle(message: Message) {
-        val actionResult = messagesActionMapper.map(action = message.action)
-        var failure = actionResult.exceptionOrNull()
-        when (val messagesAction = actionResult.getOrNull()) {
-            is MessagesAction.NoAction -> Unit
-            is MessagesAction.HealthSummaryAction -> {
-                failure = healthSummaryService.generateHealthSummaryPdf().exceptionOrNull()
-            }
-
-            is MessagesAction.VideoSectionAction -> {
-                val sectionVideo = messagesAction.videoSectionVideo
-                failure = engageEducationRepository.getVideoBySectionAndVideoId(
-                    sectionId = sectionVideo.videoSectionId,
-                    videoId = sectionVideo.videoId,
-                ).onSuccess { video ->
-                    navigator.navigateTo(EducationNavigationEvent.VideoSectionClicked(video))
-                }.exceptionOrNull()
-            }
-
-            is MessagesAction.MeasurementsAction -> {
-                appScreenEvents.emit(AppScreenEvents.Event.DoNewMeasurement)
-            }
-
-            is MessagesAction.MedicationsAction -> {
-                appScreenEvents.emit(AppScreenEvents.Event.NavigateToTab(BottomBarItem.MEDICATION))
-            }
-
-            is MessagesAction.QuestionnaireAction -> {
-                navigator.navigateTo(
-                    AppNavigationEvent.QuestionnaireScreen(messagesAction.questionnaireId)
-                )
-            }
-            else -> Unit
-        }
+        val failure = handle(message.action).exceptionOrNull()
         val messageId = message.id
         if (failure == null && message.isDismissible) {
-            messageRepository.completeMessage(messageId = messageId)
+            messageRepository.dismissMessage(messageId = messageId)
         } else if (failure != null) {
             logger.e(failure) { "Error while handling message: $messageId" }
             messageNotifier.notify(messageId = R.string.error_while_handling_message_action)
         } else {
             logger.i { "Message $messageId handled successfully" }
+        }
+    }
+
+    suspend fun handle(action: MessageAction): Result<Unit> {
+        return runCatching {
+            when (action) {
+                is MessageAction.UnknownAction -> Unit
+
+                is MessageAction.HealthSummaryAction -> {
+                    healthSummaryService.generateHealthSummaryPdf()
+                }
+
+                is MessageAction.VideoAction -> {
+                    val sectionVideo = action.video
+                    engageEducationRepository.getVideoBySectionAndVideoId(
+                        sectionId = sectionVideo.sectionId,
+                        videoId = sectionVideo.videoId,
+                    ).onSuccess { video ->
+                        navigator.navigateTo(EducationNavigationEvent.VideoSectionClicked(video))
+                    }
+                }
+
+                is MessageAction.MeasurementsAction -> {
+                    appScreenEvents.emit(AppScreenEvents.Event.DoNewMeasurement)
+                }
+
+                is MessageAction.MedicationsAction -> {
+                    appScreenEvents.emit(AppScreenEvents.Event.NavigateToTab(BottomBarItem.MEDICATION))
+                }
+
+                is MessageAction.QuestionnaireAction -> {
+                    navigator.navigateTo(
+                        AppNavigationEvent.QuestionnaireScreen(action.questionnaireId)
+                    )
+                }
+            }
         }
     }
 }

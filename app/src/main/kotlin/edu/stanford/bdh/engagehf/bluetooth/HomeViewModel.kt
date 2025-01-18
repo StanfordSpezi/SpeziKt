@@ -11,12 +11,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
+import edu.stanford.bdh.engagehf.bluetooth.data.models.MessageUiModel
 import edu.stanford.bdh.engagehf.bluetooth.data.models.UiState
 import edu.stanford.bdh.engagehf.bluetooth.measurements.MeasurementsRepository
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEService
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceEvent
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceState
-import edu.stanford.bdh.engagehf.messages.Message
 import edu.stanford.bdh.engagehf.messages.MessagesHandler
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
 import edu.stanford.spezi.core.logging.speziLogger
@@ -120,7 +120,7 @@ class HomeViewModel @Inject internal constructor(
             messagesHandler.observeUserMessages().collect { messages ->
                 _uiState.update {
                     it.copy(
-                        messages = messages
+                        messages = messages.map { MessageUiModel(it) }
                     )
                 }
             }
@@ -144,7 +144,7 @@ class HomeViewModel @Inject internal constructor(
             }
 
             is Action.MessageItemClicked -> {
-                handleMessage(message = action.message)
+                handleMessage(model = action.message)
             }
 
             is Action.ToggleExpand -> {
@@ -190,12 +190,12 @@ class HomeViewModel @Inject internal constructor(
         }
     }
 
-    private fun handleMessage(message: Message) {
+    private fun handleMessage(model: MessageUiModel) {
         val setLoading = { loading: Boolean ->
             _uiState.update {
                 it.copy(
                     messages = it.messages.map { current ->
-                        if (current.id == message.id) {
+                        if (current.message.id == model.message.id) {
                             current.copy(isLoading = loading)
                         } else {
                             current
@@ -206,7 +206,7 @@ class HomeViewModel @Inject internal constructor(
         }
         viewModelScope.launch {
             setLoading(true)
-            messagesHandler.handle(message = message)
+            messagesHandler.handle(message = model.message)
             setLoading(false)
         }
     }
@@ -219,11 +219,11 @@ class HomeViewModel @Inject internal constructor(
     private fun handleToggleExpandAction(action: Action.ToggleExpand) {
         _uiState.update {
             it.copy(
-                messages = it.messages.map { message ->
-                    if (message.id == action.message.id) {
-                        message.copy(isExpanded = !message.isExpanded)
+                messages = it.messages.map { model ->
+                    if (model.message.id == action.message.message.id) {
+                        model.copy(isExpanded = !model.isExpanded)
                     } else {
-                        message
+                        model
                     }
                 }
             )

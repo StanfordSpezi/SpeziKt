@@ -4,8 +4,8 @@ import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.bdh.engagehf.messages.Message
-import edu.stanford.bdh.engagehf.messages.MessageType
+import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MessageActionMapper
+import edu.stanford.bdh.engagehf.messages.MessageAction
 import edu.stanford.bdh.engagehf.messages.MessagesHandler
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.Routes
@@ -32,6 +32,7 @@ class MainActivityViewModel @Inject constructor(
     private val navigator: Navigator,
     private val userSessionManager: UserSessionManager,
     private val messageNotifier: MessageNotifier,
+    private val messageActionMapper: MessageActionMapper,
     private val messagesHandler: MessagesHandler,
 ) : ViewModel() {
     private val logger by speziLogger()
@@ -52,15 +53,10 @@ class MainActivityViewModel @Inject constructor(
         val firebaseMessage = intent.getParcelableExtra<FirebaseMessage>(FIREBASE_MESSAGE_KEY)
         firebaseMessage?.messageId?.let { messageId ->
             viewModelScope.launch {
-                messagesHandler.handle(
-                    message = Message(
-                        id = messageId, // Is needed to dismiss the message
-                        type = MessageType.Unknown, // We don't need the type, since we directly use the action
-                        title = "", // We don't need the title, since we directly use the action
-                        action = firebaseMessage.action, // We directly use the action
-                        isDismissible = firebaseMessage.isDismissible == true
-                    )
-                )
+                messagesHandler.handle(action =
+                    messageActionMapper.map(firebaseMessage.action)
+                        .getOrElse { MessageAction.UnknownAction },
+                ).exceptionOrNull()
             }
         }
     }

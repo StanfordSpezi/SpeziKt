@@ -10,6 +10,7 @@ import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
+import edu.stanford.bdh.engagehf.bluetooth.data.models.MessageUiModel
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
 import edu.stanford.bdh.engagehf.bluetooth.measurements.MeasurementsRepository
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEService
@@ -17,7 +18,7 @@ import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceEvent
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceState
 import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
 import edu.stanford.bdh.engagehf.messages.Message
-import edu.stanford.bdh.engagehf.messages.MessageType
+import edu.stanford.bdh.engagehf.messages.MessageAction
 import edu.stanford.bdh.engagehf.messages.MessagesHandler
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
 import edu.stanford.spezi.core.notification.NotificationPermissions
@@ -54,7 +55,6 @@ class HomeViewModelTest {
     private val messageId = "some-id"
     private val message: Message = mockk {
         every { id } returns messageId
-        every { isExpanded } returns false
     }
 
     @get:Rule
@@ -286,7 +286,7 @@ class HomeViewModelTest {
     fun `it should invoke messages handler on message item clicked`() {
         // given
         val message: Message = mockk()
-        val action = Action.MessageItemClicked(message = message)
+        val action = Action.MessageItemClicked(message = MessageUiModel(message))
         createViewModel()
 
         // when
@@ -318,9 +318,11 @@ class HomeViewModelTest {
             dueDate = ZonedDateTime.now(),
             description = "",
             title = "",
-            action = "",
-            type = MessageType.MedicationChange,
-            isExpanded = isExpanded,
+            action = MessageAction.UnknownAction,
+        )
+        val model = MessageUiModel(
+            message = message,
+            isExpanded = isExpanded
         )
         every { this@HomeViewModelTest.message.id } returns "new-id"
 
@@ -333,7 +335,7 @@ class HomeViewModelTest {
         createViewModel()
 
         // when
-        viewModel.onAction(Action.ToggleExpand(message))
+        viewModel.onAction(Action.ToggleExpand(model))
 
         // then
         assertThat(

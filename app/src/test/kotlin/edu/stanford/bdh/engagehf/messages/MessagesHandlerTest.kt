@@ -31,24 +31,23 @@ class MessagesHandlerTest {
     private val messageNotifier = mockk<MessageNotifier>(relaxed = true)
     private val appScreenEvents = mockk<AppScreenEvents>(relaxed = true)
     private val navigator = mockk<Navigator>(relaxed = true)
-    private val messageAction = "some-action"
+    private val messageActionString = "some-action"
+    private val messageAction = MessageAction.MeasurementsAction
     private val messageId = "some-id"
     private val videoSectionId = "some-video-section-id"
     private val videoId = "some-video-id"
-    private val sectionVideo = VideoSectionVideo(
-        videoSectionId = videoSectionId,
+    private val sectionVideo = Video(
+        sectionId = videoSectionId,
         videoId = videoId,
     )
     private val message: Message = mockk {
         every { action } returns messageAction
         every { id } returns messageId
-        every { isExpanded } returns false
         every { isDismissible } returns true
     }
 
     private val messagesHandler by lazy {
         MessagesHandler(
-            messagesActionMapper = actionMapper,
             appScreenEvents = appScreenEvents,
             healthSummaryService = healthSummaryService,
             engageEducationRepository = engageEducationRepository,
@@ -61,7 +60,7 @@ class MessagesHandlerTest {
     @Test
     fun `it should not handle message if action mapping fails`() = runTestUnconfined {
         // given
-        every { actionMapper.map(messageAction) } returns Result.failure(Throwable())
+        every { actionMapper.map(messageActionString) } returns Result.failure(Throwable())
 
         // when
         messagesHandler.handle(message = message)
@@ -86,7 +85,7 @@ class MessagesHandlerTest {
     @Test
     fun `it should handle HealthSummaryAction correctly on non error result`() = runTestUnconfined {
         // given
-        setup(action = MessagesAction.HealthSummaryAction)
+        setup(action = MessageAction.HealthSummaryAction)
         coEvery { healthSummaryService.generateHealthSummaryPdf() } returns Result.success(Unit)
 
         // when
@@ -99,7 +98,7 @@ class MessagesHandlerTest {
     @Test
     fun `it should not dismiss health summary message on error result`() = runTestUnconfined {
         // given
-        setup(action = MessagesAction.HealthSummaryAction)
+        setup(action = MessageAction.HealthSummaryAction)
         coEvery {
             healthSummaryService.generateHealthSummaryPdf()
         } returns Result.failure(Throwable())
@@ -114,7 +113,7 @@ class MessagesHandlerTest {
     @Test
     fun `it should not dismiss video section message on error result`() = runTestUnconfined {
         // given
-        setup(action = MessagesAction.VideoSectionAction(sectionVideo))
+        setup(action = MessageAction.VideoAction(sectionVideo))
         coEvery {
             engageEducationRepository.getVideoBySectionAndVideoId(
                 sectionId = videoSectionId,
@@ -132,7 +131,7 @@ class MessagesHandlerTest {
     @Test
     fun `it should handle video section action correctly`() = runTestUnconfined {
         val video: Video = mockk()
-        val videoSectionAction = MessagesAction.VideoSectionAction(videoSectionVideo = sectionVideo)
+        val videoSectionAction = MessageAction.VideoAction(video = sectionVideo)
         setup(action = videoSectionAction)
         coEvery {
             engageEducationRepository.getVideoBySectionAndVideoId(videoSectionId, videoId)
@@ -149,7 +148,7 @@ class MessagesHandlerTest {
     @Test
     fun `it should handle MeasurementsAction correctly`() = runTestUnconfined {
         // given
-        setup(action = MessagesAction.MeasurementsAction)
+        setup(action = MessageAction.MeasurementsAction)
 
         // when
         messagesHandler.handle(message = message)
@@ -163,7 +162,7 @@ class MessagesHandlerTest {
     fun `it should navigate to questionnaire screen on QuestionnaireAction`() = runTestUnconfined {
         // given
         val questionnaireId = "1"
-        setup(action = MessagesAction.QuestionnaireAction(questionnaireId))
+        setup(action = MessageAction.QuestionnaireAction(questionnaireId))
 
         // when
         messagesHandler.handle(message = message)
@@ -176,7 +175,7 @@ class MessagesHandlerTest {
     @Test
     fun `it should handle medication change action correctly`() = runTestUnconfined {
         // given
-        setup(action = MessagesAction.MedicationsAction)
+        setup(action = MessageAction.MedicationsAction)
 
         // when
         messagesHandler.handle(message = message)
@@ -190,14 +189,14 @@ class MessagesHandlerTest {
     fun `it should not dismiss non-dismissable messages on success`() = runTestUnconfined {
         // given
         every { message.isDismissible } returns false
-        setup(action = MessagesAction.MedicationsAction)
+        setup(action = MessageAction.MedicationsAction)
 
         // when
         messagesHandler.handle(message = message)
 
         // then
         verify { appScreenEvents.emit(AppScreenEvents.Event.NavigateToTab(BottomBarItem.MEDICATION)) }
-        coVerifyNever { messageRepository.completeMessage(messageId = messageId) }
+        coVerifyNever { messageRepository.dismissMessage(messageId = messageId) }
         verifyNever { messageNotifier.notify(R.string.error_while_handling_message_action) }
     }
 
@@ -205,15 +204,15 @@ class MessagesHandlerTest {
         verify(exactly = 1) {
             messageNotifier.notify(R.string.error_while_handling_message_action)
         }
-        coVerifyNever { messageRepository.completeMessage(messageId = messageId) }
+        coVerifyNever { messageRepository.dismissMessage(messageId = messageId) }
     }
 
     private fun assertSuccess() {
         verifyNever { messageNotifier.notify(R.string.error_while_handling_message_action) }
-        coVerify(exactly = 1) { messageRepository.completeMessage(messageId = messageId) }
+        coVerify(exactly = 1) { messageRepository.dismissMessage(messageId = messageId) }
     }
 
-    private fun setup(action: MessagesAction) {
-        every { actionMapper.map(messageAction) } returns Result.success(action)
+    private fun setup(action: MessageAction) {
+        every { actionMapper.map(messageActionString) } returns Result.success(action)
     }
 }

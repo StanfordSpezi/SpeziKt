@@ -85,7 +85,7 @@ class MessageRepositoryTest {
         every { httpsCallableReference.call(capture(paramsSlot)) } returns mockTask(mockk())
 
         // when
-        repository.completeMessage(messageId)
+        repository.dismissMessage(messageId)
 
         // then
         val params = paramsSlot.captured
@@ -100,7 +100,7 @@ class MessageRepositoryTest {
         every { userSessionManager.getUserUid() } returns null
 
         // when
-        repository.completeMessage(messageId)
+        repository.dismissMessage(messageId)
 
         // then
         verifyNever { firebaseFunctions.getHttpsCallable("dismissMessage") }

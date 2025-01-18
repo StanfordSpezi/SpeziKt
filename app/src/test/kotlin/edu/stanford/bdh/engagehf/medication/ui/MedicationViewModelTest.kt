@@ -6,7 +6,7 @@ import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendation
 import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendationType
 import edu.stanford.bdh.engagehf.medication.data.MedicationRepository
-import edu.stanford.bdh.engagehf.messages.MessagesAction
+import edu.stanford.bdh.engagehf.messages.MessageAction
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
@@ -144,13 +144,13 @@ class MedicationViewModelTest {
             val videoPath = "/videoSections/1/videos/1"
             val videoSectionId = "1"
             val videoId = "1"
-            val video = mockk<Video>()
-            val mappedAction = mockk<MessagesAction.VideoSectionAction> {
-                every { videoSectionVideo.videoSectionId } returns videoSectionId
-                every { videoSectionVideo.videoId } returns videoId
+            val actualVideo = mockk<Video>()
+            val mappedAction = mockk<MessageAction.VideoAction> {
+                every { video.sectionId } returns videoSectionId
+                every { video.videoId } returns videoId
             }
 
-            every { messageActionMapper.mapVideoSectionAction(videoPath) } returns Result.success(
+            every { messageActionMapper.mapVideoAction(videoPath) } returns Result.success(
                 mappedAction
             )
             coEvery {
@@ -158,13 +158,13 @@ class MedicationViewModelTest {
                     videoSectionId,
                     videoId
                 )
-            } returns Result.success(video)
+            } returns Result.success(actualVideo)
 
             // when
             viewModel.onAction(MedicationViewModel.Action.InfoClicked(videoPath))
 
             // then
-            verify { navigator.navigateTo(EducationNavigationEvent.VideoSectionClicked(video)) }
+            verify { navigator.navigateTo(EducationNavigationEvent.VideoSectionClicked(actualVideo)) }
         }
 
     private fun getMedicationRecommendations() = listOf(

@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
+import edu.stanford.bdh.engagehf.bluetooth.data.models.MessageUiModel
 import edu.stanford.spezi.core.design.component.DefaultElevatedCard
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Colors.primary
@@ -45,7 +46,7 @@ private const val TEXT_WEIGHT = 0.9f
 @Composable
 fun MessageItem(
     modifier: Modifier = Modifier,
-    message: Message,
+    model: MessageUiModel,
     onAction: (Action) -> Unit,
 ) {
     DefaultElevatedCard(
@@ -63,21 +64,21 @@ fun MessageItem(
                 modifier = Modifier.padding(top = Spacings.small),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                MessageIcon(message.icon)
+                MessageIcon(model.icon)
                 Spacer(modifier = Modifier.width(Spacings.small))
                 Text(
                     modifier = Modifier.testIdentifier(MessageItemTestIdentifiers.TITLE),
-                    text = message.title,
+                    text = model.message.title,
                     style = TextStyles.titleMedium,
                     color = Colors.onBackground,
                 )
             }
-            message.description?.let {
+            model.message.description?.let {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    if (message.isExpanded) {
+                    if (model.isExpanded) {
                         Text(
                             modifier = Modifier
                                 .weight(TEXT_WEIGHT)
@@ -99,11 +100,11 @@ fun MessageItem(
                     IconButton(
                         modifier = Modifier.width(Sizes.Icon.small),
                         onClick = {
-                            onAction(Action.ToggleExpand(message))
+                            onAction(Action.ToggleExpand(model))
                         }) {
                         Icon(
-                            imageVector = if (message.isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                            contentDescription = if (message.isExpanded) "Show less" else "Show more",
+                            imageVector = if (model.isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                            contentDescription = if (model.isExpanded) "Show less" else "Show more",
                         )
                     }
                 }
@@ -116,7 +117,7 @@ fun MessageItem(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start,
             ) {
-                message.dueDateFormattedString?.let {
+                model.dueDateFormattedString?.let {
                     Text(
                         modifier = Modifier.testIdentifier(MessageItemTestIdentifiers.DUE_DATE),
                         text = "Due Date: $it",
@@ -124,12 +125,12 @@ fun MessageItem(
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                if (message.action != null || message.isDismissible) {
+                if (model.message.action != null || model.message.isDismissible) {
                     Button(
                         modifier = Modifier.testIdentifier(MessageItemTestIdentifiers.ACTION_BUTTON),
                         colors = ButtonDefaults.buttonColors(containerColor = primary),
                         onClick = {
-                            onAction(Action.MessageItemClicked(message))
+                            onAction(Action.MessageItemClicked(model))
                         },
                     ) {
                         Text(
@@ -168,45 +169,44 @@ enum class MessageItemTestIdentifiers {
 fun MessageListPreview() {
     SpeziTheme(isPreview = true) {
         LazyColumn(modifier = Modifier.padding(Spacings.medium)) {
-            items(sampleMessages) { message ->
-                MessageItem(message = message, onAction = { })
+            items(sampleMessageModels) { model ->
+                MessageItem(model = model, onAction = { })
             }
         }
     }
 }
 
-private val sampleMessages = listOf(
+private val sampleMessageModels = listOf(
     Message(
         id = java.util.UUID.randomUUID().toString(),
         dueDate = ZonedDateTime.now().plusDays(1),
         completionDate = null,
-        type = MessageType.WeightGain,
         title = "Weight Gained",
         description = "You gained weight. Please take action.",
-        action = "New Weight Entry",
+        action = MessageAction.MeasurementsAction,
     ),
     Message(
         id = java.util.UUID.randomUUID().toString(),
         dueDate = ZonedDateTime.now().plusDays(2),
         completionDate = null,
-        type = MessageType.MedicationChange,
         title = "Medication Change",
         description = "Your medication has been changed. Please take action. " +
             "Your medication has been changed. Please take action. Your medication " +
             "has been changed. " +
             "Please take action.",
-        action = "Go to medication",
+        action = MessageAction.MedicationsAction,
     ),
     Message(
         id = java.util.UUID.randomUUID().toString(),
         dueDate = ZonedDateTime.now().plusDays(2),
         completionDate = null,
-        type = MessageType.Unknown,
         title = "Medication Change",
         description = "Your medication has been changed. Please take action. " +
             "Your medication has been changed. Please take action. Your medication " +
             "has been changed. " +
             "Please take action.",
-        action = "Go to medication",
+        action = MessageAction.MedicationsAction,
     ),
-)
+).map {
+    MessageUiModel(it)
+}
