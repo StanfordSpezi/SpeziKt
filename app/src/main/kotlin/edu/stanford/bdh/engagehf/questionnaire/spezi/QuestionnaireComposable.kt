@@ -16,7 +16,6 @@ import androidx.fragment.compose.rememberFragmentState
 import ca.uhn.fhir.context.FhirContext
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.component.StringResource.Companion.invoke
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import org.hl7.fhir.r4.model.Questionnaire
 
