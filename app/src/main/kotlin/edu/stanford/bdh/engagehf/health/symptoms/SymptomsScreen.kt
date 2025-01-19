@@ -287,9 +287,7 @@ private fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewMode
             SymptomType.entries.forEach { symptomType ->
                 val isSelected = headerData.selectedSymptomType == symptomType
                 DropdownMenuItem(
-                    text = {
-                        headerData.selectedSymptomTypeText
-                    },
+                    text = { SymptomTypeTitleText(symptomType) },
                     onClick = {
                         onAction(SymptomsViewModel.Action.ToggleSymptomTypeDropdown(false))
                         onAction(SymptomsViewModel.Action.SelectSymptomType(symptomType))
