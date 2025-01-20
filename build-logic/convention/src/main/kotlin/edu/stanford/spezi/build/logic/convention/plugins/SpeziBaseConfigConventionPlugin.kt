@@ -1,9 +1,12 @@
 package edu.stanford.spezi.build.logic.convention.plugins
 
+import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import edu.stanford.spezi.build.logic.convention.extensions.android
 import edu.stanford.spezi.build.logic.convention.extensions.findLibrary
 import edu.stanford.spezi.build.logic.convention.extensions.findVersion
+import edu.stanford.spezi.build.logic.convention.extensions.hasAndroidTest
+import edu.stanford.spezi.build.logic.convention.extensions.isApp
 import edu.stanford.spezi.build.logic.convention.extensions.isLibrary
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
@@ -32,7 +35,7 @@ class SpeziBaseConfigConventionPlugin : Plugin<Project> {
             }
 
             buildTypes {
-                getByName("debug").enableAndroidTestCoverage = true
+                getByName("debug").enableAndroidTestCoverage = hasAndroidTest()
             }
 
             packaging {
@@ -70,8 +73,13 @@ class SpeziBaseConfigConventionPlugin : Plugin<Project> {
         if (isLibrary()) {
             extensions.configure<LibraryAndroidComponentsExtension> {
                 beforeVariants {
-                    it.androidTest.enable =
-                        it.androidTest.enable && projectDir.resolve("src/androidTest").exists()
+                    it.androidTest.enable = it.androidTest.enable && hasAndroidTest()
+                }
+            }
+        } else if (isApp()) {
+            extensions.configure<ApplicationAndroidComponentsExtension> {
+                beforeVariants {
+                    it.androidTest.enable = it.androidTest.enable && hasAndroidTest()
                 }
             }
         }
