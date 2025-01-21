@@ -131,7 +131,7 @@ class SymptomsViewModelTest {
         headerData = HeaderData(
             formattedDate = "",
             formattedValue = "",
-            selectedSymptomType = SymptomType.SYMPTOMS_FREQUENCY,
+            selectedSymptomType = SymptomType.SPECIFIC,
         )
     )
 

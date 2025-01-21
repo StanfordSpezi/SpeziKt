@@ -276,7 +276,7 @@ private fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewMode
         TextButton(onClick = {
             onAction(SymptomsViewModel.Action.ToggleSymptomTypeDropdown(true))
         }) {
-            SymptomTypeTitleText(headerData.selectedSymptomType)
+            SymptomTypeHeaderText(headerData.selectedSymptomType)
             Icon(Icons.Default.ArrowDropDown, contentDescription = "ArrowDropDown")
         }
         DropdownMenu(
@@ -287,7 +287,7 @@ private fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewMode
             SymptomType.entries.forEach { symptomType ->
                 val isSelected = headerData.selectedSymptomType == symptomType
                 DropdownMenuItem(
-                    text = { SymptomTypeTitleText(symptomType) },
+                    text = { SymptomTypeDropdownText(symptomType) },
                     onClick = {
                         onAction(SymptomsViewModel.Action.ToggleSymptomTypeDropdown(false))
                         onAction(SymptomsViewModel.Action.SelectSymptomType(symptomType))
@@ -306,16 +306,29 @@ private fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewMode
 }
 
 @Composable
-private fun SymptomTypeTitleText(symptomType: SymptomType) {
+private fun SymptomTypeHeaderText(symptomType: SymptomType) {
     Text(
-        text =
-        when (symptomType) {
+        text = when (symptomType) {
             SymptomType.OVERALL -> stringResource(R.string.overall_score_title)
             SymptomType.PHYSICAL_LIMITS -> stringResource(R.string.physical_limits_score_title)
             SymptomType.SOCIAL_LIMITS -> stringResource(R.string.social_limits_score_title)
             SymptomType.QUALITY_OF_LIFE -> stringResource(R.string.quality_of_life_score_title)
-            SymptomType.SYMPTOMS_FREQUENCY -> stringResource(R.string.symptoms_frequency_score_title)
+            SymptomType.SPECIFIC -> stringResource(R.string.symptoms_frequency_score_title)
             SymptomType.DIZZINESS -> stringResource(R.string.dizziness_score_title)
+        }
+    )
+}
+
+@Composable
+private fun SymptomTypeDropdownText(symptomType: SymptomType) {
+    Text(
+        text = when (symptomType) {
+            SymptomType.OVERALL -> stringResource(R.string.symptom_type_overall)
+            SymptomType.PHYSICAL_LIMITS -> stringResource(R.string.symptom_type_physical)
+            SymptomType.SOCIAL_LIMITS -> stringResource(R.string.symptom_type_social)
+            SymptomType.QUALITY_OF_LIFE -> stringResource(R.string.symptom_type_quality)
+            SymptomType.SPECIFIC -> stringResource(R.string.symptom_type_specific)
+            SymptomType.DIZZINESS -> stringResource(R.string.symptom_type_dizziness)
         }
     )
 }

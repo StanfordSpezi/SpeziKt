@@ -71,7 +71,7 @@ class SymptomsUiStateMapper @Inject constructor(
             SymptomType.PHYSICAL_LIMITS -> newestData.physicalLimitsScore.asPercent()
             SymptomType.SOCIAL_LIMITS -> newestData.socialLimitsScore.asPercent()
             SymptomType.QUALITY_OF_LIFE -> newestData.qualityOfLifeScore.asPercent()
-            SymptomType.SYMPTOMS_FREQUENCY -> newestData.symptomFrequencyScore.asPercent()
+            SymptomType.SPECIFIC -> newestData.symptomFrequencyScore.asPercent()
             SymptomType.DIZZINESS -> newestData.dizzinessScore?.toString() ?: NOT_AVAILABLE
         }
     }
@@ -165,7 +165,7 @@ class SymptomsUiStateMapper @Inject constructor(
         SymptomType.PHYSICAL_LIMITS -> score.physicalLimitsScore
         SymptomType.SOCIAL_LIMITS -> score.socialLimitsScore
         SymptomType.QUALITY_OF_LIFE -> score.qualityOfLifeScore
-        SymptomType.SYMPTOMS_FREQUENCY -> score.symptomFrequencyScore
+        SymptomType.SPECIFIC -> score.symptomFrequencyScore
         SymptomType.DIZZINESS -> score.dizzinessScore
     }?.roundToDecimalPlaces(places = 2)
 
