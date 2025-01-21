@@ -21,12 +21,13 @@ import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.components.AddDataHeader
 import edu.stanford.bdh.engagehf.health.components.NumberPicker
 import edu.stanford.bdh.engagehf.health.components.TimePicker
+import edu.stanford.bdh.engagehf.health.time.TimePickerState
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
-import java.time.LocalDate
+import java.time.Instant
 import java.time.LocalTime
 
 @Composable
@@ -187,7 +188,7 @@ private fun AddDataViewPreview() {
         AddBloodPressureBottomSheet(
             uiState = AddBloodPressureBottomSheetUiState(
                 timePickerState = TimePickerState(
-                    selectedDate = LocalDate.now(),
+                    selectedDate = Instant.now(),
                     selectedTime = LocalTime.now(),
                     initialHour = 12,
                     initialMinute = 0,

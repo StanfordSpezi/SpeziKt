@@ -6,25 +6,25 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
+import edu.stanford.bdh.engagehf.health.time.TimePickerStateMapper
 import edu.stanford.spezi.core.utils.MessageNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDate
+import java.time.Instant
 import java.time.LocalTime
-import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
 internal class AddHeartRateBottomSheetViewModel @Inject constructor(
     private val appScreenEvents: AppScreenEvents,
     private val healthRepository: HealthRepository,
-    private val addHeartRateBottomSheetUiStateMapper: AddHeartRateBottomSheetUiStateMapper,
+    private val timePickerStateMapper: TimePickerStateMapper,
     private val notifier: MessageNotifier,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(addHeartRateBottomSheetUiStateMapper.initialUiState())
+    private val _uiState = MutableStateFlow(AddHeartRateBottomSheetUiState(timePickerState = timePickerStateMapper.mapNow()))
     val uiState = _uiState.asStateFlow()
 
     fun onAction(action: Action) {
@@ -39,18 +39,22 @@ internal class AddHeartRateBottomSheetViewModel @Inject constructor(
 
             is Action.UpdateDate -> {
                 _uiState.update {
-                    addHeartRateBottomSheetUiStateMapper.mapUpdateDateAction(
-                        date = action.date,
-                        uiState = it
+                    it.copy(
+                        timePickerState = timePickerStateMapper.mapDate(
+                            date = action.date,
+                            timePickerState = it.timePickerState
+                        )
                     )
                 }
             }
 
             is Action.UpdateTime -> {
                 _uiState.update {
-                    addHeartRateBottomSheetUiStateMapper.mapUpdateTimeAction(
-                        time = action.time,
-                        uiState = it
+                    it.copy(
+                        timePickerState = timePickerStateMapper.mapTime(
+                            localTime = action.time,
+                            timePickerState = it.timePickerState,
+                        )
                     )
                 }
             }
@@ -65,8 +69,7 @@ internal class AddHeartRateBottomSheetViewModel @Inject constructor(
 
     private fun handleSaveHeartRateAction() {
         with(uiState.value) {
-            val dateTime = timePickerState.selectedDate.atTime(timePickerState.selectedTime)
-                .atZone(ZoneId.systemDefault()).toInstant()
+            val dateTime = timePickerStateMapper.mapInstant(timePickerState)
             HeartRateRecord(
                 startTime = dateTime,
                 startZoneOffset = null,
@@ -93,7 +96,7 @@ internal class AddHeartRateBottomSheetViewModel @Inject constructor(
     sealed interface Action {
         data object CloseSheet : Action
         data object SaveHeartRate : Action
-        data class UpdateDate(val date: LocalDate) : Action
+        data class UpdateDate(val date: Instant) : Action
         data class UpdateTime(val time: LocalTime) : Action
         data class UpdateHeartRate(val heartRate: Int) : Action
     }
