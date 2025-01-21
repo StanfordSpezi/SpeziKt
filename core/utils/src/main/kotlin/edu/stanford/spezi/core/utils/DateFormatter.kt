@@ -10,15 +10,23 @@ import javax.inject.Inject
 class DateFormatter @Inject constructor() {
 
     fun <T : TemporalAccessor> format(date: T, format: DateFormat): String {
-        val zoned = if (date is Instant) {
-            date.atZone(ZoneId.systemDefault())
-        } else {
-            date
-        }
-        return DateTimeFormatter.ofPattern(format.pattern).format(zoned)
+        if (date is Instant) return formatDefaultZoneId(date, format)
+        return DateTimeFormatter.ofPattern(format.pattern).format(date)
+    }
+
+    fun formatUTC(instant: Instant, format: DateFormat): String {
+        return format(instant, format, ZoneId.of("UTC"))
+    }
+
+    fun formatDefaultZoneId(instant: Instant, format: DateFormat): String {
+        return format(instant, format, ZoneId.systemDefault())
     }
 
     fun format(date: Date, format: DateFormat) = format(date.toInstant(), format)
+
+    fun format(instant: Instant, format: DateFormat, zoneId: ZoneId): String {
+        return DateTimeFormatter.ofPattern(format.pattern).format(instant.atZone(zoneId))
+    }
 }
 
 sealed class DateFormat(open val pattern: String) {
