@@ -56,7 +56,7 @@ class HealthUiStateMapper @Inject constructor(
             groupAndMapRecords(filteredRecords, selectedTimeRange)
         val title: String = when (records.first()) {
             is EngageRecord.HeartRate -> "Heart Rate"
-            is EngageRecord.BloodPressure -> "Blood Pressure"
+            is EngageRecord.BloodPressure -> "Systolic"
             is EngageRecord.Weight -> "Weight"
         }
         val chartData = createAggregatedHealthData(title, pairs)
@@ -65,7 +65,7 @@ class HealthUiStateMapper @Inject constructor(
         if (records.any { it is EngageRecord.BloodPressure }) {
             val diastolicPairs: List<Pair<Double, Double>> =
                 groupAndMapRecords(filteredRecords, selectedTimeRange, true)
-            val diastolicChartData = createAggregatedHealthData(title, diastolicPairs)
+            val diastolicChartData = createAggregatedHealthData("Diastolic", diastolicPairs)
             chartDataList.add(diastolicChartData)
         }
 
