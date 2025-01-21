@@ -25,7 +25,11 @@ class MessagesHandler @Inject constructor(
     fun observeUserMessages() = messageRepository.observeUserMessages()
 
     suspend fun handle(message: Message) {
-        this.handle(message.id, message.isDismissible, message.action)
+        handle(
+            messageId = message.id,
+            isDismissible = message.isDismissible,
+            action = message.action
+        )
     }
 
     suspend fun handle(messageId: String, isDismissible: Boolean, action: MessageAction) {
@@ -34,7 +38,7 @@ class MessagesHandler @Inject constructor(
                 is MessageAction.UnknownAction -> Unit
 
                 is MessageAction.HealthSummaryAction -> {
-                    healthSummaryService.generateHealthSummaryPdf()
+                    healthSummaryService.generateHealthSummaryPdf().getOrThrow()
                 }
 
                 is MessageAction.VideoAction -> {
@@ -44,7 +48,7 @@ class MessagesHandler @Inject constructor(
                         videoId = sectionVideo.videoId,
                     ).onSuccess { video ->
                         navigator.navigateTo(EducationNavigationEvent.VideoSectionClicked(video))
-                    }
+                    }.getOrThrow()
                 }
 
                 is MessageAction.MeasurementsAction -> {

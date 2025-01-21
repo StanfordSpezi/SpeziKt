@@ -3,7 +3,6 @@ package edu.stanford.bdh.engagehf.messages
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
-import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MessageActionMapper
 import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
@@ -24,14 +23,12 @@ import kotlinx.coroutines.flow.emptyFlow
 import org.junit.Test
 
 class MessagesHandlerTest {
-    private val actionMapper: MessageActionMapper = mockk()
     private val messageRepository = mockk<MessageRepository>(relaxed = true)
     private val engageEducationRepository = mockk<EngageEducationRepository>(relaxed = true)
     private val healthSummaryService = mockk<HealthSummaryService>(relaxed = true)
     private val messageNotifier = mockk<MessageNotifier>(relaxed = true)
     private val appScreenEvents = mockk<AppScreenEvents>(relaxed = true)
     private val navigator = mockk<Navigator>(relaxed = true)
-    private val messageActionString = "some-action"
     private val messageAction = MessageAction.MeasurementsAction
     private val messageId = "some-id"
     private val videoSectionId = "some-video-section-id"
