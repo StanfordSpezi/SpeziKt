@@ -25,20 +25,11 @@ class MessagesHandler @Inject constructor(
     fun observeUserMessages() = messageRepository.observeUserMessages()
 
     suspend fun handle(message: Message) {
-        val failure = handle(message.action).exceptionOrNull()
-        val messageId = message.id
-        if (failure == null && message.isDismissible) {
-            messageRepository.dismissMessage(messageId = messageId)
-        } else if (failure != null) {
-            logger.e(failure) { "Error while handling message: $messageId" }
-            messageNotifier.notify(messageId = R.string.error_while_handling_message_action)
-        } else {
-            logger.i { "Message $messageId handled successfully" }
-        }
+        this.handle(message.id, message.isDismissible, message.action)
     }
 
-    suspend fun handle(action: MessageAction): Result<Unit> {
-        return runCatching {
+    suspend fun handle(messageId: String, isDismissible: Boolean, action: MessageAction) {
+        val failure = runCatching {
             when (action) {
                 is MessageAction.UnknownAction -> Unit
 
@@ -70,6 +61,14 @@ class MessagesHandler @Inject constructor(
                     )
                 }
             }
+        }.exceptionOrNull()
+        if (failure == null && isDismissible) {
+            messageRepository.dismissMessage(messageId = messageId)
+        } else if (failure != null) {
+            logger.e(failure) { "Error while handling message: $messageId" }
+            messageNotifier.notify(messageId = R.string.error_while_handling_message_action)
+        } else {
+            logger.i { "Message $messageId handled successfully" }
         }
     }
 }

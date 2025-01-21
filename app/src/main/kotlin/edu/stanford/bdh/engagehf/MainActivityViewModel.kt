@@ -53,10 +53,12 @@ class MainActivityViewModel @Inject constructor(
         val firebaseMessage = intent.getParcelableExtra<FirebaseMessage>(FIREBASE_MESSAGE_KEY)
         firebaseMessage?.messageId?.let { messageId ->
             viewModelScope.launch {
-                messagesHandler.handle(action =
-                    messageActionMapper.map(firebaseMessage.action)
+                messagesHandler.handle(
+                    messageId = messageId,
+                    isDismissible = firebaseMessage.isDismissible != false,
+                    action = messageActionMapper.map(firebaseMessage.action)
                         .getOrElse { MessageAction.UnknownAction },
-                ).exceptionOrNull()
+                )
             }
         }
     }

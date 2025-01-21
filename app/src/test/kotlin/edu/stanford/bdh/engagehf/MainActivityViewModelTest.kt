@@ -138,7 +138,11 @@ class MainActivityViewModelTest {
 
         // then
         coVerify {
-            messagesHandler.handle(action = expectedAction)
+            messagesHandler.handle(
+                messageId = someMessageId,
+                isDismissible = true,
+                action = expectedAction
+            )
         }
     }
 
