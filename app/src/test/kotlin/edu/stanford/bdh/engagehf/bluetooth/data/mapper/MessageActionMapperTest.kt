@@ -14,11 +14,10 @@ class MessageActionMapperTest {
         val action: String? = null
 
         // when
-        val exception = mapper.map(action).exceptionOrNull()
+        val result = mapper.map(action).getOrNull()
 
         // then
-        assertThat(exception).isInstanceOf(IllegalStateException::class.java)
-        assertThat(exception?.message).isEqualTo("Invalid action type")
+        assertThat(result).isInstanceOf(MessageAction.UnknownAction::class.java)
     }
 
     @Test

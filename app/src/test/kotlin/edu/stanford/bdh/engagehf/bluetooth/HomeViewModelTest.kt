@@ -235,7 +235,7 @@ class HomeViewModelTest {
         createViewModel()
 
         // then
-        assertThat(viewModel.uiState.value.messages).isEqualTo(messages)
+        assertThat(viewModel.uiState.value.messages.map { it.message }).isEqualTo(messages)
     }
 
     @Test

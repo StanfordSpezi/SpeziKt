@@ -29,7 +29,7 @@ data class MessageUiModel(
     val dueDateFormattedString: String?
         get() = message.dueDate?.format(DateTimeFormatter.ofPattern("MMM dd, yyyy hh:mm a"))
 
-    val icon: Int =
+    val icon: Int get() =
         when (message.action) {
             is MessageAction.MedicationsAction -> R.drawable.ic_medication
             is MessageAction.MeasurementsAction -> R.drawable.ic_vital_signs

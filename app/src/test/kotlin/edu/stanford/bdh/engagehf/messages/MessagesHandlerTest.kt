@@ -58,18 +58,6 @@ class MessagesHandlerTest {
     }
 
     @Test
-    fun `it should not handle message if action mapping fails`() = runTestUnconfined {
-        // given
-        every { actionMapper.map(messageActionString) } returns Result.failure(Throwable())
-
-        // when
-        messagesHandler.handle(message = message)
-
-        // then
-        assertError()
-    }
-
-    @Test
     fun `it should return message updates of the repository`() = runTestUnconfined {
         // given
         val updates: Flow<List<Message>> = emptyFlow()
@@ -213,6 +201,6 @@ class MessagesHandlerTest {
     }
 
     private fun setup(action: MessageAction) {
-        every { actionMapper.map(messageActionString) } returns Result.success(action)
+        every { message.action } returns action
     }
 }
