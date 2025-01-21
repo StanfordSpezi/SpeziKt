@@ -118,9 +118,17 @@ class HomeViewModel @Inject internal constructor(
     private fun observeMessages() {
         viewModelScope.launch {
             messagesHandler.observeUserMessages().collect { messages ->
-                _uiState.update {
-                    it.copy(
-                        messages = messages.map { MessageUiModel(it) }
+                _uiState.update { uiState ->
+                    uiState.copy(
+                        messages = messages.map { message ->
+                            // We try to replicate the existing message model's state
+                            // Otherwise a new incoming message would reset all individual
+                            // isLoading/isExpanded properties of all messages to the default value.
+                            uiState.messages
+                                .find { it.message.id == message.id }
+                                ?.copy(message = message)
+                                ?: MessageUiModel(message = message)
+                        }
                     )
                 }
             }
