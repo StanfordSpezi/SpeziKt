@@ -11,11 +11,10 @@ import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.utils.LocaleProvider
 import edu.stanford.spezi.core.utils.extensions.roundToDecimalPlaces
 import java.time.DayOfWeek
-import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
 import javax.inject.Inject
 
@@ -50,27 +49,34 @@ class HealthUiStateMapper @Inject constructor(
         records: List<EngageRecord>,
         selectedTimeRange: TimeRange,
     ): HealthUiData {
-        val filteredRecords: List<EngageRecord> =
-            filterRecordsByTimeRange(records, selectedTimeRange)
-        val pairs: List<Pair<Double, Double>> =
-            groupAndMapRecords(filteredRecords, selectedTimeRange)
+        val oldestRecordDate = records.minBy { it.zonedDateTime }.zonedDateTime
+        val pairs = groupAndMapRecords(
+            records = records,
+            oldestZonedDateTime = oldestRecordDate,
+            selectedTimeRange = selectedTimeRange
+        )
         val title: String = when (records.first()) {
             is EngageRecord.HeartRate -> "Heart Rate"
             is EngageRecord.BloodPressure -> "Systolic"
             is EngageRecord.Weight -> "Weight"
         }
+
         val chartData = createAggregatedHealthData(title, pairs)
 
         val chartDataList = mutableListOf(chartData)
         if (records.any { it is EngageRecord.BloodPressure }) {
-            val diastolicPairs: List<Pair<Double, Double>> =
-                groupAndMapRecords(filteredRecords, selectedTimeRange, true)
+            val diastolicPairs = groupAndMapRecords(
+                records = records,
+                oldestZonedDateTime = oldestRecordDate,
+                selectedTimeRange = selectedTimeRange,
+                diastolic = true
+            )
             val diastolicChartData = createAggregatedHealthData("Diastolic", diastolicPairs)
             chartDataList.add(diastolicChartData)
         }
 
-        val newestData: NewestHealthData? = getNewestRecord(filteredRecords)
-        val tableData: List<TableEntryData> = mapTableData(filteredRecords)
+        val newestData: NewestHealthData? = getNewestRecord(records)
+        val tableData: List<TableEntryData> = mapTableData(records)
 
         return HealthUiData(
             records = records.map { it.record },
@@ -79,7 +85,13 @@ class HealthUiStateMapper @Inject constructor(
             newestData = newestData,
             averageData = getAverageData(tableData),
             infoRowData = generateHealthHeaderData(selectedTimeRange, newestData),
-            valueFormatter = { valueFormatter(it, selectedTimeRange) }
+            valueFormatter = { value ->
+                valueFormatter(
+                    value = value.toLong(),
+                    oldestZonedDateTime = oldestRecordDate,
+                    timeRange = selectedTimeRange,
+                )
+            }
         )
     }
 
@@ -97,25 +109,35 @@ class HealthUiStateMapper @Inject constructor(
 
     private fun groupAndMapRecords(
         records: List<EngageRecord>,
+        oldestZonedDateTime: ZonedDateTime,
         selectedTimeRange: TimeRange,
         diastolic: Boolean = false,
     ): List<Pair<Double, Double>> {
         val groupedRecords = groupRecordsByTimeRange(records, selectedTimeRange)
         return groupedRecords.values.map { entries ->
-            val averageValue = entries.map { getValue(it, diastolic).value }.average()
-            Pair(
-                averageValue.roundToDecimalPlaces(2),
-                mapXValue(selectedTimeRange, entries.first().zonedDateTime).roundToDecimalPlaces(2)
+            val yValue = entries
+                .map { getValue(it, diastolic).value }
+                .average()
+                .roundToDecimalPlaces(2)
+            val xValue = mapXValue(
+                selectedTimeRange = selectedTimeRange,
+                zonedDateTime = entries.first().zonedDateTime,
+                oldestZonedDateTime = oldestZonedDateTime,
             )
+            Pair(yValue, xValue)
         }
     }
 
-    private fun mapXValue(selectedTimeRange: TimeRange, zonedDateTime: ZonedDateTime): Double {
+    private fun mapXValue(
+        selectedTimeRange: TimeRange,
+        zonedDateTime: ZonedDateTime,
+        oldestZonedDateTime: ZonedDateTime,
+    ): Double {
         return when (selectedTimeRange) {
-            TimeRange.DAILY -> (zonedDateTime.year.toDouble() + (zonedDateTime.dayOfYear - 1) / 365.0) * 10
-            TimeRange.WEEKLY -> (zonedDateTime.toEpochSecond() / (7 * 24 * 60 * 60)).toDouble()
-            TimeRange.MONTHLY -> zonedDateTime.year.toDouble() + (zonedDateTime.monthValue - 1) / 12f
-        }
+            TimeRange.DAILY -> ChronoUnit.DAYS.between(oldestZonedDateTime, zonedDateTime)
+            TimeRange.WEEKLY -> ChronoUnit.WEEKS.between(oldestZonedDateTime, zonedDateTime)
+            TimeRange.MONTHLY -> ChronoUnit.MONTHS.between(oldestZonedDateTime, zonedDateTime)
+        }.toDouble()
     }
 
     private fun groupRecordsByTimeRange(
@@ -188,14 +210,6 @@ class HealthUiStateMapper @Inject constructor(
 
     private fun formatValue(value: Double, unit: String = ""): String {
         return String.format(getDefaultLocale(), "%.1f", value) + " " + unit
-    }
-
-    private fun filterRecordsByTimeRange(
-        records: List<EngageRecord>,
-        timeRange: TimeRange,
-    ): List<EngageRecord> {
-        val maxTime = ZonedDateTime.now().minusMonths(getMaxMonths(timeRange))
-        return records.filter { it.zonedDateTime.isAfter(maxTime) }
     }
 
     private fun getMaxMonths(selectedTimeRange: TimeRange): Long {
@@ -330,28 +344,15 @@ class HealthUiStateMapper @Inject constructor(
 
     private fun getDefaultLocale() = localeProvider.getDefaultLocale()
 
-    private fun valueFormatter(value: Double, timeRange: TimeRange): String {
+    private fun valueFormatter(
+        value: Long,
+        oldestZonedDateTime: ZonedDateTime,
+        timeRange: TimeRange,
+    ): String {
         val date = when (timeRange) {
-            TimeRange.DAILY -> {
-                val actualValue = value * 10
-                val year = actualValue.toInt()
-                val dayOfYearFraction = actualValue - year
-                val dayOfYear = (dayOfYearFraction * 365).toInt() + 1
-                ZonedDateTime.of(year, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault())
-                    .plusDays((dayOfYear - 1).toLong())
-            }
-
-            TimeRange.WEEKLY -> ZonedDateTime.ofInstant(
-                Instant.ofEpochSecond(
-                    value.toLong() * 7 * 24 * 60 * 60
-                ), ZoneId.systemDefault()
-            )
-
-            TimeRange.MONTHLY -> {
-                val year = value.toInt()
-                val month = ((value - year) * 12).toInt() + 1
-                ZonedDateTime.of(year, month, 1, 0, 0, 0, 0, ZoneId.systemDefault())
-            }
+            TimeRange.DAILY -> oldestZonedDateTime.plusDays(value)
+            TimeRange.WEEKLY -> oldestZonedDateTime.plusWeeks(value)
+            TimeRange.MONTHLY -> oldestZonedDateTime.plusMonths(value)
         }
         val pattern = when (timeRange) {
             TimeRange.DAILY, TimeRange.WEEKLY -> "MMM dd"

@@ -122,6 +122,12 @@
     <string name="specific_symptoms_score_description">This represents the frequency you are experiencing heart-related symptoms. Higher scores mean less frequent symptoms and lower scores mean more frequent symptoms.</string>
     <string name="dizziness_score_title">Dizziness Score</string>
     <string name="dizziness_score_description">Your dizziness is important to keep track of because dizziness can be a side effect of your heart or your heart medicines.</string>
+    <string name="dizziness_score_very_severe">Very Severe</string>
+    <string name="dizziness_score_severe">Severe</string>
+    <string name="dizziness_score_moderate">Moderate</string>
+    <string name="dizziness_score_mild">Mild</string>
+    <string name="dizziness_score_minimal">Minimal</string>
+    <string name="dizziness_score_none">None</string>
     <string name="error_while_handling_message_action">Error while handling message action.</string>
     <string name="no_pdf_reader_app_installed_error_message">Health Summary generated successfully, but no PDF reader is installed on the device</string>
     <string name="health_summary_generate_error_message">Failed to generate Health Summary</string>

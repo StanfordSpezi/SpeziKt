@@ -113,7 +113,7 @@ data class SymptomsUiData(
     val chartData: List<AggregatedHealthData>,
     val tableData: List<TableEntryData> = emptyList(),
     val headerData: HeaderData,
-    val valueFormatter: (Double) -> String = { "" },
+    val xValueFormatter: (Double) -> String = { "" },
 )
 
 data class HeaderData(
