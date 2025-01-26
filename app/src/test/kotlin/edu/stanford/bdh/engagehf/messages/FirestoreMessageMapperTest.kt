@@ -3,6 +3,7 @@ package edu.stanford.bdh.engagehf.messages
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
+import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MessageActionMapper
 import edu.stanford.bdh.engagehf.localization.LocalizedMapReader
 import io.mockk.every
 import io.mockk.mockk
@@ -13,12 +14,13 @@ import java.time.ZonedDateTime
 class FirestoreMessageMapperTest {
     private lateinit var documentSnapshot: DocumentSnapshot
     private lateinit var mapper: FirestoreMessageMapper
+    private val messageActionMapper: MessageActionMapper = mockk()
     private val localizedMapReader: LocalizedMapReader = mockk()
 
     @Before
     fun setUp() {
         documentSnapshot = mockk()
-        mapper = FirestoreMessageMapper(localizedMapReader)
+        mapper = FirestoreMessageMapper(localizedMapReader, messageActionMapper)
     }
 
     @Test
@@ -26,21 +28,21 @@ class FirestoreMessageMapperTest {
         // Given
         val expectedId = "messageId"
         val expectedDueDate = ZonedDateTime.now()
-        val expectedType = MessageType.MedicationChange
         val expectedTitle = "Medication Reminder"
         val expectedDescription = "Time to take your medication"
-        val expectedAction = "/medication/1234"
+        val expectedActionString = "/medications"
+        val expectedAction = MessageAction.MedicationsAction
         val expectedIsDismissible = true
         every { localizedMapReader.get("title", any()) } returns expectedTitle
         every { localizedMapReader.get("description", any()) } returns expectedDescription
+        every { messageActionMapper.map(expectedActionString) } returns Result.success(expectedAction)
 
         val documentData = hashMapOf(
             "id" to expectedId,
             "dueDate" to Timestamp(expectedDueDate.toInstant()),
-            "type" to expectedType.name,
             "title" to expectedTitle,
             "description" to expectedDescription,
-            "action" to expectedAction,
+            "action" to expectedActionString,
             "isDismissible" to expectedIsDismissible
         )
 
@@ -53,7 +55,6 @@ class FirestoreMessageMapperTest {
         // Then
         assertThat(result).isNotNull()
         assertThat(result?.id).isEqualTo(expectedId)
-        assertThat(result?.type).isEqualTo(expectedType)
         assertThat(result?.title).isEqualTo(expectedTitle)
         assertThat(result?.description).isEqualTo(expectedDescription)
         assertThat(result?.action).isEqualTo(expectedAction)

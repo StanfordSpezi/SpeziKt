@@ -55,7 +55,7 @@ class MessageRepository @Inject constructor(
         }
     }
 
-    fun completeMessage(messageId: String) {
+    fun dismissMessage(messageId: String) {
         ioScope.launch {
             runCatching {
                 val uid = userSessionManager.getUserUid()
