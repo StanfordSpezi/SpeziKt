@@ -45,7 +45,7 @@ class SymptomsUiStateMapper @Inject constructor(
                     selectedSymptomType = selectedSymptomType,
                     isSelectedSymptomTypeDropdownExpanded = false,
                 ),
-                valueFormatter = { value ->
+                xValueFormatter = { value ->
                     oldestDate
                         .plusDays(value.toLong())
                         .format(DateTimeFormatter.ofPattern("MMM dd"))

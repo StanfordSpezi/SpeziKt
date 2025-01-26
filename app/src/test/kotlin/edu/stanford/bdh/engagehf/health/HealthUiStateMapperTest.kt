@@ -7,6 +7,7 @@ import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.utils.LocaleProvider
+import edu.stanford.spezi.core.utils.extensions.roundToDecimalPlaces
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before
@@ -165,14 +166,83 @@ class HealthUiStateMapperTest {
         assertThat(result.infoRowData.formattedDate).isNotEmpty()
     }
 
+    @Test
+    fun `it should map x and y values and format correctly for selectedTimeRange DAILY`() {
+        // Given
+        val records = List(5) {
+            createWeightRecord(
+                month = 1,
+                day = it + 1,
+                weightInKg = 70.0 + it
+            )
+        }
+        val expectedYValues = records.map { it.weight.inPounds.roundToDecimalPlaces(2) }
+
+        // When
+        val result = healthUiStateMapper.map(records, TimeRange.DAILY)
+        val chartData = result.chartData.first()
+
+        // Then
+        assertThat(chartData.yValues).isEqualTo(expectedYValues)
+        assertThat(chartData.xValues).isEqualTo(List(5) { it.toDouble() })
+        chartData.xValues.forEach {
+            assertThat(result.valueFormatter(it)).isEqualTo("Jan 0${it.toLong() + 1}")
+        }
+    }
+
+    @Test
+    fun `it should map x and y values and format correctly for selectedTimeRange WEEKLY`() {
+        // Given
+        val records = List(3) {
+            createWeightRecord(
+                month = 1,
+                day = 1 + (it * 7),
+                weightInKg = 70.0 + it
+            )
+        }
+        val expectedYValues = records.map { it.weight.inPounds.roundToDecimalPlaces(2) }
+
+        // When
+        val result = healthUiStateMapper.map(records, TimeRange.WEEKLY)
+        val chartData = result.chartData.first()
+
+        // Then
+        assertThat(chartData.yValues).isEqualTo(expectedYValues)
+        assertThat(chartData.xValues).isEqualTo(List(3) { it.toDouble() })
+        assertThat(result.xValue(0)).isEqualTo("Jan 01")
+        assertThat(result.xValue(1)).isEqualTo("Jan 08")
+        assertThat(result.xValue(2)).isEqualTo("Jan 15")
+    }
+
+    @Test
+    fun `it should map x and y values and format correctly for selectedTimeRange MONTHLY`() {
+        // Given
+        val records = List(3) {
+            createWeightRecord(
+                year = 2025,
+                month = 1 + it,
+                day = 1,
+                weightInKg = 70.0 + it
+            )
+        }
+        val expectedYValues = records.map { it.weight.inPounds.roundToDecimalPlaces(2) }
+
+        // When
+        val result = healthUiStateMapper.map(records, TimeRange.MONTHLY)
+        val chartData = result.chartData.first()
+
+        // Then
+        assertThat(chartData.yValues).isEqualTo(expectedYValues)
+        assertThat(chartData.xValues).isEqualTo(List(3) { it.toDouble() })
+        assertThat(result.xValue(0)).isEqualTo("Jan 25")
+        assertThat(result.xValue(1)).isEqualTo("Feb 25")
+        assertThat(result.xValue(2)).isEqualTo("Mar 25")
+    }
+
     private fun createWeightRecord(
         year: Int = zonedDateTime.year,
         month: Int = zonedDateTime.monthValue,
         day: Int = zonedDateTime.dayOfMonth,
-        hour: Int = zonedDateTime.hour,
-        minute: Int = zonedDateTime.minute,
-        second: Int = 0,
-        nanoOfSecond: Int = 0,
         weightInKg: Double = 70.0,
     ): WeightRecord {
         return WeightRecord(
@@ -180,10 +250,10 @@ class HealthUiStateMapperTest {
                 year,
                 month,
                 day,
-                hour,
-                minute,
-                second,
-                nanoOfSecond,
+                0,
+                0,
+                0,
+                0,
                 ZoneId.systemDefault()
             ).toInstant(),
             zoneOffset = zonedDateTime.offset,
@@ -195,4 +265,6 @@ class HealthUiStateMapperTest {
         records: List<Record>,
         timeRange: TimeRange = TimeRange.DAILY,
     ) = (mapToHealthData(records, timeRange) as HealthUiState.Success).data
+
+    private fun HealthUiData.xValue(index: Int) = valueFormatter(chartData.first().xValues[index])
 }

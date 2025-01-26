@@ -50,7 +50,7 @@ class SymptomsUiStateMapperTest {
         assertThat(successState.data.tableData).isNotEmpty()
         assertThat(successState.data.headerData.formattedValue).isNotEmpty()
         assertThat(successState.data.headerData.formattedDate).isNotEmpty()
-        assertThat(successState.data.valueFormatter(0.0)).isNotEmpty()
+        assertThat(successState.data.xValueFormatter(0.0)).isNotEmpty()
     }
 
     @Test
@@ -146,7 +146,7 @@ class SymptomsUiStateMapperTest {
         // Then
         assertThat(chartData.yValues).isEqualTo(List(5) { 50.0 + it })
         chartData.xValues.forEach {
-            assertThat(data.valueFormatter(it)).isEqualTo("Jan 0${it.toLong() + 1}")
+            assertThat(data.xValueFormatter(it)).isEqualTo("Jan 0${it.toLong() + 1}")
         }
     }
 
