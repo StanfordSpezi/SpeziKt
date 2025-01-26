@@ -1,8 +1,6 @@
 package edu.stanford.bdh.engagehf.health.symptoms
 
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.utils.LocaleProvider
 import io.mockk.every
 import io.mockk.mockk
@@ -128,58 +126,43 @@ class SymptomsUiStateMapperTest {
     }
 
     @Test
-    fun `mapSymptomsUiState when different symptomTypes returns correct selectedSymptomTypeText`() {
+    fun `mapSymptomsUiState returns correct chart data`() {
         // Given
-        val symptomScores = listOf(
-            createSymptomScore(),
-        )
+        val symptomScores = List(5) {
+            createSymptomScore(
+                month = 1,
+                day = 1 + it,
+                overallScore = 50.0 + it
+            )
+        }
 
         // When
-        val resultOverall =
-            symptomsUiStateMapper.mapSymptomsUiState(SymptomType.OVERALL, symptomScores)
-        val resultPhysical =
-            symptomsUiStateMapper.mapSymptomsUiState(SymptomType.PHYSICAL_LIMITS, symptomScores)
-        val resultSocial =
-            symptomsUiStateMapper.mapSymptomsUiState(SymptomType.SOCIAL_LIMITS, symptomScores)
-        val resultQuality =
-            symptomsUiStateMapper.mapSymptomsUiState(SymptomType.QUALITY_OF_LIFE, symptomScores)
-        val resultSpecific =
-            symptomsUiStateMapper.mapSymptomsUiState(SymptomType.SYMPTOMS_FREQUENCY, symptomScores)
-        val resultDizziness =
-            symptomsUiStateMapper.mapSymptomsUiState(SymptomType.DIZZINESS, symptomScores)
+        val data = (symptomsUiStateMapper.mapSymptomsUiState(
+            SymptomType.OVERALL,
+            symptomScores
+        ) as SymptomsUiState.Success).data
+        val chartData = data.chartData.first()
 
         // Then
-        assertThat(resultOverall).isInstanceOf(SymptomsUiState.Success::class.java)
-        assertThat(resultPhysical).isInstanceOf(SymptomsUiState.Success::class.java)
-        assertThat(resultSocial).isInstanceOf(SymptomsUiState.Success::class.java)
-        assertThat(resultQuality).isInstanceOf(SymptomsUiState.Success::class.java)
-        assertThat(resultSpecific).isInstanceOf(SymptomsUiState.Success::class.java)
-        assertThat(resultDizziness).isInstanceOf(SymptomsUiState.Success::class.java)
-        val successStateOverall = resultOverall as SymptomsUiState.Success
-        val successStatePhysical = resultPhysical as SymptomsUiState.Success
-        val successStateSocial = resultSocial as SymptomsUiState.Success
-        val successStateQuality = resultQuality as SymptomsUiState.Success
-        val successStateSpecific = resultSpecific as SymptomsUiState.Success
-        val successStateDizziness = resultDizziness as SymptomsUiState.Success
-        assertThat(successStateOverall.data.headerData.selectedSymptomTypeText).isEqualTo(
-            StringResource(R.string.symptom_type_overall)
-        )
-        assertThat(successStatePhysical.data.headerData.selectedSymptomTypeText).isEqualTo(
-            StringResource(R.string.symptom_type_physical)
-        )
+        assertThat(chartData.yValues).isEqualTo(List(5) { 50.0 + it })
+        chartData.xValues.forEach {
+            assertThat(data.valueFormatter(it)).isEqualTo("Jan 0${it.toLong() + 1}")
+        }
+    }
 
-        assertThat(successStateSocial.data.headerData.selectedSymptomTypeText).isEqualTo(
-            StringResource(R.string.symptom_type_social)
-        )
-        assertThat(successStateQuality.data.headerData.selectedSymptomTypeText).isEqualTo(
-            StringResource(R.string.symptom_type_quality)
-        )
-        assertThat(successStateSpecific.data.headerData.selectedSymptomTypeText).isEqualTo(
-            StringResource(R.string.symptom_type_specific)
-        )
-        assertThat(successStateDizziness.data.headerData.selectedSymptomTypeText).isEqualTo(
-            StringResource(R.string.symptom_type_dizziness)
-        )
+    @Test
+    fun `mapSymptomsUiState when different symptomTypes returns correct selectedSymptomType`() {
+        // Given
+        val symptomScores = listOf(createSymptomScore())
+
+        // When
+        SymptomType.entries.forEach { type ->
+            val result = symptomsUiStateMapper
+                .mapSymptomsUiState(type, symptomScores) as SymptomsUiState.Success
+
+            // then
+            assertThat(result.data.headerData.selectedSymptomType).isEqualTo(type)
+        }
     }
 
     private fun createSymptomScore(
@@ -193,6 +176,8 @@ class SymptomsUiStateMapperTest {
         specificSymptomsScore: Double? = 30.0,
         dizzinessScore: Double? = 20.0,
     ): SymptomScore {
+        val monthString = if (month < 10) "0$month" else "$month"
+        val dayString = if (day < 10) "0$day" else "$day"
         return SymptomScore(
             overallScore = overallScore,
             physicalLimitsScore = physicalLimitsScore,
@@ -200,7 +185,7 @@ class SymptomsUiStateMapperTest {
             qualityOfLifeScore = qualityOfLifeScore,
             symptomFrequencyScore = specificSymptomsScore,
             dizzinessScore = dizzinessScore,
-            date = "$year-$month-${day}T00:55:55.114Z"
+            date = "$year-$monthString-${dayString}T00:00:00Z"
         )
     }
 }
