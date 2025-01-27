@@ -34,7 +34,7 @@ data class MedicationCardUiModel(
     val isExpanded: Boolean,
     val statusIconResId: Int?,
     val statusColor: MedicationColor,
-    val dosageInformation: DosageInformationUiModel?,
+    val dosageInformation: DosageInformationUiModel,
 )
 
 /**

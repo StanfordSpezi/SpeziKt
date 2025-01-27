@@ -130,17 +130,15 @@ fun MedicationCard(
                         }
                     }
                 }
-                if (model.dosageInformation != null) {
-                    HorizontalDivider(
-                        modifier = Modifier.padding(
-                            top = Spacings.small,
-                            bottom = Spacings.small
-                        )
+                HorizontalDivider(
+                    modifier = Modifier.padding(
+                        top = Spacings.small,
+                        bottom = Spacings.small
                     )
-                    DosageInformation(dosageInformationUiModel = model.dosageInformation)
-                    VerticalSpacer()
-                    MedicationProgressBar(progress = model.dosageInformation.progress)
-                }
+                )
+                DosageInformation(dosageInformationUiModel = model.dosageInformation)
+                VerticalSpacer()
+                MedicationProgressBar(progress = model.dosageInformation.progress)
             }
         }
     }
