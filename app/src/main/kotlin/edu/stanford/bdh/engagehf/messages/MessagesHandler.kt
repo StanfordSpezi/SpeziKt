@@ -24,6 +24,10 @@ class MessagesHandler @Inject constructor(
 
     fun observeUserMessages() = messageRepository.observeUserMessages()
 
+    suspend fun dismiss(message: Message) {
+        messageRepository.dismissMessage(message.id)
+    }
+
     suspend fun handle(message: Message) {
         handle(
             messageId = message.id,
@@ -32,20 +36,19 @@ class MessagesHandler @Inject constructor(
         )
     }
 
-    suspend fun handle(messageId: String, isDismissible: Boolean, action: MessageAction) {
+    suspend fun handle(messageId: String, isDismissible: Boolean, action: MessageAction?) {
         val failure = runCatching {
             when (action) {
-                is MessageAction.UnknownAction -> Unit
+                null -> Unit
 
                 is MessageAction.HealthSummaryAction -> {
                     healthSummaryService.generateHealthSummaryPdf().getOrThrow()
                 }
 
                 is MessageAction.VideoAction -> {
-                    val sectionVideo = action.video
                     engageEducationRepository.getVideoBySectionAndVideoId(
-                        sectionId = sectionVideo.sectionId,
-                        videoId = sectionVideo.videoId,
+                        sectionId = action.sectionId,
+                        videoId = action.videoId,
                     ).onSuccess { video ->
                         navigator.navigateTo(EducationNavigationEvent.VideoSectionClicked(video))
                     }.getOrThrow()

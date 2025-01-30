@@ -23,6 +23,7 @@ data class UiState(
 
 data class MessageUiModel(
     val message: Message,
+    val isDismissing: Boolean = false,
     val isExpanded: Boolean = false,
     val isLoading: Boolean = false,
 ) {
@@ -35,7 +36,7 @@ data class MessageUiModel(
             is MessageAction.MeasurementsAction -> R.drawable.ic_vital_signs
             is MessageAction.QuestionnaireAction -> R.drawable.ic_assignment
             is MessageAction.VideoAction -> R.drawable.ic_visibility
-            is MessageAction.UnknownAction -> R.drawable.ic_assignment
             is MessageAction.HealthSummaryAction -> R.drawable.ic_vital_signs
+            null -> R.drawable.ic_assignment
         }
 }

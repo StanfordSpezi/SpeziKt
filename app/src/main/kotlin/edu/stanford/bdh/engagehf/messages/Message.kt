@@ -10,6 +10,6 @@ data class Message(
     val completionDate: ZonedDateTime? = null,
     val title: String,
     val description: String? = null,
-    val action: MessageAction,
+    val action: MessageAction?,
     val isDismissible: Boolean = true,
 )

@@ -28,7 +28,7 @@ class FirestoreMessageMapper @Inject constructor(
             completionDate = completionDate?.toZonedDateTime(),
             title = title,
             description = description,
-            action = messageActionMapper.map(action).getOrNull() ?: MessageAction.UnknownAction,
+            action = messageActionMapper.map(action),
             isDismissible = isDismissible,
         )
     }

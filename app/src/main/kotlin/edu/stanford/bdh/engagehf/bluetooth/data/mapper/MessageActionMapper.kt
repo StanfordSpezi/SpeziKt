@@ -1,7 +1,6 @@
 package edu.stanford.bdh.engagehf.bluetooth.data.mapper
 
 import edu.stanford.bdh.engagehf.messages.MessageAction
-import edu.stanford.bdh.engagehf.messages.Video
 import javax.inject.Inject
 
 class MessageActionMapper @Inject constructor() {
@@ -11,10 +10,10 @@ class MessageActionMapper @Inject constructor() {
         private val questionnaireRegex = Regex("/?questionnaires/(.+)")
     }
 
-    fun map(action: String?): Result<MessageAction> {
+    fun map(action: String?): MessageAction? {
         return runCatching {
             when {
-                action.isNullOrBlank() -> MessageAction.UnknownAction
+                action.isNullOrBlank() -> error("Empty action")
                 videoSectionRegex.matches(action) -> {
                     mapVideoAction(action).getOrThrow()
                 }
@@ -28,18 +27,16 @@ class MessageActionMapper @Inject constructor() {
                 action == "healthSummary" -> MessageAction.HealthSummaryAction
                 else -> error("Unknown action type")
             }
-        }
+        }.getOrNull()
     }
 
     fun mapVideoAction(action: String): Result<MessageAction.VideoAction> {
         return runCatching {
             val matchResult = videoSectionRegex.find(action)
-            val (videoSectionId, videoId) = matchResult!!.destructured
+            val (sectionId, videoId) = matchResult!!.destructured
             MessageAction.VideoAction(
-                Video(
-                    videoSectionId,
-                    videoId
-                )
+                sectionId = sectionId,
+                videoId = videoId
             )
         }
     }

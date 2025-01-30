@@ -151,6 +151,10 @@ class HomeViewModel @Inject internal constructor(
                 }
             }
 
+            is Action.MessageItemDismissed -> {
+                dismissMessage(model = action.message)
+            }
+
             is Action.MessageItemClicked -> {
                 handleMessage(model = action.message)
             }
@@ -195,6 +199,27 @@ class HomeViewModel @Inject internal constructor(
             context.startActivity(intent.apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) })
         }.onFailure {
             logger.e(it) { "Failed to launch intent ${intent.action}" }
+        }
+    }
+
+    private fun dismissMessage(model: MessageUiModel) {
+        val setDismissing = { dismissing: Boolean ->
+            _uiState.update {
+                it.copy(
+                    messages = it.messages.map { current ->
+                        if (current.message.id == model.message.id) {
+                            current.copy(isDismissing = dismissing)
+                        } else {
+                            current
+                        }
+                    }
+                )
+            }
+        }
+        viewModelScope.launch {
+            setDismissing(true)
+            messagesHandler.dismiss(message = model.message)
+            setDismissing(false)
         }
     }
 

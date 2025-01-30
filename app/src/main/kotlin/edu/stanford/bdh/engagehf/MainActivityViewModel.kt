@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MessageActionMapper
-import edu.stanford.bdh.engagehf.messages.MessageAction
 import edu.stanford.bdh.engagehf.messages.MessagesHandler
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.Routes
@@ -56,8 +55,7 @@ class MainActivityViewModel @Inject constructor(
                 messagesHandler.handle(
                     messageId = messageId,
                     isDismissible = firebaseMessage.isDismissible != false,
-                    action = messageActionMapper.map(firebaseMessage.action)
-                        .getOrElse { MessageAction.UnknownAction },
+                    action = messageActionMapper.map(firebaseMessage.action),
                 )
             }
         }

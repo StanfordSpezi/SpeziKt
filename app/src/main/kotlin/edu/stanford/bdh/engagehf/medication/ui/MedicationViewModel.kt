@@ -70,8 +70,8 @@ class MedicationViewModel @Inject internal constructor(
                     messageActionMapper.mapVideoAction(action.videoPath).let { result ->
                         result.onSuccess { mappedAction ->
                             engageEducationRepository.getVideoBySectionAndVideoId(
-                                mappedAction.video.sectionId,
-                                mappedAction.video.videoId
+                                mappedAction.sectionId,
+                                mappedAction.videoId
                             ).getOrNull()?.let { video ->
                                 navigator.navigateTo(
                                     EducationNavigationEvent.VideoSectionClicked(

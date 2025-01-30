@@ -23,12 +23,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MessageUiModel
+import edu.stanford.spezi.core.design.component.AsyncTextButton
 import edu.stanford.spezi.core.design.component.DefaultElevatedCard
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Colors.primary
@@ -72,6 +71,17 @@ fun MessageItem(
                     style = TextStyles.titleMedium,
                     color = Colors.onBackground,
                 )
+                Spacer(modifier = Modifier.weight(1f))
+                if (model.message.isDismissible) {
+                    AsyncTextButton(
+                        onClick = {
+                            onAction(Action.MessageItemDismissed(model))
+                        },
+                        isLoading = model.isDismissing,
+                    ) {
+                        Text("x")
+                    }
+                }
             }
             model.message.description?.let {
                 Row(
@@ -125,7 +135,7 @@ fun MessageItem(
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                if (model.message.action != null || model.message.isDismissible) {
+                model.message.action?.let { action ->
                     Button(
                         modifier = Modifier.testIdentifier(MessageItemTestIdentifiers.ACTION_BUTTON),
                         colors = ButtonDefaults.buttonColors(containerColor = primary),
@@ -134,7 +144,7 @@ fun MessageItem(
                         },
                     ) {
                         Text(
-                            text = stringResource(R.string.message_item_button_action_text),
+                            text = action.description.text(),
                             color = Colors.onPrimary,
                         )
                     }
