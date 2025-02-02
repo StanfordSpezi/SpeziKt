@@ -30,7 +30,7 @@ fun MedicationList(
     LazyColumn(modifier = modifier) {
         item {
             SectionHeader(
-                title = stringResource(R.string.medication_you_are_taking),
+                title = stringResource(R.string.current_medications),
                 onToggleExpand = {
                     onAction(MedicationViewModel.Action.ToggleSectionExpand(MedicationViewModel.Section.MEDICATIONS_TAKING))
                 },

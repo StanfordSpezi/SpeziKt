@@ -2,9 +2,9 @@ package edu.stanford.bdh.engagehf.messages
 
 import android.content.Context
 import android.content.Intent
-import android.os.Environment
 import androidx.core.content.FileProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.utils.MessageNotifier
@@ -31,21 +31,25 @@ class HealthSummaryService @Inject constructor(
                     "${context.packageName}.provider",
                     savePdfToFile
                 )
-                Intent(Intent.ACTION_VIEW).run {
+                val pdfIntent = Intent(Intent.ACTION_VIEW).apply {
                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     setDataAndType(pdfUri, MIME_TYPE_PDF)
-                    context.startActivity(this)
+                }
+                if (pdfIntent.resolveActivity(context.packageManager) == null) {
+                    messageNotifier.notify(messageId = R.string.no_pdf_reader_app_installed_error_message)
+                } else {
+                    context.startActivity(pdfIntent)
                 }
             }.onFailure {
-                messageNotifier.notify("Failed to generate Health Summary")
+                messageNotifier.notify(messageId = R.string.health_summary_generate_error_message)
             }
     }
 
     private fun savePdfToFile(pdfBytes: ByteArray): File {
         logger.i { "PDF size: ${pdfBytes.size}" }
-        val storageDir =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+
+        val storageDir = context.getExternalFilesDir(null) ?: context.filesDir
         if (!storageDir.exists()) {
             storageDir.mkdirs()
         }

@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.bdh.engagehf.bluetooth.BluetoothViewModel
+import edu.stanford.bdh.engagehf.bluetooth.HomeViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.OperationStatus
 import edu.stanford.bdh.engagehf.bluetooth.component.VitalDisplay
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
@@ -59,30 +59,25 @@ import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import java.time.ZonedDateTime
 
-private const val IDLE_DESCRIPTION_WEIGHT = 0.5f
-
 @Composable
-fun BluetoothScreen() {
-    val viewModel = hiltViewModel<BluetoothViewModel>()
+fun HomeScreen() {
+    val viewModel = hiltViewModel<HomeViewModel>()
     val uiState by viewModel.uiState.collectAsState()
-    BluetoothScreen(
+    HomeScreen(
         uiState = uiState,
         onAction = viewModel::onAction
     )
 }
 
 @Composable
-private fun BluetoothScreen(
+private fun HomeScreen(
     uiState: UiState,
     onAction: (Action) -> Unit,
 ) {
-    val state = uiState.bluetooth as? BluetoothUiState.Idle
-    state?.let {
-        PermissionRequester(
-            missingPermissions = it.missingPermissions,
-            onGranted = { onAction(Action.PermissionGranted(permission = it)) }
-        )
-    }
+    PermissionRequester(
+        missingPermissions = uiState.missingPermissions,
+        onResult = { _, permission -> onAction(Action.PermissionResult(permission = permission)) }
+    )
 
     LifecycleEvent { event ->
         if (event == Lifecycle.Event.ON_RESUME) {
@@ -92,7 +87,7 @@ private fun BluetoothScreen(
 
     LazyColumn(
         modifier = Modifier
-            .testIdentifier(BluetoothScreenTestIdentifier.ROOT)
+            .testIdentifier(HomeScreenTestIdentifier.ROOT)
             .fillMaxSize()
             .padding(Spacings.medium)
     ) {
@@ -106,7 +101,7 @@ private fun BluetoothScreen(
             Text(
                 text = stringResource(R.string.messages),
                 style = TextStyles.titleMedium,
-                modifier = Modifier.testIdentifier(BluetoothScreenTestIdentifier.MESSAGE_TITLE)
+                modifier = Modifier.testIdentifier(HomeScreenTestIdentifier.MESSAGE_TITLE)
             )
         }
         if (uiState.messages.isNotEmpty()) {
@@ -131,7 +126,7 @@ private fun BluetoothScreen(
             Text(
                 text = stringResource(R.string.vitals),
                 style = TextStyles.titleMedium,
-                modifier = Modifier.testIdentifier(BluetoothScreenTestIdentifier.VITAL_TITLE)
+                modifier = Modifier.testIdentifier(HomeScreenTestIdentifier.VITAL_TITLE)
             )
             Row(
                 horizontalArrangement = Arrangement.spacedBy(Spacings.medium),
@@ -144,7 +139,7 @@ private fun BluetoothScreen(
                         .weight(1f)
                         .clickable { onAction(Action.VitalsCardClicked) }
                         .testIdentifier(
-                            identifier = BluetoothScreenTestIdentifier.VITALS,
+                            identifier = HomeScreenTestIdentifier.VITALS,
                             suffix = uiState.weight.title
                         ),
                     vitalDisplayUiState = uiState.weight
@@ -154,7 +149,7 @@ private fun BluetoothScreen(
                         .weight(1f)
                         .clickable { onAction(Action.VitalsCardClicked) }
                         .testIdentifier(
-                            identifier = BluetoothScreenTestIdentifier.VITALS,
+                            identifier = HomeScreenTestIdentifier.VITALS,
                             suffix = uiState.heartRate.title
                         ),
                     vitalDisplayUiState = uiState.heartRate
@@ -165,7 +160,7 @@ private fun BluetoothScreen(
                     .padding(vertical = Spacings.medium)
                     .clickable { onAction(Action.VitalsCardClicked) }
                     .testIdentifier(
-                        identifier = BluetoothScreenTestIdentifier.VITALS,
+                        identifier = HomeScreenTestIdentifier.VITALS,
                         suffix = uiState.bloodPressure.title
                     ),
                 vitalDisplayUiState = uiState.bloodPressure
@@ -199,23 +194,26 @@ private fun BluetoothHeaderSection(
     when (bluetoothUiState) {
         is BluetoothUiState.Idle -> {
             DefaultElevatedCard(modifier = Modifier.fillMaxWidth()) {
-                Row(
+                Column(
                     modifier = Modifier
                         .padding(Spacings.small)
                         .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     SecondaryText(
                         modifier = Modifier
-                            .padding(Spacings.small)
-                            .weight(IDLE_DESCRIPTION_WEIGHT),
+                            .padding(Spacings.small),
                         text = stringResource(id = bluetoothUiState.description),
                     )
                     bluetoothUiState.settingsAction?.let {
-                        AsyncTextButton(
-                            text = stringResource(id = R.string.home_settings_action),
-                            onClick = { onAction(it) },
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            AsyncTextButton(
+                                text = stringResource(id = R.string.home_settings_action),
+                                onClick = { onAction(it) }
+                            )
+                        }
                     }
                 }
             }
@@ -273,7 +271,7 @@ fun DeviceComposable(device: DeviceUiModel) {
     }
 }
 
-enum class BluetoothScreenTestIdentifier {
+enum class HomeScreenTestIdentifier {
     ROOT,
     MESSAGE_TITLE,
     VITAL_TITLE,
@@ -283,17 +281,17 @@ enum class BluetoothScreenTestIdentifier {
 @ThemePreviews
 @Composable
 @Suppress("UnusedPrivateMember")
-private fun BluetoothScreenPreview(@PreviewParameter(BluetoothScreenPreviewProvider::class) uiState: UiState) {
+private fun HomeScreenPreview(@PreviewParameter(HomeScreenPreviewProvider::class) uiState: UiState) {
     val mockOnAction: (Action) -> Unit = {}
     SpeziTheme {
-        BluetoothScreen(
+        HomeScreen(
             uiState = uiState,
             onAction = mockOnAction
         )
     }
 }
 
-private class BluetoothScreenPreviewProvider : PreviewParameterProvider<UiState> {
+private class HomeScreenPreviewProvider : PreviewParameterProvider<UiState> {
     private val defaultUiState = createUiState()
     override val values: Sequence<UiState>
         get() = sequenceOf(

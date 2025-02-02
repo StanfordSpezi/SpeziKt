@@ -13,7 +13,6 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceState
 import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
-import edu.stanford.bdh.engagehf.messages.MessagesAction
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.utils.LocaleProvider
 import java.time.Instant
@@ -24,13 +23,16 @@ import javax.inject.Inject
 
 class BluetoothUiStateMapper @Inject constructor(
     private val localeProvider: LocaleProvider,
-    private val messageActionMapper: MessageActionMapper,
 ) {
 
     private val dateFormatter by lazy {
         DateTimeFormatter.ofPattern(
             "dd.MM.yyyy, HH:mm", localeProvider.getDefaultLocale()
         )
+    }
+
+    private val systemDefaultDateFormatter by lazy {
+        dateFormatter.withZone(ZoneId.systemDefault())
     }
 
     fun mapBleServiceState(state: EngageBLEServiceState): BluetoothUiState {
@@ -49,7 +51,6 @@ class BluetoothUiStateMapper @Inject constructor(
             is EngageBLEServiceState.MissingPermissions -> {
                 BluetoothUiState.Idle(
                     description = R.string.bluetooth_permissions_not_granted_description,
-                    missingPermissions = state.permissions,
                     settingsAction = Action.Settings.AppSettings,
                 )
             }
@@ -81,7 +82,7 @@ class BluetoothUiStateMapper @Inject constructor(
                         name = it.device.name,
                         summary = summary,
                         connected = it.device.connected,
-                        lastSeen = StringResource(R.string.last_seen_on, dateFormatter.format(time))
+                        lastSeen = StringResource(R.string.last_seen_on, systemDefaultDateFormatter.format(time))
                     )
                 }
                 val header = if (devices.isEmpty()) {
@@ -182,10 +183,6 @@ class BluetoothUiStateMapper @Inject constructor(
                 )
             }
         )
-    }
-
-    fun mapMessagesAction(action: String?): Result<MessagesAction?> {
-        return messageActionMapper.map(action)
     }
 
     private fun <T : Record> mapRecordResult(

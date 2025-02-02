@@ -9,6 +9,19 @@ class MessageActionMapperTest {
     private val mapper = MessageActionMapper()
 
     @Test
+    fun `it should return error result for null action`() {
+        // given
+        val action: String? = null
+
+        // when
+        val exception = mapper.map(action).exceptionOrNull()
+
+        // then
+        assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+        assertThat(exception?.message).isEqualTo("Invalid action type")
+    }
+
+    @Test
     fun `it should map video section action correctly`() {
         // given
         val sectionId = "some-section-id-12-34."

@@ -1,10 +1,8 @@
 package edu.stanford.bdh.engagehf.health.symptoms
 
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
-import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
@@ -133,8 +131,7 @@ class SymptomsViewModelTest {
         headerData = HeaderData(
             formattedDate = "",
             formattedValue = "",
-            selectedSymptomType = SymptomType.SYMPTOMS_FREQUENCY,
-            selectedSymptomTypeText = StringResource(R.string.symptom_type_overall),
+            selectedSymptomType = SymptomType.SPECIFIC,
         )
     )
 

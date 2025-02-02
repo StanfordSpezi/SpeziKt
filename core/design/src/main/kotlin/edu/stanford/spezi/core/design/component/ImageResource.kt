@@ -3,7 +3,6 @@ package edu.stanford.spezi.core.design.component
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.vector.ImageVector
 import edu.stanford.spezi.core.utils.UUID
-import java.util.UUID
 import javax.annotation.concurrent.Immutable
 
 /**

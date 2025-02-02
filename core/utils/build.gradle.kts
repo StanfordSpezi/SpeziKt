@@ -7,6 +7,10 @@ plugins {
 
 android {
     namespace = "edu.stanford.spezi.utils"
+
+    defaultConfig {
+        testInstrumentationRunner = "edu.stanford.spezi.core.utils.HiltApplicationTestRunner"
+    }
 }
 
 dependencies {
@@ -16,4 +20,5 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.bundles.unit.testing)
+    androidTestImplementation(libs.bundles.unit.testing)
 }
