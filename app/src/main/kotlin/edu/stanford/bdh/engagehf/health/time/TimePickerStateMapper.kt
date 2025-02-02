@@ -22,7 +22,7 @@ class TimePickerStateMapper @Inject constructor(
             selectedTime = localTime,
             initialHour = localTime.hour,
             initialMinute = localTime.minute,
-            selectedDateFormatted = format(now),
+            selectedDateFormatted = dateFormatter.formatDefaultZoneId(now, DATE_FORMAT),
             selectedTimeFormatted = format(localTime)
         )
     }
@@ -40,15 +40,18 @@ class TimePickerStateMapper @Inject constructor(
         timePickerState: TimePickerState,
     ) = timePickerState.copy(
         selectedDate = date,
-        selectedDateFormatted = format(date)
+        selectedDateFormatted = dateFormatter.formatUTC(date, DATE_FORMAT)
     )
 
     fun mapInstant(timePickerState: TimePickerState): Instant = with(timePickerState) {
-        val zoneId = ZoneId.of("UTC")
-        val date = selectedDate.atZone(zoneId).toLocalDate()
-        return LocalDateTime.of(date, selectedTime).atZone(zoneId).toInstant()
+        val date = selectedDate.atZone(UTC_ZONE_ID).toLocalDate()
+        return LocalDateTime.of(date, selectedTime).atZone(UTC_ZONE_ID).toInstant()
     }
 
     private fun format(time: LocalTime) = dateFormatter.format(time, DateFormat.HH_MM)
-    private fun format(date: Instant): String = dateFormatter.format(date, DateFormat.MM_DD_YYYY)
+
+    private companion object {
+        val UTC_ZONE_ID: ZoneId = ZoneId.of("UTC")
+        val DATE_FORMAT = DateFormat.MM_DD_YYYY
+    }
 }

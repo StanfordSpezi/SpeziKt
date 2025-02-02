@@ -24,9 +24,9 @@ class MedicationUiStateMapperTest {
     }
 
     @Test
-    fun `given medication details when mapMedicationUiState then return filtered success state`() {
+    fun `it should map medications taking and that may help correctly if current daily intake is greater zero`() {
         // given
-        val recommendations = getRecommendations()
+        val recommendations = getRecommendations(currentDailyIntake = 20.0)
 
         // when
         val result = medicationUiStateMapper.mapMedicationUiState(recommendations)
@@ -34,7 +34,21 @@ class MedicationUiStateMapperTest {
         // then
         assertThat(result).isInstanceOf(MedicationUiState.Success::class.java)
         assertThat((result as MedicationUiState.Success).medicationsTaking.medications).hasSize(1)
-        assertThat(result.medicationsTaking.medications[0].id).isEqualTo("1")
+        assertThat((result).medicationsThatMayHelp.medications).isEmpty()
+    }
+
+    @Test
+    fun `it should map medications taking and that may help correctly if current daily intake is zero`() {
+        // given
+        val recommendations = getRecommendations(currentDailyIntake = 0.0)
+
+        // when
+        val result = medicationUiStateMapper.mapMedicationUiState(recommendations)
+
+        // then
+        assertThat(result).isInstanceOf(MedicationUiState.Success::class.java)
+        assertThat((result as MedicationUiState.Success).medicationsTaking.medications).isEmpty()
+        assertThat((result).medicationsThatMayHelp.medications).hasSize(1)
     }
 
     @Test
@@ -109,20 +123,6 @@ class MedicationUiStateMapperTest {
     }
 
     @Test
-    fun `given recommendations with dosage information when mapMedicationUiState then return success state with dosage information`() {
-        // given
-        val recommendations = getRecommendationsWithDosage()
-
-        // when
-        val result = medicationUiStateMapper.mapMedicationUiState(recommendations)
-
-        // then
-        assertThat(result).isInstanceOf(MedicationUiState.Success::class.java)
-        assertThat((result as MedicationUiState.Success).medicationsTaking.medications).hasSize(1)
-        assertThat(result.medicationsTaking.medications[0].dosageInformation).isNotNull()
-    }
-
-    @Test
     fun `given SuccessState when toggleItemExpand then return updated SuccessState`() {
         // given
         val initialIsExpandedState = false
@@ -171,7 +171,7 @@ class MedicationUiStateMapperTest {
         isExpanded: Boolean = false,
         statusIconResId: Int? = null,
         statusColor: MedicationColor = MedicationColor.BLUE,
-        dosageInformation: DosageInformationUiModel? = null,
+        dosageInformation: DosageInformationUiModel = mockk(),
         videoPath: String = "",
     ) = MedicationCardUiModel(
         id = id,
@@ -185,28 +185,7 @@ class MedicationUiStateMapperTest {
         videoPath = videoPath
     )
 
-    private fun getRecommendations() = listOf(
-        MedicationRecommendation(
-            id = "2",
-            title = "Medication B",
-            subtitle = "Subtitle B",
-            description = "Description B",
-            type = MedicationRecommendationType.NOT_STARTED,
-            dosageInformation = null,
-            videoPath = null
-        ),
-        MedicationRecommendation(
-            id = "1",
-            title = "Medication A",
-            subtitle = "Subtitle A",
-            description = "Description A",
-            type = MedicationRecommendationType.TARGET_DOSE_REACHED, // higher priority than NOT_STARTED
-            dosageInformation = null,
-            videoPath = "/videoSections/1/videos/1"
-        )
-    )
-
-    private fun getRecommendationsWithDosage() = listOf(
+    private fun getRecommendations(currentDailyIntake: Double = 1.0) = listOf(
         MedicationRecommendation(
             id = "1",
             title = "Medication A",
@@ -218,7 +197,7 @@ class MedicationUiStateMapperTest {
                 currentSchedule = listOf(
                     DoseSchedule(
                         frequency = 2.0,
-                        quantity = listOf(20.0)
+                        quantity = listOf(currentDailyIntake)
                     )
                 ),
                 targetSchedule = listOf(

@@ -60,8 +60,6 @@ import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import java.time.ZonedDateTime
 
-private const val IDLE_DESCRIPTION_WEIGHT = 0.5f
-
 @Composable
 fun HomeScreen() {
     val viewModel = hiltViewModel<HomeViewModel>()
@@ -197,23 +195,26 @@ private fun BluetoothHeaderSection(
     when (bluetoothUiState) {
         is BluetoothUiState.Idle -> {
             DefaultElevatedCard(modifier = Modifier.fillMaxWidth()) {
-                Row(
+                Column(
                     modifier = Modifier
                         .padding(Spacings.small)
                         .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     SecondaryText(
                         modifier = Modifier
-                            .padding(Spacings.small)
-                            .weight(IDLE_DESCRIPTION_WEIGHT),
+                            .padding(Spacings.small),
                         text = stringResource(id = bluetoothUiState.description),
                     )
                     bluetoothUiState.settingsAction?.let {
-                        AsyncTextButton(
-                            text = stringResource(id = R.string.home_settings_action),
-                            onClick = { onAction(it) },
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            AsyncTextButton(
+                                text = stringResource(id = R.string.home_settings_action),
+                                onClick = { onAction(it) }
+                            )
+                        }
                     }
                 }
             }

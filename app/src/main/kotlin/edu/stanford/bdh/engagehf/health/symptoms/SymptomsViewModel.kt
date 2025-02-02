@@ -9,7 +9,6 @@ import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.TableEntryData
-import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -114,11 +113,10 @@ data class SymptomsUiData(
     val chartData: List<AggregatedHealthData>,
     val tableData: List<TableEntryData> = emptyList(),
     val headerData: HeaderData,
-    val valueFormatter: (Double) -> String = { "" },
+    val xValueFormatter: (Double) -> String = { "" },
 )
 
 data class HeaderData(
-    val selectedSymptomTypeText: StringResource,
     val formattedValue: String,
     val formattedDate: String,
     val selectedSymptomType: SymptomType,
@@ -146,5 +144,5 @@ data class SymptomScore(
 }
 
 enum class SymptomType {
-    OVERALL, PHYSICAL_LIMITS, SOCIAL_LIMITS, QUALITY_OF_LIFE, SYMPTOMS_FREQUENCY, DIZZINESS
+    OVERALL, PHYSICAL_LIMITS, SOCIAL_LIMITS, QUALITY_OF_LIFE, SPECIFIC, DIZZINESS
 }

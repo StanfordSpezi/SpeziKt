@@ -4,7 +4,6 @@ import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MessageActionMapper
 import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendation
-import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendationType
 import edu.stanford.bdh.engagehf.medication.data.MedicationRepository
 import edu.stanford.bdh.engagehf.messages.MessageAction
 import edu.stanford.spezi.core.navigation.Navigator
@@ -29,7 +28,7 @@ class MedicationViewModelTest {
 
     private val medicationRepository: MedicationRepository = mockk()
     private val medicationUiStateMapper: MedicationUiStateMapper = mockk()
-    private val recommendations = getMedicationRecommendations()
+    private val recommendations: List<MedicationRecommendation> = mockk()
     private val uiModels: List<MedicationCardUiModel> = mockk()
     private val navigator: Navigator = mockk(relaxed = true)
     private val engageEducationRepository: EngageEducationRepository = mockk()
@@ -166,25 +165,4 @@ class MedicationViewModelTest {
             // then
             verify { navigator.navigateTo(EducationNavigationEvent.VideoSectionClicked(actualVideo)) }
         }
-
-    private fun getMedicationRecommendations() = listOf(
-        MedicationRecommendation(
-            id = "1",
-            title = "Medication A",
-            subtitle = "Subtitle A",
-            description = "Description A",
-            type = MedicationRecommendationType.TARGET_DOSE_REACHED,
-            dosageInformation = null,
-            videoPath = null
-        ),
-        MedicationRecommendation(
-            id = "2",
-            title = "Medication B",
-            subtitle = "Subtitle B",
-            description = "Description B",
-            type = MedicationRecommendationType.NOT_STARTED,
-            dosageInformation = null,
-            videoPath = null
-        )
-    )
 }

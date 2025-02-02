@@ -28,7 +28,9 @@ class TimePickerStateMapperTest {
     fun setup() {
         every { timeProvider.nowInstant() } returns instant
         every { timeProvider.nowLocalTime() } returns time
-        every { dateFormatter.format(instant, DateFormat.MM_DD_YYYY) } returns formattedDate
+        every {
+            dateFormatter.formatDefaultZoneId(instant, DateFormat.MM_DD_YYYY)
+        } returns formattedDate
         every { dateFormatter.format(time, DateFormat.HH_MM) } returns formattedTime
     }
 
@@ -74,7 +76,7 @@ class TimePickerStateMapperTest {
         val state = mapper.mapNow()
         val newDate = Instant.now().plusSeconds(12)
         val formatted = "new-formatted-time"
-        every { dateFormatter.format(newDate, DateFormat.MM_DD_YYYY) } returns formatted
+        every { dateFormatter.formatUTC(newDate, DateFormat.MM_DD_YYYY) } returns formatted
 
         // when
         val result = mapper.mapDate(newDate, state)
