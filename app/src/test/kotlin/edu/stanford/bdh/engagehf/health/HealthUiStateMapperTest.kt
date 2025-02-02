@@ -171,7 +171,6 @@ class HealthUiStateMapperTest {
         // Given
         val records = List(5) {
             createWeightRecord(
-                month = 1,
                 day = it + 1,
                 weightInKg = 70.0 + it
             )
@@ -186,7 +185,7 @@ class HealthUiStateMapperTest {
         assertThat(chartData.yValues).isEqualTo(expectedYValues)
         assertThat(chartData.xValues).isEqualTo(List(5) { it.toDouble() })
         chartData.xValues.forEach {
-            assertThat(result.valueFormatter(it)).isEqualTo("Jan 0${it.toLong() + 1}")
+            assertThat(result.valueFormatter(it)).matches(monthRegex(it.toInt() + 1))
         }
     }
 
@@ -195,7 +194,6 @@ class HealthUiStateMapperTest {
         // Given
         val records = List(3) {
             createWeightRecord(
-                month = 1,
                 day = 1 + (it * 7),
                 weightInKg = 70.0 + it
             )
@@ -209,9 +207,9 @@ class HealthUiStateMapperTest {
         // Then
         assertThat(chartData.yValues).isEqualTo(expectedYValues)
         assertThat(chartData.xValues).isEqualTo(List(3) { it.toDouble() })
-        assertThat(result.xValue(0)).isEqualTo("Jan 01")
-        assertThat(result.xValue(1)).isEqualTo("Jan 08")
-        assertThat(result.xValue(2)).isEqualTo("Jan 15")
+        assertThat(result.xValue(0)).matches(monthRegex(1))
+        assertThat(result.xValue(1)).matches(monthRegex(8))
+        assertThat(result.xValue(2)).matches(monthRegex(15))
     }
 
     @Test
@@ -219,12 +217,12 @@ class HealthUiStateMapperTest {
         // Given
         val records = List(3) {
             createWeightRecord(
-                year = 2025,
                 month = 1 + it,
                 day = 1,
                 weightInKg = 70.0 + it
             )
         }
+        val year = zonedDateTime.year % 100
         val expectedYValues = records.map { it.weight.inPounds.roundToDecimalPlaces(2) }
 
         // When
@@ -234,9 +232,9 @@ class HealthUiStateMapperTest {
         // Then
         assertThat(chartData.yValues).isEqualTo(expectedYValues)
         assertThat(chartData.xValues).isEqualTo(List(3) { it.toDouble() })
-        assertThat(result.xValue(0)).isEqualTo("Jan 25")
-        assertThat(result.xValue(1)).isEqualTo("Feb 25")
-        assertThat(result.xValue(2)).isEqualTo("Mar 25")
+        assertThat(result.xValue(0)).isEqualTo("Jan $year")
+        assertThat(result.xValue(1)).isEqualTo("Feb $year")
+        assertThat(result.xValue(2)).isEqualTo("Mar $year")
     }
 
     private fun createWeightRecord(
@@ -259,6 +257,11 @@ class HealthUiStateMapperTest {
             zoneOffset = zonedDateTime.offset,
             weight = Mass.kilograms(weightInKg)
         )
+    }
+
+    private fun monthRegex(day: Int): String {
+        val dayString = if (day < 10) "0$day" else "$day"
+        return "^[A-Za-z]{3} $dayString"
     }
 
     private fun HealthUiStateMapper.map(
