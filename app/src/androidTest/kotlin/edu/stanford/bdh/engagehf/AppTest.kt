@@ -43,7 +43,7 @@ class AppTest {
     @Test
     fun `test app screen top app bar title is displayed`() {
         appScreen {
-            assertTopAppBarTitleIsDisplayed(composeTestRule.activity.getString(R.string.engage_hf))
+            assertTopAppBarTitleIsDisplayed(composeTestRule.activity.getString(R.string.app_name))
         }
     }
 

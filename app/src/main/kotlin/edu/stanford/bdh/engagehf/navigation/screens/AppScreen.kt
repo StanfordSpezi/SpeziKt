@@ -132,7 +132,7 @@ fun BottomSheetScaffoldContent(
                             val titleId = if (content is AppContent.Content) {
                                 content.selectedItem.label
                             } else {
-                                R.string.engage_hf
+                                R.string.app_name
                             }
 
                             Text(
@@ -224,7 +224,7 @@ private fun StudyConcludedScreen() {
                 .size(Sizes.Content.extraLarge)
                 .clip(RoundedCornerShape(Sizes.RoundedCorner.extraLarge)),
             painter = painterResource(R.drawable.ic_engage_hf),
-            contentDescription = stringResource(R.string.engage_hf)
+            contentDescription = stringResource(R.string.app_name)
         )
 
         Text(

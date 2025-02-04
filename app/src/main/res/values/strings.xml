@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">ENGAGEHF</string>
-    <string name="engage_hf">ENGAGE-HF</string>
+    <string name="app_name">ENGAGE-HF</string>
     <string name="home">Home</string>
     <string name="heart_health">Heart Health</string>
     <string name="medication">Medication</string>
