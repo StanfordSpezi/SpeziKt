@@ -1,7 +1,7 @@
 {
   "project_info": {
     "project_number": "PROJECT_NUMBER",
-    "project_id": "stanfordbdhengagehf",
+    "project_id": "stanford-bdhg-engage-hf",
     "storage_bucket": "STORAGE_BUCKET"
   },
   "client": [
