@@ -55,23 +55,21 @@ class MessageRepository @Inject constructor(
         }
     }
 
-    fun dismissMessage(messageId: String) {
-        ioScope.launch {
-            runCatching {
-                val uid = userSessionManager.getUserUid()
-                    ?: throw IllegalStateException("User not authenticated")
-                val params = mapOf(
-                    "userId" to uid,
-                    "messageId" to messageId,
-                )
-                firebaseFunctions.getHttpsCallable("dismissMessage")
-                    .call(params)
-                    .await()
+    suspend fun dismissMessage(messageId: String) {
+        runCatching {
+            val uid = userSessionManager.getUserUid()
+                ?: throw IllegalStateException("User not authenticated")
+            val params = mapOf(
+                "userId" to uid,
+                "messageId" to messageId,
+            )
+            firebaseFunctions.getHttpsCallable("dismissMessage")
+                .call(params)
+                .await()
 
-                logger.i { "Message completion for $messageId finished successfully" }
-            }.onFailure {
-                logger.e(it) { "Error while completing message with id $messageId" }
-            }
+            logger.i { "Message completion for $messageId finished successfully" }
+        }.onFailure {
+            logger.e(it) { "Error while completing message with id $messageId" }
         }
     }
 }
