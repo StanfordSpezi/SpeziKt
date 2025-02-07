@@ -333,6 +333,19 @@ class HomeViewModelTest {
     }
 
     @Test
+    fun `it should handle message dismiss action correctly`() {
+        // given
+        val isExpanded = false
+        createViewModel()
+
+        // when
+        viewModel.onAction(Action.MessageItemDismissed(messageId))
+
+        // then
+        coVerify { messagesHandler.dismiss(messageId) }
+    }
+
+    @Test
     fun `it should handle permission result action correctly`() = runTestUnconfined {
         // given
         val permissions = listOf("permission1")
