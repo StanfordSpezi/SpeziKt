@@ -83,12 +83,10 @@ fun AppScreen(
     LaunchedEffect(key1 = uiState.content) {
         launch {
             val content = uiState.content
-            if (content is AppContent.Content) {
-                if (content.bottomSheetContent != null) {
-                    bottomSheetState.expand()
-                } else {
-                    bottomSheetState.hide()
-                }
+            if ((content as? AppContent.Content)?.bottomSheetContent != null) {
+                bottomSheetState.expand()
+            } else {
+                bottomSheetState.hide()
             }
         }
     }
