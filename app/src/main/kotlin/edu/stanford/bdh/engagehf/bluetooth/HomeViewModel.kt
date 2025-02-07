@@ -241,7 +241,6 @@ class HomeViewModel @Inject internal constructor(
         }
         viewModelScope.launch {
             setLoading(true)
-            _uiState
             messagesHandler.handle(messageId = id, isDismissible = model.isDismissible, action = model.action)
             setLoading(false)
         }
