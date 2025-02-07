@@ -10,7 +10,6 @@ import edu.stanford.bdh.engagehf.bluetooth.data.mapper.BluetoothUiStateMapper
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
-import edu.stanford.bdh.engagehf.bluetooth.data.models.MessageUiModel
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
 import edu.stanford.bdh.engagehf.bluetooth.measurements.MeasurementsRepository
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEService
@@ -52,9 +51,13 @@ class HomeViewModelTest {
     private val readyUiState: BluetoothUiState.Ready = mockk()
     private val appScreenEvents = mockk<AppScreenEvents>(relaxed = true)
     private val messageId = "some-id"
-    private val message: Message = mockk {
-        every { id } returns messageId
-    }
+    private val message = Message(
+        id = messageId,
+        dueDate = ZonedDateTime.now(),
+        description = "",
+        title = "",
+        action = null,
+    )
 
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
@@ -77,6 +80,7 @@ class HomeViewModelTest {
             every { mapMeasurementDialog(any()) } returns mockk()
         }
         every { context.packageName } returns "some-package"
+        every { messagesHandler.observeUserMessages() } returns flowOf(listOf(message))
     }
 
     @Test
@@ -227,7 +231,7 @@ class HomeViewModelTest {
     @Test
     fun `it should handle message updates correctly`() {
         // given
-        val messages = List(10) { mockk<Message>() }
+        val messages = List(10) { message.copy(id = "id-$it") }
         every { messagesHandler.observeUserMessages() } returns flowOf(messages)
 
         // when
@@ -284,11 +288,7 @@ class HomeViewModelTest {
     @Test
     fun `it should invoke messages handler on message item clicked`() {
         // given
-        val message: MessageUiModel = mockk()
-        every { message.id } returns "1"
-        every { message.isDismissible } returns false
-        every { message.action } returns null
-        val action = Action.MessageItemClicked(message = message)
+        val action = Action.MessageItemClicked(id = messageId)
         createViewModel()
 
         // when
@@ -321,35 +321,10 @@ class HomeViewModelTest {
     fun `it should handle toggle expand action correctly`() {
         // given
         val isExpanded = false
-        val message = Message(
-            id = messageId,
-            dueDate = ZonedDateTime.now(),
-            description = "",
-            title = "",
-            action = null,
-        )
-        val model = MessageUiModel(
-            id = messageId,
-            description = "",
-            title = "",
-            action = null,
-            isDismissible = false,
-            isDismissing = false,
-            isLoading = false,
-            isExpanded = false,
-        )
-        every { this@HomeViewModelTest.message.id } returns "new-id"
-
-        every { messagesHandler.observeUserMessages() } returns flowOf(
-            listOf(
-                message,
-                this.message
-            )
-        )
         createViewModel()
 
         // when
-        viewModel.onAction(Action.ToggleExpand(model))
+        viewModel.onAction(Action.ToggleExpand(messageId))
 
         // then
         assertThat(

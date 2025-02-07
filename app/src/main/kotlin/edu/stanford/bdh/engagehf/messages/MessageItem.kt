@@ -84,7 +84,7 @@ fun MessageItem(
                         contentColor = iconButtonColors.contentColor,
                         contentPadding = PaddingValues(Spacings.extraSmall),
                         onClick = {
-                            onAction(Action.MessageItemDismissed(model))
+                            onAction(Action.MessageItemDismissed(model.id))
                         },
                         isLoading = model.isDismissing,
                         modifier = Modifier.size(Sizes.Icon.small),
@@ -124,7 +124,7 @@ fun MessageItem(
                     IconButton(
                         modifier = Modifier.width(Sizes.Icon.small),
                         onClick = {
-                            onAction(Action.ToggleExpand(model))
+                            onAction(Action.ToggleExpand(model.id))
                         }) {
                         Icon(
                             imageVector = if (model.isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
@@ -146,7 +146,7 @@ fun MessageItem(
                         modifier = Modifier.testIdentifier(MessageItemTestIdentifiers.ACTION_BUTTON),
                         colors = ButtonDefaults.buttonColors(containerColor = primary),
                         onClick = {
-                            onAction(Action.MessageItemClicked(model))
+                            onAction(Action.MessageItemClicked(model.id))
                         },
                     ) {
                         Text(

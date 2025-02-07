@@ -153,11 +153,11 @@ class HomeViewModel @Inject internal constructor(
             }
 
             is Action.MessageItemDismissed -> {
-                dismissMessage(model = action.message)
+                dismissMessage(id = action.id)
             }
 
             is Action.MessageItemClicked -> {
-                handleMessage(model = action.message)
+                handleMessage(id = action.id)
             }
 
             is Action.ToggleExpand -> {
@@ -203,12 +203,12 @@ class HomeViewModel @Inject internal constructor(
         }
     }
 
-    private fun dismissMessage(model: MessageUiModel) {
+    private fun dismissMessage(id: String) {
         val setDismissing = { dismissing: Boolean ->
             _uiState.update {
                 it.copy(
                     messages = it.messages.map { current ->
-                        if (current.id == model.id) {
+                        if (current.id == id) {
                             current.copy(isDismissing = dismissing)
                         } else {
                             current
@@ -219,17 +219,18 @@ class HomeViewModel @Inject internal constructor(
         }
         viewModelScope.launch {
             setDismissing(true)
-            messagesHandler.dismiss(messageId = model.id)
+            messagesHandler.dismiss(messageId = id)
             setDismissing(false)
         }
     }
 
-    private fun handleMessage(model: MessageUiModel) {
+    private fun handleMessage(id: String) {
+        val model = _uiState.value.messages.find { it.id == id } ?: return
         val setLoading = { loading: Boolean ->
             _uiState.update {
                 it.copy(
                     messages = it.messages.map { current ->
-                        if (current.id == model.id) {
+                        if (current.id == id) {
                             current.copy(isLoading = loading)
                         } else {
                             current
@@ -240,7 +241,8 @@ class HomeViewModel @Inject internal constructor(
         }
         viewModelScope.launch {
             setLoading(true)
-            messagesHandler.handle(messageId = model.id, isDismissible = model.isDismissible, action = model.action)
+            _uiState
+            messagesHandler.handle(messageId = id, isDismissible = model.isDismissible, action = model.action)
             setLoading(false)
         }
     }
@@ -254,7 +256,7 @@ class HomeViewModel @Inject internal constructor(
         _uiState.update {
             it.copy(
                 messages = it.messages.map { model ->
-                    if (model.id == action.message.id) {
+                    if (model.id == action.id) {
                         model.copy(isExpanded = !model.isExpanded)
                     } else {
                         model
