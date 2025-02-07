@@ -14,6 +14,8 @@ import edu.stanford.spezi.core.notification.NotificationNavigationEvent
 import edu.stanford.spezi.module.account.manager.UserSessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,39 +28,55 @@ class AppScreenViewModel @Inject constructor(
     private val healthSummaryService: HealthSummaryService,
     private val navigator: Navigator,
 ) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(
-        AppUiState(
-            items = BottomBarItem.entries,
-            selectedItem = BottomBarItem.HOME
-        )
-    )
+    private val _uiState = MutableStateFlow(AppUiState(content = AppContent.Loading))
 
     val uiState = _uiState.asStateFlow()
 
     init {
-        setup()
+        observeUser()
+        observeAppScreenEvents()
     }
 
-    private fun setup() {
-        viewModelScope.launch {
-            _uiState.update { uiState ->
-                val userInfo = userSessionManager.getUserInfo()
-                uiState.copy(
-                    accountUiState = uiState.accountUiState.copy(
-                        email = userInfo.email,
-                        name = userInfo.name,
-                        initials = userInfo.name?.split(" ")
-                            ?.mapNotNull { it.firstOrNull()?.toString() }?.joinToString(""),
-                    )
+    private fun observeUser() {
+        _uiState.update { uiState ->
+            val userInfo = userSessionManager.getUserInfo()
+            uiState.copy(
+                accountUiState = uiState.accountUiState.copy(
+                    email = userInfo.email,
+                    name = userInfo.name,
+                    initials = userInfo.name?.split(" ")
+                        ?.mapNotNull { it.firstOrNull()?.toString() }?.joinToString(""),
                 )
-            }
+            )
+        }
 
+        viewModelScope.launch {
+            userSessionManager
+                .observeRegisteredUser()
+                .map { it.disabled }
+                .distinctUntilChanged()
+                .collect { disabled ->
+                    _uiState.update { currentState ->
+                        if (disabled) {
+                            currentState.copy(content = AppContent.StudyConcluded)
+                        } else {
+                            currentState.copy(
+                                content = AppContent.Content(
+                                    items = BottomBarItem.entries,
+                                    selectedItem = BottomBarItem.HOME
+                                )
+                            )
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun observeAppScreenEvents() {
+        viewModelScope.launch {
             appScreenEvents.events.collect { event ->
                 if (event is AppScreenEvents.Event.NavigateToTab) {
-                    _uiState.update {
-                        it.copy(selectedItem = event.bottomBarItem)
-                    }
+                    updateContent { it.copy(selectedItem = event.bottomBarItem) }
                 } else {
                     val bottomSheetContent = when (event) {
                         AppScreenEvents.Event.NewMeasurementAction -> {
@@ -104,9 +122,7 @@ class AppScreenViewModel @Inject constructor(
 
                         else -> null
                     }
-                    _uiState.update {
-                        it.copy(bottomSheetContent = bottomSheetContent)
-                    }
+                    updateContent { it.copy(bottomSheetContent = bottomSheetContent) }
                 }
             }
         }
@@ -115,7 +131,7 @@ class AppScreenViewModel @Inject constructor(
     fun onAction(action: Action) {
         when (action) {
             is Action.UpdateSelectedBottomBarItem -> {
-                _uiState.update { it.copy(selectedItem = action.selectedBottomBarItem) }
+                updateContent { it.copy(selectedItem = action.selectedBottomBarItem) }
             }
 
             is Action.ShowAccountDialog -> {
@@ -163,14 +179,33 @@ class AppScreenViewModel @Inject constructor(
             }
         }
     }
+
+    private fun updateContent(block: (AppContent.Content) -> AppContent) {
+        _uiState.update { currentState ->
+            val content = currentState.content
+            if (content is AppContent.Content) {
+                currentState.copy(content = block(content))
+            } else {
+                currentState
+            }
+        }
+    }
 }
 
 data class AppUiState(
-    val items: List<BottomBarItem>,
-    val selectedItem: BottomBarItem,
-    val bottomSheetContent: BottomSheetContent? = null,
+    val content: AppContent = AppContent.Loading,
     val accountUiState: AccountUiState = AccountUiState(),
 )
+
+sealed interface AppContent {
+    data object Loading : AppContent
+    data object StudyConcluded : AppContent
+    data class Content(
+        val items: List<BottomBarItem>,
+        val selectedItem: BottomBarItem,
+        val bottomSheetContent: BottomSheetContent? = null,
+    ) : AppContent
+}
 
 data class AccountUiState(
     val showDialog: Boolean = false,

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ENGAGEHF</string>
+    <string name="app_name">ENGAGE-HF</string>
     <string name="home">Home</string>
     <string name="heart_health">Heart Health</string>
     <string name="medication">Medication</string>
@@ -131,4 +131,6 @@
     <string name="error_while_handling_message_action">Error while handling message action.</string>
     <string name="no_pdf_reader_app_installed_error_message">Health Summary generated successfully, but no PDF reader is installed on the device</string>
     <string name="health_summary_generate_error_message">Failed to generate Health Summary</string>
+    <string name="study_concluded_title">Thank you for participating in the ENGAGE-HF Study!</string>
+    <string name="study_concluded_description">Your account was deactivated by your study conductor!</string>
 </resources>
