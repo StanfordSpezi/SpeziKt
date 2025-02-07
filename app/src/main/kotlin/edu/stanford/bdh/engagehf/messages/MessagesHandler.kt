@@ -24,16 +24,8 @@ class MessagesHandler @Inject constructor(
 
     fun observeUserMessages() = messageRepository.observeUserMessages()
 
-    suspend fun dismiss(message: Message) {
-        messageRepository.dismissMessage(message.id)
-    }
-
-    suspend fun handle(message: Message) {
-        handle(
-            messageId = message.id,
-            isDismissible = message.isDismissible,
-            action = message.action
-        )
+    suspend fun dismiss(messageId: String) {
+        messageRepository.dismissMessage(messageId)
     }
 
     suspend fun handle(messageId: String, isDismissible: Boolean, action: MessageAction?) {

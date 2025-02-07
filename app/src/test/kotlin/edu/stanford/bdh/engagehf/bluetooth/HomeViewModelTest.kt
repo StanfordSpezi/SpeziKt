@@ -18,7 +18,6 @@ import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceEvent
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceState
 import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
 import edu.stanford.bdh.engagehf.messages.Message
-import edu.stanford.bdh.engagehf.messages.MessageAction
 import edu.stanford.bdh.engagehf.messages.MessagesHandler
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
 import edu.stanford.spezi.core.notification.NotificationPermissions
@@ -235,7 +234,7 @@ class HomeViewModelTest {
         createViewModel()
 
         // then
-        assertThat(viewModel.uiState.value.messages.map { it.message }).isEqualTo(messages)
+        assertThat(viewModel.uiState.value.messages.map { it.id }).isEqualTo(messages.map { it.id })
     }
 
     @Test
@@ -285,15 +284,24 @@ class HomeViewModelTest {
     @Test
     fun `it should invoke messages handler on message item clicked`() {
         // given
-        val message: Message = mockk()
-        val action = Action.MessageItemClicked(message = MessageUiModel(message))
+        val message: MessageUiModel = mockk()
+        every { message.id } returns "1"
+        every { message.isDismissible } returns false
+        every { message.action } returns null
+        val action = Action.MessageItemClicked(message = message)
         createViewModel()
 
         // when
         viewModel.onAction(action = action)
 
         // then
-        coVerify { messagesHandler.handle(message) }
+        coVerify {
+            messagesHandler.handle(
+                messageId = message.id,
+                isDismissible = message.isDismissible,
+                action = message.action
+            )
+        }
     }
 
     @Test
@@ -318,11 +326,17 @@ class HomeViewModelTest {
             dueDate = ZonedDateTime.now(),
             description = "",
             title = "",
-            action = MessageAction.UnknownAction,
+            action = null,
         )
         val model = MessageUiModel(
-            message = message,
-            isExpanded = isExpanded
+            id = messageId,
+            description = "",
+            title = "",
+            action = null,
+            isDismissible = false,
+            isDismissing = false,
+            isLoading = false,
+            isExpanded = false,
         )
         every { this@HomeViewModelTest.message.id } returns "new-id"
 

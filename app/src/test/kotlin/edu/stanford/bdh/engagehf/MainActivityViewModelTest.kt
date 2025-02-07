@@ -130,7 +130,7 @@ class MainActivityViewModelTest {
         } returns firebaseMessage
         every {
             messageActionMapper.map("medications")
-        } returns Result.success(expectedAction)
+        } returns expectedAction
         createViewModel()
 
         // when
@@ -162,7 +162,7 @@ class MainActivityViewModelTest {
         viewModel.onAction(action = MainActivityAction.NewIntent(intent))
 
         // then
-        coVerifyNever { messagesHandler.handle(message = any()) }
+        coVerifyNever { messagesHandler.handle(messageId = any(), isDismissible = any(), action = any()) }
     }
 
     @Test

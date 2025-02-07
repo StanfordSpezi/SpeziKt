@@ -1,9 +1,7 @@
 package edu.stanford.bdh.engagehf.bluetooth.data.models
 
-import edu.stanford.bdh.engagehf.messages.Message
 import edu.stanford.bdh.engagehf.messages.MessageAction
 import edu.stanford.spezi.core.design.R
-import java.time.format.DateTimeFormatter
 
 data class UiState(
     val bloodPressure: VitalDisplayData = VitalDisplayData(
@@ -22,16 +20,17 @@ data class UiState(
 )
 
 data class MessageUiModel(
-    val message: Message,
-    val isDismissing: Boolean = false,
-    val isExpanded: Boolean = false,
-    val isLoading: Boolean = false,
+    val id: String,
+    val title: String,
+    val description: String?,
+    val isDismissible: Boolean,
+    val action: MessageAction?,
+    val isDismissing: Boolean,
+    val isExpanded: Boolean,
+    val isLoading: Boolean,
 ) {
-    val dueDateFormattedString: String?
-        get() = message.dueDate?.format(DateTimeFormatter.ofPattern("MMM dd, yyyy hh:mm a"))
-
     val icon: Int get() =
-        when (message.action) {
+        when (action) {
             is MessageAction.MedicationsAction -> R.drawable.ic_medication
             is MessageAction.MeasurementsAction -> R.drawable.ic_vital_signs
             is MessageAction.QuestionnaireAction -> R.drawable.ic_assignment

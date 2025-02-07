@@ -17,6 +17,7 @@ import edu.stanford.bdh.engagehf.bluetooth.measurements.MeasurementsRepository
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEService
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceEvent
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceState
+import edu.stanford.bdh.engagehf.messages.Message
 import edu.stanford.bdh.engagehf.messages.MessagesHandler
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
 import edu.stanford.spezi.core.logging.speziLogger
@@ -125,9 +126,9 @@ class HomeViewModel @Inject internal constructor(
                             // Otherwise a new incoming message would reset all individual
                             // isLoading/isExpanded properties of all messages to the default value.
                             uiState.messages
-                                .find { it.message.id == message.id }
-                                ?.copy(message = message)
-                                ?: MessageUiModel(message = message)
+                                .find { it.id == message.id }
+                                ?.let { updateMessageUiModel(it, message) }
+                                ?: createMessageUiModel(message)
                         }
                     )
                 }
@@ -207,7 +208,7 @@ class HomeViewModel @Inject internal constructor(
             _uiState.update {
                 it.copy(
                     messages = it.messages.map { current ->
-                        if (current.message.id == model.message.id) {
+                        if (current.id == model.id) {
                             current.copy(isDismissing = dismissing)
                         } else {
                             current
@@ -218,7 +219,7 @@ class HomeViewModel @Inject internal constructor(
         }
         viewModelScope.launch {
             setDismissing(true)
-            messagesHandler.dismiss(message = model.message)
+            messagesHandler.dismiss(messageId = model.id)
             setDismissing(false)
         }
     }
@@ -228,7 +229,7 @@ class HomeViewModel @Inject internal constructor(
             _uiState.update {
                 it.copy(
                     messages = it.messages.map { current ->
-                        if (current.message.id == model.message.id) {
+                        if (current.id == model.id) {
                             current.copy(isLoading = loading)
                         } else {
                             current
@@ -239,7 +240,7 @@ class HomeViewModel @Inject internal constructor(
         }
         viewModelScope.launch {
             setLoading(true)
-            messagesHandler.handle(message = model.message)
+            messagesHandler.handle(messageId = model.id, isDismissible = model.isDismissible, action = model.action)
             setLoading(false)
         }
     }
@@ -253,7 +254,7 @@ class HomeViewModel @Inject internal constructor(
         _uiState.update {
             it.copy(
                 messages = it.messages.map { model ->
-                    if (model.message.id == action.message.message.id) {
+                    if (model.id == action.message.id) {
                         model.copy(isExpanded = !model.isExpanded)
                     } else {
                         model
@@ -284,4 +285,21 @@ class HomeViewModel @Inject internal constructor(
             }
         }
     }
+
+    private fun createMessageUiModel(message: Message) = MessageUiModel(
+        id = message.id,
+        title = message.title,
+        description = message.description,
+        isDismissible = message.isDismissible,
+        action = message.action,
+        isDismissing = false,
+        isLoading = false,
+        isExpanded = false,
+    )
+
+    private fun updateMessageUiModel(model: MessageUiModel, message: Message) = createMessageUiModel(message).copy(
+        isDismissing = model.isDismissing,
+        isLoading = model.isLoading,
+        isExpanded = model.isExpanded,
+    )
 }

@@ -35,7 +35,7 @@ class FirestoreMessageMapperTest {
         val expectedIsDismissible = true
         every { localizedMapReader.get("title", any()) } returns expectedTitle
         every { localizedMapReader.get("description", any()) } returns expectedDescription
-        every { messageActionMapper.map(expectedActionString) } returns Result.success(expectedAction)
+        every { messageActionMapper.map(expectedActionString) } returns expectedAction
 
         val documentData = hashMapOf(
             "id" to expectedId,

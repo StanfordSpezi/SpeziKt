@@ -33,10 +33,6 @@ class MessagesHandlerTest {
     private val messageId = "some-id"
     private val videoSectionId = "some-video-section-id"
     private val videoId = "some-video-id"
-    private val sectionVideo = Video(
-        sectionId = videoSectionId,
-        videoId = videoId,
-    )
     private val message: Message = mockk {
         every { action } returns messageAction
         every { id } returns messageId
@@ -74,7 +70,7 @@ class MessagesHandlerTest {
         coEvery { healthSummaryService.generateHealthSummaryPdf() } returns Result.success(Unit)
 
         // when
-        messagesHandler.handle(message = message)
+        messagesHandler.handle(messageId = message.id, isDismissible = message.isDismissible, action = message.action)
 
         // then
         assertSuccess()
@@ -89,7 +85,7 @@ class MessagesHandlerTest {
         } returns Result.failure(Throwable())
 
         // when
-        messagesHandler.handle(message = message)
+        messagesHandler.handle(messageId = message.id, isDismissible = message.isDismissible, action = message.action)
 
         // then
         assertError()
@@ -98,7 +94,7 @@ class MessagesHandlerTest {
     @Test
     fun `it should not dismiss video section message on error result`() = runTestUnconfined {
         // given
-        setup(action = MessageAction.VideoAction(sectionVideo))
+        setup(action = MessageAction.VideoAction(sectionId = videoSectionId, videoId = videoId))
         coEvery {
             engageEducationRepository.getVideoBySectionAndVideoId(
                 sectionId = videoSectionId,
@@ -107,7 +103,7 @@ class MessagesHandlerTest {
         } returns Result.failure(Throwable())
 
         // when
-        messagesHandler.handle(message = message)
+        messagesHandler.handle(messageId = message.id, isDismissible = message.isDismissible, action = message.action)
 
         // then
         assertError()
@@ -116,14 +112,14 @@ class MessagesHandlerTest {
     @Test
     fun `it should handle video section action correctly`() = runTestUnconfined {
         val video: Video = mockk()
-        val videoSectionAction = MessageAction.VideoAction(video = sectionVideo)
+        val videoSectionAction = MessageAction.VideoAction(sectionId = videoSectionId, videoId = videoId)
         setup(action = videoSectionAction)
         coEvery {
             engageEducationRepository.getVideoBySectionAndVideoId(videoSectionId, videoId)
         } returns Result.success(video)
 
         // when
-        messagesHandler.handle(message = message)
+        messagesHandler.handle(messageId = message.id, isDismissible = message.isDismissible, action = message.action)
 
         // then
         verify { navigator.navigateTo(EducationNavigationEvent.VideoSectionClicked(video)) }
@@ -136,7 +132,7 @@ class MessagesHandlerTest {
         setup(action = MessageAction.MeasurementsAction)
 
         // when
-        messagesHandler.handle(message = message)
+        messagesHandler.handle(messageId = message.id, isDismissible = message.isDismissible, action = message.action)
 
         // then
         verify { appScreenEvents.emit(AppScreenEvents.Event.DoNewMeasurement) }
@@ -150,7 +146,7 @@ class MessagesHandlerTest {
         setup(action = MessageAction.QuestionnaireAction(questionnaireId))
 
         // when
-        messagesHandler.handle(message = message)
+        messagesHandler.handle(messageId = message.id, isDismissible = message.isDismissible, action = message.action)
 
         // then
         verify { navigator.navigateTo(AppNavigationEvent.QuestionnaireScreen(questionnaireId)) }
@@ -163,7 +159,7 @@ class MessagesHandlerTest {
         setup(action = MessageAction.MedicationsAction)
 
         // when
-        messagesHandler.handle(message = message)
+        messagesHandler.handle(messageId = message.id, isDismissible = message.isDismissible, action = message.action)
 
         // then
         verify { appScreenEvents.emit(AppScreenEvents.Event.NavigateToTab(BottomBarItem.MEDICATION)) }
@@ -177,7 +173,7 @@ class MessagesHandlerTest {
         setup(action = MessageAction.MedicationsAction)
 
         // when
-        messagesHandler.handle(message = message)
+        messagesHandler.handle(messageId = message.id, isDismissible = message.isDismissible, action = message.action)
 
         // then
         verify { appScreenEvents.emit(AppScreenEvents.Event.NavigateToTab(BottomBarItem.MEDICATION)) }

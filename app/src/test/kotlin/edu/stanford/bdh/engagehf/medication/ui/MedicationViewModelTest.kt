@@ -142,11 +142,11 @@ class MedicationViewModelTest {
             // given
             val videoPath = "/videoSections/1/videos/1"
             val videoSectionId = "1"
-            val videoId = "1"
+            val actualVideoId = "1"
             val actualVideo = mockk<Video>()
             val mappedAction = mockk<MessageAction.VideoAction> {
-                every { video.sectionId } returns videoSectionId
-                every { video.videoId } returns videoId
+                every { sectionId } returns videoSectionId
+                every { videoId } returns actualVideoId
             }
 
             every { messageActionMapper.mapVideoAction(videoPath) } returns Result.success(
@@ -155,7 +155,7 @@ class MedicationViewModelTest {
             coEvery {
                 engageEducationRepository.getVideoBySectionAndVideoId(
                     videoSectionId,
-                    videoId
+                    actualVideoId
                 )
             } returns Result.success(actualVideo)
 

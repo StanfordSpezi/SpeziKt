@@ -14,10 +14,10 @@ class MessageActionMapperTest {
         val action: String? = null
 
         // when
-        val result = mapper.map(action).getOrNull()
+        val result = mapper.map(action)
 
         // then
-        assertThat(result).isInstanceOf(MessageAction.UnknownAction::class.java)
+        assertThat(result).isNull()
     }
 
     @Test
@@ -31,10 +31,10 @@ class MessageActionMapperTest {
         val result = mapper.map(action)
 
         // then
-        val messagesAction = result.getOrThrow() as MessageAction.VideoAction
+        val messagesAction = result as MessageAction.VideoAction
         with(messagesAction) {
-            assertThat(video.sectionId).isEqualTo(sectionId)
-            assertThat(video.videoId).isEqualTo(videoId)
+            assertThat(sectionId).isEqualTo(sectionId)
+            assertThat(videoId).isEqualTo(videoId)
         }
     }
 
@@ -49,10 +49,10 @@ class MessageActionMapperTest {
         val result = mapper.map(action)
 
         // then
-        val messagesAction = result.getOrThrow() as MessageAction.VideoAction
+        val messagesAction = result as MessageAction.VideoAction
         with(messagesAction) {
-            assertThat(video.sectionId).isEqualTo(sectionId)
-            assertThat(video.videoId).isEqualTo(videoId)
+            assertThat(sectionId).isEqualTo(sectionId)
+            assertThat(videoId).isEqualTo(videoId)
         }
     }
 
@@ -65,8 +65,7 @@ class MessageActionMapperTest {
         val result = mapper.map(action)
 
         // then
-        assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrThrow()).isEqualTo(MessageAction.MedicationsAction)
+        assertThat(result).isEqualTo(MessageAction.MedicationsAction)
     }
 
     @Test
@@ -78,8 +77,7 @@ class MessageActionMapperTest {
         val result = mapper.map(action)
 
         // then
-        assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrThrow()).isEqualTo(MessageAction.MeasurementsAction)
+        assertThat(result).isEqualTo(MessageAction.MeasurementsAction)
     }
 
     @Test
@@ -92,7 +90,7 @@ class MessageActionMapperTest {
         val result = mapper.map(action)
 
         // then
-        val messagesAction = result.getOrThrow() as MessageAction.QuestionnaireAction
+        val messagesAction = result as MessageAction.QuestionnaireAction
         assertThat(messagesAction.questionnaireId).isEqualTo(questionnaireId)
     }
 
@@ -105,8 +103,7 @@ class MessageActionMapperTest {
         val result = mapper.map(action)
 
         // then
-        assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrThrow()).isEqualTo(MessageAction.HealthSummaryAction)
+        assertThat(result).isEqualTo(MessageAction.HealthSummaryAction)
     }
 
     @Test
@@ -118,8 +115,6 @@ class MessageActionMapperTest {
         val result = mapper.map(action)
 
         // then
-        assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(IllegalStateException::class.java)
-        assertThat(result.exceptionOrNull()?.message).isEqualTo("Unknown action type")
+        assertThat(result).isNull()
     }
 }

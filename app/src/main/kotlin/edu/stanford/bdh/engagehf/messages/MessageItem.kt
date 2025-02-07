@@ -43,7 +43,6 @@ import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.design.theme.lighten
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
-import java.time.ZonedDateTime
 
 private const val TEXT_WEIGHT = 0.9f
 
@@ -72,12 +71,12 @@ fun MessageItem(
                 Spacer(modifier = Modifier.width(Spacings.small))
                 Text(
                     modifier = Modifier.testIdentifier(MessageItemTestIdentifiers.TITLE),
-                    text = model.message.title,
+                    text = model.title,
                     style = TextStyles.titleMedium,
                     color = Colors.onBackground,
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                if (model.message.isDismissible) {
+                if (model.isDismissible) {
                     val iconButtonColors = IconButtonDefaults.iconButtonColors()
                     AsyncButton(
                         shape = IconButtonDefaults.filledShape,
@@ -98,7 +97,7 @@ fun MessageItem(
                     }
                 }
             }
-            model.message.description?.let {
+            model.description?.let {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -140,17 +139,9 @@ fun MessageItem(
                     .fillMaxWidth()
                     .padding(bottom = Spacings.small),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start,
+                horizontalArrangement = Arrangement.End,
             ) {
-                model.dueDateFormattedString?.let {
-                    Text(
-                        modifier = Modifier.testIdentifier(MessageItemTestIdentifiers.DUE_DATE),
-                        text = "Due Date: $it",
-                        style = TextStyles.labelSmall
-                    )
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                model.message.action?.let { action ->
+                model.action?.let { action ->
                     Button(
                         modifier = Modifier.testIdentifier(MessageItemTestIdentifiers.ACTION_BUTTON),
                         colors = ButtonDefaults.buttonColors(containerColor = primary),
@@ -185,7 +176,6 @@ fun MessageIcon(
 enum class MessageItemTestIdentifiers {
     TITLE,
     DESCRIPTION,
-    DUE_DATE,
     ACTION_BUTTON,
 }
 
@@ -202,36 +192,40 @@ fun MessageListPreview() {
 }
 
 private val sampleMessageModels = listOf(
-    Message(
+    MessageUiModel(
         id = java.util.UUID.randomUUID().toString(),
-        dueDate = ZonedDateTime.now().plusDays(1),
-        completionDate = null,
         title = "Weight Gained",
         description = "You gained weight. Please take action.",
         action = MessageAction.MeasurementsAction,
+        isDismissible = true,
+        isDismissing = false,
+        isLoading = false,
+        isExpanded = true,
     ),
-    Message(
+    MessageUiModel(
         id = java.util.UUID.randomUUID().toString(),
-        dueDate = ZonedDateTime.now().plusDays(2),
-        completionDate = null,
         title = "Medication Change",
         description = "Your medication has been changed. Please take action. " +
             "Your medication has been changed. Please take action. Your medication " +
             "has been changed. " +
             "Please take action.",
         action = MessageAction.MedicationsAction,
+        isDismissible = true,
+        isDismissing = false,
+        isLoading = false,
+        isExpanded = true,
     ),
-    Message(
+    MessageUiModel(
         id = java.util.UUID.randomUUID().toString(),
-        dueDate = ZonedDateTime.now().plusDays(2),
-        completionDate = null,
         title = "Medication Change",
         description = "Your medication has been changed. Please take action. " +
             "Your medication has been changed. Please take action. Your medication " +
             "has been changed. " +
             "Please take action.",
         action = MessageAction.MedicationsAction,
+        isDismissible = true,
+        isDismissing = false,
+        isLoading = false,
+        isExpanded = true,
     ),
-).map {
-    MessageUiModel(it)
-}
+)

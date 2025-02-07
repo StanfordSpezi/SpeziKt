@@ -42,7 +42,6 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MessageUiModel
 import edu.stanford.bdh.engagehf.bluetooth.data.models.UiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
-import edu.stanford.bdh.engagehf.messages.Message
 import edu.stanford.bdh.engagehf.messages.MessageAction
 import edu.stanford.bdh.engagehf.messages.MessageItem
 import edu.stanford.spezi.core.design.component.AsyncTextButton
@@ -58,7 +57,6 @@ import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
-import java.time.ZonedDateTime
 
 @Composable
 fun HomeScreen() {
@@ -335,13 +333,15 @@ private class HomeScreenPreviewProvider : PreviewParameterProvider<UiState> {
         ),
         messages = listOf(
             MessageUiModel(
-                Message(
-                    id = "1",
-                    dueDate = ZonedDateTime.now(),
-                    title = "Weight Gained",
-                    description = "You gained weight. Please take action.",
-                    action = MessageAction.MeasurementsAction
-                ),),
+                id = "1",
+                title = "Weight Gained",
+                description = "You gained weight. Please take action.",
+                action = MessageAction.MeasurementsAction,
+                isExpanded = false,
+                isDismissing = false,
+                isLoading = false,
+                isDismissible = true,
+            ),
         ),
         weight = VitalDisplayData(
             title = "Weight",
