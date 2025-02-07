@@ -66,8 +66,9 @@ class MainActivityViewModelTest {
             // given
             createViewModel()
             val event = AccountEvents.Event.SignUpSuccess
-            coEvery { userSessionManager.getUserState() } returns UserState.Registered(
-                hasInvitationCodeConfirmed = false
+            coEvery { userSessionManager.getUserState() } returns registeredUser(
+                hasInvitationCodeConfirmed = false,
+                disabled = false
             )
 
             // when
@@ -83,7 +84,7 @@ class MainActivityViewModelTest {
             // given
             createViewModel()
             val event = AccountEvents.Event.SignUpSuccess
-            coEvery { userSessionManager.getUserState() } returns UserState.Registered(
+            coEvery { userSessionManager.getUserState() } returns registeredUser(
                 hasInvitationCodeConfirmed = true
             )
 
@@ -204,7 +205,7 @@ class MainActivityViewModelTest {
             // given
             createViewModel()
             val event = AccountEvents.Event.SignInSuccess
-            coEvery { userSessionManager.getUserState() } returns UserState.Registered(
+            coEvery { userSessionManager.getUserState() } returns registeredUser(
                 hasInvitationCodeConfirmed = false
             )
 
@@ -221,7 +222,7 @@ class MainActivityViewModelTest {
             // given
             createViewModel()
             val event = AccountEvents.Event.SignInSuccess
-            coEvery { userSessionManager.getUserState() } returns UserState.Registered(
+            coEvery { userSessionManager.getUserState() } returns registeredUser(
                 hasInvitationCodeConfirmed = true
             )
 
@@ -263,7 +264,7 @@ class MainActivityViewModelTest {
     fun `it should have app screen start destination for registered user if has Invitation Code Confirmed`() =
         runTestUnconfined {
             // given
-            val userState = UserState.Registered(hasInvitationCodeConfirmed = true)
+            val userState = registeredUser(hasInvitationCodeConfirmed = true)
             coEvery { userSessionManager.getUserState() } returns userState
 
             // when
@@ -277,7 +278,7 @@ class MainActivityViewModelTest {
     fun `it should have consent screen start destination for registered user if has not Invitation Code Confirmed`() =
         runTestUnconfined {
             // given
-            val userState = UserState.Registered(hasInvitationCodeConfirmed = false)
+            val userState = registeredUser(hasInvitationCodeConfirmed = false)
             coEvery { userSessionManager.getUserState() } returns userState
 
             // when
@@ -316,4 +317,12 @@ class MainActivityViewModelTest {
             messageNotifier = messageNotifier,
         )
     }
+
+    private fun registeredUser(
+        hasInvitationCodeConfirmed: Boolean,
+        disabled: Boolean = false,
+    ) = UserState.Registered(
+        hasInvitationCodeConfirmed = hasInvitationCodeConfirmed,
+        disabled = disabled,
+    )
 }
