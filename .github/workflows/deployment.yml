@@ -72,7 +72,7 @@ jobs:
     environment: ${{ needs.determineenvironment.outputs.environment }}
     outputs:
       appidentifier: ${{ vars.APP_IDENTIFIER }}
-      version: ${{ steps.vars.outputs.version }}
+      version: ${{ steps.script.outputs.version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -81,7 +81,8 @@ jobs:
         with:
           semver_only: true
           initial_version: "2.0.0"
-      - run: |
+      - id: script
+        run: |
           echo "Injecting Environment Variables In Deployment Workflow ..."
           echo "appidentifier: ${{ vars.APP_IDENTIFIER }}"
           if [[ -z "${{ inputs.version }}" ]]; then
