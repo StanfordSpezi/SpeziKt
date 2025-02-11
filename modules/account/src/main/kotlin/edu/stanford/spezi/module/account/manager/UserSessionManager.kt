@@ -1,7 +1,10 @@
 package edu.stanford.spezi.module.account.manager
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.storage.FirebaseStorage
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
@@ -22,6 +25,7 @@ interface UserSessionManager {
     suspend fun uploadConsentPdf(pdfBytes: ByteArray): Result<Unit>
     suspend fun getUserState(): UserState
     fun observeUserState(): Flow<UserState>
+    fun observeRegisteredUser(): Flow<UserState.Registered>
     fun getUserUid(): String?
     fun getUserInfo(): UserInfo
     suspend fun forceRefresh()
@@ -69,7 +73,7 @@ internal class UserSessionManagerImpl @Inject constructor(
             logger.i { "User is not available" }
             return UserState.NotInitialized
         } else {
-            return UserState.Registered(hasInvitationCodeConfirmed = hasConfirmedInvitationCode())
+            return getRegisteredUserState()
         }
     }
 
@@ -82,6 +86,26 @@ internal class UserSessionManagerImpl @Inject constructor(
         awaitClose {
             firebaseAuth.removeAuthStateListener(authStateListener)
             channel.close()
+        }
+    }
+
+    override fun observeRegisteredUser(): Flow<UserState.Registered> {
+        return callbackFlow {
+            var listenerRegistration: ListenerRegistration? = null
+            withContext(ioDispatcher) {
+                runCatching {
+                    listenerRegistration = userDocument()
+                        .addSnapshotListener { snapshot, _ ->
+                            trySend(registeredUser(document = snapshot))
+                        }
+                }.onFailure {
+                    logger.e(it) { "Error observing registered user" }
+                }
+            }
+            awaitClose {
+                listenerRegistration?.remove()
+                channel.close()
+            }
         }
     }
 
@@ -112,11 +136,31 @@ internal class UserSessionManagerImpl @Inject constructor(
         }.isSuccess
     }
 
-    private suspend fun hasConfirmedInvitationCode(): Boolean = withContext(ioDispatcher) {
+    private fun userDocument(): DocumentReference {
+        val uid = getUserUid() ?: error("No uid available")
+        return firestore.collection(USERS_PATH).document(uid)
+    }
+
+    private suspend fun getRegisteredUserState(): UserState.Registered = withContext(ioDispatcher) {
         runCatching {
-            val uid = getUserUid() ?: error("No uid available")
-            val document = firestore.collection("users").document(uid).get().await()
-            document.getString("invitationCode") != null
-        }.getOrDefault(false)
+            val document = userDocument().get().await()
+            registeredUser(document = document)
+        }.getOrDefault(
+            UserState.Registered(
+                hasInvitationCodeConfirmed = false,
+                disabled = false,
+            )
+        )
+    }
+
+    private fun registeredUser(document: DocumentSnapshot?) = UserState.Registered(
+        hasInvitationCodeConfirmed = document?.getString(INVITATION_CODE_KEY) != null,
+        disabled = document?.getBoolean(DISABLED_KEY) == true
+    )
+
+    private companion object {
+        const val USERS_PATH = "users"
+        const val INVITATION_CODE_KEY = "invitationCode"
+        const val DISABLED_KEY = "disabled"
     }
 }

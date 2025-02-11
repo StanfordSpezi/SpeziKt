@@ -8,6 +8,19 @@
 
 default_platform(:android)
 
+APP_CONFIG = {
+  default_environment: "staging",
+  default_application_id: "edu.stanford.bdh.engagehf",
+  default_version_name: "2.0.0",
+  signing: {
+    store_file: "keystore.jks",
+    store_password: ENV['KEY_PASSWORD'],
+    key_alias: ENV['KEY_ALIAS'],
+    key_password: ENV['KEY_PASSWORD']
+  },
+  json_key_data: ENV['SERVICE_ACCOUNT_JSON_KEY']
+}.freeze
+
 platform :android do
   desc "Runs all unit tests"
   lane :test do
@@ -20,18 +33,33 @@ platform :android do
   end
 
   desc "Deploy a new version to the Google Play (Internal)"
-  lane :internal do
-    version_codes = google_play_track_version_codes(
-      track: "internal",
-      json_key_data: ENV['SERVICE_ACCOUNT_JSON_KEY']
-    )
+  lane :internal do |options|
+    environment = options[:environment].to_s.strip.empty? ? APP_CONFIG[:default_environment] : options[:environment]
+    applicationid = options[:applicationid].to_s.strip.empty? ? APP_CONFIG[:default_application_id] : options[:applicationid]
+    version_name = options[:versionname].to_s.strip.empty? ? APP_CONFIG[:default_version_name] : options[:versionname]
 
-    if version_codes.nil? || version_codes.empty?
-      previous_version_code = 0
-    else
-      previous_version_code = version_codes.max
+    UI.message("Using environment: #{environment}")
+    UI.message("Using application id: #{applicationid}")
+    UI.message("Using version name: #{version_name}")
+
+    def fetch_max_version_code(track, applicationid)
+      version_codes = google_play_track_version_codes(
+        package_name: applicationid,
+        track: track,
+        json_key_data: APP_CONFIG[:json_key_data]
+      )
+
+      if version_codes.nil? || version_codes.empty?
+        0
+      else
+        version_codes.max
+      end
     end
 
+    production_version_code = fetch_max_version_code('production', applicationid)
+    internal_version_code = fetch_max_version_code('internal', applicationid)
+
+    previous_version_code = [production_version_code, internal_version_code].max
     current_version_code = previous_version_code + 1
 
     UI.message("Previous version code: #{previous_version_code}")
@@ -41,17 +69,20 @@ platform :android do
       task: "clean bundle",
       build_type: 'Release',
       properties: {
+        "android.injected.application.id" => applicationid,
         "android.injected.version.code" => current_version_code,
-        "android.injected.version.name" => "1.0.0",
-        "android.injected.signing.store.file" => "keystore.jks",
-        "android.injected.signing.store.password" => ENV['KEY_PASSWORD'],
-        "android.injected.signing.key.alias" => ENV['KEY_ALIAS'],
-        "android.injected.signing.key.password" => ENV['KEY_PASSWORD'],
+        "android.injected.version.name" => version_name,
+        "android.injected.signing.store.file" => APP_CONFIG[:signing][:store_file],
+        "android.injected.signing.store.password" => APP_CONFIG[:signing][:store_password],
+        "android.injected.signing.key.alias" => APP_CONFIG[:signing][:key_alias],
+        "android.injected.signing.key.password" => APP_CONFIG[:signing][:key_password],
       }
     )
+
     upload_to_play_store(
-      track: 'internal',
-      json_key_data: ENV['SERVICE_ACCOUNT_JSON_KEY']
+      package_name: applicationid,
+      track: environment == "production" ? 'production' : 'internal',
+      json_key_data: APP_CONFIG[:json_key_data]
     )
   end
 end

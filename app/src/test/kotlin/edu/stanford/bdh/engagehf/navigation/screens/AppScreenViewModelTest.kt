@@ -8,10 +8,14 @@ import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.module.account.manager.UserSessionManager
+import edu.stanford.spezi.module.account.manager.UserState
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.update
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -26,28 +30,50 @@ class AppScreenViewModelTest {
     private val healthSummaryService: HealthSummaryService = mockk(relaxed = true)
     private val appScreenEventsFlow = MutableSharedFlow<AppScreenEvents.Event>()
     private val navigator = mockk<Navigator>(relaxed = true)
+    private val userFlow = MutableStateFlow(
+        UserState.Registered(hasInvitationCodeConfirmed = false, disabled = false)
+    )
 
     private lateinit var viewModel: AppScreenViewModel
 
     @Before
     fun setup() {
         every { appScreenEvents.events } returns appScreenEventsFlow
-        viewModel = AppScreenViewModel(
-            appScreenEvents = appScreenEvents,
-            userSessionManager = userSessionManager,
-            healthSummaryService = healthSummaryService,
-            navigator = navigator
-        )
+        every { userSessionManager.observeRegisteredUser() } returns userFlow
+        createViewModel()
     }
 
     @Test
     fun `it should reflect the correct initial state`() {
         // when
+        every { userSessionManager.observeRegisteredUser() } returns emptyFlow()
+        createViewModel()
         val uiState = viewModel.uiState.value
 
         // then
-        assertThat(uiState.items).isEqualTo(BottomBarItem.entries)
-        assertThat(uiState.selectedItem).isEqualTo(BottomBarItem.HOME)
+        assertThat(uiState.content).isEqualTo(AppContent.Loading)
+    }
+
+    @Test
+    fun `it should reflect the study concluded state if user disabled`() = runTestUnconfined {
+        // when
+        userFlow.value = userFlow.value.copy(disabled = true)
+        createViewModel()
+        val uiState = viewModel.uiState.value
+
+        // then
+        assertThat(uiState.content).isEqualTo(AppContent.StudyConcluded)
+    }
+
+    @Test
+    fun `it should reflect content state if user not disabled`() {
+        // when
+        userFlow.update { it.copy(disabled = false) }
+        createViewModel()
+        val uiState = viewModel.uiState.value
+
+        // then
+        assertThat(uiState.content).isInstanceOf(AppContent.Content::class.java)
     }
 
     @Test
@@ -59,7 +85,7 @@ class AppScreenViewModelTest {
             viewModel.onAction(Action.UpdateSelectedBottomBarItem(selectedBottomBarItem = item))
 
             // then
-            assertThat(viewModel.uiState.value.selectedItem).isEqualTo(item)
+            assertThat(content().selectedItem).isEqualTo(item)
         }
     }
 
@@ -73,8 +99,7 @@ class AppScreenViewModelTest {
             appScreenEventsFlow.emit(event)
 
             // Then
-            val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.NEW_MEASUREMENT_RECEIVED)
+            assertThat(content().bottomSheetContent).isEqualTo(BottomSheetContent.NEW_MEASUREMENT_RECEIVED)
         }
 
     @Test
@@ -87,8 +112,7 @@ class AppScreenViewModelTest {
             appScreenEventsFlow.emit(event)
 
             // Then
-            val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.DO_NEW_MEASUREMENT)
+            assertThat(content().bottomSheetContent).isEqualTo(BottomSheetContent.DO_NEW_MEASUREMENT)
         }
 
     @Test
@@ -101,8 +125,7 @@ class AppScreenViewModelTest {
             appScreenEventsFlow.emit(event)
 
             // Then
-            val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.bottomSheetContent).isNull()
+            assertThat(content().bottomSheetContent).isNull()
         }
 
     @Test
@@ -115,8 +138,7 @@ class AppScreenViewModelTest {
             appScreenEventsFlow.emit(event)
 
             // Then
-            val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.WEIGHT_DESCRIPTION_INFO)
+            assertThat(content().bottomSheetContent).isEqualTo(BottomSheetContent.WEIGHT_DESCRIPTION_INFO)
         }
 
     @Test
@@ -129,8 +151,7 @@ class AppScreenViewModelTest {
             appScreenEventsFlow.emit(event)
 
             // Then
-            val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.ADD_WEIGHT_RECORD)
+            assertThat(content().bottomSheetContent).isEqualTo(BottomSheetContent.ADD_WEIGHT_RECORD)
         }
 
     @Test
@@ -143,8 +164,7 @@ class AppScreenViewModelTest {
             appScreenEventsFlow.emit(event)
 
             // Then
-            val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.BLUETOOTH_DEVICE_PAIRING)
+            assertThat(content().bottomSheetContent).isEqualTo(BottomSheetContent.BLUETOOTH_DEVICE_PAIRING)
         }
 
     @Test
@@ -157,8 +177,7 @@ class AppScreenViewModelTest {
             appScreenEventsFlow.emit(event)
 
             // Then
-            val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.ADD_BLOOD_PRESSURE_RECORD)
+            assertThat(content().bottomSheetContent).isEqualTo(BottomSheetContent.ADD_BLOOD_PRESSURE_RECORD)
         }
 
     @Test
@@ -171,8 +190,7 @@ class AppScreenViewModelTest {
             appScreenEventsFlow.emit(event)
 
             // Then
-            val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.ADD_HEART_RATE_RECORD)
+            assertThat(content().bottomSheetContent).isEqualTo(BottomSheetContent.ADD_HEART_RATE_RECORD)
         }
 
     @Test
@@ -251,8 +269,7 @@ class AppScreenViewModelTest {
             appScreenEventsFlow.emit(event)
 
             // Then
-            val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.BLOOD_PRESSURE_DESCRIPTION_INFO)
+            assertThat(content().bottomSheetContent).isEqualTo(BottomSheetContent.BLOOD_PRESSURE_DESCRIPTION_INFO)
         }
 
     @Test
@@ -265,8 +282,7 @@ class AppScreenViewModelTest {
             appScreenEventsFlow.emit(event)
 
             // Then
-            val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.HEART_RATE_DESCRIPTION_INFO)
+            assertThat(content().bottomSheetContent).isEqualTo(BottomSheetContent.HEART_RATE_DESCRIPTION_INFO)
         }
 
     @Test
@@ -279,7 +295,17 @@ class AppScreenViewModelTest {
             appScreenEventsFlow.emit(event)
 
             // Then
-            val updatedUiState = viewModel.uiState.value
-            assertThat(updatedUiState.bottomSheetContent).isEqualTo(BottomSheetContent.SYMPTOMS_DESCRIPTION_INFO)
+            assertThat(content().bottomSheetContent).isEqualTo(BottomSheetContent.SYMPTOMS_DESCRIPTION_INFO)
         }
+
+    private fun content() = viewModel.uiState.value.content as AppContent.Content
+
+    private fun createViewModel() {
+        viewModel = AppScreenViewModel(
+            appScreenEvents = appScreenEvents,
+            userSessionManager = userSessionManager,
+            healthSummaryService = healthSummaryService,
+            navigator = navigator
+        )
+    }
 }

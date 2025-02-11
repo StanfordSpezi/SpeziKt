@@ -34,20 +34,16 @@ class MedicationRecommendationMapper @Inject constructor(
         }
     }
 
-    private fun getDosageInformation(jsonMap: JsonMap?): DosageInformation? {
+    private fun getDosageInformation(jsonMap: JsonMap?): DosageInformation {
         val dosageInformationMap = jsonMap?.get("dosageInformation") as? JsonMap
         val unit = dosageInformationMap?.get("unit") as? String
         val currentScheduleMap = getDosage(key = "currentSchedule", jsonMap = dosageInformationMap)
         val targetSchedule = getDosage(key = "targetSchedule", jsonMap = dosageInformationMap)
-        return if (unit != null) {
-            DosageInformation(
-                currentSchedule = currentScheduleMap,
-                targetSchedule = targetSchedule,
-                unit = unit,
-            )
-        } else {
-            null
-        }
+        return DosageInformation(
+            currentSchedule = currentScheduleMap,
+            targetSchedule = targetSchedule,
+            unit = unit ?: "",
+        )
     }
 
     private fun getDosage(key: String, jsonMap: JsonMap?): List<DoseSchedule> {

@@ -12,7 +12,7 @@ android {
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "edu.stanford.bdh.engagehf"
+        applicationId = (project.findProperty("android.injected.application.id") as? String) ?: "edu.stanford.bdh.engagehf"
         versionCode =
             (project.findProperty("android.injected.version.code") as? String)?.toInt() ?: 1
         versionName = (project.findProperty("android.injected.version.name") as? String) ?: "1.0.0"

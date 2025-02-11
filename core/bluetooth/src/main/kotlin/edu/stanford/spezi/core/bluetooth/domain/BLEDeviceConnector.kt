@@ -95,6 +95,7 @@ internal class BLEDeviceConnector @AssistedInject constructor(
     fun connect() {
         val currentGatt = bluetoothGatt
         if (currentGatt != null || isDestroyed.get()) return
+        device.createBond()
         bluetoothGatt = device.connectGatt(context, false, gattCallback)
     }
 

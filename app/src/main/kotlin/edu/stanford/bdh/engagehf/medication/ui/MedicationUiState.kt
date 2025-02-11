@@ -34,7 +34,7 @@ data class MedicationCardUiModel(
     val isExpanded: Boolean,
     val statusIconResId: Int?,
     val statusColor: MedicationColor,
-    val dosageInformation: DosageInformationUiModel?,
+    val dosageInformation: DosageInformationUiModel,
 )
 
 /**
@@ -53,7 +53,8 @@ data class DosageRowInfoData(
 
 @Suppress("MagicNumber")
 enum class MedicationColor(val value: Color) {
-    GREEN_SUCCESS(value = Color(0xFF34C759)),
-    YELLOW(value = Color(0xFFFFCC00)),
-    BLUE(value = Color(0xFF677FF0)),
+    GREEN_SUCCESS(value = Color(0xFF34C659)),
+    YELLOW(value = Color(0xFFFACC01)),
+    BLUE(value = Color(0xFF66AFFF)),
+    GRAY(value = Color(0xFFBBBBBE)),
 }

@@ -1,11 +1,17 @@
 package edu.stanford.bdh.engagehf
 
+import android.content.Intent
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MessageActionMapper
+import edu.stanford.bdh.engagehf.messages.MessageAction
+import edu.stanford.bdh.engagehf.messages.MessagesHandler
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.Routes
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.notification.notifier.FirebaseMessage
 import edu.stanford.spezi.core.testing.CoroutineTestRule
+import edu.stanford.spezi.core.testing.coVerifyNever
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.module.account.account.AccountEvents
@@ -33,6 +39,8 @@ class MainActivityViewModelTest {
     private val accountEvents: AccountEvents = mockk(relaxed = true)
     private val navigator: Navigator = mockk(relaxed = true)
     private val userSessionManager: UserSessionManager = mockk()
+    private val messagesHandler: MessagesHandler = mockk(relaxed = true)
+    private val messageActionMapper: MessageActionMapper = mockk(relaxed = true)
     private val messageNotifier: MessageNotifier = mockk(relaxed = true)
     private lateinit var viewModel: MainActivityViewModel
 
@@ -58,8 +66,9 @@ class MainActivityViewModelTest {
             // given
             createViewModel()
             val event = AccountEvents.Event.SignUpSuccess
-            coEvery { userSessionManager.getUserState() } returns UserState.Registered(
-                hasInvitationCodeConfirmed = false
+            coEvery { userSessionManager.getUserState() } returns registeredUser(
+                hasInvitationCodeConfirmed = false,
+                disabled = false
             )
 
             // when
@@ -75,7 +84,7 @@ class MainActivityViewModelTest {
             // given
             createViewModel()
             val event = AccountEvents.Event.SignUpSuccess
-            coEvery { userSessionManager.getUserState() } returns UserState.Registered(
+            coEvery { userSessionManager.getUserState() } returns registeredUser(
                 hasInvitationCodeConfirmed = true
             )
 
@@ -105,6 +114,57 @@ class MainActivityViewModelTest {
                 )
             }
         }
+
+    @Test
+    fun `it should handle new intent action correctly if message id available`() {
+        // given
+        val someMessageId = "some-message-id"
+        val firebaseMessage: FirebaseMessage = mockk {
+            every { messageId } returns someMessageId
+            every { action } returns "medications"
+            every { isDismissible } returns true
+        }
+        val expectedAction = MessageAction.MedicationsAction
+        val intent = mockk<Intent>()
+        every {
+            intent.getParcelableExtra<FirebaseMessage>(FirebaseMessage.FIREBASE_MESSAGE_KEY)
+        } returns firebaseMessage
+        every {
+            messageActionMapper.map("medications")
+        } returns expectedAction
+        createViewModel()
+
+        // when
+        viewModel.onAction(action = MainActivityAction.NewIntent(intent))
+
+        // then
+        coVerify {
+            messagesHandler.handle(
+                messageId = someMessageId,
+                isDismissible = true,
+                action = expectedAction
+            )
+        }
+    }
+
+    @Test
+    fun `it should ignore handle new intent action if message id not available`() {
+        // given
+        val firebaseMessage: FirebaseMessage = mockk {
+            every { messageId } returns null
+        }
+        val intent = mockk<Intent>()
+        every {
+            intent.getParcelableExtra<FirebaseMessage>(FirebaseMessage.FIREBASE_MESSAGE_KEY)
+        } returns firebaseMessage
+        createViewModel()
+
+        // when
+        viewModel.onAction(action = MainActivityAction.NewIntent(intent))
+
+        // then
+        coVerifyNever { messagesHandler.handle(messageId = any(), isDismissible = any(), action = any()) }
+    }
 
     @Test
     fun `it should navigate to ClearBackStackOnboarding when user account event is SignOutSuccess`() =
@@ -145,7 +205,7 @@ class MainActivityViewModelTest {
             // given
             createViewModel()
             val event = AccountEvents.Event.SignInSuccess
-            coEvery { userSessionManager.getUserState() } returns UserState.Registered(
+            coEvery { userSessionManager.getUserState() } returns registeredUser(
                 hasInvitationCodeConfirmed = false
             )
 
@@ -162,7 +222,7 @@ class MainActivityViewModelTest {
             // given
             createViewModel()
             val event = AccountEvents.Event.SignInSuccess
-            coEvery { userSessionManager.getUserState() } returns UserState.Registered(
+            coEvery { userSessionManager.getUserState() } returns registeredUser(
                 hasInvitationCodeConfirmed = true
             )
 
@@ -204,7 +264,7 @@ class MainActivityViewModelTest {
     fun `it should have app screen start destination for registered user if has Invitation Code Confirmed`() =
         runTestUnconfined {
             // given
-            val userState = UserState.Registered(hasInvitationCodeConfirmed = true)
+            val userState = registeredUser(hasInvitationCodeConfirmed = true)
             coEvery { userSessionManager.getUserState() } returns userState
 
             // when
@@ -218,7 +278,7 @@ class MainActivityViewModelTest {
     fun `it should have consent screen start destination for registered user if has not Invitation Code Confirmed`() =
         runTestUnconfined {
             // given
-            val userState = UserState.Registered(hasInvitationCodeConfirmed = false)
+            val userState = registeredUser(hasInvitationCodeConfirmed = false)
             coEvery { userSessionManager.getUserState() } returns userState
 
             // when
@@ -252,7 +312,17 @@ class MainActivityViewModelTest {
             accountEvents = accountEvents,
             navigator = navigator,
             userSessionManager = userSessionManager,
+            messagesHandler = messagesHandler,
+            messageActionMapper = messageActionMapper,
             messageNotifier = messageNotifier,
         )
     }
+
+    private fun registeredUser(
+        hasInvitationCodeConfirmed: Boolean,
+        disabled: Boolean = false,
+    ) = UserState.Registered(
+        hasInvitationCodeConfirmed = hasInvitationCodeConfirmed,
+        disabled = disabled,
+    )
 }

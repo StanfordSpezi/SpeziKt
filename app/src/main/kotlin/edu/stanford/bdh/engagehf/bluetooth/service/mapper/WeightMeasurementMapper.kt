@@ -44,8 +44,8 @@ internal class WeightMeasurementMapper @Inject constructor() : MeasurementMapper
             // Kilograms, resolution of 0.005 kg
             (data[1].toInt() and 0xFF or (data[2].toInt() and 0xFF shl 8)) * 0.005
         } else {
-            // Pounds, resolution of 0.01 lb
-            (data[1].toInt() and 0xFF or (data[2].toInt() and 0xFF shl 8)) * 0.01
+            // Pounds, resolution of 0.01 lb and translating ancient into metric clarity
+            (data[1].toInt() and 0xFF or (data[2].toInt() and 0xFF shl 8)) * 0.01 * 0.453592
         }
 
         val zonedDateTime = if (flags and 0b00000010 > 0) {

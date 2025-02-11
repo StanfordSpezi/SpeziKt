@@ -14,19 +14,22 @@ import androidx.compose.ui.res.stringResource
 import edu.stanford.spezi.module.account.R
 import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
+import java.time.ZoneOffset
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerDialog(
-    date: LocalDate = LocalDate.now(),
-    onDateSelected: (LocalDate) -> Unit,
+    date: Instant,
+    onDateSelected: (Instant) -> Unit,
     onDismiss: () -> Unit,
 ) {
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = convertDateToMillis(date),
+        initialSelectedDateMillis = date.toEpochMilli(),
         selectableDates = object : SelectableDates {
-            val minTimeMillis = @Suppress("detekt:MagicNumber") convertDateToMillis(LocalDate.of(1800, 1, 1))
+            val minTimeMillis = @Suppress("detekt:MagicNumber") LocalDate.of(1800, 1, 1)
+                .atStartOfDay()
+                .toInstant(ZoneOffset.UTC)
+                .toEpochMilli()
 
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                 return utcTimeMillis >= minTimeMillis &&
@@ -35,17 +38,13 @@ fun DatePickerDialog(
         },
     )
 
-    val selectedDate = datePickerState.selectedDateMillis?.let {
-        convertMillisToDate(it)
-    }
-
     DatePickerDialog(
         modifier = Modifier.fillMaxWidth(),
         onDismissRequest = { onDismiss() },
         confirmButton = {
             Button(onClick = {
-                if (selectedDate != null) {
-                    onDateSelected(selectedDate)
+                datePickerState.selectedDateMillis?.let {
+                    onDateSelected(Instant.ofEpochMilli(it))
                 }
                 onDismiss()
             }
@@ -66,12 +65,4 @@ fun DatePickerDialog(
             state = datePickerState
         )
     }
-}
-
-private fun convertMillisToDate(millis: Long): LocalDate {
-    return Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate()
-}
-
-private fun convertDateToMillis(date: LocalDate): Long {
-    return date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }

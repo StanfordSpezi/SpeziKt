@@ -23,13 +23,13 @@ class MedicationUiStateMapper @Inject constructor(
             MedicationUiState.Success(
                 medicationsTaking =
                 Medications(
-                    medications = recommendations.filter { it.type != MedicationRecommendationType.NOT_STARTED }
+                    medications = recommendations.filter { it.dosageInformation.currentDailyIntake > 0.0 }
                         .sortedByDescending { it.type.priority }
                         .map { map(it) },
                     expanded = true,
                 ),
                 medicationsThatMayHelp = Medications(
-                    medications = recommendations.filter { it.type == MedicationRecommendationType.NOT_STARTED }
+                    medications = recommendations.filter { it.dosageInformation.currentDailyIntake == 0.0 }
                         .sortedByDescending { it.type.priority }
                         .map { map(it) },
                     expanded = false,
@@ -134,8 +134,7 @@ class MedicationUiStateMapper @Inject constructor(
         }
     }
 
-    private fun mapDosageInformation(dosageInformation: DosageInformation?): DosageInformationUiModel? {
-        dosageInformation ?: return null
+    private fun mapDosageInformation(dosageInformation: DosageInformation): DosageInformationUiModel {
         val currentDailyIntake = dosageInformation.currentDailyIntake
         val targetDailyIntake = dosageInformation.targetDailyIntake
         val progress = if (targetDailyIntake == 0.0) {

@@ -4,6 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import edu.stanford.spezi.core.utils.BuildInfo
+import edu.stanford.spezi.core.utils.BuildInfoImpl
 import edu.stanford.spezi.core.utils.LocaleProvider
 import edu.stanford.spezi.core.utils.LocaleProviderImpl
 
@@ -13,4 +15,7 @@ abstract class UtilsModule {
 
     @Binds
     internal abstract fun bindLocaleProvider(impl: LocaleProviderImpl): LocaleProvider
+
+    @Binds
+    internal abstract fun bindBuildInfo(impl: BuildInfoImpl): BuildInfo
 }

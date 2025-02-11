@@ -10,7 +10,7 @@ data class MedicationRecommendation(
     val description: String,
     val type: MedicationRecommendationType,
     val videoPath: String?,
-    val dosageInformation: DosageInformation?,
+    val dosageInformation: DosageInformation,
 )
 
 @Suppress("MagicNumber")

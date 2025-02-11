@@ -25,11 +25,8 @@ class BluetoothUiStateMapperTest {
         every { getDefaultLocale() } returns Locale.US
     }
 
-    private val messageActionMapper = mockk<MessageActionMapper>()
-
     private val mapper = BluetoothUiStateMapper(
         localeProvider = localeProvider,
-        messageActionMapper = messageActionMapper
     )
     private val bloodPressure: Measurement.BloodPressure = mockk {
         every { systolic } returns SYSTOLIC.toFloat()
@@ -76,25 +73,6 @@ class BluetoothUiStateMapperTest {
             BluetoothUiState.Idle(
                 description = R.string.bluetooth_not_enabled_description,
                 settingsAction = Action.Settings.BluetoothSettings,
-            )
-        )
-    }
-
-    @Test
-    fun `it should map MissingPermissions state correctly`() {
-        // given
-        val permissions = listOf("permission1", "permission2")
-        val state = EngageBLEServiceState.MissingPermissions(permissions)
-
-        // when
-        val result = mapper.mapBleServiceState(state) as BluetoothUiState.Idle
-
-        // then
-        assertThat(result).isEqualTo(
-            BluetoothUiState.Idle(
-                description = R.string.bluetooth_permissions_not_granted_description,
-                missingPermissions = permissions,
-                settingsAction = Action.Settings.AppSettings,
             )
         )
     }

@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -52,12 +53,10 @@ import com.patrykandpatrick.vico.compose.common.fill
 import com.patrykandpatrick.vico.core.cartesian.HorizontalLayout
 import com.patrykandpatrick.vico.core.cartesian.Scroll
 import com.patrykandpatrick.vico.core.cartesian.Zoom
-import com.patrykandpatrick.vico.core.cartesian.axis.AxisPosition
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.AxisValueOverrider
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
-import com.patrykandpatrick.vico.core.cartesian.data.ChartValues
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer.PointProvider.Companion.single
@@ -201,8 +200,7 @@ fun SymptomsChart(
         color = primary
     )
 
-    val valueFormatter: (Double, ChartValues, AxisPosition.Vertical?) -> CharSequence =
-        { value, _, _ -> uiState.valueFormatter(value) }
+    val xValueFormatter = CartesianValueFormatter { value, _, _ -> uiState.xValueFormatter(value) }
 
     val marker = remember {
         DefaultCartesianMarker(
@@ -238,15 +236,11 @@ fun SymptomsChart(
                 titleComponent = rememberTextComponent(),
                 label = rememberAxisLabelComponent(),
                 guideline = null,
-                valueFormatter = if (uiState.headerData.selectedSymptomType == SymptomType.DIZZINESS) {
-                    CartesianValueFormatter.decimal()
-                } else {
-                    CartesianValueFormatter.yPercent()
-                },
+                valueFormatter = rememberYAxisValueFormatter(uiState.headerData.selectedSymptomType),
             ),
             bottomAxis = rememberBottomAxis(
                 guideline = null,
-                valueFormatter = valueFormatter,
+                valueFormatter = xValueFormatter,
                 itemPlacer = remember {
                     HorizontalAxis.ItemPlacer.default(
                         spacing = 1,
@@ -270,13 +264,38 @@ fun SymptomsChart(
     )
 }
 
+@Suppress("MagicNumber")
+@Composable
+private fun rememberYAxisValueFormatter(
+    selectedSymptomType: SymptomType,
+): CartesianValueFormatter {
+    val context = LocalContext.current
+    return remember(selectedSymptomType) {
+        if (selectedSymptomType == SymptomType.DIZZINESS) {
+            CartesianValueFormatter { value, _, _ ->
+                val resId = when (value) {
+                    5.0 -> R.string.dizziness_score_very_severe
+                    4.0 -> R.string.dizziness_score_severe
+                    3.0 -> R.string.dizziness_score_moderate
+                    2.0 -> R.string.dizziness_score_mild
+                    1.0 -> R.string.dizziness_score_minimal
+                    else -> R.string.dizziness_score_none
+                }
+                context.getString(resId)
+            }
+        } else {
+            CartesianValueFormatter.yPercent()
+        }
+    }
+}
+
 @Composable
 private fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewModel.Action) -> Unit) {
     Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
         TextButton(onClick = {
             onAction(SymptomsViewModel.Action.ToggleSymptomTypeDropdown(true))
         }) {
-            SymptomTypeTitleText(headerData.selectedSymptomType)
+            SymptomTypeHeaderText(headerData.selectedSymptomType)
             Icon(Icons.Default.ArrowDropDown, contentDescription = "ArrowDropDown")
         }
         DropdownMenu(
@@ -287,9 +306,7 @@ private fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewMode
             SymptomType.entries.forEach { symptomType ->
                 val isSelected = headerData.selectedSymptomType == symptomType
                 DropdownMenuItem(
-                    text = {
-                        headerData.selectedSymptomTypeText
-                    },
+                    text = { SymptomTypeDropdownText(symptomType) },
                     onClick = {
                         onAction(SymptomsViewModel.Action.ToggleSymptomTypeDropdown(false))
                         onAction(SymptomsViewModel.Action.SelectSymptomType(symptomType))
@@ -308,16 +325,29 @@ private fun SymptomsDropdown(headerData: HeaderData, onAction: (SymptomsViewMode
 }
 
 @Composable
-private fun SymptomTypeTitleText(symptomType: SymptomType) {
+private fun SymptomTypeHeaderText(symptomType: SymptomType) {
     Text(
-        text =
-        when (symptomType) {
+        text = when (symptomType) {
             SymptomType.OVERALL -> stringResource(R.string.overall_score_title)
             SymptomType.PHYSICAL_LIMITS -> stringResource(R.string.physical_limits_score_title)
             SymptomType.SOCIAL_LIMITS -> stringResource(R.string.social_limits_score_title)
             SymptomType.QUALITY_OF_LIFE -> stringResource(R.string.quality_of_life_score_title)
-            SymptomType.SYMPTOMS_FREQUENCY -> stringResource(R.string.symptoms_frequency_score_title)
+            SymptomType.SPECIFIC -> stringResource(R.string.symptoms_frequency_score_title)
             SymptomType.DIZZINESS -> stringResource(R.string.dizziness_score_title)
+        }
+    )
+}
+
+@Composable
+private fun SymptomTypeDropdownText(symptomType: SymptomType) {
+    Text(
+        text = when (symptomType) {
+            SymptomType.OVERALL -> stringResource(R.string.symptom_type_overall)
+            SymptomType.PHYSICAL_LIMITS -> stringResource(R.string.symptom_type_physical)
+            SymptomType.SOCIAL_LIMITS -> stringResource(R.string.symptom_type_social)
+            SymptomType.QUALITY_OF_LIFE -> stringResource(R.string.symptom_type_quality)
+            SymptomType.SPECIFIC -> stringResource(R.string.symptom_type_specific)
+            SymptomType.DIZZINESS -> stringResource(R.string.symptom_type_dizziness)
         }
     )
 }

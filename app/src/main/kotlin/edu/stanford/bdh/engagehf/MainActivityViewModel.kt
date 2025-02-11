@@ -1,13 +1,18 @@
 package edu.stanford.bdh.engagehf
 
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MessageActionMapper
+import edu.stanford.bdh.engagehf.messages.MessagesHandler
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.Routes
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.notification.notifier.FirebaseMessage
+import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.FIREBASE_MESSAGE_KEY
 import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.module.account.account.AccountEvents
 import edu.stanford.spezi.module.account.manager.UserSessionManager
@@ -26,6 +31,8 @@ class MainActivityViewModel @Inject constructor(
     private val navigator: Navigator,
     private val userSessionManager: UserSessionManager,
     private val messageNotifier: MessageNotifier,
+    private val messageActionMapper: MessageActionMapper,
+    private val messagesHandler: MessagesHandler,
 ) : ViewModel() {
     private val logger by speziLogger()
     private val _uiState = MutableStateFlow<MainUiState>(MainUiState.SplashScreen)
@@ -33,6 +40,25 @@ class MainActivityViewModel @Inject constructor(
 
     init {
         setup()
+    }
+
+    fun onAction(action: MainActivityAction) {
+        when (action) {
+            is MainActivityAction.NewIntent -> handleNewIntent(intent = action.intent)
+        }
+    }
+
+    private fun handleNewIntent(intent: Intent) {
+        val firebaseMessage = intent.getParcelableExtra<FirebaseMessage>(FIREBASE_MESSAGE_KEY)
+        firebaseMessage?.messageId?.let { messageId ->
+            viewModelScope.launch {
+                messagesHandler.handle(
+                    messageId = messageId,
+                    isDismissible = firebaseMessage.isDismissible != false,
+                    action = messageActionMapper.map(firebaseMessage.action),
+                )
+            }
+        }
     }
 
     private fun setup() {
@@ -94,4 +120,8 @@ class MainActivityViewModel @Inject constructor(
 sealed interface MainUiState {
     data object SplashScreen : MainUiState
     data class Content(val startDestination: Routes) : MainUiState
+}
+
+sealed interface MainActivityAction {
+    data class NewIntent(val intent: Intent) : MainActivityAction
 }

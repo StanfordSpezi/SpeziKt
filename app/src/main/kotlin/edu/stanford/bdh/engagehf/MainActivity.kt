@@ -22,8 +22,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import dagger.hilt.android.AndroidEntryPoint
-import edu.stanford.bdh.engagehf.bluetooth.BluetoothViewModel
-import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.contact.ui.ContactScreen
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.RegisterParams
@@ -59,15 +57,13 @@ class MainActivity : FragmentActivity() {
 
     private val viewModel by viewModels<MainActivityViewModel>()
 
-    private val bluetoothViewModel by viewModels<BluetoothViewModel>()
-
     @Inject
     @Dispatching.Main
     lateinit var mainDispatcher: CoroutineDispatcher
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        bluetoothViewModel.onAction(Action.NewIntent(intent))
+        viewModel.onAction(action = MainActivityAction.NewIntent(intent))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

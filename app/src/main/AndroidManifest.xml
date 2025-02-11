@@ -35,4 +35,12 @@
         </provider>
     </application>
 
+    <queries>
+        <!-- Intent query to open PDF files -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:mimeType="application/pdf" />
+        </intent>
+    </queries>
+
 </manifest>
