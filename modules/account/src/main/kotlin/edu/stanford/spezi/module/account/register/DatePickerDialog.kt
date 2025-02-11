@@ -19,12 +19,12 @@ import java.time.ZoneOffset
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerDialog(
-    date: Instant,
+    date: Instant? = null,
     onDateSelected: (Instant) -> Unit,
     onDismiss: () -> Unit,
 ) {
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = date.toEpochMilli(),
+        initialSelectedDateMillis = date?.toEpochMilli(),
         selectableDates = object : SelectableDates {
             val minTimeMillis = @Suppress("detekt:MagicNumber") LocalDate.of(1800, 1, 1)
                 .atStartOfDay()

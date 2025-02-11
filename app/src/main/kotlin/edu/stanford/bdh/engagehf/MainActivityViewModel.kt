@@ -14,7 +14,7 @@ import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.notification.notifier.FirebaseMessage
 import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.FIREBASE_MESSAGE_KEY
 import edu.stanford.spezi.core.utils.MessageNotifier
-import edu.stanford.spezi.module.account.account.AccountEvents
+import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.manager.UserSessionManager
 import edu.stanford.spezi.module.account.manager.UserState
 import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
