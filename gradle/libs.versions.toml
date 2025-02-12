@@ -45,6 +45,7 @@ lifecycleRuntimeKtx = "2.7.0"
 minSdk = "31"
 mockKVersion = "1.13.10"
 playServicesAuth = "21.2.0"
+retrofit = "2.11.0"
 rulesVersion = "1.5.0"
 runnerVersion = "1.5.2"
 securityCryptoKtx = "1.1.0-alpha06"
@@ -54,6 +55,7 @@ testCoreVersion = "1.5.0"
 timberVersion = "5.0.1"
 truth = "1.4.2"
 vico = "2.0.0-alpha.26"
+firebaseAuth = "23.0.0"
 
 # Please keep [libraries] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [libraries]
@@ -96,6 +98,7 @@ coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutin
 coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutinesVersion" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesVersion" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-functions-ktx", version.ref = "firebaseFunctionsKtx" }
@@ -120,6 +123,8 @@ mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "moc
 mockk-core = { group = "io.mockk", name = "mockk", version.ref = "mockKVersion" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit"}
+retrofit-converter-kotlinx-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit"}
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timberVersion" }
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
 
