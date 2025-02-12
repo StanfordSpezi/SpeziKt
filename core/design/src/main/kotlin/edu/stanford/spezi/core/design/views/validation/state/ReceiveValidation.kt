@@ -10,13 +10,24 @@ fun ReceiveValidation(
     state: MutableState<ValidationContext>,
     content: @Composable () -> Unit,
 ) {
+    ReceiveValidation(
+        onChanged = { state.value = it },
+        content = content,
+    )
+}
+
+@Composable
+fun ReceiveValidation(
+    onChanged: (ValidationContext) -> Unit,
+    content: @Composable () -> Unit,
+) {
     // This is not remembered on purpose, since we are re-evaluating the validation here.
     val entries = CapturedValidationStateEntries()
     CompositionLocalProvider(LocalCapturedValidationStateEntries provides entries) {
         content()
 
         LaunchedEffect(entries.entries) {
-            state.value = ValidationContext(entries.entries)
+            onChanged(ValidationContext(entries.entries))
         }
     }
 }

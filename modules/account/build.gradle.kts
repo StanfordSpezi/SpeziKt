@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.spezi.library)
     alias(libs.plugins.spezi.compose)
     alias(libs.plugins.spezi.hilt)
+    alias(libs.plugins.spezi.serialization)
 }
 
 android {
@@ -22,6 +23,7 @@ dependencies {
     implementation(project(":core:coroutines"))
     implementation(project(":core:navigation"))
     implementation(project(":core:utils"))
+    implementation(project(":modules:storage"))
 
     implementation(libs.hilt.navigation.compose)
 

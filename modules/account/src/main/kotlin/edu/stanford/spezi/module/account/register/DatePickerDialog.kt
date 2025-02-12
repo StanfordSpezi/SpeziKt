@@ -13,18 +13,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import edu.stanford.spezi.module.account.R
 import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneOffset
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerDialog(
+    date: Instant? = null,
     onDateSelected: (Instant) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
-        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-            return utcTimeMillis <= System.currentTimeMillis()
-        }
-    })
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = date?.toEpochMilli(),
+        selectableDates = object : SelectableDates {
+            val minTimeMillis = @Suppress("detekt:MagicNumber") LocalDate.of(1800, 1, 1)
+                .atStartOfDay()
+                .toInstant(ZoneOffset.UTC)
+                .toEpochMilli()
+
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                return utcTimeMillis >= minTimeMillis &&
+                    utcTimeMillis <= System.currentTimeMillis()
+            }
+        },
+    )
 
     DatePickerDialog(
         modifier = Modifier.fillMaxWidth(),

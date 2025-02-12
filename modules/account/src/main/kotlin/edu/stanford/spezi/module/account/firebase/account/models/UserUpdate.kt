@@ -1,0 +1,30 @@
+package edu.stanford.spezi.module.account.firebase.account.models
+
+import com.google.firebase.auth.AuthResult
+
+internal data class UserUpdate(
+    val change: UserChange,
+    var authResult: AuthResult? = null,
+) {
+    constructor(authResult: AuthResult) : this(
+        // TODO: On iOS, the user property is not optional, so they never resort back to Removed here
+        authResult.user?.let { UserChange.User(it) } ?: UserChange.Removed,
+        authResult
+    )
+
+    fun describesSameUpdate(other: UserUpdate): Boolean =
+        when (change) {
+            is UserChange.User -> when (other.change) {
+                is UserChange.User -> other.change.user.uid == change.user.uid
+                is UserChange.Removed -> false
+            }
+            is UserChange.Removed -> when (other.change) {
+                is UserChange.User -> false
+                is UserChange.Removed -> true
+            }
+        }
+
+    companion object {
+        val removed = UserUpdate(UserChange.Removed)
+    }
+}
