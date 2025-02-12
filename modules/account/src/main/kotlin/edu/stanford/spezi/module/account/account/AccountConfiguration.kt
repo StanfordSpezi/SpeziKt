@@ -9,27 +9,27 @@ import edu.stanford.spezi.module.account.account.value.AccountKeys
 import edu.stanford.spezi.module.account.account.value.collections.AccountDetails
 import edu.stanford.spezi.module.account.account.value.configuration.AccountValueConfiguration
 import edu.stanford.spezi.module.account.account.value.keys.accountId
-import javax.inject.Inject
 import kotlin.system.exitProcess
 
 interface Standard
 
 class AccountConfiguration(
     service: AccountService,
+    standard: Standard,
     private val storageProvider: AccountStorageProvider? = null,
     configuration: AccountValueConfiguration = AccountValueConfiguration.default,
     activeDetails: AccountDetails? = null,
 ) {
     private val logger by speziLogger()
 
+    val externalStorage = ExternalAccountStorage(storageProvider)
     val account = Account(
         service,
         configuration,
+        standard,
+        externalStorage,
         activeDetails
     )
-    val externalStorage = ExternalAccountStorage(storageProvider)
-
-    @Inject internal lateinit var standard: Standard
 
     init {
         verify(account.configuration, service)

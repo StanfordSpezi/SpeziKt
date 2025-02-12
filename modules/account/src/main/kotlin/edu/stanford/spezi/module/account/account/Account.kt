@@ -11,9 +11,11 @@ import edu.stanford.spezi.module.account.account.value.keys.password
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class Account(
+class Account internal constructor(
     val accountService: AccountService,
     val configuration: AccountValueConfiguration = AccountValueConfiguration.default,
+    standard: Standard,
+    externalAccountStorage: ExternalAccountStorage,
     details: AccountDetails? = null,
 ) {
     internal val logger by speziLogger()
@@ -21,7 +23,7 @@ class Account(
     var details: AccountDetails?
         private set
 
-    val notifications = AccountNotifications()
+    val notifications = AccountNotifications(standard, externalAccountStorage)
 
     var signedIn: Boolean = details != null
         private set

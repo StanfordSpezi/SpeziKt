@@ -16,12 +16,12 @@ import kotlinx.serialization.encoding.encodeStructure
 class AccountDetailsEmptySerializer : AccountDetailsSerializer(keys = emptyList())
 
 fun AccountDetails.serializer(
-    keys: List<AccountKey<*>>,
+    keys: List<AccountKey<*>>? = null,
     identifierMapping: Map<String, AccountKey<*>>? = null,
     requireAllKeys: Boolean = false,
     lazyDecoding: Boolean = false,
 ) = AccountDetailsSerializer(
-    keys = keys,
+    keys = keys ?: this.keys,
     identifierMapping = identifierMapping,
     requireAllKeys = requireAllKeys,
     lazyDecoding = lazyDecoding,

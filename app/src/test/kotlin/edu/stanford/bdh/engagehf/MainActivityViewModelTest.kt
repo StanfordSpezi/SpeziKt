@@ -14,7 +14,7 @@ import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.coVerifyNever
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.core.utils.MessageNotifier
-import edu.stanford.spezi.module.account.account.AccountEvents
+import edu.stanford.spezi.module.account.AccountEvents
 import edu.stanford.spezi.module.account.manager.UserSessionManager
 import edu.stanford.spezi.module.account.manager.UserState
 import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent

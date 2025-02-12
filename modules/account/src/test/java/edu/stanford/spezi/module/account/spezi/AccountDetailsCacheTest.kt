@@ -10,16 +10,67 @@ import edu.stanford.spezi.module.account.account.value.keys.password
 import edu.stanford.spezi.module.account.account.value.keys.userId
 import edu.stanford.spezi.modules.storage.local.LocalStorage
 import edu.stanford.spezi.modules.storage.local.LocalStorageSetting
-import io.mockk.mockk
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.SerializationStrategy
+import kotlinx.serialization.json.Json
 import org.junit.Test
+import java.nio.charset.StandardCharsets
 
 class AccountDetailsCacheTest {
     private val accountId = UUID("b730ebce-e153-44fc-a547-d47ac9c9d190")
-    private val localStorage: LocalStorage = mockk(relaxed = true)
+    private val localStorage = object : LocalStorage {
+        private val storage = mutableMapOf<String, ByteArray>()
+
+        override fun <T : Any> store(
+            key: String,
+            value: T,
+            settings: LocalStorageSetting,
+            serializer: SerializationStrategy<T>,
+        ) {
+            store(key, value, settings) {
+                Json.encodeToString(serializer, value).toByteArray(StandardCharsets.UTF_8)
+            }
+        }
+
+        override fun <T : Any> store(
+            key: String,
+            value: T,
+            settings: LocalStorageSetting,
+            encoding: (T) -> ByteArray,
+        ) {
+            storage[key] = encoding(value)
+        }
+
+        override fun <T : Any> read(
+            key: String,
+            settings: LocalStorageSetting,
+            serializer: DeserializationStrategy<T>,
+        ): T? {
+            return read(key, settings) {
+                Json.decodeFromString(serializer, it.toString(StandardCharsets.UTF_8))
+            }
+        }
+
+        override fun <T : Any> read(
+            key: String,
+            settings: LocalStorageSetting,
+            decoding: (ByteArray) -> T,
+        ): T? {
+            return storage[key]?.let {
+                decoding(it)
+            }
+        }
+
+        override fun delete(key: String) {
+            storage.remove(key)
+        }
+    }
 
     @Test
     fun testCache() {
         val cache = AccountDetailsCache(LocalStorageSetting.Unencrypted)
+        cache.localStorage = localStorage
+
         val details = mockAccountDetails(accountId)
         cache.clearEntry(details.accountId)
 
@@ -45,6 +96,7 @@ class AccountDetailsCacheTest {
     @Test
     fun testApplyModifications() {
         val cache = AccountDetailsCache(LocalStorageSetting.Unencrypted)
+        cache.localStorage = localStorage
 
         val details = mockAccountDetails(accountId)
         val keys = details.keys
