@@ -43,7 +43,9 @@ class HomeViewModel @Inject constructor(
                     _uiState.update { it.copy(isLoadingDelete = true) }
                     runCatching {
                         choirRepository.unenrollParticipant()
-                        accountManager.signOut()
+                        accountManager.deleteCurrentUser()
+                    }.onFailure { error ->
+                        println(error)
                     }
                     _uiState.update { it.copy(isLoadingDelete = false, showsDeleteDialog = false) }
                 }

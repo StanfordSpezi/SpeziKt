@@ -55,6 +55,15 @@ class AccountManager @Inject internal constructor(
         }
     }
 
+    suspend fun deleteCurrentUser(): Result<Unit> {
+        return runCatching {
+            firebaseAuth.currentUser?.delete()?.await()
+            return@runCatching
+        }.onFailure {
+            logger.e { "Failed to delete user." }
+        }
+    }
+
     fun signOut() {
         runCatching {
             firebaseAuth.signOut()

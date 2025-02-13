@@ -54,12 +54,13 @@ class LoginViewModel @Inject constructor(
                 viewModelScope.launch {
                     _uiState.update { it.copy(isLoading = true) }
                     runCatching {
-                        accountManager.signIn(uiState.value.username, uiState.value.password).getOrThrow()
+                        val state = _uiState.value
+                        accountManager.signIn(state.username, state.password).getOrThrow()
                         choirRepository.putParticipant(
                             Participant(
                                 firstName = "",
                                 lastName = "",
-                                email = uiState.value.username,
+                                email = state.username,
                             )
                         )
                     }
