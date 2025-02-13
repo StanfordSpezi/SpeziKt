@@ -15,7 +15,8 @@ data class OnboardingAnswers(
         fieldAnswers = map.map {
             FormFieldAnswer(
                 fieldId = it.key,
-                choice = it.value.asStringList())
+                choice = it.value.asStringList(),
+            )
         }
     )
 }

@@ -3,6 +3,8 @@ package edu.stanford.bdh.heartbeat.app.account
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.bdh.heartbeat.app.choir.ChoirRepository
+import edu.stanford.bdh.heartbeat.app.choir.api.types.Participant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -30,6 +32,7 @@ sealed interface LoginAction {
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val accountManager: AccountManager,
+    private val choirRepository: ChoirRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -50,7 +53,16 @@ class LoginViewModel @Inject constructor(
             is LoginAction.Submit -> {
                 viewModelScope.launch {
                     _uiState.update { it.copy(isLoading = true) }
-                    accountManager.signIn(uiState.value.username, uiState.value.password)
+                    runCatching {
+                        accountManager.signIn(uiState.value.username, uiState.value.password).getOrThrow()
+                        choirRepository.putParticipant(
+                            Participant(
+                                firstName = "",
+                                lastName = "",
+                                email = uiState.value.username,
+                            )
+                        )
+                    }
                         .onSuccess {
                             _uiState.update {
                                 it.copy(

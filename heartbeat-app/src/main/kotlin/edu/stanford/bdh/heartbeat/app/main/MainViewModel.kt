@@ -69,7 +69,7 @@ class MainViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoadingOnboarding = false,
-                        hasFinishedOnboarding = onboarding.question.terminal == true,
+                        hasFinishedOnboarding = false, // onboarding.question.terminal == true,
                     )
                 }
             }.onFailure {
