@@ -19,6 +19,10 @@ class ChoirRepository @Inject internal constructor(
         return body(api.putParticipant(SITE_ID, participant))
     }
 
+    suspend fun unenrollParticipant() {
+        return body(api.unenrollParticipant(SITE_ID))
+    }
+
     suspend fun getOnboarding(): Onboarding {
         return body(api.getOnboarding(SITE_ID))
     }

@@ -16,11 +16,14 @@ data class MainUiState(
     val accountInfo: AccountInfo? = null,
     val isLoadingOnboarding: Boolean = false,
     val hasFinishedOnboarding: Boolean = false,
+    val showsSignOutDialog: Boolean = false,
 )
 
 sealed interface MainAction {
     data object Reload : MainAction
     data object ResendVerificationEmail : MainAction
+    data class ShowSignOutDialog(val value: Boolean) : MainAction
+    data object SignOut : MainAction
 }
 
 @HiltViewModel
@@ -51,12 +54,20 @@ class MainViewModel @Inject constructor(
                 handleReload()
             is MainAction.ResendVerificationEmail ->
                 handleResendVerificationEmail()
+            is MainAction.ShowSignOutDialog ->
+                _uiState.update { it.copy(showsSignOutDialog = action.value) }
+            is MainAction.SignOut ->
+                handleSignOut()
         }
     }
 
     private fun handleResendVerificationEmail() {
         viewModelScope.launch {
-            accountManager.sendVerificationEmail()
+            val accountInfo = accountManager.getAccountInfo()
+            _uiState.update { it.copy(accountInfo = accountInfo) }
+            if (accountInfo?.isEmailVerified == false) {
+                accountManager.sendVerificationEmail()
+            }
         }
     }
 
@@ -69,7 +80,7 @@ class MainViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoadingOnboarding = false,
-                        hasFinishedOnboarding = false, // onboarding.question.terminal == true,
+                        hasFinishedOnboarding = onboarding.question.terminal == true,
                     )
                 }
             }.onFailure {
@@ -79,6 +90,15 @@ class MainViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    private fun handleSignOut() {
+        viewModelScope.launch {
+            runCatching {
+                accountManager.signOut()
+            }
+            _uiState.update { it.copy(showsSignOutDialog = false) }
         }
     }
 }

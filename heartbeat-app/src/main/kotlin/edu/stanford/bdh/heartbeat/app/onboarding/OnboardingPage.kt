@@ -25,8 +25,6 @@ private fun OnboardingPage(
     }
 
     Column {
-        Text("Error: ${uiState.errorMessage ?: "null"}")
-        Text("isLoading: ${uiState.isLoading}")
-        Text("surveyToken: ${uiState.surveyToken ?: "null"}")
+        Text("State: $uiState")
     }
 }

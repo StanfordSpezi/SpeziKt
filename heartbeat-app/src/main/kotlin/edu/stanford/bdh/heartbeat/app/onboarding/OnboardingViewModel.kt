@@ -53,13 +53,15 @@ class OnboardingViewModel @Inject constructor(
     }
 
     private fun handleChangeAnswer(action: OnboardingAction.ChangeAnswer) {
-        TODO("Check if all answers have been answered and set uiState.continueButtonEnabled appropriately")
         _uiState.update { state ->
             state.copy(
                 answers = state.answers.copyWithChange(
                     id = action.id,
                     answer = action.answer
-                )
+                ),
+                isContinueButtonEnabled = state.step?.question?.value1?.fields?.all {
+                    it.required != true || state.answers.answer(it.fieldId) != null
+                } == true
             )
         }
     }

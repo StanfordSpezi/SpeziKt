@@ -85,7 +85,7 @@ class AccountManager @Inject internal constructor(
 
     suspend fun sendVerificationEmail(): Result<Unit> {
         return runCatching {
-            firebaseAuth.currentUser?.sendEmailVerification()
+            firebaseAuth.currentUser?.sendEmailVerification()?.await()
             return@runCatching
         }.onFailure {
             logger.e { "Error sending verification email." }

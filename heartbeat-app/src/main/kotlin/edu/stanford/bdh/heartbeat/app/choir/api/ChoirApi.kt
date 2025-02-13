@@ -6,6 +6,7 @@ import edu.stanford.bdh.heartbeat.app.choir.api.types.Onboarding
 import edu.stanford.bdh.heartbeat.app.choir.api.types.Participant
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -16,6 +17,11 @@ interface ChoirApi {
     suspend fun putParticipant(
         @Path("siteId") siteId: String,
         @Body body: Participant,
+    ): Response<Unit>
+
+    @DELETE("sites/{siteId}/participant")
+    suspend fun unenrollParticipant(
+        @Path("siteId") siteId: String,
     ): Response<Unit>
 
     @GET("sites/{siteId}/onboarding")
