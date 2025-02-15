@@ -9,12 +9,15 @@ import javax.inject.Inject
 class ChoirAuthenticationInterceptor @Inject constructor(
     private val accountManager: AccountManager,
 ) : Interceptor {
+
     override fun intercept(chain: Interceptor.Chain): Response {
-        val token: String = runBlocking {
-            accountManager.getToken(forceRefresh = false).getOrThrow()
+        val token: String? = runBlocking {
+            accountManager.getToken().getOrNull()
         }
         val request = chain.request().newBuilder()
-        request.addHeader("Authorization", "Bearer $token")
+        token?.let {
+            request.addHeader("Authorization", "Bearer $it")
+        }
         return chain.proceed(request.build())
     }
 }

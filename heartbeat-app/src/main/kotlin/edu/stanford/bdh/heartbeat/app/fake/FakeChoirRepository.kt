@@ -29,5 +29,9 @@ class FakeChoirRepository @Inject constructor() : ChoirRepository {
         return Result.failure(Error("TODO"))
     }
 
+    override fun clear() {
+        // No-op
+    }
+
     private fun <T> success(value: T) = Result.success(value)
 }

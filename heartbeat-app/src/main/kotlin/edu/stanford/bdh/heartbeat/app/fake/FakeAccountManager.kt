@@ -17,11 +17,11 @@ class FakeAccountManager @Inject constructor() : AccountManager {
 
     override fun observeAccountInfo(): Flow<AccountInfo?> = flowOf(accountInfo)
 
-    override fun getAccountInfo(): AccountInfo {
-        return accountInfo
+    override suspend fun reloadAccountInfo(): Result<AccountInfo?> {
+        return success(accountInfo)
     }
 
-    override suspend fun getToken(forceRefresh: Boolean): Result<String> {
+    override suspend fun getToken(): Result<String> {
         return success("fake-user-token")
     }
 

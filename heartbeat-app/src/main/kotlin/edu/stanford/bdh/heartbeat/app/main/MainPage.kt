@@ -12,15 +12,21 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.heartbeat.app.account.LoginPage
 import edu.stanford.bdh.heartbeat.app.home.HomePage
 import edu.stanford.bdh.heartbeat.app.onboarding.OnboardingPage
 import edu.stanford.spezi.core.design.component.Button
+import edu.stanford.spezi.core.design.component.CenteredBoxContent
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
+import edu.stanford.spezi.core.design.theme.ThemePreviews
 
 @Composable
 fun MainPage() {
@@ -34,7 +40,58 @@ private fun MainPage(
     uiState: MainUiState,
     onAction: (MainAction) -> Unit,
 ) {
-    if (uiState.showsSignOutDialog) {
+    when (uiState) {
+        MainUiState.Loading -> CircularProgressIndicator()
+
+        MainUiState.Unauthenticated -> LoginPage()
+        is MainUiState.Authenticated.RequiresEmailVerification -> EmailVerification(
+            uiState = uiState,
+            onAction = onAction
+        )
+
+        MainUiState.Authenticated.Onboarding.Loading -> CircularProgressIndicator()
+        MainUiState.Authenticated.Onboarding.Pending -> OnboardingPage()
+        MainUiState.Authenticated.Onboarding.Completed -> HomePage()
+        MainUiState.Authenticated.Onboarding.LoadingFailed -> OnboardingLoadingError(onAction = onAction)
+    }
+}
+
+@Composable
+fun OnboardingLoadingError(onAction: (MainAction) -> Unit) {
+    CenteredBoxContent {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(Spacings.large),
+        ) {
+            Text(
+                text = "Oops",
+                style = TextStyles.headlineLarge,
+                textAlign = TextAlign.Center,
+            )
+            VerticalSpacer(height = Spacings.medium)
+            Text(
+                text = "An error occurred while loading your onboarding questionnaire",
+                textAlign = TextAlign.Center,
+            )
+            VerticalSpacer(height = Spacings.medium)
+            Button(
+                onClick = {
+                    onAction(MainAction.ReloadOnboarding)
+                },
+            ) {
+                Text("Try again")
+            }
+            SignOutButton(onClick = { onAction(MainAction.SignOut) })
+        }
+    }
+}
+
+@Composable
+private fun EmailVerification(
+    uiState: MainUiState.Authenticated.RequiresEmailVerification,
+    onAction: (MainAction) -> Unit,
+) {
+    if (uiState.showSignoutDialog) {
         AlertDialog(
             onDismissRequest = {
                 onAction(MainAction.ShowSignOutDialog(false))
@@ -66,48 +123,79 @@ private fun MainPage(
         )
     }
 
-    if (uiState.accountInfo == null) {
-        LoginPage()
-    } else if (!uiState.accountInfo.isEmailVerified) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(Spacings.large),
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(Spacings.large),
+    ) {
+        Text(
+            text = "Welcome",
+            style = TextStyles.headlineLarge,
+            textAlign = TextAlign.Center,
+        )
+        VerticalSpacer(height = Spacings.medium)
+        Text(
+            text = "Check your inbox and verify your email by clicking the provided link.",
+        )
+        VerticalSpacer(height = Spacings.medium)
+
+        @Suppress("MaxLineLength")
+        Text(text = "If you haven't received the email, you can resend it. After confirming, please press \"Reload\" to update your status.")
+        VerticalSpacer(height = Spacings.medium)
+
+        Button(
+            onClick = {
+                onAction(MainAction.ResendVerificationEmail)
+            },
         ) {
-            Text("Email has been sent.", style = TextStyles.headlineLarge)
-            VerticalSpacer(height = Spacings.medium)
-            Text("Check your inbox and verify your email by clicking the provided link.")
-            VerticalSpacer(height = Spacings.medium)
-            TextButton(
-                onClick = {
-                    onAction(MainAction.Reload)
-                }
-            ) {
-                Text("Reload")
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Button(
-                onClick = {
-                    onAction(MainAction.ResendVerificationEmail)
-                },
-            ) {
-                Text("Resend verification email")
-            }
-
-            TextButton(
-                onClick = {
-                    onAction(MainAction.ShowSignOutDialog(true))
-                }
-            ) {
-                Text("Sign Out", color = Colors.error)
-            }
+            Text("Resend verification email")
         }
-    } else if (uiState.isLoadingOnboarding) {
-        CircularProgressIndicator()
-    } else if (uiState.hasFinishedOnboarding) {
-        HomePage()
-    } else {
-        OnboardingPage()
+
+        TextButton(
+            onClick = { onAction(MainAction.ReloadUser) }
+        ) {
+            Text("Reload")
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+        SignOutButton(onClick = { onAction(MainAction.SignOut) })
+    }
+}
+
+@Composable
+private fun SignOutButton(
+    onClick: () -> Unit
+) {
+    TextButton(onClick = onClick) {
+        Text("Sign Out", color = Colors.error)
+    }
+}
+
+private class MainUiStatePreviewParameterProvider : PreviewParameterProvider<MainUiState> {
+    override val values: Sequence<MainUiState>
+        get() = sequenceOf(
+            MainUiState.Loading,
+            MainUiState.Authenticated.Onboarding.Loading,
+            MainUiState.Authenticated.Onboarding.LoadingFailed,
+            MainUiState.Authenticated.RequiresEmailVerification(false),
+            MainUiState.Authenticated.RequiresEmailVerification(true)
+        )
+}
+
+@ThemePreviews
+@Composable
+private fun Previews(@PreviewParameter(MainUiStatePreviewParameterProvider::class) state: MainUiState) {
+    SpeziTheme(isPreview = true) {
+        MainPage(
+            uiState = state,
+            onAction = {}
+        )
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun OnboardingLoadingFailed() {
+    SpeziTheme(isPreview = true) {
+        EmailVerification(uiState = MainUiState.Authenticated.RequiresEmailVerification(false)) { }
     }
 }

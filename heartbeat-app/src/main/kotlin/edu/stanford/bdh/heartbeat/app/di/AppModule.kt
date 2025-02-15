@@ -30,14 +30,12 @@ class AppModule {
         const val HOST = "10.0.2.2"
         const val AUTH_PORT = 9099
         private const val USE_FIREBASE_EMULATOR = false
-
-        private const val USE_FAKE_FLOW = true
     }
 
     @Module
     @InstallIn(SingletonComponent::class)
     class ApiModule {
-        private val useFakeFlow = true
+        private val useFakeFlow = false
 
         @Provides
         fun provideAccountManager(
@@ -48,7 +46,7 @@ class AppModule {
         @Provides
         fun provideChoirRepository(
             impl: Lazy<ChoirRepositoryImpl>,
-            fake: Lazy<FakeChoirRepository>
+            fake: Lazy<FakeChoirRepository>,
         ): ChoirRepository = (if (useFakeFlow) fake else impl).get()
     }
 }

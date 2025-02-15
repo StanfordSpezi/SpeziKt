@@ -47,6 +47,7 @@ class RegisterViewModel @Inject constructor(
                                     isLoading = false,
                                 )
                             }
+                            accountManager.sendVerificationEmail().getOrNull()
                         }
                         .onFailure { error ->
                             _uiState.update {

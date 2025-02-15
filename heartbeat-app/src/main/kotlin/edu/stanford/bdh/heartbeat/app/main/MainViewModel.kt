@@ -6,21 +6,37 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.heartbeat.app.account.AccountInfo
 import edu.stanford.bdh.heartbeat.app.account.AccountManager
 import edu.stanford.bdh.heartbeat.app.choir.ChoirRepository
+import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.core.utils.MessageNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class MainUiState(
-    val accountInfo: AccountInfo? = null,
-    val isLoadingOnboarding: Boolean = false,
-    val hasFinishedOnboarding: Boolean = false,
-    val showsSignOutDialog: Boolean = false,
-)
+sealed interface MainUiState {
+    data object Loading : MainUiState
+
+    data object Unauthenticated : MainUiState
+
+    sealed interface Authenticated : MainUiState {
+
+        data class RequiresEmailVerification(
+            val showSignoutDialog: Boolean,
+        ) : Authenticated
+
+        sealed interface Onboarding : Authenticated {
+            data object Loading : Onboarding
+            data object Pending : Onboarding
+            data object LoadingFailed : Onboarding
+            data object Completed : Onboarding
+        }
+    }
+}
 
 sealed interface MainAction {
-    data object Reload : MainAction
+    data object ReloadOnboarding : MainAction
+    data object ReloadUser : MainAction
     data object ResendVerificationEmail : MainAction
     data class ShowSignOutDialog(val value: Boolean) : MainAction
     data object SignOut : MainAction
@@ -30,67 +46,97 @@ sealed interface MainAction {
 class MainViewModel @Inject constructor(
     private val accountManager: AccountManager,
     private val choirRepository: ChoirRepository,
+    private val messageNotifier: MessageNotifier,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(MainUiState())
+    private val logger by speziLogger()
+    private val _uiState = MutableStateFlow<MainUiState>(MainUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
             accountManager.observeAccountInfo().collect { accountInfo ->
-                val previousAccountInfo = _uiState.value.accountInfo
-                _uiState.update {
-                    it.copy(accountInfo = accountInfo)
-                }
-                if (previousAccountInfo == null && accountInfo != null) {
-                    handleReload()
-                }
+                logger.i { "Received new account info update $accountInfo" }
+                updateState(accountInfo = accountInfo)
+                if (accountInfo == null) choirRepository.clear()
             }
         }
     }
 
     fun onAction(action: MainAction) {
         when (action) {
-            is MainAction.Reload ->
-                handleReload()
+            is MainAction.ReloadUser -> {
+                viewModelScope.launch {
+                    val previousState = _uiState.value
+                    _uiState.update { MainUiState.Loading }
+                    accountManager.reloadAccountInfo()
+                        .onSuccess { updateState(accountInfo = it) }
+                        .onFailure { _uiState.update { previousState } }
+                }
+            }
 
-            is MainAction.ResendVerificationEmail ->
-                handleResendVerificationEmail()
+            is MainAction.ReloadOnboarding -> {
+                _uiState.update { MainUiState.Authenticated.Onboarding.Loading }
+                viewModelScope.launch {
+                    accountManager.reloadAccountInfo()
+                    loadOnboarding()
+                }
+            }
+
+            is MainAction.ResendVerificationEmail -> viewModelScope.launch {
+                accountManager.sendVerificationEmail()
+                    .onSuccess {
+                        val message = "Verification email sent!"
+                        logger.i { message }
+                        messageNotifier.notify(message)
+                    }
+                    .onFailure {
+                        val message = "Failed to send verification email!"
+                        logger.e(it) { message }
+                        messageNotifier.notify("Failed to send verification email!")
+                    }
+            }
 
             is MainAction.ShowSignOutDialog ->
-                _uiState.update { it.copy(showsSignOutDialog = action.value) }
+                _uiState.update { currentState ->
+                    if (currentState is MainUiState.Authenticated.RequiresEmailVerification) {
+                        currentState.copy(showSignoutDialog = action.value)
+                    } else {
+                        currentState
+                    }
+                }
 
-            is MainAction.SignOut ->
-                handleSignOut()
+            is MainAction.SignOut -> handleSignOut()
         }
     }
 
-    private fun handleResendVerificationEmail() {
-        viewModelScope.launch {
-            val accountInfo = accountManager.getAccountInfo()
-            _uiState.update { it.copy(accountInfo = accountInfo) }
-            if (accountInfo?.isEmailVerified == false) {
-                accountManager.sendVerificationEmail()
+    private fun updateState(accountInfo: AccountInfo?) {
+        _uiState.update {
+            when {
+                accountInfo == null -> MainUiState.Unauthenticated
+                !accountInfo.isEmailVerified -> MainUiState.Authenticated.RequiresEmailVerification(
+                    showSignoutDialog = false
+                )
+
+                else -> MainUiState.Authenticated.Onboarding.Loading.also { loadOnboarding() }
             }
         }
     }
 
-    private fun handleReload() {
+    private fun loadOnboarding() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoadingOnboarding = true) }
             choirRepository.getOnboarding()
                 .onSuccess { onboarding ->
+                    logger.i { "Onboarding loaded successfully" }
                     _uiState.update {
-                        it.copy(
-                            isLoadingOnboarding = false,
-                            hasFinishedOnboarding = onboarding.question.terminal == true,
-                        )
+                        if (onboarding.question.terminal == true) {
+                            MainUiState.Authenticated.Onboarding.Completed
+                        } else {
+                            MainUiState.Authenticated.Onboarding.Pending
+                        }
                     }
                 }.onFailure {
-                    _uiState.update {
-                        it.copy(
-                            isLoadingOnboarding = false,
-                        )
-                    }
+                    logger.e(it) { "Failed to load onboarding" }
+                    _uiState.update { MainUiState.Authenticated.Onboarding.LoadingFailed }
                 }
         }
     }
@@ -98,7 +144,11 @@ class MainViewModel @Inject constructor(
     private fun handleSignOut() {
         viewModelScope.launch {
             accountManager.signOut()
-            _uiState.update { it.copy(showsSignOutDialog = false) }
+                .onSuccess {
+                    _uiState.update { MainUiState.Unauthenticated }
+                }.onFailure {
+                    messageNotifier.notify("Failed to sign out")
+                }
         }
     }
 }

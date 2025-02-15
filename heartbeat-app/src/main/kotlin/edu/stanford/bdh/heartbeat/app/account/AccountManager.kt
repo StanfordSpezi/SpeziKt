@@ -21,9 +21,9 @@ data class AccountInfo(
 interface AccountManager {
     fun observeAccountInfo(): Flow<AccountInfo?>
 
-    fun getAccountInfo(): AccountInfo?
+    suspend fun reloadAccountInfo(): Result<AccountInfo?>
 
-    suspend fun getToken(forceRefresh: Boolean = false): Result<String>
+    suspend fun getToken(): Result<String>
 
     suspend fun deleteCurrentUser(): Result<Unit>
 
@@ -47,6 +47,24 @@ class AccountManagerImpl @Inject internal constructor(
     @Dispatching.IO private val coroutineScope: CoroutineScope,
 ) : AccountManager {
     private val logger by speziLogger()
+    private var userToken: String? = null
+
+    init {
+        observeUserTokenChanges()
+    }
+
+    private fun observeUserTokenChanges() {
+        firebaseAuth.addIdTokenListener { auth: FirebaseAuth ->
+            val currentUser = auth.currentUser
+            if (currentUser == null) {
+                userToken = null
+            } else {
+                auth.currentUser?.getIdToken(false)?.addOnSuccessListener { result ->
+                    userToken = result.token
+                }
+            }
+        }
+    }
 
     override fun observeAccountInfo(): Flow<AccountInfo?> = callbackFlow {
         val authStateListener = FirebaseAuth.AuthStateListener { _ ->
@@ -60,24 +78,27 @@ class AccountManagerImpl @Inject internal constructor(
         }
     }
 
-    override fun getAccountInfo(): AccountInfo? {
-        return firebaseAuth.currentUser?.let { user ->
-            AccountInfo(
-                email = user.email ?: "",
-                name = user.displayName?.takeIf { it.isNotBlank() },
-                isEmailVerified = user.isEmailVerified
-            )
-        }
+    override suspend fun reloadAccountInfo(): Result<AccountInfo?> = runCatching {
+        firebaseAuth.currentUser?.reload()?.await()
+        userToken = getToken(forceRefresh = true).getOrNull()
+        getAccountInfo()
     }
 
-    override suspend fun getToken(forceRefresh: Boolean): Result<String> {
+    override suspend fun getToken(): Result<String> {
+        return getToken(forceRefresh = false)
+    }
+
+    private suspend fun getToken(forceRefresh: Boolean): Result<String> {
+        val currentReceivedToken = userToken.takeIf { forceRefresh.not() }
+        if (currentReceivedToken != null) return Result.success(currentReceivedToken)
         return runCatching {
             val user =
                 firebaseAuth.currentUser ?: error("Does not have a current user to get a token for")
-            val idToken = user.getIdToken(forceRefresh).await()
-            return@runCatching idToken.token ?: error("Id token refresh didn't include a token")
+            val token = user.getIdToken(forceRefresh).await().token ?: error("Id token refresh didn't include a token")
+            userToken = token
+            token
         }.onFailure {
-            logger.e { "Failed to force refresh token" }
+            logger.e(it) { "Failed to retrieve token" }
         }
     }
 
@@ -131,6 +152,16 @@ class AccountManagerImpl @Inject internal constructor(
             if (result.user == null) error("Failed to sign in, returned null user")
         }.onFailure { e ->
             logger.e { "Error signing in with email and password: ${e.message}" }
+        }
+    }
+
+    private fun getAccountInfo(): AccountInfo? {
+        return firebaseAuth.currentUser?.let { user ->
+            AccountInfo(
+                email = user.email ?: "",
+                name = user.displayName?.takeIf { it.isNotBlank() },
+                isEmailVerified = user.isEmailVerified
+            )
         }
     }
 }
