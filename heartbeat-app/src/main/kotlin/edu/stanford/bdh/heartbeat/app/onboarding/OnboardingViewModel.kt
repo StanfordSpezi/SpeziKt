@@ -43,10 +43,13 @@ class OnboardingViewModel @Inject constructor(
         when (action) {
             is OnboardingAction.ChangeAnswer ->
                 handleChangeAnswer(action)
+
             is OnboardingAction.Reload ->
                 handleReload()
+
             is OnboardingAction.Continue ->
                 handleContinue(backRequest = false)
+
             is OnboardingAction.Back ->
                 handleContinue(backRequest = true)
         }
@@ -69,9 +72,7 @@ class OnboardingViewModel @Inject constructor(
     private fun handleReload() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            runCatching {
-                repository.getOnboarding()
-            }.onSuccess { onboarding ->
+            repository.getOnboarding().onSuccess { onboarding ->
                 _uiState.update {
                     it.copy(
                         surveyToken = onboarding.displayStatus.surveyToken,
@@ -101,27 +102,26 @@ class OnboardingViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             val state = _uiState.value
-            runCatching {
-                repository.continueAssessment(
-                    token = state.surveyToken ?: error("No survey token available."),
-                    submit = AssessmentSubmit(
-                        submitStatus = state.step?.let { step ->
-                            SubmitStatus(
-                                questionId = step.displayStatus.questionId,
-                                questionType = QuestionType.FORM,
-                                stepNumber = (step.displayStatus.stepNumber ?: "0").toDoubleOrNull() ?: 0.0,
-                                surveySectionId = step.displayStatus.surveySectionId,
-                                sessionToken = step.displayStatus.sessionToken,
-                                locale = step.displayStatus.locale,
-                                backRequest = backRequest
-                            )
-                        },
-                        answers = AssessmentSubmit.AnswersPayload(
-                            value1 = state.answers.asFormAnswer()
+            repository.continueAssessment(
+                token = state.surveyToken ?: error("No survey token available."),
+                submit = AssessmentSubmit(
+                    submitStatus = state.step?.let { step ->
+                        SubmitStatus(
+                            questionId = step.displayStatus.questionId,
+                            questionType = QuestionType.FORM,
+                            stepNumber = (step.displayStatus.stepNumber ?: "0").toDoubleOrNull()
+                                ?: 0.0,
+                            surveySectionId = step.displayStatus.surveySectionId,
+                            sessionToken = step.displayStatus.sessionToken,
+                            locale = step.displayStatus.locale,
+                            backRequest = backRequest
                         )
+                    },
+                    answers = AssessmentSubmit.AnswersPayload(
+                        value1 = state.answers.asFormAnswer()
                     )
                 )
-            }.onSuccess { success ->
+            ).onSuccess { success ->
                 _uiState.update {
                     it.copy(
                         step = success,

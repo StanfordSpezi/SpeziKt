@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import javax.inject.Singleton
 
 data class AccountInfo(
     val email: String,
@@ -17,13 +18,37 @@ data class AccountInfo(
     val isEmailVerified: Boolean,
 )
 
-class AccountManager @Inject internal constructor(
+interface AccountManager {
+    fun observeAccountInfo(): Flow<AccountInfo?>
+
+    fun getAccountInfo(): AccountInfo?
+
+    suspend fun getToken(forceRefresh: Boolean = false): Result<String>
+
+    suspend fun deleteCurrentUser(): Result<Unit>
+
+    suspend fun signOut(): Result<Unit>
+
+    suspend fun signUpWithEmailAndPassword(
+        email: String,
+        password: String,
+    ): Result<Unit>
+
+    suspend fun sendForgotPasswordEmail(email: String): Result<Unit>
+
+    suspend fun sendVerificationEmail(): Result<Unit>
+
+    suspend fun signIn(email: String, password: String): Result<Unit>
+}
+
+@Singleton
+class AccountManagerImpl @Inject internal constructor(
     private val firebaseAuth: FirebaseAuth,
     @Dispatching.IO private val coroutineScope: CoroutineScope,
-) {
+) : AccountManager {
     private val logger by speziLogger()
 
-    fun observeAccountInfo(): Flow<AccountInfo?> = callbackFlow {
+    override fun observeAccountInfo(): Flow<AccountInfo?> = callbackFlow {
         val authStateListener = FirebaseAuth.AuthStateListener { _ ->
             coroutineScope.launch { send(getAccountInfo()) }
         }
@@ -35,7 +60,7 @@ class AccountManager @Inject internal constructor(
         }
     }
 
-    fun getAccountInfo(): AccountInfo? {
+    override fun getAccountInfo(): AccountInfo? {
         return firebaseAuth.currentUser?.let { user ->
             AccountInfo(
                 email = user.email ?: "",
@@ -45,9 +70,10 @@ class AccountManager @Inject internal constructor(
         }
     }
 
-    suspend fun getToken(forceRefresh: Boolean = false): Result<String> {
+    override suspend fun getToken(forceRefresh: Boolean): Result<String> {
         return runCatching {
-            val user = firebaseAuth.currentUser ?: error("Does not have a current user to get a token for")
+            val user =
+                firebaseAuth.currentUser ?: error("Does not have a current user to get a token for")
             val idToken = user.getIdToken(forceRefresh).await()
             return@runCatching idToken.token ?: error("Id token refresh didn't include a token")
         }.onFailure {
@@ -55,24 +81,22 @@ class AccountManager @Inject internal constructor(
         }
     }
 
-    suspend fun deleteCurrentUser(): Result<Unit> {
+    override suspend fun deleteCurrentUser(): Result<Unit> {
         return runCatching {
-            firebaseAuth.currentUser?.delete()?.await()
-            return@runCatching
+            firebaseAuth.currentUser?.delete()?.await() ?: error("User not available")
+            Unit
         }.onFailure {
             logger.e { "Failed to delete user." }
         }
     }
 
-    fun signOut() {
-        runCatching {
-            firebaseAuth.signOut()
-        }.onFailure {
-            logger.e { "Failed to sign out" }
-        }
+    override suspend fun signOut(): Result<Unit> = runCatching {
+        firebaseAuth.signOut()
+    }.onFailure {
+        logger.e { "Failed to sign out" }
     }
 
-    suspend fun signUpWithEmailAndPassword(
+    override suspend fun signUpWithEmailAndPassword(
         email: String,
         password: String,
     ): Result<Unit> {
@@ -84,7 +108,7 @@ class AccountManager @Inject internal constructor(
         }
     }
 
-    suspend fun sendForgotPasswordEmail(email: String): Result<Unit> {
+    override suspend fun sendForgotPasswordEmail(email: String): Result<Unit> {
         return runCatching {
             firebaseAuth.sendPasswordResetEmail(email).await().let { }
         }.onFailure { e ->
@@ -92,7 +116,7 @@ class AccountManager @Inject internal constructor(
         }
     }
 
-    suspend fun sendVerificationEmail(): Result<Unit> {
+    override suspend fun sendVerificationEmail(): Result<Unit> {
         return runCatching {
             firebaseAuth.currentUser?.sendEmailVerification()?.await()
             return@runCatching
@@ -101,7 +125,7 @@ class AccountManager @Inject internal constructor(
         }
     }
 
-    suspend fun signIn(email: String, password: String): Result<Unit> {
+    override suspend fun signIn(email: String, password: String): Result<Unit> {
         return runCatching {
             val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
             if (result.user == null) error("Failed to sign in, returned null user")

@@ -52,10 +52,13 @@ class MainViewModel @Inject constructor(
         when (action) {
             is MainAction.Reload ->
                 handleReload()
+
             is MainAction.ResendVerificationEmail ->
                 handleResendVerificationEmail()
+
             is MainAction.ShowSignOutDialog ->
                 _uiState.update { it.copy(showsSignOutDialog = action.value) }
+
             is MainAction.SignOut ->
                 handleSignOut()
         }
@@ -74,30 +77,27 @@ class MainViewModel @Inject constructor(
     private fun handleReload() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoadingOnboarding = true) }
-            runCatching {
-                choirRepository.getOnboarding()
-            }.onSuccess { onboarding ->
-                _uiState.update {
-                    it.copy(
-                        isLoadingOnboarding = false,
-                        hasFinishedOnboarding = onboarding.question.terminal == true,
-                    )
+            choirRepository.getOnboarding()
+                .onSuccess { onboarding ->
+                    _uiState.update {
+                        it.copy(
+                            isLoadingOnboarding = false,
+                            hasFinishedOnboarding = onboarding.question.terminal == true,
+                        )
+                    }
+                }.onFailure {
+                    _uiState.update {
+                        it.copy(
+                            isLoadingOnboarding = false,
+                        )
+                    }
                 }
-            }.onFailure {
-                _uiState.update {
-                    it.copy(
-                        isLoadingOnboarding = false,
-                    )
-                }
-            }
         }
     }
 
     private fun handleSignOut() {
         viewModelScope.launch {
-            runCatching {
-                accountManager.signOut()
-            }
+            accountManager.signOut()
             _uiState.update { it.copy(showsSignOutDialog = false) }
         }
     }

@@ -1,29 +1,54 @@
 package edu.stanford.bdh.heartbeat.app.di
 
 import com.google.firebase.auth.FirebaseAuth
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import edu.stanford.bdh.heartbeat.app.account.AccountManager
+import edu.stanford.bdh.heartbeat.app.account.AccountManagerImpl
+import edu.stanford.bdh.heartbeat.app.choir.ChoirRepository
+import edu.stanford.bdh.heartbeat.app.choir.ChoirRepositoryImpl
+import edu.stanford.bdh.heartbeat.app.fake.FakeAccountManager
+import edu.stanford.bdh.heartbeat.app.fake.FakeChoirRepository
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
-    // TODO: Technically, we may want to support emulators, but I don't actually see the point,
-    //  since we cannot connect to the CHOIR servers anyways
-    private const val USE_FIREBASE_EMULATOR = false
+class AppModule {
 
     @Provides
     @Singleton
     fun provideFirebaseAuth() = FirebaseAuth.getInstance().apply {
         if (USE_FIREBASE_EMULATOR) {
-            useEmulator(FirebaseEmulatorSettings.HOST, FirebaseEmulatorSettings.AUTH_PORT)
+            useEmulator(HOST, AUTH_PORT)
         }
     }
 
-    private object FirebaseEmulatorSettings {
+    private companion object {
         const val HOST = "10.0.2.2"
         const val AUTH_PORT = 9099
+        private const val USE_FIREBASE_EMULATOR = false
+
+        private const val USE_FAKE_FLOW = true
+    }
+
+    @Module
+    @InstallIn(SingletonComponent::class)
+    class ApiModule {
+        private val useFakeFlow = true
+
+        @Provides
+        fun provideAccountManager(
+            impl: Lazy<AccountManagerImpl>,
+            fake: Lazy<FakeAccountManager>,
+        ): AccountManager = (if (useFakeFlow) fake else impl).get()
+
+        @Provides
+        fun provideChoirRepository(
+            impl: Lazy<ChoirRepositoryImpl>,
+            fake: Lazy<FakeChoirRepository>
+        ): ChoirRepository = (if (useFakeFlow) fake else impl).get()
     }
 }
