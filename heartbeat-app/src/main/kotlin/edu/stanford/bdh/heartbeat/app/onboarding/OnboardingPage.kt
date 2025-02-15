@@ -7,6 +7,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import edu.stanford.spezi.core.design.theme.SpeziTheme
+import edu.stanford.spezi.core.design.theme.ThemePreviews
 
 @Composable
 fun OnboardingPage() {
@@ -26,5 +28,14 @@ private fun OnboardingPage(
 
     Column {
         Text("State: $uiState")
+    }
+}
+
+
+@ThemePreviews
+@Composable
+private fun OnboardingLoadingFailed() {
+    SpeziTheme(isPreview = true) {
+        Text("State")
     }
 }

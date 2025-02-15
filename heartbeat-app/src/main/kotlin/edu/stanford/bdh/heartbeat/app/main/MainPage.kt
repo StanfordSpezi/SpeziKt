@@ -49,7 +49,6 @@ private fun MainPage(
             onAction = onAction
         )
 
-        MainUiState.Authenticated.Onboarding.Loading -> CircularProgressIndicator()
         MainUiState.Authenticated.Onboarding.Pending -> OnboardingPage()
         MainUiState.Authenticated.Onboarding.Completed -> HomePage()
         MainUiState.Authenticated.Onboarding.LoadingFailed -> OnboardingLoadingError(onAction = onAction)
@@ -163,7 +162,7 @@ private fun EmailVerification(
 
 @Composable
 private fun SignOutButton(
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     TextButton(onClick = onClick) {
         Text("Sign Out", color = Colors.error)
@@ -174,7 +173,6 @@ private class MainUiStatePreviewParameterProvider : PreviewParameterProvider<Mai
     override val values: Sequence<MainUiState>
         get() = sequenceOf(
             MainUiState.Loading,
-            MainUiState.Authenticated.Onboarding.Loading,
             MainUiState.Authenticated.Onboarding.LoadingFailed,
             MainUiState.Authenticated.RequiresEmailVerification(false),
             MainUiState.Authenticated.RequiresEmailVerification(true)

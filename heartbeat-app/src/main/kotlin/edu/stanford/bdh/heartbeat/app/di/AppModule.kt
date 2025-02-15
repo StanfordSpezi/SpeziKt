@@ -35,7 +35,7 @@ class AppModule {
     @Module
     @InstallIn(SingletonComponent::class)
     class ApiModule {
-        private val useFakeFlow = false
+        private val useFakeFlow = true
 
         @Provides
         fun provideAccountManager(

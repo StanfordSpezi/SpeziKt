@@ -26,7 +26,6 @@ sealed interface MainUiState {
         ) : Authenticated
 
         sealed interface Onboarding : Authenticated {
-            data object Loading : Onboarding
             data object Pending : Onboarding
             data object LoadingFailed : Onboarding
             data object Completed : Onboarding
@@ -56,7 +55,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             accountManager.observeAccountInfo().collect { accountInfo ->
                 logger.i { "Received new account info update $accountInfo" }
-                updateState(accountInfo = accountInfo)
+                update(accountInfo = accountInfo)
                 if (accountInfo == null) choirRepository.clear()
             }
         }
@@ -69,14 +68,14 @@ class MainViewModel @Inject constructor(
                     val previousState = _uiState.value
                     _uiState.update { MainUiState.Loading }
                     accountManager.reloadAccountInfo()
-                        .onSuccess { updateState(accountInfo = it) }
+                        .onSuccess { update(accountInfo = it) }
                         .onFailure { _uiState.update { previousState } }
                 }
             }
 
             is MainAction.ReloadOnboarding -> {
-                _uiState.update { MainUiState.Authenticated.Onboarding.Loading }
                 viewModelScope.launch {
+                    _uiState.update { MainUiState.Loading }
                     accountManager.reloadAccountInfo()
                     loadOnboarding()
                 }
@@ -109,21 +108,23 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun updateState(accountInfo: AccountInfo?) {
-        _uiState.update {
-            when {
-                accountInfo == null -> MainUiState.Unauthenticated
-                !accountInfo.isEmailVerified -> MainUiState.Authenticated.RequiresEmailVerification(
+    private fun update(accountInfo: AccountInfo?) {
+        when {
+            accountInfo == null -> _uiState.update { MainUiState.Unauthenticated }
+            !accountInfo.isEmailVerified -> _uiState.update {
+                MainUiState.Authenticated.RequiresEmailVerification(
                     showSignoutDialog = false
                 )
-
-                else -> MainUiState.Authenticated.Onboarding.Loading.also { loadOnboarding() }
             }
+
+            else -> loadOnboarding()
         }
     }
 
     private fun loadOnboarding() {
         viewModelScope.launch {
+            logger.i { "Invoking getOnboarding" }
+            _uiState.update { MainUiState.Loading }
             choirRepository.getOnboarding()
                 .onSuccess { onboarding ->
                     logger.i { "Onboarding loaded successfully" }
