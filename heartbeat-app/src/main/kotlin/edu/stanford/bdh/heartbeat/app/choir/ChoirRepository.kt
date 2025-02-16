@@ -7,22 +7,17 @@ import edu.stanford.bdh.heartbeat.app.choir.api.types.Onboarding
 import edu.stanford.bdh.heartbeat.app.choir.api.types.Participant
 import retrofit2.Response
 import javax.inject.Inject
-import javax.inject.Singleton
 
 interface ChoirRepository {
     suspend fun putParticipant(participant: Participant): Result<Unit>
     suspend fun unenrollParticipant(): Result<Unit>
     suspend fun getOnboarding(): Result<Onboarding>
     suspend fun continueAssessment(token: String, submit: AssessmentSubmit): Result<AssessmentStep>
-    fun clear()
 }
 
-@Singleton
 class ChoirRepositoryImpl @Inject internal constructor(
     private val api: ChoirApi,
 ) : ChoirRepository {
-
-    private var cachedOnboarding: Onboarding? = null
 
     override suspend fun putParticipant(participant: Participant): Result<Unit> {
         return result(api.putParticipant(SITE_ID, participant))
@@ -33,8 +28,7 @@ class ChoirRepositoryImpl @Inject internal constructor(
     }
 
     override suspend fun getOnboarding(): Result<Onboarding> {
-        return cachedOnboarding?.let { Result.success(it) }
-            ?: result(api.getOnboarding(SITE_ID)).onSuccess { cachedOnboarding = it }
+        return result(api.getOnboarding(SITE_ID))
     }
 
     override suspend fun continueAssessment(
@@ -42,10 +36,6 @@ class ChoirRepositoryImpl @Inject internal constructor(
         submit: AssessmentSubmit,
     ): Result<AssessmentStep> {
         return result(api.continueAssessment(SITE_ID, token, submit))
-    }
-
-    override fun clear() {
-        cachedOnboarding = null
     }
 
     private fun <T> result(response: Response<T>): Result<T> {

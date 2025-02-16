@@ -26,12 +26,12 @@ sealed interface MainUiState {
             val showSignoutDialog: Boolean,
         ) : Authenticated
 
-        sealed interface Questionnaire : Authenticated {
-            data object LoadingFailed : Questionnaire
+        sealed interface Survey : Authenticated {
+            data object LoadingFailed : Survey
             data class Content(
                 val onboarding: Onboarding,
                 val onCompleted: () -> Unit,
-            ) : Questionnaire
+            ) : Survey
         }
     }
 
@@ -61,7 +61,6 @@ class MainViewModel @Inject constructor(
             accountManager.observeAccountInfo().collect { accountInfo ->
                 logger.i { "Received new account info update $accountInfo" }
                 update(accountInfo = accountInfo)
-                if (accountInfo == null) choirRepository.clear()
             }
         }
     }
@@ -137,14 +136,14 @@ class MainViewModel @Inject constructor(
                 .onSuccess { onboarding ->
                     logger.i { "Onboarding loaded successfully" }
                     _uiState.update {
-                        MainUiState.Authenticated.Questionnaire.Content(
+                        MainUiState.Authenticated.Survey.Content(
                             onboarding = onboarding,
                             onCompleted = { _uiState.update { MainUiState.HomePage } }
                         )
                     }
                 }.onFailure {
                     logger.e(it) { "Failed to load onboarding" }
-                    _uiState.update { MainUiState.Authenticated.Questionnaire.LoadingFailed }
+                    _uiState.update { MainUiState.Authenticated.Survey.LoadingFailed }
                 }
         }
     }

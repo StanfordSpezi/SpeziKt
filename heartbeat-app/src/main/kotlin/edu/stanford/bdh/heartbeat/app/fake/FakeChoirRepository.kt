@@ -55,9 +55,5 @@ class FakeChoirRepository @Inject constructor(
         }
     }
 
-    override fun clear() {
-        // No-op
-    }
-
     private fun <T> success(value: T) = Result.success(value)
 }

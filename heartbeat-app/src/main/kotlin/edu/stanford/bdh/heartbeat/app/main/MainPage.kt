@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.heartbeat.app.account.LoginPage
 import edu.stanford.bdh.heartbeat.app.home.HomePage
-import edu.stanford.bdh.heartbeat.app.onboarding.OnboardingPage
+import edu.stanford.bdh.heartbeat.app.survey.SurveyPage
 import edu.stanford.spezi.core.design.component.Button
 import edu.stanford.spezi.core.design.component.CenteredBoxContent
 import edu.stanford.spezi.core.design.component.VerticalSpacer
@@ -50,8 +50,8 @@ private fun MainPage(
         )
 
         MainUiState.HomePage -> HomePage()
-        MainUiState.Authenticated.Questionnaire.LoadingFailed -> OnboardingLoadingError(onAction = onAction)
-        is MainUiState.Authenticated.Questionnaire.Content -> OnboardingPage(onboardingState = uiState)
+        MainUiState.Authenticated.Survey.LoadingFailed -> OnboardingLoadingError(onAction = onAction)
+        is MainUiState.Authenticated.Survey.Content -> SurveyPage(onboardingState = uiState)
     }
 }
 
@@ -173,7 +173,7 @@ private class MainUiStatePreviewParameterProvider : PreviewParameterProvider<Mai
     override val values: Sequence<MainUiState>
         get() = sequenceOf(
             MainUiState.Loading,
-            MainUiState.Authenticated.Questionnaire.LoadingFailed,
+            MainUiState.Authenticated.Survey.LoadingFailed,
             MainUiState.Authenticated.RequiresEmailVerification(false),
             MainUiState.Authenticated.RequiresEmailVerification(true)
         )
