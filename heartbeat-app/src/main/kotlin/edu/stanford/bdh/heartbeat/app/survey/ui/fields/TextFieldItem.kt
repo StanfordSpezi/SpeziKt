@@ -15,7 +15,7 @@ import edu.stanford.spezi.core.design.component.bringIntoViewOnFocusedEvent
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 
 data class TextFieldItem(
-    override val id: String,
+    override val fieldId: String,
     val style: Style,
     val info: QuestionNumberInfo,
     val fieldLabel: QuestionFieldLabel,
@@ -49,7 +49,7 @@ data class TextFieldItem(
 }
 
 val textFieldItem = TextFieldItem(
-    id = "",
+    fieldId = "",
     style = TextFieldItem.Style.NUMERIC,
     info = QuestionNumberInfo(2, 11),
     fieldLabel = QuestionFieldLabel("Phone number"),

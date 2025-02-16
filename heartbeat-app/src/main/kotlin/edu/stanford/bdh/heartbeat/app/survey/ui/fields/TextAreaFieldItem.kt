@@ -22,7 +22,7 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 
 data class TextAreaFieldItem(
-    override val id: String,
+    override val fieldId: String,
     val info: QuestionNumberInfo,
     val fieldLabel: QuestionFieldLabel,
     val value: String,
@@ -63,7 +63,7 @@ data class TextAreaFieldItem(
 }
 
 val textFieldArea = TextAreaFieldItem(
-    id = "",
+    fieldId = "",
     info = QuestionNumberInfo(2, 11),
     fieldLabel = QuestionFieldLabel("Phone number"),
     value = "",
@@ -74,7 +74,7 @@ val textFieldArea = TextAreaFieldItem(
 @Composable
 private fun Previews() {
     val item = TextAreaFieldItem(
-        id = "",
+        fieldId = "",
         info = QuestionNumberInfo(2, 11),
         fieldLabel = QuestionFieldLabel("Phone number"),
         value = "",

@@ -24,7 +24,7 @@ import edu.stanford.spezi.core.design.theme.ThemePreviews
 import java.time.Instant
 
 data class DatePickerFormField(
-    override val id: String,
+    override val fieldId: String,
     val info: QuestionNumberInfo,
     val fieldLabel: QuestionFieldLabel,
     val value: String,
@@ -64,7 +64,7 @@ data class DatePickerFormField(
 }
 
 val datePickerFormField = DatePickerFormField(
-    id = "",
+    fieldId = "",
     info = QuestionNumberInfo(2, 11),
     fieldLabel = QuestionFieldLabel("Birthday"),
     value = "",

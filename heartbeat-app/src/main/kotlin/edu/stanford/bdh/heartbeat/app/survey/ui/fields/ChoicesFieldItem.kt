@@ -34,7 +34,7 @@ import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 
 data class ChoicesFieldItem(
-    override val id: String,
+    override val fieldId: String,
     val style: Style,
     val info: QuestionNumberInfo,
     val fieldLabel: QuestionFieldLabel,
@@ -142,7 +142,7 @@ data class ChoicesFieldItem(
 class ChoicesFieldItemPreviewParameterProvider :
     PreviewParameterProvider<ChoicesFieldItem> {
     private val base = ChoicesFieldItem(
-        id = "",
+        fieldId = "",
         info = QuestionNumberInfo(2, 11),
         options = List(5) { ChoicesFieldItem.Option(id = "$it", label = "Option ${it + 1}") },
         fieldLabel = QuestionFieldLabel("State"),

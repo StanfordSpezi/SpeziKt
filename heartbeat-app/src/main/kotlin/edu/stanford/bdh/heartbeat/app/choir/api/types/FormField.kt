@@ -28,21 +28,21 @@ data class FormField(
     @Serializable
     enum class Type {
         /* START - REQUIRED IMPL */
-        @SerialName("number") NUMBER, // +
+        @SerialName("number") NUMBER, // TextFieldItem | Style.NUMERIC
 
-        @SerialName("checkboxes") CHECKBOXES, // +
+        @SerialName("checkboxes") CHECKBOXES, // ChoicesFieldItem | Style.Checkboxes
 
-        @SerialName("radios") RADIOS, // +
+        @SerialName("radios") RADIOS, // ChoicesFieldItem | Style.Radios
 
-        @SerialName("heading") HEADING, // +
+        @SerialName("heading") HEADING, // HeadingFieldItem
 
-        @SerialName("text") TEXT, // +
+        @SerialName("text") TEXT, // TextFieldItem | Style.TEXT
 
-        @SerialName("dropdown") DROPDOWN, // +
+        @SerialName("dropdown") DROPDOWN, // ChoicesFieldItem | Style.Dropdown
 
-        @SerialName("datePicker") DATE_PICKER, // NO EXAMPLE FOUND IN API RESPONSE
+        @SerialName("datePicker") DATE_PICKER, // DatePickerFormField
 
-        @SerialName("textArea") TEXT_AREA, // NO EXAMPLE FOUND IN API RESPONSE
+        @SerialName("textArea") TEXT_AREA, // TextAreaFormField
 
         /* END - REQUIRED IMPL */
 
