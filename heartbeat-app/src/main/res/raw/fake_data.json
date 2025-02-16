@@ -1,0 +1,402 @@
+{
+    "onboarding": {
+        "displayStatus": {
+            "compatLevel": "1.0",
+            "questionId": "q123",
+            "questionType": "form",
+            "surveyToken": "token_ABC123",
+            "stepNumber": "1",
+            "progress": 0.0,
+            "surveyProviderId": "provider_XYZ",
+            "surveySectionId": "section_001",
+            "surveySystemName": "onboarding_survey",
+            "sessionToken": "session_98765",
+            "sessionStatus": "question",
+            "resumeToken": "resume_456",
+            "resumeTimeoutMillis": "30000",
+            "styleSheetName": "default_theme",
+            "pageTitle": "Welcome to Onboarding",
+            "locale": "en-US",
+            "showBack": true
+        },
+        "question": {
+            "title1": "<div class=\"intro\">\n<p class=\"blue-text\">Welcome to Stanford Heartbeat Study!</p></div>",
+            "terminal": false,
+            "fields": [
+                {
+                    "fieldId": "instructions",
+                    "type": "heading",
+                    "label": "<p class=\"blue-text\">Please click the 'Continue' button to start the screening survey.</p>"
+                }
+            ]
+        }
+    },
+    "assessmentSteps": [
+        {
+            "displayStatus": {
+                "compatLevel": "1.0",
+                "questionId": "q123",
+                "questionType": "form",
+                "surveyToken": "token_ABC123",
+                "stepNumber": "2",
+                "progress": 0.14,
+                "surveyProviderId": "provider_XYZ",
+                "surveySectionId": "section_001",
+                "surveySystemName": "onboarding_survey",
+                "sessionToken": "session_98765",
+                "sessionStatus": "question",
+                "resumeToken": "resume_456",
+                "resumeTimeoutMillis": "30000",
+                "styleSheetName": "default_theme",
+                "pageTitle": "Welcome to Onboarding",
+                "locale": "en-US",
+                "showBack": true
+            },
+            "question": {
+                "title1": "Based on your answers we would like to consider you for this study. Please provide your contact information:",
+                "fields": [
+                    {
+                        "fieldId": "10:0:first_name",
+                        "type": "text",
+                        "label": "First Name",
+                        "required": true
+                    },
+                    {
+                        "fieldId": "10:1:middle_name",
+                        "type": "text",
+                        "label": "Middle Name"
+                    },
+                    {
+                        "fieldId": "10:2:last_name",
+                        "type": "text",
+                        "label": "Last Name",
+                        "required": true
+                    },
+                    {
+                        "fieldId": "10:3:email",
+                        "type": "text",
+                        "label": "Email Address",
+                        "required": true
+                    },
+                    {
+                        "fieldId": "10:4:home_phone",
+                        "type": "text",
+                        "label": "Home Phone (with area code)"
+                    },
+                    {
+                        "fieldId": "10:5:mobile_phone",
+                        "type": "text",
+                        "label": "Mobile Phone (with area code)",
+                        "required": true
+                    },
+                    {
+                        "fieldId": "10:6:sms_ok",
+                        "type": "radios",
+                        "required": true,
+                        "values": [
+                            {
+                                "id": "1",
+                                "label": "Yes, I agree to receive research-related contact."
+                            },
+                            {
+                                "id": "0",
+                                "label": "No, I do not want to receive research-related contact."
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "displayStatus": {
+                "compatLevel": "1.0",
+                "questionId": "q123",
+                "questionType": "form",
+                "surveyToken": "token_ABC123",
+                "stepNumber": "3",
+                "progress": 0.29,
+                "surveyProviderId": "provider_XYZ",
+                "surveySectionId": "section_001",
+                "surveySystemName": "onboarding_survey",
+                "sessionToken": "session_98765",
+                "sessionStatus": "question",
+                "resumeToken": "resume_456",
+                "resumeTimeoutMillis": "30000",
+                "styleSheetName": "default_theme",
+                "pageTitle": "Welcome to Onboarding",
+                "locale": "en-US",
+                "showBack": true
+            },
+            "question": {
+                "title1": "Please enter your preferred mailing address.",
+                "fields": [
+                    {
+                        "fieldId": "30:0:address1",
+                        "type": "text",
+                        "label": "Address Line 1",
+                        "required": true
+                    },
+                    {
+                        "fieldId": "30:1:address2",
+                        "type": "text",
+                        "label": "Address Line 2"
+                    },
+                    {
+                        "fieldId": "30:2:city",
+                        "type": "text",
+                        "label": "City",
+                        "required": true
+                    },
+                    {
+                        "fieldId": "30:3:state",
+                        "type": "dropdown",
+                        "label": "State",
+                        "required": true,
+                        "values": [
+                            {
+                                "id": "1",
+                                "label": "Alabama"
+                            },
+                            {
+                                "id": "2",
+                                "label": "Alaska"
+                            },
+                            {
+                                "id": "3",
+                                "label": "Arizona"
+                            },
+                            {
+                                "id": "4",
+                                "label": "Arkansas"
+                            },
+                            {
+                                "id": "5",
+                                "label": "California"
+                            },
+                            {
+                                "id": "6",
+                                "label": "Colorado"
+                            }
+                        ]
+                    },
+                    {
+                        "fieldId": "30:4:zip",
+                        "type": "text",
+                        "label": "Zip Code",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "displayStatus": {
+                "compatLevel": "1.0",
+                "questionId": "q123",
+                "questionType": "form",
+                "surveyToken": "token_ABC123",
+                "stepNumber": "4",
+                "progress": 0.43,
+                "surveyProviderId": "provider_XYZ",
+                "surveySectionId": "section_001",
+                "surveySystemName": "onboarding_survey",
+                "sessionToken": "session_98765",
+                "sessionStatus": "question",
+                "resumeToken": "resume_456",
+                "resumeTimeoutMillis": "30000",
+                "styleSheetName": "default_theme",
+                "pageTitle": "Welcome to Onboarding",
+                "locale": "en-US",
+                "showBack": true
+            },
+            "question": {
+                "title1": "Please tell us your sex at birth<br>\n<p class=\"cursive\">\nSex refers to a set of biological attributes in humans and animals. It is associated with different biological\nand physiological characteristics of males and females, such as reproductive organs, chromosomes, hormones, etc.\nWe need this information to make sure that we are being inclusive of people of different sexes.\n</p>",
+                "fields": [
+                    {
+                        "fieldId": "34:0:birth_sex",
+                        "type": "radios",
+                        "label": "",
+                        "required": true,
+                        "values": [
+                            {
+                                "id": "1",
+                                "label": "Female"
+                            },
+                            {
+                                "id": "2",
+                                "label": "Male"
+                            },
+                            {
+                                "id": "0",
+                                "label": "Prefer not to say"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "displayStatus": {
+                "compatLevel": "1.0",
+                "questionId": "q123",
+                "questionType": "form",
+                "surveyToken": "token_ABC123",
+                "stepNumber": "5",
+                "progress": 0.57,
+                "surveyProviderId": "provider_XYZ",
+                "surveySectionId": "section_001",
+                "surveySystemName": "onboarding_survey",
+                "sessionToken": "session_98765",
+                "sessionStatus": "question",
+                "resumeToken": "resume_456",
+                "resumeTimeoutMillis": "30000",
+                "styleSheetName": "default_theme",
+                "pageTitle": "Welcome to Onboarding",
+                "locale": "en-US",
+                "showBack": true
+            },
+            "question": {
+                "title1": "Do you have any of the below health conditions? Please select all that apply.",
+                "fields": [
+                    {
+                        "fieldId": "45:0:health1",
+                        "type": "checkboxes",
+                        "label": "",
+                        "required": true,
+                        "values": [
+                            {
+                                "id": "1",
+                                "label": "High blood pressure"
+                            },
+                            {
+                                "id": "2",
+                                "label": "Diabetes"
+                            },
+                            {
+                                "id": "3",
+                                "label": "Atherosclerosis, a condition in which fatty deposits build up in the walls of the arteries"
+                            },
+                            {
+                                "id": "4",
+                                "label": "Heart problems for which you were admitted to a hospital"
+                            },
+                            {
+                                "id": "0",
+                                "label": "None of the above"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "displayStatus": {
+                "compatLevel": "1.0",
+                "questionId": "q123",
+                "questionType": "form",
+                "surveyToken": "token_ABC123",
+                "stepNumber": "6",
+                "progress": 0.71,
+                "surveyProviderId": "provider_XYZ",
+                "surveySectionId": "section_001",
+                "surveySystemName": "onboarding_survey",
+                "sessionToken": "session_98765",
+                "sessionStatus": "question",
+                "resumeToken": "resume_456",
+                "resumeTimeoutMillis": "30000",
+                "styleSheetName": "default_theme",
+                "pageTitle": "Welcome to Onboarding",
+                "locale": "en-US",
+                "showBack": true
+            },
+            "question": {
+                "title1": "Please enter your year of birth.<br>\n<p class=\"cursive\">We need this information because some studies are only suitable for people above or below\na certain age.</p>",
+                "fields": [
+                    {
+                        "fieldId": "32:0:birth_year",
+                        "type": "number",
+                        "label": "",
+                        "required": true,
+                        "min": "1900",
+                        "max": "2024"
+                    }
+                ]
+            }
+        },
+        {
+            "displayStatus": {
+                "compatLevel": "1.0",
+                "questionId": "q123",
+                "questionType": "form",
+                "surveyToken": "token_ABC123",
+                "stepNumber": "7",
+                "progress": 0.86,
+                "surveyProviderId": "provider_XYZ",
+                "surveySectionId": "section_001",
+                "surveySystemName": "onboarding_survey",
+                "sessionToken": "session_98765",
+                "sessionStatus": "question",
+                "resumeToken": "resume_456",
+                "resumeTimeoutMillis": "30000",
+                "styleSheetName": "default_theme",
+                "pageTitle": "Welcome to Onboarding",
+                "locale": "en-US",
+                "showBack": true
+            },
+            "question": {
+                "title1": "<p class=\"title\">STANFORD UNIVERSITY CONSENT<br>TO PARTICIPATE IN THE STANFORD HEARTBEAT STUDY</p>\n<table>\n    <tr><td class=\"head-column\">TITLE:</td><td class=\"text-column\">STANFORD HEARTBEAT STUDY</td></tr>\n    <tr><td class=\"head-column\">PROTOCOL NO.:</td><td class=\"text-column\">75132</td></tr>\n    <tr><td class=\"head-column\">SPONSOR:</td><td class=\"text-column\">Janssen Research and Development LLC</td></tr>\n    <tr><td class=\"head-column\">PROTOCOL DIRECTOR:</td><td class=\"text-column\">\n        Marco Perez, MD<br>300 Pasteur Drive, Stanford, CA 94305, USA\n    </td></tr>\n    <tr><td class=\"head-column\">CONTACT:</td><td class=\"text-column\">(650)-307-7878</td></tr>\n</table>\n<p class=\"header\">DESCRIPTION:</p>\n<p class=\"text\">\n    You are invited to participate in the Stanford Heartbeat Study. This registry connects volunteers for \n    Atrial Fibrillation research. If you wish to revoke your authorization, contact:\n</p>\n<b>Marco Perez, MD<br>300 Pasteur Drive, Stanford, CA 94305, USA</b>\n<p class=\"text\"><b>Personal Information Used:</b> Contact info, demographics, medical history, and optional \n    smartphone data (GPS, PPG, ECG).</p>\n<p class=\"text\"><b>Data Access:</b> Stanford University, study staff, regulatory bodies, and the study sponsor.</p>\n<p class=\"text\"><b>Authorization Expiry:</b> December 31, 2075, or study completion.</p>\n<p class=\"text bold\">Do you provide your authorization to use your health information for research?</p>",
+                "terminal": true,
+                "fields": [
+                    {
+                        "fieldId": "22:0:consent_info",
+                        "type": "radios",
+                        "label": "",
+                        "required": true,
+                        "values": [
+                            {
+                                "id": "Yes, I provide my authorization.",
+                                "label": "1"
+                            },
+                            {
+                                "id": "No, I do not provide my authorization.",
+                                "label": "0"
+                            }
+                        ]
+                    },
+                    {
+                        "fieldId": "22:1:consent_info_name",
+                        "type": "text",
+                        "label": "Print Name of Adult Participant",
+                        "required": true
+                    },
+                    {
+                        "fieldId": "25:25",
+                        "type": "heading",
+                        "label": "<p class=\"text bold\">Do you provide your consent to take part in the Stanford Heartbeat Study?</p>"
+                    },
+                    {
+                        "fieldId": "25:0:consent",
+                        "type": "radios",
+                        "label": "",
+                        "required": true,
+                        "values": [
+                            {
+                                "id": "Yes, I provide my consent.",
+                                "label": "1"
+                            },
+                            {
+                                "id": "No, I do not provide my consent.",
+                                "label": "0"
+                            }
+                        ]
+                    },
+                    {
+                        "fieldId": "25:1:consent_name",
+                        "type": "text",
+                        "label": "Print Name of Adult Participant",
+                        "required": true
+                    }
+                ]
+            }
+        }
+    ]
+}

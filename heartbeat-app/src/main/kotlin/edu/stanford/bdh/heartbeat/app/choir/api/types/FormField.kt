@@ -1,11 +1,9 @@
 package edu.stanford.bdh.heartbeat.app.choir.api.types
 
-import android.annotation.SuppressLint
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-@SuppressLint("UnsafeOptInUsageError")
 data class FormField(
     val fieldId: String,
     val type: Type,
@@ -40,13 +38,11 @@ data class FormField(
 
         @SerialName("text") TEXT, // +
 
-
         @SerialName("dropdown") DROPDOWN, // +
 
         @SerialName("datePicker") DATE_PICKER, // NO EXAMPLE FOUND IN API RESPONSE
 
         @SerialName("textArea") TEXT_AREA, // NO EXAMPLE FOUND IN API RESPONSE
-
 
         /* END - REQUIRED IMPL */
 

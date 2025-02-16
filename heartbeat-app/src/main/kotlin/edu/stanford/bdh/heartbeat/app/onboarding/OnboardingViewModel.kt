@@ -62,7 +62,7 @@ class OnboardingViewModel @Inject constructor(
                     id = action.id,
                     answer = action.answer
                 ),
-                isContinueButtonEnabled = state.step?.question?.value1?.fields?.all {
+                isContinueButtonEnabled = state.step?.question?.fields?.all {
                     it.required != true || state.answers.answer(it.fieldId) != null
                 } == true
             )
@@ -78,9 +78,7 @@ class OnboardingViewModel @Inject constructor(
                         surveyToken = onboarding.displayStatus.surveyToken,
                         step = AssessmentStep(
                             displayStatus = onboarding.displayStatus,
-                            question = AssessmentStep.QuestionPayload(
-                                value1 = onboarding.question
-                            )
+                            question = onboarding.question,
                         ),
                         isLoading = false
                     )
