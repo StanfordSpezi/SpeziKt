@@ -2,17 +2,20 @@ package edu.stanford.bdh.heartbeat.app.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.heartbeat.app.choir.ChoirRepository
 import edu.stanford.bdh.heartbeat.app.choir.api.types.AssessmentStep
 import edu.stanford.bdh.heartbeat.app.choir.api.types.AssessmentSubmit
 import edu.stanford.bdh.heartbeat.app.choir.api.types.QuestionType
 import edu.stanford.bdh.heartbeat.app.choir.api.types.SubmitStatus
+import edu.stanford.bdh.heartbeat.app.main.MainUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 data class OnboardingUiState(
     val surveyToken: String? = null,
@@ -27,25 +30,31 @@ data class OnboardingUiState(
 
 sealed interface OnboardingAction {
     data class ChangeAnswer(val id: String, val answer: AnswerFormat) : OnboardingAction
-    data object Reload : OnboardingAction
     data object Continue : OnboardingAction
     data object Back : OnboardingAction
 }
 
-@HiltViewModel
-class OnboardingViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = OnboardingViewModel.Factory::class)
+class OnboardingViewModel @AssistedInject constructor(
+    @Assisted private val state: MainUiState.Authenticated.Questionnaire.Content,
     private val repository: ChoirRepository,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(OnboardingUiState())
+    private val onboarding get() = state.onboarding
+
+    private val _uiState = MutableStateFlow(OnboardingUiState(
+        surveyToken = onboarding.displayStatus.surveyToken,
+        step = AssessmentStep(
+            displayStatus = onboarding.displayStatus,
+            question = onboarding.question,
+        ),
+        isLoading = false
+    ))
     val uiState = _uiState.asStateFlow()
 
     fun onAction(action: OnboardingAction) {
         when (action) {
             is OnboardingAction.ChangeAnswer ->
                 handleChangeAnswer(action)
-
-            is OnboardingAction.Reload ->
-                handleReload()
 
             is OnboardingAction.Continue ->
                 handleContinue(backRequest = false)
@@ -66,33 +75,6 @@ class OnboardingViewModel @Inject constructor(
                     it.required != true || state.answers.answer(it.fieldId) != null
                 } == true
             )
-        }
-    }
-
-    private fun handleReload() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            repository.getOnboarding().onSuccess { onboarding ->
-                _uiState.update {
-                    it.copy(
-                        surveyToken = onboarding.displayStatus.surveyToken,
-                        step = AssessmentStep(
-                            displayStatus = onboarding.displayStatus,
-                            question = onboarding.question,
-                        ),
-                        isLoading = false
-                    )
-                }
-            }.onFailure { error ->
-                _uiState.update {
-                    it.copy(
-                        showsAssessmentContinueAlert = true,
-                        isContinueButtonEnabled = false,
-                        errorMessage = error.message ?: "An unknown error occurred.",
-                        isLoading = false
-                    )
-                }
-            }
         }
     }
 
@@ -138,5 +120,12 @@ class OnboardingViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            content: MainUiState.Authenticated.Questionnaire.Content,
+        ): OnboardingViewModel
     }
 }

@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.heartbeat.app.account.AccountInfo
 import edu.stanford.bdh.heartbeat.app.account.AccountManager
 import edu.stanford.bdh.heartbeat.app.choir.ChoirRepository
+import edu.stanford.bdh.heartbeat.app.choir.api.types.Onboarding
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.utils.MessageNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,12 +26,16 @@ sealed interface MainUiState {
             val showSignoutDialog: Boolean,
         ) : Authenticated
 
-        sealed interface Onboarding : Authenticated {
-            data object Pending : Onboarding
-            data object LoadingFailed : Onboarding
-            data object Completed : Onboarding
+        sealed interface Questionnaire : Authenticated {
+            data object LoadingFailed : Questionnaire
+            data class Content(
+                val onboarding: Onboarding,
+                val onCompleted: () -> Unit,
+            ) : Questionnaire
         }
     }
+
+    data object HomePage : MainUiState
 }
 
 sealed interface MainAction {
@@ -69,7 +74,10 @@ class MainViewModel @Inject constructor(
                     _uiState.update { MainUiState.Loading }
                     accountManager.reloadAccountInfo()
                         .onSuccess { update(accountInfo = it) }
-                        .onFailure { _uiState.update { previousState } }
+                        .onFailure {
+                            messageNotifier.notify("An error occurred while reloading your status")
+                            _uiState.update { previousState }
+                        }
                 }
             }
 
@@ -129,15 +137,14 @@ class MainViewModel @Inject constructor(
                 .onSuccess { onboarding ->
                     logger.i { "Onboarding loaded successfully" }
                     _uiState.update {
-                        if (onboarding.question.terminal == true) {
-                            MainUiState.Authenticated.Onboarding.Completed
-                        } else {
-                            MainUiState.Authenticated.Onboarding.Pending
-                        }
+                        MainUiState.Authenticated.Questionnaire.Content(
+                            onboarding = onboarding,
+                            onCompleted = { _uiState.update { MainUiState.HomePage } }
+                        )
                     }
                 }.onFailure {
                     logger.e(it) { "Failed to load onboarding" }
-                    _uiState.update { MainUiState.Authenticated.Onboarding.LoadingFailed }
+                    _uiState.update { MainUiState.Authenticated.Questionnaire.LoadingFailed }
                 }
         }
     }

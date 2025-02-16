@@ -49,9 +49,9 @@ private fun MainPage(
             onAction = onAction
         )
 
-        MainUiState.Authenticated.Onboarding.Pending -> OnboardingPage()
-        MainUiState.Authenticated.Onboarding.Completed -> HomePage()
-        MainUiState.Authenticated.Onboarding.LoadingFailed -> OnboardingLoadingError(onAction = onAction)
+        MainUiState.HomePage -> HomePage()
+        MainUiState.Authenticated.Questionnaire.LoadingFailed -> OnboardingLoadingError(onAction = onAction)
+        is MainUiState.Authenticated.Questionnaire.Content -> OnboardingPage(onboardingState = uiState)
     }
 }
 
@@ -173,7 +173,7 @@ private class MainUiStatePreviewParameterProvider : PreviewParameterProvider<Mai
     override val values: Sequence<MainUiState>
         get() = sequenceOf(
             MainUiState.Loading,
-            MainUiState.Authenticated.Onboarding.LoadingFailed,
+            MainUiState.Authenticated.Questionnaire.LoadingFailed,
             MainUiState.Authenticated.RequiresEmailVerification(false),
             MainUiState.Authenticated.RequiresEmailVerification(true)
         )
