@@ -1,11 +1,15 @@
-package edu.stanford.bdh.heartbeat.app.survey.ui
+package edu.stanford.bdh.heartbeat.app.survey.ui.fields
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import edu.stanford.bdh.heartbeat.app.survey.ui.fields.FormFieldItem
+import edu.stanford.bdh.heartbeat.app.survey.ui.QuestionFieldLabel
+import edu.stanford.bdh.heartbeat.app.survey.ui.QuestionNumberInfo
+import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyCard
+import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyItemPreview
+import edu.stanford.spezi.core.design.component.bringIntoViewOnFocusedEvent
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 
 data class TextFieldItem(
@@ -23,7 +27,7 @@ data class TextFieldItem(
             fieldLabel.Content(Modifier)
             TextField(
                 value = value,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.bringIntoViewOnFocusedEvent().fillMaxWidth(),
                 onValueChange = { onValueChange(it) },
                 placeholder = { Text("Enter your input here...") }
             )
@@ -31,16 +35,18 @@ data class TextFieldItem(
     }
 }
 
+val textFieldItem = TextFieldItem(
+    id = "",
+    info = QuestionNumberInfo(2, 11),
+    fieldLabel = QuestionFieldLabel("Phone number"),
+    value = "",
+    onValueChange = {},
+)
+
 @ThemePreviews
 @Composable
 private fun Previews() {
-    val textFieldItem = TextFieldItem(
-        id = "",
-        info = QuestionNumberInfo(2, 11),
-        fieldLabel = QuestionFieldLabel("Phone number"),
-        value = "",
-        onValueChange = {},
-    )
+
     SurveyItemPreview {
         textFieldItem.Content(Modifier)
     }
