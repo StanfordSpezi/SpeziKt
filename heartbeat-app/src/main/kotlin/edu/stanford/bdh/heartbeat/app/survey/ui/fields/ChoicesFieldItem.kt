@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,6 +30,7 @@ import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyCard
 import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyItemPreview
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 
 data class ChoicesFieldItem(
@@ -57,7 +59,7 @@ data class ChoicesFieldItem(
             mutableStateOf(if (style is Style.Dropdown) style.initialExpanded else true)
         }
 
-        SurveyCard {
+        SurveyCard(modifier = modifier) {
             info.Content(Modifier)
             fieldLabel.Content(Modifier)
 
@@ -69,12 +71,14 @@ data class ChoicesFieldItem(
                         .padding(vertical = Spacings.medium),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    val alpha = if (selectedIds.isEmpty()) 0.5f else 1f
+                    val hasSelections = selectedIds.isNotEmpty()
+                    val alpha = if (hasSelections) 1f else 0.5f
                     Text(
                         text = style.label,
                         modifier = Modifier
                             .alpha(alpha)
                             .weight(1f),
+                        style = if (hasSelections) TextStyles.titleMedium else LocalTextStyle.current
                     )
                     val image =
                         if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown

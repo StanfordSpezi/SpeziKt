@@ -5,11 +5,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.heartbeat.app.main.MainUiState
 import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyItem
@@ -39,15 +40,18 @@ data class SurveyQuestionItem(
     val title: SurveyQuestionTitle,
     val fields: List<FormFieldItem>
 ) : SurveyItem {
+
     @Composable
     override fun Content(modifier: Modifier) {
         LazyColumn(
             modifier = modifier,
             verticalArrangement = Arrangement.spacedBy(Spacings.medium)
         ) {
-            item { progress.Content(Modifier) }
+            item { progress.Content(Modifier.padding(top = Spacings.medium)) }
             item { title.Content(Modifier) }
-            items(fields) { it.Content(Modifier) }
+            itemsIndexed(fields) { index, field ->
+                field.Content(Modifier.padding(bottom = if (index == fields.size - 1) Spacings.medium else 0.dp))
+            }
         }
     }
 }
@@ -62,7 +66,7 @@ private fun SurveyPage(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(Spacings.medium)
+            .padding(horizontal = Spacings.medium)
     ) {
         SurveyQuestionItem(
             progress = SurveyProgress(0.7f),
@@ -70,6 +74,8 @@ private fun SurveyPage(
             fields = ChoicesFieldItemPreviewParameterProvider().values.toList(),
 
         ).Content(Modifier.weight(1f))
+
+        // LoadingSurveyItem.Content(Modifier)
     }
 }
 

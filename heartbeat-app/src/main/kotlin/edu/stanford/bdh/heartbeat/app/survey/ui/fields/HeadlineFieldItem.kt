@@ -17,7 +17,7 @@ data class HeadlineFieldItem(
 
     @Composable
     override fun Content(modifier: Modifier) {
-        SurveyCard {
+        SurveyCard(modifier = modifier) {
             val isHtml = remember(text) { HtmlUtils.isHtml(text) }
             if (isHtml) {
                 HtmlText(text = text, modifier = modifier)

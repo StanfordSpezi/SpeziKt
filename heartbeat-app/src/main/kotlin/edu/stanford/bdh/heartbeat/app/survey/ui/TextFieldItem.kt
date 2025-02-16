@@ -18,7 +18,7 @@ data class TextFieldItem(
 
     @Composable
     override fun Content(modifier: Modifier) {
-        SurveyCard {
+        SurveyCard(modifier = modifier) {
             info.Content(Modifier)
             fieldLabel.Content(Modifier)
             TextField(

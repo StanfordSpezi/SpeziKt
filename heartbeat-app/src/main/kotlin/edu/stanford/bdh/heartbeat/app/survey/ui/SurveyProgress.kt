@@ -21,7 +21,7 @@ data class SurveyProgress(
     override fun Content(modifier: Modifier) {
         val coercedValue = remember(value) { value.coerceIn(0f, 1f) }
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .height(12.dp)
                 .background(Colors.black20, CircleShape)
