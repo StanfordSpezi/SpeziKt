@@ -4,7 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Checkbox
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,13 +12,13 @@ import androidx.compose.ui.Modifier
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 
-data class CheckboxFieldItem(
+data class RadiosFieldItem(
     override val id: String,
     override val required: Boolean,
     val info: QuestionNumberInfo,
     val fieldLabel: QuestionFieldLabel,
     val options: List<Option>,
-    val selectedIds: List<String>,
+    val selectedId: String?,
     val onOptionClicked: (String) -> Unit,
 ) : FormFieldItem {
 
@@ -40,9 +40,9 @@ data class CheckboxFieldItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(text = option.label, modifier = Modifier.weight(1f))
-                    Checkbox(
-                        checked = option.id in selectedIds,
-                        onCheckedChange = { onOptionClicked(option.id) }
+                    RadioButton(
+                        selected = option.id == selectedId,
+                        onClick = { onOptionClicked(option.id) }
                     )
                 }
             }
@@ -54,14 +54,14 @@ data class CheckboxFieldItem(
 @ThemePreviews
 @Composable
 private fun Previews() {
-    val checkBox = CheckboxFieldItem(
+    val checkBox = RadiosFieldItem(
         id = "",
         required = true,
         info = QuestionNumberInfo(2, 11),
-        options = List(10) { CheckboxFieldItem.Option(id = "$it", label = "Option ${it + 1}")},
+        options = List(10) { RadiosFieldItem.Option(id = "$it", label = "Option ${it + 1}")},
         fieldLabel = QuestionFieldLabel("State"),
-        selectedIds = listOf("2", "4"),
-        onOptionClicked = {}
+        selectedId = "2",
+        onOptionClicked = {},
     )
     SurveyPreview {
         checkBox.Content(Modifier)
