@@ -88,7 +88,7 @@ data class DropDownFieldItem(
 
 @ThemePreviews
 @Composable
-fun Previews() {
+private fun Previews() {
     val dropDown = DropDownFieldItem(
         id = "",
         required = true,
