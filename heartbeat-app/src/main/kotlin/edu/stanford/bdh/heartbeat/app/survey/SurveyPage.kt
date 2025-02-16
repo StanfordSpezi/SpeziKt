@@ -18,6 +18,7 @@ import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyProgress
 import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyQuestionTitle
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.ChoicesFieldItemPreviewParameterProvider
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.FormFieldItem
+import edu.stanford.bdh.heartbeat.app.survey.ui.fields.datePickerFormField
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.textFieldArea
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.textFieldItem
 import edu.stanford.spezi.core.design.theme.Spacings
@@ -74,7 +75,7 @@ private fun SurveyPage(
         SurveyQuestionItem(
             progress = SurveyProgress(0.7f),
             title = SurveyQuestionTitle(content = uiState?.step?.question?.title1 ?: ""),
-            fields = ChoicesFieldItemPreviewParameterProvider().values.toList() + textFieldArea + textFieldItem,
+            fields = ChoicesFieldItemPreviewParameterProvider().values.toList() + datePickerFormField + textFieldArea + textFieldItem,
 
         ).Content(Modifier.weight(1f))
 
