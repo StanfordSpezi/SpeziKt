@@ -1,4 +1,4 @@
-package edu.stanford.bdh.heartbeat.app.survey.ui
+package edu.stanford.bdh.heartbeat.app.survey.ui.fields
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -23,13 +23,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import edu.stanford.bdh.heartbeat.app.survey.ui.QuestionFieldLabel
+import edu.stanford.bdh.heartbeat.app.survey.ui.QuestionNumberInfo
+import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyCard
+import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyItemPreview
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 
 data class ChoicesFieldItem(
     override val id: String,
-    override val required: Boolean,
     val style: Style,
     val info: QuestionNumberInfo,
     val fieldLabel: QuestionFieldLabel,
@@ -61,15 +64,17 @@ data class ChoicesFieldItem(
             if (style is Style.Dropdown) {
                 Row(
                     modifier = Modifier
-                        .clickable { expanded = !expanded }
                         .fillMaxWidth()
-                        .padding(bottom = Spacings.medium),
+                        .clickable { expanded = !expanded }
+                        .padding(vertical = Spacings.medium),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     val alpha = if (selectedIds.isEmpty()) 0.5f else 1f
                     Text(
                         text = style.label,
-                        modifier = Modifier.alpha(alpha).weight(1f),
+                        modifier = Modifier
+                            .alpha(alpha)
+                            .weight(1f),
                     )
                     val image =
                         if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
@@ -90,7 +95,7 @@ data class ChoicesFieldItem(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onOptionClicked(option.id) }
+                        .clickable(enabled = isDropDown) { onOptionClicked(option.id) }
                         .padding(vertical = rowPadding),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -112,12 +117,14 @@ data class ChoicesFieldItem(
                     )
                 }
             }
+
             is Style.Radios -> {
                 RadioButton(
                     selected = id in selectedIds,
                     onClick = { onOptionClicked(id) }
                 )
             }
+
             is Style.Checkboxes -> {
                 Checkbox(
                     checked = id in selectedIds,
@@ -128,10 +135,10 @@ data class ChoicesFieldItem(
     }
 }
 
-private class ChoicesFieldItemPreviewParameterProvider : PreviewParameterProvider<ChoicesFieldItem> {
+class ChoicesFieldItemPreviewParameterProvider :
+    PreviewParameterProvider<ChoicesFieldItem> {
     private val base = ChoicesFieldItem(
         id = "",
-        required = true,
         info = QuestionNumberInfo(2, 11),
         options = List(5) { ChoicesFieldItem.Option(id = "$it", label = "Option ${it + 1}") },
         fieldLabel = QuestionFieldLabel("State"),
@@ -150,7 +157,10 @@ private class ChoicesFieldItemPreviewParameterProvider : PreviewParameterProvide
             ),
             base.copy(
                 fieldLabel = QuestionFieldLabel("Dropdown field item collapsed"),
-                style = ChoicesFieldItem.Style.Dropdown(label = "Select an option...", initialExpanded = false),
+                style = ChoicesFieldItem.Style.Dropdown(
+                    label = "Select an option...",
+                    initialExpanded = false
+                ),
                 selectedIds = emptyList()
             ),
             base.copy(

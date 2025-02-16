@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.core.design.theme.Colors
+import edu.stanford.spezi.core.design.theme.ThemePreviews
 
 data class SurveyProgress(
     private val value: Float,
@@ -22,7 +23,7 @@ data class SurveyProgress(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(8.dp)
+                .height(12.dp)
                 .background(Colors.black20, CircleShape)
         ) {
             Box(
@@ -32,5 +33,16 @@ data class SurveyProgress(
                     .background(Colors.cardinalRedLight, CircleShape)
             )
         }
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun Previews() {
+    val progress = SurveyProgress(
+        value = 0.3f,
+    )
+    SurveyItemPreview {
+        progress.Content(Modifier)
     }
 }

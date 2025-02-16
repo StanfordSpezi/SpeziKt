@@ -5,12 +5,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.ThemePreviews
-import kotlin.random.Random
 
 interface SurveyItem {
 
@@ -19,8 +15,8 @@ interface SurveyItem {
 }
 
 @Composable
-fun SurveyItemPreview(content: @Composable () -> Unit) {
-    SpeziTheme(isPreview = true) {
+fun SurveyItemPreview(fillScreenSize: Boolean = true, content: @Composable () -> Unit) {
+    SpeziTheme(isPreview = fillScreenSize) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -30,21 +26,3 @@ fun SurveyItemPreview(content: @Composable () -> Unit) {
         }
     }
 }
-
-
-private class SurveyItemPreviewParameterProvider : PreviewParameterProvider<SurveyItem> {
-    override val values: Sequence<SurveyItem>
-        get() = sequenceOf(
-            SurveyProgress(Random.nextDouble(0.0, 1.0).toFloat()),
-            QuestionTitle("Some question content")
-        )
-}
-
-@ThemePreviews
-@Composable
-fun ProgressPreview(@PreviewParameter(SurveyItemPreviewParameterProvider::class) item: SurveyItem) {
-    SurveyItemPreview {
-        item.Content(Modifier)
-    }
-}
-

@@ -15,7 +15,7 @@ data class QuestionFieldLabel(
     override fun Content(modifier: Modifier) {
         Text(
             text = label,
-            modifier = Modifier.padding(bottom = Spacings.medium),
+            modifier = modifier.padding(bottom = Spacings.medium),
             style = TextStyles.titleMedium
         )
     }

@@ -12,6 +12,7 @@ data class QuestionNumberInfo(
     private val current: Int,
     private val total: Int
 ) : SurveyItem {
+
     @Composable
     override fun Content(modifier: Modifier) {
         Text(
