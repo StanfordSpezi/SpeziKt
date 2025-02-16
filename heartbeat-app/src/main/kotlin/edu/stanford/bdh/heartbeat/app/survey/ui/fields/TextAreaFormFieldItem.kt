@@ -62,20 +62,12 @@ data class TextAreaFormFieldItem(
     }
 }
 
-val textFieldArea = TextAreaFormFieldItem(
-    fieldId = "",
-    info = QuestionNumberInfo(2, 11),
-    fieldLabel = QuestionFieldLabel("Phone number"),
-    value = "",
-    onValueChange = {},
-)
-
 @ThemePreviews
 @Composable
 private fun Previews() {
     val item = TextAreaFormFieldItem(
         fieldId = "",
-        info = QuestionNumberInfo(2, 11),
+        info = QuestionNumberInfo(1, 2),
         fieldLabel = QuestionFieldLabel("Phone number"),
         value = "",
         onValueChange = {},

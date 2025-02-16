@@ -48,18 +48,17 @@ data class TextFormFieldItem(
     }
 }
 
-val textFieldItem = TextFormFieldItem(
-    fieldId = "",
-    style = TextFormFieldItem.Style.NUMERIC,
-    info = QuestionNumberInfo(2, 11),
-    fieldLabel = QuestionFieldLabel("Phone number"),
-    value = "",
-    onValueChange = {},
-)
-
 @ThemePreviews
 @Composable
 private fun Previews() {
+    val textFieldItem = TextFormFieldItem(
+        fieldId = "",
+        style = TextFormFieldItem.Style.NUMERIC,
+        info = QuestionNumberInfo(1, 2),
+        fieldLabel = QuestionFieldLabel("Phone number"),
+        value = "",
+        onValueChange = {},
+    )
     SurveyItemPreview {
         textFieldItem.Content(Modifier)
     }

@@ -65,7 +65,7 @@ data class DatePickerFormFieldItem(
 
 val datePickerFormField = DatePickerFormFieldItem(
     fieldId = "",
-    info = QuestionNumberInfo(2, 11),
+    info = QuestionNumberInfo(2, 2),
     fieldLabel = QuestionFieldLabel("Birthday"),
     value = "",
     onValueChange = {},

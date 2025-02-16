@@ -143,8 +143,8 @@ class ChoicesFieldItemPreviewParameterProvider :
     PreviewParameterProvider<ChoicesFormFieldItem> {
     private val base = ChoicesFormFieldItem(
         fieldId = "",
-        info = QuestionNumberInfo(2, 11),
-        options = List(5) { ChoicesFormFieldItem.Option(id = "$it", label = "Option ${it + 1}") },
+        info = QuestionNumberInfo(1, 2),
+        options = List(2 * 2) { ChoicesFormFieldItem.Option(id = "$it", label = "Option ${it + 1}") },
         fieldLabel = QuestionFieldLabel("State"),
         selectedIds = listOf("2"),
         style = ChoicesFormFieldItem.Style.Radios,
