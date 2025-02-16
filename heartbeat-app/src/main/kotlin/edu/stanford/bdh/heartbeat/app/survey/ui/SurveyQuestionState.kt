@@ -2,6 +2,7 @@ package edu.stanford.bdh.heartbeat.app.survey.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -61,6 +62,7 @@ interface SurveyQuestionState : SurveyItem {
         val progress: SurveyProgress,
         val title: SurveyQuestionTitle,
         val fields: List<FormFieldItem>,
+        val backButton: QuestionButton?,
         val continueButton: QuestionButton,
     ) : SurveyQuestionState {
 
@@ -77,7 +79,14 @@ interface SurveyQuestionState : SurveyItem {
                         field.Content(Modifier)
                     }
                 }
-                continueButton.Content(Modifier.fillMaxWidth().padding(vertical = Spacings.medium))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = Spacings.medium),
+                    horizontalArrangement = Arrangement.spacedBy(Spacings.medium)
+                ) {
+                    backButton?.Content(Modifier.weight(1f))
+                    continueButton.Content(Modifier.weight(1f))
+                }
             }
         }
     }

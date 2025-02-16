@@ -13,7 +13,7 @@ import edu.stanford.spezi.core.design.theme.Spacings
 @Composable
 fun SurveyCard(
     modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     Card(modifier = modifier.fillMaxWidth()) {
         Column(modifier = Modifier.fillMaxSize().padding(Spacings.medium), content = content)

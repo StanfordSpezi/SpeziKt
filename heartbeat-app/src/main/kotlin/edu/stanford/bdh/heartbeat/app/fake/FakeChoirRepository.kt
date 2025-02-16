@@ -8,6 +8,7 @@ import edu.stanford.bdh.heartbeat.app.choir.api.types.AssessmentStep
 import edu.stanford.bdh.heartbeat.app.choir.api.types.AssessmentSubmit
 import edu.stanford.bdh.heartbeat.app.choir.api.types.Onboarding
 import edu.stanford.bdh.heartbeat.app.choir.api.types.Participant
+import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
@@ -23,13 +24,15 @@ private data class FakeData(
 class FakeChoirRepository @Inject constructor(
     @ApplicationContext context: Context,
 ) : ChoirRepository, FakeComponent {
+    private val logger by speziLogger()
+
     private val fakeData by lazy {
         context.resources.openRawResource(R.raw.fake_data)
             .bufferedReader()
             .use { it.readText() }
             .let { Json.decodeFromString<FakeData>(it) }
     }
-    private var assessmentIndex = 0
+    private var nextAssessmentIndex = 0
 
     override suspend fun putParticipant(participant: Participant): Result<Unit> {
         return success(Unit)
@@ -48,12 +51,15 @@ class FakeChoirRepository @Inject constructor(
         token: String,
         submit: AssessmentSubmit,
     ): Result<AssessmentStep> {
+        logger.i { "Processing answers: ${submit.answers?.fieldAnswers}" }
+        val index = if (submit.submitStatus?.backRequest == true) nextAssessmentIndex - 2 else nextAssessmentIndex
         val result = fakeData
             .assessmentSteps
-            .getOrNull(assessmentIndex) ?: return Result.failure(Error("Done"))
+            .getOrNull(index) ?: return Result.failure(Error("Done"))
+
         delay()
         return Result.success(result).also {
-            assessmentIndex++
+            nextAssessmentIndex = fakeData.assessmentSteps.indexOf(result) + 1
         }
     }
 

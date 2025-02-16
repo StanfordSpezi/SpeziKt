@@ -121,5 +121,5 @@ object HtmlUtils {
         $text
     </body>
     </html>
-""".trimIndent()
+    """.trimIndent()
 }

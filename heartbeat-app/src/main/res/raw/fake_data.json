@@ -17,7 +17,7 @@
             "styleSheetName": "default_theme",
             "pageTitle": "Welcome to Onboarding",
             "locale": "en-US",
-            "showBack": true
+            "showBack": false
         },
         "question": {
             "title1": "<div class=\"intro\">\n<p class=\"blue-text\">Welcome to Stanford Heartbeat Study!</p></div>",
@@ -50,7 +50,7 @@
                 "styleSheetName": "default_theme",
                 "pageTitle": "Welcome to Onboarding",
                 "locale": "en-US",
-                "showBack": true
+                "showBack": false
             },
             "question": {
                 "title1": "Based on your answers we would like to consider you for this study. Please provide your contact information:",
@@ -329,7 +329,75 @@
                 "questionType": "form",
                 "surveyToken": "token_ABC123",
                 "stepNumber": "7",
-                "progress": 0.86,
+                "progress": 0.76,
+                "surveyProviderId": "provider_XYZ",
+                "surveySectionId": "section_001",
+                "surveySystemName": "onboarding_survey",
+                "sessionToken": "session_98765",
+                "sessionStatus": "question",
+                "resumeToken": "resume_456",
+                "resumeTimeoutMillis": "30000",
+                "styleSheetName": "default_theme",
+                "pageTitle": "Welcome to Onboarding",
+                "locale": "en-US",
+                "showBack": true
+            },
+            "question": {
+                "title1": "Please enter your year of birth.<br>\n<p class=\"cursive\">We need this information because some studies are only suitable for people above or below\na certain age.</p>",
+                "fields": [
+                    {
+                        "fieldId": "32:0:birth_year",
+                        "type": "number",
+                        "label": "",
+                        "required": true,
+                        "min": "1900",
+                        "max": "2024"
+                    }
+                ]
+            }
+        },
+        {
+            "displayStatus": {
+                "compatLevel": "1.0",
+                "questionId": "q123",
+                "questionType": "form",
+                "surveyToken": "token_ABC123",
+                "stepNumber": "8",
+                "progress": 0.81,
+                "surveyProviderId": "provider_XYZ",
+                "surveySectionId": "section_001",
+                "surveySystemName": "onboarding_survey",
+                "sessionToken": "session_98765",
+                "sessionStatus": "question",
+                "resumeToken": "resume_456",
+                "resumeTimeoutMillis": "30000",
+                "styleSheetName": "default_theme",
+                "pageTitle": "Welcome to Onboarding",
+                "locale": "en-US",
+                "showBack": true
+            },
+            "question": {
+                "title1": "Please select the date that would be suitable for you to conduct the study.",
+                "fields": [
+                    {
+                        "fieldId": "32:0:birth_year",
+                        "type": "datePicker",
+                        "label": "",
+                        "required": true,
+                        "min": "1900",
+                        "max": "2024"
+                    }
+                ]
+            }
+        },
+        {
+            "displayStatus": {
+                "compatLevel": "1.0",
+                "questionId": "q123",
+                "questionType": "form",
+                "surveyToken": "token_ABC123",
+                "stepNumber": "9",
+                "progress": 1.0,
                 "surveyProviderId": "provider_XYZ",
                 "surveySectionId": "section_001",
                 "surveySystemName": "onboarding_survey",

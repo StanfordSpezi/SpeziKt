@@ -10,7 +10,7 @@ import edu.stanford.spezi.core.design.theme.TextStyles
 
 data class QuestionNumberInfo(
     private val current: Int,
-    private val total: Int
+    private val total: Int,
 ) : SurveyItem {
 
     @Composable

@@ -25,7 +25,7 @@ data class TextFormFieldItem(
 
     enum class Style {
         NUMERIC,
-        TEXT
+        TEXT,
     }
 
     @Composable
@@ -60,7 +60,6 @@ val textFieldItem = TextFormFieldItem(
 @ThemePreviews
 @Composable
 private fun Previews() {
-
     SurveyItemPreview {
         textFieldItem.Content(Modifier)
     }
