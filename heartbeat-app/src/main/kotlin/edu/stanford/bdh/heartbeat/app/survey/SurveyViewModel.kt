@@ -18,6 +18,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class SurveyUiState(
+    val pageTitle: String
+)
+
+sealed interface QuestionState {
+    data object Loading : QuestionState
+}
+
+data class SurveyUiState2(
     val surveyToken: String? = null,
     val step: AssessmentStep,
     val isLoading: Boolean = false,
@@ -42,7 +50,7 @@ class SurveyViewModel @AssistedInject constructor(
     private val onboarding get() = state.onboarding
 
     private val _uiState = MutableStateFlow(
-        SurveyUiState(
+        SurveyUiState2(
             surveyToken = onboarding.displayStatus.surveyToken,
             step = AssessmentStep(
                 displayStatus = onboarding.displayStatus,

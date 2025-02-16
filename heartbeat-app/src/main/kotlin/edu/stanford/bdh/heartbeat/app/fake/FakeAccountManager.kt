@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.random.Random
@@ -15,10 +16,10 @@ class FakeAccountManager @Inject constructor() : AccountManager {
     private val defaultAccount = AccountInfo(
         email = "fake-user@heartbeat-study.edu",
         name = "Fake User",
-        isEmailVerified = false,
+        isEmailVerified = FakeConfigs.EMAIL_VERIFIED,
     )
 
-    private val accountState = MutableStateFlow<AccountInfo?>(null)
+    private val accountState = MutableStateFlow(defaultAccount.takeIf { FakeConfigs.SKIP_LOGIN })
 
     override fun observeAccountInfo(): Flow<AccountInfo?> = accountState.asStateFlow()
 
@@ -63,6 +64,6 @@ class FakeAccountManager @Inject constructor() : AccountManager {
     private fun <T> success(value: T) = Result.success(value)
 
     private suspend fun delay() {
-        kotlinx.coroutines.delay(timeMillis = Random.nextLong(3000L))
+        kotlinx.coroutines.delay(timeMillis = Random.nextLong(TimeUnit.SECONDS.toMillis(FakeConfigs.MAX_DELAY_SECONDS)))
     }
 }

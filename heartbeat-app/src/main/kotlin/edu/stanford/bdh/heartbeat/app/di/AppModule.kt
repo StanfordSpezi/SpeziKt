@@ -12,6 +12,7 @@ import edu.stanford.bdh.heartbeat.app.choir.ChoirRepository
 import edu.stanford.bdh.heartbeat.app.choir.ChoirRepositoryImpl
 import edu.stanford.bdh.heartbeat.app.fake.FakeAccountManager
 import edu.stanford.bdh.heartbeat.app.fake.FakeChoirRepository
+import edu.stanford.bdh.heartbeat.app.fake.FakeConfigs
 import javax.inject.Singleton
 
 @Module
@@ -35,18 +36,17 @@ class AppModule {
     @Module
     @InstallIn(SingletonComponent::class)
     class ApiModule {
-        private val useFakeFlow = true
 
         @Provides
         fun provideAccountManager(
             impl: Lazy<AccountManagerImpl>,
             fake: Lazy<FakeAccountManager>,
-        ): AccountManager = (if (useFakeFlow) fake else impl).get()
+        ): AccountManager = (if (FakeConfigs.ENABLED) fake else impl).get()
 
         @Provides
         fun provideChoirRepository(
             impl: Lazy<ChoirRepositoryImpl>,
             fake: Lazy<FakeChoirRepository>,
-        ): ChoirRepository = (if (useFakeFlow) fake else impl).get()
+        ): ChoirRepository = (if (FakeConfigs.ENABLED) fake else impl).get()
     }
 }
