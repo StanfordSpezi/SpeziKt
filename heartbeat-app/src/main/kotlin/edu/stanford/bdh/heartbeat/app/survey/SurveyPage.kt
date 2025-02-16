@@ -21,9 +21,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.heartbeat.app.main.MainUiState
+import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 
@@ -44,10 +44,7 @@ private fun SurveyPage(
     uiState: SurveyUiState,
     onAction: (SurveyAction) -> Unit,
 ) {
-
-    Column {
-        Text("${uiState.step?.question?.title1}")
-    }
+    CustomDropdownInLazyColumn()
 }
 
 @ThemePreviews
@@ -60,7 +57,7 @@ private fun SurveyLoadingFailed() {
 
 @Composable
 fun CustomDropdownInLazyColumn() {
-    val options = List(20) { "Option ${it + 1}" } // Your list of option
+    val options = List(20) { "Option ${it + 1}" }
     LazyColumn {
         item {
             CustomDropdownCard(options.first(), options)
@@ -76,17 +73,17 @@ fun CustomDropdownCard(initialOption: String, options: List<String>) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
-            .clickable { expanded = !expanded }, // Toggle on card click
+            .padding(Spacings.medium)
+            .clickable { expanded = !expanded },
     ) {
 
-        Column(Modifier.padding(16.dp)) {
+        Column {
 
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
                     .clickable { expanded = !expanded }
-                    .padding(bottom = 16.dp),
+                    .fillMaxWidth()
+                    .padding(Spacings.medium),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = selectedOption, modifier = Modifier.weight(1f))
@@ -94,8 +91,7 @@ fun CustomDropdownCard(initialOption: String, options: List<String>) {
 
             }
 
-            HorizontalDivider(modifier = Modifier.padding(bottom = 16.dp))
-            // Dropdown content (only visible when expanded)
+            HorizontalDivider(modifier = Modifier.padding(horizontal = Spacings.medium))
             if (expanded) {
                 Column {
                     options.forEach { option ->
@@ -104,8 +100,7 @@ fun CustomDropdownCard(initialOption: String, options: List<String>) {
                                 .fillMaxWidth()
                                 .clickable {
                                     selectedOption = option
-                                    expanded = false
-                                }.padding(bottom = 16.dp),
+                                }.padding(Spacings.medium),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(text = option, modifier = Modifier.weight(1f))
