@@ -12,18 +12,19 @@ import edu.stanford.bdh.heartbeat.app.choir.api.types.AssessmentSubmit
 import edu.stanford.bdh.heartbeat.app.choir.api.types.QuestionType
 import edu.stanford.bdh.heartbeat.app.choir.api.types.SubmitStatus
 import edu.stanford.bdh.heartbeat.app.main.MainUiState
+import edu.stanford.bdh.heartbeat.app.survey.ui.QuestionButton
+import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyProgress
+import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyQuestionState
+import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyQuestionTitle
+import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyUiState
+import edu.stanford.bdh.heartbeat.app.survey.ui.fields.ChoicesFieldItemPreviewParameterProvider
+import edu.stanford.bdh.heartbeat.app.survey.ui.fields.datePickerFormField
+import edu.stanford.bdh.heartbeat.app.survey.ui.fields.textFieldArea
+import edu.stanford.bdh.heartbeat.app.survey.ui.fields.textFieldItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-data class SurveyUiState(
-    val pageTitle: String
-)
-
-sealed interface QuestionState {
-    data object Loading : QuestionState
-}
 
 data class SurveyUiState2(
     val surveyToken: String? = null,
@@ -49,6 +50,22 @@ class SurveyViewModel @AssistedInject constructor(
 ) : ViewModel() {
     private val onboarding get() = state.onboarding
 
+    private val _state = MutableStateFlow(
+        SurveyUiState(
+            pageTitle = state.onboarding.displayStatus.pageTitle ?: "",
+            questionState = SurveyQuestionState.Question(
+                progress = SurveyProgress(state.onboarding.displayStatus.progress?.toFloat() ?: 0f),
+                title = SurveyQuestionTitle(state.onboarding.question.title1),
+                fields = ChoicesFieldItemPreviewParameterProvider().values.toList() + datePickerFormField + textFieldArea + textFieldItem,
+                continueButton = QuestionButton(
+                    title = "Continue",
+                    enabled = false,
+                    onClick = {},
+                )
+            )
+        )
+    )
+
     private val _uiState = MutableStateFlow(
         SurveyUiState2(
             surveyToken = onboarding.displayStatus.surveyToken,
@@ -59,7 +76,8 @@ class SurveyViewModel @AssistedInject constructor(
             isLoading = false
         )
     )
-    val uiState = _uiState.asStateFlow()
+
+    val uiState = _state.asStateFlow()
 
     fun onAction(action: SurveyAction) {
         when (action) {
