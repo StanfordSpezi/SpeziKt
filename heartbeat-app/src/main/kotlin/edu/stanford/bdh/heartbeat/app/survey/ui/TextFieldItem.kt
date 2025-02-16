@@ -1,15 +1,10 @@
 package edu.stanford.bdh.heartbeat.app.survey.ui
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 
@@ -24,15 +19,10 @@ data class TextFieldItem(
 
     @Composable
     override fun Content(modifier: Modifier) {
-        var expanded by remember { mutableStateOf(true) }
-
-        SurveyCard(modifier = Modifier.clickable { expanded = !expanded }) {
-
+        SurveyCard {
             Column {
                 info.Content(Modifier)
-
                 fieldLabel.Content(Modifier)
-
                 TextField(
                     value = value,
                     modifier = Modifier.fillMaxWidth(),

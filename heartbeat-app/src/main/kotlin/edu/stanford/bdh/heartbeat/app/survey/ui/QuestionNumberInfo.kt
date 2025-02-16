@@ -9,8 +9,8 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
 
 data class QuestionNumberInfo(
-    val current: Int,
-    val total: Int
+    private val current: Int,
+    private val total: Int
 ) : SurveyItem {
     @Composable
     override fun Content(modifier: Modifier) {

@@ -8,7 +8,7 @@ import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.TextStyles
 
 data class QuestionFieldLabel(
-    val label: String,
+    private val label: String,
 ) : SurveyItem {
 
     @Composable
