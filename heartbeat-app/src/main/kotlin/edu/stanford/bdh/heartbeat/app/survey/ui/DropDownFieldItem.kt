@@ -41,42 +41,43 @@ data class DropDownFieldItem(
         var expanded by remember { mutableStateOf(true) }
 
         SurveyCard(modifier = Modifier.clickable { expanded = !expanded }) {
+            info.Content(Modifier)
 
-            Column {
-                info.Content(Modifier)
+            fieldLabel.Content(Modifier)
 
-                fieldLabel.Content(Modifier)
+            Row(
+                modifier = Modifier
+                    .clickable { expanded = !expanded }
+                    .fillMaxWidth()
+                    .padding(bottom = Spacings.medium),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = dropdownLabel,
+                    modifier = Modifier.weight(1f),
+                )
+                val image =
+                    if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
+                Icon(imageVector = image, contentDescription = "Dropdown")
+            }
 
-                Row(
-                    modifier = Modifier
-                        .clickable { expanded = !expanded }
-                        .fillMaxWidth()
-                        .padding(bottom = Spacings.medium),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = dropdownLabel,
-                        modifier = Modifier.weight(1f),
-                    )
-                    val image = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
-                    Icon(imageVector = image, contentDescription = "Dropdown")
-                }
-
-                HorizontalDivider(color = Colors.black20)
-                if (expanded) {
-                    Column {
-                        options.forEach { option ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { onOptionClicked(option.id) }
-                                    .padding(vertical = Spacings.medium),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(text = option.label, modifier = Modifier.weight(1f))
-                                if (selectedId == option.id) {
-                                    Icon(imageVector = Icons.Filled.Check, contentDescription = "Dropdown")
-                                }
+            HorizontalDivider(color = Colors.black20)
+            if (expanded) {
+                Column {
+                    options.forEach { option ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onOptionClicked(option.id) }
+                                .padding(vertical = Spacings.medium),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(text = option.label, modifier = Modifier.weight(1f))
+                            if (selectedId == option.id) {
+                                Icon(
+                                    imageVector = Icons.Filled.Check,
+                                    contentDescription = "Dropdown"
+                                )
                             }
                         }
                     }
@@ -93,7 +94,7 @@ private fun Previews() {
         id = "",
         required = true,
         info = QuestionNumberInfo(2, 11),
-        options = List(10) { DropDownFieldItem.Option(id = "$it", label = "Option ${it + 1}")},
+        options = List(10) { DropDownFieldItem.Option(id = "$it", label = "Option ${it + 1}") },
         fieldLabel = QuestionFieldLabel("State"),
         dropdownLabel = "Select an option",
         selectedId = "2",
