@@ -22,7 +22,7 @@ private data class FakeData(
 @Singleton
 class FakeChoirRepository @Inject constructor(
     @ApplicationContext context: Context,
-) : ChoirRepository {
+) : ChoirRepository, FakeComponent {
     private val fakeData by lazy {
         context.resources.openRawResource(R.raw.fake_data)
             .bufferedReader()
@@ -40,6 +40,7 @@ class FakeChoirRepository @Inject constructor(
     }
 
     override suspend fun getOnboarding(): Result<Onboarding> {
+        delay()
         return success(fakeData.onboarding)
     }
 
@@ -50,6 +51,7 @@ class FakeChoirRepository @Inject constructor(
         val result = fakeData
             .assessmentSteps
             .getOrNull(assessmentIndex) ?: return Result.failure(Error("Done"))
+        delay()
         return Result.success(result).also {
             assessmentIndex++
         }

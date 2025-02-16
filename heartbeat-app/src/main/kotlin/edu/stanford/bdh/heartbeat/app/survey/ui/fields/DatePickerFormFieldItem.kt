@@ -26,7 +26,7 @@ import java.time.Instant
 data class DatePickerFormFieldItem(
     override val fieldId: String,
     val info: QuestionNumberInfo,
-    val fieldLabel: QuestionFieldLabel,
+    val fieldLabel: QuestionFieldLabel?,
     val value: String,
     val onValueChange: (Instant) -> Unit,
 ) : FormFieldItem {
@@ -37,7 +37,7 @@ data class DatePickerFormFieldItem(
 
         SurveyCard(modifier = modifier) {
             info.Content(Modifier)
-            fieldLabel.Content(Modifier)
+            fieldLabel?.Content(Modifier)
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

@@ -18,7 +18,7 @@ data class TextFormFieldItem(
     override val fieldId: String,
     val style: Style,
     val info: QuestionNumberInfo,
-    val fieldLabel: QuestionFieldLabel,
+    val fieldLabel: QuestionFieldLabel?,
     val value: String,
     val onValueChange: (String) -> Unit,
 ) : FormFieldItem {
@@ -32,7 +32,7 @@ data class TextFormFieldItem(
     override fun Content(modifier: Modifier) {
         SurveyCard(modifier = modifier) {
             info.Content(Modifier)
-            fieldLabel.Content(Modifier)
+            fieldLabel?.Content(Modifier)
             TextField(
                 value = value,
                 modifier = Modifier

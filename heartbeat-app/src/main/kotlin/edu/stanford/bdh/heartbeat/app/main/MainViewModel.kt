@@ -138,7 +138,10 @@ class MainViewModel @Inject constructor(
                     _uiState.update {
                         MainUiState.Authenticated.Survey.Content(
                             onboarding = onboarding,
-                            onCompleted = { _uiState.update { MainUiState.HomePage } }
+                            onCompleted = {
+                                messageNotifier.notify("We appreciate your participation in the study!")
+                                _uiState.update { MainUiState.HomePage }
+                            }
                         )
                     }
                 }.onFailure {

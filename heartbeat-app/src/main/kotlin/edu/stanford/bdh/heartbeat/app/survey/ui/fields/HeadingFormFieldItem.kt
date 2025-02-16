@@ -12,11 +12,12 @@ import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyCard
 
 data class HeadingFormFieldItem(
     override val fieldId: String,
-    private val text: String,
+    private val text: String?,
 ) : FormFieldItem {
 
     @Composable
     override fun Content(modifier: Modifier) {
+        text ?: return
         SurveyCard(modifier = modifier) {
             val isHtml = remember(text) { HtmlUtils.isHtml(text) }
             if (isHtml) {

@@ -12,7 +12,7 @@ import javax.inject.Singleton
 import kotlin.random.Random
 
 @Singleton
-class FakeAccountManager @Inject constructor() : AccountManager {
+class FakeAccountManager @Inject constructor() : AccountManager, FakeComponent {
     private val defaultAccount = AccountInfo(
         email = "fake-user@heartbeat-study.edu",
         name = "Fake User",
@@ -62,8 +62,4 @@ class FakeAccountManager @Inject constructor() : AccountManager {
     }
 
     private fun <T> success(value: T) = Result.success(value)
-
-    private suspend fun delay() {
-        kotlinx.coroutines.delay(timeMillis = Random.nextLong(TimeUnit.SECONDS.toMillis(FakeConfigs.MAX_DELAY_SECONDS)))
-    }
 }

@@ -24,7 +24,7 @@ import edu.stanford.spezi.core.design.theme.ThemePreviews
 data class TextAreaFormFieldItem(
     override val fieldId: String,
     val info: QuestionNumberInfo,
-    val fieldLabel: QuestionFieldLabel,
+    val fieldLabel: QuestionFieldLabel?,
     val value: String,
     val onValueChange: (String) -> Unit,
 ) : FormFieldItem {
@@ -33,7 +33,7 @@ data class TextAreaFormFieldItem(
     override fun Content(modifier: Modifier) {
         SurveyCard(modifier = modifier) {
             info.Content(Modifier)
-            fieldLabel.Content(Modifier)
+            fieldLabel?.Content(Modifier)
             BasicTextField(
                 value = value,
                 onValueChange = onValueChange,

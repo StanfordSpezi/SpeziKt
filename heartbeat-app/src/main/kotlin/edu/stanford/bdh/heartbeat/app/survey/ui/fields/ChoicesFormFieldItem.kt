@@ -37,7 +37,7 @@ data class ChoicesFormFieldItem(
     override val fieldId: String,
     val style: Style,
     val info: QuestionNumberInfo,
-    val fieldLabel: QuestionFieldLabel,
+    val fieldLabel: QuestionFieldLabel?,
     val options: List<Option>,
     val selectedIds: List<String>,
     val onOptionClicked: (String) -> Unit,
@@ -61,7 +61,7 @@ data class ChoicesFormFieldItem(
 
         SurveyCard(modifier = modifier) {
             info.Content(Modifier)
-            fieldLabel.Content(Modifier)
+            fieldLabel?.Content(Modifier)
 
             if (style is Style.Dropdown) {
                 Row(
@@ -103,7 +103,7 @@ data class ChoicesFormFieldItem(
                         .padding(vertical = rowPadding),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = option.label, modifier = Modifier.weight(1f))
+                    Text(text = option.label, modifier = Modifier.padding(end = Spacings.small).weight(1f))
                     Choice(id = option.id)
                 }
             }
