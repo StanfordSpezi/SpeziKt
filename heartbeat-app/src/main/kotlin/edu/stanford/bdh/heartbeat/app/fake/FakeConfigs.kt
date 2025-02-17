@@ -11,7 +11,7 @@ object FakeConfigs {
     /**
      * Indicates whether a dummy login / register flow should be used, otherwise survey starts immediately
      */
-    const val SKIP_LOGIN = true
+    const val SKIP_LOGIN = false
 
     /**
      * Max value in seconds that simulates async request durations to visualize loading states
