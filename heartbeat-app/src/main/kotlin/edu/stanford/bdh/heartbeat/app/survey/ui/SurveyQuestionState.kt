@@ -75,9 +75,7 @@ interface SurveyQuestionState : SurveyItem {
                 ) {
                     item { progress.Content(Modifier.padding(top = Spacings.medium)) }
                     item { title.Content(Modifier) }
-                    items(fields) { field ->
-                        field.Content(Modifier)
-                    }
+                    items(fields) { field -> field.Content(Modifier) }
                 }
 
                 Row(

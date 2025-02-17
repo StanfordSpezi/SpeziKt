@@ -48,23 +48,23 @@ class SurveyViewModel @AssistedInject constructor(
     private val messageNotifier: MessageNotifier,
     private val dateFormatter: DateFormatter,
 ) : ViewModel() {
-    private val answers: MutableMap<String, Set<AnswerUpdate>> = mutableMapOf()
 
-    private val onboarding get() = state.onboarding
+    private var currentAssessmentStep = with(state.onboarding) {
+        AssessmentStep(
+            question = question,
+            displayStatus = displayStatus
+        )
+    }
+    private val session = Session().apply { setup(assessmentStep = currentAssessmentStep) }
 
-    private var currentAssessmentStep = AssessmentStep(
-        question = onboarding.question,
-        displayStatus = onboarding.displayStatus
-    )
-
-    private val _state = MutableStateFlow(
+    private val _uiState = MutableStateFlow(
         surveyUiStateMapper.map(
             assessmentStep = currentAssessmentStep,
             onAction = ::onAction
         )
     )
 
-    val uiState = _state.asStateFlow()
+    val uiState = _uiState.asStateFlow()
 
     private fun onAction(action: SurveyAction) {
         when (action) {
@@ -78,95 +78,69 @@ class SurveyViewModel @AssistedInject constructor(
                 }
             }
 
-            is SurveyAction.Back ->
-                handleContinue(backRequest = true)
+            is SurveyAction.Back -> handleContinue(backRequest = true)
         }
     }
 
     private fun handleUpdate(action: SurveyAction.Update) {
-        val questionsState = _state.value.questionState as? SurveyQuestionState.Question
-        val fieldItem = questionsState?.fields?.find { it.fieldId == action.fieldId }
+        val questionsState = _uiState.value.questionState as? SurveyQuestionState.Question ?: return
+        val fieldMap = questionsState.fields.associateBy { it.fieldId }.toMutableMap()
+        val fieldId = action.fieldId
+        val fieldItem = fieldMap[fieldId]
         val answer = action.answer
-        val updatedFieldItem = when {
-            fieldItem is TextAreaFormFieldItem && answer is AnswerUpdate.Text -> {
-                if (answer.value.isEmpty()) {
-                    answers.remove(fieldItem.fieldId)
+        val answerValue = stringValue(answer = answer)
+        when (fieldItem) {
+            is TextAreaFormFieldItem -> {
+                if (answerValue.isEmpty()) {
+                    session.choices.remove(fieldId)
                 } else {
-                    answers[fieldItem.fieldId] = setOf(answer)
+                    session.choices[fieldId] = setOf(answerValue)
                 }
-                fieldItem.copy(value = answer.value)
+                fieldMap[fieldId] = fieldItem.copy(value = answerValue)
             }
 
-            fieldItem is TextFormFieldItem && answer is AnswerUpdate.Text -> {
-                val sanitized = if (fieldItem.style == TextFormFieldItem.Style.NUMERIC && answer.value.toDoubleOrNull() == null) {
-                    null
-                } else {
-                    answer.value.takeIf { it.isNotEmpty() }
-                }
-                if (sanitized == null) {
-                    answers.remove(fieldItem.fieldId)
-                } else {
-                    answers[fieldItem.fieldId] = setOf(answer)
-                }
-                fieldItem.copy(value = sanitized ?: fieldItem.value)
+            is TextFormFieldItem -> {
+                if (fieldItem.style == TextFormFieldItem.Style.NUMERIC && answerValue.toDoubleOrNull() == null) return
+                session.choices[fieldId] = setOfNotNull(answerValue.takeIf { it.isNotBlank() })
+                fieldMap[fieldId] = fieldItem.copy(value = answerValue)
             }
 
-            fieldItem is ChoicesFormFieldItem && answer is AnswerUpdate.OptionId -> {
-                val optionId = answer.value
-                var style: ChoicesFormFieldItem.Style = fieldItem.style
+            is ChoicesFormFieldItem -> {
+                var style = fieldItem.style
                 val newSelectedIds = when (style) {
-                    is ChoicesFormFieldItem.Style.Radios -> {
-                        answers[fieldItem.fieldId] = setOf(answer)
-                        listOf(optionId)
-                    }
-
+                    is ChoicesFormFieldItem.Style.Radios -> setOf(answerValue)
                     is ChoicesFormFieldItem.Style.Dropdown -> {
-                        style = style.copy(label = fieldItem.options.find { it.id == answer.value }?.label ?: "")
-                        answers[fieldItem.fieldId] = setOf(answer)
-                        listOf(optionId)
+                        val newLabel = fieldItem.options.find { it.id == answerValue }?.label
+                        style = style.copy(label = newLabel ?: style.label)
+                        setOf(answerValue)
                     }
-
                     is ChoicesFormFieldItem.Style.Checkboxes -> {
                         val currentSelections = fieldItem.selectedIds.toMutableSet()
-                        if (currentSelections.contains(optionId)) {
-                            currentSelections.remove(optionId)
-                        } else {
-                            currentSelections.add(
-                                optionId
-                            )
-                        }
-                        answers[fieldItem.fieldId] =
-                            currentSelections.map { AnswerUpdate.OptionId(it) }.toSet()
-                        currentSelections.toList()
+                        if (!currentSelections.add(answerValue)) currentSelections.remove(answerValue)
+                        currentSelections
                     }
                 }
-                fieldItem.copy(selectedIds = newSelectedIds, style = style)
+                session.choices[fieldId] = newSelectedIds
+                fieldMap[fieldId] = fieldItem.copy(
+                    selectedIds = newSelectedIds.toList(),
+                    style = style
+                )
             }
 
-            fieldItem is DatePickerFormFieldItem && answer is AnswerUpdate.Date -> {
-                val selectedDate = answer.value
-                val formatted =
-                    dateFormatter.format(selectedDate, DateFormat.MM_DD_YYYY, ZoneId.of("UTC"))
-                answers[fieldItem.fieldId] = mutableSetOf(answer)
-                fieldItem.copy(value = formatted)
+            is DatePickerFormFieldItem -> {
+                session.choices[fieldId] = setOf(answerValue)
+                fieldMap[fieldId] = fieldItem.copy(value = answerValue)
             }
 
             else -> return
         }
 
-        val newFieldItems = questionsState.fields.map {
-            if (it.fieldId == updatedFieldItem.fieldId) updatedFieldItem else it
-        }
-
-        val requiredFields =
-            currentAssessmentStep.question.fields?.filter { it.required == true } ?: emptyList()
-
-        _state.update {
+        _uiState.update {
             it.copy(
                 questionState = questionsState.copy(
-                    fields = newFieldItems,
+                    fields = fieldMap.values.toList(),
                     continueButton = questionsState.continueButton.copy(
-                        enabled = requiredFields.all { answers.contains(fieldItem.fieldId) }
+                        enabled = session.isContinueAllowed()
                     )
                 ),
             )
@@ -175,8 +149,8 @@ class SurveyViewModel @AssistedInject constructor(
 
     private fun handleContinue(backRequest: Boolean) {
         viewModelScope.launch {
-            val currentQuestionsState = _state.value.questionState
-            _state.update { it.copy(questionState = SurveyQuestionState.Loading) }
+            val currentQuestionsState = _uiState.value.questionState
+            _uiState.update { it.copy(questionState = SurveyQuestionState.Loading) }
             val displayStatus = currentAssessmentStep.displayStatus
             repository.continueAssessment(
                 token = displayStatus.surveyToken ?: "",
@@ -192,24 +166,18 @@ class SurveyViewModel @AssistedInject constructor(
                         backRequest = backRequest
                     ),
                     answers = FormAnswer(
-                        fieldAnswers = answers.map { entry ->
+                        fieldAnswers = session.choices.map { entry ->
                             FormFieldAnswer(
                                 fieldId = entry.key,
-                                choice = entry.value.map { answerUpdate ->
-                                    when (answerUpdate) {
-                                        is AnswerUpdate.Text -> answerUpdate.value
-                                        is AnswerUpdate.OptionId -> answerUpdate.value
-                                        is AnswerUpdate.Date -> answerUpdate.value.epochSecond.toString()
-                                    }
-                                }
+                                choice = entry.value.toList()
                             )
                         }
                     )
                 )
             ).onSuccess { success ->
-                answers.clear()
                 currentAssessmentStep = success
-                _state.update {
+                session.setup(assessmentStep = success)
+                _uiState.update {
                     surveyUiStateMapper.map(
                         assessmentStep = success,
                         onAction = ::onAction
@@ -217,9 +185,30 @@ class SurveyViewModel @AssistedInject constructor(
                 }
             }.onFailure { _ ->
                 messageNotifier.notify("An error occurred when submitting your answer")
-                _state.update { it.copy(questionState = currentQuestionsState) }
+                _uiState.update { it.copy(questionState = currentQuestionsState) }
             }
         }
+    }
+
+    private fun stringValue(answer: AnswerUpdate) = when (answer) {
+        is AnswerUpdate.Text -> answer.value
+        is AnswerUpdate.OptionId -> answer.value
+        is AnswerUpdate.Date -> dateFormatter.format(answer.value, DateFormat.MM_DD_YYYY, ZoneId.of("UTC"))
+    }
+
+    private inner class Session {
+        private val requiredFields = hashSetOf<String>()
+        val choices: MutableMap<String, Set<String>> = mutableMapOf()
+
+        fun setup(assessmentStep: AssessmentStep) {
+            requiredFields.clear()
+            choices.clear()
+            assessmentStep.question.fields?.forEach {
+                if (it.required == true) requiredFields.add(it.fieldId)
+            }
+        }
+
+        fun isContinueAllowed() = requiredFields.all { id -> choices[id]?.isNotEmpty() == true }
     }
 
     @AssistedFactory

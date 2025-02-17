@@ -25,7 +25,7 @@ data class HeadingFormFieldItem(
             } else {
                 Text(
                     modifier = modifier.fillMaxWidth(),
-                    text = text.trim(),
+                    text = text,
                     textAlign = TextAlign.Start
                 )
             }

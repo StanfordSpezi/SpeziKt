@@ -44,7 +44,7 @@ class SurveyUiStateMapper @Inject constructor() {
                     null
                 },
                 continueButton = QuestionButton(
-                    title = "Continue",
+                    title = if (question.terminal == true) "Finish" else "Continue",
                     onClick = { onAction(SurveyAction.Continue) },
                     enabled = FakeConfigs.FORCE_ENABLE_CONTINUE || questionFields.none { it.required == true }
                 )
@@ -52,38 +52,22 @@ class SurveyUiStateMapper @Inject constructor() {
         )
     }
 
-    @Suppress("LongMethod")
     private fun mapFormFields(
         formFields: List<FormField>,
         onAction: (SurveyAction) -> Unit,
     ): List<FormFieldItem> {
         return formFields.mapIndexed { index, formField ->
             val info = QuestionNumberInfo(current = index + 1, total = formFields.size)
-            val fieldLabel = formField.label.takeIf { it?.isNotEmpty() == true }
-                ?.let { QuestionFieldLabel(label = it) }
+            val fieldLabel =
+                formField.label?.takeIf { it.isNotEmpty() }?.let { QuestionFieldLabel(it) }
             val fieldId = formField.fieldId
-            when (formField.type) {
-                FormField.Type.NUMBER -> TextFormFieldItem(
-                    fieldId = fieldId,
-                    info = info,
-                    fieldLabel = fieldLabel,
-                    style = TextFormFieldItem.Style.NUMERIC,
-                    value = "",
-                    onValueChange = {
-                        onAction(
-                            SurveyAction.Update(
-                                fieldId = fieldId,
-                                answer = AnswerUpdate.Text(it)
-                            )
-                        )
-                    }
-                )
 
-                FormField.Type.TEXT -> TextFormFieldItem(
+            when (formField.type) {
+                FormField.Type.NUMBER, FormField.Type.TEXT -> TextFormFieldItem(
                     fieldId = fieldId,
                     info = info,
                     fieldLabel = fieldLabel,
-                    style = TextFormFieldItem.Style.TEXT,
+                    style = if (formField.type == FormField.Type.NUMBER) TextFormFieldItem.Style.NUMERIC else TextFormFieldItem.Style.TEXT,
                     value = "",
                     onValueChange = {
                         onAction(
@@ -97,67 +81,7 @@ class SurveyUiStateMapper @Inject constructor() {
 
                 FormField.Type.HEADING -> HeadingFormFieldItem(
                     fieldId = fieldId,
-                    text = formField.label,
-                )
-
-                FormField.Type.CHECKBOXES -> ChoicesFormFieldItem(
-                    fieldId = fieldId,
-                    info = info,
-                    fieldLabel = fieldLabel,
-                    style = ChoicesFormFieldItem.Style.Checkboxes,
-                    selectedIds = emptyList(),
-                    options = formField.values?.map {
-                        ChoicesFormFieldItem.Option(id = it.id, label = it.label)
-                    } ?: emptyList(),
-                    onOptionClicked = {
-                        onAction(
-                            SurveyAction.Update(
-                                fieldId = fieldId,
-                                answer = AnswerUpdate.OptionId(it)
-                            )
-                        )
-                    }
-                )
-
-                FormField.Type.RADIOS -> ChoicesFormFieldItem(
-                    fieldId = fieldId,
-                    info = info,
-                    fieldLabel = fieldLabel,
-                    style = ChoicesFormFieldItem.Style.Radios,
-                    selectedIds = emptyList(),
-                    options = formField.values?.map {
-                        ChoicesFormFieldItem.Option(id = it.id, label = it.label)
-                    } ?: emptyList(),
-                    onOptionClicked = {
-                        onAction(
-                            SurveyAction.Update(
-                                fieldId = fieldId,
-                                answer = AnswerUpdate.OptionId(it)
-                            )
-                        )
-                    }
-                )
-
-                FormField.Type.DROPDOWN -> ChoicesFormFieldItem(
-                    fieldId = fieldId,
-                    info = info,
-                    fieldLabel = fieldLabel,
-                    style = ChoicesFormFieldItem.Style.Dropdown(
-                        label = "Select an option...",
-                        initialExpanded = false
-                    ),
-                    selectedIds = emptyList(),
-                    options = formField.values?.map {
-                        ChoicesFormFieldItem.Option(id = it.id, label = it.label)
-                    } ?: emptyList(),
-                    onOptionClicked = {
-                        onAction(
-                            SurveyAction.Update(
-                                fieldId = fieldId,
-                                answer = AnswerUpdate.OptionId(it)
-                            )
-                        )
-                    }
+                    text = formField.label
                 )
 
                 FormField.Type.DATE_PICKER -> DatePickerFormFieldItem(
@@ -165,14 +89,7 @@ class SurveyUiStateMapper @Inject constructor() {
                     info = info,
                     fieldLabel = fieldLabel,
                     value = "",
-                    onValueChange = {
-                        onAction(
-                            SurveyAction.Update(
-                                fieldId = fieldId,
-                                answer = AnswerUpdate.Date(it)
-                            )
-                        )
-                    }
+                    onValueChange = { onAction(SurveyAction.Update(fieldId, AnswerUpdate.Date(it))) }
                 )
 
                 FormField.Type.TEXT_AREA -> TextAreaFormFieldItem(
@@ -180,23 +97,54 @@ class SurveyUiStateMapper @Inject constructor() {
                     info = info,
                     fieldLabel = fieldLabel,
                     value = "",
-                    onValueChange = {
-                        onAction(
-                            SurveyAction.Update(
-                                fieldId = fieldId,
-                                answer = AnswerUpdate.Text(it)
-                            )
-                        )
-                    }
+                    onValueChange = { onAction(SurveyAction.Update(fieldId, AnswerUpdate.Text(it))) }
                 )
 
+                FormField.Type.CHECKBOXES, FormField.Type.RADIOS, FormField.Type.DROPDOWN ->
+                    mapChoiceField(
+                        formField = formField,
+                        info = info,
+                        fieldLabel = fieldLabel,
+                        onAction = onAction
+                    )
+
                 else -> UnsupportedFormFieldItem(
-                    fieldId = formField.fieldId,
+                    fieldId = fieldId,
+                    type = formField.type.name,
                     info = info,
                     fieldLabel = fieldLabel,
-                    type = formField.type.name
                 )
             }
         }
+    }
+
+    private fun mapChoiceField(
+        formField: FormField,
+        info: QuestionNumberInfo,
+        fieldLabel: QuestionFieldLabel?,
+        onAction: (SurveyAction) -> Unit,
+    ): ChoicesFormFieldItem {
+        val style = when (formField.type) {
+            FormField.Type.CHECKBOXES -> ChoicesFormFieldItem.Style.Checkboxes
+            FormField.Type.RADIOS -> ChoicesFormFieldItem.Style.Radios
+            FormField.Type.DROPDOWN -> ChoicesFormFieldItem.Style.Dropdown(
+                label = "Select an option...",
+                initialExpanded = false
+            )
+
+            else -> error("Unsupported choice type: ${formField.type}")
+        }
+        return ChoicesFormFieldItem(
+            fieldId = formField.fieldId,
+            info = info,
+            fieldLabel = fieldLabel,
+            style = style,
+            selectedIds = emptyList(),
+            options = formField.values?.map { ChoicesFormFieldItem.Option(it.id, it.label) }
+                ?: emptyList(),
+            onOptionClicked = {
+                onAction(SurveyAction.Update(formField.fieldId, AnswerUpdate.OptionId(it)))
+            }
+        )
     }
 }
