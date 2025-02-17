@@ -5,10 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AssessmentStep(
     val displayStatus: DisplayStatus,
-    val question: QuestionPayload,
-) {
-    @Serializable
-    data class QuestionPayload(
-        val value1: FormQuestion? = null,
-    )
-}
+    val question: FormQuestion,
+)

@@ -19,6 +19,7 @@ import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyQuestionState
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.ChoicesFormFieldItem
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.DatePickerFormFieldItem
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.TextFormFieldItem
+import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.utils.DateFormat
 import edu.stanford.spezi.core.utils.DateFormatter
 import edu.stanford.spezi.core.utils.MessageNotifier
@@ -49,10 +50,11 @@ class SurveyViewModel @AssistedInject constructor(
     private val messageNotifier: MessageNotifier,
     private val dateFormatter: DateFormatter,
 ) : ViewModel() {
+    private val logger by speziLogger()
 
     private var currentAssessmentStep = with(state.onboarding) {
         AssessmentStep(
-            question = AssessmentStep.QuestionPayload(question),
+            question = question,
             displayStatus = displayStatus
         )
     }
@@ -72,7 +74,7 @@ class SurveyViewModel @AssistedInject constructor(
             is SurveyAction.Update -> handleUpdate(action)
 
             is SurveyAction.Continue -> {
-                if (currentAssessmentStep.question.value1?.terminal == true) {
+                if (currentAssessmentStep.question.terminal == true) {
                     state.onCompleted()
                 } else {
                     handleContinue(backRequest = false)
@@ -109,6 +111,7 @@ class SurveyViewModel @AssistedInject constructor(
                             if (!add(answerValue)) remove(answerValue)
                         }
                     }
+
                     is ChoicesFormFieldItem.Style.Radios -> setOf(answerValue)
                     is ChoicesFormFieldItem.Style.Dropdown -> {
                         val newLabel = fieldItem.options.find { it.id == answerValue }?.label
@@ -161,15 +164,13 @@ class SurveyViewModel @AssistedInject constructor(
                         locale = displayStatus.locale,
                         backRequest = backRequest
                     ),
-                    answers = AssessmentSubmit.AnswersPayload(
-                        value1 = FormAnswer(
-                            fieldAnswers = session.choices.map { entry ->
-                                FormFieldAnswer(
-                                    fieldId = entry.key,
-                                    choice = entry.value.toList()
-                                )
-                            }
-                        )
+                    answers = FormAnswer(
+                        fieldAnswers = session.choices.map { entry ->
+                            FormFieldAnswer(
+                                fieldId = entry.key,
+                                choice = entry.value.toList()
+                            )
+                        }
                     )
                 )
             ).onSuccess { success ->
@@ -181,7 +182,8 @@ class SurveyViewModel @AssistedInject constructor(
                         onAction = ::onAction
                     )
                 }
-            }.onFailure { _ ->
+            }.onFailure { error ->
+                logger.e(error) { "Failure while submitting the answer" }
                 messageNotifier.notify("An error occurred when submitting your answer")
                 _uiState.update { it.copy(questionState = currentQuestionsState) }
             }
@@ -209,6 +211,7 @@ class SurveyViewModel @AssistedInject constructor(
                 val max = formField?.max?.toDoubleOrNull() ?: Double.MAX_VALUE
                 answerValue in min..max
             }
+
             formField?.required == true && value.isBlank() -> false
             else -> true
         }
@@ -223,14 +226,15 @@ class SurveyViewModel @AssistedInject constructor(
             requiredFields.clear()
             choices.clear()
             formFields.clear()
-            assessmentStep.question.value1?.fields?.forEach {
+            assessmentStep.question.fields?.forEach {
                 formFields[it.fieldId] = it
                 if (it.required == true) requiredFields.add(it.fieldId)
             }
         }
 
         fun store(fieldId: String, answer: String?) {
-            if (answer.isNullOrEmpty()) choices.remove(fieldId) else choices[fieldId] = setOf(answer)
+            if (answer.isNullOrEmpty()) choices.remove(fieldId) else choices[fieldId] =
+                setOf(answer)
         }
 
         fun store(fieldId: String, answers: Set<String>) {
