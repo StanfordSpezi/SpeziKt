@@ -14,7 +14,6 @@ import edu.stanford.bdh.heartbeat.app.survey.ui.fields.ChoicesFormFieldItem
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.DatePickerFormFieldItem
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.FormFieldItem
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.HeadingFormFieldItem
-import edu.stanford.bdh.heartbeat.app.survey.ui.fields.TextAreaFormFieldItem
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.TextFormFieldItem
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.UnsupportedFormFieldItem
 import javax.inject.Inject
@@ -63,19 +62,22 @@ class SurveyUiStateMapper @Inject constructor() {
             val fieldId = formField.fieldId
 
             when (formField.type) {
-                FormField.Type.NUMBER, FormField.Type.TEXT -> TextFormFieldItem(
+                FormField.Type.NUMBER,
+                FormField.Type.TEXT,
+                FormField.Type.TEXT_AREA -> TextFormFieldItem(
                     fieldId = fieldId,
                     info = info,
                     fieldLabel = fieldLabel,
-                    style = if (formField.type == FormField.Type.NUMBER) TextFormFieldItem.Style.NUMERIC else TextFormFieldItem.Style.TEXT,
+                    warning = mapWarning(formField = formField),
+                    displayWarning = false,
+                    style = when (formField.type) {
+                        FormField.Type.TEXT_AREA -> TextFormFieldItem.Style.TEXT_AREA
+                        FormField.Type.NUMBER -> TextFormFieldItem.Style.NUMERIC
+                        else -> TextFormFieldItem.Style.TEXT
+                    },
                     value = "",
                     onValueChange = {
-                        onAction(
-                            SurveyAction.Update(
-                                fieldId = fieldId,
-                                answer = AnswerUpdate.Text(it)
-                            )
-                        )
+                        onAction(SurveyAction.Update(fieldId = fieldId, answer = AnswerUpdate.Text(it)))
                     }
                 )
 
@@ -90,14 +92,6 @@ class SurveyUiStateMapper @Inject constructor() {
                     fieldLabel = fieldLabel,
                     value = "",
                     onValueChange = { onAction(SurveyAction.Update(fieldId, AnswerUpdate.Date(it))) }
-                )
-
-                FormField.Type.TEXT_AREA -> TextAreaFormFieldItem(
-                    fieldId = fieldId,
-                    info = info,
-                    fieldLabel = fieldLabel,
-                    value = "",
-                    onValueChange = { onAction(SurveyAction.Update(fieldId, AnswerUpdate.Text(it))) }
                 )
 
                 FormField.Type.CHECKBOXES, FormField.Type.RADIOS, FormField.Type.DROPDOWN ->
@@ -139,12 +133,23 @@ class SurveyUiStateMapper @Inject constructor() {
             info = info,
             fieldLabel = fieldLabel,
             style = style,
-            selectedIds = emptyList(),
+            selectedIds = emptySet(),
             options = formField.values?.map { ChoicesFormFieldItem.Option(it.id, it.label) }
                 ?: emptyList(),
             onOptionClicked = {
                 onAction(SurveyAction.Update(formField.fieldId, AnswerUpdate.OptionId(it)))
             }
         )
+    }
+
+    private fun mapWarning(formField: FormField) = if (formField.type == FormField.Type.NUMBER) {
+        val min = formField.min
+        val max = formField.max
+        val rangeInfo = if (min != null && max != null) " from $min to $max." else ""
+        "Please enter a valid number$rangeInfo"
+    } else if (formField.required == true) {
+        "This answer is required!"
+    } else {
+        null
     }
 }

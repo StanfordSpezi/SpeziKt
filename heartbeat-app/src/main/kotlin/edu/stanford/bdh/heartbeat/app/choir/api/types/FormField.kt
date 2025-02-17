@@ -28,7 +28,7 @@ data class FormField(
     @Serializable
     enum class Type {
         /* START - REQUIRED IMPL */
-        @SerialName("number") NUMBER, // TextFieldItem | Style.NUMERIC
+        @SerialName("number") NUMBER, // TextFormFieldItem | Style.NUMERIC
 
         @SerialName("checkboxes") CHECKBOXES, // ChoicesFieldItem | Style.Checkboxes
 
@@ -36,13 +36,13 @@ data class FormField(
 
         @SerialName("heading") HEADING, // HeadingFieldItem
 
-        @SerialName("text") TEXT, // TextFieldItem | Style.TEXT
+        @SerialName("text") TEXT, // TextFormFieldItem | Style.TEXT
 
         @SerialName("dropdown") DROPDOWN, // ChoicesFieldItem | Style.Dropdown
 
         @SerialName("datePicker") DATE_PICKER, // DatePickerFormField
 
-        @SerialName("textArea") TEXT_AREA, // TextAreaFormField
+        @SerialName("textArea") TEXT_AREA, // TextFormFieldItem | Style.TEXT_AREA
 
         /* END - REQUIRED IMPL */
 

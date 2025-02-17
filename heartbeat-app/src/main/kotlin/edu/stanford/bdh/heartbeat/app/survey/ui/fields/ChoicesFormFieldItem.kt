@@ -39,7 +39,7 @@ data class ChoicesFormFieldItem(
     val info: QuestionNumberInfo,
     val fieldLabel: QuestionFieldLabel?,
     val options: List<Option>,
-    val selectedIds: List<String>,
+    val selectedIds: Set<String>,
     val onOptionClicked: (String) -> Unit,
 ) : FormFieldItem {
 
@@ -146,7 +146,7 @@ class ChoicesFieldItemPreviewParameterProvider :
         info = QuestionNumberInfo(1, 2),
         options = List(2 * 2) { ChoicesFormFieldItem.Option(id = "$it", label = "Option ${it + 1}") },
         fieldLabel = QuestionFieldLabel("State"),
-        selectedIds = listOf("2"),
+        selectedIds = setOf("2"),
         style = ChoicesFormFieldItem.Style.Radios,
         onOptionClicked = {},
     )
@@ -157,7 +157,7 @@ class ChoicesFieldItemPreviewParameterProvider :
             base.copy(
                 fieldLabel = QuestionFieldLabel("Checkboxes field item"),
                 style = ChoicesFormFieldItem.Style.Checkboxes,
-                selectedIds = listOf("2", "4")
+                selectedIds = setOf("2", "4")
             ),
             base.copy(
                 fieldLabel = QuestionFieldLabel("Dropdown field item collapsed"),
@@ -165,12 +165,12 @@ class ChoicesFieldItemPreviewParameterProvider :
                     label = "Select an option...",
                     initialExpanded = false
                 ),
-                selectedIds = emptyList()
+                selectedIds = emptySet()
             ),
             base.copy(
                 fieldLabel = QuestionFieldLabel("Dropdown field item expanded"),
                 style = ChoicesFormFieldItem.Style.Dropdown(label = "Option 3", initialExpanded = true),
-                selectedIds = listOf("2")
+                selectedIds = setOf("2")
             )
         )
 }

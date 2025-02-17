@@ -329,7 +329,7 @@
                 "questionType": "form",
                 "surveyToken": "token_ABC123",
                 "stepNumber": "7",
-                "progress": 0.76,
+                "progress": 0.80,
                 "surveyProviderId": "provider_XYZ",
                 "surveySectionId": "section_001",
                 "surveySystemName": "onboarding_survey",
@@ -343,15 +343,13 @@
                 "showBack": true
             },
             "question": {
-                "title1": "Please enter your year of birth.<br>\n<p class=\"cursive\">We need this information because some studies are only suitable for people above or below\na certain age.</p>",
+                "title1": "This is an exemplary question to showcase a text area",
                 "fields": [
                     {
-                        "fieldId": "32:0:birth_year",
-                        "type": "number",
-                        "label": "",
-                        "required": true,
-                        "min": "1900",
-                        "max": "2024"
+                        "fieldId": "text_area_field_id",
+                        "type": "textArea",
+                        "label": "Enter a long text in here",
+                        "required": true
                     }
                 ]
             }
