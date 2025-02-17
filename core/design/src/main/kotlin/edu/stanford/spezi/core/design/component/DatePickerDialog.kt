@@ -18,7 +18,7 @@ import java.time.Instant
 @Composable
 fun DatePickerDialog(
     onDateSelected: (Instant) -> Unit,
-    selectableDatesPredicate: (Instant) -> Boolean = { it < Instant.now() },
+    selectableDatesPredicate: (Instant) -> Boolean = { it <= Instant.now() },
     onDismiss: () -> Unit,
 ) {
     val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
