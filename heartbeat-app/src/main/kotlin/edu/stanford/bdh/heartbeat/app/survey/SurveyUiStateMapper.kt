@@ -24,14 +24,14 @@ class SurveyUiStateMapper @Inject constructor() {
         assessmentStep: AssessmentStep,
         onAction: (SurveyAction) -> Unit,
     ): SurveyUiState {
-        val question = assessmentStep.question
+        val question = assessmentStep.question.value1
         val displayStatus = assessmentStep.displayStatus
-        val questionFields = question.fields ?: emptyList()
+        val questionFields = question?.fields ?: emptyList()
         return SurveyUiState(
             pageTitle = displayStatus.pageTitle ?: "Heartbeat Study",
             questionState = SurveyQuestionState.Question(
                 progress = SurveyProgress(value = displayStatus.progress?.toFloat() ?: 0f),
-                title = SurveyQuestionTitle(question.title1),
+                title = SurveyQuestionTitle(question?.title1 ?: ""),
                 fields = mapFormFields(formFields = questionFields, onAction = onAction),
                 backButton = if (displayStatus.showBack == true) {
                     QuestionButton(
@@ -43,7 +43,7 @@ class SurveyUiStateMapper @Inject constructor() {
                     null
                 },
                 continueButton = QuestionButton(
-                    title = if (question.terminal == true) "Finish" else "Continue",
+                    title = if (question?.terminal == true) "Finish" else "Continue",
                     onClick = { onAction(SurveyAction.Continue) },
                     enabled = FakeConfigs.FORCE_ENABLE_CONTINUE || questionFields.none { it.required == true }
                 )

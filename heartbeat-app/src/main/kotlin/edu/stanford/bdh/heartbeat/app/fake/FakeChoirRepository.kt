@@ -51,7 +51,7 @@ class FakeChoirRepository @Inject constructor(
         token: String,
         submit: AssessmentSubmit,
     ): Result<AssessmentStep> {
-        logger.i { "Processing answers: ${submit.answers?.fieldAnswers}" }
+        logger.i { "Processing answers: ${submit.answers.value1?.fieldAnswers}" }
         val index = if (submit.submitStatus?.backRequest == true) nextAssessmentIndex - 2 else nextAssessmentIndex
         val result = fakeData
             .assessmentSteps

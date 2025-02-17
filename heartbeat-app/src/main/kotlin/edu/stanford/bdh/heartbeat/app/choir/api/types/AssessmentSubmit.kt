@@ -5,5 +5,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AssessmentSubmit(
     val submitStatus: SubmitStatus?,
-    val answers: FormAnswer?,
-)
+    val answers: AnswersPayload,
+) {
+    @Serializable
+    data class AnswersPayload(
+        val value1: FormAnswer? = null,
+    )
+}

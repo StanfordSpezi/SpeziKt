@@ -52,7 +52,7 @@ class SurveyViewModel @AssistedInject constructor(
 
     private var currentAssessmentStep = with(state.onboarding) {
         AssessmentStep(
-            question = question,
+            question = AssessmentStep.QuestionPayload(question),
             displayStatus = displayStatus
         )
     }
@@ -72,7 +72,7 @@ class SurveyViewModel @AssistedInject constructor(
             is SurveyAction.Update -> handleUpdate(action)
 
             is SurveyAction.Continue -> {
-                if (currentAssessmentStep.question.terminal == true) {
+                if (currentAssessmentStep.question.value1?.terminal == true) {
                     state.onCompleted()
                 } else {
                     handleContinue(backRequest = false)
@@ -161,13 +161,15 @@ class SurveyViewModel @AssistedInject constructor(
                         locale = displayStatus.locale,
                         backRequest = backRequest
                     ),
-                    answers = FormAnswer(
-                        fieldAnswers = session.choices.map { entry ->
-                            FormFieldAnswer(
-                                fieldId = entry.key,
-                                choice = entry.value.toList()
-                            )
-                        }
+                    answers = AssessmentSubmit.AnswersPayload(
+                        value1 = FormAnswer(
+                            fieldAnswers = session.choices.map { entry ->
+                                FormFieldAnswer(
+                                    fieldId = entry.key,
+                                    choice = entry.value.toList()
+                                )
+                            }
+                        )
                     )
                 )
             ).onSuccess { success ->
@@ -221,7 +223,7 @@ class SurveyViewModel @AssistedInject constructor(
             requiredFields.clear()
             choices.clear()
             formFields.clear()
-            assessmentStep.question.fields?.forEach {
+            assessmentStep.question.value1?.fields?.forEach {
                 formFields[it.fieldId] = it
                 if (it.required == true) requiredFields.add(it.fieldId)
             }
