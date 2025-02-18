@@ -233,8 +233,12 @@ class SurveyViewModel @AssistedInject constructor(
         }
 
         fun store(fieldId: String, answer: String?) {
-            if (answer.isNullOrEmpty()) choices.remove(fieldId) else choices[fieldId] =
-                setOf(answer)
+            if (answer.isNullOrEmpty()) {
+                choices.remove(fieldId)
+            } else {
+                choices[fieldId] =
+                    setOf(answer)
+            }
         }
 
         fun store(fieldId: String, answers: Set<String>) {

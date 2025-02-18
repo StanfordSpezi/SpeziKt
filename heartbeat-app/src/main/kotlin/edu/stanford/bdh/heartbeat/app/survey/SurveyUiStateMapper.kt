@@ -64,7 +64,8 @@ class SurveyUiStateMapper @Inject constructor() {
             when (formField.type) {
                 FormField.Type.NUMBER,
                 FormField.Type.TEXT,
-                FormField.Type.TEXT_AREA -> TextFormFieldItem(
+                FormField.Type.TEXT_AREA,
+                -> TextFormFieldItem(
                     fieldId = fieldId,
                     info = info,
                     fieldLabel = fieldLabel,
