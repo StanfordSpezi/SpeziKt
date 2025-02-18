@@ -1,8 +1,10 @@
 package edu.stanford.bdh.heartbeat.app.account
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -13,8 +15,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.core.design.theme.TextStyles
 
 @Composable
 fun LoginPage() {
@@ -40,7 +45,22 @@ private fun LoginPage(
         }
     }
 
-    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+    Column(modifier = Modifier.fillMaxWidth().padding(Spacings.medium)) {
+        Text(
+            "Your Account",
+            style = TextStyles.headlineLarge,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+
+        Spacer(modifier = Modifier.size(Spacings.medium))
+
+        Text(
+            "You may login to your existing account. Or create a new one if you don't have one already.",
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+        )
+
+        Spacer(modifier = Modifier.size(Spacings.medium))
+
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = uiState.username,
