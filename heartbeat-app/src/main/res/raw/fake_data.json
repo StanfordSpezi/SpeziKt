@@ -419,12 +419,12 @@
                         "required": true,
                         "values": [
                             {
-                                "id": "Yes, I provide my authorization.",
-                                "label": "1"
+                                "label": "Yes, I provide my authorization.",
+                                "id": "1"
                             },
                             {
-                                "id": "No, I do not provide my authorization.",
-                                "label": "0"
+                                "label": "No, I do not provide my authorization.",
+                                "id": "0"
                             }
                         ]
                     },
@@ -446,12 +446,12 @@
                         "required": true,
                         "values": [
                             {
-                                "id": "Yes, I provide my consent.",
-                                "label": "1"
+                                "label": "Yes, I provide my consent.",
+                                "id": "1"
                             },
                             {
-                                "id": "No, I do not provide my consent.",
-                                "label": "0"
+                                "label": "No, I do not provide my consent.",
+                                "id": "0"
                             }
                         ]
                     },
