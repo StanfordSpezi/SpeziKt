@@ -32,5 +32,5 @@ object FakeConfigs {
      * Indicates whether onboarding flow should be skipped and home page with a logged in user
      * should be used at start
      */
-    const val ONBOARDING_COMPLETED = true
+    var ONBOARDING_COMPLETED = true
 }

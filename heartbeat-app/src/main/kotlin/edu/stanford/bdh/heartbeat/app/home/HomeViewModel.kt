@@ -80,9 +80,10 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun buildAccountUiState(): AccountUiState? {
-        val email = accountManager.getAccountInfo()?.email ?: return null
+        val accountInfo = accountManager.getAccountInfo() ?: return null
         return AccountUiState(
-            email = email,
+            email = accountInfo.email,
+            name = accountInfo.name,
             actions = listOf(
                 AccountActionItem(
                     title = "Delete your account",

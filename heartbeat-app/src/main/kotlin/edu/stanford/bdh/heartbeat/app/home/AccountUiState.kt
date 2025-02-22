@@ -1,6 +1,7 @@
 package edu.stanford.bdh.heartbeat.app.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,19 +21,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import edu.stanford.spezi.core.design.component.BottomSheetComposableContent
 import edu.stanford.spezi.core.design.component.CommonScaffold
-import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Colors.onBackground
 import edu.stanford.spezi.core.design.theme.Colors.primary
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.core.design.theme.SpeziThemePreview
+import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.TextStyles.headlineSmall
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import kotlinx.coroutines.launch
 
 data class AccountUiState(
     val email: String,
+    val name: String?,
     val actions: List<AccountActionItem>,
     override val onDismiss: () -> Unit = {},
 ) : BottomSheetComposableContent {
@@ -91,12 +93,20 @@ data class AccountUiState(
                 modifier = Modifier.size(Sizes.Icon.large),
                 tint = primary
             )
-            Text(
-                text = email,
-                color = onBackground,
-                style = headlineSmall
-            )
-            VerticalSpacer(height = Spacings.small)
+            Column {
+                name?.let {
+                    Text(
+                        text = it,
+                        color = onBackground,
+                        style = headlineSmall
+                    )
+                }
+                Text(
+                    text = email,
+                    color = onBackground,
+                    style = if (name == null) headlineSmall else TextStyles.bodyMedium
+                )
+            }
         }
     }
 }
@@ -107,6 +117,7 @@ private fun AccountPreview() {
     SpeziThemePreview {
         AccountUiState(
             email = "test.email@test.com",
+            name = "Username",
             actions = listOf(
                 AccountActionItem(
                     title = "Delete your account",
