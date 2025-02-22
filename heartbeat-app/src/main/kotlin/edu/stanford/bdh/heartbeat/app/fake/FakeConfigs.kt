@@ -27,4 +27,10 @@ object FakeConfigs {
      * Set to true to ignore question validations and complete the flow
      */
     const val FORCE_ENABLE_CONTINUE = false
+
+    /**
+     * Indicates whether onboarding flow should be skipped and home page with a logged in user
+     * should be used at start
+     */
+    const val ONBOARDING_COMPLETED = false
 }

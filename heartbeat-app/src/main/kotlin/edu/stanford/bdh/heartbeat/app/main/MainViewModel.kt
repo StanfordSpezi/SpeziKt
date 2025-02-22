@@ -7,6 +7,7 @@ import edu.stanford.bdh.heartbeat.app.account.AccountInfo
 import edu.stanford.bdh.heartbeat.app.account.AccountManager
 import edu.stanford.bdh.heartbeat.app.choir.ChoirRepository
 import edu.stanford.bdh.heartbeat.app.choir.api.types.Onboarding
+import edu.stanford.bdh.heartbeat.app.fake.FakeConfigs
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.utils.MessageNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -117,6 +118,12 @@ class MainViewModel @Inject constructor(
 
     private fun update(accountInfo: AccountInfo?) {
         when {
+            FakeConfigs.ONBOARDING_COMPLETED && FakeConfigs.ENABLED -> {
+                viewModelScope.launch {
+                    if (accountInfo == null) accountManager.reloadAccountInfo()
+                    _uiState.update { MainUiState.HomePage }
+                }
+            }
             accountInfo == null -> _uiState.update { MainUiState.Unauthenticated }
             !accountInfo.isEmailVerified -> _uiState.update {
                 MainUiState.Authenticated.RequiresEmailVerification(
