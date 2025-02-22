@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class HomeUiState(
+data class _HomeUiState(
     val url: String,
     val isLoadingDelete: Boolean = false,
     val showsDeleteDialog: Boolean = false,
@@ -31,7 +31,7 @@ class HomeViewModel @Inject constructor(
     private val accountManager: AccountManager,
     private val choirRepository: ChoirRepository,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(HomeUiState(url = "https://heartbeatstudy.stanford.edu"))
+    private val _uiState = MutableStateFlow(_HomeUiState(url = "https://heartbeatstudy.stanford.edu"))
     val uiState = _uiState.asStateFlow()
 
     fun onAction(action: HomeAction) {

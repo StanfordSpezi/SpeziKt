@@ -2,23 +2,23 @@ package edu.stanford.bdh.heartbeat.app.home
 
 import android.view.ViewGroup
 import android.webkit.WebView
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.spezi.core.design.component.AsyncButton
-import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.bdh.heartbeat.app.R
+import edu.stanford.spezi.core.design.component.CommonScaffold
 
 @Composable
 fun HomePage() {
@@ -29,7 +29,7 @@ fun HomePage() {
 
 @Composable
 private fun HomePage(
-    uiState: HomeUiState,
+    uiState: _HomeUiState,
     onAction: (HomeAction) -> Unit,
 ) {
     if (uiState.showsDeleteDialog) {
@@ -95,34 +95,19 @@ private fun HomePage(
         )
     }
 
-    Scaffold(
-        topBar = {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(Spacings.medium, Alignment.CenterHorizontally),
-                modifier = Modifier.padding(horizontal = Spacings.medium, vertical = Spacings.small).fillMaxWidth()
-            ) {
-                AsyncButton(
-                    isLoading = uiState.isLoadingSignOut,
-                    onClick = {
-                        onAction(HomeAction.ShowSignOutDialog(true))
-                    },
-                ) {
-                    Text("Sign Out")
-                }
-
-                AsyncButton(
-                    isLoading = uiState.isLoadingDelete,
-                    onClick = {
-                        onAction(HomeAction.ShowDeleteDialog(true))
-                    },
-                ) {
-                    Text("Delete")
-                }
+    CommonScaffold(
+        title = stringResource(R.string.app_name),
+        actions = {
+            IconButton(onClick = {/* TODO */}) {
+                Icon(
+                    imageVector = Icons.Default.AccountCircle,
+                    contentDescription = "Account",
+                )
             }
         }
-    ) { padding ->
+    ) {
         AndroidView(
-            modifier = Modifier.padding(padding),
+            modifier = Modifier.fillMaxSize(),
             factory = {
                 WebView(it).apply {
                     layoutParams = ViewGroup.LayoutParams(
