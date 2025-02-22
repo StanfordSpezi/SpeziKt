@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import edu.stanford.spezi.core.design.component.AsyncTextButton
 import edu.stanford.spezi.core.design.component.BottomSheetComposableContent
 import edu.stanford.spezi.core.design.component.CommonScaffold
 import edu.stanford.spezi.core.design.theme.Colors
@@ -121,15 +122,15 @@ private fun AccountPreview() {
             actions = listOf(
                 AccountActionItem(
                     title = "Delete your account",
-                    color = { Colors.onBackground },
+                    color = { onBackground },
                     confirmation = "",
-                    action = {}
+                    confirmButton = AsyncTextButton(title = "")
                 ),
                 AccountActionItem(
                     title = "Sign out",
                     color = { Colors.error },
                     confirmation = "",
-                    action = {}
+                    confirmButton = AsyncTextButton(title = "")
                 ),
             )
         ) {}.Content(Modifier)

@@ -24,7 +24,12 @@ import edu.stanford.spezi.core.utils.extensions.tag
  * }
  * ```
  */
-typealias ComposableBlock = @Composable () -> Unit
+typealias ComposableBlock = ComposeValue<Unit>
+
+/**
+ * A type alias for a composable lambda function with no parameters and a return value of type T.
+ */
+typealias ComposeValue<T> = @Composable () -> T
 
 /**
  * A type alias on any enum type. Useful to set test tag on composable of a Screen to

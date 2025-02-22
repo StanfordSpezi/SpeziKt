@@ -37,7 +37,8 @@ class FakeAccountManager @Inject constructor() : AccountManager, FakeComponent {
     }
 
     override suspend fun signOut(): Result<Unit> {
-        FakeConfigs.ONBOARDING_COMPLETED = false
+        delay()
+        // FakeConfigs.ONBOARDING_COMPLETED = false
         accountState.update { null }
         return success(Unit)
     }

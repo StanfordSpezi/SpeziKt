@@ -10,14 +10,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import edu.stanford.spezi.core.design.component.AsyncTextButton
 import edu.stanford.spezi.core.design.component.ComposableContent
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
+import edu.stanford.spezi.core.utils.ComposeValue
 
 data class AccountActionItem(
     val title: String,
     val confirmation: String,
-    val color: @Composable () -> Color,
-    val action: () -> Unit,
+    val color: ComposeValue<Color>,
+    val confirmButton: AsyncTextButton,
 ) : ComposableContent {
 
     @Composable
@@ -36,14 +38,7 @@ data class AccountActionItem(
                 onDismissRequest = hideDialog,
                 title = { Text(title) },
                 text = { Text(confirmation) },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            action()
-                            hideDialog()
-                        }
-                    ) { Text("Confirm") }
-                },
+                confirmButton = { confirmButton.Content(Modifier) },
                 dismissButton = {
                     TextButton(onClick = hideDialog) {
                         Text("Cancel")
