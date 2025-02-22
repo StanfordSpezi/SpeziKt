@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.heartbeat.app.choir.ChoirRepository
 import edu.stanford.bdh.heartbeat.app.choir.api.types.Participant
+import edu.stanford.spezi.core.utils.TimeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -33,6 +34,7 @@ sealed interface LoginAction {
 class LoginViewModel @Inject constructor(
     private val accountManager: AccountManager,
     private val choirRepository: ChoirRepository,
+    private val timeProvider: TimeProvider,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -61,6 +63,7 @@ class LoginViewModel @Inject constructor(
                                 firstName = "",
                                 lastName = "",
                                 email = state.username,
+                                created = timeProvider.nowInstant().toString(),
                             )
                         )
                     }

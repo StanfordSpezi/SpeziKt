@@ -10,6 +10,7 @@ data class Participant(
     val lastName: String,
     val birthDate: String? = null,
     val email: String,
+    val created: String,
     val homePhone: String? = null,
     val mobilePhone: String? = null,
     val contactPreference: ContactPreference? = null,

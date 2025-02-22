@@ -23,6 +23,7 @@ import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.utils.DateFormat
 import edu.stanford.spezi.core.utils.DateFormatter
 import edu.stanford.spezi.core.utils.MessageNotifier
+import edu.stanford.spezi.core.utils.TimeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -31,6 +32,7 @@ import java.time.Instant
 import java.time.ZoneId
 
 sealed interface SurveyAction {
+    data object QuestionRendered : SurveyAction
     data class Update(val fieldId: String, val answer: AnswerUpdate) : SurveyAction
     data object Continue : SurveyAction
     data object Back : SurveyAction
@@ -49,6 +51,7 @@ class SurveyViewModel @AssistedInject constructor(
     private val surveyUiStateMapper: SurveyUiStateMapper,
     private val messageNotifier: MessageNotifier,
     private val dateFormatter: DateFormatter,
+    private val timeProvider: TimeProvider,
 ) : ViewModel() {
     private val logger by speziLogger()
 
@@ -71,6 +74,7 @@ class SurveyViewModel @AssistedInject constructor(
 
     private fun onAction(action: SurveyAction) {
         when (action) {
+            is SurveyAction.QuestionRendered -> session.questionRendered()
             is SurveyAction.Update -> handleUpdate(action)
 
             is SurveyAction.Continue -> {
@@ -151,15 +155,18 @@ class SurveyViewModel @AssistedInject constructor(
             val currentQuestionsState = _uiState.value.questionState
             _uiState.update { it.copy(questionState = SurveyQuestionState.Loading) }
             val displayStatus = currentAssessmentStep.displayStatus
+
             repository.continueAssessment(
                 token = displayStatus.surveyToken ?: "",
                 submit = AssessmentSubmit(
                     submitStatus = SubmitStatus(
                         questionId = displayStatus.questionId,
                         questionType = displayStatus.questionType,
-                        stepNumber = (displayStatus.stepNumber ?: "0").toDoubleOrNull()
-                            ?: 0.0,
+                        stepNumber = displayStatus.stepNumber?.toIntOrNull() ?: 1,
                         surveySectionId = displayStatus.surveySectionId,
+                        renderTimeMillis = session.renderTimeMillis,
+                        retryCount = session.retryCount,
+                        thinkTimeMillis = session.getThinkingTime(),
                         sessionToken = displayStatus.sessionToken,
                         locale = displayStatus.locale,
                         backRequest = backRequest
@@ -183,6 +190,7 @@ class SurveyViewModel @AssistedInject constructor(
                     )
                 }
             }.onFailure { error ->
+                session.retryCount++
                 logger.e(error) { "Failure while submitting the answer" }
                 messageNotifier.notify("An error occurred when submitting your answer")
                 _uiState.update { it.copy(questionState = currentQuestionsState) }
@@ -221,8 +229,14 @@ class SurveyViewModel @AssistedInject constructor(
         val formFields = mutableMapOf<String, FormField>()
         val requiredFields = hashSetOf<String>()
         val choices = mutableMapOf<String, Set<String>>()
+        private var receivedAt: Long? = null
+        var retryCount = 0
+        var renderTimeMillis: Long? = null
 
         fun setup(assessmentStep: AssessmentStep) {
+            receivedAt = timeProvider.currentTimeMillis()
+            retryCount = 0
+            renderTimeMillis = null
             requiredFields.clear()
             choices.clear()
             formFields.clear()
@@ -247,6 +261,14 @@ class SurveyViewModel @AssistedInject constructor(
 
         fun isContinueAllowed() = FakeConfigs.FORCE_ENABLE_CONTINUE ||
             requiredFields.all { id -> choices[id]?.isNotEmpty() == true }
+
+        fun getThinkingTime() = receivedAt?.let {
+            timeProvider.currentTimeMillis() - it
+        }
+
+        fun questionRendered() {
+            renderTimeMillis = receivedAt?.let { timeProvider.currentTimeMillis() - it }
+        }
     }
 
     @AssistedFactory

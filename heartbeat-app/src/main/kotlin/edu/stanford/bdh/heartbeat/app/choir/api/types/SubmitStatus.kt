@@ -6,16 +6,16 @@ import kotlinx.serialization.Serializable
 data class SubmitStatus(
     val questionId: String,
     val questionType: QuestionType,
-    val stepNumber: Double,
+    val stepNumber: Int,
     val surveyProviderId: String? = null,
     val surveySectionId: String? = null,
     val surveySystemName: String? = null,
     val sessionToken: String? = null,
-    val callTimeMillis: Double? = null,
-    val renderTimeMillis: Double? = null,
-    val thinkTimeMillis: Double? = null,
-    val retryCount: Double? = null,
+    val callTimeMillis: Long? = null,
+    val renderTimeMillis: Long? = null,
+    val thinkTimeMillis: Long? = null,
+    val retryCount: Int? = null,
     val locale: String,
     val compatLevel: String? = null,
-    val backRequest: Boolean? = null,
+    val backRequest: Boolean? = null
 )

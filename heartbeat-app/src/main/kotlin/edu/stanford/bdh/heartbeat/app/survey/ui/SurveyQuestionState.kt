@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.FormFieldItem
 import edu.stanford.spezi.core.design.component.RectangleShimmerEffect
@@ -61,13 +62,16 @@ interface SurveyQuestionState : SurveyItem {
     data class Question(
         val progress: SurveyProgress,
         val title: SurveyQuestionTitle,
+        val secondaryTitle: SurveyQuestionTitle?,
         val fields: List<FormFieldItem>,
         val backButton: QuestionButton?,
         val continueButton: QuestionButton,
+        val onDisplayed: () -> Unit,
     ) : SurveyQuestionState {
 
         @Composable
         override fun Content(modifier: Modifier) {
+            LaunchedEffect(title) { onDisplayed() }
             Column(modifier = modifier) {
                 LazyColumn(
                     modifier = Modifier.weight(1f),
@@ -75,6 +79,7 @@ interface SurveyQuestionState : SurveyItem {
                 ) {
                     item { progress.Content(Modifier.padding(top = Spacings.medium)) }
                     item { title.Content(Modifier) }
+                    secondaryTitle?.let { item { it.Content(Modifier) } }
                     items(fields) { field -> field.Content(Modifier) }
                 }
 

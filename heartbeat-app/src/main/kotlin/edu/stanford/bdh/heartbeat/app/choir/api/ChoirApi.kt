@@ -29,7 +29,7 @@ interface ChoirApi {
         @Path("siteId") siteId: String,
     ): Response<Onboarding>
 
-    @POST("sites/{siteId}/assessment/{assessmentToken}/continue")
+    @POST("sites/{siteId}/assessments/{assessmentToken}/continue")
     suspend fun continueAssessment(
         @Path("siteId") siteId: String,
         @Path("assessmentToken") assessmentToken: String,

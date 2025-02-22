@@ -30,8 +30,9 @@ class SurveyUiStateMapper @Inject constructor() {
         return SurveyUiState(
             pageTitle = displayStatus.pageTitle ?: "Heartbeat Study",
             questionState = SurveyQuestionState.Question(
-                progress = SurveyProgress(value = displayStatus.progress?.toFloat() ?: 0f),
+                progress = SurveyProgress(value = ((displayStatus.progress ?: 0.0) / 100.0).toFloat()),
                 title = SurveyQuestionTitle(question.title1),
+                secondaryTitle = question.title2?.let { SurveyQuestionTitle(it) },
                 fields = mapFormFields(formFields = questionFields, onAction = onAction),
                 backButton = if (displayStatus.showBack == true) {
                     QuestionButton(
@@ -46,7 +47,8 @@ class SurveyUiStateMapper @Inject constructor() {
                     title = if (question.terminal == true) "Finish" else "Continue",
                     onClick = { onAction(SurveyAction.Continue) },
                     enabled = FakeConfigs.FORCE_ENABLE_CONTINUE || questionFields.none { it.required == true }
-                )
+                ),
+                onDisplayed = { onAction(SurveyAction.QuestionRendered) }
             )
         )
     }
