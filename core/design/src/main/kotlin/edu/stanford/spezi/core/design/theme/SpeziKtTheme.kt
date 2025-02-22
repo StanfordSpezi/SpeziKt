@@ -86,3 +86,17 @@ fun SpeziTheme(
         content = surface
     )
 }
+
+@Composable
+fun SpeziThemePreview(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    dynamicColor: Boolean = true,
+    content: @Composable () -> Unit,
+) {
+    SpeziTheme(
+        darkTheme = darkTheme,
+        dynamicColor = dynamicColor,
+        isPreview = true,
+        content = content,
+    )
+}

@@ -23,6 +23,8 @@ interface AccountManager {
 
     suspend fun reloadAccountInfo(): Result<AccountInfo?>
 
+    fun getAccountInfo(): AccountInfo?
+
     suspend fun getToken(): Result<String>
 
     suspend fun deleteCurrentUser(): Result<Unit>
@@ -155,7 +157,7 @@ class AccountManagerImpl @Inject internal constructor(
         }
     }
 
-    private fun getAccountInfo(): AccountInfo? {
+    override fun getAccountInfo(): AccountInfo? {
         return firebaseAuth.currentUser?.let { user ->
             AccountInfo(
                 email = user.email ?: "",

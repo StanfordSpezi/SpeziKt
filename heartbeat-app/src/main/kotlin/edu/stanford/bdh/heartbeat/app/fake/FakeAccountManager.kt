@@ -59,5 +59,7 @@ class FakeAccountManager @Inject constructor() : AccountManager, FakeComponent {
         return signUpWithEmailAndPassword(email, password)
     }
 
+    override fun getAccountInfo(): AccountInfo? = accountState.value
+
     private fun <T> success(value: T) = Result.success(value)
 }

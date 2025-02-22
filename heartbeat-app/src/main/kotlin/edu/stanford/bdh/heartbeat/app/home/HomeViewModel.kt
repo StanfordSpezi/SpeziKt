@@ -1,28 +1,26 @@
 package edu.stanford.bdh.heartbeat.app.home
 
+import android.webkit.WebView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.bdh.heartbeat.app.R
 import edu.stanford.bdh.heartbeat.app.account.AccountManager
 import edu.stanford.bdh.heartbeat.app.choir.ChoirRepository
+import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.core.design.theme.Colors
+import edu.stanford.spezi.core.utils.MessageNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class _HomeUiState(
-    val url: String,
-    val isLoadingDelete: Boolean = false,
-    val showsDeleteDialog: Boolean = false,
-    val isLoadingSignOut: Boolean = false,
-    val showsSignOutDialog: Boolean = false,
-)
-
 sealed interface HomeAction {
-    data class ShowDeleteDialog(val value: Boolean) : HomeAction
+    data class WebViewCreated(val webView: WebView) : HomeAction
+    data object AccountClicked : HomeAction
+    data object CloseAccountClicked : HomeAction
     data object Delete : HomeAction
-    data class ShowSignOutDialog(val value: Boolean) : HomeAction
     data object SignOut : HomeAction
 }
 
@@ -30,35 +28,80 @@ sealed interface HomeAction {
 class HomeViewModel @Inject constructor(
     private val accountManager: AccountManager,
     private val choirRepository: ChoirRepository,
+    private val messageNotifier: MessageNotifier,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(_HomeUiState(url = "https://heartbeatstudy.stanford.edu"))
+    private val accountUiState = buildAccountUiState()
+    private val _uiState = MutableStateFlow(
+        HomeUiState(
+            title = StringResource(R.string.app_name),
+            accountUiState = null,
+            showAccountButton = accountUiState != null,
+            onAction = ::onAction,
+        )
+    )
     val uiState = _uiState.asStateFlow()
 
-    fun onAction(action: HomeAction) {
+    private fun onAction(action: HomeAction) {
         when (action) {
-            is HomeAction.ShowDeleteDialog ->
-                _uiState.update { it.copy(showsDeleteDialog = action.value) }
             is HomeAction.Delete -> {
                 viewModelScope.launch {
-                    _uiState.update { it.copy(isLoadingDelete = true) }
                     runCatching {
                         choirRepository.unenrollParticipant()
                         accountManager.deleteCurrentUser()
-                    }.onFailure { error ->
-                        println(error)
+                    }.onFailure { _ ->
+                        messageNotifier.notify("An error occurred while deleting your account")
+                    }.onSuccess {
+                        _uiState.update { it.copy(accountUiState = null) }
                     }
-                    _uiState.update { it.copy(isLoadingDelete = false, showsDeleteDialog = false) }
                 }
             }
-            is HomeAction.ShowSignOutDialog ->
-                _uiState.update { it.copy(showsSignOutDialog = action.value) }
+
             is HomeAction.SignOut -> {
                 viewModelScope.launch {
-                    _uiState.update { it.copy(isLoadingSignOut = true) }
                     accountManager.signOut()
-                    _uiState.update { it.copy(isLoadingSignOut = false, showsSignOutDialog = false) }
+                        .onFailure {
+                            messageNotifier.notify("An error occurred while signing you out!")
+                        }.onSuccess {
+                            _uiState.update { it.copy(accountUiState = null) }
+                        }
                 }
             }
+
+            HomeAction.AccountClicked -> {
+                _uiState.update { it.copy(accountUiState = accountUiState) }
+            }
+
+            is HomeAction.WebViewCreated -> {
+                action.webView.loadUrl("https://heartbeatstudy.stanford.edu")
+            }
+
+            is HomeAction.CloseAccountClicked -> dismissAccount()
         }
+    }
+
+    private fun buildAccountUiState(): AccountUiState? {
+        val email = accountManager.getAccountInfo()?.email ?: return null
+        return AccountUiState(
+            email = email,
+            actions = listOf(
+                AccountActionItem(
+                    title = "Delete your account",
+                    color = { Colors.onBackground },
+                    confirmation = "Do you really want to delete your account? This action cannot be reversed.",
+                    action = { onAction(HomeAction.Delete) }
+                ),
+                AccountActionItem(
+                    title = "Sign out",
+                    color = { Colors.error },
+                    confirmation = "Do you really want to sign out?",
+                    action = { onAction(HomeAction.SignOut) }
+                )
+            ),
+            onDismiss = ::dismissAccount
+        )
+    }
+
+    private fun dismissAccount() {
+        _uiState.update { it.copy(accountUiState = null) }
     }
 }
