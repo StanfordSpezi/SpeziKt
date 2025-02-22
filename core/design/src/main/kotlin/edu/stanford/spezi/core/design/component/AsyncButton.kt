@@ -11,11 +11,9 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -138,36 +136,36 @@ fun AsyncTextButton(
  * [action] by launching [coroutineScope].
  */
 data class AsyncTextButton(
-    private val coroutineScope: ComposeValue<CoroutineScope> = { rememberCoroutineScope() },
     private val title: String,
     private val enabled: Boolean = true,
     private val shape: ComposeValue<Shape> = { ButtonDefaults.shape },
     private val containerColor: ComposeValue<Color> = { ButtonDefaults.buttonColors().containerColor },
     private val textColor: ComposeValue<Color> = { ButtonDefaults.buttonColors().contentColor },
     private val contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+    private val coroutineScope: ComposeValue<CoroutineScope> = { rememberCoroutineScope() },
     private val action: suspend () -> Unit = {},
 ) : ComposableContent {
+    private val _loadingState = mutableStateOf(false)
+    val loadingState: State<Boolean> = _loadingState
 
     @Composable
     override fun Content(modifier: Modifier) {
-        var loadingState by remember { mutableStateOf(false) }
-        val enabledState = remember(enabled, loadingState) { enabled && loadingState.not() }
         val scope = coroutineScope()
 
         AsyncTextButton(
             modifier = modifier,
             text = title,
-            isLoading = loadingState,
-            enabled = enabledState,
+            isLoading = loadingState.value,
+            enabled = enabled && loadingState.value.not(),
             shape = shape(),
             containerColor = containerColor(),
             textColor = textColor(),
             contentPadding = contentPadding,
             onClick = {
-                loadingState = true
+                _loadingState.value = true
                 scope.launch {
                     action()
-                    loadingState = false
+                    _loadingState.value = false
                 }
             },
         )

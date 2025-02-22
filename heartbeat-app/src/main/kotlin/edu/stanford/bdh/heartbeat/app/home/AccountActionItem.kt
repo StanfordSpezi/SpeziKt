@@ -40,9 +40,10 @@ data class AccountActionItem(
                 text = { Text(confirmation) },
                 confirmButton = { confirmButton.Content(Modifier) },
                 dismissButton = {
-                    TextButton(onClick = hideDialog) {
-                        Text("Cancel")
-                    }
+                    TextButton(
+                        onClick = hideDialog,
+                        enabled = confirmButton.loadingState.value.not()
+                    ) { Text("Cancel") }
                 },
             )
         }
