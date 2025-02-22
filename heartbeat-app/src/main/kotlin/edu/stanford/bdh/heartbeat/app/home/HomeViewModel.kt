@@ -92,17 +92,13 @@ class HomeViewModel @Inject constructor(
             accountManager.deleteCurrentUser()
         }.onFailure { _ ->
             messageNotifier.notify("An error occurred while deleting your account")
-        }.onSuccess {
-            _uiState.update { it.copy(accountUiState = null) }
-        }
+        }.onSuccess { dismissAccount() }
     }
 
     private suspend fun signOut() {
         accountManager.signOut()
             .onFailure {
                 messageNotifier.notify("An error occurred while signing you out!")
-            }.onSuccess {
-                _uiState.update { it.copy(accountUiState = null) }
-            }
+            }.onSuccess { dismissAccount() }
     }
 }
