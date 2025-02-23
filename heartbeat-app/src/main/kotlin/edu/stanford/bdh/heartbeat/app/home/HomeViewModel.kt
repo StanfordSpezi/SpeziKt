@@ -1,18 +1,20 @@
 package edu.stanford.bdh.heartbeat.app.home
 
 import android.webkit.WebView
-import androidx.lifecycle.ViewModel
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.heartbeat.app.R
 import edu.stanford.bdh.heartbeat.app.account.AccountManager
 import edu.stanford.bdh.heartbeat.app.choir.ChoirRepository
 import edu.stanford.spezi.core.design.component.AsyncTextButton
+import edu.stanford.spezi.core.design.component.Screen
+import edu.stanford.spezi.core.design.component.ScreenBuilder
+import edu.stanford.spezi.core.design.component.ScreenViewModel
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.utils.MessageNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
@@ -27,9 +29,9 @@ class HomeViewModel @Inject constructor(
     private val accountManager: AccountManager,
     private val choirRepository: ChoirRepository,
     private val messageNotifier: MessageNotifier,
-) : ViewModel() {
+) : ScreenViewModel() {
     private val accountUiState = buildAccountUiState()
-    private val _uiState = MutableStateFlow(
+    private val screenState = MutableStateFlow(
         HomeUiState(
             title = StringResource(R.string.app_name),
             accountUiState = null,
@@ -37,12 +39,15 @@ class HomeViewModel @Inject constructor(
             onAction = ::onAction,
         )
     )
-    val uiState = _uiState.asStateFlow()
+
+    override val screen: Screen = ScreenBuilder {
+        screenState.collectAsState().value
+    }
 
     private fun onAction(action: HomeAction) {
         when (action) {
             HomeAction.AccountClicked -> {
-                _uiState.update { it.copy(accountUiState = accountUiState) }
+                screenState.update { it.copy(accountUiState = accountUiState) }
             }
 
             is HomeAction.WebViewCreated -> {
@@ -77,7 +82,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun dismissAccount() {
-        _uiState.update { it.copy(accountUiState = null) }
+        screenState.update { it.copy(accountUiState = null) }
     }
 
     private fun confirmButton(action: suspend () -> Unit) = AsyncTextButton(

@@ -13,10 +13,10 @@ interface ComposableContent {
 }
 
 data class ComposableContentBuilder(
-    private val builder: @Composable (modifier: Modifier) -> Unit
+    private val builder: ComposeValue<ComposableContent>
 ) : ComposableContent {
     @Composable
     override fun Body(modifier: Modifier) {
-        builder.invoke(modifier)
+        builder.invoke().Body(modifier)
     }
 }

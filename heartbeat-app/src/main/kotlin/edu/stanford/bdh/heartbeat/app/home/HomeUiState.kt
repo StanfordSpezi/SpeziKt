@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import edu.stanford.bdh.heartbeat.app.R
 import edu.stanford.spezi.core.design.component.CommonScaffold
-import edu.stanford.spezi.core.design.component.ComposableContent
+import edu.stanford.spezi.core.design.component.Screen
 import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.design.theme.SpeziThemePreview
 import edu.stanford.spezi.core.design.theme.ThemePreviews
@@ -23,7 +23,7 @@ data class HomeUiState(
     val showAccountButton: Boolean,
     val accountUiState: AccountUiState?,
     val onAction: (HomeAction) -> Unit,
-) : ComposableContent {
+) : Screen {
 
     @Composable
     override fun Body(modifier: Modifier) {

@@ -17,10 +17,11 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.heartbeat.app.account.LoginPage
-import edu.stanford.bdh.heartbeat.app.home.HomePage
+import edu.stanford.bdh.heartbeat.app.home.HomeViewModel
 import edu.stanford.bdh.heartbeat.app.survey.SurveyPage
 import edu.stanford.spezi.core.design.component.Button
 import edu.stanford.spezi.core.design.component.CenteredBoxContent
+import edu.stanford.spezi.core.design.component.Screen
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Spacings
@@ -49,7 +50,7 @@ private fun MainPage(
             onAction = onAction
         )
 
-        MainUiState.HomePage -> HomePage()
+        MainUiState.HomePage -> Screen<HomeViewModel>()
         MainUiState.Authenticated.Survey.LoadingFailed -> OnboardingLoadingError(onAction = onAction)
         is MainUiState.Authenticated.Survey.Content -> SurveyPage(onboardingState = uiState)
     }

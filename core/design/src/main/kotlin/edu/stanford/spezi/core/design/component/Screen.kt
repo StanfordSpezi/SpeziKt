@@ -8,11 +8,11 @@ import androidx.lifecycle.ViewModel
 interface Screen : ComposableContent
 
 data class ScreenBuilder(
-    private val builder: @Composable (modifier: Modifier) -> Unit
+    private val builder: ComposeValue<Screen>
 ) : Screen {
     @Composable
     override fun Body(modifier: Modifier) {
-        builder.invoke(modifier)
+        builder.invoke().Body(modifier)
     }
 }
 
