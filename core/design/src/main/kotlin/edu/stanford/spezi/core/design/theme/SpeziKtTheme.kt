@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import edu.stanford.spezi.core.utils.ComposableBlock
+import edu.stanford.spezi.core.design.component.ComposableBlock
 
 private val DarkColorScheme = darkColorScheme(
     primary = CardinalRed,

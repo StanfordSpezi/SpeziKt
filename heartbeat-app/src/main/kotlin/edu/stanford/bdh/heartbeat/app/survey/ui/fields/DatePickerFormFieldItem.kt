@@ -32,12 +32,12 @@ data class DatePickerFormFieldItem(
 ) : FormFieldItem {
 
     @Composable
-    override fun Content(modifier: Modifier) {
+    override fun Body(modifier: Modifier) {
         var showDatePicker by remember { mutableStateOf(false) }
 
         SurveyCard(modifier = modifier) {
-            info.Content(Modifier)
-            fieldLabel?.Content(Modifier)
+            info.body
+            fieldLabel?.body
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -74,6 +74,6 @@ private fun Previews() {
         onValueChange = {},
     )
     SurveyItemPreview {
-        datePickerFormField.Content(Modifier)
+        datePickerFormField.body
     }
 }

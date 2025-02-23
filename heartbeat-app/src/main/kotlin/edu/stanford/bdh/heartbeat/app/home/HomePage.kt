@@ -11,5 +11,5 @@ import androidx.hilt.navigation.compose.hiltViewModel
 fun HomePage() {
     val viewModel = hiltViewModel<HomeViewModel>()
     val uiState by viewModel.uiState.collectAsState()
-    uiState.Content(Modifier.fillMaxSize())
+    uiState.Body(Modifier.fillMaxSize())
 }

@@ -21,9 +21,7 @@ interface BottomSheetComposableContent : ComposableContent {
             onDismissRequest = { onDismiss() },
             containerColor = Colors.surface,
             dragHandle = dragHandle,
-        ) {
-            Content(Modifier)
-        }
+        ) { body }
     }
 
     @Composable

@@ -23,7 +23,6 @@ import edu.stanford.spezi.core.design.theme.Colors
 import edu.stanford.spezi.core.design.theme.Sizes
 import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.utils.ComposeValue
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -149,7 +148,7 @@ data class AsyncTextButton(
     val loadingState: State<Boolean> = _loadingState
 
     @Composable
-    override fun Content(modifier: Modifier) {
+    override fun Body(modifier: Modifier) {
         val scope = coroutineScope()
 
         AsyncTextButton(

@@ -16,10 +16,10 @@ data class UnsupportedFormFieldItem(
     val fieldLabel: QuestionFieldLabel?,
 ) : FormFieldItem {
     @Composable
-    override fun Content(modifier: Modifier) {
+    override fun Body(modifier: Modifier) {
         SurveyCard(modifier = modifier) {
-            info.Content(Modifier)
-            fieldLabel?.Content(Modifier)
+            info.body
+            fieldLabel?.body
             Text(
                 modifier = modifier.fillMaxWidth(),
                 text = "Unsupported Question Type ($type)",

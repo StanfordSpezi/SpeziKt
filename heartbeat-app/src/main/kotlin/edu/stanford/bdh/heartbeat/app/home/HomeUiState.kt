@@ -26,7 +26,7 @@ data class HomeUiState(
 ) : ComposableContent {
 
     @Composable
-    override fun Content(modifier: Modifier) {
+    override fun Body(modifier: Modifier) {
         CommonScaffold(
             title = title.text(),
             actions = {
@@ -68,6 +68,6 @@ fun Previews() {
         onAction = {},
     )
     SpeziThemePreview {
-        state.Content(Modifier)
+        state.body
     }
 }

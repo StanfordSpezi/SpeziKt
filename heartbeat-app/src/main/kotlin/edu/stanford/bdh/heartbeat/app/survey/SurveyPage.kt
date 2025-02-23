@@ -15,5 +15,5 @@ fun SurveyPage(onboardingState: MainUiState.Authenticated.Survey.Content) {
         key = onboardingState.onboarding.displayStatus.surveyToken
     )
     val uiState by viewModel.uiState.collectAsState()
-    uiState.Content(modifier = Modifier.fillMaxSize())
+    uiState.Body(modifier = Modifier.fillMaxSize())
 }

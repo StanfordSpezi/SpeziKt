@@ -12,7 +12,7 @@ data class QuestionFieldLabel(
 ) : SurveyItem {
 
     @Composable
-    override fun Content(modifier: Modifier) {
+    override fun Body(modifier: Modifier) {
         Text(
             text = label,
             modifier = modifier.padding(bottom = Spacings.medium),

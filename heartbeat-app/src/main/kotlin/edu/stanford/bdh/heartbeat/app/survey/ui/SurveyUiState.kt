@@ -13,10 +13,10 @@ data class SurveyUiState(
     val questionState: SurveyQuestionState,
 ) : SurveyItem {
     @Composable
-    override fun Content(modifier: Modifier) {
+    override fun Body(modifier: Modifier) {
         CommonScaffold(modifier = modifier, title = pageTitle) {
             Column(modifier = Modifier.padding(horizontal = Spacings.medium)) {
-                questionState.Content(modifier = Modifier.fillMaxSize())
+                questionState.Body(modifier = Modifier.fillMaxSize())
             }
         }
     }

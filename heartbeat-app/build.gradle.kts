@@ -39,7 +39,6 @@ dependencies {
     implementation(project(":core:coroutines"))
 
     implementation(libs.firebase.auth.ktx)
-    implementation(libs.hilt.navigation.compose)
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.kotlinx.serialization)
 }

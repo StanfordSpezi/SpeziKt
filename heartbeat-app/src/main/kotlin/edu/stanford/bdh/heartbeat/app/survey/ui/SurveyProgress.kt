@@ -18,7 +18,7 @@ data class SurveyProgress(
 ) : SurveyItem {
 
     @Composable
-    override fun Content(modifier: Modifier) {
+    override fun Body(modifier: Modifier) {
         val coercedValue = remember(value) { value.coerceIn(0f, 1f) }
         Box(
             modifier = modifier
@@ -43,6 +43,6 @@ private fun Previews() {
         value = 0.3f,
     )
     SurveyItemPreview {
-        progress.Content(Modifier)
+        progress.body
     }
 }

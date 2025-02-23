@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import edu.stanford.spezi.core.design.component.AsyncTextButton
 import edu.stanford.spezi.core.design.component.ComposableContent
+import edu.stanford.spezi.core.design.component.ComposeValue
 import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
-import edu.stanford.spezi.core.utils.ComposeValue
 
 data class AccountActionItem(
     val title: String,
@@ -23,7 +23,7 @@ data class AccountActionItem(
 ) : ComposableContent {
 
     @Composable
-    override fun Content(modifier: Modifier) {
+    override fun Body(modifier: Modifier) {
         var confirmationDialogDisplayed by remember { mutableStateOf(false) }
         val hideDialog = { confirmationDialogDisplayed = false }
         TextButton(onClick = { confirmationDialogDisplayed = true }) {
@@ -38,7 +38,7 @@ data class AccountActionItem(
                 onDismissRequest = hideDialog,
                 title = { Text(title) },
                 text = { Text(confirmation) },
-                confirmButton = { confirmButton.Content(Modifier) },
+                confirmButton = { confirmButton.body },
                 dismissButton = {
                     TextButton(
                         onClick = hideDialog,

@@ -23,7 +23,7 @@ interface SurveyQuestionState : SurveyItem {
     object Loading : SurveyQuestionState {
 
         @Composable
-        override fun Content(modifier: Modifier) {
+        override fun Body(modifier: Modifier) {
             LazyColumn {
                 items(PLACEHOLDERS_COUNT) {
                     SurveyCard(
@@ -70,25 +70,25 @@ interface SurveyQuestionState : SurveyItem {
     ) : SurveyQuestionState {
 
         @Composable
-        override fun Content(modifier: Modifier) {
+        override fun Body(modifier: Modifier) {
             LaunchedEffect(title) { onDisplayed() }
             Column(modifier = modifier) {
                 LazyColumn(
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(Spacings.medium)
                 ) {
-                    item { progress.Content(Modifier.padding(top = Spacings.medium)) }
-                    item { title.Content(Modifier) }
-                    secondaryTitle?.let { item { it.Content(Modifier) } }
-                    items(fields) { field -> field.Content(Modifier) }
+                    item { progress.Body(Modifier.padding(top = Spacings.medium)) }
+                    item { title.body }
+                    secondaryTitle?.let { item { it.body } }
+                    items(fields) { field -> field.body }
                 }
 
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(vertical = Spacings.medium),
                     horizontalArrangement = Arrangement.spacedBy(Spacings.medium)
                 ) {
-                    backButton?.Content(Modifier.weight(1f))
-                    continueButton.Content(Modifier.weight(1f))
+                    backButton?.Body(Modifier.weight(1f))
+                    continueButton.Body(Modifier.weight(1f))
                 }
             }
         }
@@ -101,6 +101,6 @@ private const val PLACEHOLDERS_COUNT = 10
 @Composable
 private fun Previews() {
     SurveyItemPreview {
-        SurveyQuestionState.Loading.Content(Modifier)
+        SurveyQuestionState.Loading.body
     }
 }

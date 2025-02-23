@@ -42,7 +42,7 @@ data class AccountUiState(
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    override fun Content(modifier: Modifier) {
+    override fun Body(modifier: Modifier) {
         val sheetState = rememberSheetState()
         val scope = rememberCoroutineScope()
         CommonScaffold(
@@ -76,7 +76,7 @@ data class AccountUiState(
                         )
                     }
 
-                    items(actions) { it.Content(Modifier) }
+                    items(actions) { it.body }
                 }
             }
         )
@@ -133,6 +133,6 @@ private fun AccountPreview() {
                     confirmButton = AsyncTextButton(title = "")
                 ),
             )
-        ) {}.Content(Modifier)
+        ) {}.body
     }
 }

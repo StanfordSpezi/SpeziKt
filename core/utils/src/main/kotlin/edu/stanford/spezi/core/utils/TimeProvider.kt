@@ -6,6 +6,6 @@ import javax.inject.Inject
 
 class TimeProvider @Inject constructor() {
     fun currentTimeMillis(): Long = nowInstant().toEpochMilli()
-    fun nowInstant() = Instant.now()
-    fun nowLocalTime() = LocalTime.now()
+    fun nowInstant(): Instant = Instant.now()
+    fun nowLocalTime(): LocalTime = LocalTime.now()
 }

@@ -14,7 +14,7 @@ data class QuestionNumberInfo(
 ) : SurveyItem {
 
     @Composable
-    override fun Content(modifier: Modifier) {
+    override fun Body(modifier: Modifier) {
         Text(
             text = "Question $current of $total",
             modifier = Modifier.padding(bottom = Spacings.large),

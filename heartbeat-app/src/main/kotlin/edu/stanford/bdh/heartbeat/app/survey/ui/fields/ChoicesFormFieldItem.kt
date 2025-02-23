@@ -54,14 +54,14 @@ data class ChoicesFormFieldItem(
     data class Option(val id: String, val label: String)
 
     @Composable
-    override fun Content(modifier: Modifier) {
+    override fun Body(modifier: Modifier) {
         var expanded by remember {
             mutableStateOf(if (style is Style.Dropdown) style.initialExpanded else true)
         }
 
         SurveyCard(modifier = modifier) {
-            info.Content(Modifier)
-            fieldLabel?.Content(Modifier)
+            info.body
+            fieldLabel?.body
 
             if (style is Style.Dropdown) {
                 Row(
@@ -179,6 +179,6 @@ class ChoicesFieldItemPreviewParameterProvider :
 @Composable
 private fun Previews(@PreviewParameter(ChoicesFieldItemPreviewParameterProvider::class) model: ChoicesFormFieldItem) {
     SurveyItemPreview {
-        model.Content(Modifier)
+        model.body
     }
 }
