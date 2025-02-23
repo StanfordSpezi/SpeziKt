@@ -1,6 +1,5 @@
 package edu.stanford.bdh.heartbeat.app.survey
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -19,6 +18,7 @@ import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyQuestionState
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.ChoicesFormFieldItem
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.DatePickerFormFieldItem
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.TextFormFieldItem
+import edu.stanford.spezi.core.design.component.ScreenViewModel
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.utils.DateFormat
 import edu.stanford.spezi.core.utils.DateFormatter
@@ -52,7 +52,7 @@ class SurveyViewModel @AssistedInject constructor(
     private val messageNotifier: MessageNotifier,
     private val dateFormatter: DateFormatter,
     private val timeProvider: TimeProvider,
-) : ViewModel() {
+) : ScreenViewModel() {
     private val logger by speziLogger()
 
     private var currentAssessmentStep = with(state.onboarding) {
@@ -63,14 +63,14 @@ class SurveyViewModel @AssistedInject constructor(
     }
     private val session = Session().apply { setup(assessmentStep = currentAssessmentStep) }
 
-    private val _uiState = MutableStateFlow(
+    private val _screenState = MutableStateFlow(
         surveyUiStateMapper.map(
             assessmentStep = currentAssessmentStep,
             onAction = ::onAction
         )
     )
 
-    val uiState = _uiState.asStateFlow()
+    override val screenState = _screenState.asStateFlow()
 
     private fun onAction(action: SurveyAction) {
         when (action) {
@@ -90,7 +90,7 @@ class SurveyViewModel @AssistedInject constructor(
     }
 
     private fun handleUpdate(action: SurveyAction.Update) {
-        val questionsState = _uiState.value.questionState as? SurveyQuestionState.Question ?: return
+        val questionsState = _screenState.value.questionState as? SurveyQuestionState.Question ?: return
         val fieldMap = questionsState.fields.associateBy { it.fieldId }.toMutableMap()
         val fieldId = action.fieldId
         val fieldItem = fieldMap[fieldId]
@@ -138,7 +138,7 @@ class SurveyViewModel @AssistedInject constructor(
             else -> return
         }
 
-        _uiState.update {
+        _screenState.update {
             it.copy(
                 questionState = questionsState.copy(
                     fields = fieldMap.values.toList(),
@@ -152,8 +152,8 @@ class SurveyViewModel @AssistedInject constructor(
 
     private fun handleContinue(backRequest: Boolean) {
         viewModelScope.launch {
-            val currentQuestionsState = _uiState.value.questionState
-            _uiState.update { it.copy(questionState = SurveyQuestionState.Loading) }
+            val currentQuestionsState = _screenState.value.questionState
+            _screenState.update { it.copy(questionState = SurveyQuestionState.Loading) }
             val displayStatus = currentAssessmentStep.displayStatus
 
             repository.continueAssessment(
@@ -183,7 +183,7 @@ class SurveyViewModel @AssistedInject constructor(
             ).onSuccess { success ->
                 currentAssessmentStep = success
                 session.setup(assessmentStep = success)
-                _uiState.update {
+                _screenState.update {
                     surveyUiStateMapper.map(
                         assessmentStep = success,
                         onAction = ::onAction
@@ -193,7 +193,7 @@ class SurveyViewModel @AssistedInject constructor(
                 session.retryCount++
                 logger.e(error) { "Failure while submitting the answer" }
                 messageNotifier.notify("An error occurred when submitting your answer")
-                _uiState.update { it.copy(questionState = currentQuestionsState) }
+                _screenState.update { it.copy(questionState = currentQuestionsState) }
             }
         }
     }

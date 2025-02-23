@@ -6,12 +6,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import edu.stanford.spezi.core.design.component.CommonScaffold
+import edu.stanford.spezi.core.design.component.Screen
 import edu.stanford.spezi.core.design.theme.Spacings
 
 data class SurveyUiState(
     val pageTitle: String,
     val questionState: SurveyQuestionState,
-) : SurveyItem {
+) : Screen {
     @Composable
     override fun Body(modifier: Modifier) {
         CommonScaffold(modifier = modifier, title = pageTitle) {

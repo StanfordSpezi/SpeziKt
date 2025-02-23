@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.heartbeat.app.account.LoginPage
 import edu.stanford.bdh.heartbeat.app.home.HomeViewModel
-import edu.stanford.bdh.heartbeat.app.survey.SurveyPage
+import edu.stanford.bdh.heartbeat.app.survey.SurveyViewModel
 import edu.stanford.spezi.core.design.component.Button
 import edu.stanford.spezi.core.design.component.CenteredBoxContent
 import edu.stanford.spezi.core.design.component.Screen
@@ -52,7 +52,12 @@ private fun MainPage(
 
         MainUiState.HomePage -> Screen<HomeViewModel>()
         MainUiState.Authenticated.Survey.LoadingFailed -> OnboardingLoadingError(onAction = onAction)
-        is MainUiState.Authenticated.Survey.Content -> SurveyPage(onboardingState = uiState)
+        is MainUiState.Authenticated.Survey.Content -> {
+            Screen<SurveyViewModel, SurveyViewModel.Factory>(
+                creationCallback = { factory -> factory.create(uiState) },
+                key = uiState.onboarding.displayStatus.surveyToken,
+            )
+        }
     }
 }
 

@@ -3,7 +3,7 @@ package edu.stanford.spezi.core.design.component
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
-interface ComposableContent {
+fun interface ComposableContent {
     val body
         @Composable
         get() = Body(Modifier)
@@ -12,11 +12,10 @@ interface ComposableContent {
     fun Body(modifier: Modifier)
 }
 
-data class ComposableContentBuilder(
-    private val builder: ComposeValue<ComposableContent>
-) : ComposableContent {
-    @Composable
-    override fun Body(modifier: Modifier) {
-        builder.invoke().Body(modifier)
-    }
-}
+fun composableContent(
+    builder: ComposeValue<ComposableContent>,
+): ComposableContent = ComposableContent { modifier -> builder().Body(modifier) }
+
+fun buildComposableContent(
+    builder: @Composable (modifier: Modifier) -> Unit,
+): ComposableContent = ComposableContent { modifier -> builder(modifier) }
