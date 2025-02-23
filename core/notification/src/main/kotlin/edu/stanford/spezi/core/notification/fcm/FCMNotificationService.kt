@@ -45,6 +45,7 @@ internal class FCMNotificationService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
+        logger.i { "onNewToken callback: $token" }
         deviceRegistrationService.registerDevice(token = token)
     }
 

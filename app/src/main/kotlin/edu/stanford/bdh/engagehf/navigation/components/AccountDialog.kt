@@ -3,6 +3,7 @@ package edu.stanford.bdh.engagehf.navigation.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +25,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -147,30 +149,11 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
                 }
 
                 HorizontalDivider()
-                TextButton(
-                    onClick = {
-                        onAction(Action.ShowHealthSummary)
-                    },
-                    modifier = Modifier
-                        .align(Alignment.Start),
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = stringResource(R.string.health_summary),
-                            style = bodyMedium,
-                            modifier = Modifier.weight(1f)
-                        )
-                        if (accountUiState.isHealthSummaryLoading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(Sizes.Icon.small),
-                                color = primary
-                            )
-                        }
-                    }
-                }
+                AsyncAccountItem(
+                    title = stringResource(R.string.health_summary),
+                    loading = accountUiState.isHealthSummaryLoading,
+                    onClick = { onAction(Action.ShowHealthSummary) },
+                )
                 TextButton(
                     onClick = {
                         onAction(Action.ShowNotificationSettings)
@@ -197,18 +180,44 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
                 }
                 HorizontalDivider()
                 VerticalSpacer()
-                TextButton(
+                AsyncAccountItem(
+                    title = stringResource(R.string.sign_out),
+                    color = Colors.error,
+                    loading = accountUiState.isSignOutLoading,
                     onClick = { onAction(Action.SignOut) },
-                    modifier = Modifier
-                        .align(Alignment.Start),
-                ) {
-                    Text(
-                        text = stringResource(R.string.sign_out),
-                        style = bodyMedium,
-                        color = Colors.error,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ColumnScope.AsyncAccountItem(
+    title: String,
+    color: Color = Color.Unspecified,
+    loading: Boolean,
+    onClick: () -> Unit,
+) {
+    TextButton(
+        onClick = onClick,
+        enabled = loading.not(),
+        modifier = Modifier.align(Alignment.Start),
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = title,
+                style = bodyMedium,
+                color = if (loading) Color.Unspecified else color,
+                modifier = Modifier.weight(1f)
+            )
+            if (loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(Sizes.Icon.small),
+                    color = primary
+                )
             }
         }
     }
@@ -229,7 +238,8 @@ class AppTopBarProvider : PreviewParameterProvider<AccountUiState> {
         ),
         AccountUiState(
             name = null,
-            email = "john@doe.de"
+            email = "john@doe.de",
+            isSignOutLoading = true,
         )
     )
 }

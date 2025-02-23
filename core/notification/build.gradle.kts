@@ -21,4 +21,5 @@ dependencies {
     implementation(project(":core:coroutines"))
     implementation(project(":core:navigation"))
     implementation(project(":modules:account"))
+    implementation(project(":modules:storage"))
 }

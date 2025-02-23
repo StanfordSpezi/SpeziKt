@@ -11,19 +11,34 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import edu.stanford.spezi.core.notification.NotificationPermissions
 import edu.stanford.spezi.core.notification.NotificationPermissionsImpl
+import edu.stanford.spezi.core.notification.fcm.DeviceRegistrationService
+import edu.stanford.spezi.core.notification.fcm.DeviceRegistrationServiceImpl
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 class NotificationModule {
 
+    /**
+     * This dependency is provided in a separate module to be replaced for instrumentation tests
+     * that run for android versions 31 and 34 where we can't use grant rule
+     */
     @Module
     @InstallIn(SingletonComponent::class)
-    abstract class Bindings {
+    abstract class NotificationPermissionsBinding {
         @Binds
         internal abstract fun bindNotificationPermissions(
             impl: NotificationPermissionsImpl,
         ): NotificationPermissions
+    }
+
+    @Module
+    @InstallIn(SingletonComponent::class)
+    abstract class Bindings {
+        @Binds
+        internal abstract fun bindDeviceRegistrationService(
+            impl: DeviceRegistrationServiceImpl,
+        ): DeviceRegistrationService
     }
 
     @Provides

@@ -10,7 +10,7 @@ import edu.stanford.spezi.core.notification.di.NotificationModule
 @Module
 @TestInstallIn(
     components = [SingletonComponent::class],
-    replaces = [NotificationModule.Bindings::class]
+    replaces = [NotificationModule.NotificationPermissionsBinding::class]
 )
 class AppTestModule {
 

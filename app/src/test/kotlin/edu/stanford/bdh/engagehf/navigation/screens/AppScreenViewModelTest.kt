@@ -5,6 +5,7 @@ import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.messages.HealthSummaryService
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.notification.fcm.DeviceRegistrationService
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.module.account.manager.UserSessionManager
@@ -12,6 +13,7 @@ import edu.stanford.spezi.module.account.manager.UserState
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
@@ -30,6 +32,7 @@ class AppScreenViewModelTest {
     private val healthSummaryService: HealthSummaryService = mockk(relaxed = true)
     private val appScreenEventsFlow = MutableSharedFlow<AppScreenEvents.Event>()
     private val navigator = mockk<Navigator>(relaxed = true)
+    private val deviceRegistrationService = mockk<DeviceRegistrationService>(relaxed = true)
     private val userFlow = MutableStateFlow(
         UserState.Registered(hasInvitationCodeConfirmed = false, disabled = false)
     )
@@ -222,17 +225,28 @@ class AppScreenViewModelTest {
         }
 
     @Test
-    fun `given SignOut is received then user should be signed out`() =
-        runTestUnconfined {
-            // Given
-            val event = Action.SignOut
+    fun `given SignOut is received then device should be unregistered`() = runTestUnconfined {
+        // Given
+        val event = Action.SignOut
 
-            // When
-            viewModel.onAction(event)
+        // When
+        viewModel.onAction(event)
 
-            // Then
-            coVerify { userSessionManager.signOut() }
-        }
+        // Then
+        coVerify { deviceRegistrationService.unregisterDevice() }
+    }
+
+    @Test
+    fun `given SignOut is received then user should be signed out`() = runTestUnconfined {
+        // Given
+        val event = Action.SignOut
+
+        // When
+        viewModel.onAction(event)
+
+        // Then
+        verify { userSessionManager.signOut() }
+    }
 
     @Test
     fun `given ShowHealthSummary is received then healthSummaryService should be called`() =
@@ -305,7 +319,8 @@ class AppScreenViewModelTest {
             appScreenEvents = appScreenEvents,
             userSessionManager = userSessionManager,
             healthSummaryService = healthSummaryService,
-            navigator = navigator
+            navigator = navigator,
+            deviceRegistrationService = deviceRegistrationService,
         )
     }
 }

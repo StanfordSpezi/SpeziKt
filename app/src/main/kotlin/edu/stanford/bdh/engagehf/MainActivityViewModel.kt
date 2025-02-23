@@ -11,6 +11,7 @@ import edu.stanford.bdh.engagehf.navigation.Routes
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.notification.fcm.DeviceRegistrationService
 import edu.stanford.spezi.core.notification.notifier.FirebaseMessage
 import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.FIREBASE_MESSAGE_KEY
 import edu.stanford.spezi.core.utils.MessageNotifier
@@ -25,6 +26,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@Suppress("LongParameterList")
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     private val accountEvents: AccountEvents,
@@ -33,13 +35,15 @@ class MainActivityViewModel @Inject constructor(
     private val messageNotifier: MessageNotifier,
     private val messageActionMapper: MessageActionMapper,
     private val messagesHandler: MessagesHandler,
+    private val deviceRegistrationService: DeviceRegistrationService,
 ) : ViewModel() {
     private val logger by speziLogger()
     private val _uiState = MutableStateFlow<MainUiState>(MainUiState.SplashScreen)
     val uiState = _uiState.asStateFlow()
 
     init {
-        setup()
+        setupInitialState()
+        observeAccountEvents()
     }
 
     fun onAction(action: MainActivityAction) {
@@ -47,6 +51,8 @@ class MainActivityViewModel @Inject constructor(
             is MainActivityAction.NewIntent -> handleNewIntent(intent = action.intent)
         }
     }
+
+    fun getNavigationEvents(): Flow<NavigationEvent> = navigator.events
 
     private fun handleNewIntent(intent: Intent) {
         val firebaseMessage = intent.getParcelableExtra<FirebaseMessage>(FIREBASE_MESSAGE_KEY)
@@ -61,25 +67,40 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    private fun setup() {
+    private fun setupInitialState() {
+        viewModelScope.launch {
+            val userState = userSessionManager.getUserState()
+            refreshDeviceTokenIfNeeded(userState = userState)
+            val startDestination = when (userState) {
+                is UserState.NotInitialized -> Routes.OnboardingScreen
+                is UserState.Registered -> {
+                    if (userState.hasInvitationCodeConfirmed) Routes.AppScreen else Routes.InvitationCodeScreen
+                }
+            }
+            _uiState.update { MainUiState.Content(startDestination = startDestination) }
+        }
+    }
+
+    private fun observeAccountEvents() {
         viewModelScope.launch {
             accountEvents.events.collect { event ->
                 when (event) {
                     is AccountEvents.Event.SignInSuccess, AccountEvents.Event.SignUpSuccess -> {
-                        val navigationEvent =
-                            when (val userState = userSessionManager.getUserState()) {
-                                UserState.NotInitialized -> {
-                                    OnboardingNavigationEvent.OnboardingScreen(clearBackStack = false)
-                                }
+                        val userState = userSessionManager.getUserState()
+                        refreshDeviceTokenIfNeeded(userState = userState)
+                        val navigationEvent = when (userState) {
+                            UserState.NotInitialized -> {
+                                OnboardingNavigationEvent.OnboardingScreen(clearBackStack = false)
+                            }
 
-                                is UserState.Registered -> {
-                                    if (userState.hasInvitationCodeConfirmed) {
-                                        AppNavigationEvent.AppScreen(true)
-                                    } else {
-                                        OnboardingNavigationEvent.InvitationCodeScreen
-                                    }
+                            is UserState.Registered -> {
+                                if (userState.hasInvitationCodeConfirmed) {
+                                    AppNavigationEvent.AppScreen(true)
+                                } else {
+                                    OnboardingNavigationEvent.InvitationCodeScreen
                                 }
                             }
+                        }
                         navigator.navigateTo(navigationEvent)
                     }
 
@@ -102,19 +123,11 @@ class MainActivityViewModel @Inject constructor(
                 }
             }
         }
-
-        viewModelScope.launch {
-            val startDestination = when (val userState = userSessionManager.getUserState()) {
-                is UserState.NotInitialized -> Routes.OnboardingScreen
-                is UserState.Registered -> {
-                    if (userState.hasInvitationCodeConfirmed) Routes.AppScreen else Routes.InvitationCodeScreen
-                }
-            }
-            _uiState.update { MainUiState.Content(startDestination = startDestination) }
-        }
     }
 
-    fun getNavigationEvents(): Flow<NavigationEvent> = navigator.events
+    private fun refreshDeviceTokenIfNeeded(userState: UserState) {
+        if (userState is UserState.Registered) deviceRegistrationService.refreshDeviceToken()
+    }
 }
 
 sealed interface MainUiState {
