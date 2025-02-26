@@ -60,7 +60,7 @@ data class HomeUiState(
 
 @ThemePreviews
 @Composable
-fun Previews() {
+private fun HomeUiStatePreview() {
     val state = HomeUiState(
         title = StringResource(R.string.app_name),
         accountUiState = null,

@@ -38,7 +38,7 @@ data class SurveyProgress(
 
 @ThemePreviews
 @Composable
-private fun Previews() {
+private fun SurveyProgressPreview() {
     val progress = SurveyProgress(
         value = 0.3f,
     )

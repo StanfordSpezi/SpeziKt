@@ -99,7 +99,7 @@ private const val PLACEHOLDERS_COUNT = 10
 
 @ThemePreviews
 @Composable
-private fun Previews() {
+private fun LoadingSurveyQuestionStatePreview() {
     SurveyItemPreview {
         SurveyQuestionState.Loading.body
     }

@@ -65,7 +65,7 @@ data class DatePickerFormFieldItem(
 
 @ThemePreviews
 @Composable
-private fun Previews() {
+private fun DatePickerFormFieldItemPreview() {
     val datePickerFormField = DatePickerFormFieldItem(
         fieldId = "",
         info = QuestionNumberInfo(2, 2),
