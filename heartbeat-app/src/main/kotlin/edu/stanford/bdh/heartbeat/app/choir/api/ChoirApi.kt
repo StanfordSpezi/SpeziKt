@@ -2,7 +2,6 @@ package edu.stanford.bdh.heartbeat.app.choir.api
 
 import edu.stanford.bdh.heartbeat.app.choir.api.types.AssessmentStep
 import edu.stanford.bdh.heartbeat.app.choir.api.types.AssessmentSubmit
-import edu.stanford.bdh.heartbeat.app.choir.api.types.Onboarding
 import edu.stanford.bdh.heartbeat.app.choir.api.types.Participant
 import retrofit2.Response
 import retrofit2.http.Body
@@ -27,7 +26,7 @@ interface ChoirApi {
     @GET("sites/{siteId}/onboarding")
     suspend fun getOnboarding(
         @Path("siteId") siteId: String,
-    ): Response<Onboarding>
+    ): Response<AssessmentStep>
 
     @POST("sites/{siteId}/assessments/{assessmentToken}/continue")
     suspend fun continueAssessment(

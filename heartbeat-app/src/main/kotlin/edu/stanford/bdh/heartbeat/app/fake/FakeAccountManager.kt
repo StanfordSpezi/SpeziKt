@@ -12,6 +12,7 @@ import javax.inject.Singleton
 @Singleton
 class FakeAccountManager @Inject constructor() : AccountManager, FakeComponent {
     private val defaultAccount = AccountInfo(
+        id = "fake-user-id",
         email = "user@heartbeat-study.edu",
         name = "HeartBeat user",
         isEmailVerified = FakeConfigs.EMAIL_VERIFIED,

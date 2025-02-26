@@ -3,7 +3,6 @@ package edu.stanford.bdh.heartbeat.app.choir
 import edu.stanford.bdh.heartbeat.app.choir.api.ChoirApi
 import edu.stanford.bdh.heartbeat.app.choir.api.types.AssessmentStep
 import edu.stanford.bdh.heartbeat.app.choir.api.types.AssessmentSubmit
-import edu.stanford.bdh.heartbeat.app.choir.api.types.Onboarding
 import edu.stanford.bdh.heartbeat.app.choir.api.types.Participant
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.serialization.json.Json
@@ -14,7 +13,7 @@ import javax.inject.Inject
 interface ChoirRepository {
     suspend fun putParticipant(participant: Participant): Result<Unit>
     suspend fun unenrollParticipant(): Result<Unit>
-    suspend fun getOnboarding(): Result<Onboarding>
+    suspend fun getOnboarding(): Result<AssessmentStep>
     suspend fun continueAssessment(token: String, submit: AssessmentSubmit): Result<AssessmentStep>
 }
 
@@ -37,7 +36,7 @@ class ChoirRepositoryImpl @Inject internal constructor(
         return result(api.unenrollParticipant(SITE_ID))
     }
 
-    override suspend fun getOnboarding(): Result<Onboarding> {
+    override suspend fun getOnboarding(): Result<AssessmentStep> {
         logger.i { "Invoking getOnboarding" }
         return result(api.getOnboarding(SITE_ID))
     }

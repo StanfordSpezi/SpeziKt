@@ -6,7 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.heartbeat.app.account.AccountInfo
 import edu.stanford.bdh.heartbeat.app.account.AccountManager
 import edu.stanford.bdh.heartbeat.app.choir.ChoirRepository
-import edu.stanford.bdh.heartbeat.app.choir.api.types.Onboarding
+import edu.stanford.bdh.heartbeat.app.choir.api.types.AssessmentStep
 import edu.stanford.bdh.heartbeat.app.fake.FakeConfigs
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.utils.MessageNotifier
@@ -30,7 +30,7 @@ sealed interface MainUiState {
         sealed interface Survey : Authenticated {
             data object LoadingFailed : Survey
             data class Content(
-                val onboarding: Onboarding,
+                val assessmentStep: AssessmentStep,
                 val onCompleted: () -> Unit,
             ) : Survey
         }
@@ -140,11 +140,11 @@ class MainViewModel @Inject constructor(
             logger.i { "Invoking getOnboarding" }
             _uiState.update { MainUiState.Loading }
             choirRepository.getOnboarding()
-                .onSuccess { onboarding ->
-                    logger.i { "Onboarding loaded successfully" }
+                .onSuccess { assessmentStep ->
+                    logger.i { "Assessment step loaded successfully" }
                     _uiState.update {
                         MainUiState.Authenticated.Survey.Content(
-                            onboarding = onboarding,
+                            assessmentStep = assessmentStep,
                             onCompleted = {
                                 messageNotifier.notify("We appreciate your participation in the study!")
                                 _uiState.update { MainUiState.HomePage }

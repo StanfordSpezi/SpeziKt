@@ -55,7 +55,7 @@ private fun MainPage(
         is MainUiState.Authenticated.Survey.Content -> {
             Screen<SurveyViewModel, SurveyViewModel.Factory>(
                 creationCallback = { factory -> factory.create(uiState) },
-                key = uiState.onboarding.displayStatus.surveyToken,
+                key = uiState.assessmentStep.displayStatus.surveyToken,
             )
         }
     }

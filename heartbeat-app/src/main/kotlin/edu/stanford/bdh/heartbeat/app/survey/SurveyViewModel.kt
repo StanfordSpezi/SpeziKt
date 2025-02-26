@@ -55,12 +55,7 @@ class SurveyViewModel @AssistedInject constructor(
 ) : ScreenViewModel() {
     private val logger by speziLogger()
 
-    private var currentAssessmentStep = with(state.onboarding) {
-        AssessmentStep(
-            question = question,
-            displayStatus = displayStatus
-        )
-    }
+    private var currentAssessmentStep = state.assessmentStep
     private val session = Session().apply { setup(assessmentStep = currentAssessmentStep) }
 
     private val _screenState = MutableStateFlow(

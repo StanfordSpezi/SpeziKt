@@ -6,7 +6,6 @@ import edu.stanford.bdh.heartbeat.app.R
 import edu.stanford.bdh.heartbeat.app.choir.ChoirRepository
 import edu.stanford.bdh.heartbeat.app.choir.api.types.AssessmentStep
 import edu.stanford.bdh.heartbeat.app.choir.api.types.AssessmentSubmit
-import edu.stanford.bdh.heartbeat.app.choir.api.types.Onboarding
 import edu.stanford.bdh.heartbeat.app.choir.api.types.Participant
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.serialization.Serializable
@@ -16,7 +15,7 @@ import javax.inject.Singleton
 
 @Serializable
 private data class FakeData(
-    val onboarding: Onboarding,
+    val onboarding: AssessmentStep,
     val assessmentSteps: List<AssessmentStep>,
 )
 
@@ -42,7 +41,7 @@ class FakeChoirRepository @Inject constructor(
         return success(Unit)
     }
 
-    override suspend fun getOnboarding(): Result<Onboarding> {
+    override suspend fun getOnboarding(): Result<AssessmentStep> {
         delay()
         return success(fakeData.onboarding)
     }

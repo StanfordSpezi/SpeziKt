@@ -13,6 +13,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 data class AccountInfo(
+    val id: String,
     val email: String,
     val name: String?,
     val isEmailVerified: Boolean,
@@ -160,6 +161,7 @@ class AccountManagerImpl @Inject internal constructor(
     override fun getAccountInfo(): AccountInfo? {
         return firebaseAuth.currentUser?.let { user ->
             AccountInfo(
+                id = user.uid,
                 email = user.email ?: "",
                 name = user.displayName?.takeIf { it.isNotBlank() },
                 isEmailVerified = user.isEmailVerified
