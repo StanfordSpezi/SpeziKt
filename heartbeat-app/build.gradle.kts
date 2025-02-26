@@ -37,6 +37,7 @@ android {
 
 dependencies {
     implementation(project(":core:coroutines"))
+    implementation(project(":modules:storage"))
 
     implementation(libs.firebase.auth.ktx)
     implementation(libs.retrofit)

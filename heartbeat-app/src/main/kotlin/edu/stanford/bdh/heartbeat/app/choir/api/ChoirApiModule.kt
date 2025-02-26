@@ -15,8 +15,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object ChoirApiModule {
     private const val USE_PRODUCTION = false
-    private const val BASE_URL_DEMO = "https://choir-demo.med.stanford.edu/afib-api/v1/"
-    private const val BASE_URL_PRODUCTION = "https://choir.med.stanford.edu/afib-api/v1/"
+    private const val BASE_URL_DEMO = "https://choir-demo.med.stanford.edu/afib-api/"
+    private const val BASE_URL_PRODUCTION = "https://choir.med.stanford.edu/afib-api/"
 
     @Provides
     @Singleton

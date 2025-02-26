@@ -12,26 +12,29 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface ChoirApi {
-    @PUT("sites/{siteId}/participant")
+    @PUT("$BASE/participant")
     suspend fun putParticipant(
-        @Path("siteId") siteId: String,
         @Body body: Participant,
     ): Response<Unit>
 
-    @DELETE("sites/{siteId}/participant")
-    suspend fun unenrollParticipant(
-        @Path("siteId") siteId: String,
-    ): Response<Unit>
+    @DELETE("$BASE/participant")
+    suspend fun unenrollParticipant(): Response<Unit>
 
-    @GET("sites/{siteId}/onboarding")
-    suspend fun getOnboarding(
-        @Path("siteId") siteId: String,
+    @GET("$BASE/onboarding")
+    suspend fun getOnboarding(): Response<AssessmentStep>
+
+    @GET("$BASE/assessments/{surveyToken}/start")
+    suspend fun startAssessment(
+        @Path("surveyToken") surveyToken: String,
     ): Response<AssessmentStep>
 
-    @POST("sites/{siteId}/assessments/{assessmentToken}/continue")
+    @POST("$BASE/assessments/{surveyToken}/continue")
     suspend fun continueAssessment(
-        @Path("siteId") siteId: String,
-        @Path("assessmentToken") assessmentToken: String,
+        @Path("surveyToken") surveyToken: String,
         @Body body: AssessmentSubmit,
     ): Response<AssessmentStep>
+
+    private companion object {
+        const val BASE = "v1/sites/afib"
+    }
 }

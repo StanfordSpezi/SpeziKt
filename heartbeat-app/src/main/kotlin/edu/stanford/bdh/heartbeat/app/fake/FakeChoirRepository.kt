@@ -46,6 +46,11 @@ class FakeChoirRepository @Inject constructor(
         return success(fakeData.onboarding)
     }
 
+    override suspend fun startAssessment(token: String): Result<AssessmentStep> {
+        delay()
+        return success(fakeData.onboarding)
+    }
+
     override suspend fun continueAssessment(
         token: String,
         submit: AssessmentSubmit,

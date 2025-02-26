@@ -14,6 +14,7 @@ interface ChoirRepository {
     suspend fun putParticipant(participant: Participant): Result<Unit>
     suspend fun unenrollParticipant(): Result<Unit>
     suspend fun getOnboarding(): Result<AssessmentStep>
+    suspend fun startAssessment(token: String): Result<AssessmentStep>
     suspend fun continueAssessment(token: String, submit: AssessmentSubmit): Result<AssessmentStep>
 }
 
@@ -28,17 +29,22 @@ class ChoirRepositoryImpl @Inject internal constructor(
 
     override suspend fun putParticipant(participant: Participant): Result<Unit> {
         logger.i { "Invoking putParticipant for ${json(participant)}" }
-        return result(api.putParticipant(SITE_ID, participant))
+        return result(api.putParticipant(participant))
     }
 
     override suspend fun unenrollParticipant(): Result<Unit> {
         logger.i { "Invoking unrollParticipant" }
-        return result(api.unenrollParticipant(SITE_ID))
+        return result(api.unenrollParticipant())
     }
 
     override suspend fun getOnboarding(): Result<AssessmentStep> {
         logger.i { "Invoking getOnboarding" }
-        return result(api.getOnboarding(SITE_ID))
+        return result(api.getOnboarding())
+    }
+
+    override suspend fun startAssessment(token: String): Result<AssessmentStep> {
+        logger.i { "Invoking startAssessment with $token" }
+        return result(api.startAssessment(token))
     }
 
     override suspend fun continueAssessment(
@@ -46,7 +52,7 @@ class ChoirRepositoryImpl @Inject internal constructor(
         submit: AssessmentSubmit,
     ): Result<AssessmentStep> {
         logger.i { "Invoking continueAssessment with $token and ${json(submit)}" }
-        return result(api.continueAssessment(SITE_ID, token, submit))
+        return result(api.continueAssessment(token, submit))
     }
 
     private inline fun <reified T> result(response: Response<T>): Result<T> {
@@ -68,8 +74,4 @@ class ChoirRepositoryImpl @Inject internal constructor(
     }
 
     private inline fun <reified T> json(value: T) = json.encodeToString(serializer<T>(), value)
-
-    private companion object {
-        const val SITE_ID = "afib"
-    }
 }

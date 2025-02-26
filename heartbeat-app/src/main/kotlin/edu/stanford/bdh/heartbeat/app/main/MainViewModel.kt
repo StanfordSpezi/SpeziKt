@@ -5,13 +5,13 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.heartbeat.app.account.AccountInfo
 import edu.stanford.bdh.heartbeat.app.account.AccountManager
-import edu.stanford.bdh.heartbeat.app.choir.ChoirRepository
 import edu.stanford.bdh.heartbeat.app.choir.api.types.AssessmentStep
 import edu.stanford.bdh.heartbeat.app.fake.FakeConfigs
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.utils.MessageNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -50,7 +50,7 @@ sealed interface MainAction {
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val accountManager: AccountManager,
-    private val choirRepository: ChoirRepository,
+    private val startSurveyUseCase: StartSurveyUseCase,
     private val messageNotifier: MessageNotifier,
 ) : ViewModel() {
     private val logger by speziLogger()
@@ -59,7 +59,7 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            accountManager.observeAccountInfo().collect { accountInfo ->
+            accountManager.observeAccountInfo().distinctUntilChanged().collect { accountInfo ->
                 logger.i { "Received new account info update $accountInfo" }
                 update(accountInfo = accountInfo)
             }
@@ -139,7 +139,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             logger.i { "Invoking getOnboarding" }
             _uiState.update { MainUiState.Loading }
-            choirRepository.getOnboarding()
+            startSurveyUseCase()
                 .onSuccess { assessmentStep ->
                     logger.i { "Assessment step loaded successfully" }
                     _uiState.update {
