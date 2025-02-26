@@ -4,9 +4,9 @@ import edu.stanford.bdh.heartbeat.app.R
 
 object FakeConfigs {
     /**
-     * If [true] simutales a fake flow with example questions from [R.raw.fake_data]
+     * If [true] simulates a fake flow with example questions from [R.raw.fake_data]
      */
-    const val ENABLED = true
+    const val ENABLED = false
 
     /**
      * Indicates whether a dummy login / register flow should be used, otherwise survey starts immediately

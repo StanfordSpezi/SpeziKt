@@ -150,7 +150,6 @@ class SurveyViewModel @AssistedInject constructor(
             val currentQuestionsState = _screenState.value.questionState
             _screenState.update { it.copy(questionState = SurveyQuestionState.Loading) }
             val displayStatus = currentAssessmentStep.displayStatus
-
             repository.continueAssessment(
                 token = displayStatus.surveyToken ?: "",
                 submit = AssessmentSubmit(
@@ -158,7 +157,10 @@ class SurveyViewModel @AssistedInject constructor(
                         questionId = displayStatus.questionId,
                         questionType = displayStatus.questionType,
                         stepNumber = displayStatus.stepNumber?.toIntOrNull() ?: 1,
+                        surveyProviderId = displayStatus.surveyProviderId,
+                        compatLevel = displayStatus.compatLevel,
                         surveySectionId = displayStatus.surveySectionId,
+                        surveySystemName = displayStatus.surveySystemName,
                         renderTimeMillis = session.renderTimeMillis,
                         retryCount = session.retryCount,
                         thinkTimeMillis = session.getThinkingTime(),
@@ -188,6 +190,7 @@ class SurveyViewModel @AssistedInject constructor(
                 session.retryCount++
                 logger.e(error) { "Failure while submitting the answer" }
                 messageNotifier.notify("An error occurred when submitting your answer")
+                session.renderTimeMillis = null
                 _screenState.update { it.copy(questionState = currentQuestionsState) }
             }
         }
