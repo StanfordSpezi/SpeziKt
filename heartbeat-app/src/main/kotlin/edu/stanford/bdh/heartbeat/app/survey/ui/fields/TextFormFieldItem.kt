@@ -84,7 +84,7 @@ data class TextFormFieldItem(
                     ) {
                         if (value.isEmpty()) {
                             Text(
-                                modifier = Modifier.alpha(0.5f),
+                                modifier = Modifier.alpha(DISABLED_ALPHA),
                                 text = "Enter your input here...",
                             )
                         }

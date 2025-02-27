@@ -45,7 +45,7 @@ data class DatePickerFormFieldItem(
             ) {
                 val hasValue = value.isNotEmpty()
                 Text(
-                    modifier = Modifier.alpha(if (hasValue) 1f else 0.5f).weight(1f),
+                    modifier = Modifier.alpha(if (hasValue) 1f else DISABLED_ALPHA).weight(1f),
                     text = if (hasValue) value else "Select a date..."
                 )
                 IconButton(onClick = { showDatePicker = true }) {

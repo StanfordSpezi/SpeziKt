@@ -72,7 +72,7 @@ data class ChoicesFormFieldItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     val hasSelections = selectedIds.isNotEmpty()
-                    val alpha = if (hasSelections) 1f else 0.5f
+                    val alpha = if (hasSelections) 1f else DISABLED_ALPHA
                     Text(
                         text = style.label,
                         modifier = Modifier
