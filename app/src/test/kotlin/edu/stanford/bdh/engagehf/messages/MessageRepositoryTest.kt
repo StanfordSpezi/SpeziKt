@@ -17,6 +17,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Test
 
 class MessageRepositoryTest {
@@ -33,7 +34,8 @@ class MessageRepositoryTest {
         firebaseFunctions = firebaseFunctions,
         userSessionManager = userSessionManager,
         firestoreMessageMapper = firestoreMessageMapper,
-        ioScope = SpeziTestScope()
+        ioScope = SpeziTestScope(),
+        ioDispatcher = UnconfinedTestDispatcher(),
     )
 
     @Test
@@ -74,7 +76,7 @@ class MessageRepositoryTest {
     }
 
     @Test
-    fun `dismissMessage is invoked correctly`() {
+    fun `dismissMessage is invoked correctly`() = runTestUnconfined {
         // given
         val messageId = "some-message-id"
         val httpsCallableReference: HttpsCallableReference = mockk()
@@ -85,7 +87,7 @@ class MessageRepositoryTest {
         every { httpsCallableReference.call(capture(paramsSlot)) } returns mockTask(mockk())
 
         // when
-        repository.completeMessage(messageId)
+        repository.dismissMessage(messageId)
 
         // then
         val params = paramsSlot.captured
@@ -94,13 +96,13 @@ class MessageRepositoryTest {
     }
 
     @Test
-    fun `it should not dismissMessage if user is not authenticated`() {
+    fun `it should not dismissMessage if user is not authenticated`() = runTestUnconfined {
         // given
         val messageId = "some-message-id"
         every { userSessionManager.getUserUid() } returns null
 
         // when
-        repository.completeMessage(messageId)
+        repository.dismissMessage(messageId)
 
         // then
         verifyNever { firebaseFunctions.getHttpsCallable("dismissMessage") }

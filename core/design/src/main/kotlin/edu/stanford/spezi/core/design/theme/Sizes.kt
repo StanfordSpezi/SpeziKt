@@ -45,6 +45,11 @@ object Sizes {
             @Composable
             @ReadOnlyComposable
             get() = 8.dp
+
+        val extraLarge: Dp
+            @Composable
+            @ReadOnlyComposable
+            get() = 24.dp
     }
 
     object Elevation {
@@ -55,6 +60,11 @@ object Sizes {
     }
 
     object Content {
+        val extraLarge: Dp
+            @Composable
+            @ReadOnlyComposable
+            get() = 128.dp
+
         val large: Dp
             @Composable
             @ReadOnlyComposable
