@@ -29,10 +29,4 @@ class AppSimulator(
         topAppBarTitle.assertIsDisplayed()
             .assertTextEquals(text)
     }
-
-    fun assertNavigationBarItemIsDisplayed(text: String) {
-        composeTestRule
-            .onNodeWithIdentifier(AppScreenTestIdentifier.NAVIGATION_BAR_ITEM, text)
-            .assertIsDisplayed()
-    }
 }

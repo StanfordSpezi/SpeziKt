@@ -17,7 +17,6 @@ import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceEvent
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceState
 import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
 import edu.stanford.bdh.engagehf.messages.Message
-import edu.stanford.bdh.engagehf.messages.MessageType
 import edu.stanford.bdh.engagehf.messages.MessagesHandler
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
 import edu.stanford.spezi.core.notification.NotificationPermissions
@@ -52,10 +51,13 @@ class HomeViewModelTest {
     private val readyUiState: BluetoothUiState.Ready = mockk()
     private val appScreenEvents = mockk<AppScreenEvents>(relaxed = true)
     private val messageId = "some-id"
-    private val message: Message = mockk {
-        every { id } returns messageId
-        every { isExpanded } returns false
-    }
+    private val message = Message(
+        id = messageId,
+        dueDate = ZonedDateTime.now(),
+        description = "",
+        title = "",
+        action = null,
+    )
 
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
@@ -78,6 +80,7 @@ class HomeViewModelTest {
             every { mapMeasurementDialog(any()) } returns mockk()
         }
         every { context.packageName } returns "some-package"
+        every { messagesHandler.observeUserMessages() } returns flowOf(listOf(message))
     }
 
     @Test
@@ -228,14 +231,14 @@ class HomeViewModelTest {
     @Test
     fun `it should handle message updates correctly`() {
         // given
-        val messages = List(10) { mockk<Message>() }
+        val messages = List(10) { message.copy(id = "id-$it") }
         every { messagesHandler.observeUserMessages() } returns flowOf(messages)
 
         // when
         createViewModel()
 
         // then
-        assertThat(viewModel.uiState.value.messages).isEqualTo(messages)
+        assertThat(viewModel.uiState.value.messages.map { it.id }).isEqualTo(messages.map { it.id })
     }
 
     @Test
@@ -285,15 +288,20 @@ class HomeViewModelTest {
     @Test
     fun `it should invoke messages handler on message item clicked`() {
         // given
-        val message: Message = mockk()
-        val action = Action.MessageItemClicked(message = message)
+        val action = Action.MessageItemClicked(id = messageId)
         createViewModel()
 
         // when
         viewModel.onAction(action = action)
 
         // then
-        coVerify { messagesHandler.handle(message) }
+        coVerify {
+            messagesHandler.handle(
+                messageId = message.id,
+                isDismissible = message.isDismissible,
+                action = message.action
+            )
+        }
     }
 
     @Test
@@ -313,32 +321,28 @@ class HomeViewModelTest {
     fun `it should handle toggle expand action correctly`() {
         // given
         val isExpanded = false
-        val message = Message(
-            id = messageId,
-            dueDate = ZonedDateTime.now(),
-            description = "",
-            title = "",
-            action = "",
-            type = MessageType.MedicationChange,
-            isExpanded = isExpanded,
-        )
-        every { this@HomeViewModelTest.message.id } returns "new-id"
-
-        every { messagesHandler.observeUserMessages() } returns flowOf(
-            listOf(
-                message,
-                this.message
-            )
-        )
         createViewModel()
 
         // when
-        viewModel.onAction(Action.ToggleExpand(message))
+        viewModel.onAction(Action.ToggleExpand(messageId))
 
         // then
         assertThat(
             viewModel.uiState.value.messages.first().isExpanded
         ).isEqualTo(isExpanded.not())
+    }
+
+    @Test
+    fun `it should handle message dismiss action correctly`() {
+        // given
+        val isExpanded = false
+        createViewModel()
+
+        // when
+        viewModel.onAction(Action.MessageItemDismissed(messageId))
+
+        // then
+        coVerify { messagesHandler.dismiss(messageId) }
     }
 
     @Test

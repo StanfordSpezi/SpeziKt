@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ENGAGEHF</string>
+    <string name="app_name">ENGAGE-HF</string>
     <string name="home">Startseite</string>
     <string name="heart_health">Gesundheit</string>
     <string name="medication">Medikation</string>
@@ -107,4 +107,5 @@
     <string name="specific_symptoms_score_description">Dieser Wert gibt die Häufigkeit an, mit der Sie herzbezogene Symptome verspüren. Höhere Werte bedeuten weniger häufige Symptome und niedrigere Werte bedeuten häufigere Symptome.</string>
     <string name="dizziness_score_title">Schwindel Score</string>
     <string name="dizziness_score_description">Es ist wichtig, Ihren Schwindel im Auge zu behalten, denn Schwindel kann eine Nebenwirkung Ihres Herzens oder Ihrer Herzmedikamente sein.</string>
+    <string name="dismiss_message">Nachricht entfernen</string>
 </resources>

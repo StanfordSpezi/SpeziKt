@@ -4,7 +4,9 @@ import com.google.common.truth.Truth.assertThat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
@@ -63,7 +65,8 @@ class UserSessionManagerTest {
         every { firebaseAuth.currentUser } returns firebaseUser
         every { firebaseAuth.uid } returns null
         createUserSessionManager()
-        val expectedUserState = UserState.Registered(hasInvitationCodeConfirmed = false)
+        val expectedUserState =
+            UserState.Registered(hasInvitationCodeConfirmed = false, disabled = false)
 
         // when
         val state = userSessionManager.getUserState()
@@ -71,21 +74,6 @@ class UserSessionManagerTest {
         // then
         assertThat(state).isEqualTo(expectedUserState)
     }
-
-    @Test
-    fun `it should reflect registered user has confirmed invitation code state correctly`() =
-        runTestUnconfined {
-            // given
-            setupHasConfirmedInvitationCode()
-            createUserSessionManager()
-            val expectedUserState = UserState.Registered(hasInvitationCodeConfirmed = true)
-
-            // when
-            val state = userSessionManager.getUserState()
-
-            // then
-            assertThat(state).isEqualTo(expectedUserState)
-        }
 
     @Test
     fun `it should not upload consent pdf if current user is not available`() = runTestUnconfined {
@@ -180,7 +168,7 @@ class UserSessionManagerTest {
     }
 
     @Test
-    fun `it should emit Registered with hasInvitationCodeConfirmed false when uid is null`() =
+    fun `it should emit correct Registered when uid is null`() =
         runTestUnconfined {
             // given
             val firebaseUser: FirebaseUser = mockk {
@@ -194,26 +182,105 @@ class UserSessionManagerTest {
 
             // then
             assertObservedState(
-                userState = UserState.Registered(hasInvitationCodeConfirmed = false),
+                userState = UserState.Registered(
+                    hasInvitationCodeConfirmed = false,
+                    disabled = false
+                ),
                 scope = this
             )
         }
 
     @Test
-    fun `it should emit Registered with hasInvitationCodeConfirmed true when user has consented`() =
+    fun `it should emit correct Registered user when invitation code confirmed and not disabled`() =
         runTestUnconfined {
             // given
-            setupHasConfirmedInvitationCode()
+            val invitationCodeConfirmed = true
+            val disabled = false
+            setupUserResponse(
+                invitationCodeConfirmed = invitationCodeConfirmed,
+                disabled = disabled
+            )
 
             // when
             createUserSessionManager()
 
             // then
             assertObservedState(
-                userState = UserState.Registered(hasInvitationCodeConfirmed = true),
+                userState = UserState.Registered(
+                    hasInvitationCodeConfirmed = invitationCodeConfirmed,
+                    disabled = disabled
+                ),
                 scope = this
             )
         }
+
+    @Test
+    fun `it should emit correct Registered user when invitation code not confirmed and disabled`() =
+        runTestUnconfined {
+            // given
+            val invitationCodeConfirmed = false
+            val disabled = true
+            setupUserResponse(
+                invitationCodeConfirmed = invitationCodeConfirmed,
+                disabled = disabled
+            )
+
+            // when
+            createUserSessionManager()
+
+            // then
+            assertObservedState(
+                userState = UserState.Registered(
+                    hasInvitationCodeConfirmed = invitationCodeConfirmed,
+                    disabled = disabled
+                ),
+                scope = this
+            )
+        }
+
+    @Test
+    fun `it should observe registered user correctly`() = runTestUnconfined {
+        // given
+        val uid = "some-uid"
+        val firebaseUser: FirebaseUser = mockk {
+            every { isAnonymous } returns false
+        }
+        every { firebaseAuth.currentUser } returns firebaseUser
+        every { firebaseAuth.uid } returns uid
+        val invitationCode = "1234"
+        val disabled = false
+        val snapshot: DocumentSnapshot = mockk()
+        val listenerSlot = slot<EventListener<DocumentSnapshot>>()
+        val registrationListener: ListenerRegistration = mockk(relaxed = true)
+        every {
+            firestore.collection("users")
+                .document(uid)
+                .addSnapshotListener(capture(listenerSlot))
+        } returns registrationListener
+        every { snapshot.getString("invitationCode") } returns invitationCode
+        every { snapshot.getBoolean("disabled") } returns disabled
+        var response: UserState.Registered? = null
+        createUserSessionManager()
+
+        val job = launch {
+            userSessionManager.observeRegisteredUser().collect {
+                response = it
+            }
+        }
+
+        // when
+        listenerSlot.captured.onEvent(snapshot, null)
+
+        // then
+        assertThat(response).isEqualTo(
+            UserState.Registered(
+                hasInvitationCodeConfirmed = true,
+                disabled = disabled
+            )
+        )
+
+        job.cancel()
+    }
 
     @Test
     fun `it should return the correct user uid`() {
@@ -279,10 +346,14 @@ class UserSessionManagerTest {
         every { firebaseStorage.getReference(location) } returns storageReference
     }
 
-    private fun setupHasConfirmedInvitationCode() {
+    private fun setupUserResponse(
+        invitationCodeConfirmed: Boolean,
+        disabled: Boolean,
+    ) {
         val uid = "uid"
         val document: DocumentSnapshot = mockk {
-            every { getString("invitationCode") } returns "1234"
+            every { getString("invitationCode") } returns "1234".takeIf { invitationCodeConfirmed }
+            every { getBoolean("disabled") } returns disabled
         }
         val firebaseUser: FirebaseUser = mockk {
             every { isAnonymous } returns false

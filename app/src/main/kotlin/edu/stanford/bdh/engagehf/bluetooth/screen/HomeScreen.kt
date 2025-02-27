@@ -39,11 +39,11 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.DeviceUiModel
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
+import edu.stanford.bdh.engagehf.bluetooth.data.models.MessageUiModel
 import edu.stanford.bdh.engagehf.bluetooth.data.models.UiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
-import edu.stanford.bdh.engagehf.messages.Message
+import edu.stanford.bdh.engagehf.messages.MessageAction
 import edu.stanford.bdh.engagehf.messages.MessageItem
-import edu.stanford.bdh.engagehf.messages.MessageType
 import edu.stanford.spezi.core.design.component.AsyncTextButton
 import edu.stanford.spezi.core.design.component.DefaultElevatedCard
 import edu.stanford.spezi.core.design.component.LifecycleEvent
@@ -57,7 +57,6 @@ import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.design.theme.TextStyles
 import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.utils.extensions.testIdentifier
-import java.time.ZonedDateTime
 
 @Composable
 fun HomeScreen() {
@@ -107,7 +106,7 @@ private fun HomeScreen(
         if (uiState.messages.isNotEmpty()) {
             items(uiState.messages) { message ->
                 MessageItem(
-                    message = message,
+                    model = message,
                     onAction = onAction,
                 )
             }
@@ -333,14 +332,16 @@ private class HomeScreenPreviewProvider : PreviewParameterProvider<UiState> {
             formattedWeight = "0.0"
         ),
         messages = listOf(
-            Message(
+            MessageUiModel(
                 id = "1",
-                dueDate = ZonedDateTime.now(),
-                type = MessageType.WeightGain,
                 title = "Weight Gained",
                 description = "You gained weight. Please take action.",
-                action = "New Weight Entry"
-            )
+                action = MessageAction.MeasurementsAction,
+                isExpanded = false,
+                isDismissing = false,
+                isLoading = false,
+                isDismissible = true,
+            ),
         ),
         weight = VitalDisplayData(
             title = "Weight",

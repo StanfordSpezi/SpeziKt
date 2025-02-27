@@ -6,12 +6,14 @@ import com.google.firebase.functions.FirebaseFunctions
 import edu.stanford.spezi.core.coroutines.di.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.module.account.manager.UserSessionManager
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MessageRepository @Inject constructor(
@@ -20,6 +22,7 @@ class MessageRepository @Inject constructor(
     private val userSessionManager: UserSessionManager,
     private val firestoreMessageMapper: FirestoreMessageMapper,
     @Dispatching.IO private val ioScope: CoroutineScope,
+    @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
 ) {
     private val logger by speziLogger()
 
@@ -55,23 +58,21 @@ class MessageRepository @Inject constructor(
         }
     }
 
-    fun completeMessage(messageId: String) {
-        ioScope.launch {
-            runCatching {
-                val uid = userSessionManager.getUserUid()
-                    ?: throw IllegalStateException("User not authenticated")
-                val params = mapOf(
-                    "userId" to uid,
-                    "messageId" to messageId,
-                )
-                firebaseFunctions.getHttpsCallable("dismissMessage")
-                    .call(params)
-                    .await()
+    suspend fun dismissMessage(messageId: String) = withContext(ioDispatcher) {
+        runCatching {
+            val uid = userSessionManager.getUserUid()
+                ?: throw IllegalStateException("User not authenticated")
+            val params = mapOf(
+                "userId" to uid,
+                "messageId" to messageId,
+            )
+            firebaseFunctions.getHttpsCallable("dismissMessage")
+                .call(params)
+                .await()
 
-                logger.i { "Message completion for $messageId finished successfully" }
-            }.onFailure {
-                logger.e(it) { "Error while completing message with id $messageId" }
-            }
+            logger.i { "Message completion for $messageId finished successfully" }
+        }.onFailure {
+            logger.e(it) { "Error while completing message with id $messageId" }
         }
     }
 }
