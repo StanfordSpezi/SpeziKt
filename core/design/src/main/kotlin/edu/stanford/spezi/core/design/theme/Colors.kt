@@ -71,6 +71,36 @@ object Colors {
         @Composable
         @ReadOnlyComposable
         get() = Color.Transparent
+
+    val white
+        @Composable
+        @ReadOnlyComposable
+        get() = White
+
+    val black
+        @Composable
+        @ReadOnlyComposable
+        get() = Black
+
+    val black20
+        @Composable
+        @ReadOnlyComposable
+        get() = Black20
+
+    val black40
+        @Composable
+        @ReadOnlyComposable
+        get() = Black40
+
+    val black80
+        @Composable
+        @ReadOnlyComposable
+        get() = Black80
+
+    val cardinalRedLight
+        @Composable
+        @ReadOnlyComposable
+        get() = CardinalRedLight
 }
 
 @Suppress("unused")

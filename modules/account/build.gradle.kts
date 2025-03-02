@@ -23,8 +23,6 @@ dependencies {
     implementation(project(":core:navigation"))
     implementation(project(":core:utils"))
 
-    implementation(libs.hilt.navigation.compose)
-
     implementation(libs.firebase.functions.ktx)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
