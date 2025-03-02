@@ -17,5 +17,5 @@ data class SubmitStatus(
     val retryCount: Int? = null,
     val locale: String,
     val compatLevel: String? = null,
-    val backRequest: Boolean? = null
+    val backRequest: Boolean? = null,
 )

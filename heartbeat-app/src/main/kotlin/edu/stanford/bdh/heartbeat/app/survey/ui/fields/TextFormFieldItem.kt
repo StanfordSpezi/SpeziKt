@@ -48,10 +48,10 @@ data class TextFormFieldItem(
     }
 
     @Composable
-    override fun Content(modifier: Modifier) {
+    override fun Body(modifier: Modifier) {
         SurveyCard(modifier = modifier) {
-            info.Content(Modifier)
-            fieldLabel?.Content(Modifier)
+            info.body
+            fieldLabel?.body
 
             val isTextArea = style == Style.TEXT_AREA
 
@@ -84,7 +84,7 @@ data class TextFormFieldItem(
                     ) {
                         if (value.isEmpty()) {
                             Text(
-                                modifier = Modifier.alpha(0.5f),
+                                modifier = Modifier.alpha(DISABLED_ALPHA),
                                 text = "Enter your input here...",
                             )
                         }
@@ -137,6 +137,6 @@ private class TextFormFieldPreviewParamProvider : PreviewParameterProvider<TextF
 @Composable
 private fun Previews(@PreviewParameter(TextFormFieldPreviewParamProvider::class) item: TextFormFieldItem) {
     SurveyItemPreview {
-        item.Content(Modifier)
+        item.body
     }
 }

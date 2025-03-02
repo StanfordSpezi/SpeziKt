@@ -16,7 +16,7 @@ data class HeadingFormFieldItem(
 ) : FormFieldItem {
 
     @Composable
-    override fun Content(modifier: Modifier) {
+    override fun Body(modifier: Modifier) {
         text ?: return
         SurveyCard(modifier = modifier) {
             val isHtml = remember(text) { HtmlUtils.isHtml(text) }

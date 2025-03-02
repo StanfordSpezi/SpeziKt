@@ -12,7 +12,7 @@ data class QuestionButton(
     private val onClick: () -> Unit,
 ) : SurveyItem {
     @Composable
-    override fun Content(modifier: Modifier) {
+    override fun Body(modifier: Modifier) {
         AsyncTextButton(
             text = title,
             onClick = onClick,

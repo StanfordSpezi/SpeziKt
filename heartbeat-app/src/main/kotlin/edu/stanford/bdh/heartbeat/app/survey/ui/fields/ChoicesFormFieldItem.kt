@@ -54,14 +54,14 @@ data class ChoicesFormFieldItem(
     data class Option(val id: String, val label: String)
 
     @Composable
-    override fun Content(modifier: Modifier) {
+    override fun Body(modifier: Modifier) {
         var expanded by remember {
             mutableStateOf(if (style is Style.Dropdown) style.initialExpanded else true)
         }
 
         SurveyCard(modifier = modifier) {
-            info.Content(Modifier)
-            fieldLabel?.Content(Modifier)
+            info.body
+            fieldLabel?.body
 
             if (style is Style.Dropdown) {
                 Row(
@@ -72,7 +72,7 @@ data class ChoicesFormFieldItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     val hasSelections = selectedIds.isNotEmpty()
-                    val alpha = if (hasSelections) 1f else 0.5f
+                    val alpha = if (hasSelections) 1f else DISABLED_ALPHA
                     Text(
                         text = style.label,
                         modifier = Modifier
@@ -179,6 +179,6 @@ class ChoicesFieldItemPreviewParameterProvider :
 @Composable
 private fun Previews(@PreviewParameter(ChoicesFieldItemPreviewParameterProvider::class) model: ChoicesFormFieldItem) {
     SurveyItemPreview {
-        model.Content(Modifier)
+        model.body
     }
 }

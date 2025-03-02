@@ -5,12 +5,13 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.heartbeat.app.account.AccountInfo
 import edu.stanford.bdh.heartbeat.app.account.AccountManager
-import edu.stanford.bdh.heartbeat.app.choir.ChoirRepository
-import edu.stanford.bdh.heartbeat.app.choir.api.types.Onboarding
+import edu.stanford.bdh.heartbeat.app.choir.api.types.AssessmentStep
+import edu.stanford.bdh.heartbeat.app.fake.FakeConfigs
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.utils.MessageNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,7 +30,7 @@ sealed interface MainUiState {
         sealed interface Survey : Authenticated {
             data object LoadingFailed : Survey
             data class Content(
-                val onboarding: Onboarding,
+                val assessmentStep: AssessmentStep,
                 val onCompleted: () -> Unit,
             ) : Survey
         }
@@ -49,7 +50,7 @@ sealed interface MainAction {
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val accountManager: AccountManager,
-    private val choirRepository: ChoirRepository,
+    private val startSurveyUseCase: StartSurveyUseCase,
     private val messageNotifier: MessageNotifier,
 ) : ViewModel() {
     private val logger by speziLogger()
@@ -58,7 +59,7 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            accountManager.observeAccountInfo().collect { accountInfo ->
+            accountManager.observeAccountInfo().distinctUntilChanged().collect { accountInfo ->
                 logger.i { "Received new account info update $accountInfo" }
                 update(accountInfo = accountInfo)
             }
@@ -117,6 +118,12 @@ class MainViewModel @Inject constructor(
 
     private fun update(accountInfo: AccountInfo?) {
         when {
+            FakeConfigs.ONBOARDING_COMPLETED && FakeConfigs.ENABLED -> {
+                viewModelScope.launch {
+                    if (accountInfo == null) accountManager.reloadAccountInfo()
+                    _uiState.update { MainUiState.HomePage }
+                }
+            }
             accountInfo == null -> _uiState.update { MainUiState.Unauthenticated }
             !accountInfo.isEmailVerified -> _uiState.update {
                 MainUiState.Authenticated.RequiresEmailVerification(
@@ -132,12 +139,12 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             logger.i { "Invoking getOnboarding" }
             _uiState.update { MainUiState.Loading }
-            choirRepository.getOnboarding()
-                .onSuccess { onboarding ->
-                    logger.i { "Onboarding loaded successfully" }
+            startSurveyUseCase()
+                .onSuccess { assessmentStep ->
+                    logger.i { "Assessment step loaded successfully" }
                     _uiState.update {
                         MainUiState.Authenticated.Survey.Content(
-                            onboarding = onboarding,
+                            assessmentStep = assessmentStep,
                             onCompleted = {
                                 messageNotifier.notify("We appreciate your participation in the study!")
                                 _uiState.update { MainUiState.HomePage }

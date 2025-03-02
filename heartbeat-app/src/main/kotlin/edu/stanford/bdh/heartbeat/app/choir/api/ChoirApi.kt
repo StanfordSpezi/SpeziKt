@@ -2,7 +2,6 @@ package edu.stanford.bdh.heartbeat.app.choir.api
 
 import edu.stanford.bdh.heartbeat.app.choir.api.types.AssessmentStep
 import edu.stanford.bdh.heartbeat.app.choir.api.types.AssessmentSubmit
-import edu.stanford.bdh.heartbeat.app.choir.api.types.Onboarding
 import edu.stanford.bdh.heartbeat.app.choir.api.types.Participant
 import retrofit2.Response
 import retrofit2.http.Body
@@ -13,26 +12,29 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface ChoirApi {
-    @PUT("sites/{siteId}/participant")
+    @PUT("$BASE/participant")
     suspend fun putParticipant(
-        @Path("siteId") siteId: String,
         @Body body: Participant,
     ): Response<Unit>
 
-    @DELETE("sites/{siteId}/participant")
-    suspend fun unenrollParticipant(
-        @Path("siteId") siteId: String,
-    ): Response<Unit>
+    @DELETE("$BASE/participant")
+    suspend fun unenrollParticipant(): Response<Unit>
 
-    @GET("sites/{siteId}/onboarding")
-    suspend fun getOnboarding(
-        @Path("siteId") siteId: String,
-    ): Response<Onboarding>
+    @GET("$BASE/onboarding")
+    suspend fun getOnboarding(): Response<AssessmentStep>
 
-    @POST("sites/{siteId}/assessments/{assessmentToken}/continue")
+    @GET("$BASE/assessments/{surveyToken}/start")
+    suspend fun startAssessment(
+        @Path("surveyToken") surveyToken: String,
+    ): Response<AssessmentStep>
+
+    @POST("$BASE/assessments/{surveyToken}/continue")
     suspend fun continueAssessment(
-        @Path("siteId") siteId: String,
-        @Path("assessmentToken") assessmentToken: String,
+        @Path("surveyToken") surveyToken: String,
         @Body body: AssessmentSubmit,
     ): Response<AssessmentStep>
+
+    private companion object {
+        const val BASE = "v1/sites/afib"
+    }
 }

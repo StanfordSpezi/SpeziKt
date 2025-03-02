@@ -20,6 +20,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
     implementation(libs.bundles.compose)
+    api(libs.hilt.navigation.compose)
     implementation(libs.coil.compose)
 
     androidTestImplementation(libs.bundles.compose.androidTest)

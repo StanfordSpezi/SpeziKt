@@ -19,7 +19,6 @@ class MainActivityTest {
     fun assertMainActivityLaunch() {
         mainActivity {
             assertIsDisplayed()
-            assertText(text = "Hello HeartBeat App")
         }
     }
 

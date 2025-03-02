@@ -32,12 +32,12 @@ data class DatePickerFormFieldItem(
 ) : FormFieldItem {
 
     @Composable
-    override fun Content(modifier: Modifier) {
+    override fun Body(modifier: Modifier) {
         var showDatePicker by remember { mutableStateOf(false) }
 
         SurveyCard(modifier = modifier) {
-            info.Content(Modifier)
-            fieldLabel?.Content(Modifier)
+            info.body
+            fieldLabel?.body
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -45,7 +45,7 @@ data class DatePickerFormFieldItem(
             ) {
                 val hasValue = value.isNotEmpty()
                 Text(
-                    modifier = Modifier.alpha(if (hasValue) 1f else 0.5f).weight(1f),
+                    modifier = Modifier.alpha(if (hasValue) 1f else DISABLED_ALPHA).weight(1f),
                     text = if (hasValue) value else "Select a date..."
                 )
                 IconButton(onClick = { showDatePicker = true }) {
@@ -65,7 +65,7 @@ data class DatePickerFormFieldItem(
 
 @ThemePreviews
 @Composable
-private fun Previews() {
+private fun DatePickerFormFieldItemPreview() {
     val datePickerFormField = DatePickerFormFieldItem(
         fieldId = "",
         info = QuestionNumberInfo(2, 2),
@@ -74,6 +74,6 @@ private fun Previews() {
         onValueChange = {},
     )
     SurveyItemPreview {
-        datePickerFormField.Content(Modifier)
+        datePickerFormField.body
     }
 }

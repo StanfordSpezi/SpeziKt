@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import edu.stanford.spezi.core.utils.ComposableBlock
+import edu.stanford.spezi.core.design.component.ComposableBlock
 
 private val DarkColorScheme = darkColorScheme(
     primary = CardinalRed,
@@ -84,5 +84,19 @@ fun SpeziTheme(
         colorScheme = colorScheme,
         typography = typography,
         content = surface
+    )
+}
+
+@Composable
+fun SpeziThemePreview(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    dynamicColor: Boolean = true,
+    content: @Composable () -> Unit,
+) {
+    SpeziTheme(
+        darkTheme = darkTheme,
+        dynamicColor = dynamicColor,
+        isPreview = true,
+        content = content,
     )
 }

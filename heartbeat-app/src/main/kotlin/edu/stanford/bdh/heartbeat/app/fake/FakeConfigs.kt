@@ -4,9 +4,9 @@ import edu.stanford.bdh.heartbeat.app.R
 
 object FakeConfigs {
     /**
-     * If [true] simutales a fake flow with example questions from [R.raw.fake_data]
+     * If [true] simulates a fake flow with example questions from [R.raw.fake_data]
      */
-    const val ENABLED = true
+    const val ENABLED = false
 
     /**
      * Indicates whether a dummy login / register flow should be used, otherwise survey starts immediately
@@ -27,4 +27,10 @@ object FakeConfigs {
      * Set to true to ignore question validations and complete the flow
      */
     const val FORCE_ENABLE_CONTINUE = false
+
+    /**
+     * Indicates whether onboarding flow should be skipped and home page with a logged in user
+     * should be used at start
+     */
+    var ONBOARDING_COMPLETED = false
 }

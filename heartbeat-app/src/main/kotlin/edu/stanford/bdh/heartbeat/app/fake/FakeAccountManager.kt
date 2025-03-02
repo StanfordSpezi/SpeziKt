@@ -12,8 +12,9 @@ import javax.inject.Singleton
 @Singleton
 class FakeAccountManager @Inject constructor() : AccountManager, FakeComponent {
     private val defaultAccount = AccountInfo(
-        email = "fake-user@heartbeat-study.edu",
-        name = "Fake User",
+        id = "fake-user-id",
+        email = "user@heartbeat-study.edu",
+        name = "HeartBeat user",
         isEmailVerified = FakeConfigs.EMAIL_VERIFIED,
     )
 
@@ -33,10 +34,12 @@ class FakeAccountManager @Inject constructor() : AccountManager, FakeComponent {
     }
 
     override suspend fun deleteCurrentUser(): Result<Unit> {
-        return success(Unit)
+        return signOut()
     }
 
     override suspend fun signOut(): Result<Unit> {
+        delay()
+        // FakeConfigs.ONBOARDING_COMPLETED = false
         accountState.update { null }
         return success(Unit)
     }
@@ -58,6 +61,8 @@ class FakeAccountManager @Inject constructor() : AccountManager, FakeComponent {
     override suspend fun signIn(email: String, password: String): Result<Unit> {
         return signUpWithEmailAndPassword(email, password)
     }
+
+    override fun getAccountInfo(): AccountInfo? = accountState.value
 
     private fun <T> success(value: T) = Result.success(value)
 }
