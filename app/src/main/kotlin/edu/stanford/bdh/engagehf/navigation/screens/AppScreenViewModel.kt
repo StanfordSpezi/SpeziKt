@@ -11,6 +11,7 @@ import edu.stanford.bdh.engagehf.messages.HealthSummaryService
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.notification.NotificationNavigationEvent
+import edu.stanford.spezi.core.notification.fcm.DeviceRegistrationService
 import edu.stanford.spezi.module.account.manager.UserSessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,6 +28,7 @@ class AppScreenViewModel @Inject constructor(
     private val userSessionManager: UserSessionManager,
     private val healthSummaryService: HealthSummaryService,
     private val navigator: Navigator,
+    private val deviceRegistrationService: DeviceRegistrationService,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AppUiState(content = AppContent.Loading))
 
@@ -160,8 +162,18 @@ class AppScreenViewModel @Inject constructor(
             }
 
             Action.SignOut -> {
-                _uiState.update { it.copy(accountUiState = it.accountUiState.copy(showDialog = false)) }
-                userSessionManager.signOut()
+                viewModelScope.launch {
+                    _uiState.update { it.copy(accountUiState = it.accountUiState.copy(isSignOutLoading = true)) }
+                    deviceRegistrationService.unregisterDevice()
+                    userSessionManager.signOut()
+                    _uiState.update {
+                        val newAccountUiState = it.accountUiState.copy(
+                            showDialog = false,
+                            isSignOutLoading = false,
+                        )
+                        it.copy(accountUiState = newAccountUiState)
+                    }
+                }
             }
 
             Action.DismissBottomSheet -> {
@@ -213,6 +225,7 @@ data class AccountUiState(
     val name: String? = null,
     val initials: String? = null,
     val isHealthSummaryLoading: Boolean = false,
+    val isSignOutLoading: Boolean = false,
 )
 
 enum class BottomSheetContent {

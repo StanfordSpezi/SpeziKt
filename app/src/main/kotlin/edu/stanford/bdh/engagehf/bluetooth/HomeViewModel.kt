@@ -22,6 +22,7 @@ import edu.stanford.bdh.engagehf.messages.MessagesHandler
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.notification.NotificationPermissions
+import edu.stanford.spezi.core.notification.fcm.DeviceRegistrationService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -37,7 +38,8 @@ class HomeViewModel @Inject internal constructor(
     private val appScreenEvents: AppScreenEvents,
     private val messagesHandler: MessagesHandler,
     @ApplicationContext private val context: Context,
-    notificationPermissions: NotificationPermissions,
+    private val notificationPermissions: NotificationPermissions,
+    private val deviceRegistrationService: DeviceRegistrationService,
 ) : ViewModel() {
     private val logger by speziLogger()
 
@@ -169,6 +171,9 @@ class HomeViewModel @Inject internal constructor(
             }
 
             is Action.PermissionResult -> {
+                if (notificationPermissions.getRequiredPermissions().isEmpty()) {
+                    deviceRegistrationService.refreshDeviceToken()
+                }
                 _uiState.update { state ->
                     val missingPermission = state.missingPermissions.filterNot { it == action.permission }
                     state.copy(missingPermissions = missingPermission.toSet())

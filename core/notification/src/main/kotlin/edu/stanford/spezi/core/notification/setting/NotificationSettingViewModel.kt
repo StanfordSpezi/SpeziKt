@@ -13,6 +13,7 @@ import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.notification.NotificationPermissions
+import edu.stanford.spezi.core.notification.fcm.DeviceRegistrationService
 import edu.stanford.spezi.core.utils.MessageNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,6 +24,7 @@ import javax.inject.Inject
 /**
  * ViewModel for notification settings.
  */
+@Suppress("LongParameterList")
 @HiltViewModel
 internal class NotificationSettingViewModel @Inject constructor(
     private val repository: NotificationSettingsRepository,
@@ -31,6 +33,7 @@ internal class NotificationSettingViewModel @Inject constructor(
     private val messageNotifier: MessageNotifier,
     private val notificationPermissions: NotificationPermissions,
     @ApplicationContext private val context: Context,
+    private val deviceRegistrationService: DeviceRegistrationService,
 ) : ViewModel() {
     private val logger by speziLogger()
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -120,6 +123,7 @@ internal class NotificationSettingViewModel @Inject constructor(
             if (currentState is UiState.MissingPermissions) {
                 val missingPermissions = currentState.missingPermissions.filterNot { granted && it == permission }
                 if (missingPermissions.isEmpty()) {
+                    deviceRegistrationService.refreshDeviceToken()
                     loadNotificationSettings()
                     currentState
                 } else {

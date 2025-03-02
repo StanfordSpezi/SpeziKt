@@ -9,6 +9,7 @@ import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.Routes
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.core.notification.fcm.DeviceRegistrationService
 import edu.stanford.spezi.core.notification.notifier.FirebaseMessage
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.coVerifyNever
@@ -42,6 +43,7 @@ class MainActivityViewModelTest {
     private val messagesHandler: MessagesHandler = mockk(relaxed = true)
     private val messageActionMapper: MessageActionMapper = mockk(relaxed = true)
     private val messageNotifier: MessageNotifier = mockk(relaxed = true)
+    private val deviceRegistrationService: DeviceRegistrationService = mockk(relaxed = true)
     private lateinit var viewModel: MainActivityViewModel
 
     @Before
@@ -51,13 +53,37 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `it should start observing on init`() {
+    fun `it should request user state on init`() {
         // when
         createViewModel()
 
         // then
         verify { accountEvents.events }
         coVerify { userSessionManager.getUserState() }
+    }
+
+    @Test
+    fun `it should refresh device token for registered users`() = runTestUnconfined {
+        // given
+        coEvery { userSessionManager.getUserState() } returns registeredUser()
+
+        // when
+        createViewModel()
+
+        // then
+        verify { deviceRegistrationService.refreshDeviceToken() }
+    }
+
+    @Test
+    fun `it should not refresh device token for unregistered users`() = runTestUnconfined {
+        // given
+        coEvery { userSessionManager.getUserState() } returns UserState.NotInitialized
+
+        // when
+        createViewModel()
+
+        // then
+        verify(exactly = 0) { deviceRegistrationService.refreshDeviceToken() }
     }
 
     @Test
@@ -234,6 +260,60 @@ class MainActivityViewModelTest {
         }
 
     @Test
+    fun `it should refresh device token on SignInSuccess for registered users`() = runTestUnconfined {
+        // given
+        createViewModel()
+        val event = AccountEvents.Event.SignInSuccess
+        coEvery { userSessionManager.getUserState() } returns registeredUser()
+
+        // when
+        accountEventsFlow.emit(event)
+
+        // then
+        verify { deviceRegistrationService.refreshDeviceToken() }
+    }
+
+    @Test
+    fun `it should not refresh device token on SignInSuccess for not registered users`() = runTestUnconfined {
+        // given
+        createViewModel()
+        val event = AccountEvents.Event.SignInSuccess
+
+        // when
+        accountEventsFlow.emit(event)
+
+        // then
+        verify(exactly = 0) { deviceRegistrationService.refreshDeviceToken() }
+    }
+
+    @Test
+    fun `it should not refresh device token on SignUpSuccess for not registered users`() = runTestUnconfined {
+        // given
+        createViewModel()
+        val event = AccountEvents.Event.SignUpSuccess
+
+        // when
+        accountEventsFlow.emit(event)
+
+        // then
+        verify(exactly = 0) { deviceRegistrationService.refreshDeviceToken() }
+    }
+
+    @Test
+    fun `it should refresh device token on SignUpSuccess for registered users`() = runTestUnconfined {
+        // given
+        createViewModel()
+        val event = AccountEvents.Event.SignUpSuccess
+        coEvery { userSessionManager.getUserState() } returns registeredUser()
+
+        // when
+        accountEventsFlow.emit(event)
+
+        // then
+        verify { deviceRegistrationService.refreshDeviceToken() }
+    }
+
+    @Test
     fun `it should not navigate on other account events`() = runTestUnconfined {
         // given
         createViewModel()
@@ -315,11 +395,12 @@ class MainActivityViewModelTest {
             messagesHandler = messagesHandler,
             messageActionMapper = messageActionMapper,
             messageNotifier = messageNotifier,
+            deviceRegistrationService = deviceRegistrationService,
         )
     }
 
     private fun registeredUser(
-        hasInvitationCodeConfirmed: Boolean,
+        hasInvitationCodeConfirmed: Boolean = true,
         disabled: Boolean = false,
     ) = UserState.Registered(
         hasInvitationCodeConfirmed = hasInvitationCodeConfirmed,

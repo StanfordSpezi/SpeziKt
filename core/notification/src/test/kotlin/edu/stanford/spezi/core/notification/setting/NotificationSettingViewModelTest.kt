@@ -5,6 +5,7 @@ import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.notification.NotificationPermissions
+import edu.stanford.spezi.core.notification.fcm.DeviceRegistrationService
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.utils.MessageNotifier
 import io.mockk.coEvery
@@ -27,6 +28,7 @@ class NotificationSettingViewModelTest {
     private val messageNotifier: MessageNotifier = mockk(relaxed = true)
     private val notificationPermissions: NotificationPermissions = mockk(relaxed = true)
     private val context: Context = mockk(relaxed = true)
+    private val deviceRegistrationService: DeviceRegistrationService = mockk(relaxed = true)
 
     private val viewModel: NotificationSettingViewModel by lazy {
         NotificationSettingViewModel(
@@ -36,6 +38,7 @@ class NotificationSettingViewModelTest {
             messageNotifier = messageNotifier,
             notificationPermissions = notificationPermissions,
             context = context,
+            deviceRegistrationService = deviceRegistrationService,
         )
     }
 
@@ -84,6 +87,20 @@ class NotificationSettingViewModelTest {
         assertThat(newState).isEqualTo(
             NotificationSettingViewModel.UiState.MissingPermissions(setOf(nonGranted))
         )
+    }
+
+    @Test
+    fun `it should refresh device token after permissions granted`() = runTest {
+        // Given
+        val granted = "to-be-granted-permission"
+        val permissions = setOf(granted)
+        every { notificationPermissions.getRequiredPermissions() } returns permissions
+
+        // When
+        viewModel.onAction(NotificationSettingViewModel.Action.PermissionResult(permission = granted, granted = true))
+
+        // Then
+        verify { deviceRegistrationService.refreshDeviceToken() }
     }
 
     @Test
