@@ -3,12 +3,12 @@ package edu.stanford.spezi.modules.education.videos
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.R
 import edu.stanford.spezi.modules.education.videos.data.repository.EducationRepository
+import edu.stanford.spezi.spezi.core.logging.speziLogger
+import edu.stanford.spezi.spezi.ui.resources.StringResource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.theme.TextStyles
+import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles
 
 @Composable
 fun AddDataHeader(

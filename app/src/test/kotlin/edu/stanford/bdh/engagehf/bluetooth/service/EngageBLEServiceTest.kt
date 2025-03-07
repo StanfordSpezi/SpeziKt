@@ -13,7 +13,7 @@ import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
 import edu.stanford.spezi.core.testing.SpeziTestScope
 import edu.stanford.spezi.core.testing.runTestUnconfined
-import edu.stanford.spezi.core.utils.UUID
+import edu.stanford.spezi.spezi.foundation.helpers.UUID
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk

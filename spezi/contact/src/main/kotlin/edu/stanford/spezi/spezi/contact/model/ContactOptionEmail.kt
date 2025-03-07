@@ -1,0 +1,26 @@
+package edu.stanford.spezi.spezi.contact.model
+
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import edu.stanford.spezi.spezi.ui.resources.StringResource
+import java.net.URLEncoder
+
+fun ContactOption.Companion.email(addresses: List<String>, subject: String? = null): ContactOption =
+    ContactOption(
+        image = Icons.Default.Email,
+        title = StringResource("Email"),
+        action = { context ->
+            runCatching {
+                val intent = Intent(Intent.ACTION_SENDTO).apply {
+                    val subjectLine = URLEncoder.encode(subject ?: "", "utf-8")
+                    val addressLine = URLEncoder.encode(addresses.joinToString(","), "utf-8")
+                    data = Uri.parse("mailto:$addressLine?subject=$subjectLine")
+                }
+                context.startActivity(intent)
+            }.onFailure {
+                logger.e(it) { "Failed to open intent for email to `$addresses` with subject `$subject`." }
+            }
+        }
+    )

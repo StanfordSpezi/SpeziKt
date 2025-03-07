@@ -2,7 +2,7 @@ package edu.stanford.bdh.engagehf.health
 
 import androidx.health.connect.client.records.Record
 import edu.stanford.spezi.core.design.action.PendingActions
-import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.spezi.ui.resources.StringResource
 import java.time.ZonedDateTime
 
 data class HealthUiData(

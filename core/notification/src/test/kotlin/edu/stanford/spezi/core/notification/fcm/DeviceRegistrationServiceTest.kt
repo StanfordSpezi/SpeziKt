@@ -9,8 +9,8 @@ import com.google.firebase.messaging.FirebaseMessaging
 import edu.stanford.spezi.core.testing.SpeziTestScope
 import edu.stanford.spezi.core.testing.mockTask
 import edu.stanford.spezi.core.utils.BuildInfo
-import edu.stanford.spezi.modules.storage.key.InMemoryKeyValueStorage
-import edu.stanford.spezi.modules.storage.key.putSerializable
+import edu.stanford.spezi.spezi.credentialstorage.key.InMemoryKeyValueStorage
+import edu.stanford.spezi.spezi.credentialstorage.key.putSerializable
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

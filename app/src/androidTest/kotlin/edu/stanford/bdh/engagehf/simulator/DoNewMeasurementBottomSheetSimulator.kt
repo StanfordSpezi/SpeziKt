@@ -3,7 +3,7 @@ package edu.stanford.bdh.engagehf.simulator
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import edu.stanford.bdh.engagehf.bluetooth.component.DoNewMeasurementBottomSheetTestIdentifier
-import edu.stanford.spezi.core.testing.onNodeWithIdentifier
+import edu.stanford.spezi.spezi.ui.helpers.testing.onNodeWithIdentifier
 
 class DoNewMeasurementBottomSheetSimulator(
     composeTestRule: ComposeTestRule,

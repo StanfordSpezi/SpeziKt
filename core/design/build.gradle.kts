@@ -15,6 +15,10 @@ android {
 dependencies {
     implementation(project(":core:utils"))
 
+    implementation(project(":spezi:foundation"))
+    implementation(project(":spezi:core"))
+    implementation(project(":spezi:ui"))
+
     val composeBom = platform(libs.compose.bom)
     implementation(composeBom)
     implementation(libs.androidx.appcompat)

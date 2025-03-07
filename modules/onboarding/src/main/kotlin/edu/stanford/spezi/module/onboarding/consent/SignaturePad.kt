@@ -23,7 +23,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

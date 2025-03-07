@@ -18,10 +18,13 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.utils.extensions.imageResourceIdentifier
+import edu.stanford.spezi.spezi.ui.helpers.imageResourceIdentifier
+import edu.stanford.spezi.spezi.ui.helpers.theme.Colors
+import edu.stanford.spezi.spezi.ui.helpers.theme.SpeziTheme
+import edu.stanford.spezi.spezi.ui.helpers.theme.ThemePreviews
+import edu.stanford.spezi.spezi.ui.resources.ImageResource
+import edu.stanford.spezi.spezi.ui.resources.ImageResourceComposable
+import edu.stanford.spezi.spezi.ui.resources.StringResource
 
 /**
  * Composable function to display an icon using an [ImageResource].

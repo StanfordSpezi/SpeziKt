@@ -54,12 +54,12 @@ import edu.stanford.bdh.engagehf.health.weight.bottomsheet.WeightDescriptionBott
 import edu.stanford.bdh.engagehf.medication.ui.MedicationScreen
 import edu.stanford.bdh.engagehf.navigation.components.AccountTopAppBarButton
 import edu.stanford.spezi.core.design.component.AppTopAppBar
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Sizes
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.modules.education.videos.EducationScreen
+import edu.stanford.spezi.spezi.ui.helpers.testIdentifier
+import edu.stanford.spezi.spezi.ui.helpers.theme.Colors
+import edu.stanford.spezi.spezi.ui.helpers.theme.Sizes
+import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
+import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles
 import kotlinx.coroutines.launch
 
 @Composable

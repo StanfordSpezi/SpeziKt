@@ -11,7 +11,7 @@ import edu.stanford.spezi.core.testing.SpeziTestScope
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.core.testing.verifyNever
 import edu.stanford.spezi.core.utils.PermissionChecker
-import edu.stanford.spezi.core.utils.UUID
+import edu.stanford.spezi.spezi.foundation.helpers.UUID
 import io.mockk.Called
 import io.mockk.Runs
 import io.mockk.every

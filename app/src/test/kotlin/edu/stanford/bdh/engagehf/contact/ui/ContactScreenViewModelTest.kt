@@ -5,7 +5,7 @@ import edu.stanford.bdh.engagehf.contact.data.EngageContactRepository
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.testing.CoroutineTestRule
-import edu.stanford.spezi.modules.contact.model.Contact
+import edu.stanford.spezi.spezi.contact.model.Contact
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify

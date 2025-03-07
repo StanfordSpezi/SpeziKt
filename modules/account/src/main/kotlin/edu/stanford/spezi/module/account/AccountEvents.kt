@@ -1,6 +1,6 @@
 package edu.stanford.spezi.module.account
 
-import edu.stanford.spezi.core.coroutines.di.Dispatching
+import edu.stanford.spezi.spezi.core.logging.coroutines.di.Dispatching
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow

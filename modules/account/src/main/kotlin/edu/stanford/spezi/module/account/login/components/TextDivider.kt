@@ -12,8 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import edu.stanford.spezi.core.design.theme.Spacings
 import edu.stanford.spezi.module.account.R
+import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
 
 @Composable
 fun TextDivider(text: String) {
