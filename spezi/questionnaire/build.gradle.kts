@@ -17,6 +17,7 @@ android {
 dependencies {
     api(libs.android.fhir.data.capture)
 
+    implementation(project(":spezi:foundation"))
     implementation(project(":spezi:core"))
     implementation(project(":spezi:ui"))
 
