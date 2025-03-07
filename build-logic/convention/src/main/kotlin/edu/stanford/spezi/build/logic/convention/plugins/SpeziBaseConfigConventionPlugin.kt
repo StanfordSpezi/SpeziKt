@@ -37,7 +37,7 @@ class SpeziBaseConfigConventionPlugin : Plugin<Project> {
 
             packaging {
                 resources {
-                    excludes += "/META-INF/**.md"
+                    excludes += "/META-INF/**"
                 }
             }
         }
