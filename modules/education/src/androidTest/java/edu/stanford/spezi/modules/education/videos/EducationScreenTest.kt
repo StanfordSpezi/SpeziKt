@@ -5,6 +5,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.spezi.modules.education.R
 import edu.stanford.spezi.spezi.ui.helpers.ComposeContentActivity
+import edu.stanford.spezi.spezi.ui.resources.StringResource
 import org.junit.Rule
 import org.junit.Test
 
