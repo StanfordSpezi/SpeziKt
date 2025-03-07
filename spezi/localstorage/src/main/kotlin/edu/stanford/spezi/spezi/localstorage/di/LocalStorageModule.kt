@@ -13,6 +13,8 @@ import edu.stanford.spezi.spezi.localstorage.LocalStorageImpl
 @InstallIn(SingletonComponent::class)
 class LocalStorageModule {
 
+    @Module
+    @InstallIn(SingletonComponent::class)
     abstract class Bindings {
         @Binds
         internal abstract fun bindKeyStorage(
