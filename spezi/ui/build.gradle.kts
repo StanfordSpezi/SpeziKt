@@ -13,6 +13,4 @@ dependencies {
 
     implementation(project(":spezi:foundation"))
     implementation(project(":spezi:core"))
-
-    androidTestImplementation(libs.bundles.compose.androidTest)
 }
