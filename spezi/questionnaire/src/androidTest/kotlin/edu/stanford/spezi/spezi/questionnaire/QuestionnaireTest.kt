@@ -2,6 +2,7 @@ package edu.stanford.spezi.spezi.questionnaire
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.spezi.spezi.questionnaire.composables.QuestionnaireTestComposable
 import edu.stanford.spezi.spezi.questionnaire.simulators.QuestionnaireTestSimulator
 import edu.stanford.spezi.spezi.ui.helpers.ComposeContentActivity
