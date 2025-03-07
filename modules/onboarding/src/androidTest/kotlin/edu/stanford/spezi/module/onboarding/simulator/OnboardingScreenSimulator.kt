@@ -8,8 +8,8 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onChild
 import androidx.compose.ui.test.performClick
-import edu.stanford.spezi.core.testing.onNodeWithIdentifier
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingScreenTestIdentifier
+import edu.stanford.spezi.spezi.ui.helpers.testing.onNodeWithIdentifier
 
 class OnboardingScreenSimulator(
     private val composeTestRule: ComposeTestRule,

@@ -9,11 +9,11 @@ import androidx.compose.ui.test.onChildAt
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.platform.app.InstrumentationRegistry
 import edu.stanford.spezi.core.testing.assertImageIdentifier
-import edu.stanford.spezi.core.testing.onNodeWithIdentifier
 import edu.stanford.spezi.spezi.contact.ContactComposableTestIdentifier
 import edu.stanford.spezi.spezi.contact.model.ContactOption
 import edu.stanford.spezi.spezi.contact.model.formatted
 import edu.stanford.spezi.spezi.personalinfo.PersonNameComponents
+import edu.stanford.spezi.spezi.ui.helpers.testing.onNodeWithIdentifier
 import edu.stanford.spezi.spezi.ui.resources.ImageResource
 import edu.stanford.spezi.spezi.ui.resources.StringResource
 

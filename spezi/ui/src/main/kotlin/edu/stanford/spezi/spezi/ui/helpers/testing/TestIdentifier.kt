@@ -1,4 +1,4 @@
-package edu.stanford.spezi.core.testing
+package edu.stanford.spezi.spezi.ui.helpers.testing
 
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithTag

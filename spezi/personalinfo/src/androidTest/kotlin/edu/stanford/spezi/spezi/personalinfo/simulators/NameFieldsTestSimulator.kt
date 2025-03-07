@@ -3,9 +3,9 @@ package edu.stanford.spezi.spezi.personalinfo.simulators
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performTextInput
-import edu.stanford.spezi.core.testing.onNodeWithIdentifier
 import edu.stanford.spezi.spezi.personalinfo.PersonNameComponents
 import edu.stanford.spezi.spezi.personalinfo.fields.NameTextFieldTestIdentifier
+import edu.stanford.spezi.spezi.ui.helpers.testing.onNodeWithIdentifier
 import kotlin.reflect.KMutableProperty1
 
 class NameFieldsTestSimulator(

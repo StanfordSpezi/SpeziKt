@@ -5,9 +5,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import edu.stanford.spezi.core.testing.onAllNodes
-import edu.stanford.spezi.core.testing.onNodeWithIdentifier
 import edu.stanford.spezi.spezi.ui.helpers.testIdentifier
+import edu.stanford.spezi.spezi.ui.helpers.testing.onAllNodes
+import edu.stanford.spezi.spezi.ui.helpers.testing.onNodeWithIdentifier
 import org.junit.Rule
 import org.junit.Test
 

@@ -9,6 +9,8 @@ android {
 }
 
 dependencies {
+    api(libs.bundles.compose.androidTest)
+
     implementation(project(":spezi:foundation"))
     implementation(project(":spezi:core"))
 
