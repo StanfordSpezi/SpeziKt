@@ -7,6 +7,7 @@ import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.spezi.core.utils.LocaleProvider
 import edu.stanford.spezi.core.utils.extensions.roundToDecimalPlaces
+import edu.stanford.spezi.spezi.ui.resources.StringResource
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before

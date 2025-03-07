@@ -7,6 +7,7 @@ import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEService
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceEvent
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.spezi.ui.resources.StringResource
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
