@@ -31,6 +31,7 @@ import edu.stanford.spezi.spezi.ui.helpers.theme.Sizes
 import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
 import edu.stanford.spezi.spezi.ui.helpers.theme.SpeziTheme
 import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles
+import edu.stanford.spezi.spezi.ui.helpers.theme.ThemePreviews
 
 @Composable
 fun DoNewMeasurementBottomSheet() {

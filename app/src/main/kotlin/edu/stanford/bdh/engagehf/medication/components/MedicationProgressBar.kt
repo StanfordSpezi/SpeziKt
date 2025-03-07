@@ -21,6 +21,7 @@ import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.spezi.ui.helpers.theme.Sizes
 import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
 import edu.stanford.spezi.spezi.ui.helpers.theme.SpeziTheme
+import edu.stanford.spezi.spezi.ui.helpers.theme.ThemePreviews
 
 private const val PROGRESS_GREEN_HEX = 0xFF00796B
 private val PROGRESS_GREEN = Color(PROGRESS_GREEN_HEX)

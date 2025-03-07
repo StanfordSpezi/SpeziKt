@@ -14,6 +14,7 @@ import edu.stanford.bdh.engagehf.medication.ui.DosageRowInfoData
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.spezi.ui.helpers.theme.SpeziTheme
 import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles
+import edu.stanford.spezi.spezi.ui.helpers.theme.ThemePreviews
 
 @Composable
 fun DosageInformation(dosageInformationUiModel: DosageInformationUiModel) {

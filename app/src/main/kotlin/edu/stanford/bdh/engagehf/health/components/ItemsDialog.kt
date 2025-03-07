@@ -16,6 +16,7 @@ import edu.stanford.spezi.spezi.ui.helpers.theme.Colors
 import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
 import edu.stanford.spezi.spezi.ui.helpers.theme.SpeziTheme
 import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles
+import edu.stanford.spezi.spezi.ui.helpers.theme.ThemePreviews
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

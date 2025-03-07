@@ -15,6 +15,7 @@ import edu.stanford.bdh.engagehf.medication.ui.MedicationCardUiModel
 import edu.stanford.spezi.spezi.ui.helpers.theme.Sizes
 import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
 import edu.stanford.spezi.spezi.ui.helpers.theme.SpeziTheme
+import edu.stanford.spezi.spezi.ui.helpers.theme.ThemePreviews
 
 const val MEDICATION_ICON_ALPHA_COLOR_FACTOR = 0.3f
 

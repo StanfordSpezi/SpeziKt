@@ -49,6 +49,7 @@ import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles.bodyMedium
 import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles.bodySmall
 import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles.headlineMedium
 import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles.headlineSmall
+import edu.stanford.spezi.spezi.ui.helpers.theme.ThemePreviews
 import edu.stanford.spezi.spezi.ui.helpers.theme.lighten
 
 @Composable

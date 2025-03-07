@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.TimeRange
 import edu.stanford.spezi.spezi.ui.helpers.theme.SpeziTheme
+import edu.stanford.spezi.spezi.ui.helpers.theme.ThemePreviews
 
 @Composable
 fun TimeRangeDropdown(
