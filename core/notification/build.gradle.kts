@@ -17,11 +17,10 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
 
-    implementation(project(":core:coroutines"))
     implementation(project(":core:design"))
     implementation(project(":core:navigation"))
+
     implementation(project(":modules:account"))
-    implementation(project(":modules:storage"))
 
     implementation(project(":spezi:foundation"))
     implementation(project(":spezi:core"))

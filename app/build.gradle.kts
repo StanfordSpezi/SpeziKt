@@ -42,7 +42,6 @@ android {
 
 dependencies {
     implementation(project(":core:bluetooth"))
-    implementation(project(":core:coroutines"))
     implementation(project(":core:design"))
     implementation(project(":core:navigation"))
     implementation(project(":core:notification"))

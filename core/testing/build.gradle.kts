@@ -10,7 +10,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:coroutines"))
     implementation(project(":core:utils"))
 
     implementation(project(":spezi:foundation"))

@@ -10,8 +10,6 @@ android {
 
 dependencies {
     implementation(project(":core:utils"))
-    implementation(project(":core:coroutines"))
-    implementation(project(":modules:storage"))
 
     implementation(project(":spezi:foundation"))
     implementation(project(":spezi:core"))
