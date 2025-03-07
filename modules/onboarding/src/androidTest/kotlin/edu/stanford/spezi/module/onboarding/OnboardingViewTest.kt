@@ -3,10 +3,10 @@ package edu.stanford.spezi.module.onboarding
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import edu.stanford.spezi.core.design.component.ComposeContentActivity
 import edu.stanford.spezi.module.onboarding.fakes.FakeOnboardingRepository
 import edu.stanford.spezi.module.onboarding.onboarding.OnboardingView
 import edu.stanford.spezi.module.onboarding.simulator.OnboardingScreenSimulator
+import edu.stanford.spezi.spezi.ui.helpers.ComposeContentActivity
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest

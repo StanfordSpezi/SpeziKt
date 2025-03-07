@@ -22,21 +22,21 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.core.design.component.AppTopAppBar
 import edu.stanford.spezi.core.design.component.CenteredBoxContent
-import edu.stanford.spezi.core.design.component.ImageResource
-import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.theme.Colors.primary
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
 import edu.stanford.spezi.core.notification.R
-import edu.stanford.spezi.modules.contact.ContactComposable
-import edu.stanford.spezi.modules.contact.model.Contact
-import edu.stanford.spezi.modules.contact.model.ContactOption
-import edu.stanford.spezi.modules.contact.model.call
-import edu.stanford.spezi.modules.contact.model.email
-import edu.stanford.spezi.modules.contact.model.website
+import edu.stanford.spezi.spezi.contact.ContactComposable
+import edu.stanford.spezi.spezi.contact.model.Contact
+import edu.stanford.spezi.spezi.contact.model.ContactOption
+import edu.stanford.spezi.spezi.contact.model.call
+import edu.stanford.spezi.spezi.contact.model.email
+import edu.stanford.spezi.spezi.contact.model.website
+import edu.stanford.spezi.spezi.personalinfo.PersonNameComponents
+import edu.stanford.spezi.spezi.ui.helpers.theme.Colors.primary
+import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
+import edu.stanford.spezi.spezi.ui.helpers.theme.SpeziTheme
+import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles
+import edu.stanford.spezi.spezi.ui.helpers.theme.ThemePreviews
+import edu.stanford.spezi.spezi.ui.resources.ImageResource
+import edu.stanford.spezi.spezi.ui.resources.StringResource
 import java.util.Locale
 
 @Composable
@@ -115,7 +115,7 @@ private class ContactUiStateProvider : PreviewParameterProvider<ContactScreenVie
                 ),
                 image = ImageResource.Vector(
                     Icons.Default.AccountBox,
-                    StringResource(edu.stanford.spezi.modules.contact.R.string.profile_picture)
+                    StringResource(edu.stanford.spezi.spezi.contact.R.string.profile_picture)
                 ),
                 title = StringResource("University Founder"),
                 description = StringResource(

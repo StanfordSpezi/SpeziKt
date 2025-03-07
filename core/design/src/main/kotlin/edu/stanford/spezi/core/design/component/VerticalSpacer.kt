@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
-import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
 
 @Composable
 fun VerticalSpacer(height: Dp = Spacings.medium) {

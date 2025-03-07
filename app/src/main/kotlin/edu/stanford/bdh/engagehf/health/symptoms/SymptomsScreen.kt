@@ -67,11 +67,11 @@ import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.HealthTableItem
 import edu.stanford.spezi.core.design.component.CenteredBoxContent
 import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.theme.Colors.primary
-import edu.stanford.spezi.core.design.theme.Colors.secondary
-import edu.stanford.spezi.core.design.theme.Sizes
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.TextStyles
+import edu.stanford.spezi.spezi.ui.helpers.theme.Colors.primary
+import edu.stanford.spezi.spezi.ui.helpers.theme.Colors.secondary
+import edu.stanford.spezi.spezi.ui.helpers.theme.Sizes
+import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
+import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

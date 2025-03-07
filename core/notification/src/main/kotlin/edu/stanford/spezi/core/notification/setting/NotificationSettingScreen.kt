@@ -30,15 +30,15 @@ import edu.stanford.spezi.core.design.component.AppTopAppBar
 import edu.stanford.spezi.core.design.component.AsyncSwitch
 import edu.stanford.spezi.core.design.component.AsyncTextButton
 import edu.stanford.spezi.core.design.component.CenteredBoxContent
-import edu.stanford.spezi.core.design.component.DefaultElevatedCard
 import edu.stanford.spezi.core.design.component.PermissionRequester
 import edu.stanford.spezi.core.design.component.SecondaryText
-import edu.stanford.spezi.core.design.theme.Colors.primary
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
 import edu.stanford.spezi.core.notification.R
+import edu.stanford.spezi.spezi.ui.helpers.DefaultElevatedCard
+import edu.stanford.spezi.spezi.ui.helpers.theme.Colors.primary
+import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
+import edu.stanford.spezi.spezi.ui.helpers.theme.SpeziTheme
+import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles
+import edu.stanford.spezi.spezi.ui.helpers.theme.ThemePreviews
 
 private const val IDLE_DESCRIPTION_WEIGHT = 0.5f
 

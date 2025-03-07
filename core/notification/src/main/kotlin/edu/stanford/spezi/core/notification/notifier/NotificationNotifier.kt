@@ -12,9 +12,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.PermissionChecker
 import dagger.hilt.android.qualifiers.ApplicationContext
-import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.notification.R
 import edu.stanford.spezi.core.notification.notifier.FirebaseMessage.Companion.FIREBASE_MESSAGE_KEY
+import edu.stanford.spezi.spezi.core.logging.speziLogger
 import javax.inject.Inject
 
 /**

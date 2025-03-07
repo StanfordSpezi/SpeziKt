@@ -19,10 +19,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import edu.stanford.spezi.core.design.theme.Colors.onPrimary
-import edu.stanford.spezi.core.design.theme.Colors.primary
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.TextStyles
+import edu.stanford.spezi.spezi.ui.helpers.theme.Colors.onPrimary
+import edu.stanford.spezi.spezi.ui.helpers.theme.Colors.primary
+import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
+import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles
 
 /**
  * A composable that represents a page in the onboarding view pager.

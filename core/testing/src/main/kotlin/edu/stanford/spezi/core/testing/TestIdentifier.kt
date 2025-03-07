@@ -3,8 +3,8 @@ package edu.stanford.spezi.core.testing
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
-import edu.stanford.spezi.core.utils.TestIdentifier
-import edu.stanford.spezi.core.utils.extensions.tag
+import edu.stanford.spezi.spezi.ui.helpers.TestIdentifier
+import edu.stanford.spezi.spezi.ui.helpers.tag
 
 /**
  * Finds a semantics node identified by the given test identifier.

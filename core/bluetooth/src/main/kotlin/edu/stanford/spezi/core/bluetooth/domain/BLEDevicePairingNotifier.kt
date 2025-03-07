@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import dagger.hilt.android.qualifiers.ApplicationContext
-import edu.stanford.spezi.core.coroutines.di.Dispatching
+import edu.stanford.spezi.spezi.core.logging.coroutines.di.Dispatching
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow

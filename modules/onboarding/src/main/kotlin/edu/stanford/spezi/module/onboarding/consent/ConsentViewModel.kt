@@ -3,8 +3,8 @@ package edu.stanford.spezi.module.onboarding.consent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.spezi.core.design.component.markdown.MarkdownParser
 import edu.stanford.spezi.module.account.manager.UserSessionManager
+import edu.stanford.spezi.spezi.ui.views.text.MarkdownParser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update

@@ -9,8 +9,8 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
-import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.module.account.R
+import edu.stanford.spezi.spezi.core.logging.speziLogger
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 

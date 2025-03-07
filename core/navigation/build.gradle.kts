@@ -9,6 +9,7 @@ android {
 
 dependencies {
     implementation(project(":core:coroutines"))
+    implementation(project(":spezi:core"))
 
     implementation(libs.androidx.core.ktx)
 }

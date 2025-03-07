@@ -1,16 +1,17 @@
 package edu.stanford.spezi.core.notification.fcm
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.qualifiers.ApplicationContext
-import edu.stanford.spezi.core.coroutines.di.Dispatching
-import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.utils.BuildInfo
-import edu.stanford.spezi.modules.storage.di.Storage
-import edu.stanford.spezi.modules.storage.key.KeyValueStorage
-import edu.stanford.spezi.modules.storage.key.getSerializable
-import edu.stanford.spezi.modules.storage.key.putSerializable
+import edu.stanford.spezi.spezi.core.logging.coroutines.di.Dispatching
+import edu.stanford.spezi.spezi.core.logging.speziLogger
+import edu.stanford.spezi.spezi.credentialstorage.di.Storage
+import edu.stanford.spezi.spezi.credentialstorage.key.KeyValueStorage
+import edu.stanford.spezi.spezi.credentialstorage.key.getSerializable
+import edu.stanford.spezi.spezi.credentialstorage.key.putSerializable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -120,6 +121,7 @@ internal class DeviceRegistrationServiceImpl @Inject constructor(
         const val STORAGE_KEY_NOTIFICATION_TOKEN_BODY = "fcm-notification-token-body"
     }
 
+    @SuppressLint("UnsafeOptInUsageError")
     @Serializable
     internal data class NotificationTokenBody(
         val notificationToken: String,

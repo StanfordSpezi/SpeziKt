@@ -3,9 +3,8 @@ package edu.stanford.spezi.modules.education.videos
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import edu.stanford.spezi.core.design.component.ComposeContentActivity
-import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.modules.education.R
+import edu.stanford.spezi.spezi.ui.helpers.ComposeContentActivity
 import org.junit.Rule
 import org.junit.Test
 

@@ -33,16 +33,16 @@ import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MessageUiModel
 import edu.stanford.spezi.core.design.component.AsyncButton
-import edu.stanford.spezi.core.design.component.DefaultElevatedCard
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Colors.primary
-import edu.stanford.spezi.core.design.theme.Sizes
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.design.theme.lighten
-import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.spezi.ui.helpers.DefaultElevatedCard
+import edu.stanford.spezi.spezi.ui.helpers.testIdentifier
+import edu.stanford.spezi.spezi.ui.helpers.theme.Colors
+import edu.stanford.spezi.spezi.ui.helpers.theme.Colors.primary
+import edu.stanford.spezi.spezi.ui.helpers.theme.Sizes
+import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
+import edu.stanford.spezi.spezi.ui.helpers.theme.SpeziTheme
+import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles
+import edu.stanford.spezi.spezi.ui.helpers.theme.ThemePreviews
+import edu.stanford.spezi.spezi.ui.helpers.theme.lighten
 
 private const val TEXT_WEIGHT = 0.9f
 

@@ -4,8 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.components.ItemsDialog
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.spezi.ui.helpers.theme.SpeziTheme
 
 @Composable
 fun BodyPositionsDialog(

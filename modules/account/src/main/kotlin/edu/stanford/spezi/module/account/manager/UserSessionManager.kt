@@ -6,9 +6,9 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.storage.FirebaseStorage
-import edu.stanford.spezi.core.coroutines.di.Dispatching
-import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.module.account.AccountEvents
+import edu.stanford.spezi.spezi.core.logging.coroutines.di.Dispatching
+import edu.stanford.spezi.spezi.core.logging.speziLogger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose

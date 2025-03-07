@@ -1,7 +1,7 @@
 package edu.stanford.spezi.module.onboarding.consent
 
 import androidx.compose.ui.graphics.Path
-import edu.stanford.spezi.core.design.component.markdown.MarkdownElement
+import edu.stanford.spezi.spezi.ui.views.text.MarkdownElement
 
 data class ConsentUiState(
     val firstName: FieldState = FieldState(value = "", error = false),

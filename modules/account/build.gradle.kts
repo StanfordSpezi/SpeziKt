@@ -20,8 +20,13 @@ android {
 
 dependencies {
     implementation(project(":core:coroutines"))
+    implementation(project(":core:design"))
     implementation(project(":core:navigation"))
     implementation(project(":core:utils"))
+
+    implementation(project(":spezi:foundation"))
+    implementation(project(":spezi:core"))
+    implementation(project(":spezi:ui"))
 
     implementation(libs.hilt.navigation.compose)
 

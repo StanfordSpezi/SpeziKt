@@ -7,7 +7,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import edu.stanford.spezi.core.testing.onAllNodes
 import edu.stanford.spezi.core.testing.onNodeWithIdentifier
-import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.spezi.ui.helpers.testIdentifier
 import org.junit.Rule
 import org.junit.Test
 

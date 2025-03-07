@@ -5,7 +5,6 @@ import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEService
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceEvent
-import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.testing.CoroutineTestRule
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import io.mockk.every

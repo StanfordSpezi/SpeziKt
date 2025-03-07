@@ -3,7 +3,7 @@ package edu.stanford.spezi.core.bluetooth.api
 import android.bluetooth.BluetoothDevice
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceEvent
 import edu.stanford.spezi.core.bluetooth.data.model.BLEServiceState
-import edu.stanford.spezi.core.utils.UUID
+import edu.stanford.spezi.spezi.foundation.helpers.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.UUID

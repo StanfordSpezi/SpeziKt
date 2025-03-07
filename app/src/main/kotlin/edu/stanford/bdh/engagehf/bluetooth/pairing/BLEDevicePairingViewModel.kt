@@ -9,7 +9,7 @@ import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEService
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceEvent
 import edu.stanford.spezi.core.design.action.PendingActions
-import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.spezi.ui.resources.StringResource
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

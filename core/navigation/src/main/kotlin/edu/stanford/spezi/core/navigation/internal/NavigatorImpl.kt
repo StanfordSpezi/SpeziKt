@@ -1,9 +1,9 @@
 package edu.stanford.spezi.core.navigation.internal
 
-import edu.stanford.spezi.core.coroutines.di.Dispatching
-import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.spezi.core.logging.coroutines.di.Dispatching
+import edu.stanford.spezi.spezi.core.logging.speziLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow

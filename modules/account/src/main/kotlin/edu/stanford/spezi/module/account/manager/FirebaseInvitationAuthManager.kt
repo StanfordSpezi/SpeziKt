@@ -1,7 +1,7 @@
 package edu.stanford.spezi.module.account.manager
 
 import com.google.firebase.functions.FirebaseFunctions
-import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.spezi.core.logging.speziLogger
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 

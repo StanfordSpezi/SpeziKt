@@ -43,13 +43,21 @@ android {
 dependencies {
     implementation(project(":core:bluetooth"))
     implementation(project(":core:coroutines"))
+    implementation(project(":core:design"))
     implementation(project(":core:navigation"))
     implementation(project(":core:notification"))
     implementation(project(":modules:account"))
-    implementation(project(":modules:contact"))
     implementation(project(":modules:education"))
     implementation(project(":modules:healthconnectonfhir"))
     implementation(project(":modules:onboarding"))
+
+    implementation(project(":spezi:foundation"))
+    implementation(project(":spezi:core"))
+    implementation(project(":spezi:ui"))
+
+    implementation(project(":spezi:contact"))
+    implementation(project(":spezi:personalinfo"))
+    implementation(project(":spezi:questionnaire"))
 
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.functions.ktx)

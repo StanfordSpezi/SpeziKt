@@ -31,9 +31,6 @@ import edu.stanford.bdh.engagehf.navigation.serializableType
 import edu.stanford.bdh.engagehf.onboarding.InvitationCodeScreen
 import edu.stanford.bdh.engagehf.onboarding.OnboardingScreen
 import edu.stanford.bdh.engagehf.questionnaire.QuestionnaireScreen
-import edu.stanford.spezi.core.coroutines.di.Dispatching
-import edu.stanford.spezi.core.design.theme.Sizes
-import edu.stanford.spezi.core.design.theme.SpeziTheme
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.notification.NotificationNavigationEvent
 import edu.stanford.spezi.core.notification.NotificationRoutes
@@ -47,6 +44,9 @@ import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.EducationRoutes
 import edu.stanford.spezi.modules.education.video.VideoScreen
 import edu.stanford.spezi.modules.education.videos.Video
+import edu.stanford.spezi.spezi.core.logging.coroutines.di.Dispatching
+import edu.stanford.spezi.spezi.ui.helpers.theme.Sizes
+import edu.stanford.spezi.spezi.ui.helpers.theme.SpeziTheme
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject

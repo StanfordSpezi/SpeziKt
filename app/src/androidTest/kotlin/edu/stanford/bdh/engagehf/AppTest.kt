@@ -5,7 +5,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.bdh.engagehf.navigation.screens.AppScreen
 import edu.stanford.bdh.engagehf.simulator.AppSimulator
-import edu.stanford.spezi.core.design.component.ComposeContentActivity
+import edu.stanford.spezi.spezi.ui.helpers.ComposeContentActivity
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

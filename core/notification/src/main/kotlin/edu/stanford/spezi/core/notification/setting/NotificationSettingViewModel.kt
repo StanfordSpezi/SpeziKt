@@ -9,12 +9,12 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.design.action.PendingActions
-import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.navigation.NavigationEvent
 import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.core.notification.NotificationPermissions
 import edu.stanford.spezi.core.notification.fcm.DeviceRegistrationService
 import edu.stanford.spezi.core.utils.MessageNotifier
+import edu.stanford.spezi.spezi.core.logging.speziLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

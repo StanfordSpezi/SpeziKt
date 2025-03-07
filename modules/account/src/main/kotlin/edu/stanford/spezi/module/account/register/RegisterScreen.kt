@@ -38,14 +38,14 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.core.design.component.VerticalSpacer
 import edu.stanford.spezi.core.design.component.validated.outlinedtextfield.ValidatedOutlinedTextField
-import edu.stanford.spezi.core.design.theme.Colors.primary
-import edu.stanford.spezi.core.design.theme.Sizes
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
-import edu.stanford.spezi.core.design.theme.TextStyles.titleSmall
-import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.module.account.R
+import edu.stanford.spezi.spezi.ui.helpers.testIdentifier
+import edu.stanford.spezi.spezi.ui.helpers.theme.Colors.primary
+import edu.stanford.spezi.spezi.ui.helpers.theme.Sizes
+import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
+import edu.stanford.spezi.spezi.ui.helpers.theme.SpeziTheme
+import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles.titleLarge
+import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles.titleSmall
 
 @Composable
 fun RegisterScreen(

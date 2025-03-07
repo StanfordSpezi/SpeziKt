@@ -2,7 +2,9 @@ package edu.stanford.spezi.core.design.component
 
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.vector.ImageVector
-import edu.stanford.spezi.core.utils.UUID
+import edu.stanford.spezi.spezi.foundation.helpers.UUID
+import edu.stanford.spezi.spezi.ui.resources.ImageResource
+import edu.stanford.spezi.spezi.ui.resources.StringResource
 import javax.annotation.concurrent.Immutable
 
 @Immutable

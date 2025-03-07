@@ -5,7 +5,6 @@ import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.units.Mass
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.utils.LocaleProvider
 import edu.stanford.spezi.core.utils.extensions.roundToDecimalPlaces
 import io.mockk.every

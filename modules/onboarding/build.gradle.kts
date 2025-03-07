@@ -11,8 +11,13 @@ android {
 dependencies {
     implementation(project(":modules:account"))
     implementation(project(":core:coroutines"))
+    implementation(project(":core:design"))
     implementation(project(":core:navigation"))
     implementation(project(":core:utils"))
+
+    implementation(project(":spezi:foundation"))
+    implementation(project(":spezi:core"))
+    implementation(project(":spezi:ui"))
 
     implementation(libs.androidx.foundation)
     implementation(libs.accompanist.pager)

@@ -3,9 +3,9 @@ package edu.stanford.spezi.core.notification.fcm
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
-import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.core.notification.notifier.FirebaseMessage
 import edu.stanford.spezi.core.notification.notifier.NotificationNotifier
+import edu.stanford.spezi.spezi.core.logging.speziLogger
 import javax.inject.Inject
 
 /*

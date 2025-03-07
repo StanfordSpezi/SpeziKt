@@ -7,7 +7,7 @@ import edu.stanford.spezi.core.bluetooth.data.model.BLEDevice
 import edu.stanford.spezi.core.testing.SpeziTestScope
 import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.core.utils.TimeProvider
-import edu.stanford.spezi.modules.storage.key.InMemoryKeyValueStorage
+import edu.stanford.spezi.spezi.credentialstorage.key.InMemoryKeyValueStorage
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

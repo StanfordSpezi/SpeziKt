@@ -8,8 +8,8 @@ import androidx.compose.ui.test.isNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import edu.stanford.spezi.core.design.component.Button
-import edu.stanford.spezi.core.design.theme.SpeziTheme
+import edu.stanford.spezi.spezi.ui.helpers.Button
+import edu.stanford.spezi.spezi.ui.helpers.theme.SpeziTheme
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test

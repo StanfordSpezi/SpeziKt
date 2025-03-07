@@ -1,6 +1,6 @@
 package edu.stanford.bdh.engagehf.messages
 
-import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.spezi.ui.resources.StringResource
 
 sealed interface MessageAction {
     data class VideoAction(val sectionId: String, val videoId: String) : MessageAction
