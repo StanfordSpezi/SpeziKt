@@ -42,13 +42,10 @@ internal class KeyValueStorageFactoryImpl @Inject constructor(
             when (type) {
                 KeyValueStorageType.UNENCRYPTED -> createUnencryptedStorage(fileName = fileName)
 
-                KeyValueStorageType.ENCRYPTED -> createEncryptedStorage(fileName = fileName) ?: run {
+                KeyValueStorageType.ENCRYPTED -> createEncryptedStorage(fileName = fileName).getOrNull() ?: run {
                     logger.w { "First encrypted storage creation failed, deleting existing file and retrying..." }
                     context.deleteSharedPreferences(fileName)
-                    createEncryptedStorage(fileName = fileName) ?: run {
-                        logger.w { "Second encrypted storage creation failed, returning a non encrypted file instead" }
-                        createUnencryptedStorage(fileName = fileName)
-                    }
+                    createEncryptedStorage(fileName = fileName).getOrThrow()
                 }
             }
         }
@@ -69,5 +66,5 @@ internal class KeyValueStorageFactoryImpl @Inject constructor(
         )
     }.onSuccess {
         logger.i { "Successfully created encrypted storage $fileName" }
-    }.getOrNull()
+    }
 }
