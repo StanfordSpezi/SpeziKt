@@ -24,6 +24,8 @@ internal fun Project.isApp() = plugins.hasPlugin(PluginId.ANDROID_APPLICATION.id
 
 internal fun Project.isLibrary() = plugins.hasPlugin(PluginId.ANDROID_LIBRARY.id)
 
+internal fun Project.hasAndroidTest() = projectDir.resolve("src/androidTest").exists()
+
 inline fun <reified T : Any> Project.extension(configBlock: T.() -> Unit) {
     extensions.getByType<T>().apply(configBlock)
 }

@@ -61,7 +61,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.view.model.ktx)
     implementation(libs.androidx.splashscreen)
 
-    implementation(libs.hilt.navigation.compose)
     implementation(libs.navigation.compose)
     implementation(libs.vico.compose.m3)
 
