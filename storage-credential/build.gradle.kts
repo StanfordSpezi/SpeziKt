@@ -17,4 +17,5 @@ dependencies {
     implementation(libs.core.ktx)
 
     androidTestImplementation(libs.hilt.test)
+    androidTestImplementation(project(":ui-testing"))
 }
