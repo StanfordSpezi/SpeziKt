@@ -13,4 +13,10 @@ dependencies {
 
     api(project(":ui"))
     implementation(project(":core-logging"))
+
+    implementation(libs.hilt.test)
+    implementation(libs.androidx.test.runner)
+
+    api(libs.bundles.unit.testing)
+    api(libs.bundles.compose.androidTest)
 }

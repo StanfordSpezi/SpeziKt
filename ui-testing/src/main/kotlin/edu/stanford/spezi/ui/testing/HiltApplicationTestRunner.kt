@@ -1,4 +1,4 @@
-package edu.stanford.spezi.modules.testing
+package edu.stanford.spezi.ui.testing
 
 import android.app.Application
 import android.content.Context

@@ -15,4 +15,6 @@ dependencies {
 
     implementation(libs.androidx.core.i18n)
     implementation(libs.androidx.core.ktx)
+
+    androidTestImplementation(libs.hilt.test)
 }
