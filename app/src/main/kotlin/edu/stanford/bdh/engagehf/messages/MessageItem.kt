@@ -32,17 +32,17 @@ import androidx.compose.ui.unit.Dp
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MessageUiModel
-import edu.stanford.spezi.core.design.component.AsyncButton
-import edu.stanford.spezi.spezi.ui.helpers.DefaultElevatedCard
-import edu.stanford.spezi.spezi.ui.helpers.testIdentifier
-import edu.stanford.spezi.spezi.ui.helpers.theme.Colors
-import edu.stanford.spezi.spezi.ui.helpers.theme.Colors.primary
-import edu.stanford.spezi.spezi.ui.helpers.theme.Sizes
-import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
-import edu.stanford.spezi.spezi.ui.helpers.theme.SpeziTheme
-import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles
-import edu.stanford.spezi.spezi.ui.helpers.theme.ThemePreviews
-import edu.stanford.spezi.spezi.ui.helpers.theme.lighten
+import edu.stanford.spezi.modules.design.component.AsyncButton
+import edu.stanford.spezi.ui.Colors
+import edu.stanford.spezi.ui.Colors.primary
+import edu.stanford.spezi.ui.DefaultElevatedCard
+import edu.stanford.spezi.ui.Sizes
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.TextStyles
+import edu.stanford.spezi.ui.ThemePreviews
+import edu.stanford.spezi.ui.lighten
+import edu.stanford.spezi.ui.testing.testIdentifier
 
 private const val TEXT_WEIGHT = 0.9f
 

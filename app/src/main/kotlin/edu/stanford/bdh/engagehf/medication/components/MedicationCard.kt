@@ -27,17 +27,17 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import edu.stanford.bdh.engagehf.medication.ui.MedicationCardUiModel
 import edu.stanford.bdh.engagehf.medication.ui.MedicationScreenTestIdentifier
 import edu.stanford.bdh.engagehf.medication.ui.MedicationViewModel
-import edu.stanford.spezi.core.design.component.CircleShimmerEffect
-import edu.stanford.spezi.core.design.component.RectangleShimmerEffect
-import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.component.height
-import edu.stanford.spezi.spezi.ui.helpers.DefaultElevatedCard
-import edu.stanford.spezi.spezi.ui.helpers.testIdentifier
-import edu.stanford.spezi.spezi.ui.helpers.theme.Sizes
-import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
-import edu.stanford.spezi.spezi.ui.helpers.theme.SpeziTheme
-import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles
-import edu.stanford.spezi.spezi.ui.helpers.theme.ThemePreviews
+import edu.stanford.spezi.modules.design.component.CircleShimmerEffect
+import edu.stanford.spezi.modules.design.component.RectangleShimmerEffect
+import edu.stanford.spezi.modules.design.component.VerticalSpacer
+import edu.stanford.spezi.modules.design.component.height
+import edu.stanford.spezi.ui.DefaultElevatedCard
+import edu.stanford.spezi.ui.Sizes
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.TextStyles
+import edu.stanford.spezi.ui.ThemePreviews
+import edu.stanford.spezi.ui.testing.testIdentifier
 
 private const val LOADING_ITEM_COUNT = 3
 

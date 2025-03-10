@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothGattService
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.service.BLEServiceType
 import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
-import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.modules.testing.runTestUnconfined
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Test

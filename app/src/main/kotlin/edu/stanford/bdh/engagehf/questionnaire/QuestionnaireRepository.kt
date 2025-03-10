@@ -4,8 +4,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import edu.stanford.bdh.engagehf.observations.ObservationCollection
 import edu.stanford.bdh.engagehf.observations.ObservationCollectionProvider
 import edu.stanford.healthconnectonfhir.QuestionnaireDocumentMapper
-import edu.stanford.spezi.spezi.core.logging.coroutines.di.Dispatching
-import edu.stanford.spezi.spezi.core.logging.speziLogger
+import edu.stanford.spezi.core.coroutines.Dispatching
+import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext

@@ -1,6 +1,6 @@
 package edu.stanford.bdh.engagehf.bluetooth.data.models
 
-import edu.stanford.spezi.spezi.ui.resources.StringResource
+import edu.stanford.spezi.ui.StringResource
 
 data class DeviceUiModel(
     val name: String,

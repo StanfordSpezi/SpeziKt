@@ -2,9 +2,9 @@ package edu.stanford.bdh.engagehf.medication.data
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import edu.stanford.spezi.module.account.manager.UserSessionManager
-import edu.stanford.spezi.spezi.core.logging.coroutines.di.Dispatching
-import edu.stanford.spezi.spezi.core.logging.speziLogger
+import edu.stanford.spezi.core.coroutines.Dispatching
+import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.modules.account.manager.UserSessionManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow

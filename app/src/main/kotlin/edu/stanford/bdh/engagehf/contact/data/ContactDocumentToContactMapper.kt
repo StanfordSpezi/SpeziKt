@@ -1,12 +1,12 @@
 package edu.stanford.bdh.engagehf.contact.data
 
 import com.google.firebase.firestore.DocumentSnapshot
-import edu.stanford.spezi.spezi.contact.model.Contact
-import edu.stanford.spezi.spezi.contact.model.ContactOption
-import edu.stanford.spezi.spezi.contact.model.call
-import edu.stanford.spezi.spezi.contact.model.email
-import edu.stanford.spezi.spezi.personalinfo.PersonNameComponents
-import edu.stanford.spezi.spezi.ui.resources.StringResource
+import edu.stanford.spezi.contact.Contact
+import edu.stanford.spezi.contact.ContactOption
+import edu.stanford.spezi.contact.call
+import edu.stanford.spezi.contact.email
+import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
 import javax.inject.Inject
 
 class ContactDocumentToContactMapper @Inject constructor() {

@@ -35,22 +35,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import edu.stanford.spezi.core.design.component.AsyncImageResource
-import edu.stanford.spezi.core.design.component.AsyncImageResourceComposable
-import edu.stanford.spezi.core.design.component.RectangleShimmerEffect
-import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.component.height
+import edu.stanford.spezi.modules.design.component.AsyncImageResource
+import edu.stanford.spezi.modules.design.component.AsyncImageResourceComposable
+import edu.stanford.spezi.modules.design.component.RectangleShimmerEffect
+import edu.stanford.spezi.modules.design.component.VerticalSpacer
+import edu.stanford.spezi.modules.design.component.height
 import edu.stanford.spezi.modules.education.videos.Video
-import edu.stanford.spezi.spezi.ui.helpers.DefaultElevatedCard
-import edu.stanford.spezi.spezi.ui.helpers.theme.Colors
-import edu.stanford.spezi.spezi.ui.helpers.theme.Sizes
-import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
-import edu.stanford.spezi.spezi.ui.helpers.theme.SpeziTheme
-import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles.bodyMedium
-import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles.titleLarge
-import edu.stanford.spezi.spezi.ui.helpers.theme.ThemePreviews
-import edu.stanford.spezi.spezi.ui.helpers.theme.lighten
-import edu.stanford.spezi.spezi.ui.resources.StringResource
+import edu.stanford.spezi.ui.Colors
+import edu.stanford.spezi.ui.DefaultElevatedCard
+import edu.stanford.spezi.ui.Sizes
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.ui.TextStyles.bodyMedium
+import edu.stanford.spezi.ui.TextStyles.titleLarge
+import edu.stanford.spezi.ui.ThemePreviews
+import edu.stanford.spezi.ui.lighten
 
 private const val IMAGE_HEIGHT = 200
 private const val ASPECT_16_9 = 16f / 9f

@@ -13,8 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles
+import edu.stanford.spezi.modules.design.component.VerticalSpacer
+import edu.stanford.spezi.ui.TextStyles
 
 @Composable
 fun AddDataHeader(

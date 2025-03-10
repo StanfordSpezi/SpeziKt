@@ -1,7 +1,7 @@
 package edu.stanford.bdh.engagehf.bluetooth.data.models
 
 import edu.stanford.bdh.engagehf.messages.MessageAction
-import edu.stanford.spezi.core.design.R
+import edu.stanford.spezi.modules.design.R
 
 data class UiState(
     val bloodPressure: VitalDisplayData = VitalDisplayData(

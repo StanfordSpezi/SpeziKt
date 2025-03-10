@@ -20,10 +20,10 @@ import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
 import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
-import edu.stanford.spezi.core.design.component.AsyncTextButton
-import edu.stanford.spezi.spezi.ui.helpers.testIdentifier
-import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
-import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles
+import edu.stanford.spezi.modules.design.component.AsyncTextButton
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.TextStyles
+import edu.stanford.spezi.ui.testing.testIdentifier
 
 @Composable
 fun MeasurementDialog(

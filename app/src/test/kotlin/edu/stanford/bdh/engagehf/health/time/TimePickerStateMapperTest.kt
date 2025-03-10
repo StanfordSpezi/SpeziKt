@@ -1,9 +1,9 @@
 package edu.stanford.bdh.engagehf.health.time
 
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.spezi.core.utils.DateFormat
-import edu.stanford.spezi.core.utils.DateFormatter
-import edu.stanford.spezi.core.utils.TimeProvider
+import edu.stanford.spezi.modules.utils.DateFormat
+import edu.stanford.spezi.modules.utils.DateFormatter
+import edu.stanford.spezi.modules.utils.TimeProvider
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before

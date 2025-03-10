@@ -2,8 +2,8 @@ package edu.stanford.bdh.engagehf.contact.data
 
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.firestore.DocumentSnapshot
-import edu.stanford.spezi.spezi.personalinfo.PersonNameComponents
-import edu.stanford.spezi.spezi.ui.resources.StringResource
+import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Test

@@ -1,10 +1,10 @@
 package edu.stanford.bdh.engagehf.messages
 
 import com.google.firebase.functions.FirebaseFunctions
-import edu.stanford.spezi.core.utils.JsonMap
-import edu.stanford.spezi.module.account.manager.UserSessionManager
-import edu.stanford.spezi.spezi.core.logging.coroutines.di.Dispatching
-import edu.stanford.spezi.spezi.core.logging.speziLogger
+import edu.stanford.spezi.core.coroutines.Dispatching
+import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.modules.account.manager.UserSessionManager
+import edu.stanford.spezi.modules.utils.JsonMap
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext

@@ -17,18 +17,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.spezi.core.design.component.RepeatingLazyColumn
-import edu.stanford.spezi.core.design.component.VerticalSpacer
+import edu.stanford.spezi.modules.design.component.RepeatingLazyColumn
+import edu.stanford.spezi.modules.design.component.VerticalSpacer
 import edu.stanford.spezi.modules.education.R
 import edu.stanford.spezi.modules.education.videos.component.ExpandableVideoSection
 import edu.stanford.spezi.modules.education.videos.component.LoadingVideoCard
-import edu.stanford.spezi.spezi.ui.helpers.Button
-import edu.stanford.spezi.spezi.ui.helpers.testIdentifier
-import edu.stanford.spezi.spezi.ui.helpers.theme.Colors
-import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
-import edu.stanford.spezi.spezi.ui.helpers.theme.SpeziTheme
-import edu.stanford.spezi.spezi.ui.helpers.theme.ThemePreviews
-import edu.stanford.spezi.spezi.ui.resources.StringResource
+import edu.stanford.spezi.ui.Button
+import edu.stanford.spezi.ui.Colors
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.ui.ThemePreviews
+import edu.stanford.spezi.ui.testing.testIdentifier
 
 @Composable
 fun EducationScreen() {

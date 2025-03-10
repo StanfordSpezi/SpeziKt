@@ -27,11 +27,11 @@ abstract class SpeziAbstractConfigPlugin(private val modulePlugin: PluginId) : P
         }
 
         dependencies {
-            implementation(project(":core:utils"))
+            implementation(project(":modules:utils"))
 
-            testImplementation(project(":core:testing"))
+            testImplementation(project(":modules:testing"))
 
-            androidTestImplementation(project(":core:testing"))
+            androidTestImplementation(project(":modules:testing"))
         }
     }
 }

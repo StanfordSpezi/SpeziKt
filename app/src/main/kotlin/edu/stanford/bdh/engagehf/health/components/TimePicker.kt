@@ -19,8 +19,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
-import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.TextStyles
 import java.time.Instant
 import java.time.LocalTime
 
@@ -53,7 +53,7 @@ fun TimePicker(
     }
 
     if (showDatePicker) {
-        edu.stanford.spezi.module.account.register.DatePickerDialog(
+        edu.stanford.spezi.modules.account.register.DatePickerDialog(
             onDateSelected = { date ->
                 updateDate(date)
             },

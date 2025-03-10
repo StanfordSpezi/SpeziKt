@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import edu.stanford.spezi.spezi.ui.helpers.theme.Colors
+import edu.stanford.spezi.ui.Colors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

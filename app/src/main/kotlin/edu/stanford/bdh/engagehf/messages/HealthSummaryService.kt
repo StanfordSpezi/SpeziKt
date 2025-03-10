@@ -5,9 +5,9 @@ import android.content.Intent
 import androidx.core.content.FileProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.core.utils.MessageNotifier
-import edu.stanford.spezi.spezi.core.logging.coroutines.di.Dispatching
-import edu.stanford.spezi.spezi.core.logging.speziLogger
+import edu.stanford.spezi.core.coroutines.Dispatching
+import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.modules.utils.MessageNotifier
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.io.File

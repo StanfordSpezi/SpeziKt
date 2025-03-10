@@ -21,11 +21,11 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-import edu.stanford.spezi.core.design.component.AppTopAppBar
+import edu.stanford.spezi.modules.design.component.AppTopAppBar
 import edu.stanford.spezi.modules.education.videos.Video
-import edu.stanford.spezi.spezi.ui.helpers.testIdentifier
-import edu.stanford.spezi.spezi.ui.helpers.theme.Spacings
-import edu.stanford.spezi.spezi.ui.helpers.theme.TextStyles
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.TextStyles
+import edu.stanford.spezi.ui.testing.testIdentifier
 
 @Composable
 fun VideoScreen() {

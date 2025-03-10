@@ -8,7 +8,7 @@ import edu.stanford.bdh.engagehf.medication.data.DoseSchedule
 import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendation
 import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendationType
 import javax.inject.Inject
-import edu.stanford.spezi.core.design.R.drawable as DrawableR
+import edu.stanford.spezi.modules.design.R.drawable as DrawableR
 
 class MedicationUiStateMapper @Inject constructor(
     @ApplicationContext private val context: Context,

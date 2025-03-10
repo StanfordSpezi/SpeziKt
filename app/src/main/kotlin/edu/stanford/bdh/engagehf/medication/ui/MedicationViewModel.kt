@@ -6,10 +6,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MessageActionMapper
 import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.medication.data.MedicationRepository
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.core.utils.MessageNotifier
+import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
-import edu.stanford.spezi.spezi.core.logging.speziLogger
+import edu.stanford.spezi.modules.navigation.Navigator
+import edu.stanford.spezi.modules.utils.MessageNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

@@ -14,15 +14,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.spezi.core.design.component.CenteredBoxContent
-import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.spezi.questionnaire.QuestionnaireComposable
-import edu.stanford.spezi.spezi.questionnaire.QuestionnaireResult
-import edu.stanford.spezi.spezi.ui.helpers.testIdentifier
-import edu.stanford.spezi.spezi.ui.helpers.theme.Colors
-import edu.stanford.spezi.spezi.ui.helpers.theme.Colors.primary
-import edu.stanford.spezi.spezi.ui.helpers.theme.SpeziTheme
-import edu.stanford.spezi.spezi.ui.helpers.theme.ThemePreviews
+import edu.stanford.spezi.modules.design.component.CenteredBoxContent
+import edu.stanford.spezi.modules.design.component.VerticalSpacer
+import edu.stanford.spezi.questionnaire.QuestionnaireComposable
+import edu.stanford.spezi.questionnaire.QuestionnaireResult
+import edu.stanford.spezi.ui.Colors
+import edu.stanford.spezi.ui.Colors.primary
+import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.ThemePreviews
+import edu.stanford.spezi.ui.testing.testIdentifier
 
 @Composable
 fun QuestionnaireScreen() {

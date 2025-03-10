@@ -5,10 +5,10 @@ import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.core.utils.MessageNotifier
+import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
-import edu.stanford.spezi.spezi.core.logging.speziLogger
+import edu.stanford.spezi.modules.navigation.Navigator
+import edu.stanford.spezi.modules.utils.MessageNotifier
 import javax.inject.Inject
 
 @Suppress("LongParameterList")

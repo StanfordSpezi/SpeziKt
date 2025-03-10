@@ -3,8 +3,8 @@ package edu.stanford.bdh.engagehf.health
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
-import edu.stanford.spezi.core.testing.CoroutineTestRule
-import edu.stanford.spezi.core.utils.MessageNotifier
+import edu.stanford.spezi.modules.testing.CoroutineTestRule
+import edu.stanford.spezi.modules.utils.MessageNotifier
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

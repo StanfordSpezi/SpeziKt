@@ -15,10 +15,12 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.hilt.navigation.compose)
 
-    implementation(project(":core:design"))
-    implementation(project(":core:navigation"))
+    implementation(project(":modules:design"))
+    implementation(project(":modules:navigation"))
 
-    implementation(project(":spezi:foundation"))
-    implementation(project(":spezi:core"))
-    implementation(project(":spezi:ui"))
+    implementation(project(":foundation"))
+    implementation(project(":core"))
+    implementation(project(":core-logging"))
+    implementation(project(":ui"))
+    implementation(project(":ui-testing"))
 }

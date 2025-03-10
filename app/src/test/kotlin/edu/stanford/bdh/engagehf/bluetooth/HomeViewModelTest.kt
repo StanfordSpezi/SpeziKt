@@ -19,10 +19,10 @@ import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
 import edu.stanford.bdh.engagehf.messages.Message
 import edu.stanford.bdh.engagehf.messages.MessagesHandler
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
-import edu.stanford.spezi.core.notification.NotificationPermissions
-import edu.stanford.spezi.core.notification.fcm.DeviceRegistrationService
-import edu.stanford.spezi.core.testing.CoroutineTestRule
-import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.modules.notification.NotificationPermissions
+import edu.stanford.spezi.modules.notification.fcm.DeviceRegistrationService
+import edu.stanford.spezi.modules.testing.CoroutineTestRule
+import edu.stanford.spezi.modules.testing.runTestUnconfined
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify

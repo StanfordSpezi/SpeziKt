@@ -3,7 +3,7 @@ package edu.stanford.bdh.engagehf.bluetooth.service.mapper
 import android.bluetooth.BluetoothGattCharacteristic
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
-import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.modules.testing.runTestUnconfined
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk

@@ -5,7 +5,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.spezi.modules.education.video.VideoScreenTest.UiStateFactory.createVideoScreenState
 import edu.stanford.spezi.modules.education.videos.Video
-import edu.stanford.spezi.spezi.ui.helpers.ComposeContentActivity
+import edu.stanford.spezi.ui.ComposeContentActivity
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

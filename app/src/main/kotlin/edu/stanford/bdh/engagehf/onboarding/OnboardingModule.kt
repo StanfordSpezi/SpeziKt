@@ -4,10 +4,10 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import edu.stanford.spezi.module.onboarding.consent.ConsentManager
-import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeRepository
-import edu.stanford.spezi.module.onboarding.onboarding.OnboardingRepository
-import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingRepository
+import edu.stanford.spezi.modules.onboarding.consent.ConsentManager
+import edu.stanford.spezi.modules.onboarding.invitation.InvitationCodeRepository
+import edu.stanford.spezi.modules.onboarding.onboarding.OnboardingRepository
+import edu.stanford.spezi.modules.onboarding.sequential.SequentialOnboardingRepository
 
 /**
  *  A Dagger module that provides dependencies for the onboarding feature.

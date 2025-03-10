@@ -3,8 +3,8 @@ package edu.stanford.bdh.engagehf.health.symptoms
 import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.NewestHealthData
 import edu.stanford.bdh.engagehf.health.TableEntryData
-import edu.stanford.spezi.core.utils.LocaleProvider
-import edu.stanford.spezi.core.utils.extensions.roundToDecimalPlaces
+import edu.stanford.spezi.modules.utils.LocaleProvider
+import edu.stanford.spezi.modules.utils.extensions.roundToDecimalPlaces
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit

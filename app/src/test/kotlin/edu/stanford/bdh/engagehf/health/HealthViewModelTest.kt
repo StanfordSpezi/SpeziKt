@@ -2,7 +2,7 @@ package edu.stanford.bdh.engagehf.health
 
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
-import edu.stanford.spezi.core.testing.verifyNever
+import edu.stanford.spezi.modules.testing.verifyNever
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Test

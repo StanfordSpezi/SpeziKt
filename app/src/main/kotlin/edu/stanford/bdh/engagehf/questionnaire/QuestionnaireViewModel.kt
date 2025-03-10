@@ -5,11 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.parser.IParser
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.spezi.core.navigation.NavigationEvent
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.core.utils.MessageNotifier
-import edu.stanford.spezi.core.utils.extensions.decode
-import edu.stanford.spezi.spezi.core.logging.speziLogger
+import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.modules.navigation.NavigationEvent
+import edu.stanford.spezi.modules.navigation.Navigator
+import edu.stanford.spezi.modules.utils.MessageNotifier
+import edu.stanford.spezi.modules.utils.extensions.decode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

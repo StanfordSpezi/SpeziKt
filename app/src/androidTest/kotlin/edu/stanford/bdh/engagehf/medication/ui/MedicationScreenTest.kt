@@ -2,7 +2,7 @@ package edu.stanford.bdh.engagehf.medication.ui
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import edu.stanford.bdh.engagehf.simulator.MedicationScreenSimulator
-import edu.stanford.spezi.core.design.R
+import edu.stanford.spezi.modules.design.R
 import org.junit.Rule
 import org.junit.Test
 

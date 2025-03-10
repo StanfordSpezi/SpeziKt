@@ -13,8 +13,8 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceState
 import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
-import edu.stanford.spezi.core.utils.LocaleProvider
-import edu.stanford.spezi.spezi.ui.resources.StringResource
+import edu.stanford.spezi.modules.utils.LocaleProvider
+import edu.stanford.spezi.ui.StringResource
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
