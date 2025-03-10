@@ -6,8 +6,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import edu.stanford.spezi.spezi.questionnaire.QuestionnaireComposable
-import edu.stanford.spezi.spezi.questionnaire.QuestionnaireResult
+import edu.stanford.spezi.questionnaire.QuestionnaireComposable
+import edu.stanford.spezi.questionnaire.QuestionnaireResult
 
 @Composable
 fun QuestionnaireTestComposable() {
