@@ -6,7 +6,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.spezi.modules.onboarding.fakes.FakeOnboardingRepository
 import edu.stanford.spezi.modules.onboarding.onboarding.OnboardingView
 import edu.stanford.spezi.modules.onboarding.simulator.OnboardingScreenSimulator
-import edu.stanford.spezi.ui.ComposeContentActivity
+import edu.stanford.spezi.ui.testing.ComposeContentActivity
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
