@@ -8,10 +8,10 @@ import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onChildAt
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.platform.app.InstrumentationRegistry
+import edu.stanford.spezi.contact.ContactComposableTestIdentifier
 import edu.stanford.spezi.contact.ContactOption
 import edu.stanford.spezi.contact.formatted
 import edu.stanford.spezi.modules.testing.assertImageIdentifier
-import edu.stanford.spezi.spezi.contact.ContactComposableTestIdentifier
 import edu.stanford.spezi.ui.ImageResource
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents

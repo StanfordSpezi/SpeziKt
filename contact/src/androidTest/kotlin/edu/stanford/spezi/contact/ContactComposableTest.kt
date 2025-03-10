@@ -1,7 +1,7 @@
 package edu.stanford.spezi.contact
 
 import androidx.compose.ui.test.junit4.createComposeRule
-import edu.stanford.spezi.spezi.contact.simulator.ContactComposableSimulator
+import edu.stanford.spezi.contact.simulator.ContactComposableSimulator
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
