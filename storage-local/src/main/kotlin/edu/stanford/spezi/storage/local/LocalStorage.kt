@@ -4,9 +4,9 @@ import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.coroutines.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.spezi.localstorage.LocalStorageSetting.Encrypted
-import edu.stanford.spezi.spezi.localstorage.LocalStorageSetting.EncryptedUsingKeyStore
-import edu.stanford.spezi.spezi.localstorage.LocalStorageSetting.Unencrypted
+import edu.stanford.spezi.storage.local.LocalStorageSetting.Encrypted
+import edu.stanford.spezi.storage.local.LocalStorageSetting.EncryptedUsingKeyStore
+import edu.stanford.spezi.storage.local.LocalStorageSetting.Unencrypted
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.DeserializationStrategy
