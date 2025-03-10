@@ -5,9 +5,9 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.foundation.UUID
-import edu.stanford.spezi.modules.bluetooth.data.model.BLEDevice
-import edu.stanford.spezi.modules.bluetooth.data.model.BLEServiceEvent
-import edu.stanford.spezi.modules.bluetooth.data.model.BLEServiceState
+import edu.stanford.spezi.modules.bluetooth.model.BLEDevice
+import edu.stanford.spezi.modules.bluetooth.model.BLEServiceEvent
+import edu.stanford.spezi.modules.bluetooth.model.BLEServiceState
 import edu.stanford.spezi.modules.testing.SpeziTestScope
 import edu.stanford.spezi.modules.testing.runTestUnconfined
 import edu.stanford.spezi.modules.testing.verifyNever

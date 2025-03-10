@@ -3,7 +3,7 @@ package edu.stanford.spezi.modules.bluetooth.domain
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.spezi.modules.bluetooth.data.model.BLEDevice
+import edu.stanford.spezi.modules.bluetooth.model.BLEDevice
 import edu.stanford.spezi.modules.testing.SpeziTestScope
 import edu.stanford.spezi.modules.testing.runTestUnconfined
 import edu.stanford.spezi.modules.utils.TimeProvider

@@ -14,6 +14,7 @@ dependencies {
 
     implementation(project(":foundation"))
     implementation(project(":core"))
+    implementation(project(":core-coroutines"))
     implementation(project(":ui"))
 
     implementation(libs.hilt.test)

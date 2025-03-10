@@ -7,8 +7,8 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothProfile
 import android.content.Context
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.spezi.modules.bluetooth.data.model.BLEDevice
-import edu.stanford.spezi.modules.bluetooth.data.model.BLEServiceEvent
+import edu.stanford.spezi.modules.bluetooth.model.BLEDevice
+import edu.stanford.spezi.modules.bluetooth.model.BLEServiceEvent
 import edu.stanford.spezi.modules.testing.SpeziTestScope
 import edu.stanford.spezi.modules.testing.runTestUnconfined
 import io.mockk.Called

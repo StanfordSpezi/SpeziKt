@@ -6,9 +6,9 @@ import edu.stanford.bdh.engagehf.bluetooth.service.mapper.MeasurementMapper
 import edu.stanford.spezi.core.coroutines.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.modules.bluetooth.api.BLEService
-import edu.stanford.spezi.modules.bluetooth.data.model.BLEDevice
-import edu.stanford.spezi.modules.bluetooth.data.model.BLEServiceEvent
-import edu.stanford.spezi.modules.bluetooth.data.model.BLEServiceState
+import edu.stanford.spezi.modules.bluetooth.model.BLEDevice
+import edu.stanford.spezi.modules.bluetooth.model.BLEServiceEvent
+import edu.stanford.spezi.modules.bluetooth.model.BLEServiceState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow

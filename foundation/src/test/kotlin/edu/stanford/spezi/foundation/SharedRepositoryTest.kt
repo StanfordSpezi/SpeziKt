@@ -87,7 +87,7 @@ class SharedRepositoryTest {
 
     @Test
     fun testIteration() {
-        repository[TestDataClass.key] set TestDataClass(3)
+        repository[TestDataClass.key] = TestDataClass(3)
 
         for (value in repository) {
             assertThat(value.key).isSameInstanceAs(TestDataClass.key)
@@ -102,7 +102,7 @@ class SharedRepositoryTest {
         // due to data classes having reference semantics.
         val initialValue = repository[TestDataClass.key] ?: TestDataClass(35)
         initialValue.value = 23
-        repository[TestDataClass.key] set initialValue
+        repository[TestDataClass.key] = initialValue
 
         val value = repository[TestDataClass.key]
         assertThat(value?.value).isEqualTo(23)
@@ -111,16 +111,16 @@ class SharedRepositoryTest {
     @Test
     fun testSetAndGet() {
         val testDataClass = TestDataClass(42)
-        repository[TestDataClass.key] set testDataClass
+        repository[TestDataClass.key] = testDataClass
         val contentOfDataClass = repository[TestDataClass.key]
         assertThat(contentOfDataClass).isEqualTo(testDataClass)
 
         val newTestDataClass = TestDataClass(24)
-        repository[TestDataClass.key] set newTestDataClass
+        repository[TestDataClass.key] = newTestDataClass
         val newContentOfDataClass = repository[TestDataClass.key]
         assertThat(newContentOfDataClass).isEqualTo(newTestDataClass)
 
-        repository[TestDataClass.key] set null
+        repository[TestDataClass.key] = null
         val newerContentOfDataClass = repository[TestDataClass.key]
         assertThat(newerContentOfDataClass).isNull()
     }
@@ -142,19 +142,19 @@ class SharedRepositoryTest {
         val testDataClass = TestDataClass(42)
         assertThat(repository.contains(TestDataClass.key)).isFalse()
 
-        repository[TestDataClass.key] set testDataClass
+        repository[TestDataClass.key] = testDataClass
         assertThat(repository.contains(TestDataClass.key)).isTrue()
 
-        repository[TestDataClass.key] set null
+        repository[TestDataClass.key] = null
         assertThat(repository.contains(TestDataClass.key)).isFalse()
     }
 
     @Test
     fun testGetAllThatConformTo() {
         val testDataClass = TestDataClass(42)
-        repository[TestDataClass.key] set testDataClass
+        repository[TestDataClass.key] = testDataClass
         val testClass = TestClass(42)
-        repository[TestClass.key] set testClass
+        repository[TestClass.key] = testClass
 
         val testTypes = repository.collect(allOf = TestTypes::class)
         assertThat(testTypes).hasSize(2)
@@ -164,7 +164,7 @@ class SharedRepositoryTest {
     @Test
     fun testMutationDataClass() {
         val testDataClass = TestDataClass(42)
-        repository[TestDataClass.key] set testDataClass
+        repository[TestDataClass.key] = testDataClass
 
         val contentOfDataClass = repository[TestDataClass.key]
         contentOfDataClass?.value = 24
@@ -176,7 +176,7 @@ class SharedRepositoryTest {
     @Test
     fun testKeyLikeKnowledgeSource() {
         val testClass = TestClass(42)
-        repository[KeyLike] set testClass
+        repository[KeyLike] = testClass
 
         val contentOfClass = repository[KeyLike]
         assertThat(contentOfClass).isEqualTo(testClass)

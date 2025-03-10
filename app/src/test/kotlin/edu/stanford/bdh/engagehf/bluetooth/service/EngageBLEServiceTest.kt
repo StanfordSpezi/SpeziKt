@@ -9,9 +9,9 @@ import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.service.mapper.MeasurementMapper
 import edu.stanford.spezi.foundation.UUID
 import edu.stanford.spezi.modules.bluetooth.api.BLEService
-import edu.stanford.spezi.modules.bluetooth.data.model.BLEDevice
-import edu.stanford.spezi.modules.bluetooth.data.model.BLEServiceEvent
-import edu.stanford.spezi.modules.bluetooth.data.model.BLEServiceState
+import edu.stanford.spezi.modules.bluetooth.model.BLEDevice
+import edu.stanford.spezi.modules.bluetooth.model.BLEServiceEvent
+import edu.stanford.spezi.modules.bluetooth.model.BLEServiceState
 import edu.stanford.spezi.modules.testing.SpeziTestScope
 import edu.stanford.spezi.modules.testing.runTestUnconfined
 import io.mockk.coEvery

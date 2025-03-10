@@ -1,6 +1,6 @@
 package edu.stanford.spezi.modules.testing
 
-import edu.stanford.spezi.spezi.core.logging.coroutines.DispatchersProvider
+import edu.stanford.spezi.core.coroutines.DispatchersProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 
