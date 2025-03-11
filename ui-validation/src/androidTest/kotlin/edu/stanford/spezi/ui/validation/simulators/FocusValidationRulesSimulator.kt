@@ -5,8 +5,8 @@ import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
-import edu.stanford.spezi.spezi.validation.composables.FocusValidationRulesTestIdentifier
 import edu.stanford.spezi.ui.testing.onNodeWithIdentifier
+import edu.stanford.spezi.ui.validation.composables.FocusValidationRulesTestIdentifier
 
 class FocusValidationRulesSimulator(
     private val composeTestRule: ComposeTestRule,

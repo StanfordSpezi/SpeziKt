@@ -1,8 +1,8 @@
 package edu.stanford.spezi.ui.validation
 
 import androidx.compose.ui.test.junit4.createComposeRule
-import edu.stanford.spezi.spezi.validation.composables.FocusValidationRules
-import edu.stanford.spezi.spezi.validation.simulators.FocusValidationRulesSimulator
+import edu.stanford.spezi.ui.validation.composables.FocusValidationRules
+import edu.stanford.spezi.ui.validation.simulators.FocusValidationRulesSimulator
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

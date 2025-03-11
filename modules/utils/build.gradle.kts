@@ -9,7 +9,7 @@ android {
     namespace = "edu.stanford.spezi.modules.utils"
 
     defaultConfig {
-        testInstrumentationRunner = "edu.stanford.spezi.core.utils.HiltApplicationTestRunner"
+        testInstrumentationRunner = "edu.stanford.spezi.ui.testing.HiltApplicationTestRunner"
     }
 }
 
@@ -21,4 +21,5 @@ dependencies {
 
     testImplementation(libs.bundles.unit.testing)
     androidTestImplementation(libs.bundles.unit.testing)
+    androidTestImplementation(project(":ui-testing"))
 }

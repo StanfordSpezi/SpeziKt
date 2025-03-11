@@ -8,16 +8,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import edu.stanford.spezi.spezi.validation.Validate
-import edu.stanford.spezi.spezi.validation.ValidationRule
-import edu.stanford.spezi.spezi.validation.minimalPassword
-import edu.stanford.spezi.spezi.validation.nonEmpty
-import edu.stanford.spezi.spezi.validation.state.ReceiveValidation
-import edu.stanford.spezi.spezi.validation.state.ValidationContext
-import edu.stanford.spezi.spezi.validation.views.VerifiableTextField
 import edu.stanford.spezi.ui.Button
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.testing.testIdentifier
+import edu.stanford.spezi.ui.validation.ReceiveValidation
+import edu.stanford.spezi.ui.validation.Validate
+import edu.stanford.spezi.ui.validation.ValidationContext
+import edu.stanford.spezi.ui.validation.ValidationRule
+import edu.stanford.spezi.ui.validation.VerifiableTextField
+import edu.stanford.spezi.ui.validation.minimalPassword
+import edu.stanford.spezi.ui.validation.nonEmpty
 
 enum class Field {
     INPUT, NON_EMPTY_INPUT

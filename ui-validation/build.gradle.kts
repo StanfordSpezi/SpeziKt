@@ -12,4 +12,5 @@ dependencies {
     implementation(project(":core-logging"))
 
     androidTestImplementation(libs.bundles.compose.androidTest)
+    androidTestImplementation(project(":ui-testing"))
 }
