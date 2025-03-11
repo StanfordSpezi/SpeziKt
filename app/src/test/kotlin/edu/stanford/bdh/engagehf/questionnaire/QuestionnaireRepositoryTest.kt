@@ -7,8 +7,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import edu.stanford.bdh.engagehf.observations.ObservationCollection
 import edu.stanford.bdh.engagehf.observations.ObservationCollectionProvider
 import edu.stanford.healthconnectonfhir.QuestionnaireDocumentMapper
-import edu.stanford.spezi.core.testing.mockTask
-import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.modules.testing.mockTask
+import edu.stanford.spezi.modules.testing.runTestUnconfined
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.UnconfinedTestDispatcher

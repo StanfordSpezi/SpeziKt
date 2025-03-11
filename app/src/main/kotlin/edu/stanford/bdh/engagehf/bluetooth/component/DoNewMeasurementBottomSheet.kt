@@ -24,14 +24,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Sizes
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.modules.design.component.VerticalSpacer
+import edu.stanford.spezi.ui.Colors
+import edu.stanford.spezi.ui.Sizes
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.TextStyles
+import edu.stanford.spezi.ui.ThemePreviews
+import edu.stanford.spezi.ui.testing.testIdentifier
 
 @Composable
 fun DoNewMeasurementBottomSheet() {
@@ -71,7 +71,7 @@ fun DoNewMeasurementBottomSheet() {
             )
 
             Icon(
-                painter = painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_blood_pressure),
+                painter = painterResource(id = edu.stanford.spezi.modules.design.R.drawable.ic_blood_pressure),
                 contentDescription = stringResource(R.string.blood_pressure_icon_content_description),
                 modifier = Modifier
                     .size(Sizes.Icon.large)
@@ -80,7 +80,7 @@ fun DoNewMeasurementBottomSheet() {
             )
             Spacer(modifier = Modifier.width(Spacings.medium))
             Icon(
-                painter = painterResource(id = edu.stanford.spezi.core.design.R.drawable.ic_monitor_weight),
+                painter = painterResource(id = edu.stanford.spezi.modules.design.R.drawable.ic_monitor_weight),
                 contentDescription = stringResource(R.string.info_icon_content_description),
                 modifier = Modifier
                     .size(Sizes.Icon.large)

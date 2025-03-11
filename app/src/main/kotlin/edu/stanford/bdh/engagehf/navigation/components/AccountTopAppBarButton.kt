@@ -12,8 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import edu.stanford.bdh.engagehf.navigation.screens.AccountUiState
 import edu.stanford.bdh.engagehf.navigation.screens.Action
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Sizes
+import edu.stanford.spezi.ui.Colors
+import edu.stanford.spezi.ui.Sizes
 
 @Composable
 fun AccountTopAppBarButton(accountUiState: AccountUiState, onAction: (Action) -> Unit) {

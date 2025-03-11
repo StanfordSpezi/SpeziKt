@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.contact.data.EngageContactRepository
+import edu.stanford.spezi.contact.Contact
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.core.navigation.NavigationEvent
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.modules.contact.model.Contact
+import edu.stanford.spezi.modules.navigation.NavigationEvent
+import edu.stanford.spezi.modules.navigation.Navigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch

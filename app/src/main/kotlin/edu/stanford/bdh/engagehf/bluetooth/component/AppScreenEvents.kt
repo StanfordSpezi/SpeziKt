@@ -1,7 +1,7 @@
 package edu.stanford.bdh.engagehf.bluetooth.component
 
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
-import edu.stanford.spezi.core.coroutines.di.Dispatching
+import edu.stanford.spezi.core.coroutines.Dispatching
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow

@@ -6,7 +6,7 @@ import androidx.test.rule.GrantPermissionRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.bdh.engagehf.simulator.NavigatorSimulator
-import edu.stanford.spezi.core.navigation.Navigator
+import edu.stanford.spezi.modules.navigation.Navigator
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

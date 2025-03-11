@@ -3,9 +3,9 @@ package edu.stanford.bdh.engagehf.messages
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.functions.FirebaseFunctions
-import edu.stanford.spezi.core.coroutines.di.Dispatching
+import edu.stanford.spezi.core.coroutines.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.module.account.manager.UserSessionManager
+import edu.stanford.spezi.modules.account.manager.UserSessionManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose

@@ -44,19 +44,19 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.UiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
 import edu.stanford.bdh.engagehf.messages.MessageAction
 import edu.stanford.bdh.engagehf.messages.MessageItem
-import edu.stanford.spezi.core.design.component.AsyncTextButton
-import edu.stanford.spezi.core.design.component.DefaultElevatedCard
-import edu.stanford.spezi.core.design.component.LifecycleEvent
-import edu.stanford.spezi.core.design.component.PermissionRequester
-import edu.stanford.spezi.core.design.component.SecondaryText
-import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.modules.design.component.AsyncTextButton
+import edu.stanford.spezi.modules.design.component.LifecycleEvent
+import edu.stanford.spezi.modules.design.component.PermissionRequester
+import edu.stanford.spezi.modules.design.component.SecondaryText
+import edu.stanford.spezi.modules.design.component.VerticalSpacer
+import edu.stanford.spezi.ui.Colors
+import edu.stanford.spezi.ui.DefaultElevatedCard
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.ui.TextStyles
+import edu.stanford.spezi.ui.ThemePreviews
+import edu.stanford.spezi.ui.testing.testIdentifier
 
 @Composable
 fun HomeScreen() {

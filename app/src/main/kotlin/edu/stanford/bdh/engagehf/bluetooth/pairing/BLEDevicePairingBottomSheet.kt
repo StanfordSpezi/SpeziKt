@@ -18,13 +18,13 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.core.design.component.AsyncTextButton
-import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.modules.design.component.AsyncTextButton
+import edu.stanford.spezi.ui.Colors
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.ui.TextStyles
+import edu.stanford.spezi.ui.ThemePreviews
 
 @Composable
 fun BLEDevicePairingBottomSheet() {

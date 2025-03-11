@@ -9,10 +9,10 @@ import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.messages.HealthSummaryService
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.core.notification.NotificationNavigationEvent
-import edu.stanford.spezi.core.notification.fcm.DeviceRegistrationService
-import edu.stanford.spezi.module.account.manager.UserSessionManager
+import edu.stanford.spezi.modules.account.manager.UserSessionManager
+import edu.stanford.spezi.modules.navigation.Navigator
+import edu.stanford.spezi.modules.notification.NotificationNavigationEvent
+import edu.stanford.spezi.modules.notification.fcm.DeviceRegistrationService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import edu.stanford.spezi.core.design.R.drawable as DesignR
+import edu.stanford.spezi.modules.design.R.drawable as DesignR
 
 @HiltViewModel
 class AppScreenViewModel @Inject constructor(

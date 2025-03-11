@@ -3,7 +3,7 @@ package edu.stanford.bdh.engagehf.health.symptoms
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
-import edu.stanford.spezi.core.testing.CoroutineTestRule
+import edu.stanford.spezi.modules.testing.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk

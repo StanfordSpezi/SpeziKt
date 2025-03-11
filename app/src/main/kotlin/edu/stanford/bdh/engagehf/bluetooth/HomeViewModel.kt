@@ -21,8 +21,8 @@ import edu.stanford.bdh.engagehf.messages.Message
 import edu.stanford.bdh.engagehf.messages.MessagesHandler
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.core.notification.NotificationPermissions
-import edu.stanford.spezi.core.notification.fcm.DeviceRegistrationService
+import edu.stanford.spezi.modules.notification.NotificationPermissions
+import edu.stanford.spezi.modules.notification.fcm.DeviceRegistrationService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

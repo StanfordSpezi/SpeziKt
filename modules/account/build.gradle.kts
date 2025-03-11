@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "edu.stanford.spezi.module.account"
+    namespace = "edu.stanford.spezi.modules.account"
 
     buildFeatures {
         buildConfig = true
@@ -19,9 +19,16 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:coroutines"))
-    implementation(project(":core:navigation"))
-    implementation(project(":core:utils"))
+    implementation(project(":modules:design"))
+    implementation(project(":modules:navigation"))
+    implementation(project(":modules:utils"))
+
+    implementation(project(":foundation"))
+    implementation(project(":core"))
+    implementation(project(":core-coroutines"))
+    implementation(project(":core-logging"))
+    implementation(project(":ui"))
+    implementation(project(":ui-testing"))
 
     implementation(libs.hilt.navigation.compose)
 

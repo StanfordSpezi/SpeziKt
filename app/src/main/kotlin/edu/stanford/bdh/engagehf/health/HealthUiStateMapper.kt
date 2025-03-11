@@ -7,9 +7,9 @@ import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.utils.LocaleProvider
-import edu.stanford.spezi.core.utils.extensions.roundToDecimalPlaces
+import edu.stanford.spezi.modules.utils.LocaleProvider
+import edu.stanford.spezi.modules.utils.extensions.roundToDecimalPlaces
+import edu.stanford.spezi.ui.StringResource
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.ZonedDateTime

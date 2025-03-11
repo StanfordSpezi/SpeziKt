@@ -8,7 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import edu.stanford.bdh.engagehf.MainActivity
-import edu.stanford.spezi.core.notification.notifier.Notifications
+import edu.stanford.spezi.modules.notification.notifier.Notifications
 import javax.inject.Singleton
 
 @Module

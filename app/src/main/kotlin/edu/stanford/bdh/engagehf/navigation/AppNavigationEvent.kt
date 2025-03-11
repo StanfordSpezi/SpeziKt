@@ -1,6 +1,6 @@
 package edu.stanford.bdh.engagehf.navigation
 
-import edu.stanford.spezi.core.navigation.NavigationEvent
+import edu.stanford.spezi.modules.navigation.NavigationEvent
 
 sealed interface AppNavigationEvent : NavigationEvent {
     data class AppScreen(val clearBackStack: Boolean) : AppNavigationEvent

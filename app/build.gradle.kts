@@ -41,15 +41,25 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:bluetooth"))
-    implementation(project(":core:coroutines"))
-    implementation(project(":core:navigation"))
-    implementation(project(":core:notification"))
     implementation(project(":modules:account"))
-    implementation(project(":modules:contact"))
+    implementation(project(":modules:bluetooth"))
+    implementation(project(":modules:design"))
     implementation(project(":modules:education"))
     implementation(project(":modules:healthconnectonfhir"))
+    implementation(project(":modules:navigation"))
+    implementation(project(":modules:notification"))
     implementation(project(":modules:onboarding"))
+
+    implementation(project(":contact"))
+    implementation(project(":foundation"))
+    implementation(project(":core"))
+    implementation(project(":core-coroutines"))
+    implementation(project(":core-logging"))
+    implementation(project(":ui"))
+    implementation(project(":ui-testing"))
+
+    implementation(project(":ui-personalinfo"))
+    implementation(project(":questionnaire"))
 
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.functions.ktx)
@@ -65,5 +75,5 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.vico.compose.m3)
 
-    androidTestImplementation(project(":core:testing"))
+    androidTestImplementation(project(":modules:testing"))
 }

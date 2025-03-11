@@ -1,12 +1,12 @@
 package edu.stanford.spezi.modules.education.education.video
 
 import androidx.lifecycle.SavedStateHandle
-import edu.stanford.spezi.core.navigation.NavigationEvent
-import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.modules.education.video.Action
 import edu.stanford.spezi.modules.education.video.VideoViewModel
 import edu.stanford.spezi.modules.education.videos.VIDEO_SAVE_STATE_PARAM
 import edu.stanford.spezi.modules.education.videos.Video
+import edu.stanford.spezi.modules.navigation.NavigationEvent
+import edu.stanford.spezi.modules.navigation.Navigator
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

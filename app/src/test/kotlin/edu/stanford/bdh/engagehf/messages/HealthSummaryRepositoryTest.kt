@@ -2,8 +2,8 @@ package edu.stanford.bdh.engagehf.messages
 
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.functions.FirebaseFunctions
-import edu.stanford.spezi.core.testing.runTestUnconfined
-import edu.stanford.spezi.module.account.manager.UserSessionManager
+import edu.stanford.spezi.modules.account.manager.UserSessionManager
+import edu.stanford.spezi.modules.testing.runTestUnconfined
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk

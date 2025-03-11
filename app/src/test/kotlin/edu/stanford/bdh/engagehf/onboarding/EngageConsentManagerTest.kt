@@ -2,9 +2,9 @@ package edu.stanford.bdh.engagehf.onboarding
 
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.core.testing.runTestUnconfined
-import edu.stanford.spezi.core.utils.MessageNotifier
+import edu.stanford.spezi.modules.navigation.Navigator
+import edu.stanford.spezi.modules.testing.runTestUnconfined
+import edu.stanford.spezi.modules.utils.MessageNotifier
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just

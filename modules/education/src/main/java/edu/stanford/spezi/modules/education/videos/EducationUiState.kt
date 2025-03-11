@@ -1,6 +1,6 @@
 package edu.stanford.spezi.modules.education.videos
 
-import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.ui.StringResource
 import kotlinx.serialization.Serializable
 
 data class EducationUiState(

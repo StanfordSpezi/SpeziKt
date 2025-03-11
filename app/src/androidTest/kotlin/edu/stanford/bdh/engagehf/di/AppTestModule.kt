@@ -4,8 +4,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
-import edu.stanford.spezi.core.notification.NotificationPermissions
-import edu.stanford.spezi.core.notification.di.NotificationModule
+import edu.stanford.spezi.modules.notification.NotificationPermissions
+import edu.stanford.spezi.modules.notification.di.NotificationModule
 
 @Module
 @TestInstallIn(

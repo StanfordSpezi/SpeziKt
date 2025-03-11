@@ -3,7 +3,7 @@ package edu.stanford.bdh.engagehf.bluetooth.pairing
 import android.bluetooth.BluetoothDevice
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.ui.StringResource
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Test

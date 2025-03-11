@@ -11,8 +11,8 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.service.BLEDeviceSession
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceState
 import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
-import edu.stanford.spezi.core.bluetooth.data.model.BLEDevice
-import edu.stanford.spezi.core.utils.LocaleProvider
+import edu.stanford.spezi.modules.bluetooth.model.BLEDevice
+import edu.stanford.spezi.modules.utils.LocaleProvider
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Test

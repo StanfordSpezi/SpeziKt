@@ -1,7 +1,7 @@
 package edu.stanford.bdh.engagehf.localization
 
-import edu.stanford.spezi.core.utils.JsonMap
-import edu.stanford.spezi.core.utils.LocaleProvider
+import edu.stanford.spezi.modules.utils.JsonMap
+import edu.stanford.spezi.modules.utils.LocaleProvider
 import javax.inject.Inject
 
 class LocalizedMapReader @Inject constructor(

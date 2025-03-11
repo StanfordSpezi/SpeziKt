@@ -1,5 +1,7 @@
 package edu.stanford.bdh.engagehf.medication.data
 
+import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendationType.entries
+
 /**
  * A medication that the patient is either currently taking or which is recommended for the patient to start.
  */

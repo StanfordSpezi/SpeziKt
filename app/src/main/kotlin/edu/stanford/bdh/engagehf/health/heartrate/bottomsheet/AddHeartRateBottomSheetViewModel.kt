@@ -7,7 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.time.TimePickerStateMapper
-import edu.stanford.spezi.core.utils.MessageNotifier
+import edu.stanford.spezi.modules.utils.MessageNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

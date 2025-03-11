@@ -10,9 +10,16 @@ android {
 
 dependencies {
     implementation(project(":modules:account"))
-    implementation(project(":core:coroutines"))
-    implementation(project(":core:navigation"))
-    implementation(project(":core:utils"))
+    implementation(project(":modules:design"))
+    implementation(project(":modules:navigation"))
+    implementation(project(":modules:utils"))
+
+    implementation(project(":foundation"))
+    implementation(project(":core"))
+    implementation(project(":core-coroutines"))
+    implementation(project(":ui"))
+    implementation(project(":ui-markdown"))
+    implementation(project(":ui-testing"))
 
     implementation(libs.androidx.foundation)
     implementation(libs.accompanist.pager)

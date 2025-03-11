@@ -1,11 +1,11 @@
 package edu.stanford.bdh.engagehf.onboarding
 
-import edu.stanford.spezi.core.design.R
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
-import edu.stanford.spezi.module.onboarding.onboarding.Area
-import edu.stanford.spezi.module.onboarding.onboarding.OnboardingData
-import edu.stanford.spezi.module.onboarding.onboarding.OnboardingRepository
+import edu.stanford.spezi.modules.design.R
+import edu.stanford.spezi.modules.navigation.Navigator
+import edu.stanford.spezi.modules.onboarding.OnboardingNavigationEvent
+import edu.stanford.spezi.modules.onboarding.onboarding.Area
+import edu.stanford.spezi.modules.onboarding.onboarding.OnboardingData
+import edu.stanford.spezi.modules.onboarding.onboarding.OnboardingRepository
 import javax.inject.Inject
 
 class EngageOnboardingRepository @Inject constructor(

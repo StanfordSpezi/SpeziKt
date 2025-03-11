@@ -1,13 +1,13 @@
 package edu.stanford.spezi.modules.education.education.videos
 
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.core.testing.CoroutineTestRule
-import edu.stanford.spezi.core.testing.runTestUnconfined
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.videos.Action
 import edu.stanford.spezi.modules.education.videos.EducationViewModel
 import edu.stanford.spezi.modules.education.videos.Video
 import edu.stanford.spezi.modules.education.videos.data.repository.EducationRepository
+import edu.stanford.spezi.modules.navigation.Navigator
+import edu.stanford.spezi.modules.testing.CoroutineTestRule
+import edu.stanford.spezi.modules.testing.runTestUnconfined
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

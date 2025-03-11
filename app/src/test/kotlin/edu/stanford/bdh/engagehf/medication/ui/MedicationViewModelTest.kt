@@ -6,12 +6,12 @@ import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendation
 import edu.stanford.bdh.engagehf.medication.data.MedicationRepository
 import edu.stanford.bdh.engagehf.messages.MessageAction
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.core.testing.CoroutineTestRule
-import edu.stanford.spezi.core.testing.runTestUnconfined
-import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.videos.Video
+import edu.stanford.spezi.modules.navigation.Navigator
+import edu.stanford.spezi.modules.testing.CoroutineTestRule
+import edu.stanford.spezi.modules.testing.runTestUnconfined
+import edu.stanford.spezi.modules.utils.MessageNotifier
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk

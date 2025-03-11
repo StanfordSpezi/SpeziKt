@@ -1,6 +1,6 @@
 package edu.stanford.bdh.engagehf.bluetooth.service
 
-import edu.stanford.spezi.core.utils.UUID
+import edu.stanford.spezi.foundation.UUID
 import java.util.UUID
 
 /**

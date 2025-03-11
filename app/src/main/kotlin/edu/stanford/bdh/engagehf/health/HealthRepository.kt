@@ -12,7 +12,7 @@ import edu.stanford.bdh.engagehf.observations.ObservationCollection
 import edu.stanford.bdh.engagehf.observations.ObservationCollectionProvider
 import edu.stanford.healthconnectonfhir.ObservationsDocumentMapper
 import edu.stanford.healthconnectonfhir.RecordToObservationMapper
-import edu.stanford.spezi.core.coroutines.di.Dispatching
+import edu.stanford.spezi.core.coroutines.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.awaitClose

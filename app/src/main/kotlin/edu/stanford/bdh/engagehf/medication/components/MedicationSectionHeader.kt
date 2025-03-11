@@ -13,9 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.TextStyles
+import edu.stanford.spezi.ui.ThemePreviews
 
 @Composable
 fun SectionHeader(

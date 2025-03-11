@@ -1,7 +1,7 @@
 package edu.stanford.bdh.engagehf.health.symptoms
 
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.spezi.core.utils.LocaleProvider
+import edu.stanford.spezi.modules.utils.LocaleProvider
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before

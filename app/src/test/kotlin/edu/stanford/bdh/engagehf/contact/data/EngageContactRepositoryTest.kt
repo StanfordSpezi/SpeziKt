@@ -3,7 +3,7 @@ package edu.stanford.bdh.engagehf.contact.data
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-import edu.stanford.spezi.module.account.manager.UserSessionManager
+import edu.stanford.spezi.modules.account.manager.UserSessionManager
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
