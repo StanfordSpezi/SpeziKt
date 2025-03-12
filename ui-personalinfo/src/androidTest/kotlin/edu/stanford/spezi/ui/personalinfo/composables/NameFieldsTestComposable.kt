@@ -14,7 +14,7 @@ fun NameFieldsTestComposable(nameBuilder: PersonNameComponents.Builder) {
             builder = nameBuilder,
             property = PersonNameComponents.Builder::givenName,
             description = {
-                "First Name"
+                Text("First Name")
             },
             placeholder = {
                 Text("enter your first name")
@@ -27,7 +27,7 @@ fun NameFieldsTestComposable(nameBuilder: PersonNameComponents.Builder) {
             builder = nameBuilder,
             property = PersonNameComponents.Builder::familyName,
             description = {
-                "Last Name"
+                Text("Last Name")
             },
             placeholder = {
                 Text("enter your last name")
