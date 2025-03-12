@@ -1,5 +1,6 @@
 package edu.stanford.spezi.modules.design
 
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertHasClickAction
@@ -8,7 +9,6 @@ import androidx.compose.ui.test.isNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import edu.stanford.spezi.ui.Button
 import edu.stanford.spezi.ui.SpeziTheme
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule

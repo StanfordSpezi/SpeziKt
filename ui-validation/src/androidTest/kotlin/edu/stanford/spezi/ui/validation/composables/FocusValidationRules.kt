@@ -1,14 +1,12 @@
 package edu.stanford.spezi.ui.validation.composables
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.Switch
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import edu.stanford.spezi.ui.Button
 import edu.stanford.spezi.ui.testing.testIdentifier
 import edu.stanford.spezi.ui.validation.ReceiveValidation
 import edu.stanford.spezi.ui.validation.Validate
@@ -32,7 +30,6 @@ fun FocusValidationRules() {
     val nonEmptyInput = remember { mutableStateOf("") }
     val validationContext = remember { mutableStateOf(ValidationContext()) }
     val lastValid = remember { mutableStateOf<Boolean?>(null) }
-    val switchFocus = remember { mutableStateOf(false) }
 
     ReceiveValidation(validationContext) {
         Column {
@@ -43,22 +40,17 @@ fun FocusValidationRules() {
             }
             Button(
                 onClick = {
-                    val newLastValid = validationContext.value
-                        .validateHierarchy(switchFocus.value)
-                    lastValid.value = newLastValid
+                    lastValid.value = validationContext.value
+                        .validateHierarchy()
                 }
             ) {
                 Text("Validate")
-            }
-            Row {
-                Text("Switch Focus")
-                Switch(switchFocus.value, onCheckedChange = { switchFocus.value = it })
             }
 
             Validate(nonEmptyInput.value, rules = listOf(ValidationRule.nonEmpty)) {
                 ValidatedTextField(
                     value = nonEmptyInput.value,
-                    onValueChange = {},
+                    onValueChange = { nonEmptyInput.value = it },
                     modifier = Modifier.testIdentifier(FocusValidationRulesTestIdentifier.EMAIL_TEXTFIELD),
                     label = {
                         Text(Field.NON_EMPTY_INPUT.name)
