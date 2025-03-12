@@ -10,7 +10,7 @@ import edu.stanford.spezi.ui.TextStyles
 import edu.stanford.spezi.ui.ThemePreviews
 
 @Composable
-fun ValidationResultsComposable(
+fun ValidationResults(
     results: List<FailedValidationResult>,
 ) {
     Column(
@@ -28,9 +28,9 @@ fun ValidationResultsComposable(
 
 @ThemePreviews
 @Composable
-private fun ValidationResultsComposablePreview() {
+private fun ValidationResultsPreview() {
     SpeziTheme(isPreview = true) {
-        ValidationResultsComposable(
+        ValidationResults(
             listOf(
                 FailedValidationResult(ValidationRule.nonEmpty),
                 FailedValidationResult(ValidationRule.mediumPassword),

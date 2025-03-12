@@ -9,13 +9,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import edu.stanford.spezi.ui.Button
-import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.testing.testIdentifier
 import edu.stanford.spezi.ui.validation.ReceiveValidation
 import edu.stanford.spezi.ui.validation.Validate
+import edu.stanford.spezi.ui.validation.ValidatedTextField
 import edu.stanford.spezi.ui.validation.ValidationContext
 import edu.stanford.spezi.ui.validation.ValidationRule
-import edu.stanford.spezi.ui.validation.VerifiableTextField
 import edu.stanford.spezi.ui.validation.minimalPassword
 import edu.stanford.spezi.ui.validation.nonEmpty
 
@@ -57,18 +56,24 @@ fun FocusValidationRules() {
             }
 
             Validate(nonEmptyInput.value, rules = listOf(ValidationRule.nonEmpty)) {
-                VerifiableTextField(
-                    StringResource(Field.NON_EMPTY_INPUT.name),
-                    nonEmptyInput,
-                    Modifier.testIdentifier(FocusValidationRulesTestIdentifier.EMAIL_TEXTFIELD)
+                ValidatedTextField(
+                    value = nonEmptyInput.value,
+                    onValueChange = {},
+                    modifier = Modifier.testIdentifier(FocusValidationRulesTestIdentifier.EMAIL_TEXTFIELD),
+                    label = {
+                        Text(Field.NON_EMPTY_INPUT.name)
+                    },
                 )
             }
 
             Validate(input.value, rules = listOf(ValidationRule.minimalPassword)) {
-                VerifiableTextField(
-                    StringResource(Field.INPUT.name),
-                    input,
-                    Modifier.testIdentifier(FocusValidationRulesTestIdentifier.PASSWORD_TEXTFIELD)
+                ValidatedTextField(
+                    value = input.value,
+                    onValueChange = { input.value = it },
+                    modifier = Modifier.testIdentifier(FocusValidationRulesTestIdentifier.PASSWORD_TEXTFIELD),
+                    label = {
+                        Text(Field.INPUT.name)
+                    },
                 )
             }
         }
