@@ -17,7 +17,7 @@ import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
 import edu.stanford.spezi.ui.testing.onNodeWithIdentifier
 
-class ContactComposableSimulator(
+class ContactContentSimulator(
     private val composeTestRule: ComposeTestRule,
 ) {
     private fun image(image: ImageResource) =

@@ -10,8 +10,7 @@ import edu.stanford.spezi.ui.testing.testIdentifier
 fun ContactsList(contacts: List<Contact>, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
         items(contacts) {
-            ContactComposable(
-                it,
+            it.Content(
                 modifier = Modifier.testIdentifier(
                     ContactsListTestIdentifier.CONTACT,
                     suffix = it.id.toString()

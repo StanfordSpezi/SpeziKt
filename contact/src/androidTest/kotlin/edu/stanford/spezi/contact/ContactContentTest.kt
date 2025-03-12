@@ -1,12 +1,12 @@
 package edu.stanford.spezi.contact
 
 import androidx.compose.ui.test.junit4.createComposeRule
-import edu.stanford.spezi.contact.simulator.ContactComposableSimulator
+import edu.stanford.spezi.contact.simulator.ContactContentSimulator
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class ContactComposableTest {
+class ContactContentTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -16,7 +16,7 @@ class ContactComposableTest {
     @Before
     fun init() {
         composeTestRule.setContent {
-            ContactComposable(contact)
+            contact.Content()
         }
     }
 
@@ -71,7 +71,7 @@ class ContactComposableTest {
         }
     }
 
-    private fun contactComposable(block: ContactComposableSimulator.() -> Unit) {
-        ContactComposableSimulator(composeTestRule).apply(block)
+    private fun contactComposable(block: ContactContentSimulator.() -> Unit) {
+        ContactContentSimulator(composeTestRule).apply(block)
     }
 }
