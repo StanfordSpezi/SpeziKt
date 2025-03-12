@@ -21,8 +21,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.contact.Contact
-import edu.stanford.spezi.contact.ContactComposable
 import edu.stanford.spezi.contact.ContactOption
+import edu.stanford.spezi.contact.Content
 import edu.stanford.spezi.contact.call
 import edu.stanford.spezi.contact.email
 import edu.stanford.spezi.contact.website
@@ -34,7 +34,6 @@ import edu.stanford.spezi.ui.ImageResource
 import edu.stanford.spezi.ui.Spacings
 import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.StringResource
-import edu.stanford.spezi.ui.StringResource.Companion.invoke
 import edu.stanford.spezi.ui.TextStyles
 import edu.stanford.spezi.ui.ThemePreviews
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
@@ -94,10 +93,7 @@ private fun ContactScreen(
                 }
 
                 is ContactScreenViewModel.UiState.ContactLoaded -> {
-                    val contact = uiState.contact
-                    ContactComposable(
-                        contact = contact,
-                    )
+                    uiState.contact.Content()
                 }
             }
         }
