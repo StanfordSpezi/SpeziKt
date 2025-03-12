@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import edu.stanford.spezi.ui.testing.testIdentifier
+import edu.stanford.spezi.ui.validation.OutlinedValidatedTextField
 import edu.stanford.spezi.ui.validation.ReceiveValidation
 import edu.stanford.spezi.ui.validation.Validate
 import edu.stanford.spezi.ui.validation.ValidatedTextField
@@ -59,7 +60,7 @@ fun FocusValidationRules() {
             }
 
             Validate(input.value, rules = listOf(ValidationRule.minimalPassword)) {
-                ValidatedTextField(
+                OutlinedValidatedTextField(
                     value = input.value,
                     onValueChange = { input.value = it },
                     modifier = Modifier.testIdentifier(FocusValidationRulesTestIdentifier.PASSWORD_TEXTFIELD),

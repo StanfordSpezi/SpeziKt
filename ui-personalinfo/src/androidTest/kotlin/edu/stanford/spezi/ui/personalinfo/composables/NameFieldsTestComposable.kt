@@ -5,6 +5,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import edu.stanford.spezi.ui.personalinfo.NameFieldRow
+import edu.stanford.spezi.ui.personalinfo.OutlinedNameFieldRow
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
 
 @Composable
@@ -23,7 +24,7 @@ fun NameFieldsTestComposable(nameBuilder: PersonNameComponents.Builder) {
 
         HorizontalDivider()
 
-        NameFieldRow(
+        OutlinedNameFieldRow(
             builder = nameBuilder,
             property = PersonNameComponents.Builder::familyName,
             description = {
