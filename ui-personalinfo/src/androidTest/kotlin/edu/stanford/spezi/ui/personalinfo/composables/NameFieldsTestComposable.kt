@@ -10,14 +10,28 @@ import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
 @Composable
 fun NameFieldsTestComposable(nameBuilder: PersonNameComponents.Builder) {
     Column {
-        NameFieldRow("First Name", nameBuilder, PersonNameComponents.Builder::givenName) {
-            Text("enter your first name")
-        }
+        NameFieldRow(
+            builder = nameBuilder,
+            property = PersonNameComponents.Builder::givenName,
+            description = {
+                "First Name"
+            },
+            placeholder = {
+                Text("enter your first name")
+            },
+        )
 
         HorizontalDivider()
 
-        NameFieldRow("Last Name", nameBuilder, PersonNameComponents.Builder::familyName) {
-            Text("enter your last name")
-        }
+        NameFieldRow(
+            builder = nameBuilder,
+            property = PersonNameComponents.Builder::familyName,
+            description = {
+                "Last Name"
+            },
+            placeholder = {
+                Text("enter your last name")
+            },
+        )
     }
 }
