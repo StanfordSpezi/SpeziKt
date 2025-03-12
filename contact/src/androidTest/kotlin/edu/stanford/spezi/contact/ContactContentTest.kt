@@ -22,21 +22,21 @@ class ContactContentTest {
 
     @Test
     fun `test displays contact image`() {
-        contactComposable {
+        contactContent {
             assertHasImage(contact.image)
         }
     }
 
     @Test
     fun `test displays contact name`() {
-        contactComposable {
+        contactContent {
             assertHasName(contact.name)
         }
     }
 
     @Test
     fun `test displays contact options`() {
-        contactComposable {
+        contactContent {
             for (option in contact.options) {
                 assertHasOption(option)
             }
@@ -45,33 +45,33 @@ class ContactContentTest {
 
     @Test
     fun `test displays contact title`() {
-        contactComposable {
+        contactContent {
             assertHasSubtitleContaining(contact.title)
         }
     }
 
     @Test
     fun `test displays contact organization`() {
-        contactComposable {
+        contactContent {
             assertHasSubtitleContaining(contact.organization)
         }
     }
 
     @Test
     fun `test displays contact description`() {
-        contactComposable {
+        contactContent {
             assertHasDescription(contact.description)
         }
     }
 
     @Test
     fun `test displays contact address`() {
-        contactComposable {
+        contactContent {
             assertHasAddress(contact.address)
         }
     }
 
-    private fun contactComposable(block: ContactContentSimulator.() -> Unit) {
+    private fun contactContent(block: ContactContentSimulator.() -> Unit) {
         ContactContentSimulator(composeTestRule).apply(block)
     }
 }

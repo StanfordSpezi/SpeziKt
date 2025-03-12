@@ -74,7 +74,7 @@ fun Contact.Content(modifier: Modifier = Modifier) {
                     Text(
                         text = remember(name) { name.formatted() },
                         style = TextStyles.titleLarge,
-                        modifier = Modifier.testIdentifier(ContactComposableTestIdentifier.NAME)
+                        modifier = Modifier.testIdentifier(ContactContentTestIdentifier.NAME)
                     )
                     val context = LocalContext.current
                     val subtitle = remember(title, organization) {
@@ -86,7 +86,7 @@ fun Contact.Content(modifier: Modifier = Modifier) {
                         Text(
                             text = subtitle,
                             style = TextStyles.titleSmall,
-                            modifier = Modifier.testIdentifier(ContactComposableTestIdentifier.SUBTITLE)
+                            modifier = Modifier.testIdentifier(ContactContentTestIdentifier.SUBTITLE)
                         )
                     }
                 }
@@ -98,7 +98,7 @@ fun Contact.Content(modifier: Modifier = Modifier) {
                 Text(
                     text = it.text(),
                     style = TextStyles.bodyMedium,
-                    modifier = Modifier.testIdentifier(ContactComposableTestIdentifier.DESCRIPTION)
+                    modifier = Modifier.testIdentifier(ContactContentTestIdentifier.DESCRIPTION)
                 )
             }
             Spacer(modifier = Modifier.height(Spacings.large))
@@ -112,7 +112,7 @@ fun Contact.Content(modifier: Modifier = Modifier) {
                         modifier = Modifier
                             .weight(1f)
                             .testIdentifier(
-                                ContactComposableTestIdentifier.OPTION,
+                                ContactContentTestIdentifier.OPTION,
                                 suffix = option.title.text(),
                             )
                     )
@@ -122,14 +122,14 @@ fun Contact.Content(modifier: Modifier = Modifier) {
             address?.let { address ->
                 AddressCard(
                     address = address,
-                    modifier = Modifier.testIdentifier(ContactComposableTestIdentifier.ADDRESS)
+                    modifier = Modifier.testIdentifier(ContactContentTestIdentifier.ADDRESS)
                 )
             }
         }
     }
 }
 
-enum class ContactComposableTestIdentifier {
+enum class ContactContentTestIdentifier {
     NAME, SUBTITLE, DESCRIPTION, ADDRESS, OPTION
 }
 
