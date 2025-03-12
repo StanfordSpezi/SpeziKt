@@ -71,7 +71,6 @@ fun SpeziTheme(
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }
-
     val surface: ComposableBlock = {
         Surface(
             modifier = if (isPreview) Modifier else Modifier.fillMaxSize(),

@@ -18,7 +18,7 @@ data class ValidationRule(
     // Properties
 
     @Suppress("detekt:VariableMinLength")
-    val id: UUID = UUID()
+    internal val id: UUID = UUID()
 
     // Constructor
 

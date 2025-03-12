@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -22,7 +23,6 @@ import edu.stanford.spezi.modules.design.component.VerticalSpacer
 import edu.stanford.spezi.modules.education.R
 import edu.stanford.spezi.modules.education.videos.component.ExpandableVideoSection
 import edu.stanford.spezi.modules.education.videos.component.LoadingVideoCard
-import edu.stanford.spezi.ui.Button
 import edu.stanford.spezi.ui.Colors
 import edu.stanford.spezi.ui.Spacings
 import edu.stanford.spezi.ui.SpeziTheme
