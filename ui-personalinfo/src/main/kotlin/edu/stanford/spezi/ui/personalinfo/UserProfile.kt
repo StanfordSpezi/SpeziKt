@@ -27,24 +27,46 @@ import androidx.compose.ui.unit.sp
 import edu.stanford.spezi.core.logging.SpeziLogger
 import edu.stanford.spezi.ui.Colors
 import edu.stanford.spezi.ui.ImageResource
-import edu.stanford.spezi.ui.ImageResourceComposable
 import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.ThemePreviews
 import edu.stanford.spezi.ui.lighten
 import kotlin.math.min
 
+interface UserProfileImageLoader {
+    suspend fun loadImage(): ImageResource?
+}
+
 @Composable
-fun UserProfileComposable(
+fun UserProfile(
     name: PersonNameComponents,
     modifier: Modifier = Modifier,
     imageLoader: suspend () -> ImageResource? = { null },
 ) {
+    UserProfile(
+        name = name,
+        modifier = modifier,
+        imageLoader = remember(imageLoader) {
+            object : UserProfileImageLoader {
+                override suspend fun loadImage(): ImageResource? {
+                    return imageLoader()
+                }
+            }
+        }
+    )
+}
+
+@Composable
+fun UserProfile(
+    name: PersonNameComponents,
+    modifier: Modifier = Modifier,
+    imageLoader: UserProfileImageLoader?,
+) {
     var size by remember { mutableStateOf(IntSize.Zero) }
     var loadedImage by remember(imageLoader) { mutableStateOf<ImageResource?>(null) }
 
-    LaunchedEffect(Unit) {
-        loadedImage = runCatching { imageLoader() }
+    LaunchedEffect(imageLoader) {
+        loadedImage = runCatching { imageLoader?.loadImage() }
             .onFailure { SpeziLogger.e(it) { "Failed to load image" } }
             .getOrNull()
     }
@@ -59,18 +81,17 @@ fun UserProfileComposable(
             .aspectRatio(1f)) {
         val sideLength = min(size.height, size.width).dp
         Box(modifier.size(sideLength, sideLength), contentAlignment = Alignment.Center) {
-            loadedImage?.let {
-                ImageResourceComposable(
-                    it,
-                    Modifier
-                        .fillMaxSize()
-                        .clip(CircleShape)
-                        .background(Colors.background, CircleShape)
-                )
-            } ?: Box(
-                Modifier
+            loadedImage?.Content(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(CircleShape)
+                    .background(Colors.background, CircleShape)
+            ) ?: Box(
+                modifier = Modifier
                     .background(Colors.secondary, CircleShape)
-                    .fillMaxSize(), contentAlignment = Alignment.Center) {
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
                 Text(
                     formattedName,
                     fontSize = (sideLength.value * 0.2).sp,
@@ -114,11 +135,11 @@ private class UserProfileProvider : PreviewParameterProvider<UserProfilePreviewD
 
 @ThemePreviews
 @Composable
-private fun UserProfileComposablePreview(
+private fun UserProfilePreview(
     @PreviewParameter(UserProfileProvider::class) profileData: UserProfilePreviewData,
 ) {
     SpeziTheme(isPreview = true) {
-        UserProfileComposable(
+        UserProfile(
             name = profileData.first,
             imageLoader = profileData.second,
         )

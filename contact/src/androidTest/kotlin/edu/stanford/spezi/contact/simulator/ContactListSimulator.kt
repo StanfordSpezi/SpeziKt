@@ -8,10 +8,10 @@ import edu.stanford.spezi.ui.testing.onNodeWithIdentifier
 class ContactListSimulator(
     private val composeTestRule: ComposeTestRule,
 ) {
-    private fun contactComposable(contact: Contact) =
+    private fun contactContent(contact: Contact) =
         composeTestRule.onNodeWithIdentifier(ContactsListTestIdentifier.CONTACT, contact.id.toString())
 
     fun assertHasContact(contact: Contact) {
-        contactComposable(contact).assertExists()
+        contactContent(contact).assertExists()
     }
 }

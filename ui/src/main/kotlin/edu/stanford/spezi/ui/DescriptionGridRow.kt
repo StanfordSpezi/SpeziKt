@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,7 +25,7 @@ fun DescriptionGridRow(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = Spacings.small),
-        horizontalArrangement = Arrangement.spacedBy(Spacings.medium),
+        horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -33,10 +35,12 @@ fun DescriptionGridRow(
             description()
         }
 
+        Spacer(modifier = Modifier.widthIn(min = Spacings.small))
+
         Box(
             modifier = Modifier
                 .alignByBaseline()
-                .fillMaxWidth()
+                .fillMaxWidth(),
         ) {
             content()
         }

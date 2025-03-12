@@ -8,9 +8,9 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -24,7 +24,7 @@ import edu.stanford.spezi.ui.ThemePreviews
 import kotlin.reflect.KMutableProperty1
 
 @Composable
-fun NameFieldRow(
+fun OutlinedNameFieldRow(
     builder: PersonNameComponents.Builder,
     property: KMutableProperty1<PersonNameComponents.Builder, String?>,
     description: @Composable BoxScope.() -> Unit,
@@ -47,14 +47,14 @@ fun NameFieldRow(
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = TextFieldDefaults.shape,
-    colors: TextFieldColors = TextFieldDefaults.colors(),
+    shape: Shape = OutlinedTextFieldDefaults.shape,
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
 ) {
     DescriptionGridRow(
         description = description,
         modifier = modifier,
         content = {
-            NameTextField(
+            OutlinedNameTextField(
                 builder = builder,
                 property = property,
                 enabled = enabled,
@@ -83,12 +83,11 @@ fun NameFieldRow(
 }
 
 @Composable
-fun NameFieldRow(
+fun OutlinedNameFieldRow(
     value: String,
     onValueChange: (String) -> Unit,
     description: @Composable BoxScope.() -> Unit,
     modifier: Modifier = Modifier,
-    testIdentifierSuffix: String? = null,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     textStyle: TextStyle = LocalTextStyle.current,
@@ -107,17 +106,16 @@ fun NameFieldRow(
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = TextFieldDefaults.shape,
-    colors: TextFieldColors = TextFieldDefaults.colors(),
+    shape: Shape = OutlinedTextFieldDefaults.shape,
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
 ) {
     DescriptionGridRow(
         description = description,
         modifier = modifier,
         content = {
-            NameTextField(
+            OutlinedNameTextField(
                 value = value,
                 onValueChange = onValueChange,
-                testIdentifierSuffix = testIdentifierSuffix,
                 enabled = enabled,
                 readOnly = readOnly,
                 textStyle = textStyle,

@@ -1,13 +1,17 @@
 package edu.stanford.spezi.ui.validation
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.GlobalScope
 import org.junit.Test
 
 class SpeziValidationTest {
 
     @Test
     fun testValidationDebounce() {
-        val engine = ValidationEngineImpl(rules = listOf(ValidationRule.nonEmpty))
+        val engine = ValidationEngineImpl(
+            rules = listOf(ValidationRule.nonEmpty),
+            coroutineScope = GlobalScope
+        )
 
         engine.submit("Valid")
         assertThat(engine.inputValid).isTrue()
