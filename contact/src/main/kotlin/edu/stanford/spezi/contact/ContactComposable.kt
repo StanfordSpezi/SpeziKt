@@ -24,7 +24,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.ui.ImageResource
-import edu.stanford.spezi.ui.ImageResourceComposable
 import edu.stanford.spezi.ui.Sizes
 import edu.stanford.spezi.ui.Spacings
 import edu.stanford.spezi.ui.SpeziTheme
@@ -67,8 +66,7 @@ fun ContactComposable(contact: Contact, modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.spacedBy(Spacings.small),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                ImageResourceComposable(
-                    imageResource = contact.image,
+                contact.image.Content(
                     modifier = Modifier
                         .size(Sizes.Icon.medium)
                 )
