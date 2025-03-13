@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.spezi.modules.account.manager.UserSessionManager
-import edu.stanford.spezi.ui.markdown.MarkdownParser
+import edu.stanford.spezi.modules.onboarding.consent.markdown.MarkdownParser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update

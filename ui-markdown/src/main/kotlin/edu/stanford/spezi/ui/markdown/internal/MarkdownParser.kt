@@ -10,12 +10,9 @@ import org.intellij.markdown.MarkdownElementTypes
 import org.intellij.markdown.MarkdownTokenTypes
 import org.intellij.markdown.ast.ASTNode
 import org.intellij.markdown.ast.getTextInNode
-import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import org.intellij.markdown.parser.MarkdownParser
 
 // adapted from: https://github.com/volo-droid/Markdown-to-AnnotatedString/blob/main/library/src/main/java/dev/volo/markdown/annotatedstring/AnnotatedStringGenerator.kt
-
-internal val DEFAULT_MARKDOWN_PARSER get() = MarkdownParser(GFMFlavourDescriptor())
 
 internal fun MarkdownParser.parseAnnotatedString(text: String): AnnotatedString {
     val tree = this.buildMarkdownTreeFromString(text)

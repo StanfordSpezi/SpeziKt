@@ -11,10 +11,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.AnnotatedString
 import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.ThemePreviews
-import edu.stanford.spezi.ui.markdown.internal.DEFAULT_MARKDOWN_PARSER
 import edu.stanford.spezi.ui.markdown.internal.parseAnnotatedString
+import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import org.intellij.markdown.parser.MarkdownParser
 import java.nio.charset.StandardCharsets
+
+internal val DEFAULT_MARKDOWN_PARSER get() = MarkdownParser(GFMFlavourDescriptor())
 
 @Composable
 fun MarkdownBytes(
