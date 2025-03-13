@@ -4,7 +4,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -12,71 +11,75 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.AnnotatedString
 import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.ThemePreviews
-import edu.stanford.spezi.ui.ViewState
+import edu.stanford.spezi.ui.markdown.internal.DEFAULT_MARKDOWN_PARSER
 import edu.stanford.spezi.ui.markdown.internal.parseAnnotatedString
-import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import org.intellij.markdown.parser.MarkdownParser
 import java.nio.charset.StandardCharsets
 
 @Composable
 fun MarkdownBytes(
     bytes: ByteArray,
-    state: MutableState<ViewState> = remember { mutableStateOf(ViewState.Idle) },
+    parser: MarkdownParser = DEFAULT_MARKDOWN_PARSER,
+    onFailure: ((Throwable) -> Unit)? = null,
 ) {
     MarkdownBytes(
         bytes = { bytes },
-        state = state,
+        parser = parser,
+        onFailure = onFailure,
     )
 }
 
 @Composable
 fun MarkdownBytes(
     bytes: suspend () -> ByteArray,
-    state: MutableState<ViewState> = remember { mutableStateOf(ViewState.Idle) },
+    parser: MarkdownParser = DEFAULT_MARKDOWN_PARSER,
+    onFailure: ((Throwable) -> Unit)? = null,
 ) {
     MarkdownString(
         string = { bytes().toString(StandardCharsets.UTF_8) },
-        state = state,
+        parser = parser,
+        onFailure = onFailure,
     )
 }
 
 @Composable
 fun MarkdownString(
     string: String,
-    state: MutableState<ViewState> = remember { mutableStateOf(ViewState.Idle) },
+    parser: MarkdownParser = DEFAULT_MARKDOWN_PARSER,
+    onFailure: ((Throwable) -> Unit)? = null,
 ) {
     MarkdownString(
         string = { string },
-        state = state,
+        parser = parser,
+        onFailure = onFailure,
     )
 }
 
 @Composable
 fun MarkdownString(
     string: suspend () -> String,
-    state: MutableState<ViewState> = remember { mutableStateOf(ViewState.Idle) },
+    parser: MarkdownParser = DEFAULT_MARKDOWN_PARSER,
+    onFailure: ((Throwable) -> Unit)? = null,
 ) {
     Markdown(
-        build = { MarkdownParser(GFMFlavourDescriptor()).parseAnnotatedString(string()) },
-        state = state,
+        build = { parser.parseAnnotatedString(string()) },
+        onFailure = onFailure,
     )
 }
 
 @Composable
 fun Markdown(
     build: suspend () -> AnnotatedString,
-    state: MutableState<ViewState> = remember { mutableStateOf(ViewState.Idle) },
+    onFailure: ((Throwable) -> Unit)? = null,
 ) {
     var markdownContent by remember { mutableStateOf<AnnotatedString?>(null) }
 
     @Suppress("detekt:TooGenericExceptionCaught")
-    LaunchedEffect(Unit) {
-        state.value = ViewState.Processing
+    LaunchedEffect(build) {
         try {
             markdownContent = build()
-            state.value = ViewState.Idle
         } catch (throwable: Throwable) {
-            state.value = ViewState.Error(throwable)
+            onFailure?.invoke(throwable)
         }
     }
 
