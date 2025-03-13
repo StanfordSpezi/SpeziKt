@@ -10,6 +10,7 @@ android {
 
 dependencies {
     api(libs.bundles.compose.androidTest)
+    api(libs.markdown)
 
     api(project(":ui"))
     implementation(project(":core-logging"))

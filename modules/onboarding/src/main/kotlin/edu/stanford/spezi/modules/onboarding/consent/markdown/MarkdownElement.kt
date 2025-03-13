@@ -1,4 +1,4 @@
-package edu.stanford.spezi.ui.markdown
+package edu.stanford.spezi.modules.onboarding.consent.markdown
 
 sealed interface MarkdownElement {
     data class Heading(val level: Int, val text: String) : MarkdownElement

@@ -15,10 +15,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import edu.stanford.spezi.modules.onboarding.consent.markdown.MarkdownComponent
+import edu.stanford.spezi.modules.onboarding.consent.markdown.MarkdownElement
 import edu.stanford.spezi.ui.Spacings
 import edu.stanford.spezi.ui.SpeziTheme
-import edu.stanford.spezi.ui.markdown.MarkdownComponent
-import edu.stanford.spezi.ui.markdown.MarkdownElement
 import edu.stanford.spezi.ui.testing.testIdentifier
 
 @Composable

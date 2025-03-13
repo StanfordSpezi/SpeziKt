@@ -1,82 +1,102 @@
 package edu.stanford.spezi.ui.markdown
 
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.AnnotatedString
 import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.ThemePreviews
-import edu.stanford.spezi.ui.ViewState
+import edu.stanford.spezi.ui.markdown.internal.MarkdownStyle
+import edu.stanford.spezi.ui.markdown.internal.parseAnnotatedString
+import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
+import org.intellij.markdown.parser.MarkdownParser
 import java.nio.charset.StandardCharsets
+
+internal val DEFAULT_MARKDOWN_PARSER get() = MarkdownParser(GFMFlavourDescriptor())
 
 @Composable
 fun MarkdownBytes(
     bytes: ByteArray,
-    state: MutableState<ViewState> = remember { mutableStateOf(ViewState.Idle) },
+    parser: MarkdownParser = DEFAULT_MARKDOWN_PARSER,
+    onFailure: ((Throwable) -> Unit)? = null,
 ) {
     MarkdownBytes(
         bytes = { bytes },
-        state = state,
+        parser = parser,
+        onFailure = onFailure,
     )
 }
 
 @Composable
 fun MarkdownBytes(
     bytes: suspend () -> ByteArray,
-    state: MutableState<ViewState> = remember { mutableStateOf(ViewState.Idle) },
+    parser: MarkdownParser = DEFAULT_MARKDOWN_PARSER,
+    onFailure: ((Throwable) -> Unit)? = null,
 ) {
     MarkdownString(
         string = { bytes().toString(StandardCharsets.UTF_8) },
-        state = state,
+        parser = parser,
+        onFailure = onFailure,
     )
 }
 
 @Composable
 fun MarkdownString(
     string: String,
-    state: MutableState<ViewState> = remember { mutableStateOf(ViewState.Idle) },
+    parser: MarkdownParser = DEFAULT_MARKDOWN_PARSER,
+    onFailure: ((Throwable) -> Unit)? = null,
 ) {
     MarkdownString(
         string = { string },
-        state = state,
+        parser = parser,
+        onFailure = onFailure,
     )
 }
 
 @Composable
 fun MarkdownString(
     string: suspend () -> String,
-    state: MutableState<ViewState> = remember { mutableStateOf(ViewState.Idle) },
+    parser: MarkdownParser = DEFAULT_MARKDOWN_PARSER,
+    onFailure: ((Throwable) -> Unit)? = null,
 ) {
+    val style = MarkdownStyle(
+        h1 = MaterialTheme.typography.headlineLarge,
+        h2 = MaterialTheme.typography.headlineMedium,
+        h3 = MaterialTheme.typography.headlineSmall,
+        h4 = MaterialTheme.typography.titleLarge,
+        h5 = MaterialTheme.typography.titleMedium,
+        h6 = MaterialTheme.typography.titleSmall,
+    )
     Markdown(
-        build = { MarkdownParser().parse(string()) },
-        state = state,
+        build = { parser.parseAnnotatedString(string(), style) },
+        onFailure = onFailure,
     )
 }
 
 @Composable
 fun Markdown(
-    build: suspend () -> List<MarkdownElement>,
-    state: MutableState<ViewState> = remember { mutableStateOf(ViewState.Idle) },
+    build: suspend () -> AnnotatedString,
+    onFailure: ((Throwable) -> Unit)? = null,
 ) {
-    var markdownContent by remember { mutableStateOf<List<MarkdownElement>?>(null) }
+    var markdownContent by remember { mutableStateOf<AnnotatedString?>(null) }
 
     @Suppress("detekt:TooGenericExceptionCaught")
-    LaunchedEffect(Unit) {
-        state.value = ViewState.Processing
+    LaunchedEffect(build) {
         try {
             markdownContent = build()
-            state.value = ViewState.Idle
         } catch (throwable: Throwable) {
-            state.value = ViewState.Error(throwable)
+            onFailure?.invoke(throwable)
         }
     }
 
     markdownContent?.let {
-        MarkdownComponent(it)
+        Text(it)
     } ?: CircularProgressIndicator()
 }
 
@@ -84,6 +104,22 @@ fun Markdown(
 @Composable
 private fun MarkdownPreview() {
     SpeziTheme(isPreview = true) {
-        MarkdownString("This is a markdown **example**!")
+        MarkdownString("""
+            # Markdown Title
+            This is a paragraph in **Markdown**.
+                            
+            ## Subtitle
+            - Item 1
+            - Item 2
+            - Item 3
+                            
+            ## Another Subtitle
+            **Bold Text**
+            This is a paragraph in Markdown.
+            1. Item 1
+            2. Item 2
+            3. Item 3
+        """.trimIndent()
+        )
     }
 }

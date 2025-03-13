@@ -3,10 +3,10 @@ package edu.stanford.spezi.modules.onboarding.consent
 import androidx.compose.ui.graphics.Path
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.modules.account.manager.UserSessionManager
+import edu.stanford.spezi.modules.onboarding.consent.markdown.MarkdownElement
+import edu.stanford.spezi.modules.onboarding.consent.markdown.MarkdownParser
 import edu.stanford.spezi.modules.testing.CoroutineTestRule
 import edu.stanford.spezi.modules.testing.runTestUnconfined
-import edu.stanford.spezi.ui.markdown.MarkdownElement
-import edu.stanford.spezi.ui.markdown.MarkdownParser
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
