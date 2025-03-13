@@ -1,6 +1,7 @@
 package edu.stanford.spezi.ui.markdown
 
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -11,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.AnnotatedString
 import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.ThemePreviews
+import edu.stanford.spezi.ui.markdown.internal.MarkdownStyle
 import edu.stanford.spezi.ui.markdown.internal.parseAnnotatedString
 import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import org.intellij.markdown.parser.MarkdownParser
@@ -63,8 +65,16 @@ fun MarkdownString(
     parser: MarkdownParser = DEFAULT_MARKDOWN_PARSER,
     onFailure: ((Throwable) -> Unit)? = null,
 ) {
+    val style = MarkdownStyle(
+        h1 = MaterialTheme.typography.headlineLarge,
+        h2 = MaterialTheme.typography.headlineMedium,
+        h3 = MaterialTheme.typography.headlineSmall,
+        h4 = MaterialTheme.typography.titleLarge,
+        h5 = MaterialTheme.typography.titleMedium,
+        h6 = MaterialTheme.typography.titleSmall,
+    )
     Markdown(
-        build = { parser.parseAnnotatedString(string()) },
+        build = { parser.parseAnnotatedString(string(), style) },
         onFailure = onFailure,
     )
 }
@@ -106,9 +116,9 @@ private fun MarkdownPreview() {
             ## Another Subtitle
             **Bold Text**
             This is a paragraph in Markdown.
-            - Item 1
-            - Item 2
-            - Item 3
+            1. Item 1
+            2. Item 2
+            3. Item 3
         """.trimIndent()
         )
     }
