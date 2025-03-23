@@ -1,5 +1,8 @@
 package edu.stanford.spezi.questionnaire
 
+import android.content.res.Resources
+import android.view.ViewGroup
+import android.widget.Button
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
@@ -15,9 +18,11 @@ import androidx.fragment.compose.AndroidFragment
 import androidx.fragment.compose.rememberFragmentState
 import ca.uhn.fhir.context.FhirContext
 import com.google.android.fhir.datacapture.QuestionnaireFragment
+import edu.stanford.spezi.core.logging.SpeziLogger
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.testing.testIdentifier
 import org.hl7.fhir.r4.model.Questionnaire
+import com.google.android.fhir.datacapture.R as DataCaptureR
 
 @Composable
 fun QuestionnaireComposable(
@@ -92,6 +97,7 @@ fun QuestionnaireComposable(
             .testIdentifier(QuestionnaireComposableTestIdentifiers.ROOT),
         arguments = arguments,
     ) { fragment ->
+        fragment.adjustBottomNavButtonSizesIfNeeded()
         fragment.setFragmentResultListener(
             QuestionnaireFragment.SUBMIT_REQUEST_KEY
         ) { _, _ ->
@@ -115,6 +121,50 @@ fun QuestionnaireComposable(
         }
     }
 }
+
+/**
+ * On large font size and display size settings on device, the bottom nav buttons exceed the
+ * available screen width and are not visible. This function adjusts the size of the buttons to
+ * ensure they are visible if needed.
+ */
+private fun QuestionnaireFragment.adjustBottomNavButtonSizesIfNeeded() {
+    val view = view ?: return
+    val fontScale = Resources.getSystem().configuration.fontScale
+    val displayScale = view.context.resources.displayMetrics.density
+    SpeziLogger.tag(TAG).i { "System font scale: $fontScale, display scale: $displayScale" }
+
+    if (fontScale >= MAX_FONT_SCALE && displayScale >= MAX_DISPLAY_SCALE) {
+        // Iterating through the res ids of the buttons defined in questionnaire_fragment.xml of
+        // fhir data capture
+        listOf(
+            DataCaptureR.id.cancel_questionnaire,
+            DataCaptureR.id.pagination_previous_button,
+            DataCaptureR.id.pagination_next_button,
+            DataCaptureR.id.review_mode_button,
+            DataCaptureR.id.submit_questionnaire
+        ).forEach { buttonId ->
+            view.findViewById<Button>(buttonId)?.let { button ->
+                SpeziLogger.tag(TAG).i { "Reducing button $buttonId size" }
+                button.textSize = REDUCED_BUTTON_TEXT_SIZE
+                val layoutParams = button.layoutParams as? ViewGroup.MarginLayoutParams
+                layoutParams?.setMargins(
+                    /* left */ REDUCED_BUTTON_HORIZONTAL_MARGIN,
+                    /* top */ REDUCED_BUTTON_VERTICAL_MARGIN,
+                    /* right */ REDUCED_BUTTON_HORIZONTAL_MARGIN,
+                    /* bottom */ REDUCED_BUTTON_VERTICAL_MARGIN
+                )
+                button.layoutParams = layoutParams
+            }
+        }
+    }
+}
+
+private const val TAG = "QuestionnaireFragment"
+private const val MAX_FONT_SCALE = 1.45f
+private const val MAX_DISPLAY_SCALE = 3f
+private const val REDUCED_BUTTON_TEXT_SIZE = 10f
+private const val REDUCED_BUTTON_HORIZONTAL_MARGIN = 2
+private const val REDUCED_BUTTON_VERTICAL_MARGIN = 8
 
 enum class QuestionnaireComposableTestIdentifiers {
     ROOT,
