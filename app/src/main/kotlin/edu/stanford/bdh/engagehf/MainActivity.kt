@@ -67,28 +67,7 @@ class MainActivity : FragmentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen().apply {
-            setKeepOnScreenCondition {
-                viewModel.uiState.value is MainUiState.SplashScreen
-            }
-        }
         super.onCreate(savedInstanceState)
-        setContent {
-            SpeziTheme {
-                when (val uiState = viewModel.uiState.collectAsState().value) {
-                    is MainUiState.SplashScreen -> Loading()
-                    is MainUiState.Content -> {
-                        val navHostController = rememberNavController()
-                        Navigator(navHostController = navHostController)
-                        AppContent(
-                            navHostController = navHostController,
-                            startDestination = uiState.startDestination
-                        )
-                        setTheme(R.style.Theme_Spezi_Content)
-                    }
-                }
-            }
-        }
     }
 
     @Composable
@@ -196,7 +175,7 @@ class MainActivity : FragmentActivity() {
                         )
 
                         is AccountNavigationEvent.LoginScreen -> navHostController.navigate(
-                            Routes.LoginScreen()
+                            Routes.ConsentScreen
                         )
 
                         is OnboardingNavigationEvent.InvitationCodeScreen -> navHostController.navigate(
