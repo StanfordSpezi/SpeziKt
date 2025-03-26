@@ -1,33 +1,29 @@
 package edu.stanford.speziclaid
 
 import adamma.c4dhi.claid.Module.Module
-import adamma.c4dhi.claid.Module.Properties
 import adamma.c4dhi.claid.ModuleConfig
 import com.google.protobuf.Struct
 import com.google.protobuf.Value
 
-class ModuleInstance<T : Module>(
+class WrappedModule<T : Module>(
     private val moduleClass: Class<T>,
     private val moduleId: String,
     private val properties: Map<String, String> = mapOf(),
-    private val inputChannels: Map<String, String> = mapOf(),
-    private val outputChannels: Map<String, String> = mapOf(),
-) {
+    private val outputs: Map<String, String> = mapOf(),
+    private val inputs: Map<String, String> = mapOf(),
+) : PreConfiguredModule {
 
-    init {
-    }
-
-    public fun getModuleConfig() : ModuleConfig {
+    public override fun getModuleConfig() : ModuleConfig {
         val moduleConfig = ModuleConfig.newBuilder();
         moduleConfig.setId(moduleId);
         moduleConfig.setType(moduleClass.name);
         moduleConfig.properties = mapToStruct(properties);
-        moduleConfig.putAllInputChannels(inputChannels);
-        moduleConfig.putAllOutputChannels(outputChannels);
+        moduleConfig.putAllInputChannels(inputs);
+        moduleConfig.putAllOutputChannels(outputs);
         return moduleConfig.build();
     }
 
-    fun mapToStruct(inputMap: Map<String, String>): Struct {
+    private fun mapToStruct(inputMap: Map<String, String>): Struct {
         val structBuilder = Struct.newBuilder()
 
         for ((key, value) in inputMap) {
@@ -40,4 +36,19 @@ class ModuleInstance<T : Module>(
 
         return structBuilder.build()
     }
+}
+
+fun <T : Module> wrapModule(
+    moduleClass: Class<T>,
+    moduleId: String,
+    properties: Map<String, String> = mapOf(),
+    outputs: Map<String, String> = mapOf(),
+    inputs: Map<String, String> = mapOf()): WrappedModule<T> {
+    return WrappedModule(
+        moduleClass,
+        moduleId,
+        properties,
+        outputs,
+        inputs
+    )
 }
