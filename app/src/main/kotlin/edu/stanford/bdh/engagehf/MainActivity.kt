@@ -2,7 +2,6 @@ package edu.stanford.bdh.engagehf
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,16 +9,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import dagger.hilt.android.AndroidEntryPoint
 import edu.stanford.bdh.engagehf.contact.ui.ContactScreen
@@ -46,7 +42,6 @@ import edu.stanford.spezi.modules.notification.setting.NotificationSettingScreen
 import edu.stanford.spezi.modules.onboarding.OnboardingNavigationEvent
 import edu.stanford.spezi.modules.onboarding.sequential.SequentialOnboardingScreen
 import edu.stanford.spezi.ui.Sizes
-import edu.stanford.spezi.ui.SpeziTheme
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject

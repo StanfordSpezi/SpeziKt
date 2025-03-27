@@ -1,12 +1,13 @@
 package edu.stanford.speziclaid
 
 import adamma.c4dhi.claid.CLAIDConfig
-import adamma.c4dhi.claid.Module.Module
-import adamma.c4dhi.claid.Module.ModuleFactory
+import adamma.c4dhi.claid.HostConfig
 import adamma.c4dhi.claid_android.Configuration.CLAIDPersistanceConfig
 import adamma.c4dhi.claid_android.Configuration.CLAIDSpecialPermissionsConfig
 import adamma.c4dhi.claid_platform_impl.CLAID
 import android.app.Application
+import edu.stanford.speziclaid.module.PreConfiguredModule
+import edu.stanford.speziclaid.module.SpeziCLAIDModule
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,41 +15,56 @@ import javax.inject.Singleton
 class CLAIDRuntime @Inject constructor(
     private val application: Application
 ) {
+    private var modules: ArrayList<PreConfiguredModule> = ArrayList()
+
+    private fun buildCLAIDConfig(host: String): CLAIDConfig {
+        val claidConfig = CLAIDConfig.newBuilder();
+        val hostConfig = HostConfig.newBuilder();
+        hostConfig.hostname = host;
+        for(module in modules) {
+            hostConfig.addModules(module.getModuleConfig())
+        }
 
 
-    private val claidConfig = CLAIDConfig.newBuilder()
-    private val modules = ArrayList<PreConfiguredModule>()
-
-    private fun buildCLAIDConfig() {
-
+        claidConfig.addHosts(hostConfig.build());
+        return claidConfig.build()
     }
 
     private fun preloadModules(modules: ArrayList<PreConfiguredModule>) {
+        for (module in modules) {
+            // SpeziCLAIDModules are already instantiated,
+            // thus they are preloaded and we can add them to
+            // the CLAID runtime. In contrast, WrappedModules will
+            // be instantiated by CLAID once it is started.
+            if (module is SpeziCLAIDModule) {
 
+            }
+        }
     }
 
-    public fun addModule(module: PreConfiguredModule): CLAIDRuntime {
+    fun addModule(module: PreConfiguredModule): CLAIDRuntime {
         modules.add(module)
         return this
     }
 
-    public fun addModules(modules: List<PreConfiguredModule>): CLAIDRuntime {
+    fun addModules(modules: List<PreConfiguredModule>): CLAIDRuntime {
         this.modules.addAll(modules)
         return this
     }
 
-
-
-    public fun startInBackground(
+    fun startInBackground(
         host: String,
         userId: String,
         deviceId: String,
         specialPermissionsConfig: CLAIDSpecialPermissionsConfig = CLAIDSpecialPermissionsConfig(),
         persistance: CLAIDPersistanceConfig = CLAIDPersistanceConfig()
     ) {
+        if(CLAID.isRunning()) {
+            throw Exception("CLAID is already running")
+        }
         if (!CLAID.isRunning()) {
             preloadModules(modules)
-            buildCLAIDConfig()
+            val config = buildCLAIDConfig(host = host)
             val configPath = ""
             CLAID.startInBackground(
                 application.applicationContext,
@@ -65,5 +81,8 @@ class CLAIDRuntime @Inject constructor(
         }
     }
 
+    fun isRunning(): Boolean {
+        return CLAID.isRunning()
+    }
 
 }

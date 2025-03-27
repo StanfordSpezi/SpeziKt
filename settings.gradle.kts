@@ -13,6 +13,27 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
+var isClaidDeveloper: Boolean
+val homeDir = System.getProperty("user.home")
+var credentialsFile = file("${homeDir}/.claid/developer_settings.txt")
+
+val properties = java.util.Properties()
+
+if (!credentialsFile.exists()) {
+    credentialsFile = file("developer_settings.txt")
+}
+
+if (credentialsFile.exists()) {
+    credentialsFile.inputStream().use { stream ->
+        properties.load(stream)
+    }
+    isClaidDeveloper = true  // Set to true if credentials file is found
+    println("You are a CLAID developer!")
+} else {
+    isClaidDeveloper = false  // Keep false if file is not found
+}
+
 dependencyResolutionManagement {
     @Suppress("UnstableApiUsage")
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -20,6 +41,18 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+
+        if (isClaidDeveloper) {
+            maven {
+                name = "CLAID SDK Repo"  // Give the repository a name
+                url = uri(properties.getProperty("repo_url") ?: "http://invalid_host_in_claid_developer_settings_file") // Read the URL from the properties file
+                isAllowInsecureProtocol = true
+                credentials {
+                    username = properties.getProperty("developer_name") ?: ""
+                    password = properties.getProperty("developer_password") ?: ""
+                }
+            }
+        }
     }
 }
 

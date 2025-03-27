@@ -1,6 +1,5 @@
-package edu.stanford.speziclaid
+package edu.stanford.speziclaid.module
 
-import adamma.c4dhi.claid.Module.Module
 import adamma.c4dhi.claid.ModuleConfig
 
 interface PreConfiguredModule {

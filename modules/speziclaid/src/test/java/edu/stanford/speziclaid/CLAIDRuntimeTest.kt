@@ -1,6 +1,11 @@
 package edu.stanford.speziclaid
 
+import adamma.c4dhi.claid_android.Configuration.CLAIDPersistanceConfig
+import adamma.c4dhi.claid_android.Configuration.CLAIDSpecialPermissionsConfig
 import adamma.c4dhi.claid_android.collectors.motion.AccelerometerCollector
+import edu.stanford.speziclaid.helper.structOf
+import edu.stanford.speziclaid.module.DataRecorder
+import edu.stanford.speziclaid.module.WrappedModule
 import org.junit.Test
 import javax.inject.Inject
 
@@ -16,21 +21,31 @@ class CLAIDRuntimeTest {
             listOf(
                 WrappedModule(
                     moduleClass=AccelerometerCollector::class.java,
-                    moduleId="MyAccelerometerCollector"
+                    moduleId="MyAccelerometerCollector",
+                    properties= structOf(
+                        "samplingFrequency" to 50
+                    ),
+                    outputs=mapOf(
+                        "AccelerationData" to "InternalAccelerometerData"
+                    )
                 ),
                 DataRecorder(
                     moduleId = "MyDataRecorder",
-                    properties = mapOf()
+                    properties = structOf()
                 )
-                    .record("AccelerationData")
+                    .record("InternalAccelerometerData")
                     .record("GyroscopeData"),
 
             )
         ).startInBackground(
             host="MyHost",
             userId="MyUserId",
-            deviceId="MyDeviceId"
+            deviceId="MyDeviceId",
+            CLAIDSpecialPermissionsConfig.regularConfig(),
+            CLAIDPersistanceConfig.onBootAutoStart()
         )
+
+
     }
 
 

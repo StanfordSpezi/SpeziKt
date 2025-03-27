@@ -8,6 +8,6 @@ android {
 }
 
 dependencies {
-    implementation("ch.claid:claid:0.6.4")
+    implementation("ch.claid:claid:0.6.6")
     implementation(project(":modules:healthconnectonfhir"))
 }
