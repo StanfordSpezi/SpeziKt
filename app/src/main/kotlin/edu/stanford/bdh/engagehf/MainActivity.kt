@@ -1,5 +1,9 @@
 package edu.stanford.bdh.engagehf
 
+import adamma.c4dhi.claid_android.CLAIDServices.ServiceAnnotation
+import adamma.c4dhi.claid_android.Configuration.CLAIDPersistanceConfig
+import adamma.c4dhi.claid_android.Configuration.CLAIDSpecialPermissionsConfig
+import adamma.c4dhi.claid_android.collectors.motion.AccelerometerCollector
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -42,6 +46,10 @@ import edu.stanford.spezi.modules.notification.setting.NotificationSettingScreen
 import edu.stanford.spezi.modules.onboarding.OnboardingNavigationEvent
 import edu.stanford.spezi.modules.onboarding.sequential.SequentialOnboardingScreen
 import edu.stanford.spezi.ui.Sizes
+import edu.stanford.speziclaid.CLAIDRuntime
+import edu.stanford.speziclaid.helper.structOf
+import edu.stanford.speziclaid.module.DataRecorder
+import edu.stanford.speziclaid.module.WrappedModule
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -56,6 +64,9 @@ class MainActivity : FragmentActivity() {
     @Dispatching.Main
     lateinit var mainDispatcher: CoroutineDispatcher
 
+    @Inject
+    lateinit var claidRuntime: CLAIDRuntime
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         viewModel.onAction(action = MainActivityAction.NewIntent(intent))
@@ -63,6 +74,46 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        startCLAID()
+    }
+
+
+
+    private fun startCLAID() {
+        val recorder = DataRecorder()
+
+        claidRuntime.addModules(
+            listOf(
+                WrappedModule(
+                    moduleClass=AccelerometerCollector::class.java,
+                    moduleId="MyAccelerometerCollector",
+                    properties= structOf(
+                        "samplingFrequency" to 50,
+                        "outputMode" to "BATCHED"
+                    ),
+                    outputs=mapOf(
+                        "AccelerationData" to "InternalAccelerometerData"
+                    )
+                ),
+                DataRecorder(
+                    moduleId = "MyDataRecorder",
+                    properties = structOf()
+                )
+                    .record("InternalAccelerometerData")
+                    .record("GyroscopeData"),
+                )
+        ).startInBackground(
+            host="MyHost",
+            userId="MyUserId",
+            deviceId="MyDeviceId",
+            specialPermissions=CLAIDSpecialPermissionsConfig.regularConfig(),
+            persistance=CLAIDPersistanceConfig.onBootAutoStart(),
+            annotation = ServiceAnnotation(
+                "Engage-HF background service",
+                "Running AI in the background!",
+                edu.stanford.spezi.modules.design.R.drawable.ic_medication
+            )
+        )
     }
 
     @Composable

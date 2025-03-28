@@ -49,6 +49,7 @@ dependencies {
     implementation(project(":modules:navigation"))
     implementation(project(":modules:notification"))
     implementation(project(":modules:onboarding"))
+    implementation(project(":modules:speziclaid"))
 
     implementation(project(":contact"))
     implementation(project(":foundation"))
@@ -62,7 +63,15 @@ dependencies {
     implementation(project(":questionnaire"))
 
     implementation(libs.firebase.firestore.ktx)
+    {
+        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
+        exclude(group = "com.google.protobuf", module = "protobuf-javalite")
+    }
     implementation(libs.firebase.functions.ktx)
+    {
+        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
+        exclude(group = "com.google.protobuf", module = "protobuf-javalite")
+    }
 
     implementation(libs.androidx.core.i18n)
     implementation(libs.androidx.core.ktx)
@@ -75,5 +84,7 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.vico.compose.m3)
 
+
     androidTestImplementation(project(":modules:testing"))
+
 }

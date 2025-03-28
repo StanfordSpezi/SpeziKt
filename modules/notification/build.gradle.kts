@@ -12,8 +12,17 @@ android {
 
 dependencies {
     implementation(libs.firebase.firestore.ktx)
+    {
+        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
+        exclude(group = "com.google.protobuf", module = "protobuf-javalite")    }
     implementation(libs.firebase.functions.ktx)
+    {
+        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
+        exclude(group = "com.google.protobuf", module = "protobuf-javalite")    }
     implementation(libs.firebase.messaging.ktx)
+    {
+        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
+        exclude(group = "com.google.protobuf", module = "protobuf-javalite")    }
     implementation(libs.hilt.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
 

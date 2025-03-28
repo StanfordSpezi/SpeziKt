@@ -9,17 +9,19 @@ import adamma.c4dhi.claid.Module.Properties
 import adamma.c4dhi.claid.TypeMapping.AnyProtoType
 import adamma.c4dhi.claid.TypeMapping.DataType
 import adamma.c4dhi.claid.TypeMapping.TypeMapping
+import adamma.c4dhi.claid_platform_impl.CLAID
 import adamma.c4dhi.claid_sensor_data.AccelerationData
 import adamma.c4dhi.claid_sensor_data.SleepData
 import com.google.protobuf.Message
 import com.google.protobuf.Struct
+import dagger.hilt.android.EntryPointAccessors
 import edu.stanford.speziclaid.datastore.DataStorer
 import edu.stanford.speziclaid.datastore.store
-import javax.inject.Inject
+import edu.stanford.speziclaid.helper.structOf
 
 open class DataRecorder(
     val moduleId: String,
-    properties: Struct
+    properties: Struct = structOf()
 ) : SpeziCLAIDModule(
     moduleId,
     properties,
@@ -31,10 +33,18 @@ open class DataRecorder(
     private val subscribedChannels = ArrayList<Channel<AnyProtoType>>()
     private val inputChannelPrefix = "DataRecorder/$moduleId/INPUT";
 
-    @Inject
-    lateinit var dataStorer: DataStorer
+    private val dataStorer: DataStorer by lazy {
+        val entryPoint = EntryPointAccessors.fromApplication(
+            CLAID.getContext().applicationContext, // Application context to access Hilt
+            DataStorerEntryPoint::class.java // EntryPoint interface
+        )
+        entryPoint.getDataStorer() // Get the injected DataStorer
+    }
+
+    constructor() : this("", structOf())
 
     private fun onData(data: ChannelData<AnyProtoType>) {
+        print("Received data!")
         val receivedData: AnyProtoType = data.data
         val payload: Blob = receivedData.blob
         val type: String = payload.messageType
@@ -57,6 +67,7 @@ open class DataRecorder(
         return mutator.getPackagePayload(stubPackage.build())
     }
 
+
     fun record(dataChannelName: String): DataRecorder {
         val recorderInputChannelName = "$inputChannelPrefix/${dataChannels.size}"
 
@@ -70,7 +81,7 @@ open class DataRecorder(
 
     override fun initialize(properties: Properties?) {
         for (dataChannel in dataChannels) {
-            val channel = subscribe(dataChannel.value, AnyProtoType::class.java, ::onData)
+            val channel = subscribe(dataChannel.key, AnyProtoType::class.java, ::onData)
             subscribedChannels.add(channel)
         }
     }
