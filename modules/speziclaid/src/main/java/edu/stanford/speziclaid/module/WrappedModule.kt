@@ -11,16 +11,16 @@ public class WrappedModule<T : Module>(
     private val properties: Struct = structOf(),
     private val outputs: Map<String, String> = mapOf(),
     private val inputs: Map<String, String> = mapOf(),
-) : PreConfiguredModule {
+) : ProvidesModuleConfigs {
 
-    override fun getModuleConfig() : ModuleConfig {
+    override fun getModuleConfigurations(): List<ModuleConfig> {
         val moduleConfig = ModuleConfig.newBuilder();
         moduleConfig.setId(moduleId);
         moduleConfig.setType(moduleClass.simpleName);
         moduleConfig.properties = properties;
         moduleConfig.putAllInputChannels(inputs);
         moduleConfig.putAllOutputChannels(outputs);
-        return moduleConfig.build();
+        return listOf(moduleConfig.build())
     }
 }
 

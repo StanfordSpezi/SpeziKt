@@ -15,7 +15,7 @@ abstract class SpeziCLAIDModule(
     protected val properties: Struct = structOf(),
     protected var outputChannels: MutableMap<String, String> = mutableMapOf<String, String>(),
     protected var inputChannels: MutableMap<String, String> = mutableMapOf<String, String>()
-) : Module(moduleId), PreConfiguredModule {
+) : Module(moduleId), ProvidesModuleConfigs {
 
     // Helper object for auto registration.
     companion object {
@@ -42,14 +42,14 @@ abstract class SpeziCLAIDModule(
         register(this::class.java)
     }
 
-    override fun getModuleConfig() : ModuleConfig {
+    override fun getModuleConfigurations() : List<ModuleConfig> {
         val moduleConfig = ModuleConfig.newBuilder();
         moduleConfig.setId(moduleId);
         moduleConfig.setType(javaClass.simpleName);
         moduleConfig.properties = properties;
         moduleConfig.putAllInputChannels(inputChannels);
         moduleConfig.putAllOutputChannels(outputChannels);
-        return moduleConfig.build();
+        return listOf(moduleConfig.build())
     }
 
     @EntryPoint

@@ -3,6 +3,8 @@ package edu.stanford.bdh.engagehf
 import adamma.c4dhi.claid_android.CLAIDServices.ServiceAnnotation
 import adamma.c4dhi.claid_android.Configuration.CLAIDPersistanceConfig
 import adamma.c4dhi.claid_android.Configuration.CLAIDSpecialPermissionsConfig
+import adamma.c4dhi.claid_android.Permissions.MicrophonePermission
+import adamma.c4dhi.claid_android.collectors.audio.MicrophoneCollector
 import adamma.c4dhi.claid_android.collectors.motion.AccelerometerCollector
 import android.content.Intent
 import android.os.Bundle
@@ -47,6 +49,7 @@ import edu.stanford.spezi.modules.onboarding.OnboardingNavigationEvent
 import edu.stanford.spezi.modules.onboarding.sequential.SequentialOnboardingScreen
 import edu.stanford.spezi.ui.Sizes
 import edu.stanford.speziclaid.CLAIDRuntime
+import edu.stanford.speziclaid.cough.CoughRecognizerPipeline
 import edu.stanford.speziclaid.helper.structOf
 import edu.stanford.speziclaid.module.DataRecorder
 import edu.stanford.speziclaid.module.WrappedModule
@@ -84,6 +87,7 @@ class MainActivity : FragmentActivity() {
 
         claidRuntime.addModules(
             listOf(
+                // === Accelerometer Tracking === //
                 WrappedModule(
                     moduleClass=AccelerometerCollector::class.java,
                     moduleId="MyAccelerometerCollector",
@@ -95,13 +99,25 @@ class MainActivity : FragmentActivity() {
                         "AccelerationData" to "InternalAccelerometerData"
                     )
                 ),
+                // === On Device Cough Detection === //
+                CoughRecognizerPipeline(
+                    name="MyCoughRecognizer",
+                    inputs=mapOf(
+                        "AudioData" to "MicrophoneAudioData"
+                    ),
+                    outputs=mapOf(
+                        "DetectedCoughs" to "DetectedCoughs"
+                    )
+                ),
+                // === Data Recording === //
                 DataRecorder(
                     moduleId = "MyDataRecorder",
                     properties = structOf()
                 )
                     .record("InternalAccelerometerData")
-                    .record("GyroscopeData"),
-                )
+                    .record("GyroscopeData")
+                    .record("DetectedCoughs")
+            )
         ).startInBackground(
             host="MyHost",
             userId="MyUserId",

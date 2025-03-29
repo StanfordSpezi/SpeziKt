@@ -19,6 +19,7 @@ class CLAIDRuntimeTest {
 
         claidRuntime.addModules(
             listOf(
+
                 WrappedModule(
                     moduleClass=AccelerometerCollector::class.java,
                     moduleId="MyAccelerometerCollector",

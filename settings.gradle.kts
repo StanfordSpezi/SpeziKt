@@ -88,3 +88,6 @@ include(":ui-personalinfo")
 include(":ui-testing")
 include(":ui-validation")
 include(":core-testing")
+include(":claid_cough_detection")
+
+project(":claid_cough_detection").projectDir = File("../CLAIDPackages/claid_cough_detection/packaging/android/claid_cough_detection")
