@@ -23,7 +23,7 @@ class CoughRecognizerPipeline(
                 moduleClass = MicrophoneCollector::class.java,
                 moduleId = "AudioRecorder",
                 properties = structOf(),
-                outputs = mapOf()
+                outputs = mapOf("AudioData" to "$name/AudioData")
             ),
             //CoughDetectionPreprocessor(),
             WrappedModule(
@@ -40,8 +40,8 @@ class CoughRecognizerPipeline(
                         )
                     )
                 ),
-                inputs = mapOf("InputChannel" to "MelSpectograms"),
-                outputs = mapOf("OutputChannel" to "CoughEnsembleOutputs")
+                inputs = mapOf("InputChannel" to "$name/MelSpectograms"),
+                outputs = mapOf("OutputChannel" to "$name/CoughEnsembleOutputs")
             ),
             //CoughDetectionPostprocessor()
 
