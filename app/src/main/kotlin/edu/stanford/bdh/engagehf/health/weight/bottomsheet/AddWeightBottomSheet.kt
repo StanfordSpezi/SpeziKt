@@ -124,7 +124,7 @@ private class AddWeightBottomSheetStepProvider :
 fun AddWeightBottomSheetPreview(
     @PreviewParameter(AddWeightBottomSheetStepProvider::class) uiState: AddWeightBottomSheetUiState,
 ) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         AddWeightBottomSheet(uiState = uiState, onAction = {})
     }
 }

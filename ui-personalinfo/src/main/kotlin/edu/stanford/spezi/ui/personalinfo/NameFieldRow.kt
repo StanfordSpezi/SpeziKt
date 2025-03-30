@@ -57,7 +57,7 @@ fun NameFieldRow(
 private fun NameFieldRowPreview() {
     val nameBuilder = remember { PersonNameComponents.Builder() }
 
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         Column {
             NameFieldRow(
                 nameBuilder,

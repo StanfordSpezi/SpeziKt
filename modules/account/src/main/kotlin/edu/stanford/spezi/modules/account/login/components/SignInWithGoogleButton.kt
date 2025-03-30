@@ -43,7 +43,7 @@ fun SignInWithGoogleButton(
 @ThemePreviews
 @Composable
 fun SignInWithGoogleButtonPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         SignInWithGoogleButton(onButtonClick = {})
     }
 }

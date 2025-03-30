@@ -57,7 +57,7 @@ fun ProcessingOverlay(
 @ThemePreviews
 @Composable
 private fun ProcessingOverlayPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         ProcessingOverlay(true) {
             SuspendButton("Do something") {
                 println("Did something")
