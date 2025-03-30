@@ -4,10 +4,10 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,12 +22,8 @@ import edu.stanford.spezi.ui.ThemePreviews
 import edu.stanford.spezi.ui.testing.testIdentifier
 import kotlin.reflect.KMutableProperty1
 
-enum class NameTextFieldTestIdentifier {
-    TEXT_FIELD,
-}
-
 @Composable
-fun NameTextField(
+fun OutlinedNameTextField(
     builder: PersonNameComponents.Builder,
     property: KMutableProperty1<PersonNameComponents.Builder, String?>,
     modifier: Modifier = Modifier,
@@ -49,13 +45,13 @@ fun NameTextField(
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = TextFieldDefaults.shape,
-    colors: TextFieldColors = TextFieldDefaults.colors(),
+    shape: Shape = OutlinedTextFieldDefaults.shape,
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
 ) {
     var value by remember(builder) {
         mutableStateOf(property.get(builder) ?: "")
     }
-    NameTextField(
+    OutlinedNameTextField(
         value = value,
         onValueChange = {
             property.set(builder, it.ifBlank { null })
@@ -87,7 +83,7 @@ fun NameTextField(
 }
 
 @Composable
-fun NameTextField(
+fun OutlinedNameTextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -110,10 +106,10 @@ fun NameTextField(
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = TextFieldDefaults.shape,
-    colors: TextFieldColors = TextFieldDefaults.colors(),
+    shape: Shape = OutlinedTextFieldDefaults.shape,
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
 ) {
-    TextField(
+    OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier.testIdentifier(
@@ -145,11 +141,11 @@ fun NameTextField(
 
 @ThemePreviews
 @Composable
-private fun NameTextFieldPreview() {
+private fun OutlinedNameTextFieldPreview() {
     val name = remember { PersonNameComponents.Builder() }
 
     SpeziTheme(isPreview = true) {
-        NameTextField(
+        OutlinedNameTextField(
             builder = name,
             property = PersonNameComponents.Builder::givenName,
             label = {

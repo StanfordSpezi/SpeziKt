@@ -24,7 +24,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.ui.ImageResource
-import edu.stanford.spezi.ui.ImageResourceComposable
 import edu.stanford.spezi.ui.Sizes
 import edu.stanford.spezi.ui.Spacings
 import edu.stanford.spezi.ui.SpeziTheme
@@ -38,9 +37,9 @@ import java.util.Locale
 /**
  * ContactView composable function to display contact information.
  *
- * @param contact The contact associated with the view.
+ * @param modifier A modifier to modify the inner composable.
  *
- * @sample ContactComposablePreview
+ * @sample ContactContentPreview
  *
  * @see Contact
  * @see ContactOptionCard
@@ -48,7 +47,7 @@ import java.util.Locale
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ContactComposable(contact: Contact, modifier: Modifier = Modifier) {
+fun Contact.Content(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -67,20 +66,19 @@ fun ContactComposable(contact: Contact, modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.spacedBy(Spacings.small),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                ImageResourceComposable(
-                    imageResource = contact.image,
+                image.Content(
                     modifier = Modifier
                         .size(Sizes.Icon.medium)
                 )
                 Column {
                     Text(
-                        text = remember(contact.name) { contact.name.formatted() },
+                        text = remember(name) { name.formatted() },
                         style = TextStyles.titleLarge,
-                        modifier = Modifier.testIdentifier(ContactComposableTestIdentifier.NAME)
+                        modifier = Modifier.testIdentifier(ContactContentTestIdentifier.NAME)
                     )
                     val context = LocalContext.current
-                    val subtitle = remember(contact.title, contact.organization) {
-                        listOf(contact.title, contact.organization)
+                    val subtitle = remember(title, organization) {
+                        listOf(title, organization)
                             .mapNotNull { it?.get(context) }
                             .joinToString(" - ")
                     }
@@ -88,7 +86,7 @@ fun ContactComposable(contact: Contact, modifier: Modifier = Modifier) {
                         Text(
                             text = subtitle,
                             style = TextStyles.titleSmall,
-                            modifier = Modifier.testIdentifier(ContactComposableTestIdentifier.SUBTITLE)
+                            modifier = Modifier.testIdentifier(ContactContentTestIdentifier.SUBTITLE)
                         )
                     }
                 }
@@ -96,11 +94,11 @@ fun ContactComposable(contact: Contact, modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(Spacings.small))
             HorizontalDivider()
             Spacer(modifier = Modifier.height(Spacings.small))
-            contact.description?.let {
+            description?.let {
                 Text(
                     text = it.text(),
                     style = TextStyles.bodyMedium,
-                    modifier = Modifier.testIdentifier(ContactComposableTestIdentifier.DESCRIPTION)
+                    modifier = Modifier.testIdentifier(ContactContentTestIdentifier.DESCRIPTION)
                 )
             }
             Spacer(modifier = Modifier.height(Spacings.large))
@@ -109,45 +107,44 @@ fun ContactComposable(contact: Contact, modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.spacedBy(Spacings.small),
                 verticalArrangement = Arrangement.spacedBy(Spacings.small)
             ) {
-                contact.options.forEach { option ->
-                    ContactOptionCard(
-                        option = option,
+                options.forEach { option ->
+                    option.Content(
                         modifier = Modifier
                             .weight(1f)
                             .testIdentifier(
-                                ContactComposableTestIdentifier.OPTION,
+                                ContactContentTestIdentifier.OPTION,
                                 suffix = option.title.text(),
                             )
                     )
                 }
             }
             Spacer(modifier = Modifier.height(Spacings.small))
-            contact.address?.let { address ->
+            address?.let { address ->
                 AddressCard(
                     address = address,
-                    modifier = Modifier.testIdentifier(ContactComposableTestIdentifier.ADDRESS)
+                    modifier = Modifier.testIdentifier(ContactContentTestIdentifier.ADDRESS)
                 )
             }
         }
     }
 }
 
-enum class ContactComposableTestIdentifier {
+enum class ContactContentTestIdentifier {
     NAME, SUBTITLE, DESCRIPTION, ADDRESS, OPTION
 }
 
 @ThemePreviews
 @Composable
-private fun ContactComposablePreview(@PreviewParameter(ContactProvider::class) contact: Contact) {
+private fun ContactContentPreview(@PreviewParameter(ContactProvider::class) contact: Contact) {
     SpeziTheme(isPreview = true) {
-        ContactComposable(contact = contact)
+        contact.Content(Modifier)
     }
 }
 
 private class ContactProvider : PreviewParameterProvider<Contact> {
     override val values: Sequence<Contact> = sequenceOf(
-        ContactComposableFactory.create(),
-        ContactComposableFactory.create(
+        ContactContentFactory.create(),
+        ContactContentFactory.create(
             options = listOf(
                 ContactOption.call("+49 123 456 789"),
                 ContactOption.email(listOf("test@gmail.com")),
@@ -155,7 +152,7 @@ private class ContactProvider : PreviewParameterProvider<Contact> {
                 ContactOption.text("+49 123 456 789"),
             ),
         ),
-        ContactComposableFactory.create(
+        ContactContentFactory.create(
             options = listOf(
                 ContactOption.call("+49 123 456 789"),
                 ContactOption.email(listOf("test@gmail.com")),
@@ -167,7 +164,7 @@ private class ContactProvider : PreviewParameterProvider<Contact> {
     )
 }
 
-private object ContactComposableFactory {
+private object ContactContentFactory {
     fun create(
         title: StringResource = StringResource("University Founder"),
         description: StringResource = StringResource(

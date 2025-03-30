@@ -10,21 +10,21 @@ import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.ui.ImageResource
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
-import edu.stanford.spezi.ui.personalinfo.UserProfileComposable
+import edu.stanford.spezi.ui.personalinfo.UserProfile
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun UserProfileTestComposable() {
     Column {
-        UserProfileComposable(
+        UserProfile(
             PersonNameComponents(
                 givenName = "Paul",
                 familyName = "Schmiedmayer"
             ),
             Modifier.height(100.dp),
         )
-        UserProfileComposable(
+        UserProfile(
             PersonNameComponents(
                 givenName = "Leland",
                 familyName = "Stanford"

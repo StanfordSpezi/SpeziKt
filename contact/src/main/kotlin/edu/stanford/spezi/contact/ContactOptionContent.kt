@@ -21,14 +21,14 @@ import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.ThemePreviews
 
 @Composable
-internal fun ContactOptionCard(option: ContactOption, modifier: Modifier = Modifier) {
+internal fun ContactOption.Content(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     DefaultElevatedCard(
         modifier = modifier
             .defaultMinSize(80.dp)
             .fillMaxWidth()
             .clickable {
-                option.action(context)
+                action(context)
             }
     ) {
         Column(
@@ -38,12 +38,12 @@ internal fun ContactOptionCard(option: ContactOption, modifier: Modifier = Modif
                 .fillMaxWidth()
         ) {
             Icon(
-                option.image ?: Icons.Default.Email,
-                contentDescription = option.title.text(),
+                image ?: Icons.Default.Email,
+                contentDescription = title.text(),
                 tint = Colors.primary,
             )
             Text(
-                text = option.title.text(),
+                text = title.text(),
                 maxLines = 1,
             )
         }
@@ -54,10 +54,9 @@ internal fun ContactOptionCard(option: ContactOption, modifier: Modifier = Modif
 @ThemePreviews
 private fun ContactOptionCardPreview() {
     SpeziTheme(isPreview = true) {
-        ContactOptionCard(
-            ContactOption.email(
-                addresses = listOf("test@test.de"),
-            ),
+        val option = ContactOption.email(
+            addresses = listOf("test@test.de"),
         )
+        option.Content()
     }
 }

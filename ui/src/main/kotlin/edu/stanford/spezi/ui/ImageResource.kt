@@ -1,8 +1,17 @@
 package edu.stanford.spezi.ui
 
 import androidx.annotation.DrawableRes
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.foundation.UUID
 
 /**
@@ -10,10 +19,10 @@ import edu.stanford.spezi.foundation.UUID
  * This is useful to abstract the image resource type and use it in a composable function. The identifier can be used for tests.
  * @see ImageResource.Vector
  * @see ImageResource.Drawable
- * @see ImageResourceComposable
+ * @see ImageResource.Content
  */
 @Immutable
-sealed interface ImageResource {
+sealed interface ImageResource : ComposableContent {
     val identifier: String
     val contentDescription: StringResource
 
@@ -30,4 +39,50 @@ sealed interface ImageResource {
     ) : ImageResource {
         override val identifier = UUID().toString()
     }
+
+    @Composable
+    override fun Content(modifier: Modifier) {
+        Content(modifier = modifier, tint = Colors.primary)
+    }
+
+    @Composable
+    fun Content(modifier: Modifier, tint: Color) {
+        val imageModifier = modifier.then(Modifier.imageResourceIdentifier(identifier.toString()))
+        when (this) {
+            is Vector -> {
+                Icon(
+                    imageVector = image,
+                    contentDescription = contentDescription.text(),
+                    tint = tint,
+                    modifier = imageModifier
+                )
+            }
+
+            is Drawable -> {
+                Icon(
+                    painter = painterResource(id = resId),
+                    contentDescription = contentDescription.text(),
+                    tint = tint,
+                    modifier = imageModifier,
+                )
+            }
+        }
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun ImageResourceContentPreview(
+    @PreviewParameter(ImageResourceProvider::class) imageResource: ImageResource,
+) {
+    SpeziTheme(isPreview = true) {
+        imageResource.Content(Modifier)
+    }
+}
+
+private class ImageResourceProvider : PreviewParameterProvider<ImageResource> {
+    override val values: Sequence<ImageResource> = sequenceOf(
+        ImageResource.Vector(Icons.Default.ThumbUp, StringResource("Thumbs Up")),
+        ImageResource.Drawable(android.R.drawable.ic_menu_camera, StringResource("Camera")),
+    )
 }
