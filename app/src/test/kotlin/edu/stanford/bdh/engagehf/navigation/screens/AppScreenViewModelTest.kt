@@ -2,7 +2,8 @@ package edu.stanford.bdh.engagehf.navigation.screens
 
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
-import edu.stanford.bdh.engagehf.messages.HealthSummaryService
+import edu.stanford.bdh.engagehf.health.summary.HealthSummaryService
+import edu.stanford.bdh.engagehf.health.summary.ShareHealthSummary
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.spezi.modules.account.manager.UserSessionManager
 import edu.stanford.spezi.modules.account.manager.UserState
@@ -17,6 +18,7 @@ import io.mockk.verify
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import org.junit.Before
 import org.junit.Rule
@@ -249,15 +251,88 @@ class AppScreenViewModelTest {
     }
 
     @Test
-    fun `given ShowHealthSummary is received then healthSummaryService should be called`() =
+    fun `given DisplayHealthSummaryPDF is received then healthSummaryService should be called`() =
         runTestUnconfined {
             // Given
-            val event = Action.ShowHealthSummary
+            val event = Action.DisplayHealthSummaryPDF
 
             // When
             viewModel.onAction(event)
 
             // Then
+            coVerify { healthSummaryService.generateHealthSummaryPdf() }
+        }
+
+    @Test
+    fun `given HealthSummaryRequested is received then share health summary should be shown`() =
+        runTestUnconfined {
+            // Given
+            val shareHealthSummary = ShareHealthSummary(
+                qrCodeBitmap = mockk(),
+                oneTimeCode = "123",
+            )
+            every { healthSummaryService.observeShareHealthSummary(600) } returns flowOf(Result.success(shareHealthSummary))
+            val event = Action.HealthSummaryRequested
+
+            // When
+            viewModel.onAction(event)
+
+            // Then
+            assertThat(viewModel.uiState.value.shareHealthSummaryUiState).isNotNull()
+        }
+
+    @Test
+    fun `given HealthSummaryRequested is received via app screen events it should handle display and success correctly`() =
+        runTestUnconfined {
+            // Given
+            var successInvoked = false
+            val event = AppScreenEvents.Event.HealthSummaryDisplayRequested(onSuccess = { successInvoked = true })
+            val shareHealthSummary = ShareHealthSummary(
+                qrCodeBitmap = mockk(),
+                oneTimeCode = "123",
+            )
+            every { healthSummaryService.observeShareHealthSummary(600) } returns flowOf(Result.success(shareHealthSummary))
+
+            // When
+            appScreenEventsFlow.emit(event)
+
+            // Then
+            assertThat(successInvoked).isTrue()
+        }
+
+    @Test
+    fun `it should dismiss health summary correctly`() =
+        runTestUnconfined {
+            // Given
+            val shareHealthSummary = ShareHealthSummary(
+                qrCodeBitmap = mockk(),
+                oneTimeCode = "123",
+            )
+            every { healthSummaryService.observeShareHealthSummary(600) } returns flowOf(Result.success(shareHealthSummary))
+            val event = Action.HealthSummaryRequested
+            viewModel.onAction(event)
+            val initialDisplayed = viewModel.uiState.value.shareHealthSummaryUiState
+
+            // When
+            initialDisplayed?.onDismiss?.invoke()
+
+            // Then
+            assertThat(initialDisplayed).isNotNull()
+            assertThat(viewModel.uiState.value.shareHealthSummaryUiState).isNull()
+        }
+
+    @Test
+    fun `given share health summary failure then summary pdf should be generated`() =
+        runTestUnconfined {
+            // Given
+            every { healthSummaryService.observeShareHealthSummary(600) } returns flowOf(Result.failure(Error("Error")))
+            val event = Action.HealthSummaryRequested
+
+            // When
+            viewModel.onAction(event)
+
+            // Then
+            assertThat(viewModel.uiState.value.shareHealthSummaryUiState).isNull()
             coVerify { healthSummaryService.generateHealthSummaryPdf() }
         }
 

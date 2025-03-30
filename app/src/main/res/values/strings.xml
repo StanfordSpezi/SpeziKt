@@ -134,4 +134,9 @@
     <string name="dismiss_message">Remove message</string>
     <string name="study_concluded_title">Thank you for participating in the ENGAGE-HF Study!</string>
     <string name="study_concluded_description">Your account was deactivated by your study conductor!</string>
+    <string name="qr_code_description">This QR Code can be scanned by your doctor to share your health summary.</string>
+    <string name="qr_code_one_time_code_label">One-time code</string>
+    <string name="qr_code_one_time_code">One-time code</string>
+    <string name="qr_code_health_summary_button_title">View Health Summary</string>
+    <string name="qr_code_summary_button_description">Alternatively, you can access your health summary here</string>
 </resources>

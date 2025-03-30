@@ -7,12 +7,15 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
-import edu.stanford.bdh.engagehf.messages.HealthSummaryService
+import edu.stanford.bdh.engagehf.health.components.ShareHealthSummaryDialogUiState
+import edu.stanford.bdh.engagehf.health.summary.HealthSummaryService
+import edu.stanford.bdh.engagehf.health.summary.ShareHealthSummary
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.spezi.modules.account.manager.UserSessionManager
 import edu.stanford.spezi.modules.navigation.Navigator
 import edu.stanford.spezi.modules.notification.NotificationNavigationEvent
 import edu.stanford.spezi.modules.notification.fcm.DeviceRegistrationService
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -31,6 +34,7 @@ class AppScreenViewModel @Inject constructor(
     private val deviceRegistrationService: DeviceRegistrationService,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AppUiState(content = AppContent.Loading))
+    private var shareHealthSummaryCollectJob: Job? = null
 
     val uiState = _uiState.asStateFlow()
 
@@ -77,57 +81,32 @@ class AppScreenViewModel @Inject constructor(
     private fun observeAppScreenEvents() {
         viewModelScope.launch {
             appScreenEvents.events.collect { event ->
-                if (event is AppScreenEvents.Event.NavigateToTab) {
-                    updateContent { it.copy(selectedItem = event.bottomBarItem) }
-                } else {
-                    val bottomSheetContent = when (event) {
-                        AppScreenEvents.Event.NewMeasurementAction -> {
-                            BottomSheetContent.NEW_MEASUREMENT_RECEIVED
-                        }
-
-                        AppScreenEvents.Event.DoNewMeasurement -> {
-                            BottomSheetContent.DO_NEW_MEASUREMENT
-                        }
-
-                        AppScreenEvents.Event.WeightDescriptionBottomSheet -> {
-                            BottomSheetContent.WEIGHT_DESCRIPTION_INFO
-                        }
-
-                        AppScreenEvents.Event.AddWeightRecord -> {
-                            BottomSheetContent.ADD_WEIGHT_RECORD
-                        }
-
-                        AppScreenEvents.Event.AddBloodPressureRecord -> {
-                            BottomSheetContent.ADD_BLOOD_PRESSURE_RECORD
-                        }
-
-                        AppScreenEvents.Event.AddHeartRateRecord -> {
-                            BottomSheetContent.ADD_HEART_RATE_RECORD
-                        }
-
-                        AppScreenEvents.Event.BloodPressureDescriptionBottomSheet -> {
-                            BottomSheetContent.BLOOD_PRESSURE_DESCRIPTION_INFO
-                        }
-
-                        AppScreenEvents.Event.SymptomsDescriptionBottomSheet -> BottomSheetContent.SYMPTOMS_DESCRIPTION_INFO
-
-                        AppScreenEvents.Event.CloseBottomSheet -> {
-                            null
-                        }
-
-                        AppScreenEvents.Event.HeartRateDescriptionBottomSheet -> {
-                            BottomSheetContent.HEART_RATE_DESCRIPTION_INFO
-                        }
-
-                        AppScreenEvents.Event.BLEDevicePairingBottomSheet ->
-                            BottomSheetContent.BLUETOOTH_DEVICE_PAIRING
-
-                        else -> null
+                when (event) {
+                    is AppScreenEvents.Event.NavigateToTab -> updateContent { it.copy(selectedItem = event.bottomBarItem) }
+                    is AppScreenEvents.Event.HealthSummaryDisplayRequested -> {
+                        onHealthSummaryRequested(onSuccess = event.onSuccess)
                     }
-                    updateContent { it.copy(bottomSheetContent = bottomSheetContent) }
+                    else -> handleBottomSheetContentEventIfNeeded(event = event)
                 }
             }
         }
+    }
+
+    private fun handleBottomSheetContentEventIfNeeded(event: AppScreenEvents.Event) {
+        val bottomSheetContent = when (event) {
+            AppScreenEvents.Event.NewMeasurementAction -> BottomSheetContent.NEW_MEASUREMENT_RECEIVED
+            AppScreenEvents.Event.DoNewMeasurement -> BottomSheetContent.DO_NEW_MEASUREMENT
+            AppScreenEvents.Event.WeightDescriptionBottomSheet -> BottomSheetContent.WEIGHT_DESCRIPTION_INFO
+            AppScreenEvents.Event.AddWeightRecord -> BottomSheetContent.ADD_WEIGHT_RECORD
+            AppScreenEvents.Event.AddBloodPressureRecord -> BottomSheetContent.ADD_BLOOD_PRESSURE_RECORD
+            AppScreenEvents.Event.AddHeartRateRecord -> BottomSheetContent.ADD_HEART_RATE_RECORD
+            AppScreenEvents.Event.BloodPressureDescriptionBottomSheet -> BottomSheetContent.BLOOD_PRESSURE_DESCRIPTION_INFO
+            AppScreenEvents.Event.SymptomsDescriptionBottomSheet -> BottomSheetContent.SYMPTOMS_DESCRIPTION_INFO
+            AppScreenEvents.Event.HeartRateDescriptionBottomSheet -> BottomSheetContent.HEART_RATE_DESCRIPTION_INFO
+            AppScreenEvents.Event.BLEDevicePairingBottomSheet -> BottomSheetContent.BLUETOOTH_DEVICE_PAIRING
+            else -> null
+        }
+        updateContent { it.copy(bottomSheetContent = bottomSheetContent) }
     }
 
     fun onAction(action: Action) {
@@ -140,30 +119,25 @@ class AppScreenViewModel @Inject constructor(
                 _uiState.update { it.copy(accountUiState = it.accountUiState.copy(showDialog = action.showDialog)) }
             }
 
-            Action.ShowHealthSummary -> {
-                viewModelScope.launch {
-                    _uiState.update {
-                        it.copy(
-                            accountUiState = it.accountUiState.copy(
-                                isHealthSummaryLoading = true
-                            )
-                        )
-                    }
-                    healthSummaryService.generateHealthSummaryPdf()
-                    _uiState.update {
-                        it.copy(
-                            accountUiState = it.accountUiState.copy(
-                                isHealthSummaryLoading = false,
-                                showDialog = false
-                            )
-                        )
-                    }
-                }
+            Action.HealthSummaryRequested -> onHealthSummaryRequested()
+
+            Action.DisplayHealthSummaryPDF -> onDisplayHealthSummaryPDF()
+
+            Action.DismissShareHealthSummaryDialog -> {
+                shareHealthSummaryCollectJob?.cancel()
+                shareHealthSummaryCollectJob = null
+                _uiState.update { it.copy(shareHealthSummaryUiState = null) }
             }
 
             Action.SignOut -> {
                 viewModelScope.launch {
-                    _uiState.update { it.copy(accountUiState = it.accountUiState.copy(isSignOutLoading = true)) }
+                    _uiState.update {
+                        it.copy(
+                            accountUiState = it.accountUiState.copy(
+                                isSignOutLoading = true
+                            )
+                        )
+                    }
                     deviceRegistrationService.unregisterDevice()
                     userSessionManager.signOut()
                     _uiState.update {
@@ -202,11 +176,73 @@ class AppScreenViewModel @Inject constructor(
             }
         }
     }
+
+    private fun onHealthSummaryRequested(onSuccess: (suspend () -> Unit)? = null) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(accountUiState = it.accountUiState.copy(isHealthSummaryLoading = true)) }
+            shareHealthSummaryCollectJob = launch {
+                healthSummaryService.observeShareHealthSummary(qrCodeSize = HEALTH_SUMMARY_QR_CODE_SIZE)
+                    .collect { shareHealthSummaryResult ->
+                        shareHealthSummaryResult
+                            .onSuccess { shareHealthSummary ->
+                                _uiState.update {
+                                    it.copy(
+                                        accountUiState = it.accountUiState.copy(isHealthSummaryLoading = false, showDialog = false),
+                                        shareHealthSummaryUiState = mapShareHealthSummaryUiState(shareHealthSummary)
+                                    )
+                                }
+                                onSuccess?.invoke()
+                            }.onFailure {
+                                if (_uiState.value.shareHealthSummaryUiState == null) {
+                                    healthSummaryService.generateHealthSummaryPdf()
+                                    _uiState.update {
+                                        it.copy(accountUiState = it.accountUiState.copy(isHealthSummaryLoading = false, showDialog = false))
+                                    }
+                                }
+                                dismissShareHealthSummaryDialog()
+                            }
+                    }
+            }
+        }
+    }
+
+    private fun onDisplayHealthSummaryPDF() {
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    shareHealthSummaryUiState = it.shareHealthSummaryUiState?.copy(
+                        isViewHealthSummaryLoading = true
+                    )
+                )
+            }
+            healthSummaryService.generateHealthSummaryPdf()
+            dismissShareHealthSummaryDialog()
+        }
+    }
+
+    private fun mapShareHealthSummaryUiState(shareHealthSummary: ShareHealthSummary): ShareHealthSummaryDialogUiState {
+        return ShareHealthSummaryDialogUiState(
+            qrCodeBitmap = shareHealthSummary.qrCodeBitmap,
+            oneTimeCode = shareHealthSummary.oneTimeCode,
+            onViewHealthSummaryClicked = { onAction(Action.DisplayHealthSummaryPDF) },
+            isViewHealthSummaryLoading = false,
+            onDismiss = ::dismissShareHealthSummaryDialog
+        )
+    }
+
+    private fun dismissShareHealthSummaryDialog() {
+        onAction(Action.DismissShareHealthSummaryDialog)
+    }
+
+    private companion object {
+        const val HEALTH_SUMMARY_QR_CODE_SIZE = 600
+    }
 }
 
 data class AppUiState(
     val content: AppContent = AppContent.Loading,
     val accountUiState: AccountUiState = AccountUiState(),
+    val shareHealthSummaryUiState: ShareHealthSummaryDialogUiState? = null,
 )
 
 sealed interface AppContent {
@@ -243,7 +279,9 @@ enum class BottomSheetContent {
 
 sealed interface Action {
     data class UpdateSelectedBottomBarItem(val selectedBottomBarItem: BottomBarItem) : Action
-    data object ShowHealthSummary : Action
+    data object HealthSummaryRequested : Action
+    data object DisplayHealthSummaryPDF : Action
+    data object DismissShareHealthSummaryDialog : Action
     data object ShowNotificationSettings : Action
     data object ShowContact : Action
     data object SignOut : Action

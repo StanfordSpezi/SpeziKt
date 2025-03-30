@@ -206,6 +206,7 @@ fun BottomSheetScaffoldContent(
                     }
                 }
             }
+            uiState.shareHealthSummaryUiState?.DialogContent()
         }
     }
 }

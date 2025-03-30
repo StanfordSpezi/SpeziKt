@@ -152,7 +152,7 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
                 AsyncAccountItem(
                     title = stringResource(R.string.health_summary),
                     loading = accountUiState.isHealthSummaryLoading,
-                    onClick = { onAction(Action.ShowHealthSummary) },
+                    onClick = { onAction(Action.HealthSummaryRequested) },
                 )
                 TextButton(
                     onClick = {

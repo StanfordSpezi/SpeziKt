@@ -54,6 +54,7 @@ testCoreVersion = "1.5.0"
 timberVersion = "5.0.1"
 truth = "1.4.2"
 vico = "2.0.0-alpha.26"
+zxingVersion = "3.5.0"
 
 # Please keep [libraries] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [libraries]
@@ -122,6 +123,7 @@ navigation-compose = { module = "androidx.navigation:navigation-compose", versio
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timberVersion" }
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
+zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxingVersion" }
 
 # Please keep [plugins] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [plugins]
