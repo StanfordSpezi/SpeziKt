@@ -1,16 +1,19 @@
 package edu.stanford.speziclaid.cough
 
 import adamma.c4dhi.claid_android.collectors.audio.MicrophoneCollector
+import adamma.c4dhi.claid_sensor_data.AudioChannels
+import adamma.c4dhi.claid_sensor_data.AudioEncoding
 import ch.claid.cough_detection.CoughDetectionModule
 import edu.stanford.speziclaid.module.SpeziCLAIDPipeline
 import edu.stanford.speziclaid.module.WrappedModule
 
 import edu.stanford.speziclaid.helper.structOf
+import edu.stanford.speziclaid.helper.toProtoValue
+import edu.stanford.speziclaid.module.wrapModule
 
 class CoughRecognizerPipeline(
     private val name: String,
-    private val inputs: Map<String, String> = mapOf(),
-    private val outputs: Map<String, String> = mapOf()
+    private val output: String
 ) : SpeziCLAIDPipeline() {
 
     init {
@@ -19,14 +22,28 @@ class CoughRecognizerPipeline(
 
     private fun createPipeline() {
         addModules(listOf(
-            WrappedModule(
+            // Audio recorder
+            wrapModule(
                 moduleClass = MicrophoneCollector::class.java,
-                moduleId = "AudioRecorder",
-                properties = structOf(),
-                outputs = mapOf("AudioData" to "$name/AudioData")
+                moduleId = "$name-AudioRecorder",
+                properties = structOf(
+                    "channels" to AudioChannels.CHANNEL_MONO.valueDescriptor.name,
+                    "encoding" to "ENCODING_PCM_16BIT",
+                    "bitrate" to 32,
+                    "sampling_rate" to 16000,
+                    "sample_recording_duration_seconds" to 6
+                ),
+                outputs = mapOf("AudioData" to "$name/AudioData/Microphone")
             ),
-            //CoughDetectionPreprocessor(),
+            // Preprocessor
             WrappedModule(
+                moduleType = "CoughDetectionPreprocessorModule",
+                moduleId = "$name-CoughDetectionPreprocessor",
+                inputs = mapOf("AudioInputChannel" to "$name/AudioData/Microphone"),
+                outputs = mapOf("OutputChannel" to "$name/MelSpectograms")
+            ),
+            // ML cough detector
+            wrapModule(
                 CoughDetectionModule::class.java,
                 "$name-CoughDetectionModule",
                 properties = structOf(
@@ -43,8 +60,13 @@ class CoughRecognizerPipeline(
                 inputs = mapOf("InputChannel" to "$name/MelSpectograms"),
                 outputs = mapOf("OutputChannel" to "$name/CoughEnsembleOutputs")
             ),
-            //CoughDetectionPostprocessor()
-
+            // Postprocessor
+            WrappedModule(
+                moduleType = "CoughDetectionPostprocessorModule",
+                moduleId = "$name-CoughDetectionPostprocessor",
+                inputs = mapOf("InputChannel" to "$name/CoughEnsembleOutputs"),
+                outputs = mapOf("OutputChannel" to output)
+            )
         ))
     }
 }

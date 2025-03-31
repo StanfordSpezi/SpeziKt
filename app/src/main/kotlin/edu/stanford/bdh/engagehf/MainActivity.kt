@@ -53,6 +53,7 @@ import edu.stanford.speziclaid.cough.CoughRecognizerPipeline
 import edu.stanford.speziclaid.helper.structOf
 import edu.stanford.speziclaid.module.DataRecorder
 import edu.stanford.speziclaid.module.WrappedModule
+import edu.stanford.speziclaid.module.wrapModule
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -88,7 +89,7 @@ class MainActivity : FragmentActivity() {
         claidRuntime.addModules(
             listOf(
                 // === Accelerometer Tracking === //
-                WrappedModule(
+                /*wrapModule(
                     moduleClass=AccelerometerCollector::class.java,
                     moduleId="MyAccelerometerCollector",
                     properties= structOf(
@@ -98,16 +99,11 @@ class MainActivity : FragmentActivity() {
                     outputs=mapOf(
                         "AccelerationData" to "InternalAccelerometerData"
                     )
-                ),
+                ),*/
                 // === On Device Cough Detection === //
                 CoughRecognizerPipeline(
                     name="MyCoughRecognizer",
-                    inputs=mapOf(
-                        "AudioData" to "MicrophoneAudioData"
-                    ),
-                    outputs=mapOf(
-                        "DetectedCoughs" to "DetectedCoughs"
-                    )
+                    output="DetectedCoughs"
                 ),
                 // === Data Recording === //
                 DataRecorder(

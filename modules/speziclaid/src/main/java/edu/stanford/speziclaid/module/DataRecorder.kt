@@ -12,6 +12,7 @@ import adamma.c4dhi.claid.TypeMapping.TypeMapping
 import adamma.c4dhi.claid_platform_impl.CLAID
 import adamma.c4dhi.claid_sensor_data.AccelerationData
 import adamma.c4dhi.claid_sensor_data.SleepData
+import ch.claid.cough_detection.CoughSampleVector
 import com.google.protobuf.Message
 import com.google.protobuf.Struct
 import dagger.hilt.android.EntryPointAccessors
@@ -55,7 +56,11 @@ open class DataRecorder(
         } else if (type == AccelerationData.getDescriptor().fullName) {
             val accelerometerData = decode(payload, AccelerationData::class.java)
             dataStorer.store(data = accelerometerData)
-        } else {
+        } else if (type == CoughSampleVector.getDescriptor().fullName) {
+            val coughData = decode(payload, CoughSampleVector::class.java)
+            dataStorer.store(data = coughData)
+        }
+        else {
             Logger.logError("Unknown data type: $type")
         }
     }

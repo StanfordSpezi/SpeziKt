@@ -11,7 +11,7 @@ android {
 
 
 dependencies {
-    api("ch.claid:claid:0.8.1")
+    api("ch.claid:claid:0.8.8")
     implementation(project(":modules:healthconnectonfhir"))
     implementation(project(":claid_cough_detection"))
 

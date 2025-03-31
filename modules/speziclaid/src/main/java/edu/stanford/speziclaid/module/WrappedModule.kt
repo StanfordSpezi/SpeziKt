@@ -5,8 +5,8 @@ import adamma.c4dhi.claid.ModuleConfig
 import com.google.protobuf.Struct
 import edu.stanford.speziclaid.helper.structOf
 
-public class WrappedModule<T : Module>(
-    private val moduleClass: Class<T>,
+public class WrappedModule(
+    private val moduleType: String,
     private val moduleId: String,
     private val properties: Struct = structOf(),
     private val outputs: Map<String, String> = mapOf(),
@@ -16,7 +16,7 @@ public class WrappedModule<T : Module>(
     override fun getModuleConfigurations(): List<ModuleConfig> {
         val moduleConfig = ModuleConfig.newBuilder();
         moduleConfig.setId(moduleId);
-        moduleConfig.setType(moduleClass.simpleName);
+        moduleConfig.setType(moduleType);
         moduleConfig.properties = properties;
         moduleConfig.putAllInputChannels(inputs);
         moduleConfig.putAllOutputChannels(outputs);
@@ -29,9 +29,9 @@ fun <T : Module> wrapModule(
     moduleId: String,
     properties: Struct = structOf(),
     outputs: Map<String, String> = mapOf(),
-    inputs: Map<String, String> = mapOf()): WrappedModule<T> {
+    inputs: Map<String, String> = mapOf()): WrappedModule {
     return WrappedModule(
-        moduleClass,
+        moduleClass.simpleName,
         moduleId,
         properties,
         outputs,
