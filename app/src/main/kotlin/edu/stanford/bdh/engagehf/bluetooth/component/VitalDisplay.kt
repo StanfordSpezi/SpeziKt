@@ -173,7 +173,7 @@ private class VitalDisplayDataProvider : PreviewParameterProvider<VitalDisplayDa
 @Composable
 @Suppress("UnusedPrivateMember")
 private fun VitalDisplayPreview(@PreviewParameter(VitalDisplayDataProvider::class) state: VitalDisplayData) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         VitalDisplay(
             vitalDisplayUiState = state
         )

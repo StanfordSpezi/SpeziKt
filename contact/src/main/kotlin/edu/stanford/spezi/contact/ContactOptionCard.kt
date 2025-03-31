@@ -53,7 +53,7 @@ internal fun ContactOptionCard(option: ContactOption, modifier: Modifier = Modif
 @Composable
 @ThemePreviews
 private fun ContactOptionCardPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         ContactOptionCard(
             ContactOption.email(
                 addresses = listOf("test@test.de"),

@@ -131,7 +131,7 @@ fun VerifiableTextField(
 private fun VerifiableTextFieldPreview() {
     val text = remember { mutableStateOf("") }
 
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         Validate(text.value, rules = listOf(ValidationRule.nonEmpty)) {
             VerifiableTextField(
                 text,

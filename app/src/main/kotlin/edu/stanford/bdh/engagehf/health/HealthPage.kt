@@ -300,7 +300,7 @@ private class HealthPagePreviewProvider : PreviewParameterProvider<HealthUiState
 @ThemePreviews
 @Composable
 private fun HealthPagePreview(@PreviewParameter(HealthPagePreviewProvider::class) uiState: HealthUiState) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         HealthPage(
             uiState = uiState,
             onAction = {}
