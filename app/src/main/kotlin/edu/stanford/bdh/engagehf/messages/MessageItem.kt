@@ -182,7 +182,7 @@ enum class MessageItemTestIdentifiers {
 @Composable
 @ThemePreviews
 fun MessageListPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         LazyColumn(modifier = Modifier.padding(Spacings.medium)) {
             items(sampleMessageModels) { model ->
                 MessageItem(model = model, onAction = { })

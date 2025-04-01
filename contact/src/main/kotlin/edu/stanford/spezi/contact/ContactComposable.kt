@@ -139,7 +139,7 @@ enum class ContactComposableTestIdentifier {
 @ThemePreviews
 @Composable
 private fun ContactComposablePreview(@PreviewParameter(ContactProvider::class) contact: Contact) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         ContactComposable(contact = contact)
     }
 }

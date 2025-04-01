@@ -71,7 +71,7 @@ private class DosageInformationProvider : PreviewParameterProvider<DosageInforma
 private fun DoseInformationPreview(
     @PreviewParameter(DosageInformationProvider::class) dosageInformation: DosageInformationUiModel,
 ) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         DosageInformation(dosageInformationUiModel = dosageInformation)
     }
 }

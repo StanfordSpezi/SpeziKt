@@ -74,7 +74,7 @@ private class MedicationProgressBarProvider : PreviewParameterProvider<Float> {
 private fun MedicationProgressBarPreview(
     @PreviewParameter(MedicationProgressBarProvider::class) progress: Float,
 ) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         MedicationProgressBar(progress = progress)
     }
 }

@@ -59,7 +59,7 @@ fun ItemsDialog(
 @ThemePreviews
 @Composable
 private fun BodyPositionsDialogPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         ItemsDialog(
             title = "Title",
             items = listOf("Item 1", "Item 2", "Item 3"),

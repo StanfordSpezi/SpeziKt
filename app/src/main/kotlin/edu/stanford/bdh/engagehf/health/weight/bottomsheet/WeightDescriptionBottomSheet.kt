@@ -50,7 +50,7 @@ fun WeightDescriptionBottomSheet() {
 @ThemePreviews
 @Composable
 private fun WeightDescriptionBottomSheetPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         WeightDescriptionBottomSheet()
     }
 }

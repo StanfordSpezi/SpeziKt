@@ -73,7 +73,7 @@ fun TimeRangeDropdown(
 @ThemePreviews
 @Composable
 fun MenuSamplePreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         TimeRangeDropdown(
             modifier = Modifier.fillMaxWidth(),
             isSelectedTimeRangeDropdownExpanded = true,

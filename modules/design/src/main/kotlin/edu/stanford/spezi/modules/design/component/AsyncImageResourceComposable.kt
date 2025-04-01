@@ -102,7 +102,7 @@ fun AsyncImageResourceComposable(
 private fun ImageResourceComposablePreview(
     @PreviewParameter(AsyncImageResourceProvider::class) imageResource: ImageResource,
 ) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         ImageResourceComposable(
             imageResource = imageResource,
         )

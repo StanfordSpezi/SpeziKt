@@ -33,7 +33,7 @@ fun BodyPositionsDialog(
 @ThemePreviews
 @Composable
 fun BodyPositionsDialogPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         BodyPositionsDialog(
             onDismissRequest = {},
             onOptionSelected = {},

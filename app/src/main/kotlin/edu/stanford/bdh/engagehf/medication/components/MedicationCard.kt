@@ -186,7 +186,7 @@ fun LoadingMedicationSection() {
 @ThemePreviews
 @Composable
 private fun LoadingMedicationSectionPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         LoadingMedicationSection()
     }
 }
@@ -196,7 +196,7 @@ private fun LoadingMedicationSectionPreview() {
 private fun MedicationCardPreview(
     @PreviewParameter(MedicationCardModelsProvider::class) model: MedicationCardUiModel,
 ) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         MedicationCard(
             model = model,
             onAction = {}

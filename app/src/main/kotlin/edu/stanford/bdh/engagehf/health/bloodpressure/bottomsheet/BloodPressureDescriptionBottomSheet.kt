@@ -50,7 +50,7 @@ fun BloodPressureDescriptionBottomSheet() {
 @ThemePreviews
 @Composable
 fun BloodPressureDescriptionBottomSheetPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         BloodPressureDescriptionBottomSheet()
     }
 }

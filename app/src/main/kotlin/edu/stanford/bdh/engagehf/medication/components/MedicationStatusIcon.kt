@@ -50,7 +50,7 @@ fun MedicationStatusIcon(model: MedicationCardUiModel) {
 private fun MedicationStatusIconPreview(
     @PreviewParameter(MedicationCardModelsProvider::class) model: MedicationCardUiModel,
 ) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         MedicationStatusIcon(model = model)
     }
 }

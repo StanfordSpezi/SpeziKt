@@ -51,7 +51,7 @@ fun ViewStateAlert(
 private fun ViewStateAlertPreview() {
     val state = remember { mutableStateOf<ViewState>(ViewState.Error(NotImplementedError())) }
 
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         ViewStateAlert(state)
     }
 }

@@ -76,7 +76,7 @@ fun ColorKeyRow(color: MedicationColor) {
 @ThemePreviews
 @Composable
 private fun ColorKeyPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         ColorKey()
     }
 }

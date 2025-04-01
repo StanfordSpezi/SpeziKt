@@ -73,7 +73,7 @@ fun NumberPicker(
 @ThemePreviews
 @Composable
 fun NumberPickerPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         NumberPicker(
             value = 5,
             onValueChange = {},

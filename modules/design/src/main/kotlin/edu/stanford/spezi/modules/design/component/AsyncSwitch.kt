@@ -64,7 +64,7 @@ private data class AsyncSwitchState(
 private fun AsyncSwitchPreview(
     @PreviewParameter(AsyncSwitchPreviewParameterProvider::class) state: AsyncSwitchState,
 ) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         AsyncSwitch(
             isLoading = state.isLoading,
             checked = state.checked,

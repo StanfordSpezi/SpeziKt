@@ -46,7 +46,7 @@ fun ImageResourceComposable(
 private fun ImageResourceComposablePreview(
     @PreviewParameter(ImageResourceProvider::class) imageResource: ImageResource,
 ) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         ImageResourceComposable(
             imageResource = imageResource,
         )

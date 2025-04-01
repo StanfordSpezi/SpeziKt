@@ -50,7 +50,7 @@ fun HeartRateDescriptionBottomSheet() {
 @ThemePreviews
 @Composable
 fun HeartRateDescriptionBottomSheetPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         HeartRateDescriptionBottomSheet()
     }
 }

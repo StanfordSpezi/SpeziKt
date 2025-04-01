@@ -2,7 +2,8 @@ package edu.stanford.bdh.engagehf.navigation.screens
 
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
-import edu.stanford.bdh.engagehf.messages.HealthSummaryService
+import edu.stanford.bdh.engagehf.health.summary.HealthSummaryService
+import edu.stanford.bdh.engagehf.health.summary.ShareHealthSummary
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.spezi.modules.account.manager.UserSessionManager
 import edu.stanford.spezi.modules.account.manager.UserState
@@ -10,6 +11,7 @@ import edu.stanford.spezi.modules.navigation.Navigator
 import edu.stanford.spezi.modules.notification.fcm.DeviceRegistrationService
 import edu.stanford.spezi.modules.testing.CoroutineTestRule
 import edu.stanford.spezi.modules.testing.runTestUnconfined
+import edu.stanford.spezi.modules.utils.TimeProvider
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -17,10 +19,12 @@ import io.mockk.verify
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.time.Instant
 
 class AppScreenViewModelTest {
 
@@ -33,6 +37,13 @@ class AppScreenViewModelTest {
     private val appScreenEventsFlow = MutableSharedFlow<AppScreenEvents.Event>()
     private val navigator = mockk<Navigator>(relaxed = true)
     private val deviceRegistrationService = mockk<DeviceRegistrationService>(relaxed = true)
+    private val timeProvider = mockk<TimeProvider>(relaxed = true)
+    private val instant = Instant.now()
+    private val shareHealthSummary = ShareHealthSummary(
+        qrCodeBitmap = mockk(),
+        oneTimeCode = "123",
+        expiresAt = instant,
+    )
     private val userFlow = MutableStateFlow(
         UserState.Registered(hasInvitationCodeConfirmed = false, disabled = false)
     )
@@ -43,6 +54,7 @@ class AppScreenViewModelTest {
     fun setup() {
         every { appScreenEvents.events } returns appScreenEventsFlow
         every { userSessionManager.observeRegisteredUser() } returns userFlow
+        every { timeProvider.nowInstant() } returns instant
         createViewModel()
     }
 
@@ -249,15 +261,76 @@ class AppScreenViewModelTest {
     }
 
     @Test
-    fun `given ShowHealthSummary is received then healthSummaryService should be called`() =
+    fun `given DisplayHealthSummaryPDF is received then healthSummaryService should be called`() =
         runTestUnconfined {
             // Given
-            val event = Action.ShowHealthSummary
+            val event = Action.DisplayHealthSummaryPDF
 
             // When
             viewModel.onAction(event)
 
             // Then
+            coVerify { healthSummaryService.generateHealthSummaryPdf() }
+        }
+
+    @Test
+    fun `given HealthSummaryRequested is received then share health summary should be shown`() =
+        runTestUnconfined {
+            // Given
+            every { healthSummaryService.observeShareHealthSummary(600) } returns flowOf(Result.success(shareHealthSummary))
+            val event = Action.HealthSummaryRequested
+
+            // When
+            viewModel.onAction(event)
+
+            // Then
+            assertThat(viewModel.uiState.value.shareHealthSummaryUiState).isNotNull()
+        }
+
+    @Test
+    fun `given HealthSummaryRequested is received via app screen events it should handle display and success correctly`() =
+        runTestUnconfined {
+            // Given
+            var successInvoked = false
+            val event = AppScreenEvents.Event.HealthSummaryDisplayRequested(onSuccess = { successInvoked = true })
+            every { healthSummaryService.observeShareHealthSummary(600) } returns flowOf(Result.success(shareHealthSummary))
+
+            // When
+            appScreenEventsFlow.emit(event)
+
+            // Then
+            assertThat(successInvoked).isTrue()
+        }
+
+    @Test
+    fun `it should dismiss health summary correctly`() =
+        runTestUnconfined {
+            // Given
+            every { healthSummaryService.observeShareHealthSummary(600) } returns flowOf(Result.success(shareHealthSummary))
+            val event = Action.HealthSummaryRequested
+            viewModel.onAction(event)
+            val initialDisplayed = viewModel.uiState.value.shareHealthSummaryUiState
+
+            // When
+            initialDisplayed?.onDismiss?.invoke()
+
+            // Then
+            assertThat(initialDisplayed).isNotNull()
+            assertThat(viewModel.uiState.value.shareHealthSummaryUiState).isNull()
+        }
+
+    @Test
+    fun `given share health summary failure then summary pdf should be generated`() =
+        runTestUnconfined {
+            // Given
+            every { healthSummaryService.observeShareHealthSummary(600) } returns flowOf(Result.failure(Error("Error")))
+            val event = Action.HealthSummaryRequested
+
+            // When
+            viewModel.onAction(event)
+
+            // Then
+            assertThat(viewModel.uiState.value.shareHealthSummaryUiState).isNull()
             coVerify { healthSummaryService.generateHealthSummaryPdf() }
         }
 
@@ -321,6 +394,7 @@ class AppScreenViewModelTest {
             healthSummaryService = healthSummaryService,
             navigator = navigator,
             deviceRegistrationService = deviceRegistrationService,
+            timeProvider = timeProvider,
         )
     }
 }

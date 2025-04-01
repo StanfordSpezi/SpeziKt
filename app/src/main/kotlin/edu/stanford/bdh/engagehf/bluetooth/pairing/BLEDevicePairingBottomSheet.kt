@@ -119,7 +119,7 @@ private class UIStateParamProvider : PreviewParameterProvider<BLEDevicePairingVi
 fun PreviewBLEDevicePairingBottomSheet(
     @PreviewParameter(UIStateParamProvider::class) state: BLEDevicePairingViewModel.UiState,
 ) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         BLEDevicePairingBottomSheet(
             uiState = state,
             onAction = {},
