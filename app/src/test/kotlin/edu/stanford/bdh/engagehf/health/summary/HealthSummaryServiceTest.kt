@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Test
 import java.time.Instant
 
@@ -26,6 +27,7 @@ class HealthSummaryServiceTest {
     private val someUrl = "some-url"
     private val code = "123456"
     private val qrCodeSize = 200
+    private val now = Instant.now()
 
     private val service = HealthSummaryService(
         healthSummaryRepository = healthSummaryRepository,
@@ -36,13 +38,18 @@ class HealthSummaryServiceTest {
         timeProvider = timeProvider
     )
 
+    @Before
+    fun setup() {
+        every { timeProvider.nowInstant() } returns now
+    }
+
     @Test
     fun `observeShareHealthSummary should emit successful ShareHealthSummary`() = runTest {
         // given
         val expectedBitmap = mockk<ImageBitmap>()
-        val expectedData = ShareHealthSummary(qrCodeBitmap = expectedBitmap, oneTimeCode = code)
+        val expectedData = ShareHealthSummary(qrCodeBitmap = expectedBitmap, oneTimeCode = code, expiresAt = now)
         coEvery { healthSummaryRepository.getShareHealthSummaryData() } returns Result.success(
-            ShareHealthSummaryData(url = someUrl, code = code, expiresAt = mockk())
+            ShareHealthSummaryData(url = someUrl, code = code, expiresAt = now)
         )
         every { qrCodeImageBitmapGenerator.generate(someUrl, qrCodeSize) } returns expectedBitmap
 
@@ -57,7 +64,7 @@ class HealthSummaryServiceTest {
     fun `observeShareHealthSummary should emit failure if qr code generation fails`() = runTest {
         // given
         coEvery { healthSummaryRepository.getShareHealthSummaryData() } returns Result.success(
-            ShareHealthSummaryData(url = someUrl, code = code, expiresAt = mockk())
+            ShareHealthSummaryData(url = someUrl, code = code, expiresAt = now)
         )
         every { qrCodeImageBitmapGenerator.generate(someUrl, qrCodeSize) } returns null
 
@@ -85,8 +92,6 @@ class HealthSummaryServiceTest {
     fun `observeShareHealthSummary should should reload respecting expired at of data`() = runTest {
         // given
         val expectedBitmap = mockk<ImageBitmap>()
-        val now = Instant.now()
-        every { timeProvider.nowInstant() } returns now
         val validity = 5000L
         val expiresAt = now.plusMillis(validity)
         coEvery { healthSummaryRepository.getShareHealthSummaryData() } returns Result.success(

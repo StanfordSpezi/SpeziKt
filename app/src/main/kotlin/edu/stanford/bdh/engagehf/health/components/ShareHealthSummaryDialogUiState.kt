@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.summary.QRCodeImageBitmapGenerator
 import edu.stanford.spezi.modules.design.component.AsyncTextButton
+import edu.stanford.spezi.ui.Colors
 import edu.stanford.spezi.ui.Colors.onBackground
 import edu.stanford.spezi.ui.Colors.primary
 import edu.stanford.spezi.ui.DefaultElevatedCard
@@ -37,12 +38,14 @@ import edu.stanford.spezi.ui.DialogComposableContent
 import edu.stanford.spezi.ui.Sizes
 import edu.stanford.spezi.ui.Spacings
 import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.TextStyles
 import edu.stanford.spezi.ui.ThemePreviews
 
 data class ShareHealthSummaryDialogUiState(
     val qrCodeBitmap: ImageBitmap,
     val oneTimeCode: String,
+    val expiresIn: StringResource,
     val onViewHealthSummaryClicked: () -> Unit,
     val isViewHealthSummaryLoading: Boolean,
     override val onDismiss: () -> Unit,
@@ -84,6 +87,13 @@ data class ShareHealthSummaryDialogUiState(
                     .fillMaxWidth()
                     .padding(horizontal = Spacings.medium),
                 textAlign = TextAlign.Center,
+            )
+
+            Text(
+                modifier = Modifier.padding(top = Spacings.medium),
+                text = expiresIn.text(),
+                color = Colors.secondary,
+                style = TextStyles.bodyMedium,
             )
 
             Image(
@@ -135,6 +145,7 @@ private class ShareHealthSummaryUiStatePreviewParamProvider : PreviewParameterPr
     private val base = ShareHealthSummaryDialogUiState(
         qrCodeBitmap = QRCodeImageBitmapGenerator().generate("edu.stanford.bdh.engagehf", 600)!!,
         oneTimeCode = "41S8MJTN",
+        expiresIn = StringResource(R.string.qr_code_expires_in, "4:55"),
         onViewHealthSummaryClicked = {},
         isViewHealthSummaryLoading = false,
         onDismiss = {},

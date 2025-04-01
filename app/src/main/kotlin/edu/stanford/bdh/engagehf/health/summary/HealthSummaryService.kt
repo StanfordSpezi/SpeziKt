@@ -65,6 +65,7 @@ class HealthSummaryService @Inject constructor(
                 ShareHealthSummary(
                     qrCodeBitmap = qrCodeBitmap,
                     oneTimeCode = it.code,
+                    expiresAt = it.expiresAt,
                 )
             }
             emit(shareHealthSummaryResult)

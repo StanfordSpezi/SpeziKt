@@ -15,14 +15,21 @@ import edu.stanford.spezi.modules.account.manager.UserSessionManager
 import edu.stanford.spezi.modules.navigation.Navigator
 import edu.stanford.spezi.modules.notification.NotificationNavigationEvent
 import edu.stanford.spezi.modules.notification.fcm.DeviceRegistrationService
+import edu.stanford.spezi.modules.utils.TimeProvider
+import edu.stanford.spezi.ui.StringResource
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.Instant
+import java.util.Locale
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 import edu.stanford.spezi.modules.design.R.drawable as DesignR
 
 @HiltViewModel
@@ -32,9 +39,11 @@ class AppScreenViewModel @Inject constructor(
     private val healthSummaryService: HealthSummaryService,
     private val navigator: Navigator,
     private val deviceRegistrationService: DeviceRegistrationService,
+    private val timeProvider: TimeProvider,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AppUiState(content = AppContent.Loading))
     private var shareHealthSummaryCollectJob: Job? = null
+    private var shareHealthSummaryExpirationJob: Job? = null
 
     val uiState = _uiState.asStateFlow()
 
@@ -125,7 +134,9 @@ class AppScreenViewModel @Inject constructor(
 
             Action.DismissShareHealthSummaryDialog -> {
                 shareHealthSummaryCollectJob?.cancel()
+                shareHealthSummaryExpirationJob?.cancel()
                 shareHealthSummaryCollectJob = null
+                shareHealthSummaryExpirationJob = null
                 _uiState.update { it.copy(shareHealthSummaryUiState = null) }
             }
 
@@ -191,6 +202,7 @@ class AppScreenViewModel @Inject constructor(
                                         shareHealthSummaryUiState = mapShareHealthSummaryUiState(shareHealthSummary)
                                     )
                                 }
+                                setupExpirationUpdates(expiresAt = shareHealthSummary.expiresAt)
                                 onSuccess?.invoke()
                             }.onFailure {
                                 if (_uiState.value.shareHealthSummaryUiState == null) {
@@ -223,7 +235,8 @@ class AppScreenViewModel @Inject constructor(
     private fun mapShareHealthSummaryUiState(shareHealthSummary: ShareHealthSummary): ShareHealthSummaryDialogUiState {
         return ShareHealthSummaryDialogUiState(
             qrCodeBitmap = shareHealthSummary.qrCodeBitmap,
-            oneTimeCode = shareHealthSummary.oneTimeCode,
+            oneTimeCode = shareHealthSummary.oneTimeCode.uppercase(),
+            expiresIn = getExpiresInString(expiresAt = shareHealthSummary.expiresAt),
             onViewHealthSummaryClicked = { onAction(Action.DisplayHealthSummaryPDF) },
             isViewHealthSummaryLoading = false,
             onDismiss = ::dismissShareHealthSummaryDialog
@@ -234,8 +247,35 @@ class AppScreenViewModel @Inject constructor(
         onAction(Action.DismissShareHealthSummaryDialog)
     }
 
+    private fun setupExpirationUpdates(expiresAt: Instant) {
+        shareHealthSummaryExpirationJob?.cancel()
+        shareHealthSummaryExpirationJob = viewModelScope.launch {
+            while (expiresAt > timeProvider.nowInstant()) {
+                delay(1.seconds)
+                _uiState.update {
+                    val expiresIn = getExpiresInString(expiresAt = expiresAt)
+                    it.copy(shareHealthSummaryUiState = it.shareHealthSummaryUiState?.copy(expiresIn = expiresIn))
+                }
+            }
+            shareHealthSummaryExpirationJob?.cancel()
+        }
+    }
+
+    private fun getExpiresInString(expiresAt: Instant): StringResource {
+        val remainingFormatted = runCatching {
+            val duration = Duration.between(timeProvider.nowInstant(), expiresAt).coerceAtLeast(Duration.ZERO)
+            val minutes = duration.toMinutes()
+            val seconds = duration.seconds % SECONDS_IN_MINUTE
+
+            String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
+        }.getOrDefault("")
+
+        return StringResource(R.string.qr_code_expires_in, remainingFormatted)
+    }
+
     private companion object {
         const val HEALTH_SUMMARY_QR_CODE_SIZE = 600
+        const val SECONDS_IN_MINUTE = 60
     }
 }
 

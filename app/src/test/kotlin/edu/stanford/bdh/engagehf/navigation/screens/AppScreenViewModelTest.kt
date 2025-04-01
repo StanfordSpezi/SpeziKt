@@ -11,6 +11,7 @@ import edu.stanford.spezi.modules.navigation.Navigator
 import edu.stanford.spezi.modules.notification.fcm.DeviceRegistrationService
 import edu.stanford.spezi.modules.testing.CoroutineTestRule
 import edu.stanford.spezi.modules.testing.runTestUnconfined
+import edu.stanford.spezi.modules.utils.TimeProvider
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.update
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.time.Instant
 
 class AppScreenViewModelTest {
 
@@ -35,6 +37,13 @@ class AppScreenViewModelTest {
     private val appScreenEventsFlow = MutableSharedFlow<AppScreenEvents.Event>()
     private val navigator = mockk<Navigator>(relaxed = true)
     private val deviceRegistrationService = mockk<DeviceRegistrationService>(relaxed = true)
+    private val timeProvider = mockk<TimeProvider>(relaxed = true)
+    private val instant = Instant.now()
+    private val shareHealthSummary = ShareHealthSummary(
+        qrCodeBitmap = mockk(),
+        oneTimeCode = "123",
+        expiresAt = instant,
+    )
     private val userFlow = MutableStateFlow(
         UserState.Registered(hasInvitationCodeConfirmed = false, disabled = false)
     )
@@ -45,6 +54,7 @@ class AppScreenViewModelTest {
     fun setup() {
         every { appScreenEvents.events } returns appScreenEventsFlow
         every { userSessionManager.observeRegisteredUser() } returns userFlow
+        every { timeProvider.nowInstant() } returns instant
         createViewModel()
     }
 
@@ -267,10 +277,6 @@ class AppScreenViewModelTest {
     fun `given HealthSummaryRequested is received then share health summary should be shown`() =
         runTestUnconfined {
             // Given
-            val shareHealthSummary = ShareHealthSummary(
-                qrCodeBitmap = mockk(),
-                oneTimeCode = "123",
-            )
             every { healthSummaryService.observeShareHealthSummary(600) } returns flowOf(Result.success(shareHealthSummary))
             val event = Action.HealthSummaryRequested
 
@@ -287,10 +293,6 @@ class AppScreenViewModelTest {
             // Given
             var successInvoked = false
             val event = AppScreenEvents.Event.HealthSummaryDisplayRequested(onSuccess = { successInvoked = true })
-            val shareHealthSummary = ShareHealthSummary(
-                qrCodeBitmap = mockk(),
-                oneTimeCode = "123",
-            )
             every { healthSummaryService.observeShareHealthSummary(600) } returns flowOf(Result.success(shareHealthSummary))
 
             // When
@@ -304,10 +306,6 @@ class AppScreenViewModelTest {
     fun `it should dismiss health summary correctly`() =
         runTestUnconfined {
             // Given
-            val shareHealthSummary = ShareHealthSummary(
-                qrCodeBitmap = mockk(),
-                oneTimeCode = "123",
-            )
             every { healthSummaryService.observeShareHealthSummary(600) } returns flowOf(Result.success(shareHealthSummary))
             val event = Action.HealthSummaryRequested
             viewModel.onAction(event)
@@ -396,6 +394,7 @@ class AppScreenViewModelTest {
             healthSummaryService = healthSummaryService,
             navigator = navigator,
             deviceRegistrationService = deviceRegistrationService,
+            timeProvider = timeProvider,
         )
     }
 }
