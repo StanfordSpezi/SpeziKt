@@ -17,7 +17,7 @@ import com.google.protobuf.Message
 import com.google.protobuf.Struct
 import dagger.hilt.android.EntryPointAccessors
 import edu.stanford.speziclaid.datastore.DataStorer
-import edu.stanford.speziclaid.datastore.store
+import edu.stanford.speziclaid.datastore.store.store
 import edu.stanford.speziclaid.helper.structOf
 
 open class DataRecorder(
