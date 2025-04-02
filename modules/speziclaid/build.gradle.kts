@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.spezi.library)
     alias(libs.plugins.spezi.hilt)
+    alias(libs.plugins.spezi.serialization)
 }
 
 android {
@@ -13,6 +14,8 @@ android {
 dependencies {
     api("ch.claid:claid:0.8.8")
     implementation(project(":modules:healthconnectonfhir"))
-    implementation(project(":claid_cough_detection"))
+    implementation(project(":storage-local"))
+
+    api(project(":claid_cough_detection"))
 
 }

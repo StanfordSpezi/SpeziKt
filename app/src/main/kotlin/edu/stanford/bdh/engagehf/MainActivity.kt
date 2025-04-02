@@ -8,15 +8,25 @@ import adamma.c4dhi.claid_android.collectors.audio.MicrophoneCollector
 import adamma.c4dhi.claid_android.collectors.motion.AccelerometerCollector
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -47,6 +57,7 @@ import edu.stanford.spezi.modules.notification.NotificationRoutes
 import edu.stanford.spezi.modules.notification.setting.NotificationSettingScreen
 import edu.stanford.spezi.modules.onboarding.OnboardingNavigationEvent
 import edu.stanford.spezi.modules.onboarding.sequential.SequentialOnboardingScreen
+import edu.stanford.spezi.ui.Button
 import edu.stanford.spezi.ui.Sizes
 import edu.stanford.speziclaid.CLAIDRuntime
 import edu.stanford.speziclaid.cough.CoughRecognizerPipeline
@@ -55,9 +66,14 @@ import edu.stanford.speziclaid.module.DataRecorder
 import edu.stanford.speziclaid.module.WrappedModule
 import edu.stanford.speziclaid.module.wrapModule
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.reflect.typeOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import edu.stanford.speziclaid.datastore.DataRetriever
+import edu.stanford.speziclaid.datastore.getCoughSamples
 
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
@@ -71,6 +87,9 @@ class MainActivity : FragmentActivity() {
     @Inject
     lateinit var claidRuntime: CLAIDRuntime
 
+    @Inject
+    lateinit var dataRetriever: DataRetriever
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         viewModel.onAction(action = MainActivityAction.NewIntent(intent))
@@ -79,6 +98,10 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         startCLAID()
+        setContent {
+            // Show the user data inside a Text view
+            AppContent()
+        }
     }
 
 
@@ -139,148 +162,36 @@ class MainActivity : FragmentActivity() {
     }
 
     @Composable
-    private fun AppContent(
-        navHostController: NavHostController,
-        startDestination: Routes,
-    ) {
-        NavHost(
-            navController = navHostController,
-            startDestination = startDestination,
-        ) {
-            registerAppGraph()
-        }
-    }
+    private fun AppContent() {
+        var counter by remember { mutableStateOf(0) }
 
-    private fun NavGraphBuilder.registerAppGraph() {
-        composable<Routes.RegisterScreen>(
-            typeMap = mapOf(
-                typeOf<RegisterParams>() to serializableType<RegisterParams>()
-            )
-        ) {
-            val args = it.toRoute<Routes.RegisterScreen>()
-            RegisterScreen(
-                args.registerParams.email,
-                args.registerParams.password
-            )
-        }
 
-        composable<Routes.LoginScreen> {
-            LoginScreen()
-        }
-
-        composable<EducationRoutes.VideoDetail>(
-            typeMap = mapOf(
-                typeOf<Video>() to serializableType<Video>()
-            )
-        ) {
-            VideoScreen()
-        }
-
-        composable<NotificationRoutes.NotificationSetting> {
-            NotificationSettingScreen()
-        }
-
-        composable<Routes.ContactScreen> {
-            ContactScreen()
-        }
-
-        composable<Routes.AppScreen> {
-            AppScreen()
-        }
-
-        composable<Routes.QuestionnaireScreen>(
-            typeMap = mapOf(
-                typeOf<String>() to serializableType<String>()
-            )
-        ) {
-            QuestionnaireScreen()
-        }
-
-        composable<Routes.InvitationCodeScreen> {
-            InvitationCodeScreen()
-        }
-
-        composable<Routes.OnboardingScreen> {
-            OnboardingScreen()
-        }
-
-        composable<Routes.SequentialOnboardingScreen> {
-            SequentialOnboardingScreen()
-        }
-    }
-
-    @Composable
-    private fun Navigator(navHostController: NavHostController) {
-        LaunchedEffect(key1 = Unit) {
-            launch(mainDispatcher) {
-                viewModel.getNavigationEvents().collect { event ->
-                    when (event) {
-                        is AccountNavigationEvent.RegisterScreen -> navHostController.navigate(
-                            Routes.RegisterScreen(
-                                registerParams = RegisterParams(
-                                    email = event.email,
-                                    password = event.password
-                                ),
-                            )
-                        )
-
-                        is AppNavigationEvent.QuestionnaireScreen -> navHostController.navigate(
-                            Routes.QuestionnaireScreen(event.questionnaireId)
-                        )
-
-                        is AppNavigationEvent.ContactScreen -> navHostController.navigate(
-                            Routes.ContactScreen
-                        )
-
-                        is AccountNavigationEvent.LoginScreen -> navHostController.navigate(
-                            Routes.ConsentScreen
-                        )
-
-                        is OnboardingNavigationEvent.InvitationCodeScreen -> navHostController.navigate(
-                            Routes.InvitationCodeScreen
-                        )
-
-                        is OnboardingNavigationEvent.OnboardingScreen -> navHostController.navigateTo(
-                            Routes.OnboardingScreen, event.clearBackStack
-                        )
-
-                        is OnboardingNavigationEvent.SequentialOnboardingScreen -> navHostController.navigate(
-                            Routes.SequentialOnboardingScreen
-                        )
-
-                        is OnboardingNavigationEvent.ConsentScreen -> navHostController.navigate(
-                            Routes.ConsentScreen
-                        )
-
-                        is AppNavigationEvent.AppScreen -> navHostController.navigateTo(
-                            route = Routes.AppScreen,
-                            clearBackStack = event.clearBackStack
-                        )
-
-                        is NavigationEvent.PopBackStack -> navHostController.popBackStack()
-                        is NavigationEvent.NavigateUp -> navHostController.navigateUp()
-
-                        is EducationNavigationEvent.VideoSectionClicked -> navHostController.navigate(
-                            EducationRoutes.VideoDetail(
-                                video = event.video
-                            )
-                        )
-
-                        is NotificationNavigationEvent.NotificationSettings -> navHostController.navigate(
-                            NotificationRoutes.NotificationSetting
-                        )
-                    }
-                }
+        LaunchedEffect(Unit) {
+            while (true) {
+                delay(1000L) // Delay for X milliseconds (1000ms = 1 second)
+                counter = dataRetriever.getCoughSamples().coughSamplesCount
             }
         }
-    }
 
-    private fun NavHostController.navigateTo(route: Routes, clearBackStack: Boolean = false) {
-        navigate(route) {
-            if (clearBackStack) {
-                popUpTo(graph.startDestinationId) { inclusive = true }
-                launchSingleTop = true
-            }
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "Welcome to the App!",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+
+            Text(
+                text = "Updated: $counter",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Green
+            )
         }
     }
+
 }

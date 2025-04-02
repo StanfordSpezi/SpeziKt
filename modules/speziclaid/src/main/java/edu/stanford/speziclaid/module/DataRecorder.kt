@@ -36,10 +36,15 @@ open class DataRecorder(
 
     private val dataStorer: DataStorer by lazy {
         val entryPoint = EntryPointAccessors.fromApplication(
-            CLAID.getContext().applicationContext, // Application context to access Hilt
-            DataStorerEntryPoint::class.java // EntryPoint interface
+            CLAID.getContext().applicationContext,
+            DataStorerEntryPoint::class.java
         )
-        entryPoint.getDataStorer() // Get the injected DataStorer
+        val instance = entryPoint.getDataStorer()
+
+        // Perform field injection manually
+        entryPoint.inject(instance)
+
+        instance
     }
 
     constructor() : this("", structOf())
@@ -71,7 +76,6 @@ open class DataRecorder(
         stubPackage.setPayload(payload)
         return mutator.getPackagePayload(stubPackage.build())
     }
-
 
     fun record(dataChannelName: String): DataRecorder {
         val recorderInputChannelName = "$inputChannelPrefix/${dataChannels.size}"

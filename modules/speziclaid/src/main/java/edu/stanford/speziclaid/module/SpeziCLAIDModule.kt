@@ -56,5 +56,6 @@ abstract class SpeziCLAIDModule(
     @InstallIn(SingletonComponent::class)
     interface DataStorerEntryPoint {
         fun getDataStorer(): DataStorer
+        fun inject(dataStorer: DataStorer) // Manually inject fields
     }
 }
