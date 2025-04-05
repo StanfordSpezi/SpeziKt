@@ -10,7 +10,7 @@ import android.text.StaticLayout
 import android.text.TextPaint
 import androidx.compose.ui.graphics.asAndroidPath
 import edu.stanford.spezi.core.coroutines.Dispatching
-import edu.stanford.spezi.ui.markdown.MarkdownElement
+import edu.stanford.spezi.modules.onboarding.consent.markdown.MarkdownElement
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream

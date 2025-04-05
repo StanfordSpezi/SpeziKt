@@ -1,4 +1,4 @@
-package edu.stanford.spezi.ui.markdown
+package edu.stanford.spezi.modules.onboarding.consent.markdown
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding

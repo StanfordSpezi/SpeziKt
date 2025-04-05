@@ -1,4 +1,4 @@
-package edu.stanford.spezi.ui.markdown
+package edu.stanford.spezi.modules.onboarding.consent.markdown
 
 import javax.inject.Inject
 
