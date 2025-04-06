@@ -23,3 +23,19 @@ import androidx.compose.runtime.Composable
  * ```
  */
 typealias ComposableBlock = @Composable () -> Unit
+
+/**
+ * A type alias for a composable lambda function with no parameters and a return value of type T.
+ * Useful for types of properties of a [ComposableContent] where a compose scope is needed
+ *
+ * Example usage:
+ *
+ * ```kotlin
+ * data class MyButton(
+ *     private val title: String,
+ *     private val containerColor: ComposeValue<Color> = { Colors.primary },
+ *     private val onClick: () -> Unit,
+ * ) : ComposableContent
+ * ```
+ */
+typealias ComposeValue<T> = @Composable () -> T
