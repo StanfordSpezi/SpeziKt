@@ -76,6 +76,7 @@
     <string name="delete_health_record_failure_message">Unable to delete the health record. Please try again.</string>
     <string name="delete_health_record_success_message">Health record deleted successfully.</string>
     <string name="notifications">Notifications</string>
+    <string name="account_settings_add_phone_number">Add Phone Number</string>
     <string name="heart_rate_description_part_1">Heart rate is the number of times your heart beats per minute. Checking your heart rate helps your care team see how you are responding to your meds and if any meds need to be changed.</string>
     <string name="heart_rate_description_part_2">"Everyone’s normal heart rate is different. A heart rate under 50 can make you dizzy. If your heart rate suddenly increases and stays high, you should tell your care team. "</string>
     <string name="heart_rate_description_part_3">Your heart rate will be checked when you take your blood pressure. For more info, see the heart rate video.</string>
@@ -140,4 +141,14 @@
     <string name="qr_code_one_time_code">One-time code</string>
     <string name="qr_code_health_summary_button_title">View Health Summary</string>
     <string name="qr_code_summary_button_description">Alternatively, you can access your health summary here</string>
+    <string name="invalid_phone_number_message">The entered phone number is invalid</string>
+    <string name="enter_verification_code_title">Enter Verification Code</string>
+    <string name="enter_verification_code_description">Enter your 6 digit verification code you received via text message.</string>
+    <string name="verify_phone_number_button_title">Verify Phone Number</string>
+    <string name="send_verification_message_button_title">Send Verification Message</string>
+    <string name="search_your_country_placeholder">🔍 Search your country</string>
+    <string name="no_country_codes_found">No country codes found</string>
+    <string name="error_sending_verification_message_message">An error occurred sending the verification message</string>
+    <string name="error_checking_verification_code_message">An error occurred sending the verification code</string>
+    <string name="phone_number_verification_success_message">Phone number added successfully to your account.</string>
 </resources>

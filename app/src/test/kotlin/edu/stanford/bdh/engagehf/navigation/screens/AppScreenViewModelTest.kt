@@ -261,6 +261,18 @@ class AppScreenViewModelTest {
     }
 
     @Test
+    fun `given AddPhoneNumber is received then update bottom sheet content`() {
+        // Given
+        val event = Action.AddPhoneNumber
+
+        // When
+        viewModel.onAction(event)
+
+        // Then
+        assertThat(content().bottomSheetContent).isEqualTo(BottomSheetContent.ADD_PHONE_NUMBER)
+    }
+
+    @Test
     fun `given DisplayHealthSummaryPDF is received then healthSummaryService should be called`() =
         runTestUnconfined {
             // Given

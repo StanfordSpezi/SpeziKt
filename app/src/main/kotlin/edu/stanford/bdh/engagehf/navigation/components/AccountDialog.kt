@@ -148,6 +148,19 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
                     }
                 }
 
+                TextButton(
+                    onClick = {
+                        onAction(Action.AddPhoneNumber)
+                    },
+                    modifier = Modifier
+                        .align(Alignment.Start),
+                ) {
+                    Text(
+                        text = stringResource(R.string.account_settings_add_phone_number),
+                        style = bodyMedium,
+                    )
+                }
+
                 HorizontalDivider()
                 AsyncAccountItem(
                     title = stringResource(R.string.health_summary),

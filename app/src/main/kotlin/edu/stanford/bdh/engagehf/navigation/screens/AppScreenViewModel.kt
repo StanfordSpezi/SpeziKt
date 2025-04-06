@@ -95,6 +95,7 @@ class AppScreenViewModel @Inject constructor(
                     is AppScreenEvents.Event.HealthSummaryDisplayRequested -> {
                         onHealthSummaryRequested(onSuccess = event.onSuccess)
                     }
+
                     else -> handleBottomSheetContentEventIfNeeded(event = event)
                 }
             }
@@ -173,6 +174,11 @@ class AppScreenViewModel @Inject constructor(
             Action.ShowContact -> {
                 _uiState.update { it.copy(accountUiState = it.accountUiState.copy(showDialog = false)) }
                 navigator.navigateTo(AppNavigationEvent.ContactScreen)
+            }
+
+            Action.AddPhoneNumber -> {
+                _uiState.update { it.copy(accountUiState = it.accountUiState.copy(showDialog = false)) }
+                updateContent { it.copy(bottomSheetContent = BottomSheetContent.ADD_PHONE_NUMBER) }
             }
         }
     }
@@ -315,6 +321,7 @@ enum class BottomSheetContent {
     ADD_HEART_RATE_RECORD,
     SYMPTOMS_DESCRIPTION_INFO,
     BLUETOOTH_DEVICE_PAIRING,
+    ADD_PHONE_NUMBER,
 }
 
 sealed interface Action {
@@ -323,6 +330,7 @@ sealed interface Action {
     data object DisplayHealthSummaryPDF : Action
     data object DismissShareHealthSummaryDialog : Action
     data object ShowNotificationSettings : Action
+    data object AddPhoneNumber : Action
     data object ShowContact : Action
     data object SignOut : Action
     data class ShowAccountDialog(val showDialog: Boolean) : Action

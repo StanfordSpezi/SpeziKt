@@ -44,6 +44,7 @@ lifecycleKtx = "2.8.2"
 lifecycleRuntimeKtx = "2.7.0"
 minSdk = "31"
 mockKVersion = "1.13.10"
+phoneNumberVersion = "8.13.21"
 playServicesAuth = "21.2.0"
 rulesVersion = "1.5.0"
 runnerVersion = "1.5.2"
@@ -102,6 +103,7 @@ firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-fires
 firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-functions-ktx", version.ref = "firebaseFunctionsKtx" }
 firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
+googlecode-phonenumber = { module = "com.googlecode.libphonenumber:libphonenumber", version.ref = "phoneNumberVersion" }
 google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
