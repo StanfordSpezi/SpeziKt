@@ -37,6 +37,7 @@ import kotlinx.coroutines.delay
 import javax.inject.Inject
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import edu.stanford.bdh.engagehf.application.AccountView
 import edu.stanford.speziclaid.datastore.DataRetriever
 import edu.stanford.speziclaid.datastore.retrieve.getCoughSamples
 
@@ -62,59 +63,12 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startCLAID()
         setContent {
             // Show the user data inside a Text view
             AppContent()
         }
     }
 
-
-
-    private fun startCLAID() {
-        val recorder = DataRecorder()
-
-        claidRuntime.addModules(
-            listOf(
-                // === Accelerometer Tracking === //
-                /*wrapModule(
-                    moduleClass=AccelerometerCollector::class.java,
-                    moduleId="MyAccelerometerCollector",
-                    properties= structOf(
-                        "samplingFrequency" to 50,
-                        "outputMode" to "BATCHED"
-                    ),
-                    outputs=mapOf(
-                        "AccelerationData" to "InternalAccelerometerData"
-                    )
-                ),*/
-                // === On Device Cough Detection === //
-                CoughRecognizerPipeline(
-                    name="MyCoughRecognizer",
-                    output="DetectedCoughs"
-                ),
-                // === Data Recording === //
-                DataRecorder(
-                    moduleId = "MyDataRecorder",
-                    properties = structOf()
-                )
-                    .record("InternalAccelerometerData")
-                    .record("GyroscopeData")
-                    .record("DetectedCoughs")
-            )
-        ).startInBackground(
-            host="MyHost",
-            userId="MyUserId",
-            deviceId="MyDeviceId",
-            specialPermissions=CLAIDSpecialPermissionsConfig.regularConfig(),
-            persistance=CLAIDPersistanceConfig.onBootAutoStart(),
-            annotation = ServiceAnnotation(
-                "Engage-HF background service",
-                "Running AI in the background!",
-                edu.stanford.spezi.modules.design.R.drawable.ic_medication
-            )
-        )
-    }
 
     @Composable
     private fun Loading() {
@@ -131,32 +85,8 @@ class MainActivity : FragmentActivity() {
         var counter by remember { mutableStateOf(0) }
 
 
-        LaunchedEffect(Unit) {
-            while (true) {
-                delay(1000L) // Delay for X milliseconds (1000ms = 1 second)
-                counter = dataRetriever.getCoughSamples().coughSamplesCount
-            }
-        }
-
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Welcome to the App!",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
-
-            Text(
-                text = "Updated: $counter",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color.Green
-            )
-        }
+        val view = remember { AccountView() }
+        view.Content()
     }
 
 }
