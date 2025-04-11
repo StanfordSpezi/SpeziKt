@@ -1,0 +1,69 @@
+package edu.stanford.bdh.engagehf.application.modules
+
+import adamma.c4dhi.claid.Module.Channel
+import adamma.c4dhi.claid.Module.ChannelData
+import adamma.c4dhi.claid.TypeMapping.AnyProtoType
+import adamma.c4dhi.claid.Blob
+import adamma.c4dhi.claid_sensor_data.AccelerationData
+import adamma.c4dhi.claid_sensor_data.SleepData
+import ch.claid.cough_detection.CoughSampleVector
+import edu.stanford.bdh.engagehf.application.Dependency
+import edu.stanford.bdh.engagehf.application.modules.datastore.DataStorer
+
+open class DataRecorder(
+    val moduleId: String,
+) : Module(moduleId) {
+    private var dataChannels =
+        mutableMapOf<String, String>()
+    private val subscribedChannels = ArrayList<Channel<AnyProtoType>>()
+    private val inputChannelPrefix = "DataRecorder/$moduleId/INPUT"
+
+    private val dataStorer by Dependency<DataStorer>()
+
+    private fun onData(data: ChannelData<AnyProtoType>) {
+        print("Received data!")
+        val receivedData: AnyProtoType = data.data
+        val payload: Blob = receivedData.blob
+        val type: String = payload.messageType
+
+        if(type == SleepData.getDescriptor().fullName) {
+            val sleepData = decode(payload, SleepData::class.java)
+            dataStorer.store(data = sleepData)
+        } else if (type == AccelerationData.getDescriptor().fullName) {
+            val accelerometerData = decode(payload, AccelerationData::class.java)
+            dataStorer.store(data = accelerometerData)
+        } else if (type == CoughSampleVector.getDescriptor().fullName) {
+            val coughData = decode(payload, CoughSampleVector::class.java)
+            dataStorer.store(data = coughData)
+        }
+        else {
+            Logger.logError("Unknown data type: $type")
+        }
+    }
+
+    private fun<T: Message> decode(payload: Blob, returnInstance: Class<T>): T {
+        val mutator = TypeMapping.getMutator<T>(DataType(returnInstance))
+        val stubPackage = DataPackage.newBuilder();
+        stubPackage.setPayload(payload)
+        return mutator.getPackagePayload(stubPackage.build())
+    }
+
+    fun record(dataChannelName: String): DataRecorder {
+        val recorderInputChannelName = "$inputChannelPrefix/${dataChannels.size}"
+
+        if (dataChannels.containsKey(recorderInputChannelName)) {
+            throw Exception("Data channel with name $recorderInputChannelName already exists")
+        }
+        dataChannels[recorderInputChannelName] = dataChannelName
+        inputChannels[recorderInputChannelName] = dataChannelName
+        return this
+    }
+
+    override fun configure() {
+        for (dataChannel in dataChannels) {
+            val channel = subscribe(dataChannel.key, AnyProtoType::class.java, ::onData)
+            subscribedChannels.add(channel)
+        }
+    }
+
+}

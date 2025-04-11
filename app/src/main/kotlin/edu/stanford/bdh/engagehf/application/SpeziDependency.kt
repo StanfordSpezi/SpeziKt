@@ -1,8 +1,7 @@
 package edu.stanford.bdh.engagehf.application
 
 import adamma.c4dhi.claid.Module.Module
-import adamma.c4dhi.claid_platform_impl.CLAID
-import androidx.compose.ui.test.isRoot
+import edu.stanford.bdh.engagehf.application.dependency.DependencyRegistry
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty

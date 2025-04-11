@@ -1,20 +1,17 @@
-package edu.stanford.bdh.engagehf.application
+package edu.stanford.bdh.engagehf.application.modules
 
-import adamma.c4dhi.claid.Module.Module
-import adamma.c4dhi.claid.Module.Properties
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.time.Duration
-import java.time.LocalDateTime
 
 class Account(
     id: String = "Account",
-    public val username: String = "John Doe"
+    val username: String = "John Doe"
 ) : Module(id) {
 
     var onboarded = false
     val activeSeconds = MutableStateFlow(0)
 
-    override fun initialize(p0: Properties) {
+    override fun configure() {
         registerPeriodicFunction(
             "MyFunction",
             ::someFunc,

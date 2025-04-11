@@ -38,6 +38,7 @@ import javax.inject.Inject
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import edu.stanford.bdh.engagehf.application.AccountView
+import edu.stanford.bdh.engagehf.new_onboarding.OnboardingFlow
 import edu.stanford.speziclaid.datastore.DataRetriever
 import edu.stanford.speziclaid.datastore.retrieve.getCoughSamples
 
@@ -69,23 +70,14 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-
-    @Composable
-    private fun Loading() {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            CircularProgressIndicator(modifier = Modifier.size(Sizes.Content.large))
-        }
-    }
-
     @Composable
     private fun AppContent() {
-        var counter by remember { mutableStateOf(0) }
 
-
-        val view = remember { AccountView() }
+        val view = remember { OnboardingFlow(
+            listOf(
+                AccountView()
+            )
+        ) }
         view.Content()
     }
 

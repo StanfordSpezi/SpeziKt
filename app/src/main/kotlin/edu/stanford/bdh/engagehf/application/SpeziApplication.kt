@@ -2,19 +2,18 @@ package edu.stanford.bdh.engagehf.application
 
 import adamma.c4dhi.claid.CLAIDConfig
 import adamma.c4dhi.claid.HostConfig
-import adamma.c4dhi.claid.Module.Module
-import adamma.c4dhi.claid.Module.Properties
 import adamma.c4dhi.claid.ModuleConfig
-import adamma.c4dhi.claid_android.Configuration.CLAIDSpecialPermissionsConfig
 import adamma.c4dhi.claid_platform_impl.CLAID
 import android.app.Application
 import android.content.Context
 import com.google.protobuf.util.JsonFormat
+import edu.stanford.bdh.engagehf.application.dependency.DependencyRegistry
 import java.io.File
 import java.io.FileOutputStream
 
 abstract class SpeziApplication : Application() {
     abstract val config: SpeziConfig
+    open val operatingMode: OperatingModeConfig = ForegroundConfig()
 
     override fun onCreate() {
         super.onCreate()
@@ -52,16 +51,17 @@ abstract class SpeziApplication : Application() {
         val claidConfig = buildCLAIDConfig(host = "test_host", modules = moduleConfigs)
         val storedConfigPath = storeConfig(claidConfig) ?: throw Exception("Failed to store CLAID config")
 
-        if(config.isInBackground()) {
+        if(operatingMode is BackgroundConfig) {
+            val backgroundConfig = operatingMode as BackgroundConfig
             CLAID.startInBackground(
                 applicationContext,
                 storedConfigPath,
                 host,
                 userId,
                 deviceId,
-                config.getSpecialPermissionsConfig(),
-                config.getPersistanceConfig(),
-                config.getServiceAnnotation()
+                backgroundConfig.getSpecialPermissionsConfig(),
+                backgroundConfig.getPersistanceConfig(),
+                backgroundConfig.getServiceAnnotation()
             ) // Start CLAID
             println("CLAID started successfully")
         } else {
@@ -71,7 +71,7 @@ abstract class SpeziApplication : Application() {
                 host,
                 userId,
                 deviceId,
-                config.getSpecialPermissionsConfig()
+                operatingMode.getSpecialPermissionsConfig()
             )
         }
     }

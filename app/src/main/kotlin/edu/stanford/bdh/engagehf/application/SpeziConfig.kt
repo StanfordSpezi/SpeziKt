@@ -1,16 +1,9 @@
 package edu.stanford.bdh.engagehf.application
 
 import adamma.c4dhi.claid.Module.Module
-import adamma.c4dhi.claid_android.CLAIDServices.ServiceAnnotation
-import adamma.c4dhi.claid_android.Configuration.CLAIDPersistanceConfig
-import adamma.c4dhi.claid_android.Configuration.CLAIDSpecialPermissionsConfig
+import edu.stanford.bdh.engagehf.application.dependency.ChannelDescriptor
 
-class SpeziConfig(private var modules: List<Module>) {
-
-    private var inBackground = false
-    private var persistanceConfig = CLAIDPersistanceConfig.minimumPersistance()
-    private var specialPermissions = CLAIDSpecialPermissionsConfig.regularConfig()
-    private var serviceAnnotation = ServiceAnnotation.defaultAnnotation()
+open class SpeziConfig(private var modules: List<Module>) {
 
     fun getModules(): List<Module> {
         return modules
@@ -24,7 +17,7 @@ class SpeziConfig(private var modules: List<Module>) {
             modules += this
         }
 
-        operator fun Pipeline.unaryPlus() {
+        operator fun SpeziConfig.unaryPlus() {
             modules += this.getModules()
         }
 
@@ -38,33 +31,5 @@ class SpeziConfig(private var modules: List<Module>) {
             builder.init()           // Invoke the lambda with the builder, filling it up
             return SpeziConfig(builder.build())  // Return the final SpeziConfig
         }
-    }
-
-    fun toBackground(
-        persistanceConfig: CLAIDPersistanceConfig = CLAIDPersistanceConfig.minimumPersistance(),
-        specialPermissions: CLAIDSpecialPermissionsConfig = CLAIDSpecialPermissionsConfig.regularConfig(),
-        serviceAnnotation: ServiceAnnotation = ServiceAnnotation.defaultAnnotation()
-    ): SpeziConfig {
-        this.inBackground = true
-        this.persistanceConfig = persistanceConfig
-        this.specialPermissions = specialPermissions
-        this.serviceAnnotation = serviceAnnotation
-        return this
-    }
-
-    fun isInBackground() : Boolean {
-        return this.inBackground
-    }
-
-    fun getPersistanceConfig(): CLAIDPersistanceConfig {
-        return this.persistanceConfig
-    }
-
-    fun getSpecialPermissionsConfig(): CLAIDSpecialPermissionsConfig {
-        return this.specialPermissions
-    }
-
-    fun getServiceAnnotation(): ServiceAnnotation {
-        return this.serviceAnnotation
     }
 }
