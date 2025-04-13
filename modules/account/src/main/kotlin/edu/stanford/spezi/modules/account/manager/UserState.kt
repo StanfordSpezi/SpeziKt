@@ -14,9 +14,11 @@ sealed interface UserState {
      *
      * @property hasInvitationCodeConfirmed Whether the invitation code has been submitted or not
      * @property disabled Whether user has completed the study and the account has been disabled
+     * @param phoneNumbers List of verified phone numbers of the user
      */
     data class Registered(
         val hasInvitationCodeConfirmed: Boolean,
         val disabled: Boolean,
+        val phoneNumbers: List<String>,
     ) : UserState
 }

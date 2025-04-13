@@ -405,5 +405,6 @@ class MainActivityViewModelTest {
     ) = UserState.Registered(
         hasInvitationCodeConfirmed = hasInvitationCodeConfirmed,
         disabled = disabled,
+        phoneNumbers = emptyList(),
     )
 }

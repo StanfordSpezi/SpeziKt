@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -93,7 +94,7 @@ data class PhoneNumberInputUiModel(
                         if (phoneNumber.isEmpty()) {
                             Text(
                                 modifier = Modifier.disabledAlpha(),
-                                text = "Enter your phone number",
+                                text = stringResource(R.string.phone_number_enter_placeholder_description),
                             )
                         }
                         innerTextField()

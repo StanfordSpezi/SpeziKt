@@ -31,12 +31,13 @@ import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.TextStyles
 import edu.stanford.spezi.ui.ThemePreviews
 
-data class PhoneNumberUiState(
+data class AddPhoneNumberBottomSheet(
     val title: StringResource,
     val step: PhoneNumberStep,
     val actionButton: AsyncTextButton,
     override val onDismiss: () -> Unit,
 ) : BottomSheetComposableContent {
+
     @Composable
     override fun Content(modifier: Modifier) {
         Column(
@@ -45,7 +46,7 @@ data class PhoneNumberUiState(
         ) {
             Box(
                 modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.TopStart
+                contentAlignment = Alignment.TopStart,
             ) {
                 Text(
                     text = title.text(),
@@ -83,9 +84,9 @@ data class PhoneNumberUiState(
 
 sealed interface PhoneNumberStep : ComposableContent
 
-private class PhoneNumberUiStatePreviewParamProvider : PreviewParameterProvider<PhoneNumberUiState> {
-    private val base = PhoneNumberUiState(
-        title = StringResource(R.string.account_settings_add_phone_number),
+private class AddPhoneNumberBottomSheetParamProvider : PreviewParameterProvider<AddPhoneNumberBottomSheet> {
+    private val base = AddPhoneNumberBottomSheet(
+        title = StringResource(R.string.phone_number_add),
         onDismiss = {},
         step = PhoneNumberInputUiModelPreviewParamProvider().values.first(),
         actionButton = AsyncTextButton(
@@ -93,7 +94,7 @@ private class PhoneNumberUiStatePreviewParamProvider : PreviewParameterProvider<
             action = {}
         ),
     )
-    override val values: Sequence<PhoneNumberUiState>
+    override val values: Sequence<AddPhoneNumberBottomSheet>
         get() = sequenceOf(
             base,
             base.copy(step = VerificationCodeUiModelPreviewParamProvider().values.first()),
@@ -102,8 +103,8 @@ private class PhoneNumberUiStatePreviewParamProvider : PreviewParameterProvider<
 
 @ThemePreviews
 @Composable
-fun PhoneNumberBottomSheetPreview(
-    @PreviewParameter(PhoneNumberUiStatePreviewParamProvider::class) state: PhoneNumberUiState,
+fun AddPhoneNumberBottomSheetPreview(
+    @PreviewParameter(AddPhoneNumberBottomSheetParamProvider::class) state: AddPhoneNumberBottomSheet,
 ) {
     SpeziTheme { state.Content() }
 }

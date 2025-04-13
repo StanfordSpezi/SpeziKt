@@ -6,9 +6,8 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun PhoneNumberBottomSheet() {
-    val viewModel = hiltViewModel<PhoneNumberViewModel>()
+fun PhoneNumberSettingsScreen() {
+    val viewModel = hiltViewModel<PhoneNumberSettingsViewModel>()
     val state by viewModel.uiState.collectAsState()
-
     state.Content()
 }

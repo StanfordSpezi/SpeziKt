@@ -43,6 +43,7 @@ data class CountryCodeSelectionUiModel(
     val items: List<CountryCodeUiModel>,
     override val onDismiss: () -> Unit,
 ) : BottomSheetComposableContent {
+
     override val skipPartiallyExpanded: Boolean = true
     override val dragHandle: ComposableBlock = { BottomSheetDefaults.DragHandle() }
 

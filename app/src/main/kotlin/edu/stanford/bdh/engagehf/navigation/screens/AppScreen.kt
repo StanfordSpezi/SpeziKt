@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -50,7 +49,6 @@ import edu.stanford.bdh.engagehf.health.weight.bottomsheet.AddWeightBottomSheet
 import edu.stanford.bdh.engagehf.health.weight.bottomsheet.WeightDescriptionBottomSheet
 import edu.stanford.bdh.engagehf.medication.ui.MedicationScreen
 import edu.stanford.bdh.engagehf.navigation.components.AccountTopAppBarButton
-import edu.stanford.bdh.engagehf.phonenumber.PhoneNumberBottomSheet
 import edu.stanford.spezi.modules.design.component.AppTopAppBar
 import edu.stanford.spezi.modules.education.videos.EducationScreen
 import edu.stanford.spezi.ui.Colors
@@ -228,14 +226,9 @@ private fun ModalBottomSheetContent(
 
     AnimatedVisibility(visible = sheetState.isVisible) {
         val bottomSheetContent = content?.bottomSheetContent
-        val dragHandle: @Composable (() -> Unit)? = when (bottomSheetContent) {
-            BottomSheetContent.ADD_PHONE_NUMBER, null -> null
-            else -> { { BottomSheetDefaults.DragHandle() } }
-        }
         ModalBottomSheet(
             onDismissRequest = { onAction(Action.DismissBottomSheet) },
             sheetState = sheetState,
-            dragHandle = dragHandle,
             tonalElevation = Sizes.Elevation.medium
         ) {
             when (bottomSheetContent) {
@@ -248,7 +241,6 @@ private fun ModalBottomSheetContent(
                 BottomSheetContent.HEART_RATE_DESCRIPTION_INFO -> HeartRateDescriptionBottomSheet()
                 BottomSheetContent.BLUETOOTH_DEVICE_PAIRING -> BLEDevicePairingBottomSheet()
                 BottomSheetContent.SYMPTOMS_DESCRIPTION_INFO -> SymptomsDescriptionBottomSheet()
-                BottomSheetContent.ADD_PHONE_NUMBER -> PhoneNumberBottomSheet()
                 else -> {}
             }
         }

@@ -66,7 +66,7 @@ class UserSessionManagerTest {
         every { firebaseAuth.uid } returns null
         createUserSessionManager()
         val expectedUserState =
-            UserState.Registered(hasInvitationCodeConfirmed = false, disabled = false)
+            UserState.Registered(hasInvitationCodeConfirmed = false, disabled = false, phoneNumbers = emptyList())
 
         // when
         val state = userSessionManager.getUserState()
@@ -184,7 +184,8 @@ class UserSessionManagerTest {
             assertObservedState(
                 userState = UserState.Registered(
                     hasInvitationCodeConfirmed = false,
-                    disabled = false
+                    disabled = false,
+                    phoneNumbers = emptyList()
                 ),
                 scope = this
             )
@@ -208,7 +209,8 @@ class UserSessionManagerTest {
             assertObservedState(
                 userState = UserState.Registered(
                     hasInvitationCodeConfirmed = invitationCodeConfirmed,
-                    disabled = disabled
+                    disabled = disabled,
+                    phoneNumbers = emptyList(),
                 ),
                 scope = this
             )
@@ -232,7 +234,8 @@ class UserSessionManagerTest {
             assertObservedState(
                 userState = UserState.Registered(
                     hasInvitationCodeConfirmed = invitationCodeConfirmed,
-                    disabled = disabled
+                    disabled = disabled,
+                    phoneNumbers = emptyList(),
                 ),
                 scope = this
             )
@@ -249,6 +252,7 @@ class UserSessionManagerTest {
         every { firebaseAuth.uid } returns uid
         val invitationCode = "1234"
         val disabled = false
+        val phoneNumbers = listOf("1", "2", "3")
         val snapshot: DocumentSnapshot = mockk()
         val listenerSlot = slot<EventListener<DocumentSnapshot>>()
         val registrationListener: ListenerRegistration = mockk(relaxed = true)
@@ -259,6 +263,7 @@ class UserSessionManagerTest {
         } returns registrationListener
         every { snapshot.getString("invitationCode") } returns invitationCode
         every { snapshot.getBoolean("disabled") } returns disabled
+        every { snapshot.get("phoneNumbers") } returns phoneNumbers
         var response: UserState.Registered? = null
         createUserSessionManager()
 
@@ -275,7 +280,8 @@ class UserSessionManagerTest {
         assertThat(response).isEqualTo(
             UserState.Registered(
                 hasInvitationCodeConfirmed = true,
-                disabled = disabled
+                disabled = disabled,
+                phoneNumbers = phoneNumbers,
             )
         )
 
@@ -349,11 +355,13 @@ class UserSessionManagerTest {
     private fun setupUserResponse(
         invitationCodeConfirmed: Boolean,
         disabled: Boolean,
+        phoneNumbers: List<String> = emptyList(),
     ) {
         val uid = "uid"
         val document: DocumentSnapshot = mockk {
             every { getString("invitationCode") } returns "1234".takeIf { invitationCodeConfirmed }
             every { getBoolean("disabled") } returns disabled
+            every { this@mockk.get("phoneNumbers") } returns phoneNumbers
         }
         val firebaseUser: FirebaseUser = mockk {
             every { isAnonymous } returns false
