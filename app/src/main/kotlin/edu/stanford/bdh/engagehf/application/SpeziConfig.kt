@@ -22,29 +22,30 @@ open class SpeziConfig(
     }
 
     class Builder {
-        private val modules = mutableListOf<Module>()
-        private val moduleConfigs = mutableListOf<ModuleConfig>()
+        private val builderModules = mutableListOf<Module>()
+        private val builderModuleConfigs = mutableListOf<ModuleConfig>()
         
         // Add a module via the + operator
         operator fun Module.unaryPlus() {
-            modules += this
+            builderModules += this
         }
 
         operator fun SpeziConfig.unaryPlus() {
-            modules += this.getModules()
+            builderModules += this.getModules()
+            builderModuleConfigs += this.getAdditionalModuleConfigs()
         }
 
         operator fun ModuleConfig.unaryPlus() {
-            moduleConfigs += this
+            builderModuleConfigs += this
         }
 
         // Final build function to get the modules
         fun getModules(): List<Module> {
-            return modules
+            return builderModules
         }
 
         fun getModuleConfigs(): List<ModuleConfig> {
-            return moduleConfigs
+            return builderModuleConfigs
         }
     }
 
@@ -68,8 +69,8 @@ fun wrapModule(
     moduleConfig.id = moduleId
     moduleConfig.type = moduleType
     moduleConfig.properties = properties
-    moduleConfig.inputChannelsMap.putAll(inputs)
-    moduleConfig.outputChannelsMap.putAll(outputs)
+    moduleConfig.putAllInputChannels(inputs)
+    moduleConfig.putAllOutputChannels(outputs)
 
     return moduleConfig.build()
 }

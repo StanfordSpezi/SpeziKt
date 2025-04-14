@@ -41,6 +41,8 @@ object DependencyRegistry {
         }
     }
 
+    fun hasModule(id: String) = moduleInstances.containsKey(id) || moduleProviders.containsKey(id)
+
     fun getOrderedModules(): List<Module> {
         return moduleLoadOrder.mapNotNull { moduleProviders[it]?.getModule() }
     }

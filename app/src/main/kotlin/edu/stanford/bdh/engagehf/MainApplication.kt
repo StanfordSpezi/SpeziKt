@@ -14,6 +14,8 @@ import edu.stanford.bdh.engagehf.application.modules.Onboarding
 import edu.stanford.bdh.engagehf.application.SpeziApplication
 import edu.stanford.bdh.engagehf.application.SpeziConfig
 import edu.stanford.bdh.engagehf.application.cough.AudioRecorderModule
+import edu.stanford.bdh.engagehf.application.cough.CoughPipeline
+import edu.stanford.bdh.engagehf.application.modules.DataRecorder
 import edu.stanford.bdh.engagehf.application.wrapModule
 import edu.stanford.spezi.core.logging.SpeziLogger
 import edu.stanford.speziclaid.helper.structOf
@@ -23,9 +25,6 @@ import edu.stanford.speziclaid.module.wrapModule
 @HiltAndroidApp
 class MainApplication : SpeziApplication() {
 
-    private val name = ""
-
-
     private val enableOnboarding = true
 
     override val config = SpeziConfig {
@@ -33,10 +32,16 @@ class MainApplication : SpeziApplication() {
         if(enableOnboarding)
             +Onboarding()
         +Account(username = "John Doe")
-        +coughPipeline
+
+        +CoughPipeline(
+            name = "CoughPipeline",
+            output = "DetectedCoughs"
+        )
+        +DataRecorder()
+            .record("DetectedCoughs")
     }
 
-    override val operatingMode = BackgroundConfig(
+    /*override val operatingMode = BackgroundConfig(
         specialPermissions = CLAIDSpecialPermissionsConfig.regularConfig(),
         persistanceConfig = CLAIDPersistanceConfig.onBootAutoStart(),
         serviceAnnotation = ServiceAnnotation(
@@ -44,7 +49,7 @@ class MainApplication : SpeziApplication() {
             "Running AI in the background!",
             edu.stanford.spezi.modules.design.R.drawable.ic_medication
         )
-    )
+    )*/
 
     override fun onCreate() {
         super.onCreate()

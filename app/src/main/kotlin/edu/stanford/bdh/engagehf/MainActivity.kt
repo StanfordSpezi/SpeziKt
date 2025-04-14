@@ -10,7 +10,10 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -37,7 +40,9 @@ import kotlinx.coroutines.delay
 import javax.inject.Inject
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.dp
 import edu.stanford.bdh.engagehf.application.AccountView
+import edu.stanford.bdh.engagehf.application.CoughView
 import edu.stanford.bdh.engagehf.new_onboarding.OnboardingFlow
 import edu.stanford.speziclaid.datastore.DataRetriever
 import edu.stanford.speziclaid.datastore.retrieve.getCoughSamples
@@ -61,24 +66,24 @@ class MainActivity : FragmentActivity() {
         super.onNewIntent(intent)
         viewModel.onAction(action = MainActivityAction.NewIntent(intent))
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            // Show the user data inside a Text view
             AppContent()
         }
     }
 
     @Composable
     private fun AppContent() {
+        val accountView = remember { AccountView() }
+        val coughView = remember { CoughView() }
 
-        val view = remember { OnboardingFlow(
-            listOf(
-                AccountView()
-            )
-        ) }
-        view.Content()
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp)
+        ) {
+            accountView.Content()
+            Spacer(modifier = Modifier.height(32.dp))
+            coughView.Render()
+        }
     }
-
 }

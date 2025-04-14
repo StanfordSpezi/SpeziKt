@@ -4,14 +4,21 @@ import adamma.c4dhi.claid.Module.Channel
 import adamma.c4dhi.claid.Module.ChannelData
 import adamma.c4dhi.claid.TypeMapping.AnyProtoType
 import adamma.c4dhi.claid.Blob
+import adamma.c4dhi.claid.DataPackage
+import adamma.c4dhi.claid.Logger.Logger
+import adamma.c4dhi.claid.TypeMapping.DataType
+import adamma.c4dhi.claid.TypeMapping.TypeMapping
 import adamma.c4dhi.claid_sensor_data.AccelerationData
 import adamma.c4dhi.claid_sensor_data.SleepData
 import ch.claid.cough_detection.CoughSampleVector
+import com.google.protobuf.Message
 import edu.stanford.bdh.engagehf.application.Dependency
 import edu.stanford.bdh.engagehf.application.modules.datastore.DataStorer
+import edu.stanford.bdh.engagehf.application.modules.datastore.store.store
+
 
 open class DataRecorder(
-    val moduleId: String,
+    val moduleId: String? = "DataRecorder",
 ) : Module(moduleId) {
     private var dataChannels =
         mutableMapOf<String, String>()
@@ -55,7 +62,7 @@ open class DataRecorder(
             throw Exception("Data channel with name $recorderInputChannelName already exists")
         }
         dataChannels[recorderInputChannelName] = dataChannelName
-        inputChannels[recorderInputChannelName] = dataChannelName
+        inputChannelsMap[recorderInputChannelName] = dataChannelName
         return this
     }
 

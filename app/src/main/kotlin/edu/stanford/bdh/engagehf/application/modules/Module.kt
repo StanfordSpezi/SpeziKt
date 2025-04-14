@@ -11,7 +11,8 @@ abstract class Module(thisID: String?) : Module(thisID?:"") {
         }
     }
 
-    private val channelDescriptor: ChannelDescriptor = ChannelDescriptor()
+    protected val inputChannelsMap = mutableMapOf<String, String>()
+    protected val outputChannelsMap = mutableMapOf<String, String>()
 
     protected fun configureParameters(properties: Properties) {
 
@@ -24,13 +25,22 @@ abstract class Module(thisID: String?) : Module(thisID?:"") {
 
     abstract fun configure()
 
-    fun inputs(inputMap: Map<String, String> = mapOf()): Module {
-        channelDescriptor.inputs(inputMap)
+    fun inputs(inputMap: Map<String, String>): Module {
+        inputChannelsMap.putAll(inputMap)
         return this
     }
 
     fun outputs(outputMap: Map<String, String>): Module {
-        channelDescriptor.outputs(outputMap)
+        outputChannelsMap.putAll(outputMap)
         return this
     }
+
+    fun getInputChannels(): Map<String, String> {
+        return inputChannelsMap
+    }
+
+    fun getOutputChannels(): Map<String, String> {
+        return outputChannelsMap
+    }
+
 }

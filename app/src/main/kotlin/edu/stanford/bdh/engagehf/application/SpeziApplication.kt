@@ -2,7 +2,6 @@ package edu.stanford.bdh.engagehf.application
 
 import adamma.c4dhi.claid.CLAIDConfig
 import adamma.c4dhi.claid.HostConfig
-import adamma.c4dhi.claid.Module.Module
 import adamma.c4dhi.claid.ModuleConfig
 import adamma.c4dhi.claid_platform_impl.CLAID
 import android.app.Application
@@ -29,23 +28,30 @@ abstract class SpeziApplication : Application() {
         }
 
         // 2. Resolve all remaining modules
-        for (moduleId in DependencyRegistry.moduleLoadOrder) {
+
+        var index = 0
+        while (index < DependencyRegistry.moduleLoadOrder.size) {
+            val moduleId = DependencyRegistry.moduleLoadOrder[index]
             val module = DependencyRegistry.getModuleCreateIfNotExists(moduleId)
 
             val config = ModuleConfig.newBuilder()
             config.id = moduleId
             config.type = module.javaClass.simpleName
-            CLAID.registerModule(module.javaClass)
 
-            if(module is Module){
-                CLAID.addPreloadedModule(moduleId, module)
-            } else {
-
+            if(module is edu.stanford.bdh.engagehf.application.modules.Module) {
+                config.putAllInputChannels(module.getInputChannels())
+                config.putAllOutputChannels(module.getOutputChannels())
             }
 
+            CLAID.registerModule(module.javaClass)
+            CLAID.addPreloadedModule(moduleId, module)
+
             moduleConfigs.add(config.build())
+            index += 1
         }
 
+        moduleConfigs.addAll(config.getAdditionalModuleConfigs())
+        println("Module configs: $moduleConfigs")
         launchCLAID(moduleConfigs)
     }
 
