@@ -3,7 +3,6 @@ package edu.stanford.bdh.engagehf.medication.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -13,7 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.TextStyles
 import edu.stanford.spezi.ui.ThemePreviews
 
@@ -28,13 +27,11 @@ fun SectionHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            modifier = Modifier.padding(start = Spacings.medium),
             text = title,
             style = TextStyles.titleMedium,
         )
         Spacer(modifier = Modifier.weight(1f))
         IconButton(
-            modifier = Modifier.padding(end = Spacings.medium),
             onClick = onToggleExpand
         ) {
             Icon(
@@ -48,9 +45,11 @@ fun SectionHeader(
 @ThemePreviews
 @Composable
 private fun SectionHeaderPreview() {
-    SectionHeader(
-        title = "Section Header",
-        isExpanded = true,
-        onToggleExpand = {},
-    )
+    SpeziTheme {
+        SectionHeader(
+            title = "Section Header",
+            isExpanded = true,
+            onToggleExpand = {},
+        )
+    }
 }

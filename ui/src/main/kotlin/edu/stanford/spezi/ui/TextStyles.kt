@@ -142,6 +142,10 @@ private fun TypographyPreview() {
                 style = TextStyles.titleMedium
             )
             Text(
+                text = "titleSmall",
+                style = TextStyles.titleSmall
+            )
+            Text(
                 text = "bodyLarge",
                 style = TextStyles.bodyLarge
             )

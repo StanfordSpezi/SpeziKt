@@ -63,7 +63,7 @@ fun MedicationScreen(
             RepeatingLazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(Spacings.medium)
+                    .padding(horizontal = Spacings.medium)
                     .testIdentifier(MedicationScreenTestIdentifier.LOADING),
                 itemCount = 2,
                 content = { LoadingMedicationSection() }
@@ -76,7 +76,7 @@ fun MedicationScreen(
                 onAction = onAction,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(Spacings.medium)
+                    .padding(horizontal = Spacings.medium)
                     .testIdentifier(MedicationScreenTestIdentifier.SUCCESS)
             )
         }
