@@ -1,13 +1,15 @@
 package edu.stanford.spezi.modules.education.education.videos
 
+import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.videos.Action
 import edu.stanford.spezi.modules.education.videos.EducationViewModel
+import edu.stanford.spezi.modules.education.videos.UiState
 import edu.stanford.spezi.modules.education.videos.Video
+import edu.stanford.spezi.modules.education.videos.VideoSection
 import edu.stanford.spezi.modules.education.videos.data.repository.EducationRepository
 import edu.stanford.spezi.modules.navigation.Navigator
 import edu.stanford.spezi.modules.testing.CoroutineTestRule
-import edu.stanford.spezi.modules.testing.runTestUnconfined
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -25,23 +27,45 @@ class EducationViewModelTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
-    private lateinit var viewModel: EducationViewModel
+    private val viewModel by lazy {
+        EducationViewModel(educationRepository, navigator)
+    }
 
     @Before
-    fun setup() {
-        viewModel = EducationViewModel(educationRepository, navigator)
+    fun setUp() {
+        coEvery { educationRepository.getVideoSections() } returns Result.success(emptyList())
     }
 
     @Test
-    fun `when retry action is performed, loadVideoSections is called`() = runTestUnconfined {
-        // Given
-        coEvery { educationRepository.getVideoSections() } returns Result.success(emptyList())
+    fun `it should sort video sections on the order index`() {
+        // given
+        val size = 100
+        val videoSections = List(size) {
+            VideoSection(
+                title = "title$it",
+                description = "description$it",
+                orderIndex = size - it,
+            )
+        }.reversed()
+        coEvery { educationRepository.getVideoSections() } returns Result.success(videoSections)
 
+        // when
+        val uiState = viewModel.uiState.value as UiState.Success
+        val uiStateVideoSections = uiState.data.videoSections
+
+        // then
+        assertThat(uiStateVideoSections).isEqualTo(videoSections.sortedBy { it.orderIndex })
+        assertThat(uiStateVideoSections.first().orderIndex).isEqualTo(1)
+        assertThat(uiStateVideoSections.last().orderIndex).isEqualTo(size)
+    }
+
+    @Test
+    fun `when retry action is performed, loadVideoSections is called`() {
         // When
         viewModel.onAction(Action.Retry)
 
         // Then
-        coVerify { educationRepository.getVideoSections() }
+        coVerify(exactly = 2) { educationRepository.getVideoSections() }
     }
 
     @Test

@@ -28,7 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,40 +56,15 @@ private const val IMAGE_HEIGHT = 200
 private const val ASPECT_16_9 = 16f / 9f
 
 @Composable
-internal fun SectionHeader(
-    text: String?,
-    isExpanded: Boolean,
-    onHeaderClicked: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onHeaderClicked() }
-            .padding(Spacings.medium),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        text?.let {
-            Text(
-                text = it,
-                style = titleLarge
-            )
-        }
-        ExpandIcon(isExpanded)
-    }
-}
-
-@Composable
 internal fun ExpandableVideoSection(
     modifier: Modifier = Modifier,
-    title: String?,
+    title: String,
     description: String?,
     videos: List<Video> = emptyList(),
-    expandedStartValue: Boolean = false,
-    onExpand: () -> Unit = {},
+    expandedStartValue: Boolean = true,
     onActionClick: (Video) -> Unit = { _ -> },
 ) {
-    var expanded by remember { mutableStateOf(expandedStartValue) }
+    var expanded by rememberSaveable { mutableStateOf(expandedStartValue) }
 
     VideoElevatedCard(
         modifier = modifier
@@ -103,10 +78,6 @@ internal fun ExpandableVideoSection(
             SectionHeader(
                 text = title,
                 isExpanded = expanded,
-                onHeaderClicked = {
-                    expanded = !expanded
-                    onExpand()
-                }
             )
 
             description?.let {
@@ -139,6 +110,29 @@ internal fun ExpandableVideoSection(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun SectionHeader(
+    text: String,
+    isExpanded: Boolean,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(Spacings.medium),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = text,
+            style = titleLarge
+        )
+        Icon(
+            imageVector = if (isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+            contentDescription = null,
+        )
     }
 }
 
@@ -228,24 +222,12 @@ private fun VideoElevatedCard(
     )
 }
 
-@Composable
-internal fun ExpandIcon(expanded: Boolean) {
-    val vector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
-    Icon(
-        imageVector = vector,
-        contentDescription = null,
-    )
-}
-
-private class ExpandableSectionPreviewProvider :
-    PreviewParameterProvider<ExpandableVideoSectionParams> {
+private class ExpandableSectionPreviewProvider : PreviewParameterProvider<ExpandableVideoSectionParams> {
     val factory = ExpandableVideoSectionParamsFactory()
     override val values: Sequence<ExpandableVideoSectionParams> = sequenceOf(
         factory.createParams(),
         factory.createParams().copy(expandedStartValue = true),
     )
-
-    override val count: Int = values.count()
 }
 
 @ThemePreviews
@@ -265,7 +247,7 @@ private fun ExpandableVideoSectionPreview(
 }
 
 private data class ExpandableVideoSectionParams(
-    val title: String?,
+    val title: String,
     val description: String?,
     val content: @Composable () -> Unit,
     val expandedStartValue: Boolean = false,
@@ -273,7 +255,7 @@ private data class ExpandableVideoSectionParams(
 
 private class ExpandableVideoSectionParamsFactory {
     fun createParams(
-        title: String? = "Title",
+        title: String = "Title",
         description: String? = "Description",
         content: @Composable () -> Unit = { Text(text = "Content") },
         expandedStartValue: Boolean = false,

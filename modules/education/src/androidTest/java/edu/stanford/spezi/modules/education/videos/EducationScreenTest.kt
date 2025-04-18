@@ -76,8 +76,7 @@ class EducationScreenTest {
         description: String = "description",
         orderIndex: Int = 0,
         videos: List<Video> = listOf(createDefaultVideo()),
-        isExpanded: Boolean = true,
-    ): VideoSection = VideoSection(title, description, orderIndex, videos, isExpanded)
+    ): VideoSection = VideoSection(title, description, orderIndex, videos)
 
     private fun createDefaultEducationUiState(
         videoSections: List<VideoSection> = listOf(createDefaultVideoSection()),
