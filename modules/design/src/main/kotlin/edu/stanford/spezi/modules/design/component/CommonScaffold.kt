@@ -3,6 +3,7 @@ package edu.stanford.spezi.modules.design.component
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,6 +20,8 @@ import edu.stanford.spezi.ui.ThemePreviews
 fun CommonScaffold(
     title: String,
     modifier: Modifier = Modifier,
+    navigationIcon: @Composable () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Scaffold(
@@ -35,16 +38,17 @@ fun CommonScaffold(
                         Text(text = title)
                     }
                 },
+                actions = actions,
+                navigationIcon = navigationIcon,
             )
         },
         content = { innerPadding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
-                content()
-            }
+                    .padding(innerPadding),
+                content = content,
+            )
         }
     )
 }

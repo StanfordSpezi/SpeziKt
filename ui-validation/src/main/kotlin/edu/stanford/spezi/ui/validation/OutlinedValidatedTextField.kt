@@ -95,7 +95,7 @@ fun OutlinedValidatedTextField(
 private fun OutlinedValidatedTextFieldPreview() {
     val text = remember { mutableStateOf("") }
 
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         Validate(text.value, rules = listOf(ValidationRule.nonEmpty)) {
             OutlinedValidatedTextField(
                 value = text.value,

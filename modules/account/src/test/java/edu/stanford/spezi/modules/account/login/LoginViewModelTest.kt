@@ -186,7 +186,7 @@ class LoginViewModelTest {
 
         // then
         verify { accountEvents.emit(event = AccountEvents.Event.SignInFailure) }
-        verify { messageNotifier.notify(R.string.error_sign_in_failed) }
+        verify { messageNotifier.notify(R.string.account_error_sign_in_failed) }
     }
 
     @Test
@@ -205,7 +205,7 @@ class LoginViewModelTest {
 
             // Then
             coVerify { authenticationManager.sendForgotPasswordEmail(validEmail) }
-            verify { messageNotifier.notify(R.string.email_sent) }
+            verify { messageNotifier.notify(R.string.account_email_sent) }
         }
 
     @Test
@@ -224,7 +224,7 @@ class LoginViewModelTest {
 
             // Then
             coVerify { authenticationManager.sendForgotPasswordEmail(validEmail) }
-            verify { messageNotifier.notify(R.string.failed_to_send_email) }
+            verify { messageNotifier.notify(R.string.account_failed_to_send_email) }
         }
 
     @Test
@@ -245,7 +245,7 @@ class LoginViewModelTest {
 
             // Then
             coVerifyNever { authenticationManager.sendForgotPasswordEmail(email) }
-            verify { messageNotifier.notify(R.string.please_enter_a_valid_email) }
+            verify { messageNotifier.notify(R.string.account_please_enter_a_valid_email) }
         }
 
     @Test
@@ -290,6 +290,6 @@ class LoginViewModelTest {
 
         // then
         verify { accountEvents.emit(AccountEvents.Event.SignInFailure) }
-        verify { messageNotifier.notify(R.string.error_sign_in_failed) }
+        verify { messageNotifier.notify(R.string.account_error_sign_in_failed) }
     }
 }

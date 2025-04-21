@@ -14,6 +14,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
@@ -51,7 +52,6 @@ private val LightColorScheme = lightColorScheme(
 fun SpeziTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
-    isPreview: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
@@ -71,6 +71,7 @@ fun SpeziTheme(
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }
+    val isPreview = LocalInspectionMode.current
     val surface: ComposableBlock = {
         Surface(
             modifier = if (isPreview) Modifier else Modifier.fillMaxSize(),

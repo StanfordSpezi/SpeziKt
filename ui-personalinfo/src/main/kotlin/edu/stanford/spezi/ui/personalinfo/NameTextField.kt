@@ -148,7 +148,7 @@ fun NameTextField(
 private fun NameTextFieldPreview() {
     val name = remember { PersonNameComponents.Builder() }
 
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         NameTextField(
             builder = name,
             property = PersonNameComponents.Builder::givenName,

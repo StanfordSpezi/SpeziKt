@@ -6,6 +6,8 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Test
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Locale
 
 class SymptomsUiStateMapperTest {
@@ -176,8 +178,10 @@ class SymptomsUiStateMapperTest {
         specificSymptomsScore: Double? = 30.0,
         dizzinessScore: Double? = 20.0,
     ): SymptomScore {
-        val monthString = if (month < 10) "0$month" else "$month"
-        val dayString = if (day < 10) "0$day" else "$day"
+        val date = LocalDate.of(year, month, day)
+            .atStartOfDay(ZoneId.systemDefault())
+            .toInstant()
+            .toString()
         return SymptomScore(
             overallScore = overallScore,
             physicalLimitsScore = physicalLimitsScore,
@@ -185,7 +189,7 @@ class SymptomsUiStateMapperTest {
             qualityOfLifeScore = qualityOfLifeScore,
             symptomFrequencyScore = specificSymptomsScore,
             dizzinessScore = dizzinessScore,
-            date = "$year-$monthString-${dayString}T00:00:00Z"
+            date = date,
         )
     }
 }

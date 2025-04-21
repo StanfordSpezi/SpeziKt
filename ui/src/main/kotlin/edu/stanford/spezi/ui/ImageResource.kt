@@ -47,7 +47,7 @@ sealed interface ImageResource : ComposableContent {
 
     @Composable
     fun Content(modifier: Modifier, tint: Color) {
-        val imageModifier = modifier.then(Modifier.imageResourceIdentifier(identifier.toString()))
+        val imageModifier = modifier.then(Modifier.imageResourceIdentifier(identifier))
         when (this) {
             is Vector -> {
                 Icon(
@@ -75,8 +75,8 @@ sealed interface ImageResource : ComposableContent {
 private fun ImageResourceContentPreview(
     @PreviewParameter(ImageResourceProvider::class) imageResource: ImageResource,
 ) {
-    SpeziTheme(isPreview = true) {
-        imageResource.Content(Modifier)
+    SpeziTheme {
+        imageResource.Content()
     }
 }
 

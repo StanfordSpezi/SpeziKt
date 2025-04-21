@@ -94,7 +94,7 @@ fun SymptomsPage(
         is SymptomsUiState.Error -> {
             CenteredBoxContent {
                 Text(
-                    text = uiState.message,
+                    text = uiState.message.text(),
                     style = TextStyles.headlineMedium,
                     textAlign = TextAlign.Center,
                 )
@@ -122,7 +122,7 @@ fun SymptomsPage(
         is SymptomsUiState.NoData -> {
             CenteredBoxContent {
                 Text(
-                    text = uiState.message,
+                    text = uiState.message.text(),
                     textAlign = TextAlign.Center,
                     style = TextStyles.headlineMedium,
                 )

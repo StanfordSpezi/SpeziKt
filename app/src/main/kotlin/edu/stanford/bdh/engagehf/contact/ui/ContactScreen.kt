@@ -28,7 +28,6 @@ import edu.stanford.spezi.contact.email
 import edu.stanford.spezi.contact.website
 import edu.stanford.spezi.modules.design.component.AppTopAppBar
 import edu.stanford.spezi.modules.design.component.CenteredBoxContent
-import edu.stanford.spezi.modules.notification.R
 import edu.stanford.spezi.ui.Colors.primary
 import edu.stanford.spezi.ui.ImageResource
 import edu.stanford.spezi.ui.Spacings
@@ -65,7 +64,7 @@ private fun ContactScreen(
             }) {
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.back)
+                    contentDescription = null,
                 )
             }
         })
@@ -79,7 +78,7 @@ private fun ContactScreen(
                 is ContactScreenViewModel.UiState.Error -> {
                     CenteredBoxContent {
                         Text(
-                            text = uiState.message,
+                            text = uiState.message.text(),
                             style = TextStyles.headlineMedium,
                             textAlign = TextAlign.Center,
                         )
@@ -103,7 +102,7 @@ private fun ContactScreen(
 private class ContactUiStateProvider : PreviewParameterProvider<ContactScreenViewModel.UiState> {
     override val values = sequenceOf(
         ContactScreenViewModel.UiState.Loading,
-        ContactScreenViewModel.UiState.Error("An error occurred"),
+        ContactScreenViewModel.UiState.Error(StringResource("An error occurred")),
         ContactScreenViewModel.UiState.ContactLoaded(
             contact = Contact(
                 name = PersonNameComponents(
@@ -112,7 +111,7 @@ private class ContactUiStateProvider : PreviewParameterProvider<ContactScreenVie
                 ),
                 image = ImageResource.Vector(
                     Icons.Default.AccountBox,
-                    StringResource(edu.stanford.spezi.contact.R.string.profile_picture)
+                    StringResource(edu.stanford.spezi.contact.R.string.contact_profile_picture)
                 ),
                 title = StringResource("University Founder"),
                 description = StringResource(

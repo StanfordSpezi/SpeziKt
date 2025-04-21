@@ -1,6 +1,5 @@
 package edu.stanford.spezi.core.logging
 
-import edu.stanford.spezi.core.logging.SpeziLogger.Companion.tag
 import org.jetbrains.annotations.VisibleForTesting
 import java.util.concurrent.atomic.AtomicBoolean
 

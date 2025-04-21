@@ -50,7 +50,7 @@ fun DescriptionGridRow(
 @ThemePreviews
 @Composable
 private fun DescriptionGridRowPreviews() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         Column {
             DescriptionGridRow(description = {
                 Text("Description")

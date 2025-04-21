@@ -127,7 +127,7 @@ fun Modifier.height(textStyle: TextStyle) = then(Modifier.height(textStyle.fontS
 @ThemePreviews
 @Composable
 fun ShimmerEffectPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         Row(
             modifier = Modifier
                 .fillMaxWidth()

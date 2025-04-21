@@ -13,8 +13,10 @@ import edu.stanford.spezi.modules.design.action.PendingActions
 import edu.stanford.spezi.modules.navigation.NavigationEvent
 import edu.stanford.spezi.modules.navigation.Navigator
 import edu.stanford.spezi.modules.notification.NotificationPermissions
+import edu.stanford.spezi.modules.notification.R
 import edu.stanford.spezi.modules.notification.fcm.DeviceRegistrationService
 import edu.stanford.spezi.modules.utils.MessageNotifier
+import edu.stanford.spezi.ui.StringResource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -52,7 +54,7 @@ internal class NotificationSettingViewModel @Inject constructor(
             } else {
                 repository.observeNotificationSettings().collect { result ->
                     result.onFailure {
-                        _uiState.update { UiState.Error("Failed to observe notification settings") }
+                        _uiState.update { UiState.Error(StringResource(R.string.notification_error_message)) }
                     }.onSuccess { successResult ->
                         _uiState.update {
                             UiState.NotificationSettingsLoaded(
@@ -149,7 +151,7 @@ internal class NotificationSettingViewModel @Inject constructor(
 
     sealed interface UiState {
         data object Loading : UiState
-        data class Error(val message: String) : UiState
+        data class Error(val message: StringResource) : UiState
         data class MissingPermissions(val missingPermissions: Set<String>) : UiState
 
         data class NotificationSettingsLoaded(

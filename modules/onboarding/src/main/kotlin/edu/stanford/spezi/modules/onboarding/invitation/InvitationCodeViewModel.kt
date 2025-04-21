@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.spezi.modules.account.manager.InvitationAuthManager
+import edu.stanford.spezi.modules.onboarding.R
+import edu.stanford.spezi.ui.StringResource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -19,7 +21,6 @@ class InvitationCodeViewModel @Inject internal constructor(
     private val _uiState =
         MutableStateFlow(
             InvitationCodeUiState(
-                title = screenData.title,
                 description = screenData.description,
                 error = null,
             )
@@ -53,7 +54,7 @@ class InvitationCodeViewModel @Inject internal constructor(
                 screenData.redeemAction()
             } else {
                 _uiState.update {
-                    it.copy(error = "Invitation Code is already used or incorrect")
+                    it.copy(error = StringResource(R.string.onboarding_invitation_code_error_message))
                 }
             }
         }

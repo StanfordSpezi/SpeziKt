@@ -67,7 +67,7 @@ internal fun AddressCard(address: Address, modifier: Modifier = Modifier) {
             ) {
                 Icon(
                     Icons.Default.Place,
-                    contentDescription = stringResource(R.string.address),
+                    contentDescription = stringResource(R.string.contact_address),
                     tint = Colors.primary,
                 )
             }
@@ -78,7 +78,7 @@ internal fun AddressCard(address: Address, modifier: Modifier = Modifier) {
 @Composable
 @ThemePreviews
 private fun AddressCardPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         AddressCard(Address(Locale.US).apply {
             setAddressLine(0, "1234 Main Street")
             postalCode = "12345"

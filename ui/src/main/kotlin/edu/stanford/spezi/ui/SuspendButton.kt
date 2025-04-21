@@ -82,7 +82,7 @@ fun SuspendButton(
 @Composable
 private fun SuspendButtonPreview() {
     val state = remember { mutableStateOf<ViewState>(ViewState.Idle) }
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         SuspendButton("Test Button", state) {
             throw NotImplementedError()
         }

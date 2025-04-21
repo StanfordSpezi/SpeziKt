@@ -144,7 +144,7 @@ fun OutlinedNameTextField(
 private fun OutlinedNameTextFieldPreview() {
     val name = remember { PersonNameComponents.Builder() }
 
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         OutlinedNameTextField(
             builder = name,
             property = PersonNameComponents.Builder::givenName,

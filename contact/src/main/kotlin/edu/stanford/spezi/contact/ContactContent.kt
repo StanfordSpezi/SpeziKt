@@ -136,7 +136,7 @@ enum class ContactContentTestIdentifier {
 @ThemePreviews
 @Composable
 private fun ContactContentPreview(@PreviewParameter(ContactProvider::class) contact: Contact) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         contact.Content(Modifier)
     }
 }
@@ -188,7 +188,7 @@ private object ContactContentFactory {
                 givenName = "Leland",
                 familyName = "Stanford"
             ),
-            image = ImageResource.Vector(Icons.Default.AccountBox, StringResource(R.string.profile_picture)),
+            image = ImageResource.Vector(Icons.Default.AccountBox, StringResource(R.string.contact_profile_picture)),
             title = title,
             description = description,
             organization = StringResource("Stanford University"),

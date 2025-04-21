@@ -53,7 +53,7 @@ internal fun ContactOption.Content(modifier: Modifier = Modifier) {
 @Composable
 @ThemePreviews
 private fun ContactOptionCardPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         val option = ContactOption.email(
             addresses = listOf("test@test.de"),
         )

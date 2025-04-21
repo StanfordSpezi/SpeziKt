@@ -10,10 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.spezi.modules.design.component.CenteredBoxContent
 import edu.stanford.spezi.modules.design.component.VerticalSpacer
 import edu.stanford.spezi.questionnaire.QuestionnaireComposable
@@ -21,6 +23,7 @@ import edu.stanford.spezi.questionnaire.QuestionnaireResult
 import edu.stanford.spezi.ui.Colors
 import edu.stanford.spezi.ui.Colors.primary
 import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.ThemePreviews
 import edu.stanford.spezi.ui.testing.testIdentifier
 
@@ -45,7 +48,7 @@ fun QuestionnaireScreen(
             CenteredBoxContent {
                 Text(
                     modifier = Modifier.testIdentifier(QuestionnaireScreenTestIdentifier.ERROR),
-                    text = uiState.message,
+                    text = uiState.message.text(),
                     textAlign = TextAlign.Center,
                     color = Colors.error
                 )
@@ -80,7 +83,7 @@ private fun QuestionnaireLoaded(
     ) {
         VerticalSpacer()
         Text(
-            text = "Questionnaire",
+            text = stringResource(R.string.questionnaire),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
@@ -129,7 +132,7 @@ private class QuestionnaireScreenPreviewProvider :
     PreviewParameterProvider<QuestionnaireViewModel.State> {
     override val values = sequenceOf(
         QuestionnaireViewModel.State.Loading,
-        QuestionnaireViewModel.State.Error("Error message"),
+        QuestionnaireViewModel.State.Error(StringResource(R.string.failed_to_load_questionnaire)),
     )
 }
 

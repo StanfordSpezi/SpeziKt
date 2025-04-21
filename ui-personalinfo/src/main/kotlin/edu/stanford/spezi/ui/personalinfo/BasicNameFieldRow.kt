@@ -120,7 +120,7 @@ fun BasicNameFieldRow(
 private fun BasicNameFieldRowPreview() {
     val nameBuilder = remember { PersonNameComponents.Builder() }
 
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         Column {
             BasicNameFieldRow(
                 nameBuilder,

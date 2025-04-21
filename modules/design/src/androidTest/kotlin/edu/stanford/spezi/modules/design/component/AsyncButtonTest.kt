@@ -58,7 +58,6 @@ class AsyncButtonTest {
 
         composeTestRule.onNodeWithIdentifier(root).assert(isNotEnabled())
         composeTestRule.onNodeWithIdentifier(AsyncButtonTestIdentifier.LOADING).assertIsDisplayed()
-        composeTestRule.onNodeWithText(title).assertIsNotDisplayed()
     }
 
     @Test

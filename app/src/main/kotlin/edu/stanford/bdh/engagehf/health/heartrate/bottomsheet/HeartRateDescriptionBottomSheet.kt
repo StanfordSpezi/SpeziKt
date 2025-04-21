@@ -25,7 +25,7 @@ fun HeartRateDescriptionBottomSheet() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Understanding Your Heart Rate",
+            text = stringResource(R.string.understanding_your_heart_rate),
             style = TextStyles.titleLarge
         )
         VerticalSpacer()
@@ -50,7 +50,7 @@ fun HeartRateDescriptionBottomSheet() {
 @ThemePreviews
 @Composable
 fun HeartRateDescriptionBottomSheetPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         HeartRateDescriptionBottomSheet()
     }
 }

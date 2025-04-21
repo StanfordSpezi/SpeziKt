@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,14 +34,10 @@ fun AsyncImageResourceComposable(
     loadingContent: @Composable BoxScope.() -> Unit = {
         ShimmerEffectBox(modifier = Modifier.matchParentSize())
     },
-    errorContent: @Composable BoxScope.(Throwable) -> Unit = {
-        Box(Modifier.matchParentSize()) {
-            Text("Error loading image", Modifier.align(Alignment.Center))
-        }
-    },
+    errorContent: @Composable BoxScope.(Throwable) -> Unit = {},
     tint: Color = Colors.primary,
 ) {
-    val imageModifier = modifier.then(Modifier.imageResourceIdentifier(imageResource.identifier.toString()))
+    val imageModifier = modifier.then(Modifier.imageResourceIdentifier(imageResource.identifier))
     when (imageResource) {
         is AsyncImageResource.Vector -> {
             Icon(
@@ -101,7 +96,7 @@ fun AsyncImageResourceComposable(
 private fun ImageResourceComposablePreview(
     @PreviewParameter(AsyncImageResourceProvider::class) imageResource: ImageResource,
 ) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         imageResource.Content(Modifier)
     }
 }

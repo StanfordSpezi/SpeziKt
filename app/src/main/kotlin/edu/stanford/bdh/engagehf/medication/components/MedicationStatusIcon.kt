@@ -17,8 +17,6 @@ import edu.stanford.spezi.ui.Spacings
 import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.ThemePreviews
 
-const val MEDICATION_ICON_ALPHA_COLOR_FACTOR = 0.3f
-
 @Composable
 fun MedicationStatusIcon(model: MedicationCardUiModel) {
     val backgroundColor = model.statusColor.value
@@ -26,7 +24,7 @@ fun MedicationStatusIcon(model: MedicationCardUiModel) {
         modifier = Modifier
             .size(Sizes.Icon.medium)
             .background(
-                backgroundColor.copy(alpha = MEDICATION_ICON_ALPHA_COLOR_FACTOR),
+                color = backgroundColor,
                 shape = CircleShape
             )
             .padding(Spacings.small),
@@ -50,7 +48,7 @@ fun MedicationStatusIcon(model: MedicationCardUiModel) {
 private fun MedicationStatusIconPreview(
     @PreviewParameter(MedicationCardModelsProvider::class) model: MedicationCardUiModel,
 ) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         MedicationStatusIcon(model = model)
     }
 }

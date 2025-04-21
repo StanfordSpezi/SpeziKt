@@ -10,10 +10,10 @@ import com.google.firebase.firestore.Query
 import edu.stanford.bdh.engagehf.health.symptoms.SymptomScore
 import edu.stanford.bdh.engagehf.observations.ObservationCollection
 import edu.stanford.bdh.engagehf.observations.ObservationCollectionProvider
-import edu.stanford.healthconnectonfhir.ObservationsDocumentMapper
-import edu.stanford.healthconnectonfhir.RecordToObservationMapper
 import edu.stanford.spezi.core.coroutines.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.modules.healthconnectonfhir.ObservationsDocumentMapper
+import edu.stanford.spezi.modules.healthconnectonfhir.RecordToObservationMapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -34,14 +34,14 @@ class HealthRepository @Inject constructor(
 ) {
     private val logger by speziLogger()
 
-    private suspend fun <T : Record> observe(
+    private fun <T : Record> observe(
         collection: ObservationCollection,
         maxMonths: Long = DEFAULT_MAX_MONTHS,
     ): Flow<Result<List<T>>> = observeWithMapper(collection, maxMonths) { document ->
         observationsDocumentMapper.map(document)
     }
 
-    private suspend fun <T> observeWithMapper(
+    private fun <T> observeWithMapper(
         collection: ObservationCollection,
         maxMonths: Long,
         mapper: (document: com.google.firebase.firestore.DocumentSnapshot) -> T?,
@@ -85,16 +85,16 @@ class HealthRepository @Inject constructor(
         }
     }
 
-    suspend fun observeWeightRecords(): Flow<Result<List<WeightRecord>>> =
+    fun observeWeightRecords(): Flow<Result<List<WeightRecord>>> =
         observe(ObservationCollection.BODY_WEIGHT)
 
-    suspend fun observeBloodPressureRecords(): Flow<Result<List<BloodPressureRecord>>> =
+    fun observeBloodPressureRecords(): Flow<Result<List<BloodPressureRecord>>> =
         observe(ObservationCollection.BLOOD_PRESSURE)
 
-    suspend fun observeHeartRateRecords(): Flow<Result<List<HeartRateRecord>>> =
+    fun observeHeartRateRecords(): Flow<Result<List<HeartRateRecord>>> =
         observe(ObservationCollection.HEART_RATE)
 
-    suspend fun observeSymptoms(): Flow<Result<List<SymptomScore>>> =
+    fun observeSymptoms(): Flow<Result<List<SymptomScore>>> =
         observeWithMapper(ObservationCollection.SYMPTOMS, DEFAULT_MAX_MONTHS_SYMPTOMS) { document ->
             document.toObject(SymptomScore::class.java)
         }

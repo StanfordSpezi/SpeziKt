@@ -31,6 +31,7 @@ import edu.stanford.spezi.modules.design.component.CircleShimmerEffect
 import edu.stanford.spezi.modules.design.component.RectangleShimmerEffect
 import edu.stanford.spezi.modules.design.component.VerticalSpacer
 import edu.stanford.spezi.modules.design.component.height
+import edu.stanford.spezi.ui.Colors
 import edu.stanford.spezi.ui.DefaultElevatedCard
 import edu.stanford.spezi.ui.Sizes
 import edu.stanford.spezi.ui.Spacings
@@ -72,7 +73,7 @@ fun MedicationCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = model.title,
-                        style = TextStyles.titleLarge,
+                        style = TextStyles.titleMedium,
                         overflow = TextOverflow.Clip,
                         modifier = Modifier.testIdentifier(
                             identifier = MedicationScreenTestIdentifier.SUCCESS_MEDICATION_CARD_TITLE,
@@ -81,7 +82,8 @@ fun MedicationCard(
                     )
                     Text(
                         text = model.subtitle,
-                        style = TextStyles.titleSmall,
+                        style = TextStyles.bodyMedium,
+                        color = Colors.secondary,
                         overflow = TextOverflow.Clip,
                         modifier = Modifier.testIdentifier(
                             identifier = MedicationScreenTestIdentifier.SUCCESS_MEDICATION_CARD_SUBTITLE,
@@ -97,7 +99,7 @@ fun MedicationCard(
                     )
                 }) {
                     Icon(
-                        if (model.isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                        imageVector = if (model.isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                         contentDescription = null,
                     )
                 }
@@ -125,7 +127,7 @@ fun MedicationCard(
                             IconButton(onClick = {
                                 onAction(MedicationViewModel.Action.InfoClicked(videoPath = it))
                             }) {
-                                Icon(Icons.Filled.Info, contentDescription = "Information Icon")
+                                Icon(Icons.Filled.Info, contentDescription = null)
                             }
                         }
                     }
@@ -186,7 +188,7 @@ fun LoadingMedicationSection() {
 @ThemePreviews
 @Composable
 private fun LoadingMedicationSectionPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         LoadingMedicationSection()
     }
 }
@@ -196,7 +198,7 @@ private fun LoadingMedicationSectionPreview() {
 private fun MedicationCardPreview(
     @PreviewParameter(MedicationCardModelsProvider::class) model: MedicationCardUiModel,
 ) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         MedicationCard(
             model = model,
             onAction = {}

@@ -75,5 +75,9 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.vico.compose.m3)
 
+    implementation(libs.zxing.core)
+
+    implementation(libs.googlecode.phonenumber)
+
     androidTestImplementation(project(":modules:testing"))
 }

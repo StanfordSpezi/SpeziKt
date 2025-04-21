@@ -83,7 +83,7 @@ fun TitleDescriptionItem(title: String, description: String) {
 @ThemePreviews
 @Composable
 fun SymptomsDescriptionBottomSheetPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         SymptomsDescriptionBottomSheet()
     }
 }

@@ -37,7 +37,7 @@ class HealthUiStateMapper @Inject constructor(
                 )
             }
         return if (engageRecords.isEmpty()) {
-            HealthUiState.NoData(message = "No data available")
+            HealthUiState.NoData(message = StringResource(R.string.no_data_available))
         } else {
             HealthUiState.Success(
                 data = mapUiStateTimeRange(engageRecords, selectedTimeRange)
@@ -55,13 +55,13 @@ class HealthUiStateMapper @Inject constructor(
             oldestZonedDateTime = oldestRecordDate,
             selectedTimeRange = selectedTimeRange
         )
-        val title: String = when (records.first()) {
-            is EngageRecord.HeartRate -> "Heart Rate"
-            is EngageRecord.BloodPressure -> "Systolic"
-            is EngageRecord.Weight -> "Weight"
+        val title = when (records.first()) {
+            is EngageRecord.HeartRate -> R.string.heart_rate
+            is EngageRecord.BloodPressure -> R.string.systolic
+            is EngageRecord.Weight -> R.string.weight
         }
 
-        val chartData = createAggregatedHealthData(title, pairs)
+        val chartData = createAggregatedHealthData(StringResource(title), pairs)
 
         val chartDataList = mutableListOf(chartData)
         if (records.any { it is EngageRecord.BloodPressure }) {
@@ -71,7 +71,7 @@ class HealthUiStateMapper @Inject constructor(
                 selectedTimeRange = selectedTimeRange,
                 diastolic = true
             )
-            val diastolicChartData = createAggregatedHealthData("Diastolic", diastolicPairs)
+            val diastolicChartData = createAggregatedHealthData(StringResource(R.string.diastolic), diastolicPairs)
             chartDataList.add(diastolicChartData)
         }
 
@@ -101,8 +101,8 @@ class HealthUiStateMapper @Inject constructor(
     ): InfoRowData {
         return InfoRowData(
             selectedTimeRange = selectedTimeRange,
-            formattedValue = newestData?.formattedValue ?: "",
-            formattedDate = newestData?.formattedDate ?: "",
+            formattedValue = newestData?.formattedValue.orEmpty(),
+            formattedDate = newestData?.formattedDate.orEmpty(),
             isSelectedTimeRangeDropdownExpanded = false
         )
     }
@@ -221,7 +221,7 @@ class HealthUiStateMapper @Inject constructor(
     }
 
     private fun createAggregatedHealthData(
-        title: String,
+        title: StringResource,
         pairs: List<Pair<Double, Double>>,
     ): AggregatedHealthData {
         return AggregatedHealthData(

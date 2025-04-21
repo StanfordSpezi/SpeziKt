@@ -117,7 +117,7 @@ fun BasicNameTextField(
 private fun BasicNameTextFieldPreview() {
     val name = remember { PersonNameComponents.Builder() }
 
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         BasicNameTextField(
             builder = name,
             property = PersonNameComponents.Builder::givenName,

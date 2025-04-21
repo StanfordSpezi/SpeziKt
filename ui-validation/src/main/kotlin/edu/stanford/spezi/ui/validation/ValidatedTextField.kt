@@ -97,7 +97,7 @@ fun ValidatedTextField(
 private fun ValidatedTextFieldPreview() {
     val text = remember { mutableStateOf("") }
 
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         Validate(text.value, rules = listOf(ValidationRule.nonEmpty)) {
             ValidatedTextField(
                 value = text.value,
@@ -117,7 +117,7 @@ private fun ValidatedTextFieldPreviewFocusCheck() {
     val text = remember { mutableStateOf("") }
     val context = remember { mutableStateOf(ValidationContext()) }
 
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         Column {
             ReceiveValidation(context) {
                 Validate(text.value, rules = listOf(ValidationRule.nonEmpty)) {

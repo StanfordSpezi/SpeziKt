@@ -20,9 +20,9 @@ data class HealthUiData(
 
 sealed interface HealthUiState {
     data object Loading : HealthUiState
-    data class NoData(val message: String) : HealthUiState
+    data class NoData(val message: StringResource) : HealthUiState
     data class Success(val data: HealthUiData) : HealthUiState
-    data class Error(val message: String) : HealthUiState
+    data class Error(val message: StringResource) : HealthUiState
 }
 
 data class AverageHealthData(
@@ -33,7 +33,7 @@ data class AverageHealthData(
 data class AggregatedHealthData(
     val yValues: List<Double>,
     val xValues: List<Double>,
-    val seriesName: String,
+    val seriesName: StringResource,
 )
 
 data class NewestHealthData(

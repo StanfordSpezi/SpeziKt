@@ -55,7 +55,7 @@ fun ColorKeyRow(color: MedicationColor) {
             modifier = Modifier
                 .size(Sizes.Icon.small)
                 .background(
-                    color.value.copy(alpha = MEDICATION_ICON_ALPHA_COLOR_FACTOR),
+                    color.value,
                     shape = CircleShape
                 )
                 .padding(Spacings.small),
@@ -76,7 +76,7 @@ fun ColorKeyRow(color: MedicationColor) {
 @ThemePreviews
 @Composable
 private fun ColorKeyPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         ColorKey()
     }
 }

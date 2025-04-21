@@ -41,7 +41,7 @@ fun MeasurementLocationDialog(
 @ThemePreviews
 @Composable
 fun MeasurementLocationDialogPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         MeasurementLocationDialog(
             onDismissRequest = {},
             onOptionSelected = {},

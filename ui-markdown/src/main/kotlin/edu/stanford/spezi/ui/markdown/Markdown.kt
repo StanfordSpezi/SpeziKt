@@ -83,7 +83,7 @@ fun Markdown(
 @ThemePreviews
 @Composable
 private fun MarkdownPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         MarkdownString("This is a markdown **example**!")
     }
 }

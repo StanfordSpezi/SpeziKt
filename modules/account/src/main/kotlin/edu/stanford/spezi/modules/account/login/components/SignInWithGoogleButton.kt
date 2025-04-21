@@ -32,18 +32,18 @@ fun SignInWithGoogleButton(
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_google),
-            contentDescription = stringResource(edu.stanford.spezi.modules.account.R.string.google_icon),
+            contentDescription = stringResource(edu.stanford.spezi.modules.account.R.string.account_google_icon),
             modifier = Modifier.size(Sizes.Icon.small)
         )
         Spacer(modifier = Modifier.width(Spacings.small))
-        Text(stringResource(edu.stanford.spezi.modules.account.R.string.sign_in_with_google))
+        Text(stringResource(edu.stanford.spezi.modules.account.R.string.account_sign_in_with_google))
     }
 }
 
 @ThemePreviews
 @Composable
 fun SignInWithGoogleButtonPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         SignInWithGoogleButton(onButtonClick = {})
     }
 }
