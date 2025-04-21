@@ -12,7 +12,7 @@ import edu.stanford.spezi.modules.onboarding.OnboardingNavigationEvent
 import edu.stanford.spezi.modules.onboarding.invitation.InvitationCodeScreenTestIdentifier
 import edu.stanford.spezi.modules.onboarding.onboarding.OnboardingScreenTestIdentifier
 import edu.stanford.spezi.modules.onboarding.sequential.SequentialOnboardingScreenTestIdentifier
-import edu.stanford.spezi.ui.testing.TestIdentifier
+import edu.stanford.spezi.ui.TestIdentifier
 import edu.stanford.spezi.ui.testing.onAllNodes
 import edu.stanford.spezi.ui.testing.onNodeWithIdentifier
 
