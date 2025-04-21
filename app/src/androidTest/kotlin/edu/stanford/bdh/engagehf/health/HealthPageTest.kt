@@ -32,7 +32,7 @@ class HealthPageTest {
         val message = "Error message"
 
         // when
-        setState(state = HealthUiState.Error(message))
+        setState(state = HealthUiState.Error(StringResource(message)))
 
         // then
         healthPage {

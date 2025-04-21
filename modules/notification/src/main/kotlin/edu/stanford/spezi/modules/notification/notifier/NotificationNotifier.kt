@@ -79,10 +79,10 @@ internal class NotificationNotifier @Inject constructor(
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
             SPEZI_MESSAGE_NOTIFICATION_CHANNEL_ID,
-            context.getString(R.string.notification_spezi_message_notification_channel_name),
+            context.getString(R.string.notification_message_notification_channel_name),
             NotificationManager.IMPORTANCE_DEFAULT,
         ).apply {
-            description = context.getString(R.string.notification_spezi_message_notification_channel_description)
+            description = context.getString(R.string.notification_message_notification_channel_description)
         }
         notificationManagerCompat.createNotificationChannel(channel)
     }

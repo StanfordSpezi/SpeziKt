@@ -62,9 +62,9 @@ class HomeScreenTest {
     fun `test home screen vital is displayed`() {
         homeScreen {
             val uiState = UiState()
-            assertVital(uiState.weight.title)
-            assertVital(uiState.heartRate.title)
-            assertVital(uiState.bloodPressure.title)
+            assertVital(uiState.weight.title.get(composeTestRule.activity))
+            assertVital(uiState.heartRate.title.get(composeTestRule.activity))
+            assertVital(uiState.bloodPressure.title.get(composeTestRule.activity))
         }
     }
 
