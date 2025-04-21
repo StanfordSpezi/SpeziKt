@@ -18,7 +18,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.ThemePreviews
-import edu.stanford.spezi.ui.testing.testIdentifier
+import edu.stanford.spezi.ui.testIdentifier
 import kotlin.reflect.KMutableProperty1
 
 @Composable

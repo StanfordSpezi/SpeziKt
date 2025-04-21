@@ -45,7 +45,7 @@ import edu.stanford.spezi.ui.Spacings
 import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.TextStyles.titleLarge
 import edu.stanford.spezi.ui.TextStyles.titleSmall
-import edu.stanford.spezi.ui.testing.testIdentifier
+import edu.stanford.spezi.ui.testIdentifier
 
 @Composable
 fun RegisterScreen(

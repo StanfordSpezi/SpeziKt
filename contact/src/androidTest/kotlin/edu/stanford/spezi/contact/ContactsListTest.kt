@@ -11,19 +11,19 @@ class ContactsListTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private val contacts = listOf(ContactFactory.leland, ContactFactory.mock)
+    private val contactsList = ContactsList(listOf(ContactFactory.leland, ContactFactory.mock))
 
     @Before
     fun init() {
         composeTestRule.setContent {
-            ContactsList(contacts)
+            contactsList.Content()
         }
     }
 
     @Test
     fun `test displays all contacts`() {
         contactsList {
-            for (contact in contacts) {
+            contactsList.contacts.forEach { contact ->
                 assertHasContact(contact)
             }
         }

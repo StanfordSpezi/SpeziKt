@@ -23,7 +23,7 @@ import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
 import edu.stanford.spezi.modules.design.component.AsyncTextButton
 import edu.stanford.spezi.ui.Spacings
 import edu.stanford.spezi.ui.TextStyles
-import edu.stanford.spezi.ui.testing.testIdentifier
+import edu.stanford.spezi.ui.testIdentifier
 
 @Composable
 fun MeasurementDialog(

@@ -10,7 +10,7 @@ import java.net.URLEncoder
 fun ContactOption.Companion.email(addresses: List<String>, subject: String? = null): ContactOption =
     ContactOption(
         image = Icons.Default.Email,
-        title = StringResource("Email"),
+        title = StringResource(R.string.contact_email),
         action = { context ->
             runCatching {
                 val intent = Intent(Intent.ACTION_SENDTO).apply {

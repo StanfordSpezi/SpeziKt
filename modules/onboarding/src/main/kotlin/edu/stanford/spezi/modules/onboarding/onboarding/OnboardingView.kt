@@ -34,7 +34,7 @@ import edu.stanford.spezi.ui.TextStyles.bodyMedium
 import edu.stanford.spezi.ui.TextStyles.titleLarge
 import edu.stanford.spezi.ui.TextStyles.titleSmall
 import edu.stanford.spezi.ui.ThemePreviews
-import edu.stanford.spezi.ui.testing.testIdentifier
+import edu.stanford.spezi.ui.testIdentifier
 
 /**
  * The onboarding screen.

@@ -20,7 +20,7 @@ import androidx.fragment.compose.rememberFragmentState
 import ca.uhn.fhir.context.FhirContext
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import edu.stanford.spezi.core.logging.SpeziLogger
-import edu.stanford.spezi.ui.testing.testIdentifier
+import edu.stanford.spezi.ui.testIdentifier
 import org.hl7.fhir.r4.model.Questionnaire
 import com.google.android.fhir.datacapture.R as DataCaptureR
 

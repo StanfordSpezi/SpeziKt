@@ -9,7 +9,7 @@ import edu.stanford.spezi.ui.StringResource
 fun ContactOption.Companion.website(uriString: String): ContactOption =
     ContactOption(
         image = Icons.Default.Info,
-        title = StringResource("Website"),
+        title = StringResource(R.string.contact_website),
         action = { context ->
             runCatching {
                 val browserIntent =

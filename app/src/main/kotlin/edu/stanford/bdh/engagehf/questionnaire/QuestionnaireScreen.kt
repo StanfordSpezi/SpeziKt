@@ -25,7 +25,7 @@ import edu.stanford.spezi.ui.Colors.primary
 import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.ThemePreviews
-import edu.stanford.spezi.ui.testing.testIdentifier
+import edu.stanford.spezi.ui.testIdentifier
 
 @Composable
 fun QuestionnaireScreen() {

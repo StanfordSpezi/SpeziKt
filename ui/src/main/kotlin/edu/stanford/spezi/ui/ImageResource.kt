@@ -47,7 +47,7 @@ sealed interface ImageResource : ComposableContent {
 
     @Composable
     fun Content(modifier: Modifier, tint: Color) {
-        val imageModifier = modifier.then(Modifier.imageResourceIdentifier(identifier))
+        val imageModifier = modifier.then(Modifier.testContentIdentifier(identifier))
         when (this) {
             is Vector -> {
                 Icon(

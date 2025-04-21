@@ -22,7 +22,7 @@ import edu.stanford.spezi.ui.ImageResource
 import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.ThemePreviews
-import edu.stanford.spezi.ui.imageResourceIdentifier
+import edu.stanford.spezi.ui.testContentIdentifier
 
 /**
  * Composable function to display an icon using an [ImageResource].
@@ -37,7 +37,7 @@ fun AsyncImageResourceComposable(
     errorContent: @Composable BoxScope.(Throwable) -> Unit = {},
     tint: Color = Colors.primary,
 ) {
-    val imageModifier = modifier.then(Modifier.imageResourceIdentifier(imageResource.identifier))
+    val imageModifier = modifier.then(Modifier.testContentIdentifier(imageResource.identifier))
     when (imageResource) {
         is AsyncImageResource.Vector -> {
             Icon(

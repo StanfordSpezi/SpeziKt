@@ -25,7 +25,7 @@ import edu.stanford.spezi.ui.ComposeValue
 import edu.stanford.spezi.ui.Sizes
 import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.ThemePreviews
-import edu.stanford.spezi.ui.testing.testIdentifier
+import edu.stanford.spezi.ui.testIdentifier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

@@ -6,17 +6,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.semantics.semantics
 
 private const val DISABLED_ALPHA = 0.5f
 
-fun Modifier.imageResourceIdentifier(identifier: String) = testTag(tag = identifier)
-    .semantics { this[ImageResourceKey] = identifier }
+fun Modifier.disabledAlpha() = then(Modifier.alpha(DISABLED_ALPHA))
 
-fun Modifier.disabledAlpha() = alpha(DISABLED_ALPHA)
-
-fun Modifier.noRippleClickable(onClick: () -> Unit) = this.then(
+fun Modifier.noRippleClickable(onClick: () -> Unit) = then(
     Modifier.composed {
         val interactionSource = remember { MutableInteractionSource() }
         clickable(

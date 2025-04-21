@@ -32,7 +32,8 @@ import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.TextStyles
 import edu.stanford.spezi.ui.ThemePreviews
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
-import edu.stanford.spezi.ui.testing.testIdentifier
+import edu.stanford.spezi.ui.testContentIdentifier
+import edu.stanford.spezi.ui.testIdentifier
 import java.util.Locale
 import java.util.UUID
 
@@ -66,6 +67,7 @@ data class Contact(
     override fun Content(modifier: Modifier) {
         Column(
             modifier = modifier
+                .testContentIdentifier(content = id.toString())
                 .fillMaxWidth()
                 .padding(Spacings.medium),
             horizontalAlignment = Alignment.CenterHorizontally

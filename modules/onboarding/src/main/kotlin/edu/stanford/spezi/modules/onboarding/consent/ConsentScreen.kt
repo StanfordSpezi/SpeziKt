@@ -19,7 +19,7 @@ import edu.stanford.spezi.ui.Spacings
 import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.markdown.MarkdownComponent
 import edu.stanford.spezi.ui.markdown.MarkdownElement
-import edu.stanford.spezi.ui.testing.testIdentifier
+import edu.stanford.spezi.ui.testIdentifier
 
 @Composable
 fun ConsentScreen() {

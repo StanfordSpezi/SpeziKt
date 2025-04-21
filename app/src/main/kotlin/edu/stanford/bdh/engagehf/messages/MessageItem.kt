@@ -42,7 +42,7 @@ import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.TextStyles
 import edu.stanford.spezi.ui.ThemePreviews
 import edu.stanford.spezi.ui.lighten
-import edu.stanford.spezi.ui.testing.testIdentifier
+import edu.stanford.spezi.ui.testIdentifier
 
 private const val TEXT_WEIGHT = 0.9f
 

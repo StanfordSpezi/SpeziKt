@@ -33,7 +33,7 @@ import edu.stanford.spezi.ui.Colors.primary
 import edu.stanford.spezi.ui.Colors.secondary
 import edu.stanford.spezi.ui.Colors.tertiary
 import edu.stanford.spezi.ui.Spacings
-import edu.stanford.spezi.ui.testing.testIdentifier
+import edu.stanford.spezi.ui.testIdentifier
 
 /**
  * The screen that displays the sequential onboarding steps.

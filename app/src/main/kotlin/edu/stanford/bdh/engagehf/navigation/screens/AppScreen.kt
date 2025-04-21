@@ -55,7 +55,7 @@ import edu.stanford.spezi.ui.Colors
 import edu.stanford.spezi.ui.Sizes
 import edu.stanford.spezi.ui.Spacings
 import edu.stanford.spezi.ui.TextStyles
-import edu.stanford.spezi.ui.testing.testIdentifier
+import edu.stanford.spezi.ui.testIdentifier
 import kotlinx.coroutines.launch
 
 @Composable
