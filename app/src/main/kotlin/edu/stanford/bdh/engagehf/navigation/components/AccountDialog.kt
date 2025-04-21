@@ -178,6 +178,18 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
                         style = bodyMedium,
                     )
                 }
+                TextButton(
+                    onClick = {
+                        onAction(Action.ShowPhoneNumberSettings)
+                    },
+                    modifier = Modifier
+                        .align(Alignment.Start),
+                ) {
+                    Text(
+                        text = stringResource(R.string.phone_numbers_title),
+                        style = bodyMedium,
+                    )
+                }
                 HorizontalDivider()
                 VerticalSpacer()
                 AsyncAccountItem(

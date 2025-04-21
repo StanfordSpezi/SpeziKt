@@ -11,6 +11,7 @@ import edu.stanford.bdh.engagehf.health.components.ShareHealthSummaryDialogUiSta
 import edu.stanford.bdh.engagehf.health.summary.HealthSummaryService
 import edu.stanford.bdh.engagehf.health.summary.ShareHealthSummary
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
+import edu.stanford.bdh.engagehf.phonenumber.PhoneNumberSettingsNavigationEvent
 import edu.stanford.spezi.modules.account.manager.UserSessionManager
 import edu.stanford.spezi.modules.navigation.Navigator
 import edu.stanford.spezi.modules.notification.NotificationNavigationEvent
@@ -95,6 +96,7 @@ class AppScreenViewModel @Inject constructor(
                     is AppScreenEvents.Event.HealthSummaryDisplayRequested -> {
                         onHealthSummaryRequested(onSuccess = event.onSuccess)
                     }
+
                     else -> handleBottomSheetContentEventIfNeeded(event = event)
                 }
             }
@@ -173,6 +175,11 @@ class AppScreenViewModel @Inject constructor(
             Action.ShowContact -> {
                 _uiState.update { it.copy(accountUiState = it.accountUiState.copy(showDialog = false)) }
                 navigator.navigateTo(AppNavigationEvent.ContactScreen)
+            }
+
+            Action.ShowPhoneNumberSettings -> {
+                _uiState.update { it.copy(accountUiState = it.accountUiState.copy(showDialog = false)) }
+                navigator.navigateTo(PhoneNumberSettingsNavigationEvent)
             }
         }
     }
@@ -323,6 +330,7 @@ sealed interface Action {
     data object DisplayHealthSummaryPDF : Action
     data object DismissShareHealthSummaryDialog : Action
     data object ShowNotificationSettings : Action
+    data object ShowPhoneNumberSettings : Action
     data object ShowContact : Action
     data object SignOut : Action
     data class ShowAccountDialog(val showDialog: Boolean) : Action

@@ -5,6 +5,7 @@ import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.summary.HealthSummaryService
 import edu.stanford.bdh.engagehf.health.summary.ShareHealthSummary
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
+import edu.stanford.bdh.engagehf.phonenumber.PhoneNumberSettingsNavigationEvent
 import edu.stanford.spezi.modules.account.manager.UserSessionManager
 import edu.stanford.spezi.modules.account.manager.UserState
 import edu.stanford.spezi.modules.navigation.Navigator
@@ -45,7 +46,7 @@ class AppScreenViewModelTest {
         expiresAt = instant,
     )
     private val userFlow = MutableStateFlow(
-        UserState.Registered(hasInvitationCodeConfirmed = false, disabled = false)
+        UserState.Registered(hasInvitationCodeConfirmed = false, disabled = false, phoneNumbers = emptyList())
     )
 
     private lateinit var viewModel: AppScreenViewModel
@@ -258,6 +259,18 @@ class AppScreenViewModelTest {
 
         // Then
         verify { userSessionManager.signOut() }
+    }
+
+    @Test
+    fun `given AddPhoneNumber is received then update bottom sheet content`() {
+        // Given
+        val event = Action.ShowPhoneNumberSettings
+
+        // When
+        viewModel.onAction(event)
+
+        // Then
+        verify { navigator.navigateTo(PhoneNumberSettingsNavigationEvent) }
     }
 
     @Test
