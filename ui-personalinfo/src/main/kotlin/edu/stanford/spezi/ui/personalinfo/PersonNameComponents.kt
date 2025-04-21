@@ -22,8 +22,6 @@ data class PersonNameComponents(
         ABBREVIATED, LONG
     }
 
-    fun createBuilder() = Builder(this)
-
     fun formatted(style: FormatStyle = FormatStyle.LONG): String {
         return when (style) {
             FormatStyle.LONG -> listOfNotNull(

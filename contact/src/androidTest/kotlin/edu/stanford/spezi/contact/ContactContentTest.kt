@@ -1,12 +1,12 @@
 package edu.stanford.spezi.contact
 
 import androidx.compose.ui.test.junit4.createComposeRule
-import edu.stanford.spezi.contact.simulator.ContactComposableSimulator
+import edu.stanford.spezi.contact.simulator.ContactContentSimulator
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class ContactComposableTest {
+class ContactContentTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -16,27 +16,27 @@ class ContactComposableTest {
     @Before
     fun init() {
         composeTestRule.setContent {
-            ContactComposable(contact)
+            contact.Content()
         }
     }
 
     @Test
     fun `test displays contact image`() {
-        contactComposable {
+        contactContent {
             assertHasImage(contact.image)
         }
     }
 
     @Test
     fun `test displays contact name`() {
-        contactComposable {
+        contactContent {
             assertHasName(contact.name)
         }
     }
 
     @Test
     fun `test displays contact options`() {
-        contactComposable {
+        contactContent {
             for (option in contact.options) {
                 assertHasOption(option)
             }
@@ -45,33 +45,33 @@ class ContactComposableTest {
 
     @Test
     fun `test displays contact title`() {
-        contactComposable {
+        contactContent {
             assertHasSubtitleContaining(contact.title)
         }
     }
 
     @Test
     fun `test displays contact organization`() {
-        contactComposable {
+        contactContent {
             assertHasSubtitleContaining(contact.organization)
         }
     }
 
     @Test
     fun `test displays contact description`() {
-        contactComposable {
+        contactContent {
             assertHasDescription(contact.description)
         }
     }
 
     @Test
     fun `test displays contact address`() {
-        contactComposable {
+        contactContent {
             assertHasAddress(contact.address)
         }
     }
 
-    private fun contactComposable(block: ContactComposableSimulator.() -> Unit) {
-        ContactComposableSimulator(composeTestRule).apply(block)
+    private fun contactContent(block: ContactContentSimulator.() -> Unit) {
+        ContactContentSimulator(composeTestRule).apply(block)
     }
 }

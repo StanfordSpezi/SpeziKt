@@ -19,7 +19,6 @@ import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import edu.stanford.spezi.ui.Colors
 import edu.stanford.spezi.ui.ImageResource
-import edu.stanford.spezi.ui.ImageResourceComposable
 import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.ThemePreviews
@@ -98,9 +97,7 @@ private fun ImageResourceComposablePreview(
     @PreviewParameter(AsyncImageResourceProvider::class) imageResource: ImageResource,
 ) {
     SpeziTheme {
-        ImageResourceComposable(
-            imageResource = imageResource,
-        )
+        imageResource.Content(Modifier)
     }
 }
 

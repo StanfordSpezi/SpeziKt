@@ -34,12 +34,12 @@ fun ViewStateAlert(
                 Text(text = state.errorTitle)
             },
             text = {
-                Text(text = state.errorDescription)
+                Text(text = state.errorMessage)
             },
             onDismissRequest = onClose,
             confirmButton = {
                 TextButton(onClick = onClose) {
-                    Text(StringResource("OK").text())
+                    Text(StringResource(R.string.viewstate_confirm_title).text())
                 }
             }
         )
