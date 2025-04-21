@@ -24,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -88,7 +89,7 @@ private fun HomeScreen(
         modifier = Modifier
             .testIdentifier(HomeScreenTestIdentifier.ROOT)
             .fillMaxSize()
-            .padding(Spacings.medium)
+            .padding(horizontal = Spacings.medium)
     ) {
         item {
             BluetoothHeaderSection(bluetoothUiState = uiState.bluetooth, onAction = onAction)
@@ -183,10 +184,10 @@ private fun BluetoothHeaderSection(
             color = Colors.onSurface,
         )
         Spacer(modifier = Modifier.weight(1f))
-        if (bluetoothUiState is BluetoothUiState.Ready) {
-            IconButton(onClick = { onAction(Action.BLEDevicePairing) }) {
-                Icon(Icons.Filled.Add, contentDescription = "Pair device")
-            }
+        IconButton(
+            modifier = Modifier.alpha(alpha = if (bluetoothUiState is BluetoothUiState.Ready) 1f else 0f),
+            onClick = { onAction(Action.BLEDevicePairing) }) {
+            Icon(Icons.Filled.Add, contentDescription = "Pair device")
         }
     }
 

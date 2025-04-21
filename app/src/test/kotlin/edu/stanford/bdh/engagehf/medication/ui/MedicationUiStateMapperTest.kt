@@ -34,7 +34,10 @@ class MedicationUiStateMapperTest {
         // then
         assertThat(result).isInstanceOf(MedicationUiState.Success::class.java)
         assertThat((result as MedicationUiState.Success).medicationsTaking.medications).hasSize(1)
-        assertThat((result).medicationsThatMayHelp.medications).isEmpty()
+        assertThat(result.medicationsThatMayHelp.medications).isEmpty()
+        assertThat(result.medicationsTaking.expanded).isTrue()
+        assertThat(result.medicationsThatMayHelp.expanded).isTrue()
+        assertThat(result.colorKeyExpanded).isTrue()
     }
 
     @Test
@@ -49,6 +52,8 @@ class MedicationUiStateMapperTest {
         assertThat(result).isInstanceOf(MedicationUiState.Success::class.java)
         assertThat((result as MedicationUiState.Success).medicationsTaking.medications).isEmpty()
         assertThat((result).medicationsThatMayHelp.medications).hasSize(1)
+        assertThat(result.medicationsTaking.expanded).isTrue()
+        assertThat(result.medicationsThatMayHelp.expanded).isTrue()
     }
 
     @Test
