@@ -7,6 +7,7 @@ import edu.stanford.bdh.engagehf.medication.data.DosageInformation
 import edu.stanford.bdh.engagehf.medication.data.DoseSchedule
 import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendation
 import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendationType
+import edu.stanford.spezi.ui.StringResource
 import javax.inject.Inject
 import edu.stanford.spezi.modules.design.R.drawable as DrawableR
 
@@ -17,7 +18,7 @@ class MedicationUiStateMapper @Inject constructor(
     fun mapMedicationUiState(recommendations: List<MedicationRecommendation>): MedicationUiState {
         return if (recommendations.isEmpty()) {
             MedicationUiState.NoData(
-                message = context.getString(R.string.medications_no_recommendations)
+                message = StringResource(R.string.medications_no_recommendations)
             )
         } else {
             val medicationsTaking = mutableListOf<MedicationCardUiModel>()

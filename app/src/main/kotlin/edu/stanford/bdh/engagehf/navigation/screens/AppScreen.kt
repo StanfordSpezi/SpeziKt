@@ -207,7 +207,6 @@ private fun StudyConcludedScreen() {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Suppress("CyclomaticComplexMethod")
 @Composable
 private fun ModalBottomSheetContent(
     content: AppContent.Content?,

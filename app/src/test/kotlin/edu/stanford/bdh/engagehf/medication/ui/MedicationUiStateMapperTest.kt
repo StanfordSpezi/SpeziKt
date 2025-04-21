@@ -2,10 +2,12 @@ package edu.stanford.bdh.engagehf.medication.ui
 
 import android.content.Context
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.medication.data.DosageInformation
 import edu.stanford.bdh.engagehf.medication.data.DoseSchedule
 import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendation
 import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendationType
+import edu.stanford.spezi.ui.StringResource
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before
@@ -59,7 +61,7 @@ class MedicationUiStateMapperTest {
     @Test
     fun `given error state and expand action when expandMedication then return error state`() {
         // given
-        val uiState = MedicationUiState.Error(message = "An error occurred")
+        val uiState: MedicationUiState.Error = mockk()
 
         // when
         val result = medicationUiStateMapper.expandMedication("some-id", uiState)
@@ -123,8 +125,7 @@ class MedicationUiStateMapperTest {
         val result = medicationUiStateMapper.mapMedicationUiState(recommendations)
 
         // then
-        assertThat(result).isInstanceOf(MedicationUiState.NoData::class.java)
-        assertThat((result as MedicationUiState.NoData).message).isEqualTo("some-string")
+        assertThat(result).isEqualTo(MedicationUiState.NoData(StringResource(R.string.medications_no_recommendations)))
     }
 
     @Test

@@ -1,4 +1,4 @@
-package edu.stanford.healthconnectonfhir
+package edu.stanford.spezi.modules.healthconnectonfhir.internal
 
 import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.HeartRateRecord
@@ -10,13 +10,15 @@ import ca.uhn.fhir.parser.IParser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import edu.stanford.spezi.modules.healthconnectonfhir.Loinc
+import edu.stanford.spezi.modules.healthconnectonfhir.ObservationsDocumentMapper
 import org.hl7.fhir.r4.model.Observation
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import javax.inject.Inject
 
-class ObservationsDocumentMapperImpl @Inject constructor(
+internal class ObservationsDocumentMapperImpl @Inject constructor(
     private val jsonParser: IParser,
     private val gson: Gson,
 ) : ObservationsDocumentMapper {

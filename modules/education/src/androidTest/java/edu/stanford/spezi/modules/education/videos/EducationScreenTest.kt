@@ -50,7 +50,7 @@ class EducationScreenTest {
     fun `education screen should display retry button`() {
         composeTestRule.activity.setScreen {
             EducationScreen(
-                uiState = UiState.Error(StringResource(R.string.failed_to_load_video_sections)),
+                uiState = UiState.Error(StringResource(R.string.education_failed_to_load_video_sections)),
                 onAction = {},
             )
         }

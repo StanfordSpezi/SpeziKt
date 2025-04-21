@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_message_notification_channel_description">Benachrichtigungen für Engage-HF-Nachrichten, einschließlich Updates und wichtiger Informationen.</string>
+    <string name="notification_message_notification_channel_name">Engage-HF-Benachrichtigungen</string>
+    <string name="notification_settings_title">Benachrichtigungseinstellungen</string>
+    <string name="notification_back">Zurück</string>
+    <string name="notification_reminders">Erinnerungen</string>
+    <string name="notification_appointment">Termin</string>
+    <string name="notification_survey">Umfrage</string>
+    <string name="notification_vital">Vitalwerte</string>
+    <string name="notification_updates">Updates</string>
+    <string name="notification_medications">Medikamente</string>
+    <string name="notification_recommendations">Empfehlungen</string>
+    <string name="notification_weight_trends">Gewichtstrends</string>
+    <string name="notification_trends">Trends</string>
+    <string name="notification_feature_requires_notifications">Diese Funktion erfordert die Genehmigung zum Senden von Benachrichtigungen.</string>
+    <string name="notification_settings_button_title">Einstellungen</string>
+    <string name="notification_error_message">Benachrichtigungseinstellungen konnten nicht abgerufen werden.</string>
+</resources>

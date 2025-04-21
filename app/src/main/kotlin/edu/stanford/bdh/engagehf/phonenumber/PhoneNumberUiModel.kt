@@ -60,7 +60,7 @@ data class PhoneNumberUiModel(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Delete,
-                    contentDescription = ""
+                    contentDescription = null
                 )
             }
         }

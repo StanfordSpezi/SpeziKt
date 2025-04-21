@@ -80,8 +80,8 @@ class BLEDevicePairingUiStateMapperTest {
         // then
         assertThat(state).isEqualTo(
             BLEDevicePairingViewModel.UiState.Error(
-                title = StringResource(R.string.ble_device_error_title),
-                subtitle = StringResource(R.string.ble_device_error_subtitle),
+                title = StringResource(R.string.generic_error_title),
+                subtitle = StringResource(R.string.generic_error_description),
             )
         )
         assertThat(state.action).isEqualTo(BLEDevicePairingViewModel.Action.Done)

@@ -1,5 +1,6 @@
-package edu.stanford.healthconnectonfhir
+package edu.stanford.spezi.modules.healthconnectonfhir.internal
 
+import android.content.Context
 import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
 import androidx.health.connect.client.records.BloodGlucoseRecord
 import androidx.health.connect.client.records.BloodPressureRecord
@@ -21,17 +22,54 @@ import androidx.health.connect.client.units.Percentage
 import androidx.health.connect.client.units.Pressure
 import androidx.health.connect.client.units.Temperature
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.spezi.modules.healthconnectonfhir.R
+import io.mockk.every
+import io.mockk.mockk
 import org.hl7.fhir.r4.model.DateTimeType
 import org.hl7.fhir.r4.model.Observation
 import org.hl7.fhir.r4.model.Period
 import org.hl7.fhir.r4.model.Quantity
+import org.junit.Before
 import org.junit.Test
 import java.time.Instant
 import java.time.ZoneOffset
 import java.util.Date
 
 class RecordToObservationMapperTests {
-    private val mapper = RecordToObservationMapperImpl()
+    private val context: Context = mockk()
+
+    private val mapper = RecordToObservationMapperImpl(context)
+
+    @Suppress("MaxLineLength")
+    @Before
+    fun setup() {
+        every { context.getString(R.string.healthconnectonfhir_blood_glucose_record) } returns "Blood Glucose Record"
+        every { context.getString(R.string.healthconnectonfhir_activity) } returns "Activity"
+        every { context.getString(R.string.healthconnectonfhir_calories_burned) } returns "Calories burned"
+        every { context.getString(R.string.healthconnectonfhir_active_calories_burned_record) } returns "Active Calories Burned Record"
+        every { context.getString(R.string.healthconnectonfhir_glucose_glucometer_bldc_mass_vol) } returns "Glucose Glucometer (BldC) [Mass/Vol]"
+        every { context.getString(R.string.healthconnectonfhir_vital_signs) } returns "Vital Signs"
+        every { context.getString(R.string.healthconnectonfhir_blood_pressure_panel_with_all_children_optional) } returns "Blood pressure panel with all children optional"
+        every { context.getString(R.string.healthconnectonfhir_blood_pressure_record) } returns "Blood Pressure Record"
+        every { context.getString(R.string.healthconnectonfhir_systolic_blood_pressure) } returns "Systolic blood pressure"
+        every { context.getString(R.string.healthconnectonfhir_diastolic_blood_pressure) } returns "Diastolic blood pressure"
+        every { context.getString(R.string.healthconnectonfhir_body_fat_record) } returns "Body Fat Record"
+        every { context.getString(R.string.healthconnectonfhir_body_temperature_record) } returns "Body Temperature Record"
+        every { context.getString(R.string.healthconnectonfhir_steps_record) } returns "Steps Record"
+        every { context.getString(R.string.healthconnectonfhir_number_of_steps) } returns "Number of steps"
+        every { context.getString(R.string.healthconnectonfhir_body_weight) } returns "Body weight"
+        every { context.getString(R.string.healthconnectonfhir_weight_record) } returns "Weight Record"
+        every { context.getString(R.string.healthconnectonfhir_percentage_of_body_fat_measured) } returns "Percentage of body fat Measured"
+        every { context.getString(R.string.healthconnectonfhir_body_temperature) } returns "Body temperature"
+        every { context.getString(R.string.healthconnectonfhir_heart_rate) } returns "Heart rate"
+        every { context.getString(R.string.healthconnectonfhir_heart_rate_record) } returns "Heart Rate Record"
+        every { context.getString(R.string.healthconnectonfhir_body_height) } returns "Body height"
+        every { context.getString(R.string.healthconnectonfhir_height_record) } returns "Height Record"
+        every { context.getString(R.string.healthconnectonfhir_oxygen_saturation_in_arterial_blood_by_pulse_oximetry) } returns "Oxygen saturation in Arterial blood by Pulse oximetry"
+        every { context.getString(R.string.healthconnectonfhir_oxygen_saturation_record) } returns "Oxygen Saturation Record"
+        every { context.getString(R.string.healthconnectonfhir_respiratory_rate) } returns "Respiratory rate"
+        every { context.getString(R.string.healthconnectonfhir_respiratory_rate_record) } returns "Respiratory Rate Record"
+    }
 
     @Test
     fun `activeCaloriesBurnedRecord toObservation isCorrect`() {

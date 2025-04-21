@@ -39,5 +39,5 @@ fun TextDivider(text: String) {
 @Preview
 @Composable
 fun TextDividerPreview() {
-    TextDivider(stringResource(R.string.or))
+    TextDivider(stringResource(R.string.account_or))
 }

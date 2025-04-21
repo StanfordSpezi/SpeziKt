@@ -1,4 +1,4 @@
-package edu.stanford.healthconnectonfhir
+package edu.stanford.spezi.modules.healthconnectonfhir.internal
 
 import androidx.health.connect.client.records.WeightRecord
 import ca.uhn.fhir.parser.IParser

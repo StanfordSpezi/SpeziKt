@@ -1,6 +1,7 @@
 package edu.stanford.bdh.engagehf.health.heartrate.bottomsheet
 
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.time.TimePickerState
@@ -86,7 +87,7 @@ class AddHeartRateBottomSheetViewModelTest {
         viewModel.onAction(action)
 
         // then
-        verify { notifier.notify("Failed to save heart rate record") }
+        verify { notifier.notify(R.string.heart_rate_record_save_failure_message) }
     }
 
     @Test

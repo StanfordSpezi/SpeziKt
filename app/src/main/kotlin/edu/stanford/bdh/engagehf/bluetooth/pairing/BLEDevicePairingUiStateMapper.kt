@@ -33,7 +33,7 @@ class BLEDevicePairingUiStateMapper @Inject constructor() {
         )
 
     fun mapErrorState() = BLEDevicePairingViewModel.UiState.Error(
-        title = StringResource(R.string.ble_device_error_title),
-        subtitle = StringResource(R.string.ble_device_error_subtitle),
+        title = StringResource(R.string.generic_error_title),
+        subtitle = StringResource(R.string.generic_error_description),
     )
 }

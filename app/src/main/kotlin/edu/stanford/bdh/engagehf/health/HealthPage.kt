@@ -54,7 +54,7 @@ fun HealthPage(
         is HealthUiState.Error -> {
             CenteredBoxContent {
                 Text(
-                    text = uiState.message,
+                    text = uiState.message.text(),
                     style = TextStyles.headlineMedium,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.testIdentifier(HealthPageTestIdentifier.ERROR_MESSAGE)
@@ -74,7 +74,7 @@ fun HealthPage(
         is HealthUiState.NoData -> {
             CenteredBoxContent {
                 Text(
-                    text = uiState.message,
+                    text = uiState.message.text(),
                     textAlign = TextAlign.Center,
                     style = TextStyles.headlineMedium,
                     modifier = Modifier.testIdentifier(HealthPageTestIdentifier.NO_DATA_MESSAGE)
@@ -280,8 +280,8 @@ private class HealthPagePreviewProvider : PreviewParameterProvider<HealthUiState
     override val values: Sequence<HealthUiState>
         get() = sequenceOf(
             HealthUiState.Loading,
-            HealthUiState.Error("An error occurred"),
-            HealthUiState.NoData("No data available"),
+            HealthUiState.Error(StringResource(R.string.generic_error_description)),
+            HealthUiState.NoData(StringResource(R.string.no_data_available)),
             success,
             success.copy(
                 data = success.data.copy(

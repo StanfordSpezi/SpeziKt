@@ -108,8 +108,8 @@ private class UIStateParamProvider : PreviewParameterProvider<BLEDevicePairingVi
                 subtitle = StringResource(R.string.ble_device_paired_subtitle, "Device"),
             ),
             BLEDevicePairingViewModel.UiState.Error(
-                title = StringResource(R.string.ble_device_error_title),
-                subtitle = StringResource(R.string.ble_device_error_subtitle),
+                title = StringResource(R.string.generic_error_title),
+                subtitle = StringResource(R.string.generic_error_description),
             )
         )
 }

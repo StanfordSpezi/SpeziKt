@@ -10,6 +10,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.navigation.screens.AccountUiState
 import edu.stanford.bdh.engagehf.navigation.screens.Action
 import edu.stanford.spezi.ui.Colors
@@ -22,7 +24,7 @@ fun AccountTopAppBarButton(accountUiState: AccountUiState, onAction: (Action) ->
     }) {
         Icon(
             imageVector = Icons.Default.AccountCircle,
-            contentDescription = "Account",
+            contentDescription = stringResource(R.string.account),
             tint = Colors.onPrimary,
             modifier = Modifier.size(Sizes.Icon.medium)
         )

@@ -86,12 +86,11 @@
     <string name="ble_device_found_subtitle">Möchten Sie %1$s mit der ENGAGEHF-App koppeln?</string>
     <string name="ble_device_paired_title">Zubehör Gepaart</string>
     <string name="ble_device_paired_subtitle">%1$s wurde erfolgreich mit der ENGAGEHF-App gekoppelt</string>
-    <string name="ble_device_error_title">Fehler</string>
-    <string name="ble_device_error_subtitle">Es ist ein Fehler aufgetreten, bitte versuchen Sie es später noch einmal.</string>
+    <string name="generic_error_title">Fehler</string>
+    <string name="generic_error_description">Es ist ein Fehler aufgetreten, bitte versuchen Sie es später noch einmal.</string>
     <string name="your_devices_header_title">Deine Geräte</string>
     <string name="last_seen_on">Zuletzt gesehen am %1$s</string>
     <string name="sign_out_failed">Abmeldung fehlgeschlagen.</string>
-    <string name="invitation_code">Einladungscode</string>
     <string name="onboarding">Onboarding</string>
     <string name="contact">Kontakt</string>
     <string name="symptoms_description_title">Ihre Symptome verstehen</string>

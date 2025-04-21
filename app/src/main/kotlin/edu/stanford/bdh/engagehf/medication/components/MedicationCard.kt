@@ -99,7 +99,7 @@ fun MedicationCard(
                     )
                 }) {
                     Icon(
-                        if (model.isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                        imageVector = if (model.isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                         contentDescription = null,
                     )
                 }
@@ -127,7 +127,7 @@ fun MedicationCard(
                             IconButton(onClick = {
                                 onAction(MedicationViewModel.Action.InfoClicked(videoPath = it))
                             }) {
-                                Icon(Icons.Filled.Info, contentDescription = "Information Icon")
+                                Icon(Icons.Filled.Info, contentDescription = null)
                             }
                         }
                     }

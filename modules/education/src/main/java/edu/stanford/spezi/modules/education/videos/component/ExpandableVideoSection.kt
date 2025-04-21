@@ -32,6 +32,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -161,6 +162,15 @@ private fun VideoItem(video: Video, onVideoClick: () -> Unit) {
                     .fillMaxWidth()
                     .aspectRatio(ASPECT_16_9)
                     .border(Sizes.Border.medium, Colors.primary),
+                errorContent = {
+                    Box(Modifier.matchParentSize()) {
+                        Text(
+                            text = video.title,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.align(Alignment.Center),
+                        )
+                    }
+                }
             )
 
             Box(

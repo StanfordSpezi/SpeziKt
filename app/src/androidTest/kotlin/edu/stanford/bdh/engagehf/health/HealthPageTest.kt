@@ -5,6 +5,7 @@ import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.units.Mass
 import edu.stanford.bdh.engagehf.simulator.HealthPageSimulator
+import edu.stanford.spezi.ui.StringResource
 import org.junit.Rule
 import org.junit.Test
 import java.time.ZonedDateTime
@@ -46,7 +47,7 @@ class HealthPageTest {
         val message = "No data available"
 
         // when
-        setState(state = HealthUiState.NoData(message))
+        setState(state = HealthUiState.NoData(StringResource(message)))
 
         // then
         healthPage {

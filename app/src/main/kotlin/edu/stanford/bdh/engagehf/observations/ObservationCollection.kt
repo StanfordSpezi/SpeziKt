@@ -1,6 +1,6 @@
 package edu.stanford.bdh.engagehf.observations
 
-import edu.stanford.healthconnectonfhir.Loinc
+import edu.stanford.spezi.modules.healthconnectonfhir.Loinc
 
 enum class ObservationCollection(val collectionName: String, val loinc: Loinc?) {
     HEART_RATE(collectionName = "heartRateObservations", loinc = Loinc.HEART_RATE),

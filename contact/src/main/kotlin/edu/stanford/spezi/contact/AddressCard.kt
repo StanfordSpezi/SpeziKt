@@ -67,7 +67,7 @@ internal fun AddressCard(address: Address, modifier: Modifier = Modifier) {
             ) {
                 Icon(
                     Icons.Default.Place,
-                    contentDescription = stringResource(R.string.address),
+                    contentDescription = stringResource(R.string.contact_address),
                     tint = Colors.primary,
                 )
             }

@@ -94,7 +94,7 @@ internal class LoginViewModel @Inject constructor(
                 accountEvents.emit(event = AccountEvents.Event.SignInSuccess)
             }.onFailure {
                 accountEvents.emit(event = AccountEvents.Event.SignInFailure)
-                messageNotifier.notify(R.string.error_sign_in_failed)
+                messageNotifier.notify(R.string.account_error_sign_in_failed)
             }
         }
 
@@ -158,13 +158,13 @@ internal class LoginViewModel @Inject constructor(
         if (authValidator.isValidEmail(email).isValid) {
             authenticationManager.sendForgotPasswordEmail(email)
                 .onSuccess {
-                    messageNotifier.notify(R.string.email_sent)
+                    messageNotifier.notify(R.string.account_email_sent)
                 }
                 .onFailure {
-                    messageNotifier.notify(R.string.failed_to_send_email)
+                    messageNotifier.notify(R.string.account_failed_to_send_email)
                 }
         } else {
-            messageNotifier.notify(R.string.please_enter_a_valid_email)
+            messageNotifier.notify(R.string.account_please_enter_a_valid_email)
         }
     }
 
@@ -174,7 +174,7 @@ internal class LoginViewModel @Inject constructor(
                 accountEvents.emit(event = AccountEvents.Event.SignInSuccess)
             }.onFailure {
                 accountEvents.emit(event = AccountEvents.Event.SignInFailure)
-                messageNotifier.notify(R.string.error_sign_in_failed)
+                messageNotifier.notify(R.string.account_error_sign_in_failed)
             }
     }
 
