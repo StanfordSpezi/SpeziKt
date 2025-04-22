@@ -56,7 +56,6 @@ dependencies {
     implementation(project(":core-coroutines"))
     implementation(project(":core-logging"))
     implementation(project(":ui"))
-    implementation(project(":ui-testing"))
 
     implementation(project(":ui-personalinfo"))
     implementation(project(":questionnaire"))
@@ -80,4 +79,5 @@ dependencies {
     implementation(libs.googlecode.phonenumber)
 
     androidTestImplementation(project(":modules:testing"))
+    androidTestImplementation(project(":testing-ui"))
 }

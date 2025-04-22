@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "edu.stanford.spezi.ui.markdown"
+    namespace = "edu.stanford.spezi.testing.ui"
 }
 
 dependencies {
@@ -13,5 +13,10 @@ dependencies {
 
     api(project(":ui"))
     implementation(project(":core-logging"))
-    androidTestImplementation(project(":testing-ui"))
+
+    implementation(libs.hilt.test)
+    implementation(libs.androidx.test.runner)
+
+    api(libs.bundles.unit.testing)
+    api(libs.bundles.compose.androidTest)
 }

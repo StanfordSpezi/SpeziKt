@@ -4,8 +4,8 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import edu.stanford.spezi.modules.onboarding.invitation.InvitationCodeScreenTestIdentifier
-import edu.stanford.spezi.ui.testing.onNodeWithIdentifier
-import edu.stanford.spezi.ui.testing.waitNode
+import edu.stanford.spezi.testing.ui.onNodeWithIdentifier
+import edu.stanford.spezi.testing.ui.waitNode
 
 class InvitationCodeScreenSimulator(
     private val composeTestRule: ComposeTestRule,

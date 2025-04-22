@@ -22,5 +22,5 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":core-logging"))
     implementation(project(":ui"))
-    implementation(project(":ui-testing"))
+    androidTestImplementation(project(":testing-ui"))
 }

@@ -18,7 +18,6 @@ dependencies {
     implementation(project(":foundation"))
     implementation(project(":core"))
     implementation(project(":ui"))
-    implementation(project(":ui-testing"))
 
     val composeBom = platform(libs.compose.bom)
     implementation(composeBom)
@@ -29,6 +28,7 @@ dependencies {
 
     androidTestImplementation(libs.bundles.compose.androidTest)
     androidTestImplementation(composeBom)
+    androidTestImplementation(project(":testing-ui"))
 
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)

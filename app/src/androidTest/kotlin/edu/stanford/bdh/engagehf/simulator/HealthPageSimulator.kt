@@ -5,7 +5,7 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import edu.stanford.bdh.engagehf.health.HealthPageTestIdentifier
 import edu.stanford.spezi.modules.design.component.CenteredBoxContentTestIdentifier
-import edu.stanford.spezi.ui.testing.onNodeWithIdentifier
+import edu.stanford.spezi.testing.ui.onNodeWithIdentifier
 
 class HealthPageSimulator(
     private val composeTestRule: ComposeTestRule,

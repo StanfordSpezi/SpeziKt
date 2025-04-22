@@ -13,5 +13,5 @@ dependencies {
 
     api(project(":core"))
     implementation(project(":core-logging"))
-    androidTestImplementation(project(":ui-testing"))
+    androidTestImplementation(project(":testing-ui"))
 }

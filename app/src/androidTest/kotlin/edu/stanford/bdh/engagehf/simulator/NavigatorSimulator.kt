@@ -13,8 +13,8 @@ import edu.stanford.spezi.modules.onboarding.invitation.InvitationCodeScreenTest
 import edu.stanford.spezi.modules.onboarding.onboarding.OnboardingScreenTestIdentifier
 import edu.stanford.spezi.modules.onboarding.sequential.SequentialOnboardingScreenTestIdentifier
 import edu.stanford.spezi.ui.TestIdentifier
-import edu.stanford.spezi.ui.testing.onAllNodes
-import edu.stanford.spezi.ui.testing.onNodeWithIdentifier
+import edu.stanford.spezi.testing.ui.onAllNodes
+import edu.stanford.spezi.testing.ui.onNodeWithIdentifier
 
 class NavigatorSimulator(
     private val composeTestRule: ComposeTestRule,

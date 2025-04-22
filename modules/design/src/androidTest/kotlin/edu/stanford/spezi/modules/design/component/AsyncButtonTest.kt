@@ -9,7 +9,7 @@ import androidx.compose.ui.test.isNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import edu.stanford.spezi.modules.design.action.PendingActions
-import edu.stanford.spezi.ui.testing.onNodeWithIdentifier
+import edu.stanford.spezi.testing.ui.onNodeWithIdentifier
 import org.junit.Rule
 import org.junit.Test
 

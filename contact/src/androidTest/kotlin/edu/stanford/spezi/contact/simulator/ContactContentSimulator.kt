@@ -13,8 +13,8 @@ import edu.stanford.spezi.contact.formatted
 import edu.stanford.spezi.ui.ImageResource
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
-import edu.stanford.spezi.ui.testing.onNodeWithContent
-import edu.stanford.spezi.ui.testing.onNodeWithIdentifier
+import edu.stanford.spezi.testing.ui.onNodeWithContent
+import edu.stanford.spezi.testing.ui.onNodeWithIdentifier
 
 class ContactContentSimulator(
     private val composeTestRule: ComposeTestRule,

@@ -23,7 +23,7 @@ dependencies {
     implementation(project(":core-logging"))
 
     api(project(":ui"))
-    implementation(project(":ui-testing"))
 
     implementation(libs.androidx.fragment.compose)
+    androidTestImplementation(project(":testing-ui"))
 }
