@@ -79,5 +79,6 @@ dependencies {
     implementation(libs.googlecode.phonenumber)
 
     androidTestImplementation(project(":modules:testing"))
+    implementation(project(":testing-ui"))
     androidTestImplementation(project(":testing-ui"))
 }
