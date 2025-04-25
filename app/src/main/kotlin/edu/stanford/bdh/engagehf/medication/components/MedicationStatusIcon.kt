@@ -24,7 +24,7 @@ fun MedicationStatusIcon(model: MedicationCardUiModel) {
         modifier = Modifier
             .size(Sizes.Icon.medium)
             .background(
-                backgroundColor,
+                color = backgroundColor,
                 shape = CircleShape
             )
             .padding(Spacings.small),

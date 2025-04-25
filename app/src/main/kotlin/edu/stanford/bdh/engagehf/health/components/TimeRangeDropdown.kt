@@ -36,14 +36,13 @@ fun TimeRangeDropdown(
         TextButton(onClick = {
             onToggleExpanded(true)
         }) {
-            Text(
-                text = when (selectedTimeRange) {
-                    TimeRange.DAILY -> stringResource(R.string.time_range_daily)
-                    TimeRange.WEEKLY -> stringResource(R.string.time_range_weekly)
-                    TimeRange.MONTHLY -> stringResource(R.string.time_range_monthly)
-                }
-            )
-            Icon(Icons.Default.ArrowDropDown, contentDescription = "ArrowDropDown")
+            val text = when (selectedTimeRange) {
+                TimeRange.DAILY -> stringResource(R.string.time_range_daily)
+                TimeRange.WEEKLY -> stringResource(R.string.time_range_weekly)
+                TimeRange.MONTHLY -> stringResource(R.string.time_range_monthly)
+            }
+            Text(text = text)
+            Icon(Icons.Default.ArrowDropDown, contentDescription = text)
         }
         DropdownMenu(expanded = isSelectedTimeRangeDropdownExpanded,
             onDismissRequest = {

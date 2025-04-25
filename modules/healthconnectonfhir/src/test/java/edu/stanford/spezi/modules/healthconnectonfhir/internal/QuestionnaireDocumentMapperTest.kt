@@ -1,4 +1,4 @@
-package edu.stanford.healthconnectonfhir
+package edu.stanford.spezi.modules.healthconnectonfhir.internal
 
 import ca.uhn.fhir.parser.IParser
 import com.google.common.truth.Truth.assertThat
@@ -16,7 +16,7 @@ class QuestionnaireDocumentMapperTest {
 
     private var jsonParser: IParser = mockk()
     private var gson: Gson = mockk()
-    private var mapper: QuestionnaireDocumentMapper = QuestionnaireDocumentMapper(jsonParser, gson)
+    private val mapper = QuestionnaireDocumentMapperImpl(jsonParser, gson)
 
     @Test
     fun `test map DocumentSnapshot to Questionnaire`() {

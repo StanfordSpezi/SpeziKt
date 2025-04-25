@@ -1,20 +1,21 @@
 package edu.stanford.bdh.engagehf.medication.ui
 
 import androidx.compose.ui.graphics.Color
+import edu.stanford.spezi.ui.StringResource
 
 /**
  * Represents the state of the medication screen.
  */
 sealed interface MedicationUiState {
     data object Loading : MedicationUiState
-    data class NoData(val message: String) : MedicationUiState
+    data class NoData(val message: StringResource) : MedicationUiState
     data class Success(
         val medicationsTaking: Medications,
         val medicationsThatMayHelp: Medications,
         val colorKeyExpanded: Boolean,
     ) : MedicationUiState
 
-    data class Error(val message: String) : MedicationUiState
+    data class Error(val message: StringResource) : MedicationUiState
 }
 
 data class Medications(

@@ -1,4 +1,4 @@
-package edu.stanford.healthconnectonfhir
+package edu.stanford.spezi.modules.healthconnectonfhir
 
 enum class Loinc(val code: String) {
     BLOOD_PRESSURE(code = "85354-9"),

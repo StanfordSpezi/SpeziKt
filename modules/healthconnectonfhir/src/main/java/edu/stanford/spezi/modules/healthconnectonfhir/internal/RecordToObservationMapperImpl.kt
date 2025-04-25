@@ -1,5 +1,6 @@
-package edu.stanford.healthconnectonfhir
+package edu.stanford.spezi.modules.healthconnectonfhir.internal
 
+import android.content.Context
 import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
 import androidx.health.connect.client.records.BloodGlucoseRecord
 import androidx.health.connect.client.records.BloodPressureRecord
@@ -12,6 +13,10 @@ import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.RespiratoryRateRecord
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.WeightRecord
+import dagger.hilt.android.qualifiers.ApplicationContext
+import edu.stanford.spezi.modules.healthconnectonfhir.MappedUnit
+import edu.stanford.spezi.modules.healthconnectonfhir.R
+import edu.stanford.spezi.modules.healthconnectonfhir.RecordToObservationMapper
 import org.hl7.fhir.r4.model.CodeableConcept
 import org.hl7.fhir.r4.model.Coding
 import org.hl7.fhir.r4.model.DateTimeType
@@ -22,7 +27,11 @@ import org.hl7.fhir.r4.model.Quantity
 import java.util.Date
 import javax.inject.Inject
 
-class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationMapper {
+internal class RecordToObservationMapperImpl @Inject constructor(
+    @ApplicationContext context: Context,
+) : RecordToObservationMapper {
+    private val stringResource: (id: Int) -> String = { id -> context.getString(id) }
+
     /**
      * Maps a given Health Connect record to a list of HL7 FHIR Observations.
      *
@@ -59,17 +68,17 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
                 .setCode("activity")
-                .setDisplay("Activity"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_activity)),
         ),
         codings = listOf(
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("41981-2")
-                .setDisplay("Calories burned"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_calories_burned)),
             Coding()
                 .setSystem("http://health.google/health-connect-android")
                 .setCode("ActiveCaloriesBurnedRecord")
-                .setDisplay("Active Calories Burned Record"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_active_calories_burned_record)),
         ),
         unit = MappedUnit(
             code = "kcal",
@@ -91,11 +100,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("41653-7")
-                .setDisplay("Glucose Glucometer (BldC) [Mass/Vol]"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_glucose_glucometer_bldc_mass_vol)),
             Coding()
                 .setSystem("http://health.google/health-connect-android")
                 .setCode("BloodGlucoseRecord")
-                .setDisplay("Blood Glucose Record"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_blood_glucose_record)),
         ),
         unit = MappedUnit(
             code = "mg/dL",
@@ -129,7 +138,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 Coding()
                     .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
                     .setCode("vital-signs")
-                    .setDisplay("Vital Signs")
+                    .setDisplay(stringResource(R.string.healthconnectonfhir_vital_signs))
             )
         )
 
@@ -137,11 +146,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("85354-9")
-                .setDisplay("Blood pressure panel with all children optional"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_blood_pressure_panel_with_all_children_optional)),
             Coding()
                 .setSystem("http://health.google/health-connect-android")
                 .setCode("BloodPressureRecord")
-                .setDisplay("Blood Pressure Record"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_blood_pressure_record)),
         )
 
         observation.code = CodeableConcept().apply {
@@ -156,7 +165,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("8480-6")
-                .setDisplay("Systolic blood pressure")
+                .setDisplay(stringResource(R.string.healthconnectonfhir_systolic_blood_pressure))
         )
         systolicComponent.value = Quantity()
             .setValue(record.systolic.inMillimetersOfMercury)
@@ -169,7 +178,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("8462-4")
-                .setDisplay("Diastolic blood pressure")
+                .setDisplay(stringResource(R.string.healthconnectonfhir_diastolic_blood_pressure))
         )
         diastolicComponent.value = Quantity()
             .setValue(record.diastolic.inMillimetersOfMercury)
@@ -194,11 +203,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("41982-0")
-                .setDisplay("Percentage of body fat Measured"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_percentage_of_body_fat_measured)),
             Coding()
                 .setSystem("http://health.google/health-connect-android")
                 .setCode("BodyFatRecord")
-                .setDisplay("Body Fat Record"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_body_fat_record)),
         ),
         unit = MappedUnit(
             code = "%",
@@ -220,17 +229,17 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
                 .setCode("vital-signs")
-                .setDisplay("Vital Signs")
+                .setDisplay(stringResource(R.string.healthconnectonfhir_vital_signs))
         ),
         codings = listOf(
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("8310-5")
-                .setDisplay("Body temperature"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_body_temperature)),
             Coding()
                 .setSystem("http://health.google/health-connect-android")
                 .setCode("BodyTemperatureRecord")
-                .setDisplay("Body Temperature Record"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_body_temperature_record)),
         ),
         unit = MappedUnit(
             code = "Cel",
@@ -259,7 +268,7 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                     Coding()
                         .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
                         .setCode("vital-signs")
-                        .setDisplay("Vital Signs")
+                        .setDisplay(stringResource(R.string.healthconnectonfhir_vital_signs))
                 )
             )
 
@@ -267,11 +276,11 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
                 Coding()
                     .setSystem("http://loinc.org")
                     .setCode("8867-4")
-                    .setDisplay("Heart rate"),
+                    .setDisplay(stringResource(R.string.healthconnectonfhir_heart_rate)),
                 Coding()
                     .setSystem("http://health.google/health-connect-android")
                     .setCode("HeartRateRecord")
-                    .setDisplay("Heart Rate Record")
+                    .setDisplay(stringResource(R.string.healthconnectonfhir_heart_rate_record))
             )
 
             observation.code = CodeableConcept().apply {
@@ -302,17 +311,17 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
                 .setCode("vital-signs")
-                .setDisplay("Vital Signs")
+                .setDisplay(stringResource(R.string.healthconnectonfhir_vital_signs))
         ),
         codings = listOf(
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("8302-2")
-                .setDisplay("Body height"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_body_height)),
             Coding()
                 .setSystem("http://health.google/health-connect-android")
                 .setCode("HeightRecord")
-                .setDisplay("Height Record"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_height_record)),
         ),
         unit = MappedUnit(
             code = "m",
@@ -334,17 +343,17 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
                 .setCode("vital-signs")
-                .setDisplay("Vital Signs")
+                .setDisplay(stringResource(R.string.healthconnectonfhir_vital_signs))
         ),
         codings = listOf(
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("59408-5")
-                .setDisplay("Oxygen saturation in Arterial blood by Pulse oximetry"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_oxygen_saturation_in_arterial_blood_by_pulse_oximetry)),
             Coding()
                 .setSystem("http://health.google/health-connect-android")
                 .setCode("OxygenSaturationRecord")
-                .setDisplay("Oxygen Saturation Record"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_oxygen_saturation_record)),
         ),
         unit = MappedUnit(
             code = "%",
@@ -366,17 +375,17 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
                 .setCode("vital-signs")
-                .setDisplay("Vital Signs")
+                .setDisplay(stringResource(R.string.healthconnectonfhir_vital_signs))
         ),
         codings = listOf(
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("9279-1")
-                .setDisplay("Respiratory rate"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_respiratory_rate)),
             Coding()
                 .setSystem("http://health.google/health-connect-android")
                 .setCode("RespiratoryRateRecord")
-                .setDisplay("Respiratory Rate Record"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_respiratory_rate_record)),
         ),
         unit = MappedUnit(
             code = "/min",
@@ -398,17 +407,17 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
                 .setCode("activity")
-                .setDisplay("Activity")
+                .setDisplay(stringResource(R.string.healthconnectonfhir_activity))
         ),
         codings = listOf(
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("55423-8")
-                .setDisplay("Number of steps"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_number_of_steps)),
             Coding()
                 .setSystem("http://health.google/health-connect-android")
                 .setCode("StepsRecord")
-                .setDisplay("Steps Record"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_steps_record)),
         ),
         unit = MappedUnit(
             unit = "steps",
@@ -430,17 +439,17 @@ class RecordToObservationMapperImpl @Inject constructor() : RecordToObservationM
             Coding()
                 .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
                 .setCode("vital-signs")
-                .setDisplay("Vital Signs")
+                .setDisplay(stringResource(R.string.healthconnectonfhir_vital_signs))
         ),
         codings = listOf(
             Coding()
                 .setSystem("http://loinc.org")
                 .setCode("29463-7")
-                .setDisplay("Body weight"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_body_weight)),
             Coding()
                 .setSystem("http://health.google/health-connect-android")
                 .setCode("WeightRecord")
-                .setDisplay("Weight Record"),
+                .setDisplay(stringResource(R.string.healthconnectonfhir_weight_record)),
         ),
         unit = MappedUnit(
             code = "kg",

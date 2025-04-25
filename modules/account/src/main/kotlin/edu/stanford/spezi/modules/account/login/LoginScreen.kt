@@ -94,21 +94,21 @@ internal fun LoginScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = stringResource(R.string.your_account), style = titleLarge
+            text = stringResource(R.string.account_your_account), style = titleLarge
         )
         Spacer(modifier = Modifier.height(Spacings.large))
         val annotatedText = buildAnnotatedString {
-            append(stringResource(R.string.login_screen_description))
+            append(stringResource(R.string.account_login_screen_description))
             pushStringAnnotation(
                 tag = "EMAIL",
-                annotation = stringResource(R.string.engage_support_email)
+                annotation = stringResource(R.string.account_engage_support_email)
             )
             withStyle(
                 style = SpanStyle(
                     color = Colors.primary
                 )
             ) {
-                append(stringResource(R.string.engage_support_email))
+                append(stringResource(R.string.account_engage_support_email))
             }
             pop()
         }
@@ -152,7 +152,7 @@ internal fun LoginScreen(
                     onValueChange = {
                         onAction(Action.TextFieldUpdate(it, TextFieldType.PASSWORD))
                     },
-                    labelText = stringResource(R.string.password),
+                    labelText = stringResource(R.string.account_password),
                     visualTransformation = if (uiState.passwordVisibility) {
                         VisualTransformation.None
                     } else {
@@ -173,10 +173,10 @@ internal fun LoginScreen(
                                 painter = painterResource(id = iconId),
                                 contentDescription = if (uiState.passwordVisibility) {
                                     stringResource(
-                                        R.string.hide_password
+                                        R.string.account_hide_password
                                     )
                                 } else {
-                                    stringResource(R.string.show_password)
+                                    stringResource(R.string.account_show_password)
                                 }
                             )
                         }
@@ -185,7 +185,7 @@ internal fun LoginScreen(
             })
         val forgotPasswordAction = Action.Async.ForgotPassword
         AsyncTextButton(
-            text = stringResource(R.string.forgot_password),
+            text = stringResource(R.string.account_forgot_password),
             isLoading = uiState.pendingActions.contains(forgotPasswordAction),
             containerColor = Colors.transparent,
             contentPadding = PaddingValues(0.dp),
@@ -199,7 +199,7 @@ internal fun LoginScreen(
         val passwordSignIn = Action.Async.PasswordSignIn
         AsyncTextButton(
             isLoading = uiState.pendingActions.contains(passwordSignIn),
-            text = stringResource(R.string.login),
+            text = stringResource(R.string.account_login),
             onClick = { onAction(passwordSignIn) },
             modifier = Modifier.fillMaxWidth(),
             enabled = uiState.isPasswordSignInEnabled
@@ -210,17 +210,17 @@ internal fun LoginScreen(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(stringResource(R.string.don_t_have_an_account_yet))
+            Text(stringResource(R.string.account_no_account_yet))
             TextButton(
                 onClick = {
                     onAction(Action.NavigateToRegister)
                 },
             ) {
-                Text(stringResource(R.string.signup))
+                Text(stringResource(R.string.account_signup))
             }
         }
         Spacer(modifier = Modifier.height(Spacings.medium))
-//        TextDivider(stringResource(R.string.or))
+//        TextDivider(stringResource(R.string.account_or))
 //        VerticalSpacer()
 //        val googleSignInOrSignUp = Action.Async.GoogleSignInOrSignUp
 //        SignInWithGoogleButton(

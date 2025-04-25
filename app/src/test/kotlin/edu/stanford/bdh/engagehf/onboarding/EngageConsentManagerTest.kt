@@ -1,6 +1,8 @@
 package edu.stanford.bdh.engagehf.onboarding
 
+import android.content.Context
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.spezi.modules.navigation.Navigator
 import edu.stanford.spezi.modules.testing.runTestUnconfined
@@ -16,15 +18,17 @@ import org.junit.Test
 class EngageConsentManagerTest {
     private val navigator: Navigator = mockk()
     private val messageNotifier: MessageNotifier = mockk()
+    private val context: Context = mockk()
     private val manager = EngageConsentManager(
         navigator = navigator,
         messageNotifier = messageNotifier,
+        context = context,
     )
 
     @Before
     fun setup() {
         every { navigator.navigateTo(AppNavigationEvent.AppScreen(true)) } just Runs
-        every { messageNotifier.notify(message = any(), any()) } just Runs
+        every { messageNotifier.notify(messageId = any(), any()) } just Runs
     }
 
     @Test
@@ -36,6 +40,7 @@ class EngageConsentManagerTest {
             
         Your personal information will only be shared with the research team conducting the study.
         """.trimIndent()
+        every { context.getString(R.string.consent_markdown_text) } returns expectedText
 
         // when
         val result = manager.getMarkdownText()
@@ -58,13 +63,10 @@ class EngageConsentManagerTest {
 
     @Test
     fun `it should notify error message on on consent failure`() = runTestUnconfined {
-        // given
-        val message = "Something went wrong, failed to submit the consent!"
-
         // when
         manager.onConsentFailure(error = mockk())
 
         // then
-        verify { messageNotifier.notify(message = message) }
+        verify { messageNotifier.notify(R.string.generic_error_description) }
     }
 }

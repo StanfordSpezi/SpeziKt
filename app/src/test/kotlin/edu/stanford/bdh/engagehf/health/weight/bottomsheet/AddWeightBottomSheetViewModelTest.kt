@@ -1,6 +1,7 @@
 package edu.stanford.bdh.engagehf.health.weight.bottomsheet
 
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.time.TimePickerState
@@ -105,7 +106,7 @@ class AddWeightBottomSheetViewModelTest {
         viewModel.onAction(action)
 
         // then
-        verify { notifier.notify("Failed to save weight record") }
+        verify { notifier.notify(R.string.weight_record_save_failure_message) }
     }
 
     @Test

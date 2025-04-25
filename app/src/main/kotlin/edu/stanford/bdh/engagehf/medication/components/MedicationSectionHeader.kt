@@ -35,7 +35,7 @@ fun SectionHeader(
             onClick = onToggleExpand
         ) {
             Icon(
-                if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                 contentDescription = null,
             )
         }

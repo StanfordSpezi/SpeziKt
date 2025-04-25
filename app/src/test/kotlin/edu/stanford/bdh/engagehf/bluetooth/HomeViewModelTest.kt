@@ -135,9 +135,9 @@ class HomeViewModelTest {
         createViewModel()
 
         // then
-        coVerify { measurementsRepository.observeWeightRecord() }
-        coVerify { measurementsRepository.observeHeartRateRecord() }
-        coVerify { measurementsRepository.observeBloodPressureRecord() }
+        verify { measurementsRepository.observeWeightRecord() }
+        verify { measurementsRepository.observeHeartRateRecord() }
+        verify { measurementsRepository.observeBloodPressureRecord() }
     }
 
     @Test
@@ -204,7 +204,7 @@ class HomeViewModelTest {
         val result: Result<WeightRecord?> = mockk()
         val uiState: VitalDisplayData = mockk()
         every { uiStateMapper.mapWeight(result) } returns uiState
-        coEvery {
+        every {
             measurementsRepository.observeWeightRecord()
         } returns flowOf(result)
 
@@ -221,7 +221,7 @@ class HomeViewModelTest {
         val result: Result<BloodPressureRecord?> = mockk()
         val uiState: VitalDisplayData = mockk()
         every { uiStateMapper.mapBloodPressure(result) } returns uiState
-        coEvery {
+        every {
             measurementsRepository.observeBloodPressureRecord()
         } returns flowOf(result)
 
@@ -238,7 +238,7 @@ class HomeViewModelTest {
         val result: Result<HeartRateRecord?> = mockk()
         val uiState: VitalDisplayData = mockk()
         every { uiStateMapper.mapHeartRate(result) } returns uiState
-        coEvery {
+        every {
             measurementsRepository.observeHeartRateRecord()
         } returns flowOf(result)
 

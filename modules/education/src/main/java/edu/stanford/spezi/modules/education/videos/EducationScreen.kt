@@ -14,6 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -76,7 +77,7 @@ fun EducationScreen(
                             .fillMaxWidth()
                             .testIdentifier(EducationScreenTestIdentifier.RETRY_BUTTON),
                         onClick = { onAction(Action.Retry) }) {
-                        Text(text = "Retry")
+                        Text(text = stringResource(R.string.education_retry))
                     }
                 }
             }
@@ -112,7 +113,7 @@ private class EducationUiStatePreviewProvider :
     PreviewParameterProvider<Pair<UiState, (Action) -> Unit>> {
     override val values: Sequence<Pair<UiState, (Action) -> Unit>> = sequenceOf(
         Pair(UiState.Loading) {},
-        Pair(UiState.Error(StringResource(R.string.failed_to_load_video_sections))) {},
+        Pair(UiState.Error(StringResource(R.string.education_failed_to_load_video_sections))) {},
         Pair(
             UiState.Success(
                 EducationUiState(

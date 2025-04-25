@@ -38,19 +38,19 @@ class BluetoothUiStateMapper @Inject constructor(
     fun mapBleServiceState(state: EngageBLEServiceState): BluetoothUiState {
         return when (state) {
             EngageBLEServiceState.Idle -> {
-                BluetoothUiState.Idle(description = R.string.bluetooth_initializing_description)
+                BluetoothUiState.Idle(description = StringResource(R.string.bluetooth_initializing_description))
             }
 
             EngageBLEServiceState.BluetoothNotEnabled -> {
                 BluetoothUiState.Idle(
-                    description = R.string.bluetooth_not_enabled_description,
+                    description = StringResource(R.string.bluetooth_not_enabled_description),
                     settingsAction = Action.Settings.BluetoothSettings,
                 )
             }
 
             is EngageBLEServiceState.MissingPermissions -> {
                 BluetoothUiState.Idle(
-                    description = R.string.bluetooth_permissions_not_granted_description,
+                    description = StringResource(R.string.bluetooth_permissions_not_granted_description),
                     settingsAction = Action.Settings.AppSettings,
                 )
             }
@@ -58,21 +58,14 @@ class BluetoothUiStateMapper @Inject constructor(
             is EngageBLEServiceState.Scanning -> {
                 val devices = state.sessions.map {
                     val summary = when (val lastMeasurement = it.measurements.lastOrNull()) {
-                        is Measurement.BloodPressure -> "Blood Pressure: ${
-                            formatSystolicForLocale(
-                                lastMeasurement.systolic
-                            )
-                        } / ${
-                            formatDiastolicForLocale(
-                                lastMeasurement.diastolic
-                            )
-                        }"
-
-                        is Measurement.Weight -> {
-                            "Weight: ${formatWeightForLocale(lastMeasurement.weight)}"
+                        is Measurement.BloodPressure -> {
+                            val systolic = formatSystolicForLocale(lastMeasurement.systolic)
+                            val diastolic = formatDiastolicForLocale(lastMeasurement.diastolic)
+                            StringResource(R.string.blood_pressure_value, "$systolic / $diastolic")
                         }
+                        is Measurement.Weight -> StringResource(R.string.weight_value, formatWeightForLocale(lastMeasurement.weight))
 
-                        else -> "No measurements received yet"
+                        else -> StringResource(R.string.no_measurements_received)
                     }
                     val time = ZonedDateTime.ofInstant(
                         Instant.ofEpochMilli(it.device.lastSeenTimeStamp),
@@ -86,7 +79,7 @@ class BluetoothUiStateMapper @Inject constructor(
                     )
                 }
                 val header = if (devices.isEmpty()) {
-                    R.string.paired_devices_hint_description
+                    StringResource(R.string.paired_devices_hint_description)
                 } else {
                     null
                 }
@@ -117,7 +110,7 @@ class BluetoothUiStateMapper @Inject constructor(
     }
 
     fun mapBloodPressure(result: Result<BloodPressureRecord?>): VitalDisplayData {
-        val title = "Blood Pressure"
+        val title = StringResource(R.string.blood_pressure)
         return mapRecordResult(
             result = result,
             title = title,
@@ -134,7 +127,7 @@ class BluetoothUiStateMapper @Inject constructor(
     }
 
     fun mapWeight(result: Result<WeightRecord?>): VitalDisplayData {
-        val title = "Weight"
+        val title = StringResource(R.string.weight)
         val locale = getDefaultLocale()
         return mapRecordResult(
             result = result,
@@ -162,7 +155,7 @@ class BluetoothUiStateMapper @Inject constructor(
     }
 
     fun mapHeartRate(result: Result<HeartRateRecord?>): VitalDisplayData {
-        val title = "Heart Rate"
+        val title = StringResource(R.string.heart_rate)
         return mapRecordResult(
             result = result,
             title = title,
@@ -187,7 +180,7 @@ class BluetoothUiStateMapper @Inject constructor(
 
     private fun <T : Record> mapRecordResult(
         result: Result<T?>,
-        title: String,
+        title: StringResource,
         onSuccess: (T) -> VitalDisplayData,
     ): VitalDisplayData {
         val successResult = result.getOrNull()

@@ -29,6 +29,7 @@ import edu.stanford.spezi.ui.Colors.primary
 import edu.stanford.spezi.ui.Sizes
 import edu.stanford.spezi.ui.Spacings
 import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.TextStyles.titleLarge
 import edu.stanford.spezi.ui.testing.testIdentifier
 
@@ -55,7 +56,7 @@ internal fun InvitationCodeView(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = stringResource(R.string.invitation_code),
+            text = stringResource(R.string.onboarding_invitation_code),
             modifier = Modifier.testIdentifier(InvitationCodeScreenTestIdentifier.TITLE),
             style = titleLarge,
         )
@@ -63,14 +64,14 @@ internal fun InvitationCodeView(
         Icon(
             imageVector = Icons.Default.Edit,
             tint = primary,
-            contentDescription = stringResource(R.string.edit_icon),
+            contentDescription = stringResource(R.string.onboarding_invitation_code),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .size(Sizes.Icon.medium)
         )
         Spacer(modifier = Modifier.height(Spacings.medium))
         Text(
-            text = uiState.description,
+            text = uiState.description.text(),
             modifier = Modifier.testIdentifier(InvitationCodeScreenTestIdentifier.DESCRIPTION)
         )
         Spacer(modifier = Modifier.height(Spacings.medium))
@@ -81,8 +82,8 @@ internal fun InvitationCodeView(
                 onAction(Action.UpdateInvitationCode(it))
                 onAction(Action.ClearError)
             },
-            labelText = stringResource(R.string.invitation_code),
-            errorText = uiState.error,
+            labelText = stringResource(R.string.onboarding_invitation_code),
+            errorText = uiState.error?.text(),
         )
         Spacer(modifier = Modifier.height(Spacings.medium))
         Button(
@@ -93,31 +94,24 @@ internal fun InvitationCodeView(
                 .testIdentifier(InvitationCodeScreenTestIdentifier.MAIN_ACTION_BUTTON)
                 .fillMaxWidth(),
         ) {
-            Text(stringResource(R.string.redeem_invitation_code), color = onPrimary)
+            Text(stringResource(R.string.onboarding_redeem_invitation_code), color = onPrimary)
         }
     }
 }
 
 private class InvitationCodeScreenProvider : PreviewParameterProvider<InvitationCodeUiState> {
+    private val base = InvitationCodeUiState(
+        description = StringResource("Please enter your invitation code to join the ENGAGE-HF study."),
+        invitationCode = "",
+        error = null,
+    )
     override val values: Sequence<InvitationCodeUiState> = sequenceOf(
-        InvitationCodeUiState(
-            invitationCode = "",
-            error = null,
-            description = "Please enter your invitation code to join the ENGAGE-HF study.",
-            title = "Invitation Code"
+        base,
+        base.copy(invitationCode = "1234567890"),
+        base.copy(
+            invitationCode = "1234567890",
+            error = StringResource(R.string.onboarding_invitation_code_error_message),
         ),
-        InvitationCodeUiState(
-            invitationCode = "123456",
-            error = null,
-            description = "Please enter your invitation code to join the ENGAGE-HF study.",
-            title = "Invitation Code"
-        ),
-        InvitationCodeUiState(
-            invitationCode = "",
-            error = "Invalid code",
-            description = "Please enter your invitation code to join the ENGAGE-HF study.",
-            title = "Invitation Code"
-        )
     )
 }
 

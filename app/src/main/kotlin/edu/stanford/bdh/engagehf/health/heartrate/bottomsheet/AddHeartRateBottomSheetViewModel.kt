@@ -4,6 +4,7 @@ import androidx.health.connect.client.records.HeartRateRecord
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.time.TimePickerStateMapper
@@ -84,7 +85,7 @@ internal class AddHeartRateBottomSheetViewModel @Inject constructor(
             ).also { heartRate ->
                 viewModelScope.launch {
                     healthRepository.saveRecord(heartRate).onFailure {
-                        notifier.notify("Failed to save heart rate record")
+                        notifier.notify(R.string.heart_rate_record_save_failure_message)
                     }.onSuccess {
                         appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet)
                     }

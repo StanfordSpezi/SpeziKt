@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ui_validation_empty_not_allowed">This field cannot be empty.</string>
+    <string name="ui_validation_password_min_length">Your password must be at least 8 characters long.</string>
+    <string name="ui_validation_password_med_length">Your password must be at least 10 characters long.</string>
+    <string name="ui_validation_password_strong_length">Your password must be at least 12 characters long.</string>
+    <string name="ui_validation_ascii_letters_only">Please use letters, numbers, and common punctuation only</string>
+    <string name="ui_validation_minimal_email">Please provide a correctly formatted email address.</string>
+    <string name="ui_validation_letters_only">The text must contain letters only.</string>
+</resources>

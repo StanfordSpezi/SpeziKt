@@ -1,7 +1,8 @@
 package edu.stanford.spezi.modules.onboarding.invitation
 
+import edu.stanford.spezi.ui.StringResource
+
 data class InvitationCodeViewData(
-    val title: String = "Title",
-    val description: String = "description",
+    val description: StringResource,
     val redeemAction: () -> Unit,
 )

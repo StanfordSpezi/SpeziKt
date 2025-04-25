@@ -44,7 +44,7 @@ data class PhoneNumberSettingsUiState(
             },
             actions = {
                 IconButton(onClick = onAddPhoneNumberClicked) {
-                    Icon(Icons.Filled.Add, contentDescription = "Pair device")
+                    Icon(Icons.Filled.Add, contentDescription = null)
                 }
             }
         ) {

@@ -1,4 +1,4 @@
-package edu.stanford.healthconnectonfhir
+package edu.stanford.spezi.modules.healthconnectonfhir
 
 import androidx.health.connect.client.records.Record
 import com.google.firebase.firestore.DocumentSnapshot

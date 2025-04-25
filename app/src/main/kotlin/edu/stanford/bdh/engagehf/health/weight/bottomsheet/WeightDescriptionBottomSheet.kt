@@ -25,7 +25,7 @@ fun WeightDescriptionBottomSheet() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Understanding Your Weight",
+            text = stringResource(R.string.understanding_your_weight),
             style = TextStyles.titleLarge
         )
         VerticalSpacer()

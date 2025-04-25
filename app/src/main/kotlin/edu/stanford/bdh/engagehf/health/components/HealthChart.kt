@@ -155,7 +155,7 @@ private fun rememberLegend(chartData: List<AggregatedHealthData>) =
                 rememberLegendItem(
                     icon = rememberShapeComponent(chartColor, Shape.Pill),
                     labelComponent = rememberTextComponent(vicoTheme.textColor),
-                    label = data.seriesName,
+                    label = data.seriesName.text(),
                 )
             }
         },

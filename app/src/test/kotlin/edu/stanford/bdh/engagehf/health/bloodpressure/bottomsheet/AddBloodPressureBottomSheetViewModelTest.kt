@@ -1,6 +1,7 @@
 package edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet
 
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.time.TimePickerState
@@ -86,7 +87,7 @@ class AddBloodPressureBottomSheetViewModelTest {
         viewModel.onAction(action)
 
         // then
-        verify { notifier.notify("Failed to save blood pressure record") }
+        verify { notifier.notify(R.string.blood_pressure_record_save_failure_message) }
     }
 
     @Test

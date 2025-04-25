@@ -3,6 +3,7 @@ package edu.stanford.bdh.engagehf.questionnaire
 import androidx.lifecycle.SavedStateHandle
 import ca.uhn.fhir.parser.IParser
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.spezi.modules.navigation.NavigationEvent
 import edu.stanford.spezi.modules.navigation.Navigator
 import edu.stanford.spezi.modules.testing.CoroutineTestRule
@@ -10,6 +11,7 @@ import edu.stanford.spezi.modules.testing.coVerifyNever
 import edu.stanford.spezi.modules.testing.runTestUnconfined
 import edu.stanford.spezi.modules.testing.verifyNever
 import edu.stanford.spezi.modules.utils.MessageNotifier
+import edu.stanford.spezi.ui.StringResource
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -76,7 +78,7 @@ class QuestionnaireViewModelTest {
         val uiState = viewModel.uiState.value
 
         // then
-        assertThat(uiState).isEqualTo(QuestionnaireViewModel.State.Error("Failed to load questionnaire"))
+        assertThat(uiState).isEqualTo(QuestionnaireViewModel.State.Error(StringResource(R.string.failed_to_load_questionnaire)))
     }
 
     @Test
@@ -89,7 +91,7 @@ class QuestionnaireViewModelTest {
         val uiState = viewModel.uiState.value
 
         // then
-        assertThat(uiState).isEqualTo(QuestionnaireViewModel.State.Error("Failed to load questionnaire"))
+        assertThat(uiState).isEqualTo(QuestionnaireViewModel.State.Error(StringResource(R.string.failed_to_load_questionnaire)))
     }
 
     @Test
@@ -134,7 +136,7 @@ class QuestionnaireViewModelTest {
         coEvery {
             questionnaireRepository.save(questionnaireResponse)
         } returns Result.failure(Error("Error"))
-        every { notifier.notify(message = any()) } just Runs
+        every { notifier.notify(messageId = any()) } just Runs
         createViewModel()
 
         // when
@@ -142,7 +144,7 @@ class QuestionnaireViewModelTest {
 
         // then
         coVerify { questionnaireRepository.save(questionnaireResponse) }
-        verify { notifier.notify("Failed to save questionnaire response") }
+        verify { notifier.notify(R.string.failed_to_save_questionnaire_response) }
     }
 
     @Test
@@ -159,7 +161,7 @@ class QuestionnaireViewModelTest {
         // then
         coVerifyNever { questionnaireRepository.save(any()) }
         verifyNever { navigator.navigateTo(any()) }
-        verifyNever { notifier.notify(message = any()) }
+        verifyNever { notifier.notify(messageId = any()) }
         verifyNever { questionnaireResponse.setAuthored(any()) }
     }
 

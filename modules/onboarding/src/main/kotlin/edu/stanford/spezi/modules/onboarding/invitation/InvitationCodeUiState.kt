@@ -1,10 +1,11 @@
 package edu.stanford.spezi.modules.onboarding.invitation
 
+import edu.stanford.spezi.ui.StringResource
+
 data class InvitationCodeUiState(
-    val title: String = "",
-    val description: String = "",
+    val description: StringResource = StringResource(""),
     val invitationCode: String = "",
-    val error: String? = "",
+    val error: StringResource? = null,
 )
 
 sealed interface Action {

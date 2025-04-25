@@ -25,7 +25,7 @@ fun BloodPressureDescriptionBottomSheet() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Understanding Your Blood Pressure",
+            text = stringResource(R.string.understanding_your_blood_pressure),
             style = TextStyles.titleLarge
         )
         VerticalSpacer()

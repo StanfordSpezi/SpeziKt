@@ -128,7 +128,7 @@ fun MessageItem(
                         }) {
                         Icon(
                             imageVector = if (model.isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                            contentDescription = if (model.isExpanded) "Show less" else "Show more",
+                            contentDescription = null,
                         )
                     }
                 }

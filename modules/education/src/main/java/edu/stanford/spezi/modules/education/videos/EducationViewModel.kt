@@ -33,7 +33,7 @@ internal class EducationViewModel @Inject constructor(
             educationRepository.getVideoSections().onFailure {
                 logger.e(it) { "Failed to load video sections" }
                 _uiState.value =
-                    UiState.Error(StringResource(R.string.failed_to_load_video_sections))
+                    UiState.Error(StringResource(R.string.education_failed_to_load_video_sections))
             }.onSuccess { videoSections ->
                 _uiState.value = UiState.Success(EducationUiState(videoSections = videoSections.sortedBy { it.orderIndex }))
             }
