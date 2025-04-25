@@ -5,9 +5,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import edu.stanford.spezi.core.design.component.CommonScaffold
-import edu.stanford.spezi.core.design.component.Screen
-import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.modules.design.component.CommonScaffold
+import edu.stanford.spezi.modules.design.component.Screen
+import edu.stanford.spezi.ui.Spacings
 
 data class SurveyUiState(
     val pageTitle: String,

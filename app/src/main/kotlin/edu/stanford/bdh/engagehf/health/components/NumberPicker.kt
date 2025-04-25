@@ -18,11 +18,11 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.ui.Colors
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.TextStyles
+import edu.stanford.spezi.ui.ThemePreviews
 import kotlinx.coroutines.launch
 
 private val PICKER_SIZE = DpSize(height = 110.dp, width = 70.dp)
@@ -73,7 +73,7 @@ fun NumberPicker(
 @ThemePreviews
 @Composable
 fun NumberPickerPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         NumberPicker(
             value = 5,
             onValueChange = {},

@@ -4,17 +4,17 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.screens.AppScreenTestIdentifier
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.core.testing.onAllNodes
-import edu.stanford.spezi.core.testing.onNodeWithIdentifier
-import edu.stanford.spezi.core.utils.TestIdentifier
-import edu.stanford.spezi.module.account.AccountNavigationEvent
-import edu.stanford.spezi.module.account.login.LoginScreenTestIdentifier
-import edu.stanford.spezi.module.account.register.RegisterScreenTestIdentifier
-import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
-import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeScreenTestIdentifier
-import edu.stanford.spezi.module.onboarding.onboarding.OnboardingScreenTestIdentifier
-import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreenTestIdentifier
+import edu.stanford.spezi.modules.account.AccountNavigationEvent
+import edu.stanford.spezi.modules.account.login.LoginScreenTestIdentifier
+import edu.stanford.spezi.modules.account.register.RegisterScreenTestIdentifier
+import edu.stanford.spezi.modules.navigation.Navigator
+import edu.stanford.spezi.modules.onboarding.OnboardingNavigationEvent
+import edu.stanford.spezi.modules.onboarding.invitation.InvitationCodeScreenTestIdentifier
+import edu.stanford.spezi.modules.onboarding.onboarding.OnboardingScreenTestIdentifier
+import edu.stanford.spezi.modules.onboarding.sequential.SequentialOnboardingScreenTestIdentifier
+import edu.stanford.spezi.ui.testing.TestIdentifier
+import edu.stanford.spezi.ui.testing.onAllNodes
+import edu.stanford.spezi.ui.testing.onNodeWithIdentifier
 
 class NavigatorSimulator(
     private val composeTestRule: ComposeTestRule,

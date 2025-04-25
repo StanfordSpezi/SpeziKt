@@ -6,11 +6,11 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.spezi.core.navigation.NavigationEvent
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.core.utils.extensions.decode
 import edu.stanford.spezi.modules.education.videos.VIDEO_SAVE_STATE_PARAM
 import edu.stanford.spezi.modules.education.videos.Video
+import edu.stanford.spezi.modules.navigation.NavigationEvent
+import edu.stanford.spezi.modules.navigation.Navigator
+import edu.stanford.spezi.modules.utils.extensions.decode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

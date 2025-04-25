@@ -19,8 +19,8 @@ import edu.stanford.bdh.heartbeat.app.survey.ui.QuestionFieldLabel
 import edu.stanford.bdh.heartbeat.app.survey.ui.QuestionNumberInfo
 import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyCard
 import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyItemPreview
-import edu.stanford.spezi.core.design.component.DatePickerDialog
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.modules.design.component.DatePickerDialog
+import edu.stanford.spezi.ui.ThemePreviews
 import java.time.Instant
 
 data class DatePickerFormFieldItem(

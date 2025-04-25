@@ -10,8 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.ui.Colors
+import edu.stanford.spezi.ui.ThemePreviews
 
 data class SurveyProgress(
     private val value: Float,

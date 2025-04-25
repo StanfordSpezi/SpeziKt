@@ -1,8 +1,8 @@
 package edu.stanford.bdh.engagehf.health.time
 
-import edu.stanford.spezi.core.utils.DateFormat
-import edu.stanford.spezi.core.utils.DateFormatter
-import edu.stanford.spezi.core.utils.TimeProvider
+import edu.stanford.spezi.modules.utils.DateFormat
+import edu.stanford.spezi.modules.utils.DateFormatter
+import edu.stanford.spezi.modules.utils.TimeProvider
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.LocalTime

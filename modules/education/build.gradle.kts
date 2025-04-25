@@ -15,5 +15,12 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.hilt.navigation.compose)
 
-    implementation(project(":core:navigation"))
+    implementation(project(":modules:design"))
+    implementation(project(":modules:navigation"))
+
+    implementation(project(":foundation"))
+    implementation(project(":core"))
+    implementation(project(":core-logging"))
+    implementation(project(":ui"))
+    implementation(project(":ui-testing"))
 }

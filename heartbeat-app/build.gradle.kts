@@ -36,8 +36,19 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:coroutines"))
-    implementation(project(":modules:storage"))
+    implementation(project(":foundation"))
+
+    implementation(project(":core"))
+    implementation(project(":core-coroutines"))
+    implementation(project(":core-logging"))
+
+    implementation(project(":ui"))
+    implementation(project(":ui-testing"))
+
+    implementation(project(":modules:design"))
+
+    implementation(project(":storage-credential"))
+    implementation(project(":storage-local"))
 
     implementation(libs.firebase.auth.ktx)
     implementation(libs.retrofit)

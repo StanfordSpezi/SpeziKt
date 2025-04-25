@@ -2,13 +2,13 @@
 
 This module provides Account management components.
 
-# Package edu.stanford.spezi.module.account.login
+# package edu.stanford.spezi.modules.account.login
 
 The LoginScreen is a key component of the account module. It is responsible for handling user
 authentication in Spezi Framework. This screen provides an interface for users to enter their email
 and password to log into their account.
 
-# Package edu.stanford.spezi.module.account.register
+# package edu.stanford.spezi.modules.account.register
 
 The RegisterScreen is a key component of the account module. It is responsible for handling user
 registration in the Spezi Framework. This screen provides an interface for users to create a new
@@ -21,7 +21,7 @@ To use the Account module in your project, add the following dependency to your 
 
 ```gradle
 dependencies {
-    implementation(":core:account")`
+    implementation(":modules:account")`
 }
 ```
 

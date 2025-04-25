@@ -11,12 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.FormFieldItem
-import edu.stanford.spezi.core.design.component.RectangleShimmerEffect
-import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.component.height
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.modules.design.component.RectangleShimmerEffect
+import edu.stanford.spezi.modules.design.component.VerticalSpacer
+import edu.stanford.spezi.modules.design.component.height
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.TextStyles
+import edu.stanford.spezi.ui.ThemePreviews
 
 interface SurveyQuestionState : SurveyItem {
 

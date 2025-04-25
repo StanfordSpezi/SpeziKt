@@ -2,7 +2,7 @@ package edu.stanford.bdh.engagehf.medication.data
 
 import com.google.firebase.firestore.DocumentSnapshot
 import edu.stanford.bdh.engagehf.localization.LocalizedMapReader
-import edu.stanford.spezi.core.utils.JsonMap
+import edu.stanford.spezi.modules.utils.JsonMap
 import javax.inject.Inject
 
 @Suppress("UNCHECKED_CAST")

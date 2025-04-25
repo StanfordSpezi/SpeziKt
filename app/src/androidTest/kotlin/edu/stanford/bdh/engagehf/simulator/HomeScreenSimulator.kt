@@ -4,7 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import edu.stanford.bdh.engagehf.bluetooth.screen.HomeScreenTestIdentifier
-import edu.stanford.spezi.core.testing.onNodeWithIdentifier
+import edu.stanford.spezi.ui.testing.onNodeWithIdentifier
 
 class HomeScreenSimulator(
     private val composeTestRule: ComposeTestRule,

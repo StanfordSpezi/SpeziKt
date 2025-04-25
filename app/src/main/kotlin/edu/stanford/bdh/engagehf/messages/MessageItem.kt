@@ -32,17 +32,17 @@ import androidx.compose.ui.unit.Dp
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MessageUiModel
-import edu.stanford.spezi.core.design.component.AsyncButton
-import edu.stanford.spezi.core.design.component.DefaultElevatedCard
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Colors.primary
-import edu.stanford.spezi.core.design.theme.Sizes
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.design.theme.lighten
-import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.modules.design.component.AsyncButton
+import edu.stanford.spezi.ui.Colors
+import edu.stanford.spezi.ui.Colors.primary
+import edu.stanford.spezi.ui.DefaultElevatedCard
+import edu.stanford.spezi.ui.Sizes
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.TextStyles
+import edu.stanford.spezi.ui.ThemePreviews
+import edu.stanford.spezi.ui.lighten
+import edu.stanford.spezi.ui.testing.testIdentifier
 
 private const val TEXT_WEIGHT = 0.9f
 
@@ -128,7 +128,7 @@ fun MessageItem(
                         }) {
                         Icon(
                             imageVector = if (model.isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                            contentDescription = if (model.isExpanded) "Show less" else "Show more",
+                            contentDescription = null,
                         )
                     }
                 }
@@ -182,7 +182,7 @@ enum class MessageItemTestIdentifiers {
 @Composable
 @ThemePreviews
 fun MessageListPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         LazyColumn(modifier = Modifier.padding(Spacings.medium)) {
             items(sampleMessageModels) { model ->
                 MessageItem(model = model, onAction = { })

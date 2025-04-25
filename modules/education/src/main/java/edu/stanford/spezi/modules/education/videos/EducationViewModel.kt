@@ -3,15 +3,14 @@ package edu.stanford.spezi.modules.education.videos
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.core.navigation.Navigator
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.R
 import edu.stanford.spezi.modules.education.videos.data.repository.EducationRepository
+import edu.stanford.spezi.modules.navigation.Navigator
+import edu.stanford.spezi.ui.StringResource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,22 +33,16 @@ internal class EducationViewModel @Inject constructor(
             educationRepository.getVideoSections().onFailure {
                 logger.e(it) { "Failed to load video sections" }
                 _uiState.value =
-                    UiState.Error(StringResource(R.string.failed_to_load_video_sections))
+                    UiState.Error(StringResource(R.string.education_failed_to_load_video_sections))
             }.onSuccess { videoSections ->
-                _uiState.value = UiState.Success(EducationUiState(videoSections = videoSections))
+                _uiState.value = UiState.Success(EducationUiState(videoSections = videoSections.sortedBy { it.orderIndex }))
             }
         }
     }
 
-    private fun retry() {
-        loadVideoSections()
-    }
-
     fun onAction(action: Action) {
         when (action) {
-            is Action.Retry -> {
-                retry()
-            }
+            is Action.Retry -> loadVideoSections()
 
             is Action.VideoSectionClicked -> {
                 navigator.navigateTo(
@@ -57,24 +50,6 @@ internal class EducationViewModel @Inject constructor(
                         video = action.video
                     )
                 )
-            }
-
-            is Action.OnExpand -> _uiState.update { currentState ->
-                if (currentState is UiState.Success) {
-                    currentState.copy(data = currentState.data.copy(
-                        videoSections = currentState.data.videoSections.map { videoSection ->
-                            if (videoSection == action.videoSection) {
-                                videoSection.copy(
-                                    isExpanded = !videoSection.isExpanded
-                                )
-                            } else {
-                                videoSection
-                            }
-                        }
-                    ))
-                } else {
-                    currentState
-                }
             }
         }
     }

@@ -16,8 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.TextStyles
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.TextStyles
 
 @Composable
 fun LoginPage() {

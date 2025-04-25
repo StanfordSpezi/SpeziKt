@@ -1,26 +1,26 @@
 package edu.stanford.bdh.engagehf.messages
 
+import androidx.lifecycle.AtomicReference
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
+import edu.stanford.spezi.modules.navigation.Navigator
+import edu.stanford.spezi.modules.utils.MessageNotifier
 import javax.inject.Inject
 
-@Suppress("LongParameterList")
 class MessagesHandler @Inject constructor(
     private val appScreenEvents: AppScreenEvents,
-    private val healthSummaryService: HealthSummaryService,
     private val engageEducationRepository: EngageEducationRepository,
     private val navigator: Navigator,
     private val messageRepository: MessageRepository,
     private val messageNotifier: MessageNotifier,
 ) {
     private val logger by speziLogger()
+    private val pendingMessageId = AtomicReference<String?>(null)
 
     fun observeUserMessages() = messageRepository.observeUserMessages()
 
@@ -34,7 +34,14 @@ class MessagesHandler @Inject constructor(
                 null -> Unit
 
                 is MessageAction.HealthSummaryAction -> {
-                    healthSummaryService.generateHealthSummaryPdf().getOrThrow()
+                    pendingMessageId.set(messageId.takeIf { isDismissible })
+                    val event = AppScreenEvents.Event.HealthSummaryDisplayRequested {
+                        if (pendingMessageId.get() == messageId) {
+                            pendingMessageId.set(null)
+                            dismiss(messageId = messageId)
+                        }
+                    }
+                    appScreenEvents.emit(event)
                 }
 
                 is MessageAction.VideoAction -> {
@@ -61,8 +68,8 @@ class MessagesHandler @Inject constructor(
                 }
             }
         }.exceptionOrNull()
-        if (failure == null && isDismissible) {
-            messageRepository.dismissMessage(messageId = messageId)
+        if (failure == null && isDismissible && pendingMessageId.get() != messageId) {
+            dismiss(messageId = messageId)
         } else if (failure != null) {
             logger.e(failure) { "Error while handling message: $messageId" }
             messageNotifier.notify(messageId = R.string.error_while_handling_message_action)

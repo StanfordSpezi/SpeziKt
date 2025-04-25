@@ -18,12 +18,12 @@ import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyQuestionState
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.ChoicesFormFieldItem
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.DatePickerFormFieldItem
 import edu.stanford.bdh.heartbeat.app.survey.ui.fields.TextFormFieldItem
-import edu.stanford.spezi.core.design.component.ScreenViewModel
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.core.utils.DateFormat
-import edu.stanford.spezi.core.utils.DateFormatter
-import edu.stanford.spezi.core.utils.MessageNotifier
-import edu.stanford.spezi.core.utils.TimeProvider
+import edu.stanford.spezi.modules.design.component.ScreenViewModel
+import edu.stanford.spezi.modules.utils.DateFormat
+import edu.stanford.spezi.modules.utils.DateFormatter
+import edu.stanford.spezi.modules.utils.MessageNotifier
+import edu.stanford.spezi.modules.utils.TimeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

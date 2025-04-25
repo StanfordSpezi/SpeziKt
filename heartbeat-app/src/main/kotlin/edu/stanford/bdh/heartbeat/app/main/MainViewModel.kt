@@ -8,7 +8,7 @@ import edu.stanford.bdh.heartbeat.app.account.AccountManager
 import edu.stanford.bdh.heartbeat.app.choir.api.types.AssessmentStep
 import edu.stanford.bdh.heartbeat.app.fake.FakeConfigs
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.core.utils.MessageNotifier
+import edu.stanford.spezi.modules.utils.MessageNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged

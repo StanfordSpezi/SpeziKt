@@ -23,11 +23,11 @@ import edu.stanford.bdh.engagehf.health.components.AddDataHeader
 import edu.stanford.bdh.engagehf.health.components.NumberPicker
 import edu.stanford.bdh.engagehf.health.components.TimePicker
 import edu.stanford.bdh.engagehf.health.time.TimePickerState
-import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.modules.design.component.VerticalSpacer
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.TextStyles
+import edu.stanford.spezi.ui.ThemePreviews
 import java.time.Instant
 import java.time.LocalTime
 
@@ -124,7 +124,7 @@ private class AddWeightBottomSheetStepProvider :
 fun AddWeightBottomSheetPreview(
     @PreviewParameter(AddWeightBottomSheetStepProvider::class) uiState: AddWeightBottomSheetUiState,
 ) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         AddWeightBottomSheet(uiState = uiState, onAction = {})
     }
 }

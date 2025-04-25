@@ -10,7 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.spezi.core.design.theme.Colors
+import edu.stanford.spezi.ui.Colors
 
 @Composable
 fun RegisterPage(onDismissRequest: () -> Unit) {

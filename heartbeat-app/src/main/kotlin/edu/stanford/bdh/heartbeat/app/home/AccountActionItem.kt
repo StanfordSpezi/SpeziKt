@@ -10,10 +10,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import edu.stanford.spezi.core.design.component.AsyncTextButton
-import edu.stanford.spezi.core.design.component.ComposableContent
-import edu.stanford.spezi.core.design.component.ComposeValue
-import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
+import edu.stanford.spezi.modules.design.component.AsyncTextButton
+import edu.stanford.spezi.modules.design.component.ComposableContent
+import edu.stanford.spezi.modules.design.component.ComposeValue
+import edu.stanford.spezi.ui.TextStyles.titleLarge
 
 data class AccountActionItem(
     val title: String,
@@ -38,7 +38,7 @@ data class AccountActionItem(
                 onDismissRequest = hideDialog,
                 title = { Text(title) },
                 text = { Text(confirmation) },
-                confirmButton = { confirmButton.body },
+                confirmButton = { confirmButton.Content() },
                 dismissButton = {
                     TextButton(
                         onClick = hideDialog,

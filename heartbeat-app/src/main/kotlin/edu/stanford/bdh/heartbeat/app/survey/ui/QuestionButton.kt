@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import edu.stanford.spezi.core.design.component.AsyncTextButton
+import edu.stanford.spezi.modules.design.component.AsyncTextButton
 
 data class QuestionButton(
     private val title: String,

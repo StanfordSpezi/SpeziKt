@@ -19,18 +19,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import edu.stanford.spezi.core.design.component.AsyncTextButton
-import edu.stanford.spezi.core.design.component.BottomSheetComposableContent
-import edu.stanford.spezi.core.design.component.CommonScaffold
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Colors.onBackground
-import edu.stanford.spezi.core.design.theme.Colors.primary
-import edu.stanford.spezi.core.design.theme.Sizes
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziThemePreview
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.TextStyles.headlineSmall
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.modules.design.component.AsyncTextButton
+import edu.stanford.spezi.modules.design.component.BottomSheetComposableContent
+import edu.stanford.spezi.modules.design.component.CommonScaffold
+import edu.stanford.spezi.ui.Colors
+import edu.stanford.spezi.ui.Colors.onBackground
+import edu.stanford.spezi.ui.Colors.primary
+import edu.stanford.spezi.ui.Sizes
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.SpeziThemePreview
+import edu.stanford.spezi.ui.TextStyles
+import edu.stanford.spezi.ui.TextStyles.headlineSmall
+import edu.stanford.spezi.ui.ThemePreviews
 import kotlinx.coroutines.launch
 
 data class AccountUiState(

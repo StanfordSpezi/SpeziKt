@@ -2,7 +2,7 @@ package edu.stanford.bdh.engagehf.observations
 
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
-import edu.stanford.spezi.module.account.manager.UserSessionManager
+import edu.stanford.spezi.modules.account.manager.UserSessionManager
 import javax.inject.Inject
 
 class ObservationCollectionProvider @Inject constructor(

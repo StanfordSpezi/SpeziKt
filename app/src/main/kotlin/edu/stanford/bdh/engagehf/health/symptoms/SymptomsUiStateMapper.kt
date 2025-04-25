@@ -1,10 +1,12 @@
 package edu.stanford.bdh.engagehf.health.symptoms
 
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.NewestHealthData
 import edu.stanford.bdh.engagehf.health.TableEntryData
-import edu.stanford.spezi.core.utils.LocaleProvider
-import edu.stanford.spezi.core.utils.extensions.roundToDecimalPlaces
+import edu.stanford.spezi.modules.utils.LocaleProvider
+import edu.stanford.spezi.modules.utils.extensions.roundToDecimalPlaces
+import edu.stanford.spezi.ui.StringResource
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -23,7 +25,7 @@ class SymptomsUiStateMapper @Inject constructor(
         symptomScores: List<SymptomScore>,
     ): SymptomsUiState {
         if (symptomScores.isEmpty()) {
-            return SymptomsUiState.NoData("No symptom scores available")
+            return SymptomsUiState.NoData(StringResource(R.string.no_symptom_scores_available))
         }
         val oldestDate = symptomScores.minBy { it.zonedDateTime }.zonedDateTime
         val chartData = calculateChartData(
@@ -153,7 +155,14 @@ class SymptomsUiStateMapper @Inject constructor(
         return AggregatedHealthData(
             yValues = yValues,
             xValues = xValues,
-            seriesName = selectedSymptomType.name
+            seriesName = when (selectedSymptomType) {
+                SymptomType.OVERALL -> R.string.symptom_type_overall
+                SymptomType.PHYSICAL_LIMITS -> R.string.symptom_type_physical
+                SymptomType.SOCIAL_LIMITS -> R.string.symptom_type_social
+                SymptomType.QUALITY_OF_LIFE -> R.string.symptom_type_quality
+                SymptomType.SPECIFIC -> R.string.symptom_type_specific
+                SymptomType.DIZZINESS -> R.string.symptom_type_dizziness
+            }.let { StringResource(it) }
         )
     }
 

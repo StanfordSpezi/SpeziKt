@@ -2,7 +2,7 @@ package edu.stanford.bdh.engagehf.bluetooth.pairing
 
 import android.bluetooth.BluetoothDevice
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.ui.StringResource
 import javax.inject.Inject
 
 @Suppress("MissingPermission")
@@ -33,7 +33,7 @@ class BLEDevicePairingUiStateMapper @Inject constructor() {
         )
 
     fun mapErrorState() = BLEDevicePairingViewModel.UiState.Error(
-        title = StringResource(R.string.ble_device_error_title),
-        subtitle = StringResource(R.string.ble_device_error_subtitle),
+        title = StringResource(R.string.generic_error_title),
+        subtitle = StringResource(R.string.generic_error_description),
     )
 }

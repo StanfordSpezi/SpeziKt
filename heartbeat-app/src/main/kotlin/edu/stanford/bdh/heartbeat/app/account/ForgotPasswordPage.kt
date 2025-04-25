@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.spezi.core.design.theme.Colors
+import edu.stanford.spezi.ui.Colors
 
 @Composable
 fun ForgotPasswordPage(onDismissRequest: () -> Unit) {

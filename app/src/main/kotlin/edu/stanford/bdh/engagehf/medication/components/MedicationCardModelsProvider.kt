@@ -5,7 +5,7 @@ import edu.stanford.bdh.engagehf.medication.ui.DosageInformationUiModel
 import edu.stanford.bdh.engagehf.medication.ui.DosageRowInfoData
 import edu.stanford.bdh.engagehf.medication.ui.MedicationCardUiModel
 import edu.stanford.bdh.engagehf.medication.ui.MedicationColor
-import edu.stanford.spezi.core.design.R
+import edu.stanford.spezi.modules.design.R
 
 class MedicationCardModelsProvider : PreviewParameterProvider<MedicationCardUiModel> {
     override val values: Sequence<MedicationCardUiModel> = sequenceOf(

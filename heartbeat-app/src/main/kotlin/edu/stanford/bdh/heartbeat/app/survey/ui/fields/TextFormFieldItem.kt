@@ -24,11 +24,11 @@ import edu.stanford.bdh.heartbeat.app.survey.ui.QuestionFieldLabel
 import edu.stanford.bdh.heartbeat.app.survey.ui.QuestionNumberInfo
 import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyCard
 import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyItemPreview
-import edu.stanford.spezi.core.design.component.bringIntoViewOnFocusedEvent
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.modules.design.component.bringIntoViewOnFocusedEvent
+import edu.stanford.spezi.ui.Colors
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.TextStyles
+import edu.stanford.spezi.ui.ThemePreviews
 
 data class TextFormFieldItem(
     override val fieldId: String,

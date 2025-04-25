@@ -1,7 +1,7 @@
 package edu.stanford.bdh.heartbeat.app.account
 
 import com.google.firebase.auth.FirebaseAuth
-import edu.stanford.spezi.core.coroutines.di.Dispatching
+import edu.stanford.spezi.core.coroutines.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose

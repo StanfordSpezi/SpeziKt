@@ -35,14 +35,14 @@ import edu.stanford.bdh.engagehf.health.bloodpressure.BloodPressurePage
 import edu.stanford.bdh.engagehf.health.heartrate.HeartRatePage
 import edu.stanford.bdh.engagehf.health.symptoms.SymptomsPage
 import edu.stanford.bdh.engagehf.health.weight.WeightPage
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Colors.onPrimary
-import edu.stanford.spezi.core.design.theme.Colors.primary
-import edu.stanford.spezi.core.design.theme.Colors.secondary
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.lighten
-import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.ui.Colors
+import edu.stanford.spezi.ui.Colors.onPrimary
+import edu.stanford.spezi.ui.Colors.primary
+import edu.stanford.spezi.ui.Colors.secondary
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.TextStyles
+import edu.stanford.spezi.ui.lighten
+import edu.stanford.spezi.ui.testing.testIdentifier
 
 @Composable
 fun HealthScreen() {

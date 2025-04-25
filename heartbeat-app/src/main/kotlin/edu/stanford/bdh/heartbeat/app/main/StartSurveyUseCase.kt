@@ -4,8 +4,8 @@ import edu.stanford.bdh.heartbeat.app.account.AccountManager
 import edu.stanford.bdh.heartbeat.app.choir.ChoirRepository
 import edu.stanford.bdh.heartbeat.app.choir.api.types.AssessmentStep
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.modules.storage.di.Storage
-import edu.stanford.spezi.modules.storage.key.KeyValueStorage
+import edu.stanford.spezi.storage.credential.KeyValueStorage
+import edu.stanford.spezi.storage.credential.Storage
 import javax.inject.Inject
 
 class StartSurveyUseCase @Inject constructor(

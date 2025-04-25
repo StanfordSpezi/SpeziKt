@@ -19,11 +19,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.medication.ui.MedicationColor
-import edu.stanford.spezi.core.design.component.DefaultElevatedCard
-import edu.stanford.spezi.core.design.theme.Sizes
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.ui.DefaultElevatedCard
+import edu.stanford.spezi.ui.Sizes
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.ThemePreviews
 
 @Composable
 fun ColorKey(
@@ -55,7 +55,7 @@ fun ColorKeyRow(color: MedicationColor) {
             modifier = Modifier
                 .size(Sizes.Icon.small)
                 .background(
-                    color.value.copy(alpha = MEDICATION_ICON_ALPHA_COLOR_FACTOR),
+                    color.value,
                     shape = CircleShape
                 )
                 .padding(Spacings.small),
@@ -76,7 +76,7 @@ fun ColorKeyRow(color: MedicationColor) {
 @ThemePreviews
 @Composable
 private fun ColorKeyPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         ColorKey()
     }
 }

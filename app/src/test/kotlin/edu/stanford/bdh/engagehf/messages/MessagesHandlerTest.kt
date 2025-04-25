@@ -6,17 +6,18 @@ import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.navigation.AppNavigationEvent
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.core.testing.coVerifyNever
-import edu.stanford.spezi.core.testing.runTestUnconfined
-import edu.stanford.spezi.core.testing.verifyNever
-import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.videos.Video
+import edu.stanford.spezi.modules.navigation.Navigator
+import edu.stanford.spezi.modules.testing.coVerifyNever
+import edu.stanford.spezi.modules.testing.runTestUnconfined
+import edu.stanford.spezi.modules.testing.verifyNever
+import edu.stanford.spezi.modules.utils.MessageNotifier
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -25,7 +26,6 @@ import org.junit.Test
 class MessagesHandlerTest {
     private val messageRepository = mockk<MessageRepository>(relaxed = true)
     private val engageEducationRepository = mockk<EngageEducationRepository>(relaxed = true)
-    private val healthSummaryService = mockk<HealthSummaryService>(relaxed = true)
     private val messageNotifier = mockk<MessageNotifier>(relaxed = true)
     private val appScreenEvents = mockk<AppScreenEvents>(relaxed = true)
     private val navigator = mockk<Navigator>(relaxed = true)
@@ -42,7 +42,6 @@ class MessagesHandlerTest {
     private val messagesHandler by lazy {
         MessagesHandler(
             appScreenEvents = appScreenEvents,
-            healthSummaryService = healthSummaryService,
             engageEducationRepository = engageEducationRepository,
             navigator = navigator,
             messageRepository = messageRepository,
@@ -64,31 +63,34 @@ class MessagesHandlerTest {
     }
 
     @Test
-    fun `it should handle HealthSummaryAction correctly on non error result`() = runTestUnconfined {
+    fun `it should handle dismissible HealthSummaryAction correctly`() = runTestUnconfined {
         // given
         setup(action = MessageAction.HealthSummaryAction)
-        coEvery { healthSummaryService.generateHealthSummaryPdf() } returns Result.success(Unit)
+        val slot = slot<AppScreenEvents.Event.HealthSummaryDisplayRequested>()
 
         // when
-        messagesHandler.handle(messageId = message.id, isDismissible = message.isDismissible, action = message.action)
+        messagesHandler.handle(messageId = message.id, isDismissible = true, action = message.action)
 
         // then
+        verify { appScreenEvents.emit(capture(slot)) }
+        repeat(4) { slot.captured.onSuccess() }
+        coVerify(exactly = 1) { messageRepository.dismissMessage(messageId = messageId) }
         assertSuccess()
     }
 
     @Test
-    fun `it should not dismiss health summary message on error result`() = runTestUnconfined {
+    fun `it should handle non dismissible HealthSummaryAction correctly`() = runTestUnconfined {
         // given
         setup(action = MessageAction.HealthSummaryAction)
-        coEvery {
-            healthSummaryService.generateHealthSummaryPdf()
-        } returns Result.failure(Throwable())
+        val slot = slot<AppScreenEvents.Event.HealthSummaryDisplayRequested>()
 
         // when
-        messagesHandler.handle(messageId = message.id, isDismissible = message.isDismissible, action = message.action)
+        messagesHandler.handle(messageId = message.id, isDismissible = false, action = message.action)
 
         // then
-        assertError()
+        verify { appScreenEvents.emit(capture(slot)) }
+        slot.captured.onSuccess()
+        coVerifyNever { messageRepository.dismissMessage(messageId = any()) }
     }
 
     @Test

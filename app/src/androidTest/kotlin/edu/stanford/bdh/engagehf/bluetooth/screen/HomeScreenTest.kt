@@ -8,7 +8,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.data.models.UiState
 import edu.stanford.bdh.engagehf.simulator.HomeScreenSimulator
-import edu.stanford.spezi.core.design.component.ComposeContentActivity
+import edu.stanford.spezi.ui.testing.ComposeContentActivity
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -62,9 +62,9 @@ class HomeScreenTest {
     fun `test home screen vital is displayed`() {
         homeScreen {
             val uiState = UiState()
-            assertVital(uiState.weight.title)
-            assertVital(uiState.heartRate.title)
-            assertVital(uiState.bloodPressure.title)
+            assertVital(uiState.weight.title.get(composeTestRule.activity))
+            assertVital(uiState.heartRate.title.get(composeTestRule.activity))
+            assertVital(uiState.bloodPressure.title.get(composeTestRule.activity))
         }
     }
 

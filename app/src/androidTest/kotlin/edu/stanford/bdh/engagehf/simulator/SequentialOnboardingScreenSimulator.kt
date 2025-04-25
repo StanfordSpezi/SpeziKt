@@ -3,10 +3,10 @@ package edu.stanford.bdh.engagehf.simulator
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.performClick
-import edu.stanford.spezi.core.testing.onNodeWithIdentifier
-import edu.stanford.spezi.core.testing.waitNode
-import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreenTestIdentifier
-import edu.stanford.spezi.module.onboarding.sequential.components.PageIndicatorTestIdentifier
+import edu.stanford.spezi.modules.onboarding.sequential.SequentialOnboardingScreenTestIdentifier
+import edu.stanford.spezi.modules.onboarding.sequential.components.PageIndicatorTestIdentifier
+import edu.stanford.spezi.ui.testing.onNodeWithIdentifier
+import edu.stanford.spezi.ui.testing.waitNode
 
 class SequentialOnboardingScreenSimulator(
     private val composeTestRule: ComposeTestRule,

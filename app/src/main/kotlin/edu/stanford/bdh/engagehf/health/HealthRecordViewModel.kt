@@ -10,7 +10,8 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
-import edu.stanford.spezi.core.utils.MessageNotifier
+import edu.stanford.spezi.modules.utils.MessageNotifier
+import edu.stanford.spezi.ui.StringResource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -41,7 +42,7 @@ class HealthRecordViewModel @AssistedInject constructor(
             updates.collect { result ->
                 result.onFailure {
                     _uiState.update {
-                        HealthUiState.Error("Failed to observe health records")
+                        HealthUiState.Error(StringResource(R.string.failed_to_observe_health_records))
                     }
                 }.onSuccess { successResult ->
                     _uiState.update {

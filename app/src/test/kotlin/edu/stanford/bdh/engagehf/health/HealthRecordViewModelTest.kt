@@ -3,8 +3,8 @@ package edu.stanford.bdh.engagehf.health
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
-import edu.stanford.spezi.core.testing.CoroutineTestRule
-import edu.stanford.spezi.core.utils.MessageNotifier
+import edu.stanford.spezi.modules.testing.CoroutineTestRule
+import edu.stanford.spezi.modules.utils.MessageNotifier
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -36,14 +36,14 @@ class HealthRecordViewModelTest {
 
     @Before
     fun setup() {
-        coEvery {
+        every {
             healthRepository.observeWeightRecords()
         } returns flowOf(Result.success(emptyList()))
-        coEvery {
+        every {
             healthRepository.observeHeartRateRecords()
         } returns flowOf(Result.success(emptyList()))
 
-        coEvery {
+        every {
             healthRepository.observeBloodPressureRecords()
         } returns flowOf(Result.success(emptyList()))
 
@@ -59,14 +59,14 @@ class HealthRecordViewModelTest {
         val viewModel = createViewModel(type)
 
         // then
-        coEvery { healthRepository.observeHeartRateRecords() }
+        verify { healthRepository.observeHeartRateRecords() }
         assertThat(viewModel.getUiData()).isEqualTo(uiData)
     }
 
     @Test
     fun `it should handle error correctly`() {
         // given
-        coEvery {
+        every {
             healthRepository.observeBloodPressureRecords()
         } returns flowOf(Result.failure(Error("error")))
 
@@ -86,7 +86,7 @@ class HealthRecordViewModelTest {
         val viewModel = createViewModel(type)
 
         // then
-        coEvery { healthRepository.observeWeightRecords() }
+        verify { healthRepository.observeWeightRecords() }
         assertThat(viewModel.getUiData()).isEqualTo(uiData)
     }
 
@@ -99,7 +99,7 @@ class HealthRecordViewModelTest {
         val viewModel = createViewModel(type)
 
         // then
-        coEvery { healthRepository.observeBloodPressureRecords() }
+        verify { healthRepository.observeBloodPressureRecords() }
         assertThat(viewModel.getUiData()).isEqualTo(uiData)
     }
 

@@ -48,11 +48,11 @@ import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.AverageHealthData
 import edu.stanford.bdh.engagehf.health.HealthUiData
 import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.ADAPTIVE_Y_VALUES_FRACTION
-import edu.stanford.spezi.core.design.theme.Colors.onTertiary
-import edu.stanford.spezi.core.design.theme.Colors.primary
-import edu.stanford.spezi.core.design.theme.Colors.secondary
-import edu.stanford.spezi.core.design.theme.Colors.tertiary
-import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.ui.Colors.onTertiary
+import edu.stanford.spezi.ui.Colors.primary
+import edu.stanford.spezi.ui.Colors.secondary
+import edu.stanford.spezi.ui.Colors.tertiary
+import edu.stanford.spezi.ui.Spacings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -155,7 +155,7 @@ private fun rememberLegend(chartData: List<AggregatedHealthData>) =
                 rememberLegendItem(
                     icon = rememberShapeComponent(chartColor, Shape.Pill),
                     labelComponent = rememberTextComponent(vicoTheme.textColor),
-                    label = data.seriesName,
+                    label = data.seriesName.text(),
                 )
             }
         },

@@ -12,12 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import edu.stanford.bdh.engagehf.medication.ui.MedicationCardUiModel
-import edu.stanford.spezi.core.design.theme.Sizes
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.ThemePreviews
-
-const val MEDICATION_ICON_ALPHA_COLOR_FACTOR = 0.3f
+import edu.stanford.spezi.ui.Sizes
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.ThemePreviews
 
 @Composable
 fun MedicationStatusIcon(model: MedicationCardUiModel) {
@@ -26,7 +24,7 @@ fun MedicationStatusIcon(model: MedicationCardUiModel) {
         modifier = Modifier
             .size(Sizes.Icon.medium)
             .background(
-                backgroundColor.copy(alpha = MEDICATION_ICON_ALPHA_COLOR_FACTOR),
+                color = backgroundColor,
                 shape = CircleShape
             )
             .padding(Spacings.small),
@@ -50,7 +48,7 @@ fun MedicationStatusIcon(model: MedicationCardUiModel) {
 private fun MedicationStatusIconPreview(
     @PreviewParameter(MedicationCardModelsProvider::class) model: MedicationCardUiModel,
 ) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         MedicationStatusIcon(model = model)
     }
 }

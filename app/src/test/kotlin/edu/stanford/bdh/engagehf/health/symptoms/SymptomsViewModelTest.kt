@@ -1,9 +1,11 @@
 package edu.stanford.bdh.engagehf.health.symptoms
 
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
-import edu.stanford.spezi.core.testing.CoroutineTestRule
+import edu.stanford.spezi.modules.testing.CoroutineTestRule
+import edu.stanford.spezi.ui.StringResource
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -62,7 +64,7 @@ class SymptomsViewModelTest {
 
         // then
         assertThat(viewModel.uiState.value)
-            .isEqualTo(SymptomsUiState.Error("Failed to observe symptom scores"))
+            .isEqualTo(SymptomsUiState.Error(StringResource(R.string.failed_to_observe_symptom_scores)))
     }
 
     @Test

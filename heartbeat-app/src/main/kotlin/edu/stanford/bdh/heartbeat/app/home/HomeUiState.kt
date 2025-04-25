@@ -12,11 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import edu.stanford.bdh.heartbeat.app.R
-import edu.stanford.spezi.core.design.component.CommonScaffold
-import edu.stanford.spezi.core.design.component.Screen
-import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.theme.SpeziThemePreview
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.modules.design.component.CommonScaffold
+import edu.stanford.spezi.modules.design.component.Screen
+import edu.stanford.spezi.ui.SpeziThemePreview
+import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.ui.ThemePreviews
 
 data class HomeUiState(
     val title: StringResource,

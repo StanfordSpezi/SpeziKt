@@ -19,15 +19,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.heartbeat.app.account.LoginPage
 import edu.stanford.bdh.heartbeat.app.home.HomeViewModel
 import edu.stanford.bdh.heartbeat.app.survey.SurveyViewModel
-import edu.stanford.spezi.core.design.component.Button
-import edu.stanford.spezi.core.design.component.CenteredBoxContent
-import edu.stanford.spezi.core.design.component.Screen
-import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.modules.design.component.CenteredBoxContent
+import edu.stanford.spezi.modules.design.component.Screen
+import edu.stanford.spezi.modules.design.component.VerticalSpacer
+import edu.stanford.spezi.ui.Button
+import edu.stanford.spezi.ui.Colors
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.TextStyles
+import edu.stanford.spezi.ui.ThemePreviews
 
 @Composable
 fun MainPage() {
@@ -188,7 +188,7 @@ private class MainUiStatePreviewParameterProvider : PreviewParameterProvider<Mai
 @ThemePreviews
 @Composable
 private fun Previews(@PreviewParameter(MainUiStatePreviewParameterProvider::class) state: MainUiState) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         MainPage(
             uiState = state,
             onAction = {}
@@ -199,7 +199,7 @@ private fun Previews(@PreviewParameter(MainUiStatePreviewParameterProvider::clas
 @ThemePreviews
 @Composable
 private fun OnboardingLoadingFailed() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         EmailVerification(uiState = MainUiState.Authenticated.RequiresEmailVerification(false)) { }
     }
 }

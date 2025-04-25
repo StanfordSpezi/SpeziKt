@@ -44,6 +44,7 @@ lifecycleKtx = "2.8.2"
 lifecycleRuntimeKtx = "2.7.0"
 minSdk = "31"
 mockKVersion = "1.13.10"
+phoneNumberVersion = "8.13.21"
 playServicesAuth = "21.2.0"
 retrofit = "2.11.0"
 rulesVersion = "1.5.0"
@@ -55,6 +56,7 @@ testCoreVersion = "1.5.0"
 timberVersion = "5.0.1"
 truth = "1.4.2"
 vico = "2.0.0-alpha.26"
+zxingVersion = "3.5.0"
 
 # Please keep [libraries] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [libraries]
@@ -102,6 +104,7 @@ firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-fires
 firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-functions-ktx", version.ref = "firebaseFunctionsKtx" }
 firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
+googlecode-phonenumber = { module = "com.googlecode.libphonenumber:libphonenumber", version.ref = "phoneNumberVersion" }
 google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
@@ -125,6 +128,7 @@ retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = 
 retrofit-converter-kotlinx-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit"}
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timberVersion" }
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
+zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxingVersion" }
 
 # Please keep [plugins] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [plugins]

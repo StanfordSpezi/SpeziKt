@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.AndroidEntryPoint
 import edu.stanford.bdh.heartbeat.app.main.MainPage
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.testing.testIdentifier
 
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {

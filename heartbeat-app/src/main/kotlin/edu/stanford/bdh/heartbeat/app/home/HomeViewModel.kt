@@ -6,11 +6,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.bdh.heartbeat.app.R
 import edu.stanford.bdh.heartbeat.app.account.AccountManager
 import edu.stanford.bdh.heartbeat.app.choir.ChoirRepository
-import edu.stanford.spezi.core.design.component.AsyncTextButton
-import edu.stanford.spezi.core.design.component.ScreenViewModel
-import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.utils.MessageNotifier
+import edu.stanford.spezi.modules.design.component.AsyncTextButton
+import edu.stanford.spezi.modules.design.component.ScreenViewModel
+import edu.stanford.spezi.modules.utils.MessageNotifier
+import edu.stanford.spezi.ui.Colors
+import edu.stanford.spezi.ui.StringResource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

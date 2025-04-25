@@ -18,8 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.TimeRange
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.ThemePreviews
 
 @Composable
 fun TimeRangeDropdown(
@@ -36,14 +36,13 @@ fun TimeRangeDropdown(
         TextButton(onClick = {
             onToggleExpanded(true)
         }) {
-            Text(
-                text = when (selectedTimeRange) {
-                    TimeRange.DAILY -> stringResource(R.string.time_range_daily)
-                    TimeRange.WEEKLY -> stringResource(R.string.time_range_weekly)
-                    TimeRange.MONTHLY -> stringResource(R.string.time_range_monthly)
-                }
-            )
-            Icon(Icons.Default.ArrowDropDown, contentDescription = "ArrowDropDown")
+            val text = when (selectedTimeRange) {
+                TimeRange.DAILY -> stringResource(R.string.time_range_daily)
+                TimeRange.WEEKLY -> stringResource(R.string.time_range_weekly)
+                TimeRange.MONTHLY -> stringResource(R.string.time_range_monthly)
+            }
+            Text(text = text)
+            Icon(Icons.Default.ArrowDropDown, contentDescription = text)
         }
         DropdownMenu(expanded = isSelectedTimeRangeDropdownExpanded,
             onDismissRequest = {
@@ -73,7 +72,7 @@ fun TimeRangeDropdown(
 @ThemePreviews
 @Composable
 fun MenuSamplePreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         TimeRangeDropdown(
             modifier = Modifier.fillMaxWidth(),
             isSelectedTimeRangeDropdownExpanded = true,

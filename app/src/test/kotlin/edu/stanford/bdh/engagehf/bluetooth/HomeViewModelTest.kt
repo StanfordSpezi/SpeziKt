@@ -19,9 +19,10 @@ import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
 import edu.stanford.bdh.engagehf.messages.Message
 import edu.stanford.bdh.engagehf.messages.MessagesHandler
 import edu.stanford.bdh.engagehf.navigation.screens.BottomBarItem
-import edu.stanford.spezi.core.notification.NotificationPermissions
-import edu.stanford.spezi.core.testing.CoroutineTestRule
-import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.modules.notification.NotificationPermissions
+import edu.stanford.spezi.modules.notification.fcm.DeviceRegistrationService
+import edu.stanford.spezi.modules.testing.CoroutineTestRule
+import edu.stanford.spezi.modules.testing.runTestUnconfined
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -50,6 +51,7 @@ class HomeViewModelTest {
     private val bleServiceEvents = MutableSharedFlow<EngageBLEServiceEvent>()
     private val readyUiState: BluetoothUiState.Ready = mockk()
     private val appScreenEvents = mockk<AppScreenEvents>(relaxed = true)
+    private val deviceRegistrationService = mockk<DeviceRegistrationService>(relaxed = true)
     private val messageId = "some-id"
     private val message = Message(
         id = messageId,
@@ -98,6 +100,25 @@ class HomeViewModelTest {
     }
 
     @Test
+    fun `it should refresh device token if notification permissions are empty after permission result`() {
+        // given
+        val permissions = setOf("permission1")
+        every { notificationPermissions.getRequiredPermissions() } returns permissions
+        createViewModel()
+        val initialState = viewModel.uiState.value
+
+        // when
+        every { notificationPermissions.getRequiredPermissions() } returns emptySet()
+        viewModel.onAction(Action.PermissionResult(permissions.first()))
+        val newState = viewModel.uiState.value
+
+        // then
+        assertThat(initialState.missingPermissions).isEqualTo(permissions)
+        assertThat(newState.missingPermissions).isEmpty()
+        verify { deviceRegistrationService.refreshDeviceToken() }
+    }
+
+    @Test
     fun `it should start ble service and start collection on init`() {
         // when
         createViewModel()
@@ -114,9 +135,9 @@ class HomeViewModelTest {
         createViewModel()
 
         // then
-        coVerify { measurementsRepository.observeWeightRecord() }
-        coVerify { measurementsRepository.observeHeartRateRecord() }
-        coVerify { measurementsRepository.observeBloodPressureRecord() }
+        verify { measurementsRepository.observeWeightRecord() }
+        verify { measurementsRepository.observeHeartRateRecord() }
+        verify { measurementsRepository.observeBloodPressureRecord() }
     }
 
     @Test
@@ -183,7 +204,7 @@ class HomeViewModelTest {
         val result: Result<WeightRecord?> = mockk()
         val uiState: VitalDisplayData = mockk()
         every { uiStateMapper.mapWeight(result) } returns uiState
-        coEvery {
+        every {
             measurementsRepository.observeWeightRecord()
         } returns flowOf(result)
 
@@ -200,7 +221,7 @@ class HomeViewModelTest {
         val result: Result<BloodPressureRecord?> = mockk()
         val uiState: VitalDisplayData = mockk()
         every { uiStateMapper.mapBloodPressure(result) } returns uiState
-        coEvery {
+        every {
             measurementsRepository.observeBloodPressureRecord()
         } returns flowOf(result)
 
@@ -217,7 +238,7 @@ class HomeViewModelTest {
         val result: Result<HeartRateRecord?> = mockk()
         val uiState: VitalDisplayData = mockk()
         every { uiStateMapper.mapHeartRate(result) } returns uiState
-        coEvery {
+        every {
             measurementsRepository.observeHeartRateRecord()
         } returns flowOf(result)
 
@@ -335,7 +356,6 @@ class HomeViewModelTest {
     @Test
     fun `it should handle message dismiss action correctly`() {
         // given
-        val isExpanded = false
         createViewModel()
 
         // when
@@ -408,6 +428,7 @@ class HomeViewModelTest {
             context = context,
             messagesHandler = messagesHandler,
             notificationPermissions = notificationPermissions,
+            deviceRegistrationService = deviceRegistrationService,
         )
     }
 }

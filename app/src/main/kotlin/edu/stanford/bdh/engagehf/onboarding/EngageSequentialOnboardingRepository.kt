@@ -1,52 +1,57 @@
 package edu.stanford.bdh.engagehf.onboarding
 
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.module.account.AccountNavigationEvent
-import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingData
-import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingRepository
-import edu.stanford.spezi.module.onboarding.sequential.Step
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import edu.stanford.bdh.engagehf.R
+import edu.stanford.spezi.modules.account.AccountNavigationEvent
+import edu.stanford.spezi.modules.navigation.Navigator
+import edu.stanford.spezi.modules.onboarding.sequential.SequentialOnboardingData
+import edu.stanford.spezi.modules.onboarding.sequential.SequentialOnboardingRepository
+import edu.stanford.spezi.modules.onboarding.sequential.Step
 import javax.inject.Inject
+import edu.stanford.spezi.modules.design.R as DesignR
 
 /**
- * A implementation of [edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingRepository]
+ * A implementation of [edu.stanford.spezi.modules.onboarding.sequential.SequentialOnboardingRepository]
  * that provides a list of steps to be shown in the sequential onboarding screen.
  */
 class EngageSequentialOnboardingRepository @Inject internal constructor(
     private val navigator: Navigator,
+    @ApplicationContext context: Context,
 ) : SequentialOnboardingRepository {
+    private val stringResource: (Int) -> String = { context.getString(it) }
+
     override suspend fun getSequentialOnboardingData(): SequentialOnboardingData {
         return SequentialOnboardingData(
             steps = listOf(
                 Step(
-                    title = "Pair with Devices",
-                    description = "Pair with the provided weight scale and blood pressure cuff in Bluetooth settings.",
-                    icon = edu.stanford.spezi.core.design.R.drawable.ic_bluetooth
+                    title = stringResource(R.string.sequential_onboarding_step1_title),
+                    description = stringResource(R.string.sequential_onboarding_step1_description),
+                    icon = DesignR.drawable.ic_bluetooth
                 ),
                 Step(
-                    title = "Record Health Data",
-                    description = "Use the weight scale and blood pressure cuff to record health data in Heart Health.",
-                    icon = edu.stanford.spezi.core.design.R.drawable.ic_assignment
+                    title = stringResource(R.string.sequential_onboarding_step2_title),
+                    description = stringResource(R.string.sequential_onboarding_step2_description),
+                    icon = DesignR.drawable.ic_assignment
                 ),
                 Step(
-                    title = "Tune Medications",
-                    description = "See your medication dosage, schedule, and updates in Medications.",
-                    icon = edu.stanford.spezi.core.design.R.drawable.ic_medication
+                    title = stringResource(R.string.sequential_onboarding_step3_title),
+                    description = stringResource(R.string.sequential_onboarding_step3_description),
+                    icon = DesignR.drawable.ic_medication
                 ),
                 Step(
-                    title = "Summarize",
-                    description = "Generate and export a full PDF health report in Health Summary.",
-                    icon = edu.stanford.spezi.core.design.R.drawable.ic_assignment
+                    title = stringResource(R.string.sequential_onboarding_step4_title),
+                    description = stringResource(R.string.sequential_onboarding_step4_description),
+                    icon = DesignR.drawable.ic_assignment
                 ),
                 Step(
-                    title = "Learn",
-                    description = "Learn more about your medications and heart health in Education.",
-                    icon = edu.stanford.spezi.core.design.R.drawable.ic_school
+                    title = stringResource(R.string.sequential_onboarding_step5_title),
+                    description = stringResource(R.string.sequential_onboarding_step5_description),
+                    icon = DesignR.drawable.ic_school
                 )
             ),
-            actionText = "Start",
-            onAction = {
-                navigator.navigateTo(AccountNavigationEvent.LoginScreen)
-            }
+            actionText = stringResource(R.string.sequential_onboarding_action_text),
+            onAction = { navigator.navigateTo(AccountNavigationEvent.LoginScreen) },
         )
     }
 }

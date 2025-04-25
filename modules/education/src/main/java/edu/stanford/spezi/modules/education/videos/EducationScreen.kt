@@ -14,21 +14,22 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.spezi.core.design.component.Button
-import edu.stanford.spezi.core.design.component.RepeatingLazyColumn
-import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.modules.design.component.RepeatingLazyColumn
+import edu.stanford.spezi.modules.design.component.VerticalSpacer
 import edu.stanford.spezi.modules.education.R
 import edu.stanford.spezi.modules.education.videos.component.ExpandableVideoSection
 import edu.stanford.spezi.modules.education.videos.component.LoadingVideoCard
+import edu.stanford.spezi.ui.Button
+import edu.stanford.spezi.ui.Colors
+import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.ui.ThemePreviews
+import edu.stanford.spezi.ui.testing.testIdentifier
 
 @Composable
 fun EducationScreen() {
@@ -76,7 +77,7 @@ fun EducationScreen(
                             .fillMaxWidth()
                             .testIdentifier(EducationScreenTestIdentifier.RETRY_BUTTON),
                         onClick = { onAction(Action.Retry) }) {
-                        Text(text = "Retry")
+                        Text(text = stringResource(R.string.education_retry))
                     }
                 }
             }
@@ -94,10 +95,6 @@ fun EducationScreen(
                         title = videoSection.title,
                         description = videoSection.description,
                         videos = videoSection.videos,
-                        expandedStartValue = videoSection.isExpanded,
-                        onExpand = {
-                            onAction(Action.OnExpand(videoSection))
-                        },
                         onActionClick = { video ->
                             onAction(
                                 Action.VideoSectionClicked(
@@ -116,7 +113,7 @@ private class EducationUiStatePreviewProvider :
     PreviewParameterProvider<Pair<UiState, (Action) -> Unit>> {
     override val values: Sequence<Pair<UiState, (Action) -> Unit>> = sequenceOf(
         Pair(UiState.Loading) {},
-        Pair(UiState.Error(StringResource(R.string.failed_to_load_video_sections))) {},
+        Pair(UiState.Error(StringResource(R.string.education_failed_to_load_video_sections))) {},
         Pair(
             UiState.Success(
                 EducationUiState(

@@ -6,8 +6,8 @@ import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.QuerySnapshot
-import edu.stanford.spezi.core.testing.runTestUnconfined
-import edu.stanford.spezi.module.account.manager.UserSessionManager
+import edu.stanford.spezi.modules.account.manager.UserSessionManager
+import edu.stanford.spezi.modules.testing.runTestUnconfined
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot

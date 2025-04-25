@@ -30,23 +30,25 @@ import edu.stanford.bdh.engagehf.navigation.screens.AppScreen
 import edu.stanford.bdh.engagehf.navigation.serializableType
 import edu.stanford.bdh.engagehf.onboarding.InvitationCodeScreen
 import edu.stanford.bdh.engagehf.onboarding.OnboardingScreen
+import edu.stanford.bdh.engagehf.phonenumber.PhoneNumberSettingsNavigationEvent
+import edu.stanford.bdh.engagehf.phonenumber.PhoneNumberSettingsScreen
 import edu.stanford.bdh.engagehf.questionnaire.QuestionnaireScreen
-import edu.stanford.spezi.core.coroutines.di.Dispatching
-import edu.stanford.spezi.core.design.theme.Sizes
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.navigation.NavigationEvent
-import edu.stanford.spezi.core.notification.NotificationNavigationEvent
-import edu.stanford.spezi.core.notification.NotificationRoutes
-import edu.stanford.spezi.core.notification.setting.NotificationSettingScreen
-import edu.stanford.spezi.module.account.AccountNavigationEvent
-import edu.stanford.spezi.module.account.login.LoginScreen
-import edu.stanford.spezi.module.account.register.RegisterScreen
-import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
-import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingScreen
+import edu.stanford.spezi.core.coroutines.Dispatching
+import edu.stanford.spezi.modules.account.AccountNavigationEvent
+import edu.stanford.spezi.modules.account.login.LoginScreen
+import edu.stanford.spezi.modules.account.register.RegisterScreen
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.EducationRoutes
 import edu.stanford.spezi.modules.education.video.VideoScreen
 import edu.stanford.spezi.modules.education.videos.Video
+import edu.stanford.spezi.modules.navigation.NavigationEvent
+import edu.stanford.spezi.modules.notification.NotificationNavigationEvent
+import edu.stanford.spezi.modules.notification.NotificationRoutes
+import edu.stanford.spezi.modules.notification.setting.NotificationSettingScreen
+import edu.stanford.spezi.modules.onboarding.OnboardingNavigationEvent
+import edu.stanford.spezi.modules.onboarding.sequential.SequentialOnboardingScreen
+import edu.stanford.spezi.ui.Sizes
+import edu.stanford.spezi.ui.SpeziTheme
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -170,6 +172,10 @@ class MainActivity : FragmentActivity() {
         composable<Routes.SequentialOnboardingScreen> {
             SequentialOnboardingScreen()
         }
+
+        composable<Routes.PhoneNumberSettings> {
+            PhoneNumberSettingsScreen()
+        }
     }
 
     @Composable
@@ -178,6 +184,7 @@ class MainActivity : FragmentActivity() {
             launch(mainDispatcher) {
                 viewModel.getNavigationEvents().collect { event ->
                     when (event) {
+                        is AppNavigationEvent -> navHostController.handle(event)
                         is AccountNavigationEvent.RegisterScreen -> navHostController.navigate(
                             Routes.RegisterScreen(
                                 registerParams = RegisterParams(
@@ -185,14 +192,6 @@ class MainActivity : FragmentActivity() {
                                     password = event.password
                                 ),
                             )
-                        )
-
-                        is AppNavigationEvent.QuestionnaireScreen -> navHostController.navigate(
-                            Routes.QuestionnaireScreen(event.questionnaireId)
-                        )
-
-                        is AppNavigationEvent.ContactScreen -> navHostController.navigate(
-                            Routes.ContactScreen
                         )
 
                         is AccountNavigationEvent.LoginScreen -> navHostController.navigate(
@@ -215,11 +214,6 @@ class MainActivity : FragmentActivity() {
                             Routes.ConsentScreen
                         )
 
-                        is AppNavigationEvent.AppScreen -> navHostController.navigateTo(
-                            route = Routes.AppScreen,
-                            clearBackStack = event.clearBackStack
-                        )
-
                         is NavigationEvent.PopBackStack -> navHostController.popBackStack()
                         is NavigationEvent.NavigateUp -> navHostController.navigateUp()
 
@@ -232,10 +226,18 @@ class MainActivity : FragmentActivity() {
                         is NotificationNavigationEvent.NotificationSettings -> navHostController.navigate(
                             NotificationRoutes.NotificationSetting
                         )
+
+                        is PhoneNumberSettingsNavigationEvent -> navHostController.navigate(Routes.PhoneNumberSettings)
                     }
                 }
             }
         }
+    }
+
+    private fun NavHostController.handle(appNavigationEvent: AppNavigationEvent) = when (appNavigationEvent) {
+        is AppNavigationEvent.QuestionnaireScreen -> navigate(Routes.QuestionnaireScreen(appNavigationEvent.questionnaireId))
+        is AppNavigationEvent.ContactScreen -> navigate(Routes.ContactScreen)
+        is AppNavigationEvent.AppScreen -> navigateTo(Routes.AppScreen, appNavigationEvent.clearBackStack)
     }
 
     private fun NavHostController.navigateTo(route: Routes, clearBackStack: Boolean = false) {
