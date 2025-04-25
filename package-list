@@ -21,6 +21,7 @@ edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet
 edu.stanford.bdh.engagehf.health.components
 edu.stanford.bdh.engagehf.health.heartrate
 edu.stanford.bdh.engagehf.health.heartrate.bottomsheet
+edu.stanford.bdh.engagehf.health.summary
 edu.stanford.bdh.engagehf.health.symptoms
 edu.stanford.bdh.engagehf.health.time
 edu.stanford.bdh.engagehf.health.weight
@@ -35,6 +36,7 @@ edu.stanford.bdh.engagehf.navigation.components
 edu.stanford.bdh.engagehf.navigation.screens
 edu.stanford.bdh.engagehf.observations
 edu.stanford.bdh.engagehf.onboarding
+edu.stanford.bdh.engagehf.phonenumber
 edu.stanford.bdh.engagehf.questionnaire
 module:contact
 edu.stanford.spezi.contact
@@ -85,8 +87,8 @@ edu.stanford.spezi.modules.education.videos
 edu.stanford.spezi.modules.education.videos.component
 edu.stanford.spezi.modules.education.videos.data.repository
 module:healthconnectonfhir
-edu.stanford.healthconnectonfhir
-edu.stanford.healthconnectonfhir.di
+edu.stanford.spezi.modules.healthconnectonfhir
+edu.stanford.spezi.modules.healthconnectonfhir.di
 module:navigation
 edu.stanford.spezi.modules.navigation
 edu.stanford.spezi.modules.navigation.di
