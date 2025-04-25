@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onboarding_edit_icon">Edit Icon</string>
+    <string name="onboarding_invitation_code">Invitation Code</string>
+    <string name="onboarding_redeem_invitation_code">Redeem Invitation Code</string>
+    <string name="onboarding_area_icon">Area Icon</string>
+    <string name="onboarding_first_name">First Name</string>
+    <string name="onboarding_last_name">Last Name</string>
+    <string name="onboarding_signature">Signature:</string>
+    <string name="onboarding_undo">Undo</string>
+    <string name="onboarding_i_consent">I Consent</string>
+    <string name="onboarding_invitation_code_error_message">Invitation Code is already used or incorrect</string>
+</resources>

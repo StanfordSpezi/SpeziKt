@@ -25,7 +25,7 @@ import java.util.UUID
 data class Contact(
     val id: UUID = UUID.randomUUID(),
     val name: PersonNameComponents,
-    val image: ImageResource = ImageResource.Vector(Icons.Default.AccountBox, StringResource(R.string.profile_picture)),
+    val image: ImageResource = ImageResource.Vector(Icons.Default.AccountBox, StringResource(R.string.contact_profile_picture)),
     val title: StringResource? = null,
     val description: StringResource? = null,
     val organization: StringResource? = null,

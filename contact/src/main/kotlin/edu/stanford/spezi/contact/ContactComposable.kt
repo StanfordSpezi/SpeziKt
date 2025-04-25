@@ -139,7 +139,7 @@ enum class ContactComposableTestIdentifier {
 @ThemePreviews
 @Composable
 private fun ContactComposablePreview(@PreviewParameter(ContactProvider::class) contact: Contact) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         ContactComposable(contact = contact)
     }
 }
@@ -191,7 +191,7 @@ private object ContactComposableFactory {
                 givenName = "Leland",
                 familyName = "Stanford"
             ),
-            image = ImageResource.Vector(Icons.Default.AccountBox, StringResource(R.string.profile_picture)),
+            image = ImageResource.Vector(Icons.Default.AccountBox, StringResource(R.string.contact_profile_picture)),
             title = title,
             description = description,
             organization = StringResource("Stanford University"),

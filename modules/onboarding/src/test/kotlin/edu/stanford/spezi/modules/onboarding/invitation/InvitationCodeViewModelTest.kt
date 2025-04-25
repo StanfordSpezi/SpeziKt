@@ -2,8 +2,10 @@ package edu.stanford.spezi.modules.onboarding.invitation
 
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.modules.account.manager.InvitationAuthManager
+import edu.stanford.spezi.modules.onboarding.R
 import edu.stanford.spezi.modules.testing.CoroutineTestRule
 import edu.stanford.spezi.modules.testing.runTestUnconfined
+import edu.stanford.spezi.ui.StringResource
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -80,7 +82,7 @@ class InvitationCodeViewModelTest {
 
             // then
             val uiState = invitationCodeViewModel.uiState.first()
-            assertThat(uiState.error).isEqualTo("Invitation Code is already used or incorrect")
+            assertThat(uiState.error).isEqualTo(StringResource(R.string.onboarding_invitation_code_error_message))
         }
 
     @Test

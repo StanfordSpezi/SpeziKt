@@ -67,7 +67,7 @@ fun NameTextField(
 private fun NameTextFieldPreview() {
     val name = remember { PersonNameComponents.Builder() }
 
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         NameTextField(name, PersonNameComponents.Builder::givenName) {
             Text("Enter first name")
         }

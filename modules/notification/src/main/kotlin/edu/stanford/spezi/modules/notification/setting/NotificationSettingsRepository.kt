@@ -23,7 +23,7 @@ internal class NotificationSettingsRepository @Inject constructor(
 ) {
     private val logger by speziLogger()
 
-    suspend fun observeNotificationSettings(): Flow<Result<NotificationSettings>> =
+    fun observeNotificationSettings(): Flow<Result<NotificationSettings>> =
         callbackFlow {
             var listenerRegistration: ListenerRegistration? = null
             withContext(ioDispatcher) {

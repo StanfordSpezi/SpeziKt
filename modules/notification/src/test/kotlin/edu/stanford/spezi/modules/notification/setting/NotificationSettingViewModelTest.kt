@@ -5,10 +5,11 @@ import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.modules.navigation.NavigationEvent
 import edu.stanford.spezi.modules.navigation.Navigator
 import edu.stanford.spezi.modules.notification.NotificationPermissions
+import edu.stanford.spezi.modules.notification.R
 import edu.stanford.spezi.modules.notification.fcm.DeviceRegistrationService
 import edu.stanford.spezi.modules.testing.CoroutineTestRule
 import edu.stanford.spezi.modules.utils.MessageNotifier
-import io.mockk.coEvery
+import edu.stanford.spezi.ui.StringResource
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -104,16 +105,12 @@ class NotificationSettingViewModelTest {
     }
 
     @Test
-    fun `loadNotificationSettings should update state on success`() = runTest {
+    fun `loadNotificationSettings should update state on success`() {
         // Given
         val notificationSettings = NotificationSettings(
             mapOf(NotificationType.APPOINTMENT_REMINDERS to true),
         )
-        coEvery { repository.observeNotificationSettings() } returns flowOf(
-            Result.success(
-                notificationSettings
-            )
-        )
+        every { repository.observeNotificationSettings() } returns flowOf(Result.success(notificationSettings))
 
         // When
         val uiState = viewModel.uiState.value
@@ -125,15 +122,9 @@ class NotificationSettingViewModelTest {
     }
 
     @Test
-    fun `loadNotificationSettings should update state on failure`() = runTest {
+    fun `loadNotificationSettings should update state on failure`() {
         // Given
-        coEvery { repository.observeNotificationSettings() } returns flowOf(
-            Result.failure(
-                Exception(
-                    "Error"
-                )
-            )
-        )
+        every { repository.observeNotificationSettings() } returns flowOf(Result.failure(Exception("Error")))
 
         // When
         val uiState = viewModel.uiState.value
@@ -141,7 +132,7 @@ class NotificationSettingViewModelTest {
         // Then
         assertThat(uiState).isInstanceOf(NotificationSettingViewModel.UiState.Error::class.java)
         val errorState = uiState as NotificationSettingViewModel.UiState.Error
-        assertThat(errorState.message).isEqualTo("Failed to observe notification settings")
+        assertThat(errorState.message).isEqualTo(StringResource(R.string.notification_error_message))
     }
 
     @Test

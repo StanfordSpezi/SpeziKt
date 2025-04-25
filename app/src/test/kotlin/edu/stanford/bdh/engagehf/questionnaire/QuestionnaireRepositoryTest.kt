@@ -6,7 +6,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import edu.stanford.bdh.engagehf.observations.ObservationCollection
 import edu.stanford.bdh.engagehf.observations.ObservationCollectionProvider
-import edu.stanford.healthconnectonfhir.QuestionnaireDocumentMapper
+import edu.stanford.spezi.modules.healthconnectonfhir.QuestionnaireDocumentMapper
 import edu.stanford.spezi.modules.testing.mockTask
 import edu.stanford.spezi.modules.testing.runTestUnconfined
 import io.mockk.every

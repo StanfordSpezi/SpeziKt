@@ -128,7 +128,7 @@ fun MessageItem(
                         }) {
                         Icon(
                             imageVector = if (model.isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                            contentDescription = if (model.isExpanded) "Show less" else "Show more",
+                            contentDescription = null,
                         )
                     }
                 }
@@ -182,7 +182,7 @@ enum class MessageItemTestIdentifiers {
 @Composable
 @ThemePreviews
 fun MessageListPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         LazyColumn(modifier = Modifier.padding(Spacings.medium)) {
             items(sampleMessageModels) { model ->
                 MessageItem(model = model, onAction = { })

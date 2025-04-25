@@ -1,17 +1,19 @@
 package edu.stanford.bdh.engagehf.bluetooth.data.models
 
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.messages.MessageAction
-import edu.stanford.spezi.modules.design.R
+import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.modules.design.R as DesignR
 
 data class UiState(
     val bloodPressure: VitalDisplayData = VitalDisplayData(
-        title = "Blood Pressure",
+        title = StringResource(R.string.blood_pressure),
     ),
     val heartRate: VitalDisplayData = VitalDisplayData(
-        title = "Heart Rate",
+        title = StringResource(R.string.heart_rate),
     ),
     val weight: VitalDisplayData = VitalDisplayData(
-        title = "Weight",
+        title = StringResource(R.string.weight)
     ),
     val missingPermissions: Set<String> = emptySet(),
     val messages: List<MessageUiModel> = emptyList(),
@@ -31,11 +33,11 @@ data class MessageUiModel(
 ) {
     val icon: Int get() =
         when (action) {
-            is MessageAction.MedicationsAction -> R.drawable.ic_medication
-            is MessageAction.MeasurementsAction -> R.drawable.ic_vital_signs
-            is MessageAction.QuestionnaireAction -> R.drawable.ic_assignment
-            is MessageAction.VideoAction -> R.drawable.ic_visibility
-            is MessageAction.HealthSummaryAction -> R.drawable.ic_vital_signs
-            null -> R.drawable.ic_assignment
+            is MessageAction.MedicationsAction -> DesignR.drawable.ic_medication
+            is MessageAction.MeasurementsAction -> DesignR.drawable.ic_vital_signs
+            is MessageAction.QuestionnaireAction -> DesignR.drawable.ic_assignment
+            is MessageAction.VideoAction -> DesignR.drawable.ic_visibility
+            is MessageAction.HealthSummaryAction -> DesignR.drawable.ic_vital_signs
+            null -> DesignR.drawable.ic_assignment
         }
 }

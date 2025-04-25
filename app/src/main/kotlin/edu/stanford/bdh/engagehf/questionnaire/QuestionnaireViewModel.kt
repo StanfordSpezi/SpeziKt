@@ -5,11 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.parser.IParser
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.modules.navigation.NavigationEvent
 import edu.stanford.spezi.modules.navigation.Navigator
 import edu.stanford.spezi.modules.utils.MessageNotifier
 import edu.stanford.spezi.modules.utils.extensions.decode
+import edu.stanford.spezi.ui.StringResource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -51,7 +53,7 @@ class QuestionnaireViewModel @Inject internal constructor(
                         )
                     }
                 }.onFailure {
-                    _uiState.update { State.Error(message = "Failed to load questionnaire") }
+                    _uiState.update { State.Error(message = StringResource(R.string.failed_to_load_questionnaire)) }
                 }
         }
     }
@@ -70,7 +72,7 @@ class QuestionnaireViewModel @Inject internal constructor(
                     result.onSuccess {
                         navigator.navigateTo(NavigationEvent.PopBackStack)
                     }.onFailure {
-                        notifier.notify("Failed to save questionnaire response")
+                        notifier.notify(R.string.failed_to_save_questionnaire_response)
                     }
                 }
             }
@@ -94,7 +96,7 @@ class QuestionnaireViewModel @Inject internal constructor(
         ) : State {
             val showCancelButton = true
         }
-        data class Error(val message: String) : State
+        data class Error(val message: StringResource) : State
     }
 
     companion object {

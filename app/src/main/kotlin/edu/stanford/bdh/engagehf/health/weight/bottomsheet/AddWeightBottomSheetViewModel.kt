@@ -5,6 +5,7 @@ import androidx.health.connect.client.units.Mass
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.time.TimePickerStateMapper
@@ -90,7 +91,7 @@ class AddWeightBottomSheetViewModel @Inject internal constructor(
             ).let {
                 viewModelScope.launch {
                     healthRepository.saveRecord(it).onFailure {
-                        notifier.notify("Failed to save weight record")
+                        notifier.notify(R.string.weight_record_save_failure_message)
                     }.onSuccess {
                         appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet)
                     }

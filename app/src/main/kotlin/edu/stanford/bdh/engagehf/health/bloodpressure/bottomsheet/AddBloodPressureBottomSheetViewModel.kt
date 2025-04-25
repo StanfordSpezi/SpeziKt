@@ -5,6 +5,7 @@ import androidx.health.connect.client.units.Pressure
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.time.TimePickerStateMapper
@@ -109,7 +110,7 @@ internal class AddBloodPressureBottomSheetViewModel @Inject constructor(
             )
             viewModelScope.launch {
                 healthRepository.saveRecord(bloodPressureRecord).onFailure {
-                    notifier.notify("Failed to save blood pressure record")
+                    notifier.notify(R.string.blood_pressure_record_save_failure_message)
                 }.onSuccess {
                     appScreenEvents.emit(AppScreenEvents.Event.CloseBottomSheet)
                 }
@@ -125,8 +126,7 @@ internal class AddBloodPressureBottomSheetViewModel @Inject constructor(
         data class UpdateSystolic(val systolic: Int) : Action
         data class UpdateDiastolic(val diastolic: Int) : Action
         data object CloseUpdateDate : Action
-        data class UpdateMeasurementLocation(val measurementLocation: MeasurementLocations) :
-            Action
+        data class UpdateMeasurementLocation(val measurementLocation: MeasurementLocations) : Action
 
         data class UpdateBodyPosition(val bodyPosition: BodyPositions) : Action
         data class ShowMeasurementLocationsDialog(val isShown: Boolean) : Action

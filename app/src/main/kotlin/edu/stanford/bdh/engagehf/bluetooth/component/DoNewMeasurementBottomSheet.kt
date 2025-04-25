@@ -103,7 +103,7 @@ enum class DoNewMeasurementBottomSheetTestIdentifier {
 @ThemePreviews
 @Composable
 fun PreviewDoNewMeasurementBottomSheetContent() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         DoNewMeasurementBottomSheet()
     }
 }

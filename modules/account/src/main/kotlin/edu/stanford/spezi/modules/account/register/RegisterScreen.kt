@@ -97,12 +97,12 @@ fun RegisterScreen(
                 .size(Sizes.Icon.large)
         )
         Text(
-            text = stringResource(R.string.create_a_new_account),
+            text = stringResource(R.string.account_create_a_new_account),
             style = titleLarge,
         )
         VerticalSpacer()
         Text(
-            text = stringResource(R.string.please_fill_out_the_details_below_to_create_your_new_account),
+            text = stringResource(R.string.account_fill_out_details),
             style = titleSmall,
         )
         VerticalSpacer(height = Spacings.large)
@@ -115,7 +115,7 @@ fun RegisterScreen(
                     onValueChange = {
                         onAction(Action.TextFieldUpdate(it, TextFieldType.EMAIL))
                     },
-                    labelText = stringResource(R.string.e_mail_address),
+                    labelText = stringResource(R.string.account_email_address),
                     errorText = uiState.email.error,
                 )
             })
@@ -129,7 +129,7 @@ fun RegisterScreen(
                     onValueChange = {
                         onAction(Action.TextFieldUpdate(it, TextFieldType.PASSWORD))
                     },
-                    labelText = stringResource(R.string.password),
+                    labelText = stringResource(R.string.account_password),
                     errorText = uiState.password.error,
                     trailingIcon = {
                         IconButton(onClick = { onAction(Action.TogglePasswordVisibility) }) {
@@ -142,10 +142,10 @@ fun RegisterScreen(
                                 painter = painterResource(id = iconId),
                                 contentDescription = if (uiState.isPasswordVisible) {
                                     stringResource(
-                                        R.string.hide_password
+                                        R.string.account_hide_password
                                     )
                                 } else {
-                                    stringResource(R.string.show_password)
+                                    stringResource(R.string.account_show_password)
                                 }
                             )
                         }
@@ -165,7 +165,7 @@ fun RegisterScreen(
             modifier = Modifier.fillMaxWidth(),
             enabled = uiState.isRegisterButtonEnabled
         ) {
-            Text(stringResource(R.string.signup))
+            Text(stringResource(R.string.account_signup))
         }
     }
 }

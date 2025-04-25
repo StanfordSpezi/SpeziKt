@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="healthconnectonfhir_blood_glucose_record">Blood Glucose Record</string>
+    <string name="healthconnectonfhir_activity">Activity</string>
+    <string name="healthconnectonfhir_calories_burned">Calories burned</string>
+    <string name="healthconnectonfhir_active_calories_burned_record">Active Calories Burned Record</string>
+    <string name="healthconnectonfhir_glucose_glucometer_bldc_mass_vol">Glucose Glucometer (BldC) [Mass/Vol]</string>
+    <string name="healthconnectonfhir_vital_signs">Vital Signs</string>
+    <string name="healthconnectonfhir_blood_pressure_panel_with_all_children_optional">Blood pressure panel with all children optional</string>
+    <string name="healthconnectonfhir_blood_pressure_record">Blood Pressure Record</string>
+    <string name="healthconnectonfhir_systolic_blood_pressure">Systolic blood pressure</string>
+    <string name="healthconnectonfhir_diastolic_blood_pressure">Diastolic blood pressure</string>
+    <string name="healthconnectonfhir_body_fat_record">Body Fat Record</string>
+    <string name="healthconnectonfhir_body_temperature_record">Body Temperature Record</string>
+    <string name="healthconnectonfhir_steps_record">Steps Record</string>
+    <string name="healthconnectonfhir_number_of_steps">Number of steps</string>
+    <string name="healthconnectonfhir_body_weight">Body weight</string>
+    <string name="healthconnectonfhir_weight_record">Weight Record</string>
+    <string name="healthconnectonfhir_percentage_of_body_fat_measured">Percentage of body fat Measured</string>
+    <string name="healthconnectonfhir_body_temperature">Body temperature</string>
+    <string name="healthconnectonfhir_heart_rate">Heart rate</string>
+    <string name="healthconnectonfhir_heart_rate_record">Heart Rate Record</string>
+    <string name="healthconnectonfhir_body_height">Body height</string>
+    <string name="healthconnectonfhir_height_record">Height Record</string>
+    <string name="healthconnectonfhir_oxygen_saturation_in_arterial_blood_by_pulse_oximetry">Oxygen saturation in Arterial blood by Pulse oximetry</string>
+    <string name="healthconnectonfhir_oxygen_saturation_record">Oxygen Saturation Record</string>
+    <string name="healthconnectonfhir_respiratory_rate">Respiratory rate</string>
+    <string name="healthconnectonfhir_respiratory_rate_record">Respiratory Rate Record</string>
+</resources>

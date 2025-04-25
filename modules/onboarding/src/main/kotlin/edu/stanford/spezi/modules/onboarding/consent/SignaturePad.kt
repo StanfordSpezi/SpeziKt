@@ -20,9 +20,11 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import edu.stanford.spezi.modules.onboarding.R
 import edu.stanford.spezi.ui.Spacings
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -39,10 +41,10 @@ internal fun SignaturePad(
                 onAction(ConsentAction.TextFieldUpdate(it, TextFieldType.FIRST_NAME))
             },
             modifier = Modifier.fillMaxWidth(),
-            label = { Text("First Name") },
+            label = { Text(stringResource(R.string.onboarding_first_name)) },
             singleLine = true,
             isError = uiState.firstName.error,
-            trailingIcon = { Icon(Icons.Filled.Info, contentDescription = "Information Icon") }
+            trailingIcon = { Icon(Icons.Filled.Info, contentDescription = stringResource(R.string.onboarding_first_name)) }
         )
         Spacer(modifier = Modifier.height(Spacings.small))
         OutlinedTextField(
@@ -51,20 +53,20 @@ internal fun SignaturePad(
                 onAction(ConsentAction.TextFieldUpdate(it, TextFieldType.LAST_NAME))
             },
             modifier = Modifier.fillMaxWidth(),
-            label = { Text("Last Name") },
+            label = { Text(stringResource(R.string.onboarding_last_name)) },
             isError = uiState.lastName.error,
             singleLine = true,
             trailingIcon = {
                 Icon(
                     Icons.Filled.Info,
-                    contentDescription = "Information Icon"
+                    contentDescription = stringResource(R.string.onboarding_last_name)
                 )
             }
         )
 
         if (uiState.firstName.value.isNotBlank() && uiState.lastName.value.isNotBlank()) {
             Spacer(modifier = Modifier.height(Spacings.medium))
-            Text("Signature:")
+            Text(stringResource(R.string.onboarding_signature))
             SignatureCanvas(
                 paths = uiState.paths.toMutableList(),
                 firstName = uiState.firstName.value,
@@ -85,7 +87,7 @@ internal fun SignaturePad(
                     enabled = uiState.paths.isNotEmpty(),
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text("Undo")
+                    Text(stringResource(R.string.onboarding_undo))
                 }
                 Spacer(modifier = Modifier.width(Spacings.medium))
                 Button(
@@ -95,7 +97,7 @@ internal fun SignaturePad(
                     enabled = uiState.isValidForm,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("I Consent")
+                    Text(stringResource(R.string.onboarding_i_consent))
                 }
             }
         }

@@ -107,7 +107,7 @@ fun FeatureItem(area: Area) {
     ) {
         Icon(
             painter = painterResource(id = area.iconId),
-            contentDescription = stringResource(R.string.area_icon),
+            contentDescription = stringResource(R.string.onboarding_area_icon),
             modifier = Modifier.size(Sizes.Icon.medium),
             tint = primary
         )

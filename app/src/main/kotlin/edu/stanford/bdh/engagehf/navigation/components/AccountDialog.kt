@@ -152,7 +152,7 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
                 AsyncAccountItem(
                     title = stringResource(R.string.health_summary),
                     loading = accountUiState.isHealthSummaryLoading,
-                    onClick = { onAction(Action.ShowHealthSummary) },
+                    onClick = { onAction(Action.HealthSummaryRequested) },
                 )
                 TextButton(
                     onClick = {
@@ -175,6 +175,18 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
                 ) {
                     Text(
                         text = stringResource(R.string.contact),
+                        style = bodyMedium,
+                    )
+                }
+                TextButton(
+                    onClick = {
+                        onAction(Action.ShowPhoneNumberSettings)
+                    },
+                    modifier = Modifier
+                        .align(Alignment.Start),
+                ) {
+                    Text(
+                        text = stringResource(R.string.phone_numbers_title),
                         style = bodyMedium,
                     )
                 }

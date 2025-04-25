@@ -149,13 +149,15 @@ internal class UserSessionManagerImpl @Inject constructor(
             UserState.Registered(
                 hasInvitationCodeConfirmed = false,
                 disabled = false,
+                phoneNumbers = emptyList(),
             )
         )
     }
 
     private fun registeredUser(document: DocumentSnapshot?) = UserState.Registered(
         hasInvitationCodeConfirmed = document?.getString(INVITATION_CODE_KEY) != null,
-        disabled = document?.getBoolean(DISABLED_KEY) == true
+        disabled = document?.getBoolean(DISABLED_KEY) == true,
+        phoneNumbers = document?.get("phoneNumbers") as? List<String> ?: emptyList(),
     )
 
     private companion object {

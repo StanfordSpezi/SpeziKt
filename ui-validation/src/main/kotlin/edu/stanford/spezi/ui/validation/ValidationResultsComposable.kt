@@ -29,7 +29,7 @@ fun ValidationResultsComposable(
 @ThemePreviews
 @Composable
 private fun ValidationResultsComposablePreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         ValidationResultsComposable(
             listOf(
                 FailedValidationResult(ValidationRule.nonEmpty),

@@ -34,5 +34,6 @@ class AppScreenEvents @Inject constructor(
         data object AddHeartRateRecord : Event
         data class NavigateToTab(val bottomBarItem: BottomBarItem) : Event
         data object SymptomsDescriptionBottomSheet : Event
+        data class HealthSummaryDisplayRequested(val onSuccess: suspend () -> Unit) : Event
     }
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="account_error_sign_in_failed">Failed to sign in.</string>
+    <string name="account_please_enter_a_valid_email">Please enter a valid email.</string>
+    <string name="account_failed_to_send_email">Failed to send email.</string>
+    <string name="account_email_sent">Email sent.</string>
+    <string name="account_google_icon">Google Icon</string>
+    <string name="account_sign_in_with_google">Sign in with Google</string>
+    <string name="account_or">OR</string>
+    <string name="account_your_account">Your Account</string>
+    <string name="account_password">Password</string>
+    <string name="account_hide_password">Hide password</string>
+    <string name="account_show_password">Show password</string>
+    <string name="account_forgot_password">Forgot Password?</string>
+    <string name="account_no_account_yet">Don\'t have an Account yet?</string>
+    <string name="account_ok">OK</string>
+    <string name="account_cancel">Cancel</string>
+    <string name="account_create_a_new_account">Create a new Account</string>
+    <string name="account_fill_out_details">Please fill out the details below to create your new account.</string>
+    <string name="account_email_address">E-Mail Address</string>
+    <string name="account_signup">Signup</string>
+    <string name="account_login">Login</string>
+    <string name="account_login_screen_description">You may login to your existing account or create a new one if you don\'t have one already. You can also sign in with your Google Account. If you are having  difficulty logging in or resetting your password, you can reach out to:\u00A0</string>
+    <string name="account_engage_support_email">engage-hf-team@stanford.edu</string>
+</resources>

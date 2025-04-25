@@ -24,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -88,7 +89,7 @@ private fun HomeScreen(
         modifier = Modifier
             .testIdentifier(HomeScreenTestIdentifier.ROOT)
             .fillMaxSize()
-            .padding(Spacings.medium)
+            .padding(horizontal = Spacings.medium)
     ) {
         item {
             BluetoothHeaderSection(bluetoothUiState = uiState.bluetooth, onAction = onAction)
@@ -113,7 +114,7 @@ private fun HomeScreen(
         } else {
             item {
                 Text(
-                    text = "No messages",
+                    text = stringResource(R.string.no_messages),
                     style = TextStyles.bodyMedium,
                     modifier = Modifier.padding(vertical = Spacings.small)
                 )
@@ -139,7 +140,7 @@ private fun HomeScreen(
                         .clickable { onAction(Action.VitalsCardClicked) }
                         .testIdentifier(
                             identifier = HomeScreenTestIdentifier.VITALS,
-                            suffix = uiState.weight.title
+                            suffix = uiState.weight.title.text()
                         ),
                     vitalDisplayUiState = uiState.weight
                 )
@@ -149,7 +150,7 @@ private fun HomeScreen(
                         .clickable { onAction(Action.VitalsCardClicked) }
                         .testIdentifier(
                             identifier = HomeScreenTestIdentifier.VITALS,
-                            suffix = uiState.heartRate.title
+                            suffix = uiState.heartRate.title.text()
                         ),
                     vitalDisplayUiState = uiState.heartRate
                 )
@@ -160,7 +161,7 @@ private fun HomeScreen(
                     .clickable { onAction(Action.VitalsCardClicked) }
                     .testIdentifier(
                         identifier = HomeScreenTestIdentifier.VITALS,
-                        suffix = uiState.bloodPressure.title
+                        suffix = uiState.bloodPressure.title.text()
                     ),
                 vitalDisplayUiState = uiState.bloodPressure
             )
@@ -183,10 +184,10 @@ private fun BluetoothHeaderSection(
             color = Colors.onSurface,
         )
         Spacer(modifier = Modifier.weight(1f))
-        if (bluetoothUiState is BluetoothUiState.Ready) {
-            IconButton(onClick = { onAction(Action.BLEDevicePairing) }) {
-                Icon(Icons.Filled.Add, contentDescription = "Pair device")
-            }
+        IconButton(
+            modifier = Modifier.alpha(alpha = if (bluetoothUiState is BluetoothUiState.Ready) 1f else 0f),
+            onClick = { onAction(Action.BLEDevicePairing) }) {
+            Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.ble_device_pair_action_title))
         }
     }
 
@@ -201,7 +202,7 @@ private fun BluetoothHeaderSection(
                     SecondaryText(
                         modifier = Modifier
                             .padding(Spacings.small),
-                        text = stringResource(id = bluetoothUiState.description),
+                        text = bluetoothUiState.description.text(),
                     )
                     bluetoothUiState.settingsAction?.let {
                         Row(
@@ -227,7 +228,7 @@ private fun BluetoothHeaderSection(
 @Composable
 private fun Devices(readyState: BluetoothUiState.Ready) {
     readyState.header?.let {
-        SecondaryText(text = stringResource(id = it))
+        SecondaryText(text = it.text())
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(Spacings.small)) {
@@ -264,7 +265,7 @@ fun DeviceComposable(device: DeviceUiModel) {
                 )
                 Text(text = device.name, style = TextStyles.bodyMedium)
             }
-            SecondaryText(text = device.summary)
+            SecondaryText(text = device.summary.text())
             SecondaryText(text = device.lastSeen.text())
         }
     }
@@ -297,19 +298,19 @@ private class HomeScreenPreviewProvider : PreviewParameterProvider<UiState> {
             defaultUiState,
             defaultUiState.copy(
                 bluetooth = BluetoothUiState.Ready(
-                    header = R.string.paired_devices_hint_description,
+                    header = StringResource(R.string.paired_devices_hint_description),
                     devices = emptyList(),
                 )
             ),
             defaultUiState.copy(
                 bluetooth = BluetoothUiState.Idle(
-                    description = R.string.bluetooth_not_enabled_description,
+                    description = StringResource(R.string.bluetooth_not_enabled_description),
                     settingsAction = Action.Settings.BluetoothSettings,
                 )
             ),
             defaultUiState.copy(
                 bluetooth = BluetoothUiState.Idle(
-                    description = R.string.bluetooth_permissions_not_granted_description,
+                    description = StringResource(R.string.bluetooth_permissions_not_granted_description),
                     settingsAction = Action.Settings.BluetoothSettings,
                 )
             )
@@ -321,7 +322,7 @@ private class HomeScreenPreviewProvider : PreviewParameterProvider<UiState> {
             devices = listOf(
                 DeviceUiModel(
                     name = "My device",
-                    summary = "Device 1 Summary",
+                    summary = StringResource("Device 1 Summary"),
                     connected = true,
                     lastSeen = StringResource("Last seen on 12.04.05 12:43"),
                 ),
@@ -344,14 +345,14 @@ private class HomeScreenPreviewProvider : PreviewParameterProvider<UiState> {
             ),
         ),
         weight = VitalDisplayData(
-            title = "Weight",
+            title = StringResource(R.string.weight),
             value = "0.0",
             unit = "kg",
             status = OperationStatus.SUCCESS,
             date = "01 Jan 2022"
         ),
         heartRate = VitalDisplayData(
-            title = "Heart Rate",
+            title = StringResource(R.string.heart_rate),
             status = OperationStatus.FAILURE,
             error = "Cannot retrieve data"
         ),

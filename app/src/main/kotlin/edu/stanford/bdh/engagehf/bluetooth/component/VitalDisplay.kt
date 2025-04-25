@@ -12,9 +12,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.VitalDisplayDataFactory.createVitalDisplayState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
 import edu.stanford.spezi.modules.design.component.RectangleShimmerEffect
@@ -23,6 +25,7 @@ import edu.stanford.spezi.ui.Colors
 import edu.stanford.spezi.ui.DefaultElevatedCard
 import edu.stanford.spezi.ui.Spacings
 import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.TextStyles
 import edu.stanford.spezi.ui.ThemePreviews
 import edu.stanford.spezi.ui.testing.testIdentifier
@@ -47,7 +50,7 @@ fun VitalDisplay(
                 .fillMaxSize()
         ) {
             Text(
-                text = vitalDisplayUiState.title,
+                text = vitalDisplayUiState.title.text(),
                 style = TextStyles.titleMedium,
                 color = Colors.onBackground,
                 modifier = Modifier.testIdentifier(WeightDisplayTestIdentifier.TITLE),
@@ -74,7 +77,7 @@ fun VitalDisplay(
 
                 OperationStatus.FAILURE -> {
                     Text(
-                        text = "Error: ${vitalDisplayUiState.error}",
+                        text = stringResource(R.string.generic_error_description),
                         style = TextStyles.bodySmall,
                         color = Colors.error,
                         modifier = Modifier
@@ -113,7 +116,7 @@ fun VitalDisplay(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "No data available",
+                            text = stringResource(R.string.no_data_available),
                             style = TextStyles.bodyMedium
                         )
                     }
@@ -141,7 +144,7 @@ enum class OperationStatus {
 
 private object VitalDisplayDataFactory {
     fun createVitalDisplayState(): VitalDisplayData {
-        val title = "Weight"
+        val title = StringResource(R.string.weight)
         val value = "70.0"
         val unit = "kg"
         val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
@@ -154,17 +157,17 @@ private class VitalDisplayDataProvider : PreviewParameterProvider<VitalDisplayDa
     override val values: Sequence<VitalDisplayData> = sequenceOf(
         createVitalDisplayState(),
         createVitalDisplayState().copy(
-            title = "Blood Pressure",
+            title = StringResource(R.string.blood_pressure),
             value = "120/80",
             unit = "mmHg",
             status = OperationStatus.SUCCESS
         ),
         createVitalDisplayState().copy(
-            title = "Heart Rate", value = "70", unit = "bpm",
+            title = StringResource(R.string.heart_rate), value = "70", unit = "bpm",
             status = OperationStatus.FAILURE, error = "Cannot retrieve data"
         ),
         createVitalDisplayState().copy(
-            title = "Heart Rate", status = OperationStatus.NO_DATA
+            title = StringResource(R.string.heart_rate), status = OperationStatus.NO_DATA
         )
     )
 }
@@ -173,7 +176,7 @@ private class VitalDisplayDataProvider : PreviewParameterProvider<VitalDisplayDa
 @Composable
 @Suppress("UnusedPrivateMember")
 private fun VitalDisplayPreview(@PreviewParameter(VitalDisplayDataProvider::class) state: VitalDisplayData) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         VitalDisplay(
             vitalDisplayUiState = state
         )

@@ -37,6 +37,7 @@ import edu.stanford.spezi.ui.Colors.primary
 import edu.stanford.spezi.ui.DefaultElevatedCard
 import edu.stanford.spezi.ui.Spacings
 import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.TextStyles
 import edu.stanford.spezi.ui.ThemePreviews
 
@@ -60,7 +61,7 @@ internal fun NotificationSettingScreen(
     Scaffold(topBar = {
         AppTopAppBar(title = {
             Text(
-                text = stringResource(R.string.notification_settings),
+                text = stringResource(R.string.notification_settings_title),
             )
         }, navigationIcon = {
             IconButton(onClick = {
@@ -68,7 +69,7 @@ internal fun NotificationSettingScreen(
             }) {
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.back)
+                    contentDescription = stringResource(R.string.notification_back)
                 )
             }
         })
@@ -82,7 +83,7 @@ internal fun NotificationSettingScreen(
                 is NotificationSettingViewModel.UiState.Error -> {
                     CenteredBoxContent {
                         Text(
-                            text = uiState.message,
+                            text = uiState.message.text(),
                             style = TextStyles.headlineMedium,
                             textAlign = TextAlign.Center,
                         )
@@ -135,11 +136,11 @@ private fun MissingPermissions(
                 modifier = Modifier
                     .padding(Spacings.small)
                     .weight(IDLE_DESCRIPTION_WEIGHT),
-                text = stringResource(R.string.feature_requires_notifications),
+                text = stringResource(R.string.notification_feature_requires_notifications),
             )
             AsyncTextButton(
                 modifier = Modifier.padding(Spacings.small),
-                text = stringResource(R.string.settings),
+                text = stringResource(R.string.notification_settings_button_title),
                 onClick = { onAction(NotificationSettingViewModel.Action.AppSettings) },
             )
         }
@@ -158,21 +159,21 @@ private fun NotificationOptions(
             item {
                 NotificationOptionHeadline(
                     text = when (section) {
-                        NotificationType.Section.REMINDERS -> stringResource(R.string.reminders)
-                        NotificationType.Section.UPDATES -> stringResource(R.string.updates)
-                        NotificationType.Section.TRENDS -> stringResource(R.string.trends)
+                        NotificationType.Section.REMINDERS -> stringResource(R.string.notification_reminders)
+                        NotificationType.Section.UPDATES -> stringResource(R.string.notification_updates)
+                        NotificationType.Section.TRENDS -> stringResource(R.string.notification_trends)
                     }
                 )
             }
             items(settings) { (type, value) ->
                 NotificationOptionRow(
                     text = when (type) {
-                        NotificationType.APPOINTMENT_REMINDERS -> stringResource(R.string.appointment)
-                        NotificationType.MEDICATION_UPDATES -> stringResource(R.string.medications)
-                        NotificationType.QUESTIONNAIRE_REMINDERS -> stringResource(R.string.survey)
-                        NotificationType.RECOMMENDATION_UPDATES -> stringResource(R.string.recommendations)
-                        NotificationType.VITALS_REMINDERS -> stringResource(R.string.vital)
-                        NotificationType.WEIGHT_ALERTS -> stringResource(R.string.weight_trends)
+                        NotificationType.APPOINTMENT_REMINDERS -> stringResource(R.string.notification_appointment)
+                        NotificationType.MEDICATION_UPDATES -> stringResource(R.string.notification_medications)
+                        NotificationType.QUESTIONNAIRE_REMINDERS -> stringResource(R.string.notification_survey)
+                        NotificationType.RECOMMENDATION_UPDATES -> stringResource(R.string.notification_recommendations)
+                        NotificationType.VITALS_REMINDERS -> stringResource(R.string.notification_vital)
+                        NotificationType.WEIGHT_ALERTS -> stringResource(R.string.notification_weight_trends)
                     },
                     checked = value,
                     onCheckedChange = {
@@ -210,7 +211,7 @@ private fun NotificationOptionRow(
     isLoading: Boolean = false,
 ) {
     Row(
-        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = text,
@@ -227,7 +228,7 @@ private class NotificationUiStateProvider :
     PreviewParameterProvider<NotificationSettingViewModel.UiState> {
     override val values = sequenceOf(
         NotificationSettingViewModel.UiState.Loading,
-        NotificationSettingViewModel.UiState.Error("An error occurred"),
+        NotificationSettingViewModel.UiState.Error(StringResource(R.string.notification_error_message)),
         NotificationSettingViewModel.UiState.MissingPermissions(setOf("permission")),
         NotificationSettingViewModel.UiState.NotificationSettingsLoaded(
             notificationSettings = NotificationSettings(
