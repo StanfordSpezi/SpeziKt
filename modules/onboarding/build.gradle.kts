@@ -24,8 +24,17 @@ dependencies {
     implementation(libs.androidx.foundation)
     implementation(libs.accompanist.pager)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.androidx.input.motionprediction)
+    implementation(libs.digital.ink.recognition)
 
     testImplementation(libs.bundles.unit.testing)
 
     androidTestImplementation(libs.bundles.compose.androidTest)
+
+    implementation(libs.androidx.ink.authoring)
+    implementation(libs.androidx.ink.brush)
+    implementation(libs.androidx.ink.geometry)
+    implementation(libs.androidx.ink.nativeloader)
+    implementation(libs.androidx.ink.rendering)
+    implementation(libs.androidx.ink.strokes)
 }

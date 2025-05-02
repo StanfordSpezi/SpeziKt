@@ -1,12 +1,13 @@
 package edu.stanford.spezi.modules.onboarding.consent
 
-import androidx.compose.ui.graphics.Path
+import androidx.ink.authoring.InProgressStrokeId
+import androidx.ink.strokes.Stroke
 import edu.stanford.spezi.ui.markdown.MarkdownElement
 
 data class ConsentUiState(
     val firstName: FieldState = FieldState(value = "", error = false),
     val lastName: FieldState = FieldState(value = "", error = false),
-    val paths: List<Path> = emptyList(),
+    val paths: List<Pair<InProgressStrokeId, Stroke>> = emptyList(),
     val markdownElements: List<MarkdownElement> = emptyList(),
 ) {
     val isValidForm: Boolean =
@@ -24,7 +25,8 @@ enum class TextFieldType {
 
 sealed interface ConsentAction {
     data class TextFieldUpdate(val newValue: String, val type: TextFieldType) : ConsentAction
-    data class AddPath(val path: Path) : ConsentAction
-    data object Undo : ConsentAction
+    data class AddPath(val paths: Map<InProgressStrokeId, Stroke>) : ConsentAction
+    data object UndoPath : ConsentAction
+    data object ClearPath: ConsentAction
     data object Consent : ConsentAction
 }

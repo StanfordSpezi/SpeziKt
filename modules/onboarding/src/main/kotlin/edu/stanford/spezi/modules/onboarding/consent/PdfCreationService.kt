@@ -3,12 +3,14 @@ package edu.stanford.spezi.modules.onboarding.consent
 
 import android.graphics.Canvas
 import android.graphics.Paint
+import androidx.compose.ui.graphics.Path
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import androidx.compose.ui.graphics.asAndroidPath
+import androidx.ink.strokes.Stroke
 import edu.stanford.spezi.core.coroutines.Dispatching
 import edu.stanford.spezi.ui.markdown.MarkdownElement
 import kotlinx.coroutines.CoroutineDispatcher
@@ -49,6 +51,22 @@ internal class PdfCreationService @Inject internal constructor(
         outputStream.toByteArray()
     }
 
+    private fun strokeInputListToPath(stroke: Stroke): Path? {
+        if (stroke.inputs.isEmpty()) {
+            return null
+        }
+        val path = Path()
+
+        path.moveTo(stroke.inputs[0].x, stroke.inputs[0].y) // Start at the first point
+
+        // Draw lines to subsequent points
+        for (i in 1 until stroke.inputs.size) {
+            val input = stroke.inputs[i]
+            path.lineTo(input.x, input.y)
+        }
+        return path
+    }
+
     private fun drawNamesAndSignature(
         canvas: Canvas,
         uiState: ConsentUiState,
@@ -64,9 +82,11 @@ internal class PdfCreationService @Inject internal constructor(
             yOffset,
             paintNames
         )
+        assert(uiState.paths.isNotEmpty()) { "Signature paths should not be empty" }
+
         val paintSignature = Paint().apply {
-            color = android.graphics.Color.BLUE
-            strokeWidth = 3f
+            color = uiState.paths.first().second.brush.colorIntArgb
+            strokeWidth = uiState.paths.first().second.brush.size
             style = Paint.Style.STROKE
         }
 
@@ -74,11 +94,14 @@ internal class PdfCreationService @Inject internal constructor(
         canvas.save()
         canvas.scale(scaleFactor, scaleFactor)
 
-        uiState.paths.forEach { path ->
-            val androidPath = path.asAndroidPath()
-            val offsetPath = android.graphics.Path(androidPath)
-            offsetPath.offset(0f, yOffset * 5)
-            canvas.drawPath(offsetPath, paintSignature)
+        uiState.paths.forEach { (_, stroke) ->
+            val path = strokeInputListToPath(stroke)
+            if (path != null) {
+                val androidPath = path.asAndroidPath()
+                val offsetPath = android.graphics.Path(androidPath)
+                offsetPath.offset(0f, yOffset * 5)
+                canvas.drawPath(offsetPath, paintSignature)
+            }
         }
         canvas.restore()
         return yOffset - 80f

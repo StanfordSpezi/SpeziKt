@@ -52,7 +52,7 @@ internal class DeviceRegistrationServiceImpl @Inject constructor(
         val body = NotificationTokenBody(
             notificationToken = token,
             osVersion = buildInfo.getOsVersion(),
-            appVersion = packageInfo.versionName,
+            appVersion = packageInfo.versionName!!,
             appBuild = packageInfo.versionCode.toString(),
             language = Locale.getDefault().toLanguageTag(),
             timeZone = TimeZone.getDefault().id

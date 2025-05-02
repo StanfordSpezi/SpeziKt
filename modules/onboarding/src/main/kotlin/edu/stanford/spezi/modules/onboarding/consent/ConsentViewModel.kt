@@ -47,15 +47,18 @@ internal class ConsentViewModel @Inject internal constructor(
             }
 
             is ConsentAction.AddPath -> {
-                _uiState.update { it.copy(paths = it.paths + action.path) }
+                _uiState.update { it.copy(paths = it.paths + action.paths.toList()) }
             }
 
-            is ConsentAction.Undo -> {
+            is ConsentAction.UndoPath -> {
                 _uiState.update { it.copy(paths = it.paths.dropLast(1)) }
             }
 
             is ConsentAction.Consent -> {
                 onConsentAction()
+            }
+            is ConsentAction.ClearPath -> {
+                _uiState.update { it.copy(paths = emptyList()) }
             }
         }
     }
