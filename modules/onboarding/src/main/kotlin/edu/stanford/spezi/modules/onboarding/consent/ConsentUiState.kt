@@ -27,6 +27,6 @@ sealed interface ConsentAction {
     data class TextFieldUpdate(val newValue: String, val type: TextFieldType) : ConsentAction
     data class AddPath(val paths: Map<InProgressStrokeId, Stroke>) : ConsentAction
     data object UndoPath : ConsentAction
-    data object ClearPath: ConsentAction
+    data object ClearPath : ConsentAction
     data object Consent : ConsentAction
 }

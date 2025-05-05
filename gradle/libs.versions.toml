@@ -18,6 +18,7 @@ coroutinesVersion = "1.8.0"
 credentialsPlayServicesAuth = "1.2.2"
 datastorePreferences = "1.1.1"
 detekt = "1.23.6" # please adjust github action version as well in case of version change
+digitalInkRecognition = "18.1.0"
 dokka = "1.9.20"
 espressoCore = "3.5.1"
 fhirDataCapture = "1.1.0"
@@ -36,12 +37,15 @@ healthConnectClient = "1.1.0-alpha07"
 hiltNavigation = "1.2.0"
 hiltVersion = "2.51"
 inkAuthoring = "1.0.0-alpha01"
+inkAuthoringAndroid = "1.0.0-alpha04"
 inkBrush = "1.0.0-alpha01"
 inkCore = "1.0.0-alpha02"
 inkGeometry = "1.0.0-alpha01"
 inkNativeloader = "1.0.0-alpha01"
 inkRendering = "1.0.0-alpha01"
 inkStrokes = "1.0.0-alpha01"
+inkStrokesAndroid = "1.0.0-alpha04"
+inputMotionprediction = "1.0.0-beta05"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 kotlin = "2.0.0"
@@ -63,10 +67,6 @@ timberVersion = "5.0.1"
 truth = "1.4.2"
 vico = "2.0.0-alpha.26"
 zxingVersion = "3.5.0"
-inkAuthoringAndroid = "1.0.0-alpha04"
-inputMotionprediction = "1.0.0-beta05"
-inkStrokesAndroid = "1.0.0-alpha04"
-digitalInkRecognition = "18.1.0"
 
 # Please keep [libraries] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [libraries]
@@ -86,12 +86,15 @@ androidx-foundation = { module = "androidx.compose.foundation:foundation", versi
 androidx-fragment-compose = { module = "androidx.fragment:fragment-compose", version.ref = "fragmentCompose" }
 androidx-health-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "healthConnectClient" }
 androidx-ink-authoring = { module = "androidx.ink:ink-authoring", version.ref = "inkAuthoring" }
+androidx-ink-authoring-android = { group = "androidx.ink", name = "ink-authoring-android", version.ref = "inkAuthoringAndroid" }
+androidx-ink-brush = { module = "androidx.ink:ink-brush", version.ref = "inkBrush" }
 androidx-ink-core = { module = "androidx.ink:ink-core", version.ref = "inkCore" }
 androidx-ink-geometry = { module = "androidx.ink:ink-geometry", version.ref = "inkGeometry" }
-androidx-ink-brush = { module = "androidx.ink:ink-brush", version.ref = "inkBrush" }
-androidx-ink-rendering = { module = "androidx.ink:ink-rendering", version.ref = "inkRendering" }
 androidx-ink-nativeloader = { module = "androidx.ink:ink-nativeloader", version.ref = "inkNativeloader" }
+androidx-ink-rendering = { module = "androidx.ink:ink-rendering", version.ref = "inkRendering" }
 androidx-ink-strokes = { module = "androidx.ink:ink-strokes", version.ref = "inkStrokes" }
+androidx-ink-strokes-android = { group = "androidx.ink", name = "ink-strokes-android", version.ref = "inkStrokesAndroid" }
+androidx-input-motionprediction = { group = "androidx.input", name = "input-motionprediction", version.ref = "inputMotionprediction" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleKtx" }
 androidx-lifecycle-view-model-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleKtx" }
@@ -116,13 +119,14 @@ coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutin
 coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutinesVersion" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesVersion" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+digital-ink-recognition = { group = "com.google.mlkit", name = "digital-ink-recognition", version.ref = "digitalInkRecognition" }
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-functions-ktx", version.ref = "firebaseFunctionsKtx" }
 firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
-googlecode-phonenumber = { module = "com.googlecode.libphonenumber:libphonenumber", version.ref = "phoneNumberVersion" }
 google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
+googlecode-phonenumber = { module = "com.googlecode.libphonenumber:libphonenumber", version.ref = "phoneNumberVersion" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
@@ -144,10 +148,6 @@ play-services-auth = { group = "com.google.android.gms", name = "play-services-a
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timberVersion" }
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
 zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxingVersion" }
-androidx-ink-authoring-android = { group = "androidx.ink", name = "ink-authoring-android", version.ref = "inkAuthoringAndroid" }
-androidx-input-motionprediction = { group = "androidx.input", name = "input-motionprediction", version.ref = "inputMotionprediction" }
-androidx-ink-strokes-android = { group = "androidx.ink", name = "ink-strokes-android", version.ref = "inkStrokesAndroid" }
-digital-ink-recognition = { group = "com.google.mlkit", name = "digital-ink-recognition", version.ref = "digitalInkRecognition" }
 
 # Please keep [plugins] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [plugins]

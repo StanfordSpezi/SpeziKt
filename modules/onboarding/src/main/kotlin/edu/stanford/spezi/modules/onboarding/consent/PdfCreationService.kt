@@ -3,12 +3,12 @@ package edu.stanford.spezi.modules.onboarding.consent
 
 import android.graphics.Canvas
 import android.graphics.Paint
-import androidx.compose.ui.graphics.Path
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asAndroidPath
 import androidx.ink.strokes.Stroke
 import edu.stanford.spezi.core.coroutines.Dispatching
@@ -95,12 +95,13 @@ internal class PdfCreationService @Inject internal constructor(
         canvas.scale(scaleFactor, scaleFactor)
 
         uiState.paths.forEach { (_, stroke) ->
-            val path = strokeInputListToPath(stroke)
-            if (path != null) {
-                val androidPath = path.asAndroidPath()
-                val offsetPath = android.graphics.Path(androidPath)
-                offsetPath.offset(0f, yOffset * 5)
-                canvas.drawPath(offsetPath, paintSignature)
+            strokeInputListToPath(stroke).let { path ->
+                if (path != null) {
+                    val androidPath = path.asAndroidPath()
+                    val offsetPath = android.graphics.Path(androidPath)
+                    offsetPath.offset(0f, yOffset * 5)
+                    canvas.drawPath(offsetPath, paintSignature)
+                }
             }
         }
         canvas.restore()

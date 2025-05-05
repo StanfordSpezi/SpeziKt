@@ -32,16 +32,14 @@ import androidx.ink.brush.StockBrushes
 import androidx.ink.strokes.Stroke
 import androidx.input.motionprediction.MotionEventPredictor
 
-
 @ExperimentalComposeUiApi
 @Composable
 internal fun SignatureCanvas(
     firstName: String,
     lastName: String,
     onPathAdd: (Map<InProgressStrokeId, Stroke>) -> Unit,
-    onViewCreated: (InProgressStrokesView) -> Unit = {}
+    onViewCreated: (InProgressStrokesView) -> Unit = {},
 ) {
-
     val currentPointerId = remember { mutableStateOf<Int?>(null) }
     val currentStrokeId = remember { mutableStateOf<InProgressStrokeId?>(null) }
 
@@ -162,10 +160,10 @@ internal fun SignatureCanvas(
                 strokeWidth = 2f
             )
             drawLine(
-            start = Offset(x = 10f, y = size.height - 55f),
-            end = Offset(x = 60f, y = size.height - 105f),
-            color = Color.Gray,
-            strokeWidth = 2f
+                start = Offset(x = 10f, y = size.height - 55f),
+                end = Offset(x = 60f, y = size.height - 105f),
+                color = Color.Gray,
+                strokeWidth = 2f
             )
             drawLine(
                 start = Offset(x = 60f, y = size.height - 55f),

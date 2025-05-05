@@ -44,7 +44,6 @@ internal fun SignaturePad(
     uiState: ConsentUiState,
     onAction: (ConsentAction) -> Unit,
 ) {
-
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val scope = rememberCoroutineScope()
@@ -90,7 +89,7 @@ internal fun SignaturePad(
                 onViewCreated = {
                     onAction(ConsentAction.ClearPath)
                     currentStrokesView = it
-                                },
+                },
                 onPathAdd = {
                     onAction(ConsentAction.AddPath(it))
                     // This is needed, otherwise having the keyboard out, will cause the signature to not be deletable
@@ -106,7 +105,7 @@ internal fun SignaturePad(
             Row(modifier = Modifier.fillMaxWidth()) {
                 FilledTonalButton(
                     onClick = {
-                      if (uiState.paths.isNotEmpty()) {
+                        if (uiState.paths.isNotEmpty()) {
                             currentStrokesView?.cancelStroke(uiState.paths.last().first)
                             currentStrokesView?.removeFinishedStrokes(setOf(uiState.paths.last().first))
                             onAction(ConsentAction.UndoPath)
