@@ -2,7 +2,7 @@
 <html class="no-js">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
-    <title>LOGGER</title>
+    <title>invoke</title>
 <link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../";</script>
     <script>document.documentElement.classList.replace("no-js","js");</script>
     <script>const storage = localStorage.getItem("dokka-dark-mode")
@@ -45,7 +45,7 @@
             </div>
         </div>
         <div class="filter-section" id="filter-section">
-                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":core-logging:dokkaHtmlPartial/release">androidJvm</button>
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":core:dokkaHtmlPartial/release">androidJvm</button>
         </div>
     </div>
     <div class="navigation-controls">
@@ -58,12 +58,12 @@
                 <div class="sidebar--inner" id="sideMenu"></div>
             </div>
             <div id="main">
-<div class="main-content" data-page-type="member" id="content" pageids="core-logging::edu.stanford.spezi.core.logging/SpeziLogger.Companion/LOGGER/#/PointingToDeclaration//-752609662">
-  <div class="breadcrumbs"><a href="../../../index.html">core-logging</a><span class="delimiter">/</span><a href="../../index.html">edu.stanford.spezi.core.logging</a><span class="delimiter">/</span><a href="../index.html">SpeziLogger</a><span class="delimiter">/</span><a href="index.html">Companion</a><span class="delimiter">/</span><span class="current">LOGGER</span></div>
+<div class="main-content" data-page-type="member" id="content" pageids="core::edu.stanford.spezi.core/Configuration.Companion/invoke/#kotlin.Function1[edu.stanford.spezi.core.ConfigurationBuilder,kotlin.Unit]/PointingToDeclaration//-27209644">
+  <div class="breadcrumbs"><a href="../../../index.html">core</a><span class="delimiter">/</span><a href="../../index.html">edu.stanford.spezi.core</a><span class="delimiter">/</span><a href="../index.html">Configuration</a><span class="delimiter">/</span><a href="index.html">Companion</a><span class="delimiter">/</span><span class="current">invoke</span></div>
   <div class="cover ">
-    <h1 class="cover"><span><span>LOGGER</span></span></h1>
+    <h1 class="cover"><span><span>invoke</span></span></h1>
   </div>
-  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-logging:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.jetbrains.annotations/VisibleForTesting///PointingToDeclaration/"><span class="token annotation builtin">VisibleForTesting</span></span></div></div><span class="token keyword">val </span><a href="-l-o-g-g-e-r.html">LOGGER</a><span class="token operator">: </span><a href="../index.html">SpeziLogger</a></div><p class="paragraph">The logger instance with default configuration.</p><p class="paragraph">It is recommended to use the logging methods (<code class="lang-kotlin">i</code>, <code class="lang-kotlin">w</code>, <code class="lang-kotlin">e</code>) provided by this class to log messages, rather than accessing the logger instance directly. This property is only public due to it's usage inside of inline methods below.</p></div></div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">operator </span><span class="token keyword">fun </span><a href="invoke.html"><span class="token function">invoke</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">scope<span class="token operator">: </span><a href="../../-configuration-builder/index.html">ConfigurationBuilder</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">Configuration</a></div><p class="paragraph">Creates a new <a href="../index.html">Configuration</a> instance using the provided configuration block.</p><p class="paragraph">This function allows you to define and register modules and their dependencies in a declarative way in your application.</p><p class="paragraph">Example usage:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">class MyApplication : Application(), SpeziApplication {<br>    override val configuration: Configuration = Configuration {<br>         module { AudioModule() }<br>         module&lt;Onboarding&gt; { OnboardingImpl() }<br>         module(identifier = "alternative-onboarding") { AlternativeOnboarding() }<br>         include(configuration = externalConfiguration)<br>    }<br>}</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><span class="kdoc-tag"><h4 class="">Return</h4><p class="paragraph">A new <a href="../index.html">Configuration</a> instance.</p></span><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/release" data-filterable-set=":core:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>scope</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The configuration block to configure the <a href="../index.html">Configuration</a>.</p></div></div></div></div></div></div></div>
 </div>
       <div class="footer">
         <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2025 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
