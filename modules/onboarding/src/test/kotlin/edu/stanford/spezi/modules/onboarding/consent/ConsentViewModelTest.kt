@@ -1,6 +1,7 @@
 package edu.stanford.spezi.modules.onboarding.consent
 
-import androidx.compose.ui.graphics.Path
+import androidx.ink.authoring.InProgressStrokeId
+import androidx.ink.strokes.Stroke
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.modules.account.manager.UserSessionManager
 import edu.stanford.spezi.modules.testing.CoroutineTestRule
@@ -39,6 +40,16 @@ class ConsentViewModelTest {
         every { markdownParser.parse(any()) } returns emptyList()
     }
 
+    private fun createPath(): Map<InProgressStrokeId, Stroke> {
+        val mockStrokeId1 = mockk<InProgressStrokeId>()
+        val mockStroke1 = mockk<Stroke>()
+
+        val mockStrokeMap = mapOf(
+            mockStrokeId1 to mockStroke1,
+        )
+        return mockStrokeMap
+    }
+
     @Test
     fun `it should update firstName on TextFieldUpdate action correctly`() = runTestUnconfined {
         // Given
@@ -71,7 +82,7 @@ class ConsentViewModelTest {
     @Test
     fun `it should handle AddPath action correctly`() = runTestUnconfined {
         // Given
-        val action = ConsentAction.AddPath(Path())
+        val action = ConsentAction.AddPath(createPath())
 
         // When
         viewModel.onAction(action)
@@ -84,8 +95,22 @@ class ConsentViewModelTest {
     @Test
     fun `it should handle Undo action correctly`() = runTestUnconfined {
         // Given
-        viewModel.onAction(ConsentAction.AddPath(Path()))
-        val action = ConsentAction.Undo
+        viewModel.onAction(ConsentAction.AddPath(createPath()))
+        val action = ConsentAction.UndoPath
+
+        // When
+        viewModel.onAction(action)
+
+        // Then
+        val uiState = viewModel.uiState.first()
+        assertThat(uiState.paths.size).isEqualTo(0)
+    }
+
+    @Test
+    fun `it should handle Clear action correctly`() = runTestUnconfined {
+        // Given
+        viewModel.onAction(ConsentAction.AddPath(createPath()))
+        val action = ConsentAction.ClearPath
 
         // When
         viewModel.onAction(action)

@@ -79,5 +79,8 @@ dependencies {
 
     implementation(libs.googlecode.phonenumber)
 
+    implementation(libs.androidx.ink.authoring)
+    implementation(libs.androidx.ink.strokes)
+
     androidTestImplementation(project(":modules:testing"))
 }

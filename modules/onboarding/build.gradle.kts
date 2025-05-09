@@ -21,8 +21,16 @@ dependencies {
     implementation(project(":ui-markdown"))
     implementation(project(":ui-testing"))
 
-    implementation(libs.androidx.foundation)
     implementation(libs.accompanist.pager)
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.ink.authoring)
+    implementation(libs.androidx.ink.brush)
+    implementation(libs.androidx.ink.geometry)
+    implementation(libs.androidx.ink.nativeloader)
+    implementation(libs.androidx.ink.rendering)
+    implementation(libs.androidx.ink.strokes)
+    implementation(libs.androidx.input.motionprediction)
+    implementation(libs.digital.ink.recognition)
     implementation(libs.hilt.navigation.compose)
 
     testImplementation(libs.bundles.unit.testing)

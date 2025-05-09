@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -72,7 +71,7 @@ private class ConsentScreenPreviewProvider : PreviewParameterProvider<ConsentUiS
         ConsentUiState(
             firstName = FieldState("John"),
             lastName = FieldState("Doe"),
-            paths = mutableListOf(Path().apply { lineTo(100f, 100f) }),
+            paths = mutableListOf(),
             markdownElements = listOf(
                 MarkdownElement.Heading(1, "Consent"),
                 MarkdownElement.Paragraph("Please sign below to indicate your consent."),
