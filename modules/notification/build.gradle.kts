@@ -14,7 +14,6 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.functions.ktx)
     implementation(libs.firebase.messaging.ktx)
-    implementation(libs.hilt.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
 
     implementation(project(":modules:account"))

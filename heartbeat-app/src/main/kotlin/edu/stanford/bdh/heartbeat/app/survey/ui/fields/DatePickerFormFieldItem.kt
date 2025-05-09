@@ -1,0 +1,79 @@
+package edu.stanford.bdh.heartbeat.app.survey.ui.fields
+
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import edu.stanford.bdh.heartbeat.app.survey.ui.QuestionFieldLabel
+import edu.stanford.bdh.heartbeat.app.survey.ui.QuestionNumberInfo
+import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyCard
+import edu.stanford.bdh.heartbeat.app.survey.ui.SurveyItemPreview
+import edu.stanford.spezi.modules.design.component.DatePickerDialog
+import edu.stanford.spezi.ui.ThemePreviews
+import java.time.Instant
+
+data class DatePickerFormFieldItem(
+    override val fieldId: String,
+    val info: QuestionNumberInfo,
+    val fieldLabel: QuestionFieldLabel?,
+    val value: String,
+    val onValueChange: (Instant) -> Unit,
+) : FormFieldItem {
+
+    @Composable
+    override fun Body(modifier: Modifier) {
+        var showDatePicker by remember { mutableStateOf(false) }
+
+        SurveyCard(modifier = modifier) {
+            info.body
+            fieldLabel?.body
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                val hasValue = value.isNotEmpty()
+                Text(
+                    modifier = Modifier.alpha(if (hasValue) 1f else DISABLED_ALPHA).weight(1f),
+                    text = if (hasValue) value else "Select a date..."
+                )
+                IconButton(onClick = { showDatePicker = true }) {
+                    Icon(imageVector = Icons.Filled.DateRange, contentDescription = "")
+                }
+            }
+            if (showDatePicker) {
+                DatePickerDialog(
+                    onDateSelected = onValueChange,
+                    onDismiss = { showDatePicker = false },
+                    selectableDatesPredicate = { true } // TODO; consider
+                )
+            }
+        }
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun DatePickerFormFieldItemPreview() {
+    val datePickerFormField = DatePickerFormFieldItem(
+        fieldId = "",
+        info = QuestionNumberInfo(2, 2),
+        fieldLabel = QuestionFieldLabel("Birthday"),
+        value = "",
+        onValueChange = {},
+    )
+    SurveyItemPreview {
+        datePickerFormField.body
+    }
+}

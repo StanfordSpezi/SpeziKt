@@ -30,8 +30,6 @@ dependencies {
     implementation(project(":ui"))
     implementation(project(":ui-testing"))
 
-    implementation(libs.hilt.navigation.compose)
-
     implementation(libs.firebase.functions.ktx)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)

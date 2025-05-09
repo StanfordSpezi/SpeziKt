@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,6 +63,14 @@ private fun CommonScaffoldPreview() {
     SpeziTheme {
         CommonScaffold(
             title = "Common Scaffold",
+            actions = {
+                IconButton(onClick = {}) {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "",
+                    )
+                }
+            },
             content = {}
         )
     }

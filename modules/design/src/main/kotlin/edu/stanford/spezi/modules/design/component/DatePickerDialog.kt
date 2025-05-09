@@ -1,4 +1,4 @@
-package edu.stanford.spezi.modules.account.register
+package edu.stanford.spezi.modules.design.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
@@ -11,18 +11,19 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import edu.stanford.spezi.modules.account.R
+import edu.stanford.spezi.modules.design.R
 import java.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerDialog(
     onDateSelected: (Instant) -> Unit,
+    selectableDatesPredicate: (Instant) -> Boolean = { it <= Instant.now() },
     onDismiss: () -> Unit,
 ) {
     val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
         override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-            return utcTimeMillis <= System.currentTimeMillis()
+            return selectableDatesPredicate(Instant.ofEpochMilli(utcTimeMillis))
         }
     })
 
@@ -38,14 +39,14 @@ fun DatePickerDialog(
             }
 
             ) {
-                Text(text = stringResource(R.string.account_ok))
+                Text(text = stringResource(R.string.ok))
             }
         },
         dismissButton = {
             Button(onClick = {
                 onDismiss()
             }) {
-                Text(text = stringResource(R.string.account_cancel))
+                Text(text = stringResource(R.string.cancel))
             }
         }
     ) {

@@ -2,7 +2,7 @@ package edu.stanford.spezi.ui.testing
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.test.junit4.ComposeTestRule
+import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 
@@ -12,18 +12,16 @@ import androidx.compose.ui.test.onNodeWithTag
  */
 typealias TestIdentifier = Enum<*>
 
-fun ComposeTestRule.onNodeWithIdentifier(
+fun SemanticsNodeInteractionsProvider.onNodeWithIdentifier(
     identifier: TestIdentifier,
     suffix: String? = null,
-    useUnmergedTree: Boolean = false,
-) = onNodeWithTag(identifier.tag(suffix = suffix), useUnmergedTree = useUnmergedTree)
+) = onNodeWithTag(identifier.tag(suffix = suffix), useUnmergedTree = true)
 
-fun ComposeTestRule.onAllNodes(
+fun SemanticsNodeInteractionsProvider.onAllNodes(
     identifier: TestIdentifier,
-    useUnmergedTree: Boolean = false,
-) = onAllNodesWithTag(identifier.tag(), useUnmergedTree)
+) = onAllNodesWithTag(testTag = identifier.tag(), useUnmergedTree = true)
 
-fun ComposeTestRule.waitNode(
+fun SemanticsNodeInteractionsProvider.waitNode(
     identifier: TestIdentifier,
 ) = onAllNodesWithTag(identifier.tag()).fetchSemanticsNodes().isNotEmpty()
 

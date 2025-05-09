@@ -131,15 +131,20 @@ fun AsyncTextButton(
     )
 }
 
+/**
+ * A [ComposableContent] button that renders a circular progress CircularProgressIndicator
+ * in case of loading or [title] otherwise in a self managing manner while executing suspend
+ * [action] by launching [coroutineScope].
+ */
 data class AsyncTextButton(
-    val title: String,
-    val enabled: Boolean = true,
+    private val title: String,
+    private val enabled: Boolean = true,
     private val shape: ComposeValue<Shape> = { ButtonDefaults.shape },
     private val containerColor: ComposeValue<Color> = { ButtonDefaults.buttonColors().containerColor },
     private val textColor: ComposeValue<Color> = { ButtonDefaults.buttonColors().contentColor },
     private val contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     private val coroutineScope: ComposeValue<CoroutineScope> = { rememberCoroutineScope() },
-    val action: suspend () -> Unit = {},
+    private val action: suspend () -> Unit = {},
 ) : ComposableContent {
     private val _loadingState = mutableStateOf(false)
     val loadingState: State<Boolean> = _loadingState
