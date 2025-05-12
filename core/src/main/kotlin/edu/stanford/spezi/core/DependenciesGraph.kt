@@ -1,9 +1,11 @@
 package edu.stanford.spezi.core
 
+import android.content.Context
 import edu.stanford.spezi.core.internal.ModuleKey
 import edu.stanford.spezi.core.internal.ModuleRegistry
 import edu.stanford.spezi.core.internal.speziCoreLogger
 import edu.stanford.spezi.foundation.simpleTypeName
+import kotlin.reflect.full.companionObjectInstance
 
 /**
  * A graph of dependencies built at app start up via the configuration of the [SpeziApplication].
@@ -39,8 +41,40 @@ class DependenciesGraph internal constructor(
      */
     inline fun <reified M : Module> dependency(identifier: String? = null): M {
         val typeKey = ModuleKey<M>(identifier)
-        return optionalDependency(typeKey)
-            ?: speziError("$typeKey not found. Please make sure to registered it the configuration block of your SpeziApplication")
+        return optionalDependency(typeKey) ?: createModuleOrThrow(typeKey)
+    }
+
+    /**
+     * Creates a module of type [M] if it was not previously registered in the dependency graph.
+     * It will attempt to instantiate the module by checking for an empty constructor, a constructor that takes a [Context] parameter, or
+     * finally check whether companion object of [M] implements [DefaultInitializer].
+     *
+     * @param typeKey The key associated with the instance built via [ConfigurationBuilder.module].
+     * @return The module instance of type [M] if it was previously registered or throws an error if not found.
+     */
+    @PublishedApi
+    @Suppress("UNCHECKED_CAST")
+    internal inline fun <reified M : Module> createModuleOrThrow(typeKey: ModuleKey<M>): M {
+        val clazz = M::class
+        val constructors = clazz.constructors
+        val appContext = optionalDependency<ApplicationModule>()?.application?.applicationContext
+        val result = runCatching {
+            constructors.find { it.parameters.isEmpty() }?.call()
+                ?: constructors.find { it.parameters.size == 1 && it.parameters[0].type.classifier == Context::class }?.call(appContext)
+                ?: run { appContext?.let { (clazz.companionObjectInstance as? DefaultInitializer<M>)?.create(it) } }
+                ?: speziError("No suitable constructor found for $typeKey")
+        }
+        val instance = result.getOrNull()
+        return if (instance != null) {
+            registry.modules[typeKey] = instance
+            logger.w { "Instantiated module $typeKey manually via fallback mechanism. Consider registering it explicitly." }
+            instance
+        } else {
+            speziError(
+                message = "$typeKey not found. Please make sure to register via in the configuration block of your app component",
+                cause = result.exceptionOrNull()
+            )
+        }
     }
 
     /**

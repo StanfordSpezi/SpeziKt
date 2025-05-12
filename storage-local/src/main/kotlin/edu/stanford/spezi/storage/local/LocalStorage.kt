@@ -2,12 +2,15 @@ package edu.stanford.spezi.storage.local
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
+import edu.stanford.spezi.core.DefaultInitializer
+import edu.stanford.spezi.core.Module
 import edu.stanford.spezi.core.coroutines.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.storage.local.LocalStorageSetting.Encrypted
 import edu.stanford.spezi.storage.local.LocalStorageSetting.EncryptedUsingKeyStore
 import edu.stanford.spezi.storage.local.LocalStorageSetting.Unencrypted
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationStrategy
@@ -19,7 +22,7 @@ import java.security.KeyPair
 import javax.crypto.Cipher
 import javax.inject.Inject
 
-interface LocalStorage {
+interface LocalStorage : Module {
 
     suspend fun <T : Any> store(
         key: String,
@@ -48,6 +51,16 @@ interface LocalStorage {
     ): T?
 
     suspend fun delete(key: String)
+
+    companion object : DefaultInitializer<LocalStorage> {
+        override fun create(context: Context): LocalStorage {
+            return LocalStorageImpl(
+                context = context,
+                ioDispatcher = Dispatchers.IO,
+                keyStorage = KeyStorageImpl(),
+            )
+        }
+    }
 }
 
 internal class LocalStorageImpl @Inject constructor(

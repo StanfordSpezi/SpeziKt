@@ -1,5 +1,6 @@
 package edu.stanford.spezi.storage.local
 
+import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -43,6 +44,15 @@ class LocalStorageTests {
 
     @Serializable
     data class Letter(val greeting: String)
+
+    @Test
+    fun `it should return a correct instance via companion object default initializer`() {
+        // given
+        val storage = LocalStorage.create(InstrumentationRegistry.getInstrumentation().targetContext)
+
+        // then
+        assertThat(storage).isInstanceOf(LocalStorageImpl::class.java)
+    }
 
     @Test
     fun `it should handle complex type correctly`() = runTestUnconfined {
