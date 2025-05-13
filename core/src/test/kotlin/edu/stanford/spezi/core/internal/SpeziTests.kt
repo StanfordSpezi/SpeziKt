@@ -1,10 +1,12 @@
 package edu.stanford.spezi.core.internal
 
 import android.app.Application
+import android.content.Context
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.ApplicationModule
 import edu.stanford.spezi.core.Configuration
 import edu.stanford.spezi.core.ConfigurationBuilder
+import edu.stanford.spezi.core.DefaultInitializer
 import edu.stanford.spezi.core.Module
 import edu.stanford.spezi.core.SpeziApplication
 import edu.stanford.spezi.core.SpeziError
@@ -29,10 +31,53 @@ class SpeziTests {
         }
 
         // when
-        val dependency by dependency<ApplicationModule>()
+        val dependency = dependency<ApplicationModule>().value
 
         // then
         assertThat(dependency.application).isEqualTo(application)
+    }
+
+    @Test
+    fun `it should be able to create and return modules with empty constructor`() {
+        // given
+        testApplication {
+            // no dependencies registered
+        }
+
+        // when
+        val dependency by dependency<EmptyModule>()
+
+        // then
+        assertThat(dependency.name).isEqualTo("empty-module")
+    }
+
+    @Test
+    fun `it should be able to create and return modules with context constructor`() {
+        // given
+        testApplication {
+            // no dependencies registered
+        }
+
+        // when
+        val dependency by dependency<EmptyModuleContext>()
+
+        // then
+        assertThat(dependency.name).isEqualTo("empty-module-context")
+    }
+
+    @Test
+    fun `it should be able to create and return modules from Default initializer of companion object`() {
+        // given
+        val application = testApplication {
+            // no dependencies registered
+        }
+
+        // when
+        val dependency by dependency<EmptyModuleWithCompanion>()
+        val defaultInstance = EmptyModuleWithCompanion.create(application)
+
+        // then
+        assertThat(dependency).isEqualTo(defaultInstance)
     }
 
     @Test
@@ -363,3 +408,16 @@ private class ConfigurableModule : Module {
 private class AudioModule : Module
 private class Preprocessor(val module: AudioModule) : Module
 private class CoughModule(val audioModule: AudioModule, val preprocessor: Preprocessor) : Module
+class EmptyModule : Module {
+    val name = "empty-module"
+}
+class EmptyModuleContext(private val context: Context) : Module {
+    val name = "empty-module-context"
+}
+data class EmptyModuleWithCompanion(val name: String) : Module {
+    companion object : DefaultInitializer<EmptyModuleWithCompanion> {
+        override fun create(context: Context): EmptyModuleWithCompanion {
+            return EmptyModuleWithCompanion(name = "empty-module-with-companion")
+        }
+    }
+}

@@ -1,6 +1,5 @@
 package edu.stanford.spezi.core
 
-import edu.stanford.spezi.core.internal.ModuleKey
 import edu.stanford.spezi.core.internal.Spezi
 
 /**
@@ -41,7 +40,5 @@ inline fun <reified M : Module> optionalDependency(identifier: String? = null) =
  * }
  */
 inline fun <reified M : Module> dependency(identifier: String? = null): Lazy<M> = lazy {
-    val key = ModuleKey<M>(identifier)
-    Spezi.requireGraph().optionalDependency(key)
-        ?: speziError("$key not found. Please make sure to register via in the configuration block of your app component")
+    Spezi.requireGraph().dependency(identifier)
 }
