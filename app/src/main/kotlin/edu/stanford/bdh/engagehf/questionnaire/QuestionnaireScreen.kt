@@ -20,12 +20,12 @@ import edu.stanford.spezi.modules.design.component.CenteredBoxContent
 import edu.stanford.spezi.modules.design.component.VerticalSpacer
 import edu.stanford.spezi.questionnaire.QuestionnaireComposable
 import edu.stanford.spezi.questionnaire.QuestionnaireResult
-import edu.stanford.spezi.ui.Colors
-import edu.stanford.spezi.ui.Colors.primary
-import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.StringResource
-import edu.stanford.spezi.ui.ThemePreviews
 import edu.stanford.spezi.ui.testIdentifier
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.Colors.primary
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 @Composable
 fun QuestionnaireScreen() {

@@ -12,9 +12,9 @@ import edu.stanford.spezi.modules.onboarding.OnboardingNavigationEvent
 import edu.stanford.spezi.modules.onboarding.invitation.InvitationCodeScreenTestIdentifier
 import edu.stanford.spezi.modules.onboarding.onboarding.OnboardingScreenTestIdentifier
 import edu.stanford.spezi.modules.onboarding.sequential.SequentialOnboardingScreenTestIdentifier
-import edu.stanford.spezi.ui.TestIdentifier
 import edu.stanford.spezi.testing.ui.onAllNodes
 import edu.stanford.spezi.testing.ui.onNodeWithIdentifier
+import edu.stanford.spezi.ui.TestIdentifier
 
 class NavigatorSimulator(
     private val composeTestRule: ComposeTestRule,

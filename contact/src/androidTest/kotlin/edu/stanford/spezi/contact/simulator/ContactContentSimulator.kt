@@ -10,11 +10,11 @@ import androidx.test.platform.app.InstrumentationRegistry
 import edu.stanford.spezi.contact.ContactContentTestIdentifier
 import edu.stanford.spezi.contact.ContactOption
 import edu.stanford.spezi.contact.formatted
+import edu.stanford.spezi.testing.ui.onNodeWithContent
+import edu.stanford.spezi.testing.ui.onNodeWithIdentifier
 import edu.stanford.spezi.ui.ImageResource
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
-import edu.stanford.spezi.testing.ui.onNodeWithContent
-import edu.stanford.spezi.testing.ui.onNodeWithIdentifier
 
 class ContactContentSimulator(
     private val composeTestRule: ComposeTestRule,

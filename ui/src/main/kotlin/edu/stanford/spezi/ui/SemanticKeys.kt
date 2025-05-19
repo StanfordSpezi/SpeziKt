@@ -1,5 +1,6 @@
 package edu.stanford.spezi.ui
 
+import androidx.annotation.DrawableRes
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.SemanticsPropertyKey
@@ -19,6 +20,6 @@ fun Modifier.testContentIdentifier(content: String) = semantics {
     this[SemanticKeys.Content] = content
 }
 
-fun Modifier.testDrawableResIdentifier(id: Int) = semantics {
+fun Modifier.testDrawableResIdentifier(@DrawableRes id: Int) = semantics {
     this[SemanticKeys.DrawableRes] = id
 }

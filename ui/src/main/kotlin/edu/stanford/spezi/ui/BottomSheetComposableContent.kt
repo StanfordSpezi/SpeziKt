@@ -5,6 +5,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import edu.stanford.spezi.ui.theme.Colors
 
 @OptIn(ExperimentalMaterial3Api::class)
 interface BottomSheetComposableContent : ComposableContent {

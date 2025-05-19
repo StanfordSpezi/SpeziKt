@@ -18,10 +18,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.spezi.modules.design.component.CommonScaffold
 import edu.stanford.spezi.ui.ComposableContent
-import edu.stanford.spezi.ui.Spacings
-import edu.stanford.spezi.ui.SpeziTheme
-import edu.stanford.spezi.ui.TextStyles
-import edu.stanford.spezi.ui.ThemePreviews
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 data class PhoneNumberSettingsUiState(
     val bottomSheet: AddPhoneNumberBottomSheet?,

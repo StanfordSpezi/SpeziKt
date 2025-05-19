@@ -17,12 +17,12 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
-import edu.stanford.spezi.ui.Colors
 import edu.stanford.spezi.ui.ImageResource
-import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.StringResource
-import edu.stanford.spezi.ui.ThemePreviews
 import edu.stanford.spezi.ui.testContentIdentifier
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 /**
  * Composable function to display an icon using an [ImageResource].

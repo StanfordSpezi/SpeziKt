@@ -25,15 +25,15 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.ui.ComposableContent
 import edu.stanford.spezi.ui.ImageResource
-import edu.stanford.spezi.ui.Sizes
-import edu.stanford.spezi.ui.Spacings
-import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.StringResource
-import edu.stanford.spezi.ui.TextStyles
-import edu.stanford.spezi.ui.ThemePreviews
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
 import edu.stanford.spezi.ui.testContentIdentifier
 import edu.stanford.spezi.ui.testIdentifier
+import edu.stanford.spezi.ui.theme.Sizes
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles
+import edu.stanford.spezi.ui.theme.ThemePreviews
 import java.util.Locale
 import java.util.UUID
 
@@ -216,4 +216,3 @@ private object ContactContentFactory {
         )
     }
 }
-

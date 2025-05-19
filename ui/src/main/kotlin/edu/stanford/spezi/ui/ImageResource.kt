@@ -13,6 +13,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.foundation.UUID
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 /**
  * A sealed class to represent an image resource. It can be either a vector image or a drawable.

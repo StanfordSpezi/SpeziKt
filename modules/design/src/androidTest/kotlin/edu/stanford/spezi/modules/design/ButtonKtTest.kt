@@ -9,7 +9,7 @@ import androidx.compose.ui.test.isNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.theme.SpeziTheme
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test

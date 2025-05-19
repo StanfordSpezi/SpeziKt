@@ -9,6 +9,7 @@ android {
 
 dependencies {
     implementation(project(":core-logging"))
+    implementation(project(":foundation"))
 
     api(project(":ui-personalinfo"))
 

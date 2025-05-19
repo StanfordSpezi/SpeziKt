@@ -51,12 +51,12 @@ import edu.stanford.spezi.modules.account.register.FieldState
 import edu.stanford.spezi.modules.account.register.IconLeadingContent
 import edu.stanford.spezi.modules.design.component.AsyncTextButton
 import edu.stanford.spezi.modules.design.component.validated.outlinedtextfield.ValidatedOutlinedTextField
-import edu.stanford.spezi.ui.Colors
-import edu.stanford.spezi.ui.Spacings
-import edu.stanford.spezi.ui.SpeziTheme
-import edu.stanford.spezi.ui.TextStyles.bodyLarge
-import edu.stanford.spezi.ui.TextStyles.titleLarge
 import edu.stanford.spezi.ui.testIdentifier
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles.bodyLarge
+import edu.stanford.spezi.ui.theme.TextStyles.titleLarge
 import edu.stanford.spezi.modules.design.R as DesignR
 
 @Composable

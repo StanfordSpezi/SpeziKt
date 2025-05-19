@@ -12,8 +12,8 @@ import edu.stanford.bdh.engagehf.medication.ui.MedicationCardUiModel
 import edu.stanford.bdh.engagehf.medication.ui.MedicationUiState
 import edu.stanford.bdh.engagehf.medication.ui.MedicationViewModel
 import edu.stanford.bdh.engagehf.medication.ui.Medications
-import edu.stanford.spezi.ui.SpeziTheme
-import edu.stanford.spezi.ui.ThemePreviews
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 @Composable
 fun MedicationList(

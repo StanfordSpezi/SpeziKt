@@ -35,22 +35,22 @@ import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.navigation.screens.AccountUiState
 import edu.stanford.bdh.engagehf.navigation.screens.Action
 import edu.stanford.spezi.modules.design.component.VerticalSpacer
-import edu.stanford.spezi.ui.Colors
-import edu.stanford.spezi.ui.Colors.onBackground
-import edu.stanford.spezi.ui.Colors.onPrimary
-import edu.stanford.spezi.ui.Colors.primary
-import edu.stanford.spezi.ui.Colors.secondary
-import edu.stanford.spezi.ui.Colors.surface
-import edu.stanford.spezi.ui.Sizes
-import edu.stanford.spezi.ui.Spacings
-import edu.stanford.spezi.ui.SpeziTheme
-import edu.stanford.spezi.ui.TextStyles
-import edu.stanford.spezi.ui.TextStyles.bodyMedium
-import edu.stanford.spezi.ui.TextStyles.bodySmall
-import edu.stanford.spezi.ui.TextStyles.headlineMedium
-import edu.stanford.spezi.ui.TextStyles.headlineSmall
-import edu.stanford.spezi.ui.ThemePreviews
 import edu.stanford.spezi.ui.lighten
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.Colors.onBackground
+import edu.stanford.spezi.ui.theme.Colors.onPrimary
+import edu.stanford.spezi.ui.theme.Colors.primary
+import edu.stanford.spezi.ui.theme.Colors.secondary
+import edu.stanford.spezi.ui.theme.Colors.surface
+import edu.stanford.spezi.ui.theme.Sizes
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles
+import edu.stanford.spezi.ui.theme.TextStyles.bodyMedium
+import edu.stanford.spezi.ui.theme.TextStyles.bodySmall
+import edu.stanford.spezi.ui.theme.TextStyles.headlineMedium
+import edu.stanford.spezi.ui.theme.TextStyles.headlineSmall
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 @Composable
 fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {

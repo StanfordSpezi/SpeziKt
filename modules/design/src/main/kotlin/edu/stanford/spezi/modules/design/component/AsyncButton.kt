@@ -19,13 +19,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import edu.stanford.spezi.ui.Colors
 import edu.stanford.spezi.ui.ComposableContent
 import edu.stanford.spezi.ui.ComposeValue
-import edu.stanford.spezi.ui.Sizes
-import edu.stanford.spezi.ui.SpeziTheme
-import edu.stanford.spezi.ui.ThemePreviews
 import edu.stanford.spezi.ui.testIdentifier
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.Sizes
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.ThemePreviews
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

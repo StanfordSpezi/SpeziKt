@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import edu.stanford.spezi.ui.theme.Spacings
 
 /**
  * A [ComposableContent] with additional capability to render itself in as a model dialog

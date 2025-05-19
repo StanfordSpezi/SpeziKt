@@ -3,8 +3,8 @@ package edu.stanford.spezi.modules.design.component
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import edu.stanford.spezi.ui.Colors
-import edu.stanford.spezi.ui.TextStyles
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.TextStyles
 
 @Composable
 fun SecondaryText(text: String, modifier: Modifier = Modifier) {

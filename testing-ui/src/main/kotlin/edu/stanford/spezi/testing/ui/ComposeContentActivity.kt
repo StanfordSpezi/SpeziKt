@@ -8,7 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.AndroidEntryPoint
 import edu.stanford.spezi.ui.ComposableBlock
-import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.theme.SpeziTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 

@@ -10,10 +10,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import edu.stanford.spezi.ui.Colors
-import edu.stanford.spezi.ui.Sizes
-import edu.stanford.spezi.ui.SpeziTheme
-import edu.stanford.spezi.ui.ThemePreviews
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.Sizes
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 @Composable
 fun AsyncSwitch(

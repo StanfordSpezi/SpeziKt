@@ -12,11 +12,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import edu.stanford.spezi.modules.design.component.VerticalSpacer
-import edu.stanford.spezi.ui.Colors
-import edu.stanford.spezi.ui.Spacings
-import edu.stanford.spezi.ui.SpeziTheme
-import edu.stanford.spezi.ui.TextStyles
-import edu.stanford.spezi.ui.ThemePreviews
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

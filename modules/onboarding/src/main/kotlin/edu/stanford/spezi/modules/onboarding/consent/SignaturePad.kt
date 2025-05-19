@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.modules.onboarding.R
-import edu.stanford.spezi.ui.Spacings
+import edu.stanford.spezi.ui.theme.Spacings
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

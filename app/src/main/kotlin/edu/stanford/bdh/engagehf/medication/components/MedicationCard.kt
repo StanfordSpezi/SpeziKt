@@ -31,14 +31,14 @@ import edu.stanford.spezi.modules.design.component.CircleShimmerEffect
 import edu.stanford.spezi.modules.design.component.RectangleShimmerEffect
 import edu.stanford.spezi.modules.design.component.VerticalSpacer
 import edu.stanford.spezi.modules.design.component.height
-import edu.stanford.spezi.ui.Colors
 import edu.stanford.spezi.ui.DefaultElevatedCard
-import edu.stanford.spezi.ui.Sizes
-import edu.stanford.spezi.ui.Spacings
-import edu.stanford.spezi.ui.SpeziTheme
-import edu.stanford.spezi.ui.TextStyles
-import edu.stanford.spezi.ui.ThemePreviews
 import edu.stanford.spezi.ui.testIdentifier
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.Sizes
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 private const val LOADING_ITEM_COUNT = 3
 

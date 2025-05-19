@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.components.ItemsDialog
-import edu.stanford.spezi.ui.SpeziTheme
-import edu.stanford.spezi.ui.ThemePreviews
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 @Composable
 fun MeasurementLocationDialog(

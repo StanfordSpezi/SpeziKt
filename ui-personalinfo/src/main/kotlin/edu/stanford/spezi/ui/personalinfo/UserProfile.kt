@@ -25,12 +25,12 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import edu.stanford.spezi.core.logging.SpeziLogger
-import edu.stanford.spezi.ui.Colors
 import edu.stanford.spezi.ui.ImageResource
-import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.StringResource
-import edu.stanford.spezi.ui.ThemePreviews
 import edu.stanford.spezi.ui.lighten
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.ThemePreviews
 import kotlin.math.min
 
 interface UserProfileImageLoader {

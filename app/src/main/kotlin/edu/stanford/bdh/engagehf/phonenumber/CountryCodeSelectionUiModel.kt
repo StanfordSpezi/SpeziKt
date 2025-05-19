@@ -29,12 +29,12 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.spezi.ui.BottomSheetComposableContent
-import edu.stanford.spezi.ui.Colors
 import edu.stanford.spezi.ui.ComposableBlock
-import edu.stanford.spezi.ui.Spacings
-import edu.stanford.spezi.ui.SpeziTheme
-import edu.stanford.spezi.ui.ThemePreviews
 import edu.stanford.spezi.ui.disabledAlpha
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 @OptIn(ExperimentalMaterial3Api::class)
 data class CountryCodeSelectionUiModel(

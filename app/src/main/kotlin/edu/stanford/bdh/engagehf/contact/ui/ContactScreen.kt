@@ -27,14 +27,14 @@ import edu.stanford.spezi.contact.email
 import edu.stanford.spezi.contact.website
 import edu.stanford.spezi.modules.design.component.AppTopAppBar
 import edu.stanford.spezi.modules.design.component.CenteredBoxContent
-import edu.stanford.spezi.ui.Colors.primary
 import edu.stanford.spezi.ui.ImageResource
-import edu.stanford.spezi.ui.Spacings
-import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.StringResource
-import edu.stanford.spezi.ui.TextStyles
-import edu.stanford.spezi.ui.ThemePreviews
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
+import edu.stanford.spezi.ui.theme.Colors.primary
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles
+import edu.stanford.spezi.ui.theme.ThemePreviews
 import java.util.Locale
 
 @Composable

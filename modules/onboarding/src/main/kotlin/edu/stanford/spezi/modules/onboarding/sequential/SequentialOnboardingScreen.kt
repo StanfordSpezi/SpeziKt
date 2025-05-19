@@ -26,14 +26,14 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.modules.onboarding.sequential.components.OnboardingViewPage
 import edu.stanford.spezi.modules.onboarding.sequential.components.PageIndicator
-import edu.stanford.spezi.ui.Colors.onPrimary
-import edu.stanford.spezi.ui.Colors.onSecondary
-import edu.stanford.spezi.ui.Colors.onTertiary
-import edu.stanford.spezi.ui.Colors.primary
-import edu.stanford.spezi.ui.Colors.secondary
-import edu.stanford.spezi.ui.Colors.tertiary
-import edu.stanford.spezi.ui.Spacings
 import edu.stanford.spezi.ui.testIdentifier
+import edu.stanford.spezi.ui.theme.Colors.onPrimary
+import edu.stanford.spezi.ui.theme.Colors.onSecondary
+import edu.stanford.spezi.ui.theme.Colors.onTertiary
+import edu.stanford.spezi.ui.theme.Colors.primary
+import edu.stanford.spezi.ui.theme.Colors.secondary
+import edu.stanford.spezi.ui.theme.Colors.tertiary
+import edu.stanford.spezi.ui.theme.Spacings
 
 /**
  * The screen that displays the sequential onboarding steps.

@@ -18,13 +18,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.foundation.UUID
-import edu.stanford.spezi.ui.Colors
 import edu.stanford.spezi.ui.ComposableContent
 import edu.stanford.spezi.ui.DefaultElevatedCard
-import edu.stanford.spezi.ui.Spacings
-import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.StringResource
-import edu.stanford.spezi.ui.ThemePreviews
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.ThemePreviews
 import java.util.UUID
 
 /**
@@ -87,4 +87,3 @@ private fun ContactOptionCardPreview() {
         option.Content()
     }
 }
-

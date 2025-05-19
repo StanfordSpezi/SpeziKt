@@ -47,8 +47,8 @@ import edu.stanford.spezi.modules.notification.NotificationRoutes
 import edu.stanford.spezi.modules.notification.setting.NotificationSettingScreen
 import edu.stanford.spezi.modules.onboarding.OnboardingNavigationEvent
 import edu.stanford.spezi.modules.onboarding.sequential.SequentialOnboardingScreen
-import edu.stanford.spezi.ui.Sizes
-import edu.stanford.spezi.ui.SpeziTheme
+import edu.stanford.spezi.ui.theme.Sizes
+import edu.stanford.spezi.ui.theme.SpeziTheme
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -6,8 +6,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import edu.stanford.spezi.ui.Colors.onPrimary
-import edu.stanford.spezi.ui.Colors.primary
+import edu.stanford.spezi.ui.theme.Colors.onPrimary
+import edu.stanford.spezi.ui.theme.Colors.primary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

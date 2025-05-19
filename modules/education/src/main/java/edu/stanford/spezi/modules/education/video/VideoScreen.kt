@@ -23,9 +23,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import edu.stanford.spezi.modules.design.component.AppTopAppBar
 import edu.stanford.spezi.modules.education.videos.Video
-import edu.stanford.spezi.ui.Spacings
-import edu.stanford.spezi.ui.TextStyles
 import edu.stanford.spezi.ui.testIdentifier
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.TextStyles
 
 @Composable
 fun VideoScreen() {
