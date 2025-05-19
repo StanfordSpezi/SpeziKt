@@ -54,13 +54,9 @@ fun Validate(
             debounceDuration,
         )
     }
-    LaunchedEffect(configuration) {
+    LaunchedEffect(configuration, coroutineScope, debounceDuration) {
         engine.configuration = configuration
-    }
-    LaunchedEffect(coroutineScope) {
         engine.coroutineScope = coroutineScope
-    }
-    LaunchedEffect(debounceDuration) {
         engine.debounceDuration = debounceDuration
     }
 

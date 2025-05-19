@@ -1,16 +1,20 @@
 package edu.stanford.spezi.ui.validation
 
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class SpeziValidationTest {
+    private val dispatcher = StandardTestDispatcher()
 
     @Test
-    fun testValidationDebounce() {
+    fun testValidationDebounce() = runTest(dispatcher) {
         val engine = ValidationEngineImpl(
             rules = listOf(ValidationRule.nonEmpty),
-            coroutineScope = GlobalScope
+            coroutineScope = TestScope(dispatcher)
         )
 
         engine.submit("Valid")
@@ -21,7 +25,7 @@ class SpeziValidationTest {
         assertThat(engine.inputValid).isTrue()
         assertThat(engine.validationResults).isEmpty()
 
-        Thread.sleep(1_000)
+        delay(1_000)
 
         assertThat(engine.inputValid).isFalse()
         assertThat(engine.validationResults).hasSize(1)
