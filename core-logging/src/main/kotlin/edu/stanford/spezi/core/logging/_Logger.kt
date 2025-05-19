@@ -10,7 +10,8 @@ package edu.stanford.spezi.core.logging
  * @see [SpeziLogger] for the reasoning behind inline functions.
  */
 @Suppress("ClassNaming")
-sealed interface _Logger {
+@PublishedApi
+internal sealed interface _Logger {
     val tag: String
     val messagePrefix: String?
     var nextTag: String?

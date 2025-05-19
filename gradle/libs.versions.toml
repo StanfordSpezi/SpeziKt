@@ -116,6 +116,7 @@ hilt-test = { group = "com.google.dagger", name = "hilt-android-testing", versio
 hilt-test-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hiltVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlin-gradle = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 mockk-agent-core = { group = "io.mockk", name = "mockk-agent", version.ref = "mockKVersion" }
 mockk-agent-jvm = { group = "io.mockk", name = "mockk-agent-jvm", version.ref = "mockKVersion" }

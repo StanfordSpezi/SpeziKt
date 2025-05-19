@@ -6,6 +6,7 @@ data class RegisterUiState(
     val isFormValid: Boolean = false,
     val isPasswordVisible: Boolean = false,
     val isRegisterButtonEnabled: Boolean = false,
+    val isProcessing: Boolean = false,
 )
 
 data class FieldState(

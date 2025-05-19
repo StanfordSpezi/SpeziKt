@@ -1,6 +1,5 @@
 package edu.stanford.spezi.core.logging
 
-import org.jetbrains.annotations.VisibleForTesting
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -26,7 +25,9 @@ class SpeziLogger internal constructor(private val tag: String, private val conf
     /**
      * Lazily initializes the appropriate logger based on the configuration.
      */
-    private val _logger by lazy {
+    @PublishedApi
+    @Suppress("VariableNaming")
+    internal val _logger by lazy {
         val currentConfig = config.get()
         val logTag = tag.removeSuffix("Impl")
         val prefix = currentConfig.messagePrefix
@@ -47,8 +48,8 @@ class SpeziLogger internal constructor(private val tag: String, private val conf
      * rather than accessing the logger instance directly. This property is only public due to it's usage inside of inline
      * methods below.
      */
-    @get:VisibleForTesting
-    val logger get() = if (enabled) _logger else null
+    @PublishedApi
+    internal val logger get() = if (enabled) _logger else null
 
     /**
      * Logs an informational message.
@@ -124,8 +125,8 @@ class SpeziLogger internal constructor(private val tag: String, private val conf
          * rather than accessing the logger instance directly. This property is only public due to it's usage inside of inline
          * methods below.
          */
-        @get:VisibleForTesting
-        val LOGGER by speziLogger {
+        @PublishedApi
+        internal val LOGGER by speziLogger {
             tag = "edu.stanford.spezi.logger"
             messagePrefix = null
             loggingStrategy = LoggingStrategy.TIMBER

@@ -1,8 +1,5 @@
 plugins {
     alias(libs.plugins.spezi.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.spezi.base)
-    alias(libs.plugins.spezi.hilt)
 }
 
 android {
@@ -10,5 +7,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core-logging"))
+    implementation(libs.kotlin.reflect)
     api(project(":foundation"))
 }

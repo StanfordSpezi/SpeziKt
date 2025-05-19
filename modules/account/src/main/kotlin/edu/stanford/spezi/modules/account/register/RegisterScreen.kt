@@ -16,7 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -37,6 +36,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.modules.account.R
+import edu.stanford.spezi.modules.design.component.AsyncButton
 import edu.stanford.spezi.modules.design.component.VerticalSpacer
 import edu.stanford.spezi.modules.design.component.validated.outlinedtextfield.ValidatedOutlinedTextField
 import edu.stanford.spezi.ui.Colors.primary
@@ -158,12 +158,13 @@ fun RegisterScreen(
                 )
             })
         Spacer(modifier = Modifier.height(Spacings.large))
-        Button(
+        AsyncButton(
             onClick = {
                 onAction(Action.OnRegisterPressed)
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = uiState.isRegisterButtonEnabled
+            enabled = uiState.isRegisterButtonEnabled,
+            isLoading = uiState.isProcessing,
         ) {
             Text(stringResource(R.string.account_signup))
         }

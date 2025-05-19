@@ -59,6 +59,12 @@ class RegisterViewModel @Inject internal constructor(
                 email = uiState.email.value,
             )
         ) {
+            _uiState.update {
+                it.copy(
+                    isProcessing = true,
+                    isRegisterButtonEnabled = false
+                )
+            }
             viewModelScope.launch {
                 authenticationManager.signUpWithEmailAndPassword(
                     email = uiState.email.value,
@@ -70,6 +76,12 @@ class RegisterViewModel @Inject internal constructor(
                         accountEvents.emit(AccountEvents.Event.SignUpFailure)
                         messageNotifier.notify("Failed to sign up")
                     }
+                _uiState.update {
+                    val updatedUiState = it.copy(isProcessing = false)
+                    updatedUiState.copy(
+                        isRegisterButtonEnabled = isRegisterButtonEnabled(updatedUiState)
+                    )
+                }
             }
             uiState
         } else {
@@ -90,6 +102,6 @@ class RegisterViewModel @Inject internal constructor(
     }
 
     private fun isRegisterButtonEnabled(uiState: RegisterUiState): Boolean {
-        return uiState.email.value.isNotEmpty() && uiState.password.value.isNotEmpty()
+        return uiState.email.value.isNotEmpty() && uiState.password.value.isNotEmpty() && !uiState.isProcessing
     }
 }
