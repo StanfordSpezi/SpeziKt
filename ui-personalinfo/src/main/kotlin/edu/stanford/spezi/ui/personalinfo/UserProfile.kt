@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -47,7 +48,9 @@ fun UserProfile(
     ) {
         val sideLength = min(size.height, size.width).dp
         Box(
-            modifier = Modifier.size(sideLength),
+            modifier = Modifier
+                .size(sideLength)
+                .clip(CircleShape),
             contentAlignment = Alignment.Center,
         ) {
             AsyncImageResource(
@@ -71,7 +74,7 @@ private fun PersonNameComponents.Content(sideLength: Dp) {
     }
     Box(
         modifier = Modifier
-            .background(Colors.secondary, CircleShape)
+            .background(Colors.secondary)
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
