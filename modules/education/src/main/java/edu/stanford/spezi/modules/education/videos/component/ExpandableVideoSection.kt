@@ -36,14 +36,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import edu.stanford.spezi.modules.education.videos.Video
 import edu.stanford.spezi.ui.AsyncImageResource
-import edu.stanford.spezi.ui.AsyncImageResourceComposable
+import edu.stanford.spezi.ui.DefaultElevatedCard
 import edu.stanford.spezi.ui.RectangleShimmerEffect
 import edu.stanford.spezi.ui.VerticalSpacer
 import edu.stanford.spezi.ui.height
-import edu.stanford.spezi.modules.education.videos.Video
-import edu.stanford.spezi.ui.DefaultElevatedCard
-import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.lighten
 import edu.stanford.spezi.ui.theme.Colors
 import edu.stanford.spezi.ui.theme.Sizes
@@ -156,13 +154,13 @@ private fun VideoItem(video: Video, onVideoClick: () -> Unit) {
                 .padding(Spacings.small)
                 .fillMaxWidth()
         ) {
-            AsyncImageResourceComposable(
-                imageResource = AsyncImageResource.Remote(url = video.thumbnailUrl, StringResource("Video thumbnail")),
+            AsyncImageResource(
+                url = video.thumbnailUrl,
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(ASPECT_16_9)
                     .border(Sizes.Border.medium, Colors.primary),
-                errorContent = {
+                error = {
                     Box(Modifier.matchParentSize()) {
                         Text(
                             text = video.title,

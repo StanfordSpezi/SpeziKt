@@ -19,10 +19,10 @@ import androidx.compose.ui.unit.dp
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.VitalDisplayDataFactory.createVitalDisplayState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
-import edu.stanford.spezi.ui.RectangleShimmerEffect
-import edu.stanford.spezi.ui.height
 import edu.stanford.spezi.ui.DefaultElevatedCard
+import edu.stanford.spezi.ui.RectangleShimmerEffect
 import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.ui.height
 import edu.stanford.spezi.ui.testIdentifier
 import edu.stanford.spezi.ui.theme.Colors
 import edu.stanford.spezi.ui.theme.Spacings

@@ -19,9 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import edu.stanford.spezi.ui.ComposableContent
-import edu.stanford.spezi.ui.ComposeValue
-import edu.stanford.spezi.ui.testIdentifier
 import edu.stanford.spezi.ui.theme.Colors
 import edu.stanford.spezi.ui.theme.Sizes
 import edu.stanford.spezi.ui.theme.SpeziTheme

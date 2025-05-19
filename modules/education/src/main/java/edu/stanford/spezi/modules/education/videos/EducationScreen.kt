@@ -19,12 +19,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.spezi.ui.RepeatingLazyColumn
-import edu.stanford.spezi.ui.VerticalSpacer
 import edu.stanford.spezi.modules.education.R
 import edu.stanford.spezi.modules.education.videos.component.ExpandableVideoSection
 import edu.stanford.spezi.modules.education.videos.component.LoadingVideoCard
+import edu.stanford.spezi.ui.RepeatingLazyColumn
 import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.ui.VerticalSpacer
 import edu.stanford.spezi.ui.testIdentifier
 import edu.stanford.spezi.ui.theme.Colors
 import edu.stanford.spezi.ui.theme.Spacings

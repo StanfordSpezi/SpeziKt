@@ -25,13 +25,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.spezi.ui.PendingActions
-import edu.stanford.spezi.ui.AsyncTextButton
 import edu.stanford.spezi.modules.notification.R
 import edu.stanford.spezi.ui.AppTopAppBar
 import edu.stanford.spezi.ui.AsyncSwitch
+import edu.stanford.spezi.ui.AsyncTextButton
 import edu.stanford.spezi.ui.CenteredBoxContent
 import edu.stanford.spezi.ui.DefaultElevatedCard
+import edu.stanford.spezi.ui.PendingActions
 import edu.stanford.spezi.ui.PermissionRequester
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.theme.Colors

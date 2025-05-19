@@ -21,8 +21,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-import edu.stanford.spezi.ui.AppTopAppBar
 import edu.stanford.spezi.modules.education.videos.Video
+import edu.stanford.spezi.ui.AppTopAppBar
 import edu.stanford.spezi.ui.testIdentifier
 import edu.stanford.spezi.ui.theme.Spacings
 import edu.stanford.spezi.ui.theme.TextStyles

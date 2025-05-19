@@ -1,48 +1,49 @@
 package edu.stanford.spezi.ui
 
-import androidx.annotation.DrawableRes
-import androidx.compose.ui.graphics.vector.ImageVector
-import edu.stanford.spezi.foundation.UUID
-import edu.stanford.spezi.ui.ImageResource
-import edu.stanford.spezi.ui.StringResource
-import javax.annotation.concurrent.Immutable
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.SubcomposeAsyncImage
 
-@Immutable
-sealed interface AsyncImageResource {
-    val identifier: String
-    val contentDescription: StringResource
-
-    data class Remote(
-        val url: String,
-        override val contentDescription: StringResource,
-    ) : AsyncImageResource {
-        override val identifier = UUID().toString()
-    }
-
-    data class Vector(
-        val image: ImageVector,
-        override val contentDescription: StringResource,
-    ) : AsyncImageResource {
-        override val identifier = UUID().toString()
-    }
-
-    data class Drawable(
-        @DrawableRes val resId: Int,
-        override val contentDescription: StringResource,
-    ) : AsyncImageResource {
-        override val identifier = UUID().toString()
-    }
-
-    companion object {
-        operator fun invoke(imageResource: ImageResource): AsyncImageResource = when (imageResource) {
-            is ImageResource.Vector -> Vector(
-                image = imageResource.image,
-                contentDescription = imageResource.contentDescription
+/**
+ * Composable function to display an image from a remote url
+ */
+@Composable
+fun AsyncImageResource(
+    url: String?,
+    modifier: Modifier = Modifier,
+    contentDescription: String = "",
+    contentScale: ContentScale = ContentScale.Fit,
+    loading: @Composable BoxScope.() -> Unit = { },
+    error: @Composable BoxScope.() -> Unit = { },
+) {
+    SubcomposeAsyncImage(
+        model = url,
+        modifier = modifier,
+        contentDescription = contentDescription,
+        success = {
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = painter,
+                contentDescription = contentDescription,
+                contentScale = contentScale,
             )
-            is ImageResource.Drawable -> Drawable(
-                resId = imageResource.resId,
-                contentDescription = imageResource.contentDescription
+        },
+        loading = {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                content = loading,
+            )
+        },
+        error = {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                content = error,
             )
         }
-    }
+    )
 }

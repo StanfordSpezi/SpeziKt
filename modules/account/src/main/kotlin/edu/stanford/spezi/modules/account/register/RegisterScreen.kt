@@ -37,8 +37,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.modules.account.R
 import edu.stanford.spezi.ui.AsyncButton
-import edu.stanford.spezi.ui.VerticalSpacer
 import edu.stanford.spezi.ui.ValidatedOutlinedTextField
+import edu.stanford.spezi.ui.VerticalSpacer
 import edu.stanford.spezi.ui.testIdentifier
 import edu.stanford.spezi.ui.theme.Colors.primary
 import edu.stanford.spezi.ui.theme.Sizes

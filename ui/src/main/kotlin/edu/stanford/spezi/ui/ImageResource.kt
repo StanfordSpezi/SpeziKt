@@ -28,10 +28,12 @@ import edu.stanford.spezi.ui.theme.ThemePreviews
 sealed interface ImageResource : ComposableContent {
     val identifier: String
     val contentDescription: StringResource
+    val tint: ComposeValue<Color>
 
     data class Vector(
         val image: ImageVector,
         override val contentDescription: StringResource,
+        override val tint: ComposeValue<Color> = { Colors.primary },
     ) : ImageResource {
         override val identifier = UUID().toString()
     }
@@ -39,24 +41,20 @@ sealed interface ImageResource : ComposableContent {
     data class Drawable(
         @DrawableRes val resId: Int,
         override val contentDescription: StringResource,
+        override val tint: ComposeValue<Color> = { Colors.primary },
     ) : ImageResource {
         override val identifier = UUID().toString()
     }
 
     @Composable
     override fun Content(modifier: Modifier) {
-        Content(modifier = modifier, tint = Colors.primary)
-    }
-
-    @Composable
-    fun Content(modifier: Modifier, tint: Color) {
         val imageModifier = modifier.then(Modifier.testContentIdentifier(identifier))
         when (this) {
             is Vector -> {
                 Icon(
                     imageVector = image,
                     contentDescription = contentDescription.text(),
-                    tint = tint,
+                    tint = tint.invoke(),
                     modifier = imageModifier
                 )
             }
@@ -65,7 +63,7 @@ sealed interface ImageResource : ComposableContent {
                 Icon(
                     painter = painterResource(id = resId),
                     contentDescription = contentDescription.text(),
-                    tint = tint,
+                    tint = tint.invoke(),
                     modifier = imageModifier,
                 )
             }
