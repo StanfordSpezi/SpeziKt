@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.modules.design.component.AsyncTextButton
+import edu.stanford.spezi.ui.AsyncTextButton
 import edu.stanford.spezi.ui.BottomSheetComposableContent
 import edu.stanford.spezi.ui.ComposableContent
 import edu.stanford.spezi.ui.StringResource

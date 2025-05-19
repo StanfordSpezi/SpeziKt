@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.modules.design.component.CommonScaffold
+import edu.stanford.spezi.ui.CommonScaffold
 import edu.stanford.spezi.ui.ComposableContent
 import edu.stanford.spezi.ui.theme.Spacings
 import edu.stanford.spezi.ui.theme.SpeziTheme

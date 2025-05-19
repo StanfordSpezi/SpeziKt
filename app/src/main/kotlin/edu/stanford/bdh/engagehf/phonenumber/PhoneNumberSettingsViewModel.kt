@@ -7,7 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.spezi.modules.account.manager.UserSessionManager
-import edu.stanford.spezi.modules.design.component.AsyncTextButton
+import edu.stanford.spezi.ui.AsyncTextButton
 import edu.stanford.spezi.modules.navigation.NavigationEvent
 import edu.stanford.spezi.modules.navigation.Navigator
 import edu.stanford.spezi.modules.utils.MessageNotifier

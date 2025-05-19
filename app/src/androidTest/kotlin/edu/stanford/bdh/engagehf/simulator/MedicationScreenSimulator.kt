@@ -4,7 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import edu.stanford.bdh.engagehf.medication.ui.MedicationScreenTestIdentifier
-import edu.stanford.spezi.modules.design.component.CenteredBoxContentTestIdentifier
+import edu.stanford.spezi.ui.CenteredBoxContentTestIdentifier
 import edu.stanford.spezi.testing.ui.onNodeWithIdentifier
 
 class MedicationScreenSimulator(

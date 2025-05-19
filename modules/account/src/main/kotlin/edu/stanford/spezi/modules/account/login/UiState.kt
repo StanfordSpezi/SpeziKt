@@ -1,7 +1,7 @@
 package edu.stanford.spezi.modules.account.login
 
 import edu.stanford.spezi.modules.account.register.FieldState
-import edu.stanford.spezi.modules.design.action.PendingActions
+import edu.stanford.spezi.ui.PendingActions
 
 data class UiState(
     val password: FieldState = FieldState(),

@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.bdh.engagehf.medication.ui.DosageInformationUiModel
 import edu.stanford.bdh.engagehf.medication.ui.DosageRowInfoData
-import edu.stanford.spezi.modules.design.component.VerticalSpacer
+import edu.stanford.spezi.ui.VerticalSpacer
 import edu.stanford.spezi.ui.theme.SpeziTheme
 import edu.stanford.spezi.ui.theme.TextStyles
 import edu.stanford.spezi.ui.theme.ThemePreviews

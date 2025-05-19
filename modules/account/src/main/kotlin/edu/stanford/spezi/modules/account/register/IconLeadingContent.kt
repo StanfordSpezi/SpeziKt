@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import edu.stanford.spezi.modules.design.component.validated.outlinedtextfield.ValidatedOutlinedTextField
+import edu.stanford.spezi.ui.ValidatedOutlinedTextField
 import edu.stanford.spezi.ui.theme.Sizes
 import edu.stanford.spezi.ui.theme.Spacings
 

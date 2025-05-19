@@ -49,7 +49,7 @@ import edu.stanford.bdh.engagehf.health.weight.bottomsheet.AddWeightBottomSheet
 import edu.stanford.bdh.engagehf.health.weight.bottomsheet.WeightDescriptionBottomSheet
 import edu.stanford.bdh.engagehf.medication.ui.MedicationScreen
 import edu.stanford.bdh.engagehf.navigation.components.AccountTopAppBarButton
-import edu.stanford.spezi.modules.design.component.AppTopAppBar
+import edu.stanford.spezi.ui.AppTopAppBar
 import edu.stanford.spezi.modules.education.videos.EducationScreen
 import edu.stanford.spezi.ui.testIdentifier
 import edu.stanford.spezi.ui.theme.Colors

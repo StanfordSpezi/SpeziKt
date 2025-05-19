@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.modules.design.component.VerticalSpacer
+import edu.stanford.spezi.ui.VerticalSpacer
 import edu.stanford.spezi.ui.testIdentifier
 import edu.stanford.spezi.ui.theme.Colors
 import edu.stanford.spezi.ui.theme.Sizes

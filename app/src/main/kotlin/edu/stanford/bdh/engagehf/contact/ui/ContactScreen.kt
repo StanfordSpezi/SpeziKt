@@ -25,8 +25,8 @@ import edu.stanford.spezi.contact.ContactOption
 import edu.stanford.spezi.contact.call
 import edu.stanford.spezi.contact.email
 import edu.stanford.spezi.contact.website
-import edu.stanford.spezi.modules.design.component.AppTopAppBar
-import edu.stanford.spezi.modules.design.component.CenteredBoxContent
+import edu.stanford.spezi.ui.AppTopAppBar
+import edu.stanford.spezi.ui.CenteredBoxContent
 import edu.stanford.spezi.ui.ImageResource
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents

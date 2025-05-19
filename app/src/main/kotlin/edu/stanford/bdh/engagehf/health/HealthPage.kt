@@ -33,8 +33,8 @@ import edu.stanford.bdh.engagehf.bluetooth.screen.MeasurementDialogTestIdentifie
 import edu.stanford.bdh.engagehf.health.components.HealthChart
 import edu.stanford.bdh.engagehf.health.components.SwipeBox
 import edu.stanford.bdh.engagehf.health.components.TimeRangeDropdown
-import edu.stanford.spezi.modules.design.component.AsyncTextButton
-import edu.stanford.spezi.modules.design.component.CenteredBoxContent
+import edu.stanford.spezi.ui.AsyncTextButton
+import edu.stanford.spezi.ui.CenteredBoxContent
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.testIdentifier
 import edu.stanford.spezi.ui.theme.Colors.primary

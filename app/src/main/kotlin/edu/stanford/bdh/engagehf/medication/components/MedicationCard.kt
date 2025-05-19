@@ -27,10 +27,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import edu.stanford.bdh.engagehf.medication.ui.MedicationCardUiModel
 import edu.stanford.bdh.engagehf.medication.ui.MedicationScreenTestIdentifier
 import edu.stanford.bdh.engagehf.medication.ui.MedicationViewModel
-import edu.stanford.spezi.modules.design.component.CircleShimmerEffect
-import edu.stanford.spezi.modules.design.component.RectangleShimmerEffect
-import edu.stanford.spezi.modules.design.component.VerticalSpacer
-import edu.stanford.spezi.modules.design.component.height
+import edu.stanford.spezi.ui.CircleShimmerEffect
+import edu.stanford.spezi.ui.RectangleShimmerEffect
+import edu.stanford.spezi.ui.VerticalSpacer
+import edu.stanford.spezi.ui.height
 import edu.stanford.spezi.ui.DefaultElevatedCard
 import edu.stanford.spezi.ui.testIdentifier
 import edu.stanford.spezi.ui.theme.Colors

@@ -22,7 +22,7 @@ import edu.stanford.bdh.engagehf.health.components.AddDataHeader
 import edu.stanford.bdh.engagehf.health.components.NumberPicker
 import edu.stanford.bdh.engagehf.health.components.TimePicker
 import edu.stanford.bdh.engagehf.health.time.TimePickerState
-import edu.stanford.spezi.modules.design.component.VerticalSpacer
+import edu.stanford.spezi.ui.VerticalSpacer
 import edu.stanford.spezi.ui.theme.Spacings
 import edu.stanford.spezi.ui.theme.SpeziTheme
 import edu.stanford.spezi.ui.theme.TextStyles

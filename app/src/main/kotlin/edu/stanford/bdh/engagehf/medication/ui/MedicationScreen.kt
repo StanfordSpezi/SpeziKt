@@ -14,8 +14,8 @@ import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.medication.components.LoadingMedicationSection
 import edu.stanford.bdh.engagehf.medication.components.MedicationList
 import edu.stanford.bdh.engagehf.medication.components.getMedicationCardUiModel
-import edu.stanford.spezi.modules.design.component.CenteredBoxContent
-import edu.stanford.spezi.modules.design.component.RepeatingLazyColumn
+import edu.stanford.spezi.ui.CenteredBoxContent
+import edu.stanford.spezi.ui.RepeatingLazyColumn
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.testIdentifier
 import edu.stanford.spezi.ui.theme.Colors

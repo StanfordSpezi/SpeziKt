@@ -34,7 +34,7 @@ import androidx.compose.ui.window.DialogProperties
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.navigation.screens.AccountUiState
 import edu.stanford.bdh.engagehf.navigation.screens.Action
-import edu.stanford.spezi.modules.design.component.VerticalSpacer
+import edu.stanford.spezi.ui.VerticalSpacer
 import edu.stanford.spezi.ui.lighten
 import edu.stanford.spezi.ui.theme.Colors
 import edu.stanford.spezi.ui.theme.Colors.onBackground

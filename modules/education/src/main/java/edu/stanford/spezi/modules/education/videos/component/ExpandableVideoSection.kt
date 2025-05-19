@@ -36,11 +36,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import edu.stanford.spezi.modules.design.component.AsyncImageResource
-import edu.stanford.spezi.modules.design.component.AsyncImageResourceComposable
-import edu.stanford.spezi.modules.design.component.RectangleShimmerEffect
-import edu.stanford.spezi.modules.design.component.VerticalSpacer
-import edu.stanford.spezi.modules.design.component.height
+import edu.stanford.spezi.ui.AsyncImageResource
+import edu.stanford.spezi.ui.AsyncImageResourceComposable
+import edu.stanford.spezi.ui.RectangleShimmerEffect
+import edu.stanford.spezi.ui.VerticalSpacer
+import edu.stanford.spezi.ui.height
 import edu.stanford.spezi.modules.education.videos.Video
 import edu.stanford.spezi.ui.DefaultElevatedCard
 import edu.stanford.spezi.ui.StringResource

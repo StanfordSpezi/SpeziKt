@@ -45,13 +45,12 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.UiState
 import edu.stanford.bdh.engagehf.bluetooth.data.models.VitalDisplayData
 import edu.stanford.bdh.engagehf.messages.MessageAction
 import edu.stanford.bdh.engagehf.messages.MessageItem
-import edu.stanford.spezi.modules.design.component.AsyncTextButton
-import edu.stanford.spezi.modules.design.component.LifecycleEvent
-import edu.stanford.spezi.modules.design.component.PermissionRequester
-import edu.stanford.spezi.modules.design.component.SecondaryText
-import edu.stanford.spezi.modules.design.component.VerticalSpacer
+import edu.stanford.spezi.ui.AsyncTextButton
 import edu.stanford.spezi.ui.DefaultElevatedCard
+import edu.stanford.spezi.ui.LifecycleEvent
+import edu.stanford.spezi.ui.PermissionRequester
 import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.ui.VerticalSpacer
 import edu.stanford.spezi.ui.testIdentifier
 import edu.stanford.spezi.ui.theme.Colors
 import edu.stanford.spezi.ui.theme.Spacings
@@ -236,6 +235,16 @@ private fun Devices(readyState: BluetoothUiState.Ready) {
             DeviceComposable(device = device)
         }
     }
+}
+
+@Composable
+private fun SecondaryText(text: String, modifier: Modifier = Modifier) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = TextStyles.bodySmall,
+        color = Colors.secondary,
+    )
 }
 
 @Composable

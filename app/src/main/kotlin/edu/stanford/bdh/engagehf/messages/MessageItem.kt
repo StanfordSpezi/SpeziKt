@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.Dp
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MessageUiModel
-import edu.stanford.spezi.modules.design.component.AsyncButton
+import edu.stanford.spezi.ui.AsyncButton
 import edu.stanford.spezi.ui.DefaultElevatedCard
 import edu.stanford.spezi.ui.lighten
 import edu.stanford.spezi.ui.testIdentifier

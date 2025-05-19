@@ -65,8 +65,8 @@ import com.patrykandpatrick.vico.core.common.component.TextComponent
 import com.patrykandpatrick.vico.core.common.shape.Shape
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.HealthTableItem
-import edu.stanford.spezi.modules.design.component.CenteredBoxContent
-import edu.stanford.spezi.modules.design.component.VerticalSpacer
+import edu.stanford.spezi.ui.CenteredBoxContent
+import edu.stanford.spezi.ui.VerticalSpacer
 import edu.stanford.spezi.ui.theme.Colors.primary
 import edu.stanford.spezi.ui.theme.Colors.secondary
 import edu.stanford.spezi.ui.theme.Sizes

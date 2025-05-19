@@ -29,7 +29,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.summary.QRCodeImageBitmapGenerator
-import edu.stanford.spezi.modules.design.component.AsyncTextButton
+import edu.stanford.spezi.ui.AsyncTextButton
 import edu.stanford.spezi.ui.DefaultElevatedCard
 import edu.stanford.spezi.ui.DialogComposableContent
 import edu.stanford.spezi.ui.StringResource

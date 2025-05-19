@@ -11,7 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import edu.stanford.spezi.modules.design.component.VerticalSpacer
+import edu.stanford.spezi.ui.VerticalSpacer
 import edu.stanford.spezi.ui.theme.Colors
 import edu.stanford.spezi.ui.theme.Spacings
 import edu.stanford.spezi.ui.theme.SpeziTheme

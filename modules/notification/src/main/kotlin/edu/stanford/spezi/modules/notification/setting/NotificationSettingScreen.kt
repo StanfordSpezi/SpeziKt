@@ -25,16 +25,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.spezi.modules.design.action.PendingActions
-import edu.stanford.spezi.modules.design.component.AppTopAppBar
-import edu.stanford.spezi.modules.design.component.AsyncSwitch
-import edu.stanford.spezi.modules.design.component.AsyncTextButton
-import edu.stanford.spezi.modules.design.component.CenteredBoxContent
-import edu.stanford.spezi.modules.design.component.PermissionRequester
-import edu.stanford.spezi.modules.design.component.SecondaryText
+import edu.stanford.spezi.ui.PendingActions
+import edu.stanford.spezi.ui.AsyncTextButton
 import edu.stanford.spezi.modules.notification.R
+import edu.stanford.spezi.ui.AppTopAppBar
+import edu.stanford.spezi.ui.AsyncSwitch
+import edu.stanford.spezi.ui.CenteredBoxContent
 import edu.stanford.spezi.ui.DefaultElevatedCard
+import edu.stanford.spezi.ui.PermissionRequester
 import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.ui.theme.Colors
 import edu.stanford.spezi.ui.theme.Colors.primary
 import edu.stanford.spezi.ui.theme.Spacings
 import edu.stanford.spezi.ui.theme.SpeziTheme
@@ -132,11 +132,13 @@ private fun MissingPermissions(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            SecondaryText(
+            Text(
                 modifier = Modifier
                     .padding(Spacings.small)
                     .weight(IDLE_DESCRIPTION_WEIGHT),
                 text = stringResource(R.string.notification_feature_requires_notifications),
+                style = TextStyles.bodySmall,
+                color = Colors.secondary,
             )
             AsyncTextButton(
                 modifier = Modifier.padding(Spacings.small),

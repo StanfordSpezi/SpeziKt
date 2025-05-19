@@ -16,8 +16,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.modules.design.component.CenteredBoxContent
-import edu.stanford.spezi.modules.design.component.VerticalSpacer
+import edu.stanford.spezi.ui.CenteredBoxContent
+import edu.stanford.spezi.ui.VerticalSpacer
 import edu.stanford.spezi.questionnaire.QuestionnaireComposable
 import edu.stanford.spezi.questionnaire.QuestionnaireResult
 import edu.stanford.spezi.ui.StringResource

@@ -12,7 +12,6 @@ android {
 dependencies {
 
     implementation(libs.androidyoutubeplayer.core)
-    implementation(libs.coil.compose)
     implementation(libs.hilt.navigation.compose)
 
     implementation(project(":modules:design"))

@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import edu.stanford.spezi.modules.design.R
-import edu.stanford.spezi.modules.design.component.AsyncButton
+import edu.stanford.spezi.ui.AsyncButton
 import edu.stanford.spezi.ui.theme.Sizes
 import edu.stanford.spezi.ui.theme.Spacings
 import edu.stanford.spezi.ui.theme.SpeziTheme

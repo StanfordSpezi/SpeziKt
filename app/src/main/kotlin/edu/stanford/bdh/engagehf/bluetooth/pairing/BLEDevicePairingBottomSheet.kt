@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.modules.design.component.AsyncTextButton
+import edu.stanford.spezi.ui.AsyncTextButton
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.theme.Colors
 import edu.stanford.spezi.ui.theme.Spacings

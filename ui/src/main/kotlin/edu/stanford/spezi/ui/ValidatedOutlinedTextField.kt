@@ -1,15 +1,11 @@
-@file:Suppress("FunctionName", "LongParameterList", "UnusedPrivateMember")
-package edu.stanford.spezi.modules.design.component.validated.textfield
+package edu.stanford.spezi.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,7 +16,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 
 @Composable
-fun ValidatedTextField(
+fun ValidatedOutlinedTextField(
     modifier: Modifier = Modifier,
     value: String = "",
     onValueChange: (String) -> Unit,
@@ -30,67 +26,58 @@ fun ValidatedTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
     visualTransformation: VisualTransformation = VisualTransformation.None,
     readOnly: Boolean = false,
-    trailingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: ComposableBlock? = null,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        TextField(
+        OutlinedTextField(
             modifier = modifier.fillMaxWidth(),
             value = value,
             onValueChange = {
                 onValueChange(it)
             },
-            label = {
-                Text(labelText)
-            },
+            label = { Text(labelText) },
             singleLine = singleLine,
             keyboardOptions = keyboardOptions,
             isError = errorText != null,
-            supportingText = {
-                if (errorText != null) {
-                    Text(
-                        text = errorText,
-                    )
-                }
-            },
-            visualTransformation = visualTransformation,
+            readOnly = readOnly,
             trailingIcon = trailingIcon,
-            readOnly = readOnly
+            keyboardActions = keyboardActions,
+            visualTransformation = visualTransformation,
+            supportingText = errorText?.let {
+                { Text(text = it) }
+            },
         )
     }
 }
 
 @Preview
 @Composable
-private fun ValidatedTextFieldPreview(
-    @PreviewParameter(ValidatedTextFieldProvider::class) params: ValidatedTextFieldParams,
+private fun ValidatedOutlinedTextFieldPreview(
+    @PreviewParameter(ValidatedOutlinedTextFieldProvider::class) params: ValidatedOutlinedTextFieldParams,
 ) {
-    ValidatedTextField(
-        value = params.value,
+    ValidatedOutlinedTextField(
         onValueChange = {},
+        value = params.value,
         labelText = params.labelText,
         errorText = params.errorText,
-        trailingIcon = {
-            IconButton(onClick = { }) {
-                Icon(Icons.Filled.Edit, contentDescription = "Select Date")
-            }
-        },
     )
 }
 
-private class ValidatedTextFieldProvider :
-    PreviewParameterProvider<ValidatedTextFieldParams> {
+private class ValidatedOutlinedTextFieldProvider :
+    PreviewParameterProvider<ValidatedOutlinedTextFieldParams> {
     override val values = sequenceOf(data, data.copy(errorText = null))
 }
 
-private val data =
-    ValidatedTextFieldParams(
-        value = "",
-        labelText = "Label",
-        errorText = "The input is invalid",
-    )
-
-private data class ValidatedTextFieldParams(
+private data class ValidatedOutlinedTextFieldParams(
     val value: String,
     val labelText: String,
     val errorText: String?,
 )
+
+private val data =
+    ValidatedOutlinedTextFieldParams(
+        value = "",
+        labelText = "Label",
+        errorText = "The input is invalid",
+    )
