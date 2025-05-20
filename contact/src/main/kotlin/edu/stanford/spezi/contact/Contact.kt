@@ -24,7 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.ui.ComposableContent
-import edu.stanford.spezi.ui.ImageResource
+import edu.stanford.spezi.ui.LocalImageResource
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
 import edu.stanford.spezi.ui.testContentIdentifier
@@ -54,7 +54,7 @@ import java.util.UUID
 data class Contact(
     val id: UUID = UUID.randomUUID(),
     val name: PersonNameComponents,
-    val image: ImageResource = ImageResource.Vector(Icons.Default.AccountBox, StringResource(R.string.contact_profile_picture)),
+    val image: LocalImageResource = LocalImageResource.Vector(Icons.Default.AccountBox, StringResource(R.string.contact_profile_picture)),
     val title: StringResource? = null,
     val description: StringResource? = null,
     val organization: StringResource? = null,
@@ -207,7 +207,7 @@ private object ContactContentFactory {
                 givenName = "Leland",
                 familyName = "Stanford"
             ),
-            image = ImageResource.Vector(Icons.Default.AccountBox, StringResource(R.string.contact_profile_picture)),
+            image = LocalImageResource.Vector(Icons.Default.AccountBox, StringResource(R.string.contact_profile_picture)),
             title = title,
             description = description,
             organization = StringResource("Stanford University"),

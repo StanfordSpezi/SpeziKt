@@ -3,7 +3,7 @@ package edu.stanford.spezi.contact
 import android.location.Address
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
-import edu.stanford.spezi.ui.ImageResource
+import edu.stanford.spezi.ui.LocalImageResource
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
 import java.util.Locale
@@ -14,7 +14,7 @@ object ContactFactory {
             givenName = "Leland",
             familyName = "Stanford"
         ),
-        image = ImageResource.Vector(Icons.Default.AccountBox, StringResource("Account Box")),
+        image = LocalImageResource.Vector(Icons.Default.AccountBox, StringResource("Account Box")),
         title = StringResource("University Founder"),
         description = StringResource("""
 Amasa Leland Stanford (March 9, 1824 – June 21, 1893) was an American industrialist and politician. [...] \
@@ -43,7 +43,7 @@ He and his wife Jane were also the founders of Stanford University, which they n
             givenName = "Paul",
             familyName = "Schmiedmayer"
         ),
-        image = ImageResource.Vector(Icons.Default.AccountBox, StringResource("Account Box")),
+        image = LocalImageResource.Vector(Icons.Default.AccountBox, StringResource("Account Box")),
         title = StringResource("A Title"),
         description = StringResource("""
 This is a description of a contact that will be displayed. It might even be longer than what has to be displayed in the contact card.

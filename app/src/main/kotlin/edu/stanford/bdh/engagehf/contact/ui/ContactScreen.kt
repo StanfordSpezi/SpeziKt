@@ -27,7 +27,7 @@ import edu.stanford.spezi.contact.email
 import edu.stanford.spezi.contact.website
 import edu.stanford.spezi.ui.AppTopAppBar
 import edu.stanford.spezi.ui.CenteredBoxContent
-import edu.stanford.spezi.ui.ImageResource
+import edu.stanford.spezi.ui.LocalImageResource
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
 import edu.stanford.spezi.ui.theme.Colors.primary
@@ -108,7 +108,7 @@ private class ContactUiStateProvider : PreviewParameterProvider<ContactScreenVie
                     givenName = "Leland",
                     familyName = "Stanford"
                 ),
-                image = ImageResource.Vector(
+                image = LocalImageResource.Vector(
                     Icons.Default.AccountBox,
                     StringResource(edu.stanford.spezi.contact.R.string.contact_profile_picture)
                 ),

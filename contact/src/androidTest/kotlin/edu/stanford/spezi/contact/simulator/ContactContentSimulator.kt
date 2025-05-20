@@ -12,14 +12,14 @@ import edu.stanford.spezi.contact.ContactOption
 import edu.stanford.spezi.contact.formatted
 import edu.stanford.spezi.testing.ui.onNodeWithContent
 import edu.stanford.spezi.testing.ui.onNodeWithIdentifier
-import edu.stanford.spezi.ui.ImageResource
+import edu.stanford.spezi.ui.LocalImageResource
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
 
 class ContactContentSimulator(
     private val composeTestRule: ComposeTestRule,
 ) {
-    private fun image(image: ImageResource) =
+    private fun image(image: LocalImageResource) =
         composeTestRule.onNodeWithContent(image.identifier)
 
     private val name =
@@ -43,7 +43,7 @@ class ContactContentSimulator(
             title.get(targetContext)
         )
 
-    fun assertHasImage(imageResource: ImageResource?) {
+    fun assertHasImage(imageResource: LocalImageResource?) {
         imageResource?.let {
             image(imageResource)
                 .assertExists()
