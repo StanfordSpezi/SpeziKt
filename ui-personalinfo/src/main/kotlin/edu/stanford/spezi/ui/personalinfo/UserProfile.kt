@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import edu.stanford.spezi.ui.AsyncImageResource
 import edu.stanford.spezi.ui.ImageResource
+import edu.stanford.spezi.ui.LocalImageResource
 import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.lighten
 import edu.stanford.spezi.ui.theme.Colors
@@ -37,7 +37,7 @@ import kotlin.math.min
 fun UserProfile(
     name: PersonNameComponents,
     modifier: Modifier = Modifier,
-    imageUrl: String? = null,
+    image: ImageResource? = null,
 ) {
     var size by remember { mutableStateOf(IntSize.Zero) }
 
@@ -53,16 +53,15 @@ fun UserProfile(
                 .clip(CircleShape),
             contentAlignment = Alignment.Center,
         ) {
-            AsyncImageResource(
+            image?.Content(
                 modifier = Modifier.fillMaxSize(),
-                url = imageUrl,
                 loading = {
                     name.Content(sideLength = sideLength)
                 },
                 error = {
                     name.Content(sideLength = sideLength)
                 }
-            )
+            ) ?: name.Content(sideLength = sideLength)
         }
     }
 }
@@ -86,7 +85,7 @@ private fun PersonNameComponents.Content(sideLength: Dp) {
     }
 }
 
-private typealias UserProfilePreviewData = Pair<PersonNameComponents, suspend () -> ImageResource?>
+private typealias UserProfilePreviewData = Pair<PersonNameComponents, LocalImageResource?>
 
 private class UserProfileProvider : PreviewParameterProvider<UserProfilePreviewData> {
     override val values: Sequence<UserProfilePreviewData> = sequenceOf(
@@ -94,27 +93,28 @@ private class UserProfileProvider : PreviewParameterProvider<UserProfilePreviewD
             PersonNameComponents(
                 givenName = "Paul",
                 familyName = "Schmiedmayer",
-            )
-        ) { null },
+            ),
+            null
+        ),
         Pair(
             PersonNameComponents(
                 namePrefix = "Prof.",
                 givenName = "Oliver",
                 middleName = "Oppers",
                 familyName = "Aalami"
-            )
-        ) { null },
+            ),
+            null,
+        ),
         Pair(
             PersonNameComponents(
                 givenName = "Vishnu",
                 familyName = "Ravi",
-            )
-        ) {
-            ImageResource.Vector(
+            ),
+            LocalImageResource.Vector(
                 Icons.Default.Person,
                 StringResource("Person")
             )
-        },
+        )
     )
 }
 
@@ -126,7 +126,7 @@ private fun UserProfilePreview(
     SpeziTheme {
         UserProfile(
             name = profileData.first,
-            imageUrl = null,
+            image = profileData.second,
         )
     }
 }

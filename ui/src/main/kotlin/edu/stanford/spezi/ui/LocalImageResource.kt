@@ -1,6 +1,7 @@
 package edu.stanford.spezi.ui
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Icon
@@ -17,24 +18,35 @@ import edu.stanford.spezi.ui.theme.Colors
 import edu.stanford.spezi.ui.theme.SpeziTheme
 import edu.stanford.spezi.ui.theme.ThemePreviews
 
+sealed interface ImageResource : ComposableContent {
+    val contentDescription: StringResource
+        get() = StringResource("")
+
+    @Composable
+    fun Content(
+        modifier: Modifier,
+        loading: @Composable BoxScope.() -> Unit,
+        error: @Composable BoxScope.() -> Unit,
+    )
+}
+
 /**
  * A sealed class to represent an image resource. It can be either a vector image or a drawable.
  * This is useful to abstract the image resource type and use it in a composable function. The identifier can be used for tests.
- * @see ImageResource.Vector
- * @see ImageResource.Drawable
- * @see ImageResource.Content
+ * @see LocalImageResource.Vector
+ * @see LocalImageResource.Drawable
+ * @see LocalImageResource.Content
  */
 @Immutable
-sealed interface ImageResource : ComposableContent {
-    val identifier: String
-    val contentDescription: StringResource
+sealed interface LocalImageResource : ImageResource {
     val tint: ComposeValue<Color>
+    val identifier: String
 
     data class Vector(
         val image: ImageVector,
         override val contentDescription: StringResource,
         override val tint: ComposeValue<Color> = { Colors.primary },
-    ) : ImageResource {
+    ) : LocalImageResource {
         override val identifier = UUID().toString()
     }
 
@@ -42,7 +54,7 @@ sealed interface ImageResource : ComposableContent {
         @DrawableRes val resId: Int,
         override val contentDescription: StringResource,
         override val tint: ComposeValue<Color> = { Colors.primary },
-    ) : ImageResource {
+    ) : LocalImageResource {
         override val identifier = UUID().toString()
     }
 
@@ -69,21 +81,30 @@ sealed interface ImageResource : ComposableContent {
             }
         }
     }
+
+    @Composable
+    override fun Content(
+        modifier: Modifier,
+        loading: @Composable BoxScope.() -> Unit,
+        error: @Composable BoxScope.() -> Unit,
+    ) {
+        Content(modifier)
+    }
 }
 
 @ThemePreviews
 @Composable
 private fun ImageResourceContentPreview(
-    @PreviewParameter(ImageResourceProvider::class) imageResource: ImageResource,
+    @PreviewParameter(ImageResourceProvider::class) imageResource: LocalImageResource,
 ) {
     SpeziTheme {
         imageResource.Content()
     }
 }
 
-private class ImageResourceProvider : PreviewParameterProvider<ImageResource> {
-    override val values: Sequence<ImageResource> = sequenceOf(
-        ImageResource.Vector(Icons.Default.ThumbUp, StringResource("Thumbs Up")),
-        ImageResource.Drawable(android.R.drawable.ic_menu_camera, StringResource("Camera")),
+private class ImageResourceProvider : PreviewParameterProvider<LocalImageResource> {
+    override val values: Sequence<LocalImageResource> = sequenceOf(
+        LocalImageResource.Vector(Icons.Default.ThumbUp, StringResource("Thumbs Up")),
+        LocalImageResource.Drawable(android.R.drawable.ic_menu_camera, StringResource("Camera")),
     )
 }
