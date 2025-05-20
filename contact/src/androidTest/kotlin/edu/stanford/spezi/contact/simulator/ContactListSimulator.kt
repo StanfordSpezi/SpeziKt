@@ -2,16 +2,12 @@ package edu.stanford.spezi.contact.simulator
 
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import edu.stanford.spezi.contact.Contact
-import edu.stanford.spezi.contact.ContactsListTestIdentifier
-import edu.stanford.spezi.ui.testing.onNodeWithIdentifier
+import edu.stanford.spezi.testing.ui.onNodeWithContent
 
 class ContactListSimulator(
     private val composeTestRule: ComposeTestRule,
 ) {
-    private fun contactComposable(contact: Contact) =
-        composeTestRule.onNodeWithIdentifier(ContactsListTestIdentifier.CONTACT, contact.id.toString())
-
     fun assertHasContact(contact: Contact) {
-        contactComposable(contact).assertExists()
+        composeTestRule.onNodeWithContent(contact.id.toString()).assertExists()
     }
 }

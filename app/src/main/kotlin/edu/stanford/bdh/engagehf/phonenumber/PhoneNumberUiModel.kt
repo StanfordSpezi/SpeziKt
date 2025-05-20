@@ -19,12 +19,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import edu.stanford.spezi.modules.design.component.AsyncButton
-import edu.stanford.spezi.ui.Colors
+import edu.stanford.spezi.ui.AsyncButton
 import edu.stanford.spezi.ui.ComposableContent
 import edu.stanford.spezi.ui.ComposeValue
-import edu.stanford.spezi.ui.SpeziTheme
-import edu.stanford.spezi.ui.ThemePreviews
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.ThemePreviews
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

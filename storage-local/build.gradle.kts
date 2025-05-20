@@ -15,5 +15,5 @@ dependencies {
 
     androidTestImplementation(libs.bundles.compose.androidTest)
     androidTestImplementation(libs.hilt.test)
-    androidTestImplementation(project(":ui-testing"))
+    androidTestImplementation(project(":testing-ui"))
 }

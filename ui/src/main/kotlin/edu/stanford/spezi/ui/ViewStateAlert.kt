@@ -8,6 +8,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 @Composable
 fun ViewStateAlert(
@@ -34,12 +36,12 @@ fun ViewStateAlert(
                 Text(text = state.errorTitle)
             },
             text = {
-                Text(text = state.errorDescription)
+                Text(text = state.errorMessage)
             },
             onDismissRequest = onClose,
             confirmButton = {
                 TextButton(onClick = onClose) {
-                    Text(StringResource("OK").text())
+                    Text(StringResource(R.string.viewstate_confirm_title).text())
                 }
             }
         )

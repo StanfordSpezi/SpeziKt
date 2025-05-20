@@ -25,16 +25,16 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.modules.onboarding.R
-import edu.stanford.spezi.ui.Colors.primary
-import edu.stanford.spezi.ui.Sizes
-import edu.stanford.spezi.ui.Spacings
-import edu.stanford.spezi.ui.SpeziTheme
-import edu.stanford.spezi.ui.TextStyles.bodyLarge
-import edu.stanford.spezi.ui.TextStyles.bodyMedium
-import edu.stanford.spezi.ui.TextStyles.titleLarge
-import edu.stanford.spezi.ui.TextStyles.titleSmall
-import edu.stanford.spezi.ui.ThemePreviews
-import edu.stanford.spezi.ui.testing.testIdentifier
+import edu.stanford.spezi.ui.testIdentifier
+import edu.stanford.spezi.ui.theme.Colors.primary
+import edu.stanford.spezi.ui.theme.Sizes
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles.bodyLarge
+import edu.stanford.spezi.ui.theme.TextStyles.bodyMedium
+import edu.stanford.spezi.ui.theme.TextStyles.titleLarge
+import edu.stanford.spezi.ui.theme.TextStyles.titleSmall
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 /**
  * The onboarding screen.

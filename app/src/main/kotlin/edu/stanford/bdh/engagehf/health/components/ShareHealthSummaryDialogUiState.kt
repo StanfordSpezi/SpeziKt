@@ -29,18 +29,18 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.summary.QRCodeImageBitmapGenerator
-import edu.stanford.spezi.modules.design.component.AsyncTextButton
-import edu.stanford.spezi.ui.Colors
-import edu.stanford.spezi.ui.Colors.onBackground
-import edu.stanford.spezi.ui.Colors.primary
+import edu.stanford.spezi.ui.AsyncTextButton
 import edu.stanford.spezi.ui.DefaultElevatedCard
 import edu.stanford.spezi.ui.DialogComposableContent
-import edu.stanford.spezi.ui.Sizes
-import edu.stanford.spezi.ui.Spacings
-import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.StringResource
-import edu.stanford.spezi.ui.TextStyles
-import edu.stanford.spezi.ui.ThemePreviews
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.Colors.onBackground
+import edu.stanford.spezi.ui.theme.Colors.primary
+import edu.stanford.spezi.ui.theme.Sizes
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 data class ShareHealthSummaryDialogUiState(
     val qrCodeBitmap: ImageBitmap,

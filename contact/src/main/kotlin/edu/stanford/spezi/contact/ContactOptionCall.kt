@@ -9,7 +9,7 @@ import edu.stanford.spezi.ui.StringResource
 fun ContactOption.Companion.call(number: String) =
     ContactOption(
         image = Icons.Default.Call,
-        title = StringResource("Call"),
+        title = StringResource(R.string.contact_call),
         action = { context ->
             runCatching {
                 val intent = Intent(Intent.ACTION_DIAL).apply {

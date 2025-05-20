@@ -1,7 +1,7 @@
 package edu.stanford.bdh.engagehf.health
 
 import androidx.health.connect.client.records.Record
-import edu.stanford.spezi.modules.design.action.PendingActions
+import edu.stanford.spezi.ui.PendingActions
 import edu.stanford.spezi.ui.StringResource
 import java.time.ZonedDateTime
 

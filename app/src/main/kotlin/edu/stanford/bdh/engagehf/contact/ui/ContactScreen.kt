@@ -21,21 +21,20 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.spezi.contact.Contact
-import edu.stanford.spezi.contact.ContactComposable
 import edu.stanford.spezi.contact.ContactOption
 import edu.stanford.spezi.contact.call
 import edu.stanford.spezi.contact.email
 import edu.stanford.spezi.contact.website
-import edu.stanford.spezi.modules.design.component.AppTopAppBar
-import edu.stanford.spezi.modules.design.component.CenteredBoxContent
-import edu.stanford.spezi.ui.Colors.primary
+import edu.stanford.spezi.ui.AppTopAppBar
+import edu.stanford.spezi.ui.CenteredBoxContent
 import edu.stanford.spezi.ui.ImageResource
-import edu.stanford.spezi.ui.Spacings
-import edu.stanford.spezi.ui.SpeziTheme
 import edu.stanford.spezi.ui.StringResource
-import edu.stanford.spezi.ui.TextStyles
-import edu.stanford.spezi.ui.ThemePreviews
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
+import edu.stanford.spezi.ui.theme.Colors.primary
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles
+import edu.stanford.spezi.ui.theme.ThemePreviews
 import java.util.Locale
 
 @Composable
@@ -92,10 +91,7 @@ private fun ContactScreen(
                 }
 
                 is ContactScreenViewModel.UiState.ContactLoaded -> {
-                    val contact = uiState.contact
-                    ContactComposable(
-                        contact = contact,
-                    )
+                    uiState.contact.Content()
                 }
             }
         }

@@ -28,7 +28,6 @@ dependencies {
     implementation(project(":core-coroutines"))
     implementation(project(":core-logging"))
     implementation(project(":ui"))
-    implementation(project(":ui-testing"))
 
     implementation(libs.hilt.navigation.compose)
 
@@ -43,4 +42,5 @@ dependencies {
 
     testImplementation(libs.bundles.unit.testing)
     androidTestImplementation(libs.bundles.compose.androidTest)
+    androidTestImplementation(project(":testing-ui"))
 }

@@ -9,12 +9,13 @@ android {
 
 dependencies {
     implementation(project(":core-logging"))
+    implementation(project(":foundation"))
 
     api(project(":ui-personalinfo"))
-    implementation(project(":ui-testing"))
 
     implementation(libs.androidx.core.i18n)
     implementation(libs.androidx.core.ktx)
 
     androidTestImplementation(libs.hilt.test)
+    androidTestImplementation(project(":testing-ui"))
 }

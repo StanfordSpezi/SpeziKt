@@ -7,11 +7,18 @@ data class FailedValidationResult(
     val id: UUID,
     val message: StringResource,
 ) {
+    // Constructors
+
     constructor(rule: ValidationRule) : this(
         id = rule.id,
         message = rule.message
     )
 
-    override fun equals(other: Any?) = (other as? FailedValidationResult)?.id == id
-    override fun hashCode() = id.hashCode()
+    // Overrides
+
+    override fun equals(other: Any?) =
+        (other as? FailedValidationResult)?.id == id
+
+    override fun hashCode() =
+        id.hashCode()
 }

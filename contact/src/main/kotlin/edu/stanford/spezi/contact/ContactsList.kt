@@ -4,19 +4,23 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import edu.stanford.spezi.ui.testing.testIdentifier
+import edu.stanford.spezi.ui.ComposableContent
+import edu.stanford.spezi.ui.testIdentifier
 
-@Composable
-fun ContactsList(contacts: List<Contact>, modifier: Modifier = Modifier) {
-    LazyColumn(modifier = modifier) {
-        items(contacts) {
-            ContactComposable(
-                it,
-                modifier = Modifier.testIdentifier(
-                    ContactsListTestIdentifier.CONTACT,
-                    suffix = it.id.toString()
+data class ContactsList(
+    val contacts: List<Contact>,
+) : ComposableContent {
+    @Composable
+    override fun Content(modifier: Modifier) {
+        LazyColumn(modifier = modifier) {
+            items(contacts) {
+                it.Content(
+                    modifier = Modifier.testIdentifier(
+                        ContactsListTestIdentifier.CONTACT,
+                        suffix = it.id.toString()
+                    )
                 )
-            )
+            }
         }
     }
 }

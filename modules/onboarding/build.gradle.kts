@@ -19,7 +19,6 @@ dependencies {
     implementation(project(":core-coroutines"))
     implementation(project(":ui"))
     implementation(project(":ui-markdown"))
-    implementation(project(":ui-testing"))
 
     implementation(libs.androidx.foundation)
     implementation(libs.accompanist.pager)
@@ -28,4 +27,5 @@ dependencies {
     testImplementation(libs.bundles.unit.testing)
 
     androidTestImplementation(libs.bundles.compose.androidTest)
+    androidTestImplementation(project(":testing-ui"))
 }

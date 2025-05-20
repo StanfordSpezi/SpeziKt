@@ -25,7 +25,9 @@ class SpeziLogger internal constructor(private val tag: String, private val conf
     /**
      * Lazily initializes the appropriate logger based on the configuration.
      */
-    private val _logger by lazy {
+    @PublishedApi
+    @Suppress("VariableNaming")
+    internal val _logger by lazy {
         val currentConfig = config.get()
         val logTag = tag.removeSuffix("Impl")
         val prefix = currentConfig.messagePrefix

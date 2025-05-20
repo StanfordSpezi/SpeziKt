@@ -36,22 +36,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import edu.stanford.spezi.modules.design.component.AsyncImageResource
-import edu.stanford.spezi.modules.design.component.AsyncImageResourceComposable
-import edu.stanford.spezi.modules.design.component.RectangleShimmerEffect
-import edu.stanford.spezi.modules.design.component.VerticalSpacer
-import edu.stanford.spezi.modules.design.component.height
 import edu.stanford.spezi.modules.education.videos.Video
-import edu.stanford.spezi.ui.Colors
+import edu.stanford.spezi.ui.AsyncImageResource
 import edu.stanford.spezi.ui.DefaultElevatedCard
-import edu.stanford.spezi.ui.Sizes
-import edu.stanford.spezi.ui.Spacings
-import edu.stanford.spezi.ui.SpeziTheme
-import edu.stanford.spezi.ui.StringResource
-import edu.stanford.spezi.ui.TextStyles.bodyMedium
-import edu.stanford.spezi.ui.TextStyles.titleLarge
-import edu.stanford.spezi.ui.ThemePreviews
+import edu.stanford.spezi.ui.RectangleShimmerEffect
+import edu.stanford.spezi.ui.VerticalSpacer
+import edu.stanford.spezi.ui.height
 import edu.stanford.spezi.ui.lighten
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.Sizes
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles.bodyMedium
+import edu.stanford.spezi.ui.theme.TextStyles.titleLarge
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 private const val IMAGE_HEIGHT = 200
 private const val ASPECT_16_9 = 16f / 9f
@@ -156,13 +154,13 @@ private fun VideoItem(video: Video, onVideoClick: () -> Unit) {
                 .padding(Spacings.small)
                 .fillMaxWidth()
         ) {
-            AsyncImageResourceComposable(
-                imageResource = AsyncImageResource.Remote(url = video.thumbnailUrl, StringResource("Video thumbnail")),
+            AsyncImageResource(
+                url = video.thumbnailUrl,
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(ASPECT_16_9)
                     .border(Sizes.Border.medium, Colors.primary),
-                errorContent = {
+                error = {
                     Box(Modifier.matchParentSize()) {
                         Text(
                             text = video.title,

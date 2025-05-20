@@ -12,7 +12,6 @@ android {
 dependencies {
 
     implementation(libs.androidyoutubeplayer.core)
-    implementation(libs.coil.compose)
     implementation(libs.hilt.navigation.compose)
 
     implementation(project(":modules:design"))
@@ -22,5 +21,5 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":core-logging"))
     implementation(project(":ui"))
-    implementation(project(":ui-testing"))
+    androidTestImplementation(project(":testing-ui"))
 }
