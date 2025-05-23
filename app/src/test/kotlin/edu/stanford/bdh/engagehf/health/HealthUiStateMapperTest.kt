@@ -5,8 +5,9 @@ import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.units.Mass
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.utils.LocaleProvider
+import edu.stanford.spezi.modules.utils.LocaleProvider
+import edu.stanford.spezi.modules.utils.extensions.roundToDecimalPlaces
+import edu.stanford.spezi.ui.StringResource
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before
@@ -144,7 +145,7 @@ class HealthUiStateMapperTest {
                 day = 4,
             ),
             createWeightRecord(
-                month = zonedDateTime.monthValue + 1,
+                year = zonedDateTime.year + 1,
                 day = 5,
             ),
         )
@@ -165,14 +166,81 @@ class HealthUiStateMapperTest {
         assertThat(result.infoRowData.formattedDate).isNotEmpty()
     }
 
+    @Test
+    fun `it should map x and y values and format correctly for selectedTimeRange DAILY`() {
+        // Given
+        val records = List(5) {
+            createWeightRecord(
+                day = it + 1,
+                weightInKg = 70.0 + it
+            )
+        }
+        val expectedYValues = records.map { it.weight.inPounds.roundToDecimalPlaces(2) }
+
+        // When
+        val result = healthUiStateMapper.map(records, TimeRange.DAILY)
+        val chartData = result.chartData.first()
+
+        // Then
+        assertThat(chartData.yValues).isEqualTo(expectedYValues)
+        assertThat(chartData.xValues).isEqualTo(List(5) { it.toDouble() })
+        chartData.xValues.forEach {
+            assertThat(result.valueFormatter(it)).matches(monthRegex(it.toInt() + 1))
+        }
+    }
+
+    @Test
+    fun `it should map x and y values and format correctly for selectedTimeRange WEEKLY`() {
+        // Given
+        val records = List(3) {
+            createWeightRecord(
+                day = 1 + (it * 7),
+                weightInKg = 70.0 + it
+            )
+        }
+        val expectedYValues = records.map { it.weight.inPounds.roundToDecimalPlaces(2) }
+
+        // When
+        val result = healthUiStateMapper.map(records, TimeRange.WEEKLY)
+        val chartData = result.chartData.first()
+
+        // Then
+        assertThat(chartData.yValues).isEqualTo(expectedYValues)
+        assertThat(chartData.xValues).isEqualTo(List(3) { it.toDouble() })
+        assertThat(result.xValue(0)).matches(monthRegex(1))
+        assertThat(result.xValue(1)).matches(monthRegex(8))
+        assertThat(result.xValue(2)).matches(monthRegex(15))
+    }
+
+    @Test
+    fun `it should map x and y values and format correctly for selectedTimeRange MONTHLY`() {
+        // Given
+        val records = List(3) {
+            createWeightRecord(
+                month = 1 + it,
+                day = 1,
+                weightInKg = 70.0 + it
+            )
+        }
+        val year = zonedDateTime.year % 100
+        val expectedYValues = records.map { it.weight.inPounds.roundToDecimalPlaces(2) }
+
+        // When
+        val result = healthUiStateMapper.map(records, TimeRange.MONTHLY)
+        val chartData = result.chartData.first()
+
+        // Then
+        assertThat(chartData.yValues).isEqualTo(expectedYValues)
+        assertThat(chartData.xValues).isEqualTo(List(3) { it.toDouble() })
+        assertThat(result.xValue(0)).isEqualTo("Jan $year")
+        assertThat(result.xValue(1)).isEqualTo("Feb $year")
+        assertThat(result.xValue(2)).isEqualTo("Mar $year")
+    }
+
     private fun createWeightRecord(
         year: Int = zonedDateTime.year,
         month: Int = zonedDateTime.monthValue,
         day: Int = zonedDateTime.dayOfMonth,
-        hour: Int = zonedDateTime.hour,
-        minute: Int = zonedDateTime.minute,
-        second: Int = 0,
-        nanoOfSecond: Int = 0,
         weightInKg: Double = 70.0,
     ): WeightRecord {
         return WeightRecord(
@@ -180,10 +248,10 @@ class HealthUiStateMapperTest {
                 year,
                 month,
                 day,
-                hour,
-                minute,
-                second,
-                nanoOfSecond,
+                0,
+                0,
+                0,
+                0,
                 ZoneId.systemDefault()
             ).toInstant(),
             zoneOffset = zonedDateTime.offset,
@@ -191,8 +259,15 @@ class HealthUiStateMapperTest {
         )
     }
 
+    private fun monthRegex(day: Int): String {
+        val dayString = if (day < 10) "0$day" else "$day"
+        return "^[A-Za-z]{3} $dayString"
+    }
+
     private fun HealthUiStateMapper.map(
         records: List<Record>,
         timeRange: TimeRange = TimeRange.DAILY,
     ) = (mapToHealthData(records, timeRange) as HealthUiState.Success).data
+
+    private fun HealthUiData.xValue(index: Int) = valueFormatter(chartData.first().xValues[index])
 }

@@ -7,7 +7,7 @@ import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.units.Mass
 import androidx.health.connect.client.units.Pressure
 import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
-import edu.stanford.healthconnectonfhir.RecordToObservationMapper
+import edu.stanford.spezi.modules.healthconnectonfhir.RecordToObservationMapper
 import org.hl7.fhir.r4.model.Observation
 import java.time.LocalDateTime
 import java.time.ZonedDateTime

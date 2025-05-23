@@ -17,11 +17,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.theme.Sizes
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.ui.VerticalSpacer
+import edu.stanford.spezi.ui.theme.Sizes
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 private const val PROGRESS_GREEN_HEX = 0xFF00796B
 private val PROGRESS_GREEN = Color(PROGRESS_GREEN_HEX)
@@ -74,7 +74,7 @@ private class MedicationProgressBarProvider : PreviewParameterProvider<Float> {
 private fun MedicationProgressBarPreview(
     @PreviewParameter(MedicationProgressBarProvider::class) progress: Float,
 ) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         MedicationProgressBar(progress = progress)
     }
 }

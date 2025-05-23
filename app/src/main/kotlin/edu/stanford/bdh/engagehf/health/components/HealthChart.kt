@@ -11,13 +11,13 @@ import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelCompone
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
 import com.patrykandpatrick.vico.compose.cartesian.decoration.rememberHorizontalLine
-import com.patrykandpatrick.vico.compose.cartesian.fullWidth
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberPoint
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
+import com.patrykandpatrick.vico.compose.cartesian.segmented
 import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
@@ -48,11 +48,11 @@ import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.AverageHealthData
 import edu.stanford.bdh.engagehf.health.HealthUiData
 import edu.stanford.bdh.engagehf.health.HealthUiStateMapper.Companion.ADAPTIVE_Y_VALUES_FRACTION
-import edu.stanford.spezi.core.design.theme.Colors.onTertiary
-import edu.stanford.spezi.core.design.theme.Colors.primary
-import edu.stanford.spezi.core.design.theme.Colors.secondary
-import edu.stanford.spezi.core.design.theme.Colors.tertiary
-import edu.stanford.spezi.core.design.theme.Spacings
+import edu.stanford.spezi.ui.theme.Colors.onTertiary
+import edu.stanford.spezi.ui.theme.Colors.primary
+import edu.stanford.spezi.ui.theme.Colors.secondary
+import edu.stanford.spezi.ui.theme.Colors.tertiary
+import edu.stanford.spezi.ui.theme.Spacings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -132,7 +132,7 @@ fun HealthChart(
             decorations = uiState.averageData?.let { averageWeight ->
                 listOf(rememberComposeHorizontalLine(averageWeight))
             } ?: emptyList(),
-            horizontalLayout = HorizontalLayout.fullWidth(),
+            horizontalLayout = HorizontalLayout.segmented(),
             legend = rememberLegend(uiState.chartData),
         ),
         modelProducer = modelProducer,
@@ -155,7 +155,7 @@ private fun rememberLegend(chartData: List<AggregatedHealthData>) =
                 rememberLegendItem(
                     icon = rememberShapeComponent(chartColor, Shape.Pill),
                     labelComponent = rememberTextComponent(vicoTheme.textColor),
-                    label = data.seriesName,
+                    label = data.seriesName.text(),
                 )
             }
         },

@@ -1,11 +1,14 @@
 package edu.stanford.bdh.engagehf.contact.ui
 
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.contact.data.EngageContactRepository
-import edu.stanford.spezi.core.navigation.NavigationEvent
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.core.testing.CoroutineTestRule
-import edu.stanford.spezi.modules.contact.model.Contact
+import edu.stanford.bdh.engagehf.contact.ui.ContactScreenViewModel.UiState
+import edu.stanford.spezi.contact.Contact
+import edu.stanford.spezi.modules.navigation.NavigationEvent
+import edu.stanford.spezi.modules.navigation.Navigator
+import edu.stanford.spezi.modules.testing.CoroutineTestRule
+import edu.stanford.spezi.ui.StringResource
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
@@ -45,28 +48,21 @@ class ContactScreenViewModelTest {
 
         // Then
         val uiState = viewModel.uiState.first()
-        assertThat(uiState).isInstanceOf(ContactScreenViewModel.UiState.ContactLoaded::class.java)
-        val loadedState = uiState as ContactScreenViewModel.UiState.ContactLoaded
+        assertThat(uiState).isInstanceOf(UiState.ContactLoaded::class.java)
+        val loadedState = uiState as UiState.ContactLoaded
         assertThat(loadedState.contact).isEqualTo(contact)
     }
 
     @Test
     fun `loadContact should update state on failure`() = runTest {
         // Given
-        val errorMessage = "Failed to load contact"
-        coEvery { engageContactRepository.getContact() } returns Result.failure(
-            Exception(
-                errorMessage
-            )
-        )
+        coEvery { engageContactRepository.getContact() } returns Result.failure(Exception("Failed to load contact"))
 
         // When
 
         // Then
         val uiState = viewModel.uiState.first()
-        assertThat(uiState).isInstanceOf(ContactScreenViewModel.UiState.Error::class.java)
-        val errorState = uiState as ContactScreenViewModel.UiState.Error
-        assertThat(errorState.message).isEqualTo(errorMessage)
+        assertThat(uiState).isEqualTo(UiState.Error(StringResource(R.string.generic_error_description)))
     }
 
     @Test

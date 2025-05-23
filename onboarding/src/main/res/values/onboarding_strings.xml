@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="questionnaire_cancel">Cancel</string>
+    <string name="questionnaire_cancel_confirm_description">Do you really want to cancel?</string>
+    <string name="questionnaire_ok">OK</string>
+</resources>

@@ -3,6 +3,7 @@ package edu.stanford.bdh.engagehf.messages
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,13 +13,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,24 +31,25 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
-import edu.stanford.spezi.core.design.component.DefaultElevatedCard
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Colors.primary
-import edu.stanford.spezi.core.design.theme.Sizes
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.design.theme.lighten
-import edu.stanford.spezi.core.utils.extensions.testIdentifier
-import java.time.ZonedDateTime
+import edu.stanford.bdh.engagehf.bluetooth.data.models.MessageUiModel
+import edu.stanford.spezi.ui.AsyncButton
+import edu.stanford.spezi.ui.DefaultElevatedCard
+import edu.stanford.spezi.ui.lighten
+import edu.stanford.spezi.ui.testIdentifier
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.Colors.primary
+import edu.stanford.spezi.ui.theme.Sizes
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 private const val TEXT_WEIGHT = 0.9f
 
 @Composable
 fun MessageItem(
     modifier: Modifier = Modifier,
-    message: Message,
+    model: MessageUiModel,
     onAction: (Action) -> Unit,
 ) {
     DefaultElevatedCard(
@@ -64,21 +67,42 @@ fun MessageItem(
                 modifier = Modifier.padding(top = Spacings.small),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                MessageIcon(message.icon)
+                MessageIcon(model.icon)
                 Spacer(modifier = Modifier.width(Spacings.small))
                 Text(
                     modifier = Modifier.testIdentifier(MessageItemTestIdentifiers.TITLE),
-                    text = message.title,
+                    text = model.title,
                     style = TextStyles.titleMedium,
                     color = Colors.onBackground,
                 )
+                Spacer(modifier = Modifier.weight(1f))
+                if (model.isDismissible) {
+                    val iconButtonColors = IconButtonDefaults.iconButtonColors()
+                    AsyncButton(
+                        shape = IconButtonDefaults.filledShape,
+                        containerColor = iconButtonColors.containerColor,
+                        contentColor = iconButtonColors.contentColor,
+                        contentPadding = PaddingValues(Spacings.extraSmall),
+                        onClick = {
+                            onAction(Action.MessageItemDismissed(model.id))
+                        },
+                        isLoading = model.isDismissing,
+                        modifier = Modifier.size(Sizes.Icon.small),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = stringResource(R.string.dismiss_message),
+                            tint = Colors.onBackground,
+                        )
+                    }
+                }
             }
-            message.description?.let {
+            model.description?.let {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    if (message.isExpanded) {
+                    if (model.isExpanded) {
                         Text(
                             modifier = Modifier
                                 .weight(TEXT_WEIGHT)
@@ -100,11 +124,11 @@ fun MessageItem(
                     IconButton(
                         modifier = Modifier.width(Sizes.Icon.small),
                         onClick = {
-                            onAction(Action.ToggleExpand(message))
+                            onAction(Action.ToggleExpand(model.id))
                         }) {
                         Icon(
-                            imageVector = if (message.isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                            contentDescription = if (message.isExpanded) "Show less" else "Show more",
+                            imageVector = if (model.isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                            contentDescription = null,
                         )
                     }
                 }
@@ -115,29 +139,18 @@ fun MessageItem(
                     .fillMaxWidth()
                     .padding(bottom = Spacings.small),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start,
+                horizontalArrangement = Arrangement.End,
             ) {
-                message.dueDateFormattedString?.let {
-                    Text(
-                        modifier = Modifier.testIdentifier(MessageItemTestIdentifiers.DUE_DATE),
-                        text = "Due Date: $it",
-                        style = TextStyles.labelSmall
-                    )
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                Button(
-                    modifier = Modifier.testIdentifier(MessageItemTestIdentifiers.ACTION_BUTTON),
-                    colors = ButtonDefaults.buttonColors(containerColor = primary),
-                    enabled = !message.isLoading,
-                    onClick = {
-                        onAction(Action.MessageItemClicked(message))
-                    },
-                ) {
-                    if (message.isLoading) {
-                        CircularProgressIndicator(modifier = Modifier.size(Sizes.Content.small))
-                    } else {
+                model.action?.let { action ->
+                    Button(
+                        modifier = Modifier.testIdentifier(MessageItemTestIdentifiers.ACTION_BUTTON),
+                        colors = ButtonDefaults.buttonColors(containerColor = primary),
+                        onClick = {
+                            onAction(Action.MessageItemClicked(model.id))
+                        },
+                    ) {
                         Text(
-                            text = stringResource(R.string.message_item_button_action_text),
+                            text = action.description.text(),
                             color = Colors.onPrimary,
                         )
                     }
@@ -163,54 +176,56 @@ fun MessageIcon(
 enum class MessageItemTestIdentifiers {
     TITLE,
     DESCRIPTION,
-    DUE_DATE,
     ACTION_BUTTON,
 }
 
 @Composable
 @ThemePreviews
 fun MessageListPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         LazyColumn(modifier = Modifier.padding(Spacings.medium)) {
-            items(sampleMessages) { message ->
-                MessageItem(message = message, onAction = { })
+            items(sampleMessageModels) { model ->
+                MessageItem(model = model, onAction = { })
             }
         }
     }
 }
 
-private val sampleMessages = listOf(
-    Message(
+private val sampleMessageModels = listOf(
+    MessageUiModel(
         id = java.util.UUID.randomUUID().toString(),
-        dueDate = ZonedDateTime.now().plusDays(1),
-        completionDate = null,
-        type = MessageType.WeightGain,
         title = "Weight Gained",
         description = "You gained weight. Please take action.",
-        action = "New Weight Entry",
+        action = MessageAction.MeasurementsAction,
+        isDismissible = true,
+        isDismissing = false,
+        isLoading = false,
+        isExpanded = true,
     ),
-    Message(
+    MessageUiModel(
         id = java.util.UUID.randomUUID().toString(),
-        dueDate = ZonedDateTime.now().plusDays(2),
-        completionDate = null,
-        type = MessageType.MedicationChange,
         title = "Medication Change",
         description = "Your medication has been changed. Please take action. " +
             "Your medication has been changed. Please take action. Your medication " +
             "has been changed. " +
             "Please take action.",
-        action = "Go to medication",
+        action = MessageAction.MedicationsAction,
+        isDismissible = true,
+        isDismissing = false,
+        isLoading = false,
+        isExpanded = true,
     ),
-    Message(
+    MessageUiModel(
         id = java.util.UUID.randomUUID().toString(),
-        dueDate = ZonedDateTime.now().plusDays(2),
-        completionDate = null,
-        type = MessageType.Unknown,
         title = "Medication Change",
         description = "Your medication has been changed. Please take action. " +
             "Your medication has been changed. Please take action. Your medication " +
             "has been changed. " +
             "Please take action.",
-        action = "Go to medication",
+        action = MessageAction.MedicationsAction,
+        isDismissible = true,
+        isDismissing = false,
+        isLoading = false,
+        isExpanded = true,
     ),
 )

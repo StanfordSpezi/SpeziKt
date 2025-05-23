@@ -4,15 +4,14 @@ import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MessageActionMapper
 import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendation
-import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendationType
 import edu.stanford.bdh.engagehf.medication.data.MedicationRepository
-import edu.stanford.bdh.engagehf.messages.MessagesAction
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.core.testing.CoroutineTestRule
-import edu.stanford.spezi.core.testing.runTestUnconfined
-import edu.stanford.spezi.core.utils.MessageNotifier
+import edu.stanford.bdh.engagehf.messages.MessageAction
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
 import edu.stanford.spezi.modules.education.videos.Video
+import edu.stanford.spezi.modules.navigation.Navigator
+import edu.stanford.spezi.modules.testing.CoroutineTestRule
+import edu.stanford.spezi.modules.testing.runTestUnconfined
+import edu.stanford.spezi.modules.utils.MessageNotifier
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -29,7 +28,7 @@ class MedicationViewModelTest {
 
     private val medicationRepository: MedicationRepository = mockk()
     private val medicationUiStateMapper: MedicationUiStateMapper = mockk()
-    private val recommendations = getMedicationRecommendations()
+    private val recommendations: List<MedicationRecommendation> = mockk()
     private val uiModels: List<MedicationCardUiModel> = mockk()
     private val navigator: Navigator = mockk(relaxed = true)
     private val engageEducationRepository: EngageEducationRepository = mockk()
@@ -143,48 +142,27 @@ class MedicationViewModelTest {
             // given
             val videoPath = "/videoSections/1/videos/1"
             val videoSectionId = "1"
-            val videoId = "1"
-            val video = mockk<Video>()
-            val mappedAction = mockk<MessagesAction.VideoSectionAction> {
-                every { videoSectionVideo.videoSectionId } returns videoSectionId
-                every { videoSectionVideo.videoId } returns videoId
+            val actualVideoId = "1"
+            val actualVideo = mockk<Video>()
+            val mappedAction = mockk<MessageAction.VideoAction> {
+                every { sectionId } returns videoSectionId
+                every { videoId } returns actualVideoId
             }
 
-            every { messageActionMapper.mapVideoSectionAction(videoPath) } returns Result.success(
+            every { messageActionMapper.mapVideoAction(videoPath) } returns Result.success(
                 mappedAction
             )
             coEvery {
                 engageEducationRepository.getVideoBySectionAndVideoId(
                     videoSectionId,
-                    videoId
+                    actualVideoId
                 )
-            } returns Result.success(video)
+            } returns Result.success(actualVideo)
 
             // when
             viewModel.onAction(MedicationViewModel.Action.InfoClicked(videoPath))
 
             // then
-            verify { navigator.navigateTo(EducationNavigationEvent.VideoSectionClicked(video)) }
+            verify { navigator.navigateTo(EducationNavigationEvent.VideoSectionClicked(actualVideo)) }
         }
-
-    private fun getMedicationRecommendations() = listOf(
-        MedicationRecommendation(
-            id = "1",
-            title = "Medication A",
-            subtitle = "Subtitle A",
-            description = "Description A",
-            type = MedicationRecommendationType.TARGET_DOSE_REACHED,
-            dosageInformation = null,
-            videoPath = null
-        ),
-        MedicationRecommendation(
-            id = "2",
-            title = "Medication B",
-            subtitle = "Subtitle B",
-            description = "Description B",
-            type = MedicationRecommendationType.NOT_STARTED,
-            dosageInformation = null,
-            videoPath = null
-        )
-    )
 }

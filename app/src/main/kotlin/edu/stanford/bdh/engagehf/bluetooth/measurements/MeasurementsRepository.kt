@@ -10,9 +10,9 @@ import com.google.firebase.firestore.Query
 import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
 import edu.stanford.bdh.engagehf.observations.ObservationCollection
 import edu.stanford.bdh.engagehf.observations.ObservationCollectionProvider
-import edu.stanford.healthconnectonfhir.ObservationsDocumentMapper
-import edu.stanford.spezi.core.coroutines.di.Dispatching
+import edu.stanford.spezi.core.coroutines.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.modules.healthconnectonfhir.ObservationsDocumentMapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -59,7 +59,7 @@ class MeasurementsRepository @Inject internal constructor(
         }
     }
 
-    private suspend fun <T : Record> observe(
+    private fun <T : Record> observe(
         collection: ObservationCollection,
     ): Flow<Result<T?>> = callbackFlow {
         var listenerRegistration: ListenerRegistration? = null
@@ -90,12 +90,12 @@ class MeasurementsRepository @Inject internal constructor(
         }
     }
 
-    suspend fun observeBloodPressureRecord(): Flow<Result<BloodPressureRecord?>> =
+    fun observeBloodPressureRecord(): Flow<Result<BloodPressureRecord?>> =
         observe(ObservationCollection.BLOOD_PRESSURE)
 
-    suspend fun observeWeightRecord(): Flow<Result<WeightRecord?>> =
+    fun observeWeightRecord(): Flow<Result<WeightRecord?>> =
         observe(ObservationCollection.BODY_WEIGHT)
 
-    suspend fun observeHeartRateRecord(): Flow<Result<HeartRateRecord?>> =
+    fun observeHeartRateRecord(): Flow<Result<HeartRateRecord?>> =
         observe(ObservationCollection.HEART_RATE)
 }

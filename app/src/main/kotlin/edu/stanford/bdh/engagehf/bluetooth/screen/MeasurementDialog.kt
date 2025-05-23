@@ -20,10 +20,10 @@ import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.data.models.Action
 import edu.stanford.bdh.engagehf.bluetooth.data.models.MeasurementDialogUiState
 import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
-import edu.stanford.spezi.core.design.component.AsyncTextButton
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.ui.AsyncTextButton
+import edu.stanford.spezi.ui.testIdentifier
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.TextStyles
 
 @Composable
 fun MeasurementDialog(
@@ -53,21 +53,21 @@ fun MeasurementDialog(
                     uiState.measurement?.let {
                         if (it is Measurement.Weight) {
                             MeasurementRow(
-                                label = stringResource(R.string.weight) + ":",
+                                label = stringResource(R.string.weight),
                                 value = uiState.formattedWeight,
                             )
                         }
                         if (it is Measurement.BloodPressure) {
                             MeasurementRow(
-                                label = stringResource(R.string.systolic) + ":",
+                                label = stringResource(R.string.systolic),
                                 value = uiState.formattedSystolic
                             )
                             MeasurementRow(
-                                label = stringResource(R.string.diastolic) + ":",
+                                label = stringResource(R.string.diastolic),
                                 value = uiState.formattedDiastolic
                             )
                             MeasurementRow(
-                                label = stringResource(R.string.pulse_rate) + ":",
+                                label = stringResource(R.string.pulse_rate),
                                 value = uiState.formattedHeartRate
                             )
                         }
@@ -105,7 +105,7 @@ fun MeasurementRow(modifier: Modifier = Modifier, label: String, value: String) 
         horizontalArrangement = Arrangement.spacedBy(Spacings.small)
     ) {
         Text(
-            text = label,
+            text = "$label:",
             style = TextStyles.bodyMedium,
             modifier = Modifier
                 .width(80.dp)

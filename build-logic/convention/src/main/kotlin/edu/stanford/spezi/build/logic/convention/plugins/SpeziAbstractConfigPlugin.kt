@@ -22,17 +22,16 @@ abstract class SpeziAbstractConfigPlugin(private val modulePlugin: PluginId) : P
 
         android {
             defaultConfig {
-                testInstrumentationRunner = "edu.stanford.spezi.core.testing.HiltApplicationTestRunner"
+                testInstrumentationRunner = "edu.stanford.spezi.testing.ui.HiltApplicationTestRunner"
             }
         }
 
         dependencies {
-            implementation(project(":core:utils"))
-            implementation(project(":core:logging"))
+            implementation(project(":modules:utils"))
 
-            testImplementation(project(":core:testing"))
+            testImplementation(project(":modules:testing"))
 
-            androidTestImplementation(project(":core:testing"))
+            androidTestImplementation(project(":modules:testing"))
         }
     }
 }

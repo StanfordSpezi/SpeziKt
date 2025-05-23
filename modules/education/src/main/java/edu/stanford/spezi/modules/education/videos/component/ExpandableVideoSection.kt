@@ -28,68 +28,42 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import edu.stanford.spezi.core.design.component.AsyncImageResource
-import edu.stanford.spezi.core.design.component.AsyncImageResourceComposable
-import edu.stanford.spezi.core.design.component.DefaultElevatedCard
-import edu.stanford.spezi.core.design.component.RectangleShimmerEffect
-import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.component.height
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Sizes
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles.bodyMedium
-import edu.stanford.spezi.core.design.theme.TextStyles.titleLarge
-import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.design.theme.lighten
 import edu.stanford.spezi.modules.education.videos.Video
+import edu.stanford.spezi.ui.AsyncImageResource
+import edu.stanford.spezi.ui.DefaultElevatedCard
+import edu.stanford.spezi.ui.RectangleShimmerEffect
+import edu.stanford.spezi.ui.VerticalSpacer
+import edu.stanford.spezi.ui.height
+import edu.stanford.spezi.ui.lighten
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.Sizes
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles.bodyMedium
+import edu.stanford.spezi.ui.theme.TextStyles.titleLarge
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 private const val IMAGE_HEIGHT = 200
 private const val ASPECT_16_9 = 16f / 9f
 
 @Composable
-internal fun SectionHeader(
-    text: String?,
-    isExpanded: Boolean,
-    onHeaderClicked: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onHeaderClicked() }
-            .padding(Spacings.medium),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        text?.let {
-            Text(
-                text = it,
-                style = titleLarge
-            )
-        }
-        ExpandIcon(isExpanded)
-    }
-}
-
-@Composable
 internal fun ExpandableVideoSection(
     modifier: Modifier = Modifier,
-    title: String?,
+    title: String,
     description: String?,
     videos: List<Video> = emptyList(),
-    expandedStartValue: Boolean = false,
-    onExpand: () -> Unit = {},
+    expandedStartValue: Boolean = true,
     onActionClick: (Video) -> Unit = { _ -> },
 ) {
-    var expanded by remember { mutableStateOf(expandedStartValue) }
+    var expanded by rememberSaveable { mutableStateOf(expandedStartValue) }
 
     VideoElevatedCard(
         modifier = modifier
@@ -103,10 +77,6 @@ internal fun ExpandableVideoSection(
             SectionHeader(
                 text = title,
                 isExpanded = expanded,
-                onHeaderClicked = {
-                    expanded = !expanded
-                    onExpand()
-                }
             )
 
             description?.let {
@@ -143,6 +113,29 @@ internal fun ExpandableVideoSection(
 }
 
 @Composable
+private fun SectionHeader(
+    text: String,
+    isExpanded: Boolean,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(Spacings.medium),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = text,
+            style = titleLarge
+        )
+        Icon(
+            imageVector = if (isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+            contentDescription = null,
+        )
+    }
+}
+
+@Composable
 private fun VideoItem(video: Video, onVideoClick: () -> Unit) {
     Column(modifier = Modifier.padding(Spacings.small)) {
         Text(
@@ -161,12 +154,21 @@ private fun VideoItem(video: Video, onVideoClick: () -> Unit) {
                 .padding(Spacings.small)
                 .fillMaxWidth()
         ) {
-            AsyncImageResourceComposable(
-                imageResource = AsyncImageResource.Remote(url = video.thumbnailUrl, StringResource("Video thumbnail")),
+            AsyncImageResource(
+                url = video.thumbnailUrl,
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(ASPECT_16_9)
                     .border(Sizes.Border.medium, Colors.primary),
+                error = {
+                    Box(Modifier.matchParentSize()) {
+                        Text(
+                            text = video.title,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.align(Alignment.Center),
+                        )
+                    }
+                }
             )
 
             Box(
@@ -228,24 +230,12 @@ private fun VideoElevatedCard(
     )
 }
 
-@Composable
-internal fun ExpandIcon(expanded: Boolean) {
-    val vector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
-    Icon(
-        imageVector = vector,
-        contentDescription = null,
-    )
-}
-
-private class ExpandableSectionPreviewProvider :
-    PreviewParameterProvider<ExpandableVideoSectionParams> {
+private class ExpandableSectionPreviewProvider : PreviewParameterProvider<ExpandableVideoSectionParams> {
     val factory = ExpandableVideoSectionParamsFactory()
     override val values: Sequence<ExpandableVideoSectionParams> = sequenceOf(
         factory.createParams(),
         factory.createParams().copy(expandedStartValue = true),
     )
-
-    override val count: Int = values.count()
 }
 
 @ThemePreviews
@@ -265,7 +255,7 @@ private fun ExpandableVideoSectionPreview(
 }
 
 private data class ExpandableVideoSectionParams(
-    val title: String?,
+    val title: String,
     val description: String?,
     val content: @Composable () -> Unit,
     val expandedStartValue: Boolean = false,
@@ -273,7 +263,7 @@ private data class ExpandableVideoSectionParams(
 
 private class ExpandableVideoSectionParamsFactory {
     fun createParams(
-        title: String? = "Title",
+        title: String = "Title",
         description: String? = "Description",
         content: @Composable () -> Unit = { Text(text = "Content") },
         expandedStartValue: Boolean = false,

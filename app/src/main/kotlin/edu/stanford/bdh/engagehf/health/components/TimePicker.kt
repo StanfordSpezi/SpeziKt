@@ -19,16 +19,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.TextStyles
-import java.time.LocalDate
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.TextStyles
+import java.time.Instant
 import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePicker(
-    state: edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.TimePickerState,
-    updateDate: (LocalDate) -> Unit,
+    state: edu.stanford.bdh.engagehf.health.time.TimePickerState,
+    updateDate: (Instant) -> Unit,
     updateTime: (LocalTime) -> Unit,
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
@@ -53,7 +53,7 @@ fun TimePicker(
     }
 
     if (showDatePicker) {
-        edu.stanford.spezi.module.account.register.DatePickerDialog(
+        edu.stanford.spezi.modules.account.register.DatePickerDialog(
             onDateSelected = { date ->
                 updateDate(date)
             },

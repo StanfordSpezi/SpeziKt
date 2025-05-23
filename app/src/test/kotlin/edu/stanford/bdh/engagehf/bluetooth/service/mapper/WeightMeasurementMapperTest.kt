@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothGattService
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.bdh.engagehf.bluetooth.service.BLEServiceType
 import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
-import edu.stanford.spezi.core.testing.runTestUnconfined
+import edu.stanford.spezi.modules.testing.runTestUnconfined
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Test
@@ -90,4 +90,42 @@ class WeightMeasurementMapperTest {
         // then
         assertThat(result).isNull()
     }
+
+    @Test
+    fun `it should map characteristic and kg data to weight measurement in kg`() =
+        runTestUnconfined {
+            // given
+            val sut = mapper
+            val data = byteArrayOf(
+                0b00000000, // Flags: kg
+                0x30, 0x75, // Weight: 30000 (0x7530) * 0.005 = 150.0 kg
+            )
+
+            // when
+            val result = sut.map(characteristic, data)
+
+            // then
+            assertThat(result).isInstanceOf(Measurement.Weight::class.java)
+            val weightMeasurement = result as Measurement.Weight
+            assertThat(weightMeasurement.weight).isEqualTo(150.0)
+        }
+
+    @Test
+    fun `it should map characteristic and lbs data to weight measurement in kg`() =
+        runTestUnconfined {
+            // given
+            val sut = mapper
+            val data = byteArrayOf(
+                0b00000001, // Flags: lbs
+                0x30, 0x75, // Weight: 30000 (0x7530) * 0.01 = 300.0 lbs * 0.453592 = 136.0776 kg
+            )
+
+            // when
+            val result = sut.map(characteristic, data)
+
+            // then
+            assertThat(result).isInstanceOf(Measurement.Weight::class.java)
+            val weightMeasurement = result as Measurement.Weight
+            assertThat(weightMeasurement.weight).isEqualTo(136.0776)
+        }
 }

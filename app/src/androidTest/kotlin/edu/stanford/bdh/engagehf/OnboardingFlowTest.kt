@@ -5,10 +5,10 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.bdh.engagehf.simulator.NavigatorSimulator
 import edu.stanford.bdh.engagehf.simulator.OnboardingFlowSimulator
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.module.onboarding.invitation.InvitationCodeRepository
-import edu.stanford.spezi.module.onboarding.onboarding.OnboardingRepository
-import edu.stanford.spezi.module.onboarding.sequential.SequentialOnboardingRepository
+import edu.stanford.spezi.modules.navigation.Navigator
+import edu.stanford.spezi.modules.onboarding.invitation.InvitationCodeRepository
+import edu.stanford.spezi.modules.onboarding.onboarding.OnboardingRepository
+import edu.stanford.spezi.modules.onboarding.sequential.SequentialOnboardingRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule

@@ -1,8 +1,8 @@
 package edu.stanford.bdh.engagehf.health
 
 import androidx.health.connect.client.records.Record
-import edu.stanford.spezi.core.design.action.PendingActions
-import edu.stanford.spezi.core.design.component.StringResource
+import edu.stanford.spezi.ui.PendingActions
+import edu.stanford.spezi.ui.StringResource
 import java.time.ZonedDateTime
 
 data class HealthUiData(
@@ -20,9 +20,9 @@ data class HealthUiData(
 
 sealed interface HealthUiState {
     data object Loading : HealthUiState
-    data class NoData(val message: String) : HealthUiState
+    data class NoData(val message: StringResource) : HealthUiState
     data class Success(val data: HealthUiData) : HealthUiState
-    data class Error(val message: String) : HealthUiState
+    data class Error(val message: StringResource) : HealthUiState
 }
 
 data class AverageHealthData(
@@ -33,7 +33,7 @@ data class AverageHealthData(
 data class AggregatedHealthData(
     val yValues: List<Double>,
     val xValues: List<Double>,
-    val seriesName: String,
+    val seriesName: StringResource,
 )
 
 data class NewestHealthData(

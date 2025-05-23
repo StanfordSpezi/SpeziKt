@@ -30,6 +30,9 @@ sealed class Routes {
 
     @Serializable
     data object ContactScreen : Routes()
+
+    @Serializable
+    data object PhoneNumberSettings : Routes()
 }
 
 @Serializable

@@ -3,9 +3,9 @@ package edu.stanford.spezi.modules.education.videos
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import edu.stanford.spezi.core.design.component.ComposeContentActivity
-import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.modules.education.R
+import edu.stanford.spezi.testing.ui.ComposeContentActivity
+import edu.stanford.spezi.ui.StringResource
 import org.junit.Rule
 import org.junit.Test
 
@@ -50,7 +50,7 @@ class EducationScreenTest {
     fun `education screen should display retry button`() {
         composeTestRule.activity.setScreen {
             EducationScreen(
-                uiState = UiState.Error(StringResource(R.string.failed_to_load_video_sections)),
+                uiState = UiState.Error(StringResource(R.string.education_failed_to_load_video_sections)),
                 onAction = {},
             )
         }
@@ -76,8 +76,7 @@ class EducationScreenTest {
         description: String = "description",
         orderIndex: Int = 0,
         videos: List<Video> = listOf(createDefaultVideo()),
-        isExpanded: Boolean = true,
-    ): VideoSection = VideoSection(title, description, orderIndex, videos, isExpanded)
+    ): VideoSection = VideoSection(title, description, orderIndex, videos)
 
     private fun createDefaultEducationUiState(
         videoSections: List<VideoSection> = listOf(createDefaultVideoSection()),

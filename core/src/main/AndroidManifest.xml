@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <provider
+            android:name="edu.stanford.spezi.core.internal.SpeziApplicationContentProvider"
+            android:authorities="${applicationId}.spezi.configuration"
+            android:exported="false"
+            android:initOrder="100" />
+    </application>
+</manifest>

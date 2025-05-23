@@ -4,12 +4,12 @@ import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.NewestHealthData
 import edu.stanford.bdh.engagehf.health.TableEntryData
-import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.utils.LocaleProvider
-import edu.stanford.spezi.core.utils.extensions.roundToDecimalPlaces
-import java.time.ZoneId
+import edu.stanford.spezi.modules.utils.LocaleProvider
+import edu.stanford.spezi.modules.utils.extensions.roundToDecimalPlaces
+import edu.stanford.spezi.ui.StringResource
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 @Suppress("MagicNumber")
@@ -25,11 +25,14 @@ class SymptomsUiStateMapper @Inject constructor(
         symptomScores: List<SymptomScore>,
     ): SymptomsUiState {
         if (symptomScores.isEmpty()) {
-            return SymptomsUiState.NoData("No symptom scores available")
+            return SymptomsUiState.NoData(StringResource(R.string.no_symptom_scores_available))
         }
-
-        val symptomScoresByDay = groupScoresByDay(symptomScores)
-        val chartData = calculateChartData(symptomScoresByDay, selectedSymptomType)
+        val oldestDate = symptomScores.minBy { it.zonedDateTime }.zonedDateTime
+        val chartData = calculateChartData(
+            symptomScores = symptomScores,
+            oldestDateTime = oldestDate,
+            selectedSymptomType = selectedSymptomType,
+        )
         val tableData = mapTableData(symptomScores, selectedSymptomType)
         val newestHealthData = mapNewestHealthData(symptomScores, selectedSymptomType)
 
@@ -43,31 +46,14 @@ class SymptomsUiStateMapper @Inject constructor(
                     formattedDate = newestHealthData.formattedDate,
                     selectedSymptomType = selectedSymptomType,
                     isSelectedSymptomTypeDropdownExpanded = false,
-                    selectedSymptomTypeText = getSelectedSymptomTypeText(selectedSymptomType),
                 ),
-                valueFormatter = ::valueFormatter
+                xValueFormatter = { value ->
+                    oldestDate
+                        .plusDays(value.toLong())
+                        .format(DateTimeFormatter.ofPattern("MMM dd"))
+                }
             )
         )
-    }
-
-    private fun getSelectedSymptomTypeText(selectedSymptomType: SymptomType): StringResource {
-        return when (selectedSymptomType) {
-            SymptomType.OVERALL -> StringResource(R.string.symptom_type_overall)
-            SymptomType.PHYSICAL_LIMITS -> StringResource(R.string.symptom_type_physical)
-            SymptomType.SOCIAL_LIMITS -> StringResource(R.string.symptom_type_social)
-            SymptomType.QUALITY_OF_LIFE -> StringResource(R.string.symptom_type_quality)
-            SymptomType.SYMPTOMS_FREQUENCY -> StringResource(R.string.symptom_type_specific)
-            SymptomType.DIZZINESS -> StringResource(R.string.symptom_type_dizziness)
-        }
-    }
-
-    private fun valueFormatter(value: Double): String {
-        val year = value.toInt()
-        val dayOfYearFraction = value - year
-        val dayOfYear = (dayOfYearFraction * 365).toInt() + 1
-        val date = ZonedDateTime.of(year, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault())
-            .plusDays((dayOfYear - 1).toLong())
-        return date.format(DateTimeFormatter.ofPattern("MMM dd"))
     }
 
     private fun mapNewestHealthData(
@@ -87,7 +73,7 @@ class SymptomsUiStateMapper @Inject constructor(
             SymptomType.PHYSICAL_LIMITS -> newestData.physicalLimitsScore.asPercent()
             SymptomType.SOCIAL_LIMITS -> newestData.socialLimitsScore.asPercent()
             SymptomType.QUALITY_OF_LIFE -> newestData.qualityOfLifeScore.asPercent()
-            SymptomType.SYMPTOMS_FREQUENCY -> newestData.symptomFrequencyScore.asPercent()
+            SymptomType.SPECIFIC -> newestData.symptomFrequencyScore.asPercent()
             SymptomType.DIZZINESS -> newestData.dizzinessScore?.toString() ?: NOT_AVAILABLE
         }
     }
@@ -144,18 +130,17 @@ class SymptomsUiStateMapper @Inject constructor(
             }.reversed()
     }
 
-    private fun groupScoresByDay(symptomScores: List<SymptomScore>): Map<ZonedDateTime, List<SymptomScore>> {
-        return symptomScores.groupBy { it.zonedDateTime }
-    }
-
     private fun calculateChartData(
-        symptomScoresByDay: Map<ZonedDateTime, List<SymptomScore>>,
+        symptomScores: List<SymptomScore>,
         selectedSymptomType: SymptomType,
+        oldestDateTime: ZonedDateTime,
     ): AggregatedHealthData {
         val yValues = mutableListOf<Double>()
         val xValues = mutableListOf<Double>()
+        val groupedByDay = symptomScores.groupBy { it.zonedDateTime.toLocalDate() }
+        val oldestLocalDate = oldestDateTime.toLocalDate()
 
-        symptomScoresByDay.forEach { (date, scores) ->
+        groupedByDay.forEach { (date, scores) ->
             val filteredScores = scores.mapNotNull { score ->
                 getScoreForSelectedSymptomType(selectedSymptomType, score)
             }
@@ -163,15 +148,21 @@ class SymptomsUiStateMapper @Inject constructor(
             if (filteredScores.isNotEmpty()) {
                 val averageScore = filteredScores.average()
                 yValues.add(averageScore)
-                val xValue = date.year + (date.dayOfYear - 1) / 365.0
-                xValues.add(xValue.roundToDecimalPlaces(places = 2))
+                xValues.add(ChronoUnit.DAYS.between(oldestLocalDate, date).toDouble())
             }
         }
 
         return AggregatedHealthData(
             yValues = yValues,
             xValues = xValues,
-            seriesName = selectedSymptomType.name
+            seriesName = when (selectedSymptomType) {
+                SymptomType.OVERALL -> R.string.symptom_type_overall
+                SymptomType.PHYSICAL_LIMITS -> R.string.symptom_type_physical
+                SymptomType.SOCIAL_LIMITS -> R.string.symptom_type_social
+                SymptomType.QUALITY_OF_LIFE -> R.string.symptom_type_quality
+                SymptomType.SPECIFIC -> R.string.symptom_type_specific
+                SymptomType.DIZZINESS -> R.string.symptom_type_dizziness
+            }.let { StringResource(it) }
         )
     }
 
@@ -183,7 +174,7 @@ class SymptomsUiStateMapper @Inject constructor(
         SymptomType.PHYSICAL_LIMITS -> score.physicalLimitsScore
         SymptomType.SOCIAL_LIMITS -> score.socialLimitsScore
         SymptomType.QUALITY_OF_LIFE -> score.qualityOfLifeScore
-        SymptomType.SYMPTOMS_FREQUENCY -> score.symptomFrequencyScore
+        SymptomType.SPECIFIC -> score.symptomFrequencyScore
         SymptomType.DIZZINESS -> score.dizzinessScore
     }?.roundToDecimalPlaces(places = 2)
 

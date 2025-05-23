@@ -33,16 +33,16 @@ import edu.stanford.bdh.engagehf.bluetooth.screen.MeasurementDialogTestIdentifie
 import edu.stanford.bdh.engagehf.health.components.HealthChart
 import edu.stanford.bdh.engagehf.health.components.SwipeBox
 import edu.stanford.bdh.engagehf.health.components.TimeRangeDropdown
-import edu.stanford.spezi.core.design.component.AsyncTextButton
-import edu.stanford.spezi.core.design.component.CenteredBoxContent
-import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.theme.Colors.primary
-import edu.stanford.spezi.core.design.theme.Sizes
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.ui.AsyncTextButton
+import edu.stanford.spezi.ui.CenteredBoxContent
+import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.ui.testIdentifier
+import edu.stanford.spezi.ui.theme.Colors.primary
+import edu.stanford.spezi.ui.theme.Sizes
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles
+import edu.stanford.spezi.ui.theme.ThemePreviews
 import java.time.ZonedDateTime
 
 @Composable
@@ -54,7 +54,7 @@ fun HealthPage(
         is HealthUiState.Error -> {
             CenteredBoxContent {
                 Text(
-                    text = uiState.message,
+                    text = uiState.message.text(),
                     style = TextStyles.headlineMedium,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.testIdentifier(HealthPageTestIdentifier.ERROR_MESSAGE)
@@ -74,7 +74,7 @@ fun HealthPage(
         is HealthUiState.NoData -> {
             CenteredBoxContent {
                 Text(
-                    text = uiState.message,
+                    text = uiState.message.text(),
                     textAlign = TextAlign.Center,
                     style = TextStyles.headlineMedium,
                     modifier = Modifier.testIdentifier(HealthPageTestIdentifier.NO_DATA_MESSAGE)
@@ -280,8 +280,8 @@ private class HealthPagePreviewProvider : PreviewParameterProvider<HealthUiState
     override val values: Sequence<HealthUiState>
         get() = sequenceOf(
             HealthUiState.Loading,
-            HealthUiState.Error("An error occurred"),
-            HealthUiState.NoData("No data available"),
+            HealthUiState.Error(StringResource(R.string.generic_error_description)),
+            HealthUiState.NoData(StringResource(R.string.no_data_available)),
             success,
             success.copy(
                 data = success.data.copy(
@@ -300,7 +300,7 @@ private class HealthPagePreviewProvider : PreviewParameterProvider<HealthUiState
 @ThemePreviews
 @Composable
 private fun HealthPagePreview(@PreviewParameter(HealthPagePreviewProvider::class) uiState: HealthUiState) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         HealthPage(
             uiState = uiState,
             onAction = {}

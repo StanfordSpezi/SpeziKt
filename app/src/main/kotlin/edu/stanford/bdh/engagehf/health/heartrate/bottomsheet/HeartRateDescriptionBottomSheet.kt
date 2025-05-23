@@ -10,11 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.ui.VerticalSpacer
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 @Composable
 fun HeartRateDescriptionBottomSheet() {
@@ -25,7 +25,7 @@ fun HeartRateDescriptionBottomSheet() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Understanding Your Heart Rate",
+            text = stringResource(R.string.understanding_your_heart_rate),
             style = TextStyles.titleLarge
         )
         VerticalSpacer()
@@ -50,7 +50,7 @@ fun HeartRateDescriptionBottomSheet() {
 @ThemePreviews
 @Composable
 fun HeartRateDescriptionBottomSheetPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         HeartRateDescriptionBottomSheet()
     }
 }

@@ -1,9 +1,9 @@
 package edu.stanford.bdh.engagehf.contact.data
 
 import com.google.firebase.firestore.FirebaseFirestore
+import edu.stanford.spezi.contact.Contact
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.module.account.manager.UserSessionManager
-import edu.stanford.spezi.modules.contact.model.Contact
+import edu.stanford.spezi.modules.account.manager.UserSessionManager
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 

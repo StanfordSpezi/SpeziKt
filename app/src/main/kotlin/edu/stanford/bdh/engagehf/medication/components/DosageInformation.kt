@@ -11,10 +11,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.bdh.engagehf.medication.ui.DosageInformationUiModel
 import edu.stanford.bdh.engagehf.medication.ui.DosageRowInfoData
-import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.ui.VerticalSpacer
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 @Composable
 fun DosageInformation(dosageInformationUiModel: DosageInformationUiModel) {
@@ -71,7 +71,7 @@ private class DosageInformationProvider : PreviewParameterProvider<DosageInforma
 private fun DoseInformationPreview(
     @PreviewParameter(DosageInformationProvider::class) dosageInformation: DosageInformationUiModel,
 ) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         DosageInformation(dosageInformationUiModel = dosageInformation)
     }
 }

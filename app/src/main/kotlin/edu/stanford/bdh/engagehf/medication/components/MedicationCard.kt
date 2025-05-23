@@ -27,17 +27,18 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import edu.stanford.bdh.engagehf.medication.ui.MedicationCardUiModel
 import edu.stanford.bdh.engagehf.medication.ui.MedicationScreenTestIdentifier
 import edu.stanford.bdh.engagehf.medication.ui.MedicationViewModel
-import edu.stanford.spezi.core.design.component.CircleShimmerEffect
-import edu.stanford.spezi.core.design.component.DefaultElevatedCard
-import edu.stanford.spezi.core.design.component.RectangleShimmerEffect
-import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.component.height
-import edu.stanford.spezi.core.design.theme.Sizes
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.ui.CircleShimmerEffect
+import edu.stanford.spezi.ui.DefaultElevatedCard
+import edu.stanford.spezi.ui.RectangleShimmerEffect
+import edu.stanford.spezi.ui.VerticalSpacer
+import edu.stanford.spezi.ui.height
+import edu.stanford.spezi.ui.testIdentifier
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.Sizes
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 private const val LOADING_ITEM_COUNT = 3
 
@@ -72,7 +73,7 @@ fun MedicationCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = model.title,
-                        style = TextStyles.titleLarge,
+                        style = TextStyles.titleMedium,
                         overflow = TextOverflow.Clip,
                         modifier = Modifier.testIdentifier(
                             identifier = MedicationScreenTestIdentifier.SUCCESS_MEDICATION_CARD_TITLE,
@@ -81,7 +82,8 @@ fun MedicationCard(
                     )
                     Text(
                         text = model.subtitle,
-                        style = TextStyles.titleSmall,
+                        style = TextStyles.bodyMedium,
+                        color = Colors.secondary,
                         overflow = TextOverflow.Clip,
                         modifier = Modifier.testIdentifier(
                             identifier = MedicationScreenTestIdentifier.SUCCESS_MEDICATION_CARD_SUBTITLE,
@@ -97,7 +99,7 @@ fun MedicationCard(
                     )
                 }) {
                     Icon(
-                        if (model.isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                        imageVector = if (model.isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                         contentDescription = null,
                     )
                 }
@@ -125,22 +127,20 @@ fun MedicationCard(
                             IconButton(onClick = {
                                 onAction(MedicationViewModel.Action.InfoClicked(videoPath = it))
                             }) {
-                                Icon(Icons.Filled.Info, contentDescription = "Information Icon")
+                                Icon(Icons.Filled.Info, contentDescription = null)
                             }
                         }
                     }
                 }
-                if (model.dosageInformation != null) {
-                    HorizontalDivider(
-                        modifier = Modifier.padding(
-                            top = Spacings.small,
-                            bottom = Spacings.small
-                        )
+                HorizontalDivider(
+                    modifier = Modifier.padding(
+                        top = Spacings.small,
+                        bottom = Spacings.small
                     )
-                    DosageInformation(dosageInformationUiModel = model.dosageInformation)
-                    VerticalSpacer()
-                    MedicationProgressBar(progress = model.dosageInformation.progress)
-                }
+                )
+                DosageInformation(dosageInformationUiModel = model.dosageInformation)
+                VerticalSpacer()
+                MedicationProgressBar(progress = model.dosageInformation.progress)
             }
         }
     }
@@ -188,7 +188,7 @@ fun LoadingMedicationSection() {
 @ThemePreviews
 @Composable
 private fun LoadingMedicationSectionPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         LoadingMedicationSection()
     }
 }
@@ -198,7 +198,7 @@ private fun LoadingMedicationSectionPreview() {
 private fun MedicationCardPreview(
     @PreviewParameter(MedicationCardModelsProvider::class) model: MedicationCardUiModel,
 ) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         MedicationCard(
             model = model,
             onAction = {}

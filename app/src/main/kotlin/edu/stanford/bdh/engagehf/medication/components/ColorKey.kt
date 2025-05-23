@@ -19,11 +19,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.medication.ui.MedicationColor
-import edu.stanford.spezi.core.design.component.DefaultElevatedCard
-import edu.stanford.spezi.core.design.theme.Sizes
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.ui.DefaultElevatedCard
+import edu.stanford.spezi.ui.theme.Sizes
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 @Composable
 fun ColorKey(
@@ -55,7 +55,7 @@ fun ColorKeyRow(color: MedicationColor) {
             modifier = Modifier
                 .size(Sizes.Icon.small)
                 .background(
-                    color.value.copy(alpha = MEDICATION_ICON_ALPHA_COLOR_FACTOR),
+                    color.value,
                     shape = CircleShape
                 )
                 .padding(Spacings.small),
@@ -63,9 +63,10 @@ fun ColorKeyRow(color: MedicationColor) {
         Spacer(modifier = Modifier.width(Spacings.small))
         Text(
             text = when (color) {
-                MedicationColor.GREEN_SUCCESS -> stringResource(R.string.on_target_dose_that_best_helps_your_heart)
-                MedicationColor.YELLOW -> stringResource(R.string.on_medication_but_may_benefit_from_a_higher_dose)
-                MedicationColor.BLUE -> stringResource(R.string.not_on_this_medication_that_may_help_your_heart)
+                MedicationColor.GREEN_SUCCESS -> stringResource(R.string.you_are_on_the_target_dose)
+                MedicationColor.YELLOW -> stringResource(R.string.you_are_on_this_medication)
+                MedicationColor.BLUE -> stringResource(R.string.more_information_needed)
+                MedicationColor.GRAY -> stringResource(R.string.you_are_not_on_this_medication)
             },
             overflow = TextOverflow.Clip,
         )
@@ -75,7 +76,7 @@ fun ColorKeyRow(color: MedicationColor) {
 @ThemePreviews
 @Composable
 private fun ColorKeyPreview() {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         ColorKey()
     }
 }

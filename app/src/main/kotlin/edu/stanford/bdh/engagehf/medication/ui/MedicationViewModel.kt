@@ -3,13 +3,15 @@ package edu.stanford.bdh.engagehf.medication.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.data.mapper.MessageActionMapper
 import edu.stanford.bdh.engagehf.education.EngageEducationRepository
 import edu.stanford.bdh.engagehf.medication.data.MedicationRepository
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.core.utils.MessageNotifier
 import edu.stanford.spezi.modules.education.EducationNavigationEvent
+import edu.stanford.spezi.modules.navigation.Navigator
+import edu.stanford.spezi.modules.utils.MessageNotifier
+import edu.stanford.spezi.ui.StringResource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -48,7 +50,7 @@ class MedicationViewModel @Inject internal constructor(
                     }
                 }.onFailure {
                     _uiState.value =
-                        MedicationUiState.Error(it.message ?: "Error observing medication details")
+                        MedicationUiState.Error(StringResource(R.string.generic_error_description))
                 }
             }
         }
@@ -67,11 +69,11 @@ class MedicationViewModel @Inject internal constructor(
 
             is Action.InfoClicked -> {
                 viewModelScope.launch {
-                    messageActionMapper.mapVideoSectionAction(action.videoPath).let { result ->
+                    messageActionMapper.mapVideoAction(action.videoPath).let { result ->
                         result.onSuccess { mappedAction ->
                             engageEducationRepository.getVideoBySectionAndVideoId(
-                                mappedAction.videoSectionVideo.videoSectionId,
-                                mappedAction.videoSectionVideo.videoId
+                                mappedAction.sectionId,
+                                mappedAction.videoId
                             ).getOrNull()?.let { video ->
                                 navigator.navigateTo(
                                     EducationNavigationEvent.VideoSectionClicked(
@@ -80,7 +82,7 @@ class MedicationViewModel @Inject internal constructor(
                                 )
                             }
                         }.onFailure {
-                            messageNotifier.notify("Error loading video")
+                            messageNotifier.notify(R.string.error_loading_video)
                             logger.e { "Error mapping video section action: ${it.message}" }
                         }
                     }

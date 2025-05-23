@@ -2,10 +2,12 @@ package edu.stanford.bdh.engagehf.medication.ui
 
 import android.content.Context
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.medication.data.DosageInformation
 import edu.stanford.bdh.engagehf.medication.data.DoseSchedule
 import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendation
 import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendationType
+import edu.stanford.spezi.ui.StringResource
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before
@@ -24,9 +26,9 @@ class MedicationUiStateMapperTest {
     }
 
     @Test
-    fun `given medication details when mapMedicationUiState then return filtered success state`() {
+    fun `it should map medications taking and that may help correctly if current daily intake is greater zero`() {
         // given
-        val recommendations = getRecommendations()
+        val recommendations = getRecommendations(currentDailyIntake = 20.0)
 
         // when
         val result = medicationUiStateMapper.mapMedicationUiState(recommendations)
@@ -34,13 +36,32 @@ class MedicationUiStateMapperTest {
         // then
         assertThat(result).isInstanceOf(MedicationUiState.Success::class.java)
         assertThat((result as MedicationUiState.Success).medicationsTaking.medications).hasSize(1)
-        assertThat(result.medicationsTaking.medications[0].id).isEqualTo("1")
+        assertThat(result.medicationsThatMayHelp.medications).isEmpty()
+        assertThat(result.medicationsTaking.expanded).isTrue()
+        assertThat(result.medicationsThatMayHelp.expanded).isTrue()
+        assertThat(result.colorKeyExpanded).isTrue()
+    }
+
+    @Test
+    fun `it should map medications taking and that may help correctly if current daily intake is zero`() {
+        // given
+        val recommendations = getRecommendations(currentDailyIntake = 0.0)
+
+        // when
+        val result = medicationUiStateMapper.mapMedicationUiState(recommendations)
+
+        // then
+        assertThat(result).isInstanceOf(MedicationUiState.Success::class.java)
+        assertThat((result as MedicationUiState.Success).medicationsTaking.medications).isEmpty()
+        assertThat((result).medicationsThatMayHelp.medications).hasSize(1)
+        assertThat(result.medicationsTaking.expanded).isTrue()
+        assertThat(result.medicationsThatMayHelp.expanded).isTrue()
     }
 
     @Test
     fun `given error state and expand action when expandMedication then return error state`() {
         // given
-        val uiState = MedicationUiState.Error(message = "An error occurred")
+        val uiState: MedicationUiState.Error = mockk()
 
         // when
         val result = medicationUiStateMapper.expandMedication("some-id", uiState)
@@ -104,22 +125,7 @@ class MedicationUiStateMapperTest {
         val result = medicationUiStateMapper.mapMedicationUiState(recommendations)
 
         // then
-        assertThat(result).isInstanceOf(MedicationUiState.NoData::class.java)
-        assertThat((result as MedicationUiState.NoData).message).isEqualTo("some-string")
-    }
-
-    @Test
-    fun `given recommendations with dosage information when mapMedicationUiState then return success state with dosage information`() {
-        // given
-        val recommendations = getRecommendationsWithDosage()
-
-        // when
-        val result = medicationUiStateMapper.mapMedicationUiState(recommendations)
-
-        // then
-        assertThat(result).isInstanceOf(MedicationUiState.Success::class.java)
-        assertThat((result as MedicationUiState.Success).medicationsTaking.medications).hasSize(1)
-        assertThat(result.medicationsTaking.medications[0].dosageInformation).isNotNull()
+        assertThat(result).isEqualTo(MedicationUiState.NoData(StringResource(R.string.medications_no_recommendations)))
     }
 
     @Test
@@ -171,7 +177,7 @@ class MedicationUiStateMapperTest {
         isExpanded: Boolean = false,
         statusIconResId: Int? = null,
         statusColor: MedicationColor = MedicationColor.BLUE,
-        dosageInformation: DosageInformationUiModel? = null,
+        dosageInformation: DosageInformationUiModel = mockk(),
         videoPath: String = "",
     ) = MedicationCardUiModel(
         id = id,
@@ -185,28 +191,7 @@ class MedicationUiStateMapperTest {
         videoPath = videoPath
     )
 
-    private fun getRecommendations() = listOf(
-        MedicationRecommendation(
-            id = "2",
-            title = "Medication B",
-            subtitle = "Subtitle B",
-            description = "Description B",
-            type = MedicationRecommendationType.NOT_STARTED,
-            dosageInformation = null,
-            videoPath = null
-        ),
-        MedicationRecommendation(
-            id = "1",
-            title = "Medication A",
-            subtitle = "Subtitle A",
-            description = "Description A",
-            type = MedicationRecommendationType.TARGET_DOSE_REACHED, // higher priority than NOT_STARTED
-            dosageInformation = null,
-            videoPath = "/videoSections/1/videos/1"
-        )
-    )
-
-    private fun getRecommendationsWithDosage() = listOf(
+    private fun getRecommendations(currentDailyIntake: Double = 1.0) = listOf(
         MedicationRecommendation(
             id = "1",
             title = "Medication A",
@@ -218,7 +203,7 @@ class MedicationUiStateMapperTest {
                 currentSchedule = listOf(
                     DoseSchedule(
                         frequency = 2.0,
-                        quantity = listOf(20.0)
+                        quantity = listOf(currentDailyIntake)
                     )
                 ),
                 targetSchedule = listOf(

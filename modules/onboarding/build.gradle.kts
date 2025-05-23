@@ -10,9 +10,19 @@ android {
 
 dependencies {
     implementation(project(":modules:account"))
-    implementation(project(":core:coroutines"))
-    implementation(project(":core:navigation"))
-    implementation(project(":core:utils"))
+    implementation(project(":modules:design"))
+    implementation(project(":modules:navigation"))
+    implementation(project(":modules:utils"))
+
+    implementation(project(":foundation"))
+    implementation(project(":core"))
+    implementation(project(":core-coroutines"))
+    implementation(project(":ui"))
+    implementation(project(":ui-personalinfo"))
+    implementation(project(":ui-markdown"))
+
+    implementation(project(":consent"))
+    implementation(project(":onboarding"))
 
     implementation(libs.androidx.foundation)
     implementation(libs.accompanist.pager)
@@ -21,4 +31,5 @@ dependencies {
     testImplementation(libs.bundles.unit.testing)
 
     androidTestImplementation(libs.bundles.compose.androidTest)
+    androidTestImplementation(project(":testing-ui"))
 }

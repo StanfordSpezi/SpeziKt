@@ -1,11 +1,13 @@
 package edu.stanford.bdh.engagehf.health.heartrate.bottomsheet
 
 import com.google.common.truth.Truth.assertThat
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.HealthRepository
-import edu.stanford.bdh.engagehf.health.bloodpressure.bottomsheet.TimePickerState
-import edu.stanford.spezi.core.testing.CoroutineTestRule
-import edu.stanford.spezi.core.utils.MessageNotifier
+import edu.stanford.bdh.engagehf.health.time.TimePickerState
+import edu.stanford.bdh.engagehf.health.time.TimePickerStateMapper
+import edu.stanford.spezi.modules.testing.CoroutineTestRule
+import edu.stanford.spezi.modules.utils.MessageNotifier
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -14,7 +16,7 @@ import io.mockk.verify
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.time.LocalDate
+import java.time.Instant
 import java.time.LocalTime
 import kotlin.random.Random
 
@@ -25,44 +27,41 @@ class AddHeartRateBottomSheetViewModelTest {
 
     private val appScreenEvents: AppScreenEvents = mockk(relaxed = true)
     private var healthRepository: HealthRepository = mockk(relaxed = true)
-    private val uiStateMapper: AddHeartRateBottomSheetUiStateMapper = mockk(relaxed = true)
+    private val timePickerStateMapper: TimePickerStateMapper = mockk(relaxed = true)
     private val notifier: MessageNotifier = mockk(relaxed = true)
 
     private val viewModel: AddHeartRateBottomSheetViewModel by lazy {
         AddHeartRateBottomSheetViewModel(
             appScreenEvents = appScreenEvents,
             healthRepository = healthRepository,
-            addHeartRateBottomSheetUiStateMapper = uiStateMapper,
+            timePickerStateMapper = timePickerStateMapper,
             notifier = notifier
         )
     }
 
     @Before
     fun setup() {
-        every { uiStateMapper.initialUiState() } returns AddHeartRateBottomSheetUiState(
-            heartRate = 70,
-            timePickerState = TimePickerState(
-                selectedDate = LocalDate.now(),
-                selectedTime = LocalTime.now(),
-                initialHour = LocalTime.now().hour,
-                initialMinute = LocalTime.now().minute,
-                selectedDateFormatted = "",
-                selectedTimeFormatted = ""
-            )
+        every { timePickerStateMapper.mapNow() } returns TimePickerState(
+            selectedDate = Instant.now(),
+            selectedTime = LocalTime.now(),
+            initialHour = LocalTime.now().hour,
+            initialMinute = LocalTime.now().minute,
+            selectedDateFormatted = "",
+            selectedTimeFormatted = ""
         )
     }
 
     @Test
     fun `it should have correct initial state`() {
         // given
-        val state: AddHeartRateBottomSheetUiState = mockk()
-        every { uiStateMapper.initialUiState() } returns state
+        val timePickerState: TimePickerState = mockk()
+        every { timePickerStateMapper.mapNow() } returns timePickerState
 
         // when
         val uiState = viewModel.uiState.value
 
         // then
-        assertThat(state).isEqualTo(uiState)
+        assertThat(uiState.timePickerState).isEqualTo(timePickerState)
     }
 
     @Test
@@ -88,7 +87,7 @@ class AddHeartRateBottomSheetViewModelTest {
         viewModel.onAction(action)
 
         // then
-        verify { notifier.notify("Failed to save heart rate record") }
+        verify { notifier.notify(R.string.heart_rate_record_save_failure_message) }
     }
 
     @Test
@@ -103,35 +102,32 @@ class AddHeartRateBottomSheetViewModelTest {
     @Test
     fun `test UpdateDate action`() {
         // given
-        val newState: AddHeartRateBottomSheetUiState = mockk()
-        val date: LocalDate = LocalDate.now()
+        val newState: TimePickerState = mockk()
+        val date = Instant.now()
         val initialState = viewModel.uiState.value
-        every { uiStateMapper.mapUpdateDateAction(date, initialState) } returns newState
+        every { timePickerStateMapper.mapDate(date, initialState.timePickerState) } returns newState
 
         // when
         viewModel.onAction(AddHeartRateBottomSheetViewModel.Action.UpdateDate(date))
 
         // then
-        verify { uiStateMapper.mapUpdateDateAction(date, initialState) }
         val uiState = viewModel.uiState.value
-        assertThat(uiState).isEqualTo(newState)
+        assertThat(uiState.timePickerState).isEqualTo(newState)
     }
 
     @Test
     fun `test UpdateTime action`() {
         // given
-        val newState: AddHeartRateBottomSheetUiState = mockk()
+        val newState: TimePickerState = mockk()
         val time: LocalTime = LocalTime.now()
-        val initialState = viewModel.uiState.value
-        every { uiStateMapper.mapUpdateTimeAction(time, initialState) } returns newState
+        every { timePickerStateMapper.mapTime(time, any()) } returns newState
 
         // when
         viewModel.onAction(AddHeartRateBottomSheetViewModel.Action.UpdateTime(time))
 
         // then
-        verify { uiStateMapper.mapUpdateTimeAction(time, initialState) }
         val uiState = viewModel.uiState.value
-        assertThat(uiState).isEqualTo(newState)
+        assertThat(uiState.timePickerState).isEqualTo(newState)
     }
 
     @Test

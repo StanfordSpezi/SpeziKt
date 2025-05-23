@@ -5,12 +5,13 @@ package edu.stanford.bdh.engagehf.health.symptoms
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.bluetooth.component.AppScreenEvents
 import edu.stanford.bdh.engagehf.health.AggregatedHealthData
 import edu.stanford.bdh.engagehf.health.HealthRepository
 import edu.stanford.bdh.engagehf.health.TableEntryData
-import edu.stanford.spezi.core.design.component.StringResource
 import edu.stanford.spezi.core.logging.speziLogger
+import edu.stanford.spezi.ui.StringResource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -42,7 +43,7 @@ class SymptomsViewModel @Inject internal constructor(
             healthRepository.observeSymptoms().collect { result ->
                 result.onFailure {
                     _uiState.update {
-                        SymptomsUiState.Error("Failed to observe symptom scores")
+                        SymptomsUiState.Error(StringResource(R.string.failed_to_observe_symptom_scores))
                     }
                 }.onSuccess { successResult ->
                     _uiState.update {
@@ -105,8 +106,8 @@ sealed interface SymptomsUiState {
         val data: SymptomsUiData,
     ) : SymptomsUiState
 
-    data class NoData(val message: String) : SymptomsUiState
-    data class Error(val message: String) : SymptomsUiState
+    data class NoData(val message: StringResource) : SymptomsUiState
+    data class Error(val message: StringResource) : SymptomsUiState
 }
 
 data class SymptomsUiData(
@@ -114,11 +115,10 @@ data class SymptomsUiData(
     val chartData: List<AggregatedHealthData>,
     val tableData: List<TableEntryData> = emptyList(),
     val headerData: HeaderData,
-    val valueFormatter: (Double) -> String = { "" },
+    val xValueFormatter: (Double) -> String = { "" },
 )
 
 data class HeaderData(
-    val selectedSymptomTypeText: StringResource,
     val formattedValue: String,
     val formattedDate: String,
     val selectedSymptomType: SymptomType,
@@ -146,5 +146,5 @@ data class SymptomScore(
 }
 
 enum class SymptomType {
-    OVERALL, PHYSICAL_LIMITS, SOCIAL_LIMITS, QUALITY_OF_LIFE, SYMPTOMS_FREQUENCY, DIZZINESS
+    OVERALL, PHYSICAL_LIMITS, SOCIAL_LIMITS, QUALITY_OF_LIFE, SPECIFIC, DIZZINESS
 }

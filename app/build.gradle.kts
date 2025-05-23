@@ -12,7 +12,7 @@ android {
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "edu.stanford.bdh.engagehf"
+        applicationId = (project.findProperty("android.injected.application.id") as? String) ?: "edu.stanford.bdh.engagehf"
         versionCode =
             (project.findProperty("android.injected.version.code") as? String)?.toInt() ?: 1
         versionName = (project.findProperty("android.injected.version.name") as? String) ?: "1.0.0"
@@ -41,15 +41,24 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:bluetooth"))
-    implementation(project(":core:coroutines"))
-    implementation(project(":core:navigation"))
-    implementation(project(":core:notification"))
     implementation(project(":modules:account"))
-    implementation(project(":modules:contact"))
+    implementation(project(":modules:bluetooth"))
+    implementation(project(":modules:design"))
     implementation(project(":modules:education"))
     implementation(project(":modules:healthconnectonfhir"))
+    implementation(project(":modules:navigation"))
+    implementation(project(":modules:notification"))
     implementation(project(":modules:onboarding"))
+
+    implementation(project(":contact"))
+    implementation(project(":foundation"))
+    implementation(project(":core"))
+    implementation(project(":core-coroutines"))
+    implementation(project(":core-logging"))
+    implementation(project(":ui"))
+
+    implementation(project(":ui-personalinfo"))
+    implementation(project(":questionnaire"))
 
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.functions.ktx)
@@ -65,5 +74,11 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.vico.compose.m3)
 
-    androidTestImplementation(project(":core:testing"))
+    implementation(libs.zxing.core)
+
+    implementation(libs.googlecode.phonenumber)
+
+    androidTestImplementation(project(":modules:testing"))
+    implementation(project(":testing-ui"))
+    androidTestImplementation(project(":testing-ui"))
 }

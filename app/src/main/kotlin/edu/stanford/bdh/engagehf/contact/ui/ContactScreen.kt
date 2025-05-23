@@ -20,23 +20,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.spezi.core.design.component.AppTopAppBar
-import edu.stanford.spezi.core.design.component.CenteredBoxContent
-import edu.stanford.spezi.core.design.component.ImageResource
-import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.theme.Colors.primary
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.design.views.personalinfo.PersonNameComponents
-import edu.stanford.spezi.core.notification.R
-import edu.stanford.spezi.modules.contact.ContactComposable
-import edu.stanford.spezi.modules.contact.model.Contact
-import edu.stanford.spezi.modules.contact.model.ContactOption
-import edu.stanford.spezi.modules.contact.model.call
-import edu.stanford.spezi.modules.contact.model.email
-import edu.stanford.spezi.modules.contact.model.website
+import edu.stanford.spezi.contact.Contact
+import edu.stanford.spezi.contact.ContactOption
+import edu.stanford.spezi.contact.call
+import edu.stanford.spezi.contact.email
+import edu.stanford.spezi.contact.website
+import edu.stanford.spezi.ui.AppTopAppBar
+import edu.stanford.spezi.ui.CenteredBoxContent
+import edu.stanford.spezi.ui.ImageResource
+import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
+import edu.stanford.spezi.ui.theme.Colors.primary
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles
+import edu.stanford.spezi.ui.theme.ThemePreviews
 import java.util.Locale
 
 @Composable
@@ -65,7 +63,7 @@ private fun ContactScreen(
             }) {
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.back)
+                    contentDescription = null,
                 )
             }
         })
@@ -79,7 +77,7 @@ private fun ContactScreen(
                 is ContactScreenViewModel.UiState.Error -> {
                     CenteredBoxContent {
                         Text(
-                            text = uiState.message,
+                            text = uiState.message.text(),
                             style = TextStyles.headlineMedium,
                             textAlign = TextAlign.Center,
                         )
@@ -93,10 +91,7 @@ private fun ContactScreen(
                 }
 
                 is ContactScreenViewModel.UiState.ContactLoaded -> {
-                    val contact = uiState.contact
-                    ContactComposable(
-                        contact = contact,
-                    )
+                    uiState.contact.Content()
                 }
             }
         }
@@ -106,7 +101,7 @@ private fun ContactScreen(
 private class ContactUiStateProvider : PreviewParameterProvider<ContactScreenViewModel.UiState> {
     override val values = sequenceOf(
         ContactScreenViewModel.UiState.Loading,
-        ContactScreenViewModel.UiState.Error("An error occurred"),
+        ContactScreenViewModel.UiState.Error(StringResource("An error occurred")),
         ContactScreenViewModel.UiState.ContactLoaded(
             contact = Contact(
                 name = PersonNameComponents(
@@ -115,7 +110,7 @@ private class ContactUiStateProvider : PreviewParameterProvider<ContactScreenVie
                 ),
                 image = ImageResource.Vector(
                     Icons.Default.AccountBox,
-                    StringResource(edu.stanford.spezi.modules.contact.R.string.profile_picture)
+                    StringResource(edu.stanford.spezi.contact.R.string.contact_profile_picture)
                 ),
                 title = StringResource("University Founder"),
                 description = StringResource(

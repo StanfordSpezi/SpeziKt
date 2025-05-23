@@ -1,12 +1,24 @@
 package edu.stanford.bdh.engagehf.bluetooth.data.mapper
 
 import com.google.common.truth.Truth.assertThat
-import edu.stanford.bdh.engagehf.messages.MessagesAction
+import edu.stanford.bdh.engagehf.messages.MessageAction
 import org.junit.Test
 
 class MessageActionMapperTest {
 
     private val mapper = MessageActionMapper()
+
+    @Test
+    fun `it should return error result for null action`() {
+        // given
+        val action: String? = null
+
+        // when
+        val result = mapper.map(action)
+
+        // then
+        assertThat(result).isNull()
+    }
 
     @Test
     fun `it should map video section action correctly`() {
@@ -19,10 +31,10 @@ class MessageActionMapperTest {
         val result = mapper.map(action)
 
         // then
-        val messagesAction = result.getOrThrow() as MessagesAction.VideoSectionAction
+        val messagesAction = result as MessageAction.VideoAction
         with(messagesAction) {
-            assertThat(videoSectionVideo.videoSectionId).isEqualTo(sectionId)
-            assertThat(videoSectionVideo.videoId).isEqualTo(videoId)
+            assertThat(sectionId).isEqualTo(sectionId)
+            assertThat(videoId).isEqualTo(videoId)
         }
     }
 
@@ -37,10 +49,10 @@ class MessageActionMapperTest {
         val result = mapper.map(action)
 
         // then
-        val messagesAction = result.getOrThrow() as MessagesAction.VideoSectionAction
+        val messagesAction = result as MessageAction.VideoAction
         with(messagesAction) {
-            assertThat(videoSectionVideo.videoSectionId).isEqualTo(sectionId)
-            assertThat(videoSectionVideo.videoId).isEqualTo(videoId)
+            assertThat(sectionId).isEqualTo(sectionId)
+            assertThat(videoId).isEqualTo(videoId)
         }
     }
 
@@ -53,8 +65,7 @@ class MessageActionMapperTest {
         val result = mapper.map(action)
 
         // then
-        assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrThrow()).isEqualTo(MessagesAction.MedicationsAction)
+        assertThat(result).isEqualTo(MessageAction.MedicationsAction)
     }
 
     @Test
@@ -66,8 +77,7 @@ class MessageActionMapperTest {
         val result = mapper.map(action)
 
         // then
-        assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrThrow()).isEqualTo(MessagesAction.MeasurementsAction)
+        assertThat(result).isEqualTo(MessageAction.MeasurementsAction)
     }
 
     @Test
@@ -80,7 +90,7 @@ class MessageActionMapperTest {
         val result = mapper.map(action)
 
         // then
-        val messagesAction = result.getOrThrow() as MessagesAction.QuestionnaireAction
+        val messagesAction = result as MessageAction.QuestionnaireAction
         assertThat(messagesAction.questionnaireId).isEqualTo(questionnaireId)
     }
 
@@ -93,8 +103,7 @@ class MessageActionMapperTest {
         val result = mapper.map(action)
 
         // then
-        assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrThrow()).isEqualTo(MessagesAction.HealthSummaryAction)
+        assertThat(result).isEqualTo(MessageAction.HealthSummaryAction)
     }
 
     @Test
@@ -106,8 +115,6 @@ class MessageActionMapperTest {
         val result = mapper.map(action)
 
         // then
-        assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(IllegalStateException::class.java)
-        assertThat(result.exceptionOrNull()?.message).isEqualTo("Unknown action type")
+        assertThat(result).isNull()
     }
 }

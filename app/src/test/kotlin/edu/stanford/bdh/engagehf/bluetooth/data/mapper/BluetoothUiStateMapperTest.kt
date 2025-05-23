@@ -11,8 +11,9 @@ import edu.stanford.bdh.engagehf.bluetooth.data.models.BluetoothUiState
 import edu.stanford.bdh.engagehf.bluetooth.service.BLEDeviceSession
 import edu.stanford.bdh.engagehf.bluetooth.service.EngageBLEServiceState
 import edu.stanford.bdh.engagehf.bluetooth.service.Measurement
-import edu.stanford.spezi.core.bluetooth.data.model.BLEDevice
-import edu.stanford.spezi.core.utils.LocaleProvider
+import edu.stanford.spezi.modules.bluetooth.model.BLEDevice
+import edu.stanford.spezi.modules.utils.LocaleProvider
+import edu.stanford.spezi.ui.StringResource
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Test
@@ -25,11 +26,8 @@ class BluetoothUiStateMapperTest {
         every { getDefaultLocale() } returns Locale.US
     }
 
-    private val messageActionMapper = mockk<MessageActionMapper>()
-
     private val mapper = BluetoothUiStateMapper(
         localeProvider = localeProvider,
-        messageActionMapper = messageActionMapper
     )
     private val bloodPressure: Measurement.BloodPressure = mockk {
         every { systolic } returns SYSTOLIC.toFloat()
@@ -58,7 +56,7 @@ class BluetoothUiStateMapperTest {
         // then
         assertThat(result).isEqualTo(
             BluetoothUiState.Idle(
-                description = R.string.bluetooth_initializing_description,
+                description = StringResource(R.string.bluetooth_initializing_description),
             )
         )
     }
@@ -74,27 +72,8 @@ class BluetoothUiStateMapperTest {
         // then
         assertThat(result).isEqualTo(
             BluetoothUiState.Idle(
-                description = R.string.bluetooth_not_enabled_description,
+                description = StringResource(R.string.bluetooth_not_enabled_description),
                 settingsAction = Action.Settings.BluetoothSettings,
-            )
-        )
-    }
-
-    @Test
-    fun `it should map MissingPermissions state correctly`() {
-        // given
-        val permissions = listOf("permission1", "permission2")
-        val state = EngageBLEServiceState.MissingPermissions(permissions)
-
-        // when
-        val result = mapper.mapBleServiceState(state) as BluetoothUiState.Idle
-
-        // then
-        assertThat(result).isEqualTo(
-            BluetoothUiState.Idle(
-                description = R.string.bluetooth_permissions_not_granted_description,
-                missingPermissions = permissions,
-                settingsAction = Action.Settings.AppSettings,
             )
         )
     }
@@ -109,7 +88,7 @@ class BluetoothUiStateMapperTest {
 
         // then
         with(result) {
-            assertThat(header).isEqualTo(R.string.paired_devices_hint_description)
+            assertThat(header).isEqualTo(StringResource(R.string.paired_devices_hint_description))
             assertThat(devices).isEmpty()
         }
     }
@@ -128,7 +107,7 @@ class BluetoothUiStateMapperTest {
             assertThat(header).isEqualTo(null)
             with(devices.first()) {
                 assertThat(name).isEqualTo(NAME)
-                assertThat(summary).isEqualTo("Blood Pressure: $SYSTOLIC mmHg / $DIASTOLIC mmHg")
+                assertThat(summary).isEqualTo(StringResource(R.string.blood_pressure_value, "$SYSTOLIC mmHg / $DIASTOLIC mmHg"))
                 assertThat(connected).isEqualTo(CONNECTED)
             }
         }
@@ -148,7 +127,7 @@ class BluetoothUiStateMapperTest {
             assertThat(header).isEqualTo(null)
             with(devices.first()) {
                 assertThat(name).isEqualTo(NAME)
-                assertThat(summary).isEqualTo("Weight: 10.05 lbs")
+                assertThat(summary).isEqualTo(StringResource(R.string.weight_value, "10.05 lbs"))
                 assertThat(connected).isEqualTo(CONNECTED)
             }
         }
@@ -224,7 +203,7 @@ class BluetoothUiStateMapperTest {
 
         // then
         with(result) {
-            assertThat(title).isEqualTo("Blood Pressure")
+            assertThat(title).isEqualTo(StringResource(R.string.blood_pressure))
             assertThat(status).isEqualTo(OperationStatus.SUCCESS)
             assertThat(value).isEqualTo("120.0/80.0")
             assertThat(unit).isEqualTo("mmHg")
@@ -241,7 +220,7 @@ class BluetoothUiStateMapperTest {
 
         // then
         with(vitalDisplayData) {
-            assertThat(title).isEqualTo("Blood Pressure")
+            assertThat(title).isEqualTo(StringResource(R.string.blood_pressure))
             assertThat(status).isEqualTo(OperationStatus.FAILURE)
             assertThat(value).isNull()
             assertThat(unit).isNull()
@@ -258,7 +237,7 @@ class BluetoothUiStateMapperTest {
 
         // then
         with(vitalDisplayData) {
-            assertThat(title).isEqualTo("Blood Pressure")
+            assertThat(title).isEqualTo(StringResource(R.string.blood_pressure))
             assertThat(status).isEqualTo(OperationStatus.NO_DATA)
             assertThat(value).isEqualTo("No data available")
             assertThat(unit).isNull()
@@ -281,7 +260,7 @@ class BluetoothUiStateMapperTest {
 
         // then
         with(vitalDisplayData) {
-            assertThat(title).isEqualTo("Weight")
+            assertThat(title).isEqualTo(StringResource(R.string.weight))
             assertThat(status).isEqualTo(OperationStatus.SUCCESS)
             assertThat(value).isEqualTo("154.32")
             assertThat(unit).isEqualTo("lbs")
@@ -304,7 +283,7 @@ class BluetoothUiStateMapperTest {
 
         // then
         with(vitalDisplayData) {
-            assertThat(title).isEqualTo("Weight")
+            assertThat(title).isEqualTo(StringResource(R.string.weight))
             assertThat(status).isEqualTo(OperationStatus.SUCCESS)
             assertThat(value).isEqualTo("70,12")
             assertThat(unit).isEqualTo("kg")
@@ -321,7 +300,7 @@ class BluetoothUiStateMapperTest {
 
         // then
         with(vitalDisplayData) {
-            assertThat(title).isEqualTo("Weight")
+            assertThat(title).isEqualTo(StringResource(R.string.weight))
             assertThat(status).isEqualTo(OperationStatus.FAILURE)
             assertThat(value).isNull()
             assertThat(unit).isNull()
@@ -338,7 +317,7 @@ class BluetoothUiStateMapperTest {
 
         // then
         with(vitalDisplayData) {
-            assertThat(title).isEqualTo("Weight")
+            assertThat(title).isEqualTo(StringResource(R.string.weight))
             assertThat(status).isEqualTo(OperationStatus.NO_DATA)
             assertThat(value).isEqualTo("No data available")
             assertThat(unit).isNull()
@@ -364,7 +343,7 @@ class BluetoothUiStateMapperTest {
 
         // then
         with(vitalDisplayData) {
-            assertThat(title).isEqualTo("Heart Rate")
+            assertThat(title).isEqualTo(StringResource(R.string.heart_rate))
             assertThat(value).isEqualTo("$beatsPerMinute.0")
             assertThat(unit).isEqualTo("bpm")
             assertThat(date).isEqualTo("01.01.2024, 15:00")
@@ -381,7 +360,7 @@ class BluetoothUiStateMapperTest {
 
         // then
         with(vitalDisplayData) {
-            assertThat(title).isEqualTo("Heart Rate")
+            assertThat(title).isEqualTo(StringResource(R.string.heart_rate))
             assertThat(status).isEqualTo(OperationStatus.FAILURE)
             assertThat(value).isNull()
             assertThat(unit).isNull()
@@ -398,7 +377,7 @@ class BluetoothUiStateMapperTest {
 
         // then
         with(vitalDisplayData) {
-            assertThat(title).isEqualTo("Heart Rate")
+            assertThat(title).isEqualTo(StringResource(R.string.heart_rate))
             assertThat(status).isEqualTo(OperationStatus.NO_DATA)
             assertThat(value).isEqualTo("No data available")
             assertThat(unit).isNull()

@@ -18,13 +18,13 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edu.stanford.bdh.engagehf.R
-import edu.stanford.spezi.core.design.component.AsyncTextButton
-import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
+import edu.stanford.spezi.ui.AsyncTextButton
+import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 @Composable
 fun BLEDevicePairingBottomSheet() {
@@ -108,8 +108,8 @@ private class UIStateParamProvider : PreviewParameterProvider<BLEDevicePairingVi
                 subtitle = StringResource(R.string.ble_device_paired_subtitle, "Device"),
             ),
             BLEDevicePairingViewModel.UiState.Error(
-                title = StringResource(R.string.ble_device_error_title),
-                subtitle = StringResource(R.string.ble_device_error_subtitle),
+                title = StringResource(R.string.generic_error_title),
+                subtitle = StringResource(R.string.generic_error_description),
             )
         )
 }
@@ -119,7 +119,7 @@ private class UIStateParamProvider : PreviewParameterProvider<BLEDevicePairingVi
 fun PreviewBLEDevicePairingBottomSheet(
     @PreviewParameter(UIStateParamProvider::class) state: BLEDevicePairingViewModel.UiState,
 ) {
-    SpeziTheme(isPreview = true) {
+    SpeziTheme {
         BLEDevicePairingBottomSheet(
             uiState = state,
             onAction = {},

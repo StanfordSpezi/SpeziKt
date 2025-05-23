@@ -1,39 +1,43 @@
 package edu.stanford.bdh.engagehf.onboarding
 
-import edu.stanford.spezi.core.design.R
-import edu.stanford.spezi.core.navigation.Navigator
-import edu.stanford.spezi.module.onboarding.OnboardingNavigationEvent
-import edu.stanford.spezi.module.onboarding.onboarding.Area
-import edu.stanford.spezi.module.onboarding.onboarding.OnboardingData
-import edu.stanford.spezi.module.onboarding.onboarding.OnboardingRepository
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import edu.stanford.bdh.engagehf.R
+import edu.stanford.spezi.modules.navigation.Navigator
+import edu.stanford.spezi.modules.onboarding.OnboardingNavigationEvent
+import edu.stanford.spezi.modules.onboarding.onboarding.Area
+import edu.stanford.spezi.modules.onboarding.onboarding.OnboardingData
+import edu.stanford.spezi.modules.onboarding.onboarding.OnboardingRepository
 import javax.inject.Inject
+import edu.stanford.spezi.modules.design.R as DesignR
 
 class EngageOnboardingRepository @Inject constructor(
     private val navigator: Navigator,
+    @ApplicationContext private val context: Context,
 ) : OnboardingRepository {
 
     override suspend fun getOnboardingData(): Result<OnboardingData> = Result.success(
         OnboardingData(
             areas = listOf(
                 Area(
-                    title = "Join the Study",
-                    iconId = R.drawable.ic_groups,
-                    description = "Connect to your study via an invitation code from the researchers."
+                    title = context.getString(R.string.onboarding_area_1_title),
+                    iconId = DesignR.drawable.ic_groups,
+                    description = context.getString(R.string.onboarding_area_1_description)
                 ),
                 Area(
-                    title = "Complete Health Checks",
-                    iconId = R.drawable.ic_assignment,
-                    description = "Record and report health data automatically according to a schedule set by the research team."
+                    title = context.getString(R.string.onboarding_area_2_title),
+                    iconId = DesignR.drawable.ic_assignment,
+                    description = context.getString(R.string.onboarding_area_2_description)
                 ),
                 Area(
-                    title = "Visualize Data",
-                    iconId = R.drawable.ic_vital_signs,
-                    description = "Visualize your heart health progress throughout participation in the study."
+                    title = context.getString(R.string.onboarding_area_3_title),
+                    iconId = DesignR.drawable.ic_vital_signs,
+                    description = context.getString(R.string.onboarding_area_3_description)
                 )
             ),
-            title = "Welcome to ENGAGE-HF",
-            subTitle = "Remote study participation made easy.",
-            continueButtonText = "Learn more",
+            title = context.getString(R.string.onboarding_welcome_to_engage_hf),
+            subTitle = context.getString(R.string.onboarding_remote_study_participation_made_easy),
+            continueButtonText = context.getString(R.string.onboarding_learn_more),
             continueButtonAction = { navigator.navigateTo(OnboardingNavigationEvent.SequentialOnboardingScreen) }
         )
     )

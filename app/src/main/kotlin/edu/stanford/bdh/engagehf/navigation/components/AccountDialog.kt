@@ -3,6 +3,7 @@ package edu.stanford.bdh.engagehf.navigation.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +25,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -32,19 +34,23 @@ import androidx.compose.ui.window.DialogProperties
 import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.navigation.screens.AccountUiState
 import edu.stanford.bdh.engagehf.navigation.screens.Action
-import edu.stanford.spezi.core.design.component.VerticalSpacer
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Colors.onPrimary
-import edu.stanford.spezi.core.design.theme.Colors.primary
-import edu.stanford.spezi.core.design.theme.Colors.surface
-import edu.stanford.spezi.core.design.theme.Sizes
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.TextStyles.bodyMedium
-import edu.stanford.spezi.core.design.theme.TextStyles.headlineMedium
-import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.design.theme.lighten
+import edu.stanford.spezi.ui.VerticalSpacer
+import edu.stanford.spezi.ui.lighten
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.Colors.onBackground
+import edu.stanford.spezi.ui.theme.Colors.onPrimary
+import edu.stanford.spezi.ui.theme.Colors.primary
+import edu.stanford.spezi.ui.theme.Colors.secondary
+import edu.stanford.spezi.ui.theme.Colors.surface
+import edu.stanford.spezi.ui.theme.Sizes
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles
+import edu.stanford.spezi.ui.theme.TextStyles.bodyMedium
+import edu.stanford.spezi.ui.theme.TextStyles.bodySmall
+import edu.stanford.spezi.ui.theme.TextStyles.headlineMedium
+import edu.stanford.spezi.ui.theme.TextStyles.headlineSmall
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 @Composable
 fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
@@ -61,10 +67,10 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
             color = surface.lighten(),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Spacings.medium)
+                .padding(Spacings.small)
         ) {
             Column(
-                modifier = Modifier.padding(Spacings.medium),
+                modifier = Modifier.padding(Spacings.small),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Row {
@@ -80,12 +86,14 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = stringResource(R.string.close_dialog_content_description),
-                                tint = MaterialTheme.colorScheme.primary,
+                                tint = primary,
                                 modifier = Modifier.size(Sizes.Icon.small)
                             )
                         }
                         Text(
-                            text = stringResource(R.string.account), style = TextStyles.titleMedium,
+                            text = stringResource(R.string.account),
+                            style = TextStyles.titleMedium,
+                            color = onBackground,
                             modifier = Modifier.align(
                                 Alignment.Center
                             )
@@ -124,39 +132,28 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
                     Column {
                         VerticalSpacer()
                         accountUiState.name?.let {
-                            Text(text = it, style = headlineMedium)
+                            Text(
+                                text = it,
+                                color = onBackground,
+                                style = headlineSmall
+                            )
                             VerticalSpacer(height = Spacings.small)
                         }
-                        Text(text = accountUiState.email, style = bodyMedium)
+                        Text(
+                            text = accountUiState.email,
+                            color = secondary,
+                            style = bodySmall
+                        )
                         VerticalSpacer()
                     }
                 }
 
                 HorizontalDivider()
-                TextButton(
-                    onClick = {
-                        onAction(Action.ShowHealthSummary)
-                    },
-                    modifier = Modifier
-                        .align(Alignment.Start),
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = stringResource(R.string.health_summary),
-                            style = bodyMedium,
-                            modifier = Modifier.weight(1f)
-                        )
-                        if (accountUiState.isHealthSummaryLoading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(Sizes.Icon.small),
-                                color = primary
-                            )
-                        }
-                    }
-                }
+                AsyncAccountItem(
+                    title = stringResource(R.string.health_summary),
+                    loading = accountUiState.isHealthSummaryLoading,
+                    onClick = { onAction(Action.HealthSummaryRequested) },
+                )
                 TextButton(
                     onClick = {
                         onAction(Action.ShowNotificationSettings)
@@ -181,20 +178,58 @@ fun AccountDialog(accountUiState: AccountUiState, onAction: (Action) -> Unit) {
                         style = bodyMedium,
                     )
                 }
-                HorizontalDivider()
-                VerticalSpacer()
                 TextButton(
-                    onClick = { onAction(Action.SignOut) },
+                    onClick = {
+                        onAction(Action.ShowPhoneNumberSettings)
+                    },
                     modifier = Modifier
                         .align(Alignment.Start),
                 ) {
                     Text(
-                        text = stringResource(R.string.sign_out),
+                        text = stringResource(R.string.phone_numbers_title),
                         style = bodyMedium,
-                        color = Colors.error,
-                        modifier = Modifier.fillMaxWidth()
                     )
                 }
+                HorizontalDivider()
+                VerticalSpacer()
+                AsyncAccountItem(
+                    title = stringResource(R.string.sign_out),
+                    color = Colors.error,
+                    loading = accountUiState.isSignOutLoading,
+                    onClick = { onAction(Action.SignOut) },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ColumnScope.AsyncAccountItem(
+    title: String,
+    color: Color = Color.Unspecified,
+    loading: Boolean,
+    onClick: () -> Unit,
+) {
+    TextButton(
+        onClick = onClick,
+        enabled = loading.not(),
+        modifier = Modifier.align(Alignment.Start),
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = title,
+                style = bodyMedium,
+                color = if (loading) Color.Unspecified else color,
+                modifier = Modifier.weight(1f)
+            )
+            if (loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(Sizes.Icon.small),
+                    color = primary
+                )
             }
         }
     }
@@ -215,7 +250,8 @@ class AppTopBarProvider : PreviewParameterProvider<AccountUiState> {
         ),
         AccountUiState(
             name = null,
-            email = "john@doe.de"
+            email = "john@doe.de",
+            isSignOutLoading = true,
         )
     )
 }

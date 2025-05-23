@@ -1,20 +1,21 @@
 package edu.stanford.bdh.engagehf.medication.ui
 
 import androidx.compose.ui.graphics.Color
+import edu.stanford.spezi.ui.StringResource
 
 /**
  * Represents the state of the medication screen.
  */
 sealed interface MedicationUiState {
     data object Loading : MedicationUiState
-    data class NoData(val message: String) : MedicationUiState
+    data class NoData(val message: StringResource) : MedicationUiState
     data class Success(
         val medicationsTaking: Medications,
         val medicationsThatMayHelp: Medications,
         val colorKeyExpanded: Boolean,
     ) : MedicationUiState
 
-    data class Error(val message: String) : MedicationUiState
+    data class Error(val message: StringResource) : MedicationUiState
 }
 
 data class Medications(
@@ -34,7 +35,7 @@ data class MedicationCardUiModel(
     val isExpanded: Boolean,
     val statusIconResId: Int?,
     val statusColor: MedicationColor,
-    val dosageInformation: DosageInformationUiModel?,
+    val dosageInformation: DosageInformationUiModel,
 )
 
 /**
@@ -53,7 +54,8 @@ data class DosageRowInfoData(
 
 @Suppress("MagicNumber")
 enum class MedicationColor(val value: Color) {
-    GREEN_SUCCESS(value = Color(0xFF34C759)),
-    YELLOW(value = Color(0xFFFFCC00)),
-    BLUE(value = Color(0xFF677FF0)),
+    GREEN_SUCCESS(value = Color(0xFF34C659)),
+    YELLOW(value = Color(0xFFFACC01)),
+    BLUE(value = Color(0xFF66AFFF)),
+    GRAY(value = Color(0xFFBBBBBE)),
 }

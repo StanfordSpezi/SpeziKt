@@ -21,11 +21,11 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-import edu.stanford.spezi.core.design.component.AppTopAppBar
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.utils.extensions.testIdentifier
 import edu.stanford.spezi.modules.education.videos.Video
+import edu.stanford.spezi.ui.AppTopAppBar
+import edu.stanford.spezi.ui.testIdentifier
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.TextStyles
 
 @Composable
 fun VideoScreen() {
@@ -39,7 +39,6 @@ fun VideoScreen(
     onAction: (Action) -> Unit,
     video: Video,
 ) {
-    val context = LocalContext.current
     Scaffold(
         topBar = {
             AppTopAppBar(

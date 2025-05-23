@@ -1,13 +1,13 @@
 package edu.stanford.bdh.engagehf.bluetooth.data.models
 
 import edu.stanford.bdh.engagehf.R
+import edu.stanford.spezi.ui.StringResource
 
 sealed interface BluetoothUiState {
     data class Idle(
-        val description: Int = R.string.bluetooth_not_enabled_description,
-        val missingPermissions: List<String>? = null,
+        val description: StringResource = StringResource(R.string.bluetooth_not_enabled_description),
         val settingsAction: Action.Settings? = null,
     ) : BluetoothUiState
 
-    data class Ready(val header: Int?, val devices: List<DeviceUiModel>) : BluetoothUiState
+    data class Ready(val header: StringResource?, val devices: List<DeviceUiModel>) : BluetoothUiState
 }

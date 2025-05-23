@@ -2,7 +2,8 @@ package edu.stanford.bdh.engagehf.medication.ui
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import edu.stanford.bdh.engagehf.simulator.MedicationScreenSimulator
-import edu.stanford.spezi.core.design.R
+import edu.stanford.spezi.modules.design.R
+import edu.stanford.spezi.ui.StringResource
 import org.junit.Rule
 import org.junit.Test
 
@@ -42,7 +43,7 @@ class MedicationScreenTest {
     @Test
     fun `it should display the error correctly`() {
         val errorMessage = "An error occurred"
-        setUiState(MedicationUiState.Error(errorMessage))
+        setUiState(MedicationUiState.Error(StringResource(errorMessage)))
         medicationScreen {
             assertErrorTextIsDisplayed(errorMessage)
             assertCenteredContent()
@@ -52,7 +53,7 @@ class MedicationScreenTest {
     @Test
     fun `it should display the no data message correctly`() {
         val message = "No medication recommendations"
-        setUiState(MedicationUiState.NoData(message))
+        setUiState(MedicationUiState.NoData(StringResource(message)))
         medicationScreen {
             assertNoDataTextIsDisplayed(message)
             assertCenteredContent()

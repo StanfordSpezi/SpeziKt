@@ -10,17 +10,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import edu.stanford.bdh.engagehf.R
 import edu.stanford.bdh.engagehf.medication.components.LoadingMedicationSection
 import edu.stanford.bdh.engagehf.medication.components.MedicationList
 import edu.stanford.bdh.engagehf.medication.components.getMedicationCardUiModel
-import edu.stanford.spezi.core.design.component.CenteredBoxContent
-import edu.stanford.spezi.core.design.component.RepeatingLazyColumn
-import edu.stanford.spezi.core.design.theme.Colors
-import edu.stanford.spezi.core.design.theme.Spacings
-import edu.stanford.spezi.core.design.theme.SpeziTheme
-import edu.stanford.spezi.core.design.theme.TextStyles
-import edu.stanford.spezi.core.design.theme.ThemePreviews
-import edu.stanford.spezi.core.utils.extensions.testIdentifier
+import edu.stanford.spezi.ui.CenteredBoxContent
+import edu.stanford.spezi.ui.RepeatingLazyColumn
+import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.ui.testIdentifier
+import edu.stanford.spezi.ui.theme.Colors
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziTheme
+import edu.stanford.spezi.ui.theme.TextStyles
+import edu.stanford.spezi.ui.theme.ThemePreviews
 
 @Composable
 fun MedicationScreen() {
@@ -41,7 +43,7 @@ fun MedicationScreen(
         is MedicationUiState.Error -> {
             CenteredBoxContent {
                 Text(
-                    text = (uiState).message,
+                    text = uiState.message.text(),
                     color = Colors.error,
                     style = TextStyles.titleMedium,
                     modifier = Modifier.testIdentifier(MedicationScreenTestIdentifier.ERROR_TEXT),
@@ -52,7 +54,7 @@ fun MedicationScreen(
         is MedicationUiState.NoData -> {
             CenteredBoxContent {
                 Text(
-                    text = uiState.message,
+                    text = uiState.message.text(),
                     style = TextStyles.titleMedium,
                     modifier = Modifier.testIdentifier(MedicationScreenTestIdentifier.NO_DATA_TEXT),
                 )
@@ -63,7 +65,7 @@ fun MedicationScreen(
             RepeatingLazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(Spacings.medium)
+                    .padding(horizontal = Spacings.medium)
                     .testIdentifier(MedicationScreenTestIdentifier.LOADING),
                 itemCount = 2,
                 content = { LoadingMedicationSection() }
@@ -76,7 +78,7 @@ fun MedicationScreen(
                 onAction = onAction,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(Spacings.medium)
+                    .padding(horizontal = Spacings.medium)
                     .testIdentifier(MedicationScreenTestIdentifier.SUCCESS)
             )
         }
@@ -86,8 +88,8 @@ fun MedicationScreen(
 private class UiStateProvider : PreviewParameterProvider<MedicationUiState> {
     override val values: Sequence<MedicationUiState> = sequenceOf(
         MedicationUiState.Loading,
-        MedicationUiState.Error(message = "An error occurred"),
-        MedicationUiState.NoData(message = "No message recommendations"),
+        MedicationUiState.Error(message = StringResource(R.string.generic_error_description)),
+        MedicationUiState.NoData(message = StringResource(R.string.no_messages)),
         MedicationUiState.Success(
             medicationsTaking = Medications(
                 listOf(

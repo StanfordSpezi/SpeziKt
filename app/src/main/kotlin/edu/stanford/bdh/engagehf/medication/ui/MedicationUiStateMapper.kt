@@ -7,8 +7,9 @@ import edu.stanford.bdh.engagehf.medication.data.DosageInformation
 import edu.stanford.bdh.engagehf.medication.data.DoseSchedule
 import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendation
 import edu.stanford.bdh.engagehf.medication.data.MedicationRecommendationType
+import edu.stanford.spezi.ui.StringResource
 import javax.inject.Inject
-import edu.stanford.spezi.core.design.R.drawable as DrawableR
+import edu.stanford.spezi.modules.design.R.drawable as DrawableR
 
 class MedicationUiStateMapper @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -17,24 +18,32 @@ class MedicationUiStateMapper @Inject constructor(
     fun mapMedicationUiState(recommendations: List<MedicationRecommendation>): MedicationUiState {
         return if (recommendations.isEmpty()) {
             MedicationUiState.NoData(
-                message = context.getString(R.string.medications_no_recommendations)
+                message = StringResource(R.string.medications_no_recommendations)
             )
         } else {
+            val medicationsTaking = mutableListOf<MedicationCardUiModel>()
+            val medicationsThatMayHelp = mutableListOf<MedicationCardUiModel>()
+            recommendations
+                .sortedByDescending { it.type.priority }
+                .forEach { recommendation ->
+                    val cardUiModel = map(recommendation)
+                    val currentDailyIntake = recommendation.dosageInformation.currentDailyIntake
+                    if (currentDailyIntake > 0.0) {
+                        medicationsTaking.add(cardUiModel)
+                    } else {
+                        medicationsThatMayHelp.add(cardUiModel)
+                    }
+                }
             MedicationUiState.Success(
-                medicationsTaking =
-                Medications(
-                    medications = recommendations.filter { it.type != MedicationRecommendationType.NOT_STARTED }
-                        .sortedByDescending { it.type.priority }
-                        .map { map(it) },
+                medicationsTaking = Medications(
+                    medications = medicationsTaking.toList(),
                     expanded = true,
                 ),
                 medicationsThatMayHelp = Medications(
-                    medications = recommendations.filter { it.type == MedicationRecommendationType.NOT_STARTED }
-                        .sortedByDescending { it.type.priority }
-                        .map { map(it) },
-                    expanded = false,
+                    medications = medicationsThatMayHelp.toList(),
+                    expanded = true,
                 ),
-                colorKeyExpanded = false
+                colorKeyExpanded = true
             )
         }
     }
@@ -134,8 +143,7 @@ class MedicationUiStateMapper @Inject constructor(
         }
     }
 
-    private fun mapDosageInformation(dosageInformation: DosageInformation?): DosageInformationUiModel? {
-        dosageInformation ?: return null
+    private fun mapDosageInformation(dosageInformation: DosageInformation): DosageInformationUiModel {
         val currentDailyIntake = dosageInformation.currentDailyIntake
         val targetDailyIntake = dosageInformation.targetDailyIntake
         val progress = if (targetDailyIntake == 0.0) {
@@ -178,14 +186,15 @@ class MedicationUiStateMapper @Inject constructor(
             MedicationRecommendationType.PERSONAL_TARGET_DOSE_REACHED,
             -> MedicationColor.GREEN_SUCCESS
 
-            MedicationRecommendationType.IMPROVEMENT_AVAILABLE,
+            MedicationRecommendationType.IMPROVEMENT_AVAILABLE -> MedicationColor.YELLOW
+
             MedicationRecommendationType.MORE_PATIENT_OBSERVATIONS_REQUIRED,
             MedicationRecommendationType.MORE_LAB_OBSERVATIONS_REQUIRED,
-            -> MedicationColor.YELLOW
+            -> MedicationColor.BLUE
 
             MedicationRecommendationType.NOT_STARTED,
             MedicationRecommendationType.NO_ACTION_REQUIRED,
-            -> MedicationColor.BLUE
+            -> MedicationColor.GRAY
         }
     }
 }
