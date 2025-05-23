@@ -1,3 +1,3 @@
-package edu.stanford.spezi.core.utils
+package edu.stanford.spezi.modules.utils
 
 interface Standard
