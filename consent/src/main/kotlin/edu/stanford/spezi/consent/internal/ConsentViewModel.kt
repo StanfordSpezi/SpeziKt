@@ -1,8 +1,10 @@
-package edu.stanford.spezi.consent
+package edu.stanford.spezi.consent.internal
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.stanford.spezi.consent.ConsentDataSource
+import edu.stanford.spezi.consent.ConsentPdfService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update

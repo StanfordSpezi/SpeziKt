@@ -1,18 +1,18 @@
 package edu.stanford.spezi.onboarding.composables
 
 import androidx.compose.runtime.Composable
-import edu.stanford.spezi.module.onboarding.core.OnboardingTitle
-import edu.stanford.spezi.module.onboarding.spezi.SequentialOnboardingComposable
-import edu.stanford.spezi.module.onboarding.spezi.SequentialOnboardingContent
-import edu.stanford.spezi.module.onboarding.spezi.flow.LocalOnboardingNavigationPath
-import edu.stanford.spezi.module.onboarding.spezi.flow.OnboardingStack
+import edu.stanford.spezi.onboarding.LocalOnboardingNavigationPath
+import edu.stanford.spezi.onboarding.OnboardingStack
+import edu.stanford.spezi.onboarding.OnboardingTitle
+import edu.stanford.spezi.onboarding.SequentialOnboarding
+import edu.stanford.spezi.onboarding.SequentialOnboardingContent
 
 @Composable
 fun SequentialOnboardingTestComposable() {
     OnboardingStack {
         step("Welcome") {
             val path = LocalOnboardingNavigationPath.current
-            SequentialOnboardingComposable(
+            SequentialOnboarding(
                 title = "Things to know",
                 subtitle = "And you should pay close attention ...",
                 content = listOf(

@@ -4,9 +4,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import edu.stanford.spezi.module.onboarding.core.OnboardingTitle
-import edu.stanford.spezi.module.onboarding.spezi.flow.LocalOnboardingNavigationPath
-import edu.stanford.spezi.module.onboarding.spezi.flow.OnboardingStack
+import edu.stanford.spezi.onboarding.LocalOnboardingNavigationPath
+import edu.stanford.spezi.onboarding.OnboardingStack
+import edu.stanford.spezi.onboarding.OnboardingTitle
 
 object DynamicOnboardingTestStepId {
     const val START = "START"

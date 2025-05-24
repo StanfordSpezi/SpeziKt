@@ -3,7 +3,7 @@ package edu.stanford.spezi.consent
 import android.graphics.pdf.PdfDocument
 
 class ConsentDocumentExport(
-    private val documentIdentifier: String = Defaults.DOCUMENT_IDENTIFIER,
+    val documentIdentifier: String = Defaults.DOCUMENT_IDENTIFIER,
     private val document: suspend () -> PdfDocument,
 ) {
     private object Defaults {

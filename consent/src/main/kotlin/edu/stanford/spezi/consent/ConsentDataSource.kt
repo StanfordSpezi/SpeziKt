@@ -1,11 +1,12 @@
 package edu.stanford.spezi.consent
 
 import android.graphics.pdf.PdfDocument
-import edu.stanford.spezi.core.utils.Standard
-import javax.inject.Inject
+import edu.stanford.spezi.core.Module
+import edu.stanford.spezi.core.Standard
+import edu.stanford.spezi.core.dependency
 
-class ConsentDataSource @Inject constructor() {
-    val standard: Standard? = null
+class ConsentDataSource : Module {
+    val standard by dependency<Standard>()
 
     init {
         if (standard !is ConsentConstraint) {

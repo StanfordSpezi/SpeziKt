@@ -11,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -19,10 +18,12 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.navigation.compose.hiltViewModel
-import edu.stanford.spezi.onboarding.OnboardingComposable
+import edu.stanford.spezi.consent.internal.ConsentAction
+import edu.stanford.spezi.consent.internal.ConsentUiState
+import edu.stanford.spezi.consent.internal.ConsentViewModel
+import edu.stanford.spezi.onboarding.Onboarding
 import edu.stanford.spezi.onboarding.OnboardingTitle
 import edu.stanford.spezi.ui.StringResource
-import edu.stanford.spezi.ui.ViewState
 import edu.stanford.spezi.ui.markdown.MarkdownBytes
 import edu.stanford.spezi.ui.markdown.MarkdownElement
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
@@ -33,7 +34,7 @@ import edu.stanford.spezi.ui.theme.ThemePreviews
 import kotlinx.coroutines.launch
 
 @Composable
-fun OnboardingConsentComposable(
+fun ConsentOnboarding(
     markdown: suspend () -> ByteArray,
     action: suspend () -> Unit,
     title: String? = StringResource("Consent").text(),
@@ -43,7 +44,7 @@ fun OnboardingConsentComposable(
     val viewModel: ConsentViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
-    OnboardingConsentComposableContent(
+    ConsentOnboardingComposable(
         markdown = markdown,
         action = action,
         title = title,
@@ -55,7 +56,7 @@ fun OnboardingConsentComposable(
 }
 
 @Composable
-internal fun OnboardingConsentComposableContent(
+internal fun ConsentOnboardingComposable(
     markdown: suspend () -> ByteArray,
     action: suspend () -> Unit,
     title: String?,
@@ -65,7 +66,7 @@ internal fun OnboardingConsentComposableContent(
     onAction: (ConsentAction) -> Unit,
 ) {
     val actionScope = rememberCoroutineScope()
-    OnboardingComposable(
+    Onboarding(
         modifier = Modifier
             .testIdentifier(OnboardingConsentTestIdentifier.ROOT)
             .fillMaxSize(),
@@ -77,9 +78,8 @@ internal fun OnboardingConsentComposableContent(
         content = {
             ConsentDocument(
                 markdown = markdown,
-                viewState = remember { mutableStateOf(ConsentViewState.Base(ViewState.Idle)) },
                 exportConfiguration = exportConfiguration,
-            ).Composable(
+            ).Content(
                 modifier = Modifier.padding(bottom = Spacings.medium),
                 uiState = uiState,
                 onAction = onAction,
@@ -116,7 +116,7 @@ private fun OnboardingConsentPreview(
     @PreviewParameter(OnboardingConsentPreviewProvider::class) uiState: ConsentUiState,
 ) {
     SpeziTheme {
-        OnboardingConsentComposableContent(
+        ConsentOnboardingComposable(
             markdown = { ByteArray(0) },
             action = {},
             title = null,

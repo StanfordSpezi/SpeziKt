@@ -22,25 +22,25 @@ class WelcomeOnboardingTest {
     @Test
     fun testWelcomeOnboarding() {
         welcomeOnboarding {
-            WelcomeOnboardingSimulator.assertTextExists("Welcome")
-            WelcomeOnboardingSimulator.assertTextExists("Spezi UI Tests")
+            assertTextExists("Welcome")
+            assertTextExists("Spezi UI Tests")
 
-            WelcomeOnboardingSimulator.assertTextExists("Tortoise")
-            WelcomeOnboardingSimulator.assertTextExists("A Tortoise!")
+            assertTextExists("Tortoise")
+            assertTextExists("A Tortoise!")
 
-            WelcomeOnboardingSimulator.assertTextExists("Tree")
-            WelcomeOnboardingSimulator.assertTextExists("A Tree!")
+            assertTextExists("Tree")
+            assertTextExists("A Tree!")
 
-            WelcomeOnboardingSimulator.assertTextExists("Letter")
-            WelcomeOnboardingSimulator.assertTextExists("A letter!")
+            assertTextExists("Letter")
+            assertTextExists("A letter!")
 
-            WelcomeOnboardingSimulator.assertTextExists("Circle")
-            WelcomeOnboardingSimulator.assertTextExists("A circle!")
+            assertTextExists("Circle")
+            assertTextExists("A circle!")
 
-            WelcomeOnboardingSimulator.clickButton("Learn More")
+            clickButton("Learn More")
 
-            WelcomeOnboardingSimulator.assertTextExists("Done")
-            WelcomeOnboardingSimulator.assertTextExists("Welcome Onboarding done!")
+            assertTextExists("Done")
+            assertTextExists("Welcome Onboarding done!")
         }
     }
 

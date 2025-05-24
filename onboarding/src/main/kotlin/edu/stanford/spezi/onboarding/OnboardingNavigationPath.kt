@@ -14,9 +14,9 @@ import edu.stanford.spezi.foundation.UUID
 class OnboardingNavigationPath internal constructor(
     internal val navController: NavController,
     internal var startDestination: String,
-    internal var steps: List<OnboardingNavigationStep>,
+    internal var steps: List<OnboardingStep>,
 ) {
-    private val customSteps = mutableListOf<OnboardingNavigationStep>()
+    private val customSteps = mutableListOf<OnboardingStep>()
 
     private val currentOnboardingStepId: String? get() {
         val currentQueue = navController.backQueue
@@ -53,7 +53,7 @@ class OnboardingNavigationPath internal constructor(
 
     fun append(content: @Composable () -> Unit) {
         val stepId = UUID().toString()
-        customSteps.add(OnboardingNavigationStep(stepId, content))
+        customSteps.add(OnboardingStep(stepId, content))
         navController.navigate(
             route = customRoute(stepId),
             navOptions = navOptions {}, // TODO: Anything important/relevant needed here?

@@ -13,11 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import edu.stanford.spezi.ui.theme.SpeziTheme
 import edu.stanford.spezi.ui.theme.ThemePreviews
 
-internal data class OnboardingNavigationStep(
-    val id: String,
-    val content: @Composable () -> Unit,
-)
-
 val LocalOnboardingNavigationPath = compositionLocalOf<OnboardingNavigationPath> {
     error("Do not access this outside of OnboardingStack!")
 }

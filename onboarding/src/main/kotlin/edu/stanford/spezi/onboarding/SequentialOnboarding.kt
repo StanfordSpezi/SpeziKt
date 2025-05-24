@@ -27,14 +27,14 @@ data class SequentialOnboardingContent(
 )
 
 @Composable
-fun SequentialOnboardingComposable(
+fun SequentialOnboarding(
     title: String,
     subtitle: String? = null,
     content: List<SequentialOnboardingContent>,
     actionText: String,
     action: suspend () -> Unit,
 ) {
-    SequentialOnboardingComposable(
+    SequentialOnboarding(
         title = {
             OnboardingTitle(
                 title,
@@ -48,14 +48,14 @@ fun SequentialOnboardingComposable(
 }
 
 @Composable
-fun SequentialOnboardingComposable(
+fun SequentialOnboarding(
     title: @Composable () -> Unit,
     content: List<SequentialOnboardingContent>,
     actionText: String,
     action: suspend () -> Unit,
 ) {
     val currentContentIndex = remember { mutableIntStateOf(0) }
-    OnboardingComposable(
+    Onboarding(
         title = {
             title()
         },
@@ -128,7 +128,7 @@ private fun SequentialOnboardingStep(
 @Composable
 private fun SequentialOnboardingPreview() {
     SpeziTheme {
-        SequentialOnboardingComposable(
+        SequentialOnboarding(
             title = "Title",
             subtitle = "Subtitle",
             content = listOf(

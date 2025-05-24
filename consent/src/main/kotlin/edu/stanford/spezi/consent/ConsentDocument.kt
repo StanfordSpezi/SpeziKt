@@ -14,9 +14,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Path
@@ -24,15 +21,16 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import edu.stanford.spezi.consent.internal.ConsentAction
+import edu.stanford.spezi.consent.internal.ConsentTextFieldType
+import edu.stanford.spezi.consent.internal.ConsentUiState
 import edu.stanford.spezi.ui.StringResource
-import edu.stanford.spezi.ui.ViewState
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
 import edu.stanford.spezi.ui.theme.Spacings
 import java.nio.charset.StandardCharsets
 
 data class ConsentDocument(
     private val markdown: suspend () -> ByteArray,
-    private val viewState: MutableState<ConsentViewState>,
     private val givenNameTitle: StringResource = LocalizationDefaults.givenNameTitle,
     private val givenNamePlaceholder: StringResource = LocalizationDefaults.givenNamePlaceholder,
     private val familyNameTitle: StringResource = LocalizationDefaults.familyNameTitle,
@@ -48,7 +46,7 @@ data class ConsentDocument(
 
     @OptIn(ExperimentalComposeUiApi::class)
     @Composable
-    internal fun Composable(
+    internal fun Content(
         modifier: Modifier = Modifier,
         uiState: ConsentUiState,
         onAction: (ConsentAction) -> Unit,
@@ -127,8 +125,7 @@ private fun ConsentDocumentComposablePreview(
 ) {
     ConsentDocument(
         markdown = { "".toByteArray(StandardCharsets.UTF_8) },
-        viewState = remember { mutableStateOf(ConsentViewState.Base(ViewState.Idle)) },
-    ).Composable(
+    ).Content(
         uiState = ConsentUiState(
             name = data.name,
             paths = data.paths

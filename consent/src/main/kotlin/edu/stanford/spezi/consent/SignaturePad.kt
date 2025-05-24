@@ -8,8 +8,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -20,6 +24,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import edu.stanford.spezi.consent.internal.ConsentAction
+import edu.stanford.spezi.consent.internal.ConsentTextFieldType
+import edu.stanford.spezi.consent.internal.ConsentUiState
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
 import edu.stanford.spezi.ui.theme.Spacings
 
@@ -31,7 +38,6 @@ internal fun SignaturePad(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     Column {
-        /*
         OutlinedTextField(
             value = uiState.name.givenName ?: "",
             onValueChange = {
@@ -40,7 +46,6 @@ internal fun SignaturePad(
             modifier = Modifier.fillMaxWidth(),
             label = { Text(stringResource(R.string.onboarding_first_name)) },
             singleLine = true,
-            isError = uiState.firstName.error,
             trailingIcon = { Icon(Icons.Filled.Info, contentDescription = stringResource(R.string.onboarding_first_name)) }
         )
         Spacer(modifier = Modifier.height(Spacings.small))
@@ -51,7 +56,6 @@ internal fun SignaturePad(
             },
             modifier = Modifier.fillMaxWidth(),
             label = { Text(stringResource(R.string.onboarding_last_name)) },
-            isError = uiState.lastName.error,
             singleLine = true,
             trailingIcon = {
                 Icon(
@@ -60,7 +64,6 @@ internal fun SignaturePad(
                 )
             }
         )
-         */
 
         if ((uiState.name.givenName ?: "").isNotBlank() && (uiState.name.familyName ?: "").isNotBlank()) {
             Spacer(modifier = Modifier.height(Spacings.medium))

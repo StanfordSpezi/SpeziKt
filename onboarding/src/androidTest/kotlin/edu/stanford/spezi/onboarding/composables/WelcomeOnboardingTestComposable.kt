@@ -3,20 +3,20 @@ package edu.stanford.spezi.onboarding.composables
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
-import edu.stanford.spezi.core.design.component.ImageResource
-import edu.stanford.spezi.core.design.component.StringResource
-import edu.stanford.spezi.module.onboarding.core.OnboardingTitle
-import edu.stanford.spezi.module.onboarding.spezi.OnboardingComposable
-import edu.stanford.spezi.module.onboarding.spezi.OnboardingInformationContent
-import edu.stanford.spezi.module.onboarding.spezi.flow.LocalOnboardingNavigationPath
-import edu.stanford.spezi.module.onboarding.spezi.flow.OnboardingStack
+import edu.stanford.spezi.onboarding.LocalOnboardingNavigationPath
+import edu.stanford.spezi.onboarding.Onboarding
+import edu.stanford.spezi.onboarding.OnboardingInformationContent
+import edu.stanford.spezi.onboarding.OnboardingStack
+import edu.stanford.spezi.onboarding.OnboardingTitle
+import edu.stanford.spezi.ui.ImageResource
+import edu.stanford.spezi.ui.StringResource
 
 @Composable
 fun WelcomeOnboardingTestComposable() {
     OnboardingStack {
         step("Welcome") {
             val path = LocalOnboardingNavigationPath.current
-            OnboardingComposable(
+            Onboarding(
                 title = "Welcome",
                 subtitle = "Spezi UI Tests",
                 areas = listOf(

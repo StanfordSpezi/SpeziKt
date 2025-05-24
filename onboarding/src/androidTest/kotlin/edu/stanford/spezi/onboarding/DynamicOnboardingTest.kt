@@ -22,57 +22,57 @@ class DynamicOnboardingTest {
     @Test
     fun testDynamicOnboardingFlowONE() {
         dynamicOnboarding {
-            DynamicOnboardingSimulator.assertTextExists("START")
-            DynamicOnboardingSimulator.clickButton("ONE")
-            DynamicOnboardingSimulator.assertTextExists("TITLE: ONE")
-            DynamicOnboardingSimulator.clickButton("Next")
-            DynamicOnboardingSimulator.assertTextExists("TITLE: TWO")
-            DynamicOnboardingSimulator.clickButton("Next")
-            DynamicOnboardingSimulator.assertTextExists("Done")
-            DynamicOnboardingSimulator.assertTextExists("Dynamic Onboarding done!")
+            assertTextExists("START")
+            clickButton("ONE")
+            assertTextExists("TITLE: ONE")
+            clickButton("Next")
+            assertTextExists("TITLE: TWO")
+            clickButton("Next")
+            assertTextExists("Done")
+            assertTextExists("Dynamic Onboarding done!")
         }
     }
 
     @Test
     fun testDynamicOnboardingFlowTWO() {
         dynamicOnboarding {
-            DynamicOnboardingSimulator.assertTextExists("START")
-            DynamicOnboardingSimulator.clickButton("TWO")
-            DynamicOnboardingSimulator.assertTextExists("TITLE: TWO")
-            DynamicOnboardingSimulator.clickButton("Next")
-            DynamicOnboardingSimulator.assertTextExists("Done")
-            DynamicOnboardingSimulator.assertTextExists("Dynamic Onboarding done!")
+            assertTextExists("START")
+            clickButton("TWO")
+            assertTextExists("TITLE: TWO")
+            clickButton("Next")
+            assertTextExists("Done")
+            assertTextExists("Dynamic Onboarding done!")
         }
     }
 
     @Test
     fun testDynamicOnboardingFlowTHREE() {
         dynamicOnboarding {
-            DynamicOnboardingSimulator.assertTextExists("START")
-            DynamicOnboardingSimulator.clickButton("THREE")
-            DynamicOnboardingSimulator.assertTextExists("TITLE: THREE")
-            DynamicOnboardingSimulator.clickButton("Next")
-            DynamicOnboardingSimulator.assertTextExists("TITLE: ONE")
-            DynamicOnboardingSimulator.clickButton("Next")
-            DynamicOnboardingSimulator.assertTextExists("TITLE: TWO")
-            DynamicOnboardingSimulator.clickButton("Next")
-            DynamicOnboardingSimulator.assertTextExists("Done")
-            DynamicOnboardingSimulator.assertTextExists("Dynamic Onboarding done!")
+            assertTextExists("START")
+            clickButton("THREE")
+            assertTextExists("TITLE: THREE")
+            clickButton("Next")
+            assertTextExists("TITLE: ONE")
+            clickButton("Next")
+            assertTextExists("TITLE: TWO")
+            clickButton("Next")
+            assertTextExists("Done")
+            assertTextExists("Dynamic Onboarding done!")
         }
     }
 
     @Test
     fun testDynamicOnboardingFlowNext() {
         dynamicOnboarding {
-            DynamicOnboardingSimulator.assertTextExists("START")
-            DynamicOnboardingSimulator.clickButton("Next")
+            assertTextExists("START")
+            clickButton("Next")
             composeRule.waitForIdle()
-            DynamicOnboardingSimulator.assertTextExists("TITLE: ONE")
-            DynamicOnboardingSimulator.clickButton("Next")
-            DynamicOnboardingSimulator.assertTextExists("TITLE: TWO")
-            DynamicOnboardingSimulator.clickButton("Next")
-            DynamicOnboardingSimulator.assertTextExists("Done")
-            DynamicOnboardingSimulator.assertTextExists("Dynamic Onboarding done!")
+            assertTextExists("TITLE: ONE")
+            clickButton("Next")
+            assertTextExists("TITLE: TWO")
+            clickButton("Next")
+            assertTextExists("Done")
+            assertTextExists("Dynamic Onboarding done!")
         }
     }
 

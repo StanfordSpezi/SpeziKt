@@ -4,12 +4,13 @@ package edu.stanford.spezi.consent
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Path
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.asAndroidPath
 import edu.stanford.spezi.core.coroutines.Dispatching
 import edu.stanford.spezi.ui.markdown.MarkdownElement
 import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
@@ -18,8 +19,6 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
 import kotlin.collections.forEach
-
-// import androidx.compose.ui.graphics.asAndroidPath
 
 internal class ConsentPdfService @Inject internal constructor(
     @Dispatching.IO private val ioCoroutineDispatcher: CoroutineDispatcher,
@@ -86,12 +85,9 @@ internal class ConsentPdfService @Inject internal constructor(
         canvas.scale(scaleFactor, scaleFactor)
 
         signaturePaths.forEach { path ->
-            /* TODO
-            val androidPath = path.asAndroidPath()
-            val offsetPath = Path(androidPath)
+            val offsetPath = path.asAndroidPath()
             offsetPath.offset(0f, yOffset * 5)
             canvas.drawPath(offsetPath, paintSignature)
-             */
         }
         canvas.restore()
         return yOffset - 80f
