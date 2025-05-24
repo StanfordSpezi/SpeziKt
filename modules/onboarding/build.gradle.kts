@@ -18,7 +18,11 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":core-coroutines"))
     implementation(project(":ui"))
+    implementation(project(":ui-personalinfo"))
     implementation(project(":ui-markdown"))
+
+    implementation(project(":consent"))
+    implementation(project(":onboarding"))
 
     implementation(libs.androidx.foundation)
     implementation(libs.accompanist.pager)

@@ -210,10 +210,6 @@ class MainActivity : FragmentActivity() {
                             Routes.SequentialOnboardingScreen
                         )
 
-                        is OnboardingNavigationEvent.ConsentScreen -> navHostController.navigate(
-                            Routes.ConsentScreen
-                        )
-
                         is NavigationEvent.PopBackStack -> navHostController.popBackStack()
                         is NavigationEvent.NavigateUp -> navHostController.navigateUp()
 

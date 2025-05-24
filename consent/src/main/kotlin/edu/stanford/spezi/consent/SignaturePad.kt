@@ -1,6 +1,6 @@
 @file:Suppress("MagicNumber")
 
-package edu.stanford.spezi.modules.onboarding.consent
+package edu.stanford.spezi.consent
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,7 +24,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import edu.stanford.spezi.modules.onboarding.R
+import edu.stanford.spezi.consent.internal.ConsentAction
+import edu.stanford.spezi.consent.internal.ConsentTextFieldType
+import edu.stanford.spezi.consent.internal.ConsentUiState
+import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
 import edu.stanford.spezi.ui.theme.Spacings
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -36,25 +39,23 @@ internal fun SignaturePad(
     val keyboardController = LocalSoftwareKeyboardController.current
     Column {
         OutlinedTextField(
-            value = uiState.firstName.value,
+            value = uiState.name.givenName ?: "",
             onValueChange = {
-                onAction(ConsentAction.TextFieldUpdate(it, TextFieldType.FIRST_NAME))
+                onAction(ConsentAction.TextFieldUpdate(it, ConsentTextFieldType.FIRST_NAME))
             },
             modifier = Modifier.fillMaxWidth(),
             label = { Text(stringResource(R.string.onboarding_first_name)) },
             singleLine = true,
-            isError = uiState.firstName.error,
             trailingIcon = { Icon(Icons.Filled.Info, contentDescription = stringResource(R.string.onboarding_first_name)) }
         )
         Spacer(modifier = Modifier.height(Spacings.small))
         OutlinedTextField(
-            value = uiState.lastName.value,
+            value = uiState.name.familyName ?: "",
             onValueChange = {
-                onAction(ConsentAction.TextFieldUpdate(it, TextFieldType.LAST_NAME))
+                onAction(ConsentAction.TextFieldUpdate(it, ConsentTextFieldType.LAST_NAME))
             },
             modifier = Modifier.fillMaxWidth(),
             label = { Text(stringResource(R.string.onboarding_last_name)) },
-            isError = uiState.lastName.error,
             singleLine = true,
             trailingIcon = {
                 Icon(
@@ -64,13 +65,13 @@ internal fun SignaturePad(
             }
         )
 
-        if (uiState.firstName.value.isNotBlank() && uiState.lastName.value.isNotBlank()) {
+        if ((uiState.name.givenName ?: "").isNotBlank() && (uiState.name.familyName ?: "").isNotBlank()) {
             Spacer(modifier = Modifier.height(Spacings.medium))
             Text(stringResource(R.string.onboarding_signature))
             SignatureCanvas(
                 paths = uiState.paths.toMutableList(),
-                firstName = uiState.firstName.value,
-                lastName = uiState.lastName.value,
+                firstName = uiState.name.givenName ?: "",
+                lastName = uiState.name.familyName ?: "",
                 onPathAdd = { path ->
                     onAction(ConsentAction.AddPath(path))
                     keyboardController?.hide()
@@ -92,7 +93,11 @@ internal fun SignaturePad(
                 Spacer(modifier = Modifier.width(Spacings.medium))
                 Button(
                     onClick = {
-                        onAction(ConsentAction.Consent)
+                        onAction(
+                            ConsentAction.Consent(
+                                documentIdentifier = "consent",
+                                exportConfiguration = ConsentDocumentExportConfiguration()
+                            ))
                     },
                     enabled = uiState.isValidForm,
                     modifier = Modifier.weight(1f)
@@ -111,8 +116,10 @@ private fun SignaturePadPreview(
 ) {
     SignaturePad(
         uiState = ConsentUiState(
-            firstName = FieldState(data.firstName),
-            lastName = FieldState(data.lastName),
+            name = PersonNameComponents(
+                givenName = data.firstName,
+                familyName = data.lastName,
+            ),
             paths = data.paths
         )
     ) {}

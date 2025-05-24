@@ -1,0 +1,84 @@
+package edu.stanford.spezi.onboarding.composables
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import edu.stanford.spezi.onboarding.LocalOnboardingNavigationPath
+import edu.stanford.spezi.onboarding.OnboardingStack
+import edu.stanford.spezi.onboarding.OnboardingTitle
+
+object DynamicOnboardingTestStepId {
+    const val START = "START"
+    const val ONE = "ONE"
+    const val TWO = "TWO"
+    const val DONE = "DONE"
+}
+
+@Composable
+fun DynamicOnboardingTestComposable() {
+    OnboardingStack {
+        step(DynamicOnboardingTestStepId.START) {
+            val path = LocalOnboardingNavigationPath.current
+
+            Column {
+                Text("START")
+
+                Button(onClick = {
+                    path.append(DynamicOnboardingTestStepId.ONE)
+                }) {
+                    Text("ONE")
+                }
+
+                Button(onClick = {
+                    path.append(DynamicOnboardingTestStepId.TWO)
+                }) {
+                    Text("TWO")
+                }
+
+                Button(onClick = {
+                    path.append {
+                        DynamicOnboardingComposable("THREE")
+                    }
+                }) {
+                    Text("THREE")
+                }
+
+                Button(onClick = {
+                    path.nextStep()
+                }) {
+                    Text("Next")
+                }
+            }
+        }
+
+        step(DynamicOnboardingTestStepId.ONE) {
+            DynamicOnboardingComposable(DynamicOnboardingTestStepId.ONE)
+        }
+
+        step(DynamicOnboardingTestStepId.TWO) {
+            DynamicOnboardingComposable(DynamicOnboardingTestStepId.TWO)
+        }
+
+        step(DynamicOnboardingTestStepId.DONE) {
+            OnboardingTitle(
+                "Done",
+                "Dynamic Onboarding done!"
+            )
+        }
+    }
+}
+
+@Composable
+private fun DynamicOnboardingComposable(title: String) {
+    val path = LocalOnboardingNavigationPath.current
+
+    Column {
+        Text("TITLE: $title")
+        Button(onClick = {
+            path.nextStep()
+        }) {
+            Text("Next")
+        }
+    }
+}

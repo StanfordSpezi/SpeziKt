@@ -29,9 +29,6 @@ sealed class Routes {
     data object OnboardingScreen : Routes()
 
     @Serializable
-    data object ConsentScreen : Routes()
-
-    @Serializable
     data object ContactScreen : Routes()
 
     @Serializable

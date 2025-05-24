@@ -7,7 +7,6 @@ import dagger.hilt.testing.TestInstallIn
 import edu.stanford.spezi.modules.account.di.AccountModule
 import edu.stanford.spezi.modules.account.manager.InvitationAuthManager
 import edu.stanford.spezi.modules.account.manager.UserSessionManager
-import edu.stanford.spezi.modules.onboarding.consent.ConsentManager
 import edu.stanford.spezi.modules.onboarding.fakes.FakeOnboardingRepository
 import edu.stanford.spezi.modules.onboarding.invitation.InvitationCodeRepository
 import edu.stanford.spezi.modules.onboarding.onboarding.OnboardingRepository
@@ -43,8 +42,4 @@ class TestOnboardingModule {
     @Provides
     @Singleton
     fun provideSequentialOnboardingRepository(): SequentialOnboardingRepository = mockk()
-
-    @Provides
-    @Singleton
-    fun provideOnConsentRepository(): ConsentManager = mockk()
 }

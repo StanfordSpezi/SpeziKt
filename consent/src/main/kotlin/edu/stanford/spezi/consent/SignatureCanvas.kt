@@ -1,5 +1,5 @@
 @file:Suppress("MagicNumber")
-package edu.stanford.spezi.modules.onboarding.consent
+package edu.stanford.spezi.consent
 
 import android.graphics.Paint
 import android.view.MotionEvent
@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 
 @ExperimentalComposeUiApi
 @Composable
-internal fun SignatureCanvas(
+fun SignatureCanvas(
     paths: MutableList<Path>,
     firstName: String,
     lastName: String,
