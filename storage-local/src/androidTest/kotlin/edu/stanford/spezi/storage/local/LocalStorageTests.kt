@@ -5,7 +5,7 @@ import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.spezi.foundation.UUID
-import edu.stanford.spezi.modules.testing.runTestUnconfined
+import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
@@ -37,7 +37,7 @@ class LocalStorageTests {
     }
 
     @After
-    fun tearDown() = runTestUnconfined {
+    fun tearDown() = runTest {
         localStorage.delete(key = key)
         keyStorage.deleteAll()
     }
@@ -55,7 +55,7 @@ class LocalStorageTests {
     }
 
     @Test
-    fun `it should handle complex type correctly`() = runTestUnconfined {
+    fun `it should handle complex type correctly`() = runTest {
         // given
         val greeting = "Hello Paul 👋 ${"🚀".repeat(Random.nextInt(10))}"
         val letter = Letter(greeting = greeting)
@@ -78,7 +78,7 @@ class LocalStorageTests {
     }
 
     @Test
-    fun `it should handle custom coding correctly`() = runTestUnconfined {
+    fun `it should handle custom coding correctly`() = runTest {
         // given
         val greeting = "Hello Paul 👋 ${"🚀".repeat(Random.nextInt(10))}"
         val letter = Letter(greeting = greeting)
@@ -101,7 +101,7 @@ class LocalStorageTests {
     }
 
     @Test
-    fun `it should handle deletion of complex type correctly`() = runTestUnconfined {
+    fun `it should handle deletion of complex type correctly`() = runTest {
         // given
         val greeting = "Hello Paul 👋 ${"🚀".repeat(Random.nextInt(10))}"
         val letter = Letter(greeting = greeting)
@@ -131,7 +131,7 @@ class LocalStorageTests {
     }
 
     @Test
-    fun `it should handle list of complex types correctly`() = runTestUnconfined {
+    fun `it should handle list of complex types correctly`() = runTest {
         // given
         val greeting = "Hello Paul 👋 ${"🚀".repeat(Random.nextInt(10))}"
         val letters = listOf(Letter(greeting = greeting))
@@ -154,7 +154,7 @@ class LocalStorageTests {
     }
 
     @Test
-    fun `it should handle primitive type correctly`() = runTestUnconfined {
+    fun `it should handle primitive type correctly`() = runTest {
         // given
         val value = Random.nextBoolean()
         localStorage.store(
@@ -176,7 +176,7 @@ class LocalStorageTests {
     }
 
     @Test
-    fun `it should handle Unencrypted setting correctly`() = runTestUnconfined {
+    fun `it should handle Unencrypted setting correctly`() = runTest {
         // given
         val value = UUID().toString()
         localStorage.store(
@@ -198,7 +198,7 @@ class LocalStorageTests {
     }
 
     @Test
-    fun `it should handle Encrypted with custom key pair setting correctly`() = runTestUnconfined {
+    fun `it should handle Encrypted with custom key pair setting correctly`() = runTest {
         // given
         val value = UUID().toString()
         val androidKeyStoreKey = "androidKeyStoreKey"

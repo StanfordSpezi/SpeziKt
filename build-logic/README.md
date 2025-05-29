@@ -43,7 +43,7 @@ plugins {
 Current list of convention plugins:
 
 - [`spezi.application`](convention/src/main/kotlin/edu/stanford/spezi/build/logic/convention/plugins/SpeziApplicationConventionPlugin.kt)
-  - Convention plugin that applies by default `com.android.application` and `org.jetbrains.kotlin.android`. Additionally it applies the default project configuration of `spezi.base` plugin. Applies `:modules:logging` implementation and `:modules:testing` test implementation dependencies.
+  - Convention plugin that applies by default `com.android.application` and `org.jetbrains.kotlin.android`. Additionally it applies the default project configuration of `spezi.base` plugin.
 - [`spezi.compose`](convention/src/main/kotlin/edu/stanford/spezi/build/logic/convention/plugins/SpeziComposeConventionPlugin.kt)
   - - Convention plugin that applies the required configuration and dependencies needed for `Compose`. Note that you need to additionally apply either `spezi.application` or `spezi.library` plugins.
 - [`spezi.base`](convention/src/main/kotlin/edu/stanford/spezi/build/logic/convention/plugins/SpeziBaseConfigConventionPlugin.kt)
@@ -51,5 +51,5 @@ Current list of convention plugins:
 - [`spezi.hilt`](convention/src/main/kotlin/edu/stanford/spezi/build/logic/convention/plugins/HiltConventionPlugin.kt)
   - Convention plugin that applies all the dependency needed to use Hilt DI.
 - [`spezi.library`](convention/src/main/kotlin/edu/stanford/spezi/build/logic/convention/plugins/SpeziLibraryConventionPlugin.kt)
-  - Convention plugin that applies by default `com.android.library` and `org.jetbrains.kotlin.android`. Additionally it applies the default project configuration of `spezi.base` plugin. Applies `:modules:logging` implementation and `:modules:testing` test implementation dependencies.
+  - Convention plugin that applies by default `com.android.library` and `org.jetbrains.kotlin.android`. Additionally it applies the default project configuration of `spezi.base` plugin.
 
