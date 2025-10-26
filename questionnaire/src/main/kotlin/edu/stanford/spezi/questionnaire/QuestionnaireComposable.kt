@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.core.os.bundleOf
@@ -21,6 +22,7 @@ import ca.uhn.fhir.context.FhirContext
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import edu.stanford.spezi.core.logging.SpeziLogger
 import edu.stanford.spezi.ui.testIdentifier
+import kotlinx.coroutines.launch
 import org.hl7.fhir.r4.model.Questionnaire
 import com.google.android.fhir.datacapture.R as DataCaptureR
 
@@ -90,6 +92,7 @@ fun QuestionnaireComposable(
         )
     }
     val fragmentState = rememberFragmentState()
+    val coroutineScope = rememberCoroutineScope()
     AndroidFragment<QuestionnaireFragment>(
         fragmentState = fragmentState,
         modifier = modifier
@@ -101,8 +104,10 @@ fun QuestionnaireComposable(
         fragment.setFragmentResultListener(
             QuestionnaireFragment.SUBMIT_REQUEST_KEY
         ) { _, _ ->
-            val response = fragment.getQuestionnaireResponse()
-            onResult(QuestionnaireResult.Completed(response))
+            coroutineScope.launch {
+                val response = fragment.getQuestionnaireResponse()
+                onResult(QuestionnaireResult.Completed(response))
+            }
         }
         fragment.setFragmentResultListener(
             QuestionnaireFragment.CANCEL_REQUEST_KEY

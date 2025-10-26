@@ -3,9 +3,9 @@ package edu.stanford.spezi.testing.ui
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.annotation.CallSuper
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.AndroidEntryPoint
 import edu.stanford.spezi.ui.ComposableBlock
 import edu.stanford.spezi.ui.theme.SpeziTheme
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
 @AndroidEntryPoint
-class ComposeContentActivity : FragmentActivity() {
+class ComposeContentActivity : AppCompatActivity() {
 
     private val content = MutableStateFlow<ComposableBlock?>(null)
 
