@@ -23,7 +23,7 @@ jobs:
           fetch-depth: 1
           ref: ${{ github.head_ref }}
       - name: Detekt PR Check
-        uses: alaegin/Detekt-Action@v1.23.6
+        uses: alaegin/Detekt-Action@v1.23.7 # latest github action version released
         with:
           reviewdog_reporter: github-pr-check
           github_token: ${{ secrets.github_token }}
@@ -155,7 +155,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
       - name: Run Dokka with Gradle
-        run: ./gradlew dokkaHtmlMultiModule
+        run: ./gradlew generateDocs
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main'
         uses: JamesIves/github-pages-deploy-action@v4

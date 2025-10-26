@@ -4,18 +4,18 @@ activityCompose = "1.11.0"
 agp = "8.13.0"
 androidTools = "31.13.0"
 appcompat = "1.7.0"
-coilCompose = "2.6.0"
+coilComposeVersion = "3.3.0"
 compileSdk = "36"
-composeBom = "2024.06.00"
-composeNavigation = "2.8.0-beta03"
+composeBom = "2025.10.01"
+composeNavigation = "2.9.5"
 coreI18n = "1.0.0-alpha01"
 coreKtx = "1.13.1"
 coreKtxVersion = "1.5.0"
 coreTestingVersion = "2.2.0"
 coroutinesVersion = "1.8.0"
 credentialsPlayServicesAuth = "1.2.2"
-detekt = "1.23.6" # please adjust github action version as well in case of version change
-dokka = "1.9.20"
+detekt = "1.23.8" # please adjust github action version as well in case of version change
+dokka = "2.1.0"
 espressoCore = "3.5.1"
 fhirDataCapture = "1.1.0"
 firebaseAuthKtx = "23.0.0"
@@ -33,7 +33,7 @@ healthConnectClient = "1.1.0-alpha07"
 hiltNavigation = "1.2.0"
 hiltVersion = "2.57.2"
 junit = "4.13.2"
-junitVersion = "1.1.5"
+junitVersion = "1.3.0"
 kotlin = "2.1.21" # latest kotlin version that we can support due to this ksp issue: https://github.com/google/ksp/issues/2463
 kotlinxSerializationJson = "1.6.3"
 kspVersion = "2.1.21-2.0.1" # should align version with kotlin, see kotlin = "2.1.21"
@@ -56,6 +56,7 @@ android-fhir-data-capture = { module = "com.google.android.fhir:data-capture", v
 android-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-material-icons = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-core-i18n = { group = "androidx.core", name = "core-i18n", version.ref = "coreI18n" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -73,8 +74,10 @@ androidx-splashscreen = { group = "androidx.core", name = "core-splashscreen", v
 androidx-test-core = { group = "androidx.test", name = "core", version.ref = "testCoreVersion" }
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "rulesVersion" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "runnerVersion" }
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilComposeVersion" }
+coil-network = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilComposeVersion" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
 compose-ui = { group = "androidx.compose.ui", name = "ui" }
@@ -137,7 +140,19 @@ spezi-serialization = { id = "spezi.serialization", version = "unspecified" }
 
 # Please keep [bundles] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [bundles]
-compose = ["compose-ui", "compose-material3", "compose-ui-tooling-preview", "compose-ui-tooling", "androidx-core-ktx", "androidx-appcompat", "androidx-activity-compose"]
+compose = [
+    "androidx-activity-compose",
+    "androidx-appcompat",
+    "androidx-compose-material-icons",
+    "androidx-core-ktx",
+    "coil-compose",
+    "coil-network",
+    "compose-foundation",
+    "compose-material3",
+    "compose-ui",
+    "compose-ui-tooling",
+    "compose-ui-tooling-preview",
+]
 compose-androidTest = ["junit", "androidx-espresso-core", "compose-ui-test", "mockk-agent-core", "mockk-android", "google-truth"]
 ktx-coroutines = ["coroutines-core", "coroutines-android"]
 unit-testing = ["junit", "mockk-core", "google-truth", "coroutines-test", "androidx-core-testing", "androidx-test-rules"]
