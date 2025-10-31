@@ -21,6 +21,15 @@ tasks.register("generateDocs") {
     description = "Aggregates documentation for all modules (Dokka v2)."
     dependsOn(subprojects.map { it.path + ":dokkaGeneratePublicationHtml" })
     finalizedBy("copyDocumentationImages")
+
+    doLast {
+        val outputDir = layout.buildDirectory.dir("dokka/htmlMultiModule")
+        copy {
+            from(layout.buildDirectory.dir("dokka/html"))
+            into(outputDir)
+        }
+        println("Moved docs to: ${outputDir.get().asFile.absolutePath}")
+    }
 }
 
 subprojects {
