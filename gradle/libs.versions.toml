@@ -8,6 +8,7 @@ coilComposeVersion = "3.3.0"
 compileSdk = "36"
 composeBom = "2025.10.01"
 composeNavigation = "2.9.5"
+coreDesugaringVersion = "2.1.5"
 coreI18n = "1.0.0"
 coreKtx = "1.17.0"
 coreTestingVersion = "2.2.0"
@@ -47,6 +48,7 @@ truth = "1.4.5"
 
 # Please keep [libraries] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [libraries]
+android-desugaring = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "coreDesugaringVersion" }
 android-fhir-data-capture = { module = "com.google.android.fhir:data-capture", version.ref = "fhirDataCapture" }
 android-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
@@ -125,6 +127,7 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 spezi-application = { id = "spezi.application", version = "unspecified" }
 spezi-base = { id = "spezi.base", version = "unspecified" }
 spezi-compose = { id = "spezi.compose", version = "unspecified" }
+spezi-desugaring = { id = "spezi.desugaring", version = "unspecified" }
 spezi-hilt = { id = "spezi.hilt", version = "unspecified" }
 spezi-library = { id = "spezi.library", version = "unspecified" }
 spezi-serialization = { id = "spezi.serialization", version = "unspecified" }
