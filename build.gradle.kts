@@ -1,5 +1,5 @@
 import io.gitlab.arturbosch.detekt.Detekt
-import org.jetbrains.dokka.gradle.DokkaExtension
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 plugins {
     alias(libs.plugins.android.application) apply false
@@ -16,22 +16,6 @@ plugins {
     alias(libs.plugins.kotlin.parcelize) apply false
 }
 
-tasks.register("generateDocs") {
-    group = "documentation"
-    description = "Aggregates documentation for all modules (Dokka v2)."
-    dependsOn(subprojects.map { it.path + ":dokkaGeneratePublicationHtml" })
-    finalizedBy("copyDocumentationImages")
-
-    doLast {
-        val outputDir = layout.buildDirectory.dir("dokka/htmlMultiModule")
-        copy {
-            from(layout.buildDirectory.dir("dokka/html"))
-            into(outputDir)
-        }
-        println("Moved docs to: ${outputDir.get().asFile.absolutePath}")
-    }
-}
-
 subprojects {
     setupDokka()
     setupDetekt()
@@ -40,28 +24,40 @@ subprojects {
 
 installCustomTasks()
 
+tasks.dokkaHtmlMultiModule {
+    moduleName.set("Spezi Documentation")
+    includes.from("README.md")
+    dependsOn("copyDocumentationImages")
+}
+
 fun Project.setupDokka() {
     apply(plugin = rootProject.libs.plugins.dokka.get().pluginId)
 
-    extensions.configure<DokkaExtension> {
-        moduleName.set(project.name)
+    if (this != rootProject) {
+        rootProject.tasks.named("dokkaHtmlMultiModule") {
+            dependsOn("${project.path}:dokkaHtml")
+        }
+    }
 
+    tasks.withType<DokkaTaskPartial>().configureEach {
         dokkaSourceSets.configureEach {
+            noAndroidSdkLink.set(false)
             skipDeprecated.set(true)
             skipEmptyPackages.set(true)
+            includeNonPublic.set(false)
             jdkVersion.set(JavaVersion.VERSION_17.majorVersion.toInt())
-
-            val readme = file("README.md")
-            if (readme.exists()) {
-                includes.from(readme)
+            if (file("README.md").exists()) {
+                includes.from("README.md")
             }
         }
     }
 
-    if (this != rootProject) {
-        rootProject.tasks.named("generateDocs") {
-            dependsOn(tasks.named("dokkaGeneratePublicationHtml"))
-        }
+    val dokkaHtmlMultiModule = tasks.findByName("dokkaHtmlMultiModule") ?: tasks.create(
+        "dokkaHtmlMultiModule",
+        DokkaTaskPartial::class.java
+    )
+    rootProject.tasks.named("dokkaHtmlMultiModule") {
+        dependsOn(dokkaHtmlMultiModule)
     }
 }
 
@@ -155,10 +151,7 @@ fun Project.installCustomTasks() {
     }
 
     tasks.register<Copy>("copyDocumentationImages") {
-        group = "documentation"
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
-
-        val htmlOutput = layout.buildDirectory.dir("dokka/html")
         fileTree("$rootDir").matching {
             include("**/screens/*.jpg")
         }.forEach { file ->
@@ -166,7 +159,7 @@ fun Project.installCustomTasks() {
             from(file.parentFile) {
                 include("*.jpg")
             }
-            into(htmlOutput.map { it.dir(relativePath.path) })
+            into("$buildDir/dokka/htmlMultiModule/$relativePath")
         }
     }
 }
