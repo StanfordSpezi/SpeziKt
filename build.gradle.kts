@@ -108,7 +108,6 @@ fun Project.setupJacoco() {
         "**/*Activity.class",
         "**/*Application.class",
         "**/di/*Module.*",
-        "edu/stanford/spezi/modules/notification/fcm/FCMNotificationService.class",
     )
     val reportTask = tasks.register("jacocoCoverageReport", JacocoReport::class.java) {
         classDirectories.setFrom(

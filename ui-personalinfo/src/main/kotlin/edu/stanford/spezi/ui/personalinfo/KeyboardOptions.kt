@@ -10,6 +10,5 @@ val KeyboardOptions.Companion.NameDefault
     @Composable @ReadOnlyComposable get() =
         Default.copy(
             capitalization = KeyboardCapitalization.Words,
-            autoCorrect = false,
             keyboardType = KeyboardType.Text
         )

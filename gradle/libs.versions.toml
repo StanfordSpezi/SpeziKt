@@ -1,90 +1,78 @@
 # Please keep [versions] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [versions]
-accompanistPager = "0.35.1-alpha"
-activityCompose = "1.9.0"
-agp = "8.5.0"
-androidTools = "31.5.0"
-androidyoutubeplayer-core = "12.1.0"
-appcompat = "1.7.0"
-coilCompose = "2.6.0"
-compileSdk = "34"
-composeBom = "2024.06.00"
-composeNavigation = "2.8.0-beta03"
-coreI18n = "1.0.0-alpha01"
-coreKtx = "1.13.1"
-coreKtxVersion = "1.5.0"
+activityCompose = "1.11.0"
+agp = "8.13.0"
+androidTools = "31.13.0"
+appcompat = "1.7.1"
+coilComposeVersion = "3.3.0"
+compileSdk = "36"
+composeBom = "2025.10.01"
+composeNavigation = "2.9.5"
+coreDesugaringVersion = "2.1.5"
+coreI18n = "1.0.0"
+coreKtx = "1.17.0"
 coreTestingVersion = "2.2.0"
-coroutinesVersion = "1.8.0"
-credentialsPlayServicesAuth = "1.2.2"
-datastorePreferences = "1.1.1"
-detekt = "1.23.6" # please adjust github action version as well in case of version change
+coroutinesVersion = "1.10.2"
+credentialsPlayServicesAuth = "1.5.0"
+detekt = "1.23.8" # please adjust github action version as well in case of version change
 dokka = "1.9.20"
-espressoCore = "3.5.1"
-fhirDataCapture = "1.1.0"
-firebaseAuthKtx = "23.0.0"
-firebaseFirestoreKtx = "25.0.0"
-firebaseFunctionsKtx = "21.0.0"
-firebaseMessagingKtx = "24.0.1"
-firebaseStorageKtx = "21.0.0"
-foundation = "1.6.8"
-fragmentCompose = "1.8.2"
-googleGmsGoogleServices = "4.4.2"
-googleid = "1.1.0"
-gson = "2.11.0"
+espressoCore = "3.7.0"
+fhirDataCapture = "1.3.0"
+firebaseAuthKtx = "23.2.1"
+firebaseFirestoreKtx = "25.1.4"
+firebaseFunctionsKtx = "21.2.1"
+firebaseMessagingKtx = "24.1.2"
+firebaseStorageKtx = "21.0.2"
+foundation = "1.9.4"
+fragmentCompose = "1.8.9"
+googleGmsGoogleServices = "4.4.4"
+googleid = "1.1.1"
 guava = "32.1.3-android" # is a fixed version which works with all other dependencies
-healthConnectClient = "1.1.0-alpha07"
-hiltNavigation = "1.2.0"
-hiltVersion = "2.51"
+hiltNavigation = "1.3.0"
+hiltVersion = "2.57.2"
 junit = "4.13.2"
-junitVersion = "1.1.5"
-kotlin = "2.0.0"
-kotlinxSerializationJson = "1.6.3"
-kspVersion = "2.0.0-1.0.21"
-lifecycleKtx = "2.8.2"
-lifecycleRuntimeKtx = "2.7.0"
+junitVersion = "1.3.0"
+kotlin = "2.1.21" # latest kotlin version that we can support due to this ksp issue: https://github.com/google/ksp/issues/2463
+kotlinxSerializationJson = "1.9.0"
+kspVersion = "2.1.21-2.0.1" # should align version with kotlin, see kotlin = "2.1.21"
+lifecycleKtx = "2.9.4"
 minSdk = "31"
-mockKVersion = "1.13.10"
-phoneNumberVersion = "8.13.21"
-playServicesAuth = "21.2.0"
-rulesVersion = "1.5.0"
-runnerVersion = "1.5.2"
-securityCryptoKtx = "1.1.0-alpha06"
-splashScreenVersion = "1.0.1"
-targetSdk = "34"
-testCoreVersion = "1.5.0"
+mockKVersion = "1.14.6"
+playServicesAuth = "21.4.0"
+rulesVersion = "1.7.0"
+runnerVersion = "1.7.0"
+securityCryptoKtx = "1.1.0"
+testCoreVersion = "1.7.0"
 timberVersion = "5.0.1"
-truth = "1.4.2"
-vico = "2.0.0-alpha.26"
-zxingVersion = "3.5.0"
+truth = "1.4.5"
 
 # Please keep [libraries] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [libraries]
-accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
+android-desugaring = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "coreDesugaringVersion" }
 android-fhir-data-capture = { module = "com.google.android.fhir:data-capture", version.ref = "fhirDataCapture" }
 android-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-material-icons = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-core-i18n = { group = "androidx.core", name = "core-i18n", version.ref = "coreI18n" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTestingVersion" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentialsPlayServicesAuth" }
-androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
 androidx-fragment-compose = { module = "androidx.fragment:fragment-compose", version.ref = "fragmentCompose" }
-androidx-health-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "healthConnectClient" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleKtx" }
 androidx-lifecycle-view-model-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleKtx" }
 androidx-security-crypto-ktx = { group = "androidx.security", name = "security-crypto-ktx", version.ref = "securityCryptoKtx" }
-androidx-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashScreenVersion" }
 androidx-test-core = { group = "androidx.test", name = "core", version.ref = "testCoreVersion" }
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "rulesVersion" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "runnerVersion" }
-androidyoutubeplayer-core = { module = "com.pierfrancescosoffritti.androidyoutubeplayer:core", version.ref = "androidyoutubeplayer-core" }
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilComposeVersion" }
+coil-network = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilComposeVersion" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
 compose-ui = { group = "androidx.compose.ui", name = "ui" }
@@ -93,7 +81,6 @@ compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtxVersion" }
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutinesVersion" }
 coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutinesVersion" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesVersion" }
@@ -103,10 +90,8 @@ firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-fires
 firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-functions-ktx", version.ref = "firebaseFunctionsKtx" }
 firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
-googlecode-phonenumber = { module = "com.googlecode.libphonenumber:libphonenumber", version.ref = "phoneNumberVersion" }
 google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
-gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltVersion" }
 hilt-core = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltVersion" }
@@ -125,8 +110,6 @@ mockk-core = { group = "io.mockk", name = "mockk", version.ref = "mockKVersion" 
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timberVersion" }
-vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
-zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxingVersion" }
 
 # Please keep [plugins] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [plugins]
@@ -144,13 +127,26 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 spezi-application = { id = "spezi.application", version = "unspecified" }
 spezi-base = { id = "spezi.base", version = "unspecified" }
 spezi-compose = { id = "spezi.compose", version = "unspecified" }
+spezi-desugaring = { id = "spezi.desugaring", version = "unspecified" }
 spezi-hilt = { id = "spezi.hilt", version = "unspecified" }
 spezi-library = { id = "spezi.library", version = "unspecified" }
 spezi-serialization = { id = "spezi.serialization", version = "unspecified" }
 
 # Please keep [bundles] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [bundles]
-compose = ["compose-ui", "compose-material3", "compose-ui-tooling-preview", "compose-ui-tooling", "androidx-core-ktx", "androidx-appcompat", "androidx-activity-compose"]
+compose = [
+    "androidx-activity-compose",
+    "androidx-appcompat",
+    "androidx-compose-material-icons",
+    "androidx-core-ktx",
+    "coil-compose",
+    "coil-network",
+    "compose-foundation",
+    "compose-material3",
+    "compose-ui",
+    "compose-ui-tooling",
+    "compose-ui-tooling-preview",
+]
 compose-androidTest = ["junit", "androidx-espresso-core", "compose-ui-test", "mockk-agent-core", "mockk-android", "google-truth"]
 ktx-coroutines = ["coroutines-core", "coroutines-android"]
 unit-testing = ["junit", "mockk-core", "google-truth", "coroutines-test", "androidx-core-testing", "androidx-test-rules"]

@@ -3,6 +3,7 @@
     <application>
         <activity
             android:name="edu.stanford.spezi.testing.ui.ComposeContentActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="true"  />
     </application>
 </manifest>

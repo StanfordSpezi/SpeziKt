@@ -12,9 +12,7 @@ dependencies {
     api(project(":core"))
     implementation(project(":core-logging"))
 
-    implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.security.crypto.ktx)
-    implementation(libs.core.ktx)
 
     androidTestImplementation(libs.hilt.test)
     androidTestImplementation(project(":testing-ui"))

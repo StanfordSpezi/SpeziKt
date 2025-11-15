@@ -23,7 +23,7 @@ jobs:
           fetch-depth: 1
           ref: ${{ github.head_ref }}
       - name: Detekt PR Check
-        uses: alaegin/Detekt-Action@v1.23.6
+        uses: alaegin/Detekt-Action@v1.23.7 # latest github action version released
         with:
           reviewdog_reporter: github-pr-check
           github_token: ${{ secrets.github_token }}

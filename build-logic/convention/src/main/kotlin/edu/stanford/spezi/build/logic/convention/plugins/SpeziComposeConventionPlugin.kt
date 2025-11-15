@@ -26,8 +26,6 @@ class SpeziComposeConventionPlugin : Plugin<Project> {
                 implementation(composeBom)
                 implementation(findBundle("compose"))
 
-                implementation(findLibrary("coil-compose"))
-
                 androidTestImplementation(composeBom)
                 androidTestImplementation(findBundle("unit-testing"))
                 androidTestImplementation(findBundle("compose-androidTest"))
