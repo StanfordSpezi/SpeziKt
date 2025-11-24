@@ -7,6 +7,11 @@ import edu.stanford.spezi.core.internal.ModuleRegistry
  */
 sealed interface Configuration {
 
+    /**
+     * The [Standard] module that orchestrates the data flow in the application.
+     */
+    val standard: Standard
+
     companion object {
         /**
          * Creates a new [Configuration] instance using the provided configuration block.
@@ -18,7 +23,7 @@ sealed interface Configuration {
          * ```kotlin
          *
          * class MyApplication : Application(), SpeziApplication {
-         *     override val configuration: Configuration = Configuration {
+         *     override val configuration: Configuration = Configuration(standard = ExampleStandard()) {
          *          module { AudioModule() }
          *          module<Onboarding> { OnboardingImpl() }
          *          module(identifier = "alternative-onboarding") { AlternativeOnboarding() }
@@ -31,8 +36,9 @@ sealed interface Configuration {
          * @return A new [Configuration] instance.
          */
         operator fun invoke(
+            standard: Standard = DefaultStandard,
             scope: ConfigurationBuilder.() -> Unit,
-        ): Configuration = ConfigurationBuilder().apply(scope).build()
+        ): Configuration = ConfigurationBuilder(standard = standard).apply(scope).build()
     }
 }
 
@@ -40,10 +46,13 @@ sealed interface Configuration {
  * Combines two [Configuration] instances into a new one, merging their modules and factories.
  */
 operator fun Configuration.plus(other: Configuration): Configuration {
+    require(standard == other.standard) {
+        "Cannot combine configurations with different standards: $standard vs ${other.standard}"
+    }
     val registry = ModuleRegistry()
     registry.register(configuration = this)
     registry.register(configuration = other)
-    return ConfigurationImpl(registry = registry)
+    return ConfigurationImpl(standard = standard, registry = registry)
 }
 
 /**
@@ -52,7 +61,8 @@ operator fun Configuration.plus(other: Configuration): Configuration {
  * @param registry The [ModuleRegistry] that holds the registered modules and their dependencies.
  */
 @PublishedApi
-internal data class ConfigurationImpl internal constructor(
+internal data class ConfigurationImpl(
+    override val standard: Standard,
     @PublishedApi
     internal val registry: ModuleRegistry,
 ) : Configuration

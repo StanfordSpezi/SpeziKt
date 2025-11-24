@@ -20,6 +20,13 @@ interface DispatchersProvider {
     fun main(): CoroutineDispatcher
 
     /**
+     * Returns the main immediate [CoroutineDispatcher], which should be typically used for UI-related tasks.
+     *
+     * @return The main immediate [CoroutineDispatcher].
+     */
+    fun mainImmediate(): CoroutineDispatcher
+
+    /**
      * Returns the default [CoroutineDispatcher]. This dispatcher is optimized for CPU-intensive tasks.
      *
      * @return The default [CoroutineDispatcher].
@@ -56,6 +63,13 @@ internal class DispatchersProviderImpl @Inject constructor() : DispatchersProvid
      * @return The main [CoroutineDispatcher] from [Dispatchers.Main].
      */
     override fun main(): CoroutineDispatcher = Dispatchers.Main
+
+    /**
+     * Returns the main immediate [CoroutineDispatcher], which should be typically used for UI-related tasks.
+     *
+     * @return The main immediate [CoroutineDispatcher].
+     */
+    override fun mainImmediate(): CoroutineDispatcher = Dispatchers.Main.immediate
 
     /**
      * Returns the default [CoroutineDispatcher].

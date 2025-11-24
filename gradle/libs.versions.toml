@@ -25,9 +25,11 @@ firebaseMessagingKtx = "24.1.2"
 firebaseStorageKtx = "21.0.2"
 foundation = "1.9.4"
 fragmentCompose = "1.8.9"
+fragmentKtxVersion = "1.8.6"
 googleGmsGoogleServices = "4.4.4"
 googleid = "1.1.1"
 guava = "32.1.3-android" # is a fixed version which works with all other dependencies
+healthConnectClient = "1.1.0"
 hiltNavigation = "1.3.0"
 hiltVersion = "2.57.2"
 junit = "4.13.2"
@@ -61,7 +63,9 @@ androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", v
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentialsPlayServicesAuth" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
+androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtxVersion" }
 androidx-fragment-compose = { module = "androidx.fragment:fragment-compose", version.ref = "fragmentCompose" }
+androidx-health-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "healthConnectClient" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleKtx" }
 androidx-lifecycle-view-model-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleKtx" }
