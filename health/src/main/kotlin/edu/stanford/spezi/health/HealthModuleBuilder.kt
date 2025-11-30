@@ -30,25 +30,6 @@ class HealthModuleBuilder {
     }
 
     /**
-     * Adds a [requestReadAccess] component for categorized [Record] sets.
-     */
-    fun requestReadAccess(
-        quantity: Set<AnyRecordType> = emptySet(),
-        category: Set<AnyRecordType> = emptySet(),
-        correlation: Set<AnyRecordType> = emptySet(),
-        other: Set<AnyRecordType> = emptySet(),
-    ) {
-        components.add(
-            RequestReadAccess(
-                quantity = quantity,
-                category = category,
-                correlation = correlation,
-                other = other
-            )
-        )
-    }
-
-    /**
      * Adds a [requestWriteAccess] component for the given [Record] types.
      */
     fun requestWriteAccess(recordTypes: Set<AnyRecordType>) {
