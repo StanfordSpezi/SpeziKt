@@ -10,6 +10,7 @@ import edu.stanford.spezi.core.DefaultInitializer
 import edu.stanford.spezi.core.Module
 import edu.stanford.spezi.core.SpeziApplication
 import edu.stanford.spezi.core.SpeziError
+import edu.stanford.spezi.core.Standard
 import edu.stanford.spezi.core.dependency
 import edu.stanford.spezi.core.optionalDependency
 import edu.stanford.spezi.core.plus
@@ -35,6 +36,21 @@ class SpeziTests {
 
         // then
         assertThat(dependency.application).isEqualTo(application)
+    }
+
+    @Test
+    fun `it should register use correct standard`() {
+        // given
+        val testStandard = object : Standard {}
+        testApplication(standard = testStandard) {
+            // empty
+        }
+
+        // when
+        val dependency = dependency<ApplicationModule>().value
+
+        // then
+        assertThat(dependency.standard).isEqualTo(testStandard)
     }
 
     @Test
@@ -84,7 +100,7 @@ class SpeziTests {
     fun `it should keep formerly registered application module reconfiguration`() {
         // given
         val application = testApplication { }
-        SpeziApplication.configure { }
+        SpeziApplication.configure(application.configuration.standard) { }
 
         // when
         val dependency by dependency<ApplicationModule>()
@@ -211,7 +227,7 @@ class SpeziTests {
     @Test
     fun `it should register modules from custom configurations correctly`() {
         // given
-        val configuration = Configuration {
+        val configuration = Configuration(standard = TestStandard) {
             module { Module1(name = "Module 1") }
             module { Module2(age = "Module 2") }
         }
@@ -278,7 +294,7 @@ class SpeziTests {
     @Test
     fun `it should handle a complete dependencies graph correctly`() {
         // given
-        val customConfiguration = Configuration {
+        val customConfiguration = Configuration(standard = TestStandard) {
             module { AudioModule() }
             module { Preprocessor(module = dependency()) }
             module {
@@ -347,10 +363,10 @@ class SpeziTests {
     @Test
     fun `it should register merged configurations correctly`() {
         // given
-        val config1 = Configuration {
+        val config1 = Configuration(standard = TestStandard) {
             module { Module1(name = "Module 1") }
         }
-        val config2 = Configuration {
+        val config2 = Configuration(standard = TestStandard) {
             module { Module2(age = "Module 2") }
         }
         testApplication {
@@ -367,9 +383,10 @@ class SpeziTests {
     }
 
     private fun testApplication(
+        standard: Standard = TestStandard,
         scope: ConfigurationBuilder.() -> Unit = {},
     ): TestApplication {
-        val application = object : TestApplication(scope) {}
+        val application = object : TestApplication(standard = standard, scope = scope) {}
         SpeziApplication.configure(application)
         return application
     }
@@ -377,11 +394,13 @@ class SpeziTests {
 
 class CircularDep1(val circularDep2: CircularDep2) : Module
 class CircularDep2(val circularDep1: CircularDep1) : Module
+private object TestStandard : Standard
 
 private abstract class TestApplication(
+    standard: Standard,
     scope: ConfigurationBuilder.() -> Unit = {},
 ) : Application(), SpeziApplication {
-    override val configuration: Configuration = Configuration(scope = scope)
+    override val configuration: Configuration = Configuration(standard = standard, scope = scope)
 }
 
 private interface Onboarding : Module

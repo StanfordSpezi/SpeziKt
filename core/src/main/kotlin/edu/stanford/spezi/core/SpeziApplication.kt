@@ -33,12 +33,14 @@ interface SpeziApplication {
          * Note that there is no need to call this method directly, as it is invoked automatically on app start up time by Spezi Framework,
          * This method can be used to rebuild the dependency graph in case of a configuration change.
          *
+         * @param standard the [Standard] to configure the Spezi framework with
          * @param scope the configuration block to configure the [DependenciesGraph]
          */
         fun configure(
+            standard: Standard = DefaultStandard,
             scope: ConfigurationBuilder.() -> Unit,
         ) {
-            Spezi.configure(scope = scope)
+            Spezi.configure(standard = standard, scope = scope)
         }
 
         /**

@@ -6,7 +6,8 @@ import edu.stanford.spezi.core.internal.ModuleRegistry
 /**
  * Builder for creating a [Configuration] for a [SpeziApplication].
  */
-class ConfigurationBuilder internal constructor() {
+@SpeziDsl
+class ConfigurationBuilder internal constructor(private val standard: Standard) {
     @PublishedApi
     internal val registry = ModuleRegistry()
 
@@ -41,5 +42,5 @@ class ConfigurationBuilder internal constructor() {
      *
      * @return A [Configuration] instance with the registered modules and factories.
      */
-    internal fun build() = ConfigurationImpl(registry = registry)
+    internal fun build() = ConfigurationImpl(standard = standard, registry = registry)
 }

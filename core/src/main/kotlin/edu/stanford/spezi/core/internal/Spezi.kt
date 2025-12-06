@@ -4,9 +4,11 @@ import edu.stanford.spezi.core.ApplicationModule
 import edu.stanford.spezi.core.Configuration
 import edu.stanford.spezi.core.ConfigurationBuilder
 import edu.stanford.spezi.core.ConfigurationImpl
+import edu.stanford.spezi.core.DefaultStandard
 import edu.stanford.spezi.core.DependenciesGraph
 import edu.stanford.spezi.core.Module
 import edu.stanford.spezi.core.SpeziApplication
+import edu.stanford.spezi.core.Standard
 import edu.stanford.spezi.core.optionalDependency
 import edu.stanford.spezi.core.speziError
 import java.util.concurrent.atomic.AtomicReference
@@ -53,11 +55,15 @@ internal object Spezi {
     /**
      * Constructs the [DependenciesGraph] out of the [Configuration] of [SpeziApplication], registers [ApplicationModule] module and invokes
      * [Module.configure] on all registered modules in the graph.
+     *
+     * @param standard the [Standard] to configure the Spezi framework with
+     * @param scope the configuration block to configure the [DependenciesGraph]
      */
     fun configure(
+        standard: Standard = DefaultStandard,
         scope: ConfigurationBuilder.() -> Unit,
     ) {
-        val builder = ConfigurationBuilder().apply(scope)
+        val builder = ConfigurationBuilder(standard = standard).apply(scope)
         val applicationModule = optionalDependency<ApplicationModule>().value
         if (applicationModule != null) builder.module { applicationModule }
         val dependenciesGraph = DependenciesGraph(registry = builder.registry)
