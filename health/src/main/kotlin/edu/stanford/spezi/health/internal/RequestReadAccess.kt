@@ -2,6 +2,7 @@ package edu.stanford.spezi.health.internal
 
 import edu.stanford.spezi.health.AnyRecordType
 import edu.stanford.spezi.health.HealthConstraint
+import edu.stanford.spezi.health.HealthDataAccessRequirements
 
 /**
  * A [HealthConfigurationComponent] that requests read access to specific Health Connect
@@ -15,7 +16,7 @@ internal class RequestReadAccess(
 ) : HealthConfigurationComponent {
 
     /**
-     * The [HealthDataAccessRequirements] requesting read access to the specified record types.
+     * The [edu.stanford.spezi.health.HealthDataAccessRequirements] requesting read access to the specified record types.
      */
     override val dataAccessRequirements: HealthDataAccessRequirements = HealthDataAccessRequirements(read = recordTypes, write = emptySet())
 

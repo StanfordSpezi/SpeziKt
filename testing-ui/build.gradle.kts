@@ -9,10 +9,7 @@ android {
 }
 
 dependencies {
-    api(libs.bundles.compose.androidTest)
-
     api(project(":ui"))
-    implementation(project(":core-logging"))
 
     implementation(libs.hilt.test)
     implementation(libs.androidx.test.runner)

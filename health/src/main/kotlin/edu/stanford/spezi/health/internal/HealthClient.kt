@@ -5,9 +5,11 @@ import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.records.Record
 import edu.stanford.spezi.core.ApplicationModule
 import edu.stanford.spezi.core.coroutines.Concurrency
+import edu.stanford.spezi.core.lifecycle.AppLifecycle
 import edu.stanford.spezi.health.AnyRecordType
 import edu.stanford.spezi.health.Health
 import edu.stanford.spezi.health.HealthConstraint
+import edu.stanford.spezi.health.HealthDataAccessRequirements
 import edu.stanford.spezi.health.HealthQueryTimeRange
 import edu.stanford.spezi.health.QueryResult
 import edu.stanford.spezi.health.QuerySort
@@ -31,7 +33,7 @@ internal interface HealthClient {
     val isFullyAuthorizedState: StateFlow<Boolean>
 
     /**
-     * The [HealthDataAccessRequirements] defining the requested read and write access.
+     * The [edu.stanford.spezi.health.HealthDataAccessRequirements] defining the requested read and write access.
      */
     val dataAccessRequirements: HealthDataAccessRequirements
 
@@ -105,6 +107,14 @@ internal interface HealthClient {
      * Triggers an immediate collection of data from all registered data collectors with a manual collection mode.
      */
     suspend fun triggerDataSourceCollection()
+
+    /**
+     * Inserts a [Record] into Health Connect.
+     *
+     * @param record The [Record] to insert.
+     * @return `true` if the insertion was successful, `false` otherwise.
+     */
+    suspend fun insert(record: Record): Boolean
 
     /**
      * Queries health data of the given [Record] [type].
@@ -182,6 +192,7 @@ internal interface HealthClient {
          * @param applicationModule The [ApplicationModule] providing application context and standard.
          * @param concurrency The [Concurrency] instance for coroutine dispatching.
          * @param localStorage The [LocalStorage] instance for local data storage.
+         * @param appLifecycle The [AppLifecycle] instance for observing application lifecycle events.
          * @param configurations The set of [HealthConfigurationComponent]s to configure the client with.
          *
          * @return A [HealthClient] instance.
@@ -190,6 +201,7 @@ internal interface HealthClient {
             applicationModule: ApplicationModule,
             concurrency: Concurrency,
             localStorage: LocalStorage,
+            appLifecycle: AppLifecycle,
             configurations: Set<HealthConfigurationComponent>,
         ): HealthClient {
             val context = applicationModule.requireContext()
@@ -203,6 +215,7 @@ internal interface HealthClient {
                     standard = applicationModule.standard as? HealthConstraint,
                     concurrency = concurrency,
                     localStorage = localStorage,
+                    appLifecycle = appLifecycle,
                     configurations = configurations,
                 )
             } else {

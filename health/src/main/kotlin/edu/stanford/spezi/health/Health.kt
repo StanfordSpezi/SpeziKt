@@ -2,13 +2,11 @@ package edu.stanford.spezi.health
 
 import androidx.fragment.app.FragmentActivity
 import androidx.health.connect.client.records.Record
-import edu.stanford.spezi.core.ApplicationModule
 import edu.stanford.spezi.core.Module
-import edu.stanford.spezi.core.coroutines.Concurrency
-import edu.stanford.spezi.core.dependency
+import edu.stanford.spezi.core.requireDependency
 import edu.stanford.spezi.health.internal.HealthClient
 import edu.stanford.spezi.health.internal.HealthConfigurationComponent
-import edu.stanford.spezi.storage.local.LocalStorage
+import edu.stanford.spezi.health.internal.PrivacyConfig
 import kotlinx.coroutines.flow.Flow
 import java.time.Instant
 import kotlin.time.Duration
@@ -33,24 +31,39 @@ import kotlin.time.Duration.Companion.seconds
  * }
  *
  */
-class Health internal constructor(private val configComponents: Set<HealthConfigurationComponent>) : Module {
+class Health internal constructor(
+    private val configComponents: Set<HealthConfigurationComponent>,
+    internal val privacyConfig: PrivacyConfig,
+) : Module {
     /**
      * The internal [HealthClient] instance, either [edu.stanford.spezi.health.internal.DefaultHealthClient] or
      * [edu.stanford.spezi.health.internal.NoOpHealthClient] in case Health Connect is not available.
      */
     private val healthClient by lazy {
-        val appModule by dependency<ApplicationModule>()
-        val concurrency by dependency<Concurrency>()
-        val localStorage by dependency<LocalStorage>()
         HealthClient.create(
-            applicationModule = appModule,
-            concurrency = concurrency,
-            localStorage = localStorage,
+            applicationModule = requireDependency(),
+            concurrency = requireDependency(),
+            localStorage = requireDependency(),
+            appLifecycle = requireDependency(),
             configurations = configComponents,
         )
     }
 
-    internal constructor(builder: HealthModuleBuilder) : this(configComponents = builder.components.toSet())
+    /**
+     * Indicates whether all requested permissions have been granted.
+     */
+    val isFullyAuthorizedState = healthClient.isFullyAuthorizedState
+
+    /**
+     * The current configuration state of the Health module.
+     */
+    val dataAccessRequirements: HealthDataAccessRequirements
+        get() = healthClient.dataAccessRequirements
+
+    internal constructor(builder: HealthModuleBuilder) : this(
+        configComponents = builder.components.toSet(),
+        privacyConfig = builder.privacyConfigBuilder.config,
+    )
 
     internal fun onPermissionsGranted(granted: Set<String>) {
         healthClient.onPermissionsGranted(granted = granted)
@@ -93,6 +106,15 @@ class Health internal constructor(private val configComponents: Set<HealthConfig
     fun resetRecordCollection(type: AnyRecordType) {
         healthClient.resetRecordCollection(type)
     }
+
+    /**
+     * Inserts a [Record] into Health Connect.
+     *
+     * @param record The [Record] to insert.
+     *
+     * @return `true` if the insertion was successful, `false` otherwise.
+     */
+    suspend fun insert(record: Record): Boolean = healthClient.insert(record)
 
     /**
      * Queries health data of the given [Record] [type].
@@ -168,8 +190,8 @@ class Health internal constructor(private val configComponents: Set<HealthConfig
         type: RecordType<T>,
         timeRange: HealthQueryTimeRange,
         interval: Duration = 15.seconds,
-        anchor: String?,
-        predicate: ((T) -> Boolean)?,
+        anchor: String? = null,
+        predicate: ((T) -> Boolean)? = null,
     ): Flow<QueryResult<T>> = healthClient.continuousQuery(
         type = type,
         timeRange = timeRange,

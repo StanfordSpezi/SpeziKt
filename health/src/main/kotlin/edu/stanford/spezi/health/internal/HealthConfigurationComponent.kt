@@ -1,6 +1,7 @@
 package edu.stanford.spezi.health.internal
 
 import edu.stanford.spezi.health.HealthConstraint
+import edu.stanford.spezi.health.HealthDataAccessRequirements
 
 /**
  * Internal interface representing a health configuration component.

@@ -18,7 +18,21 @@ import edu.stanford.spezi.core.internal.Spezi
  * }
  */
 inline fun <reified M : Module> optionalDependency(identifier: String? = null) = lazy {
-    Spezi.requireGraph().optionalDependency<M>(identifier)
+    requireOptionalDependency<M>(identifier)
+}
+
+/**
+ * Retrieve an optional module dependency from the [SpeziApplication] dependency graph.
+ *
+ * Example usage:
+ *
+ * ```kotlin
+ *
+ * val myModule: MyModule? = requireOptionalDependency()
+ * ```
+ */
+inline fun <reified M : Module> requireOptionalDependency(identifier: String? = null): M? {
+    return Spezi.requireGraph().optionalDependency<M>(identifier)
 }
 
 /**
@@ -40,5 +54,15 @@ inline fun <reified M : Module> optionalDependency(identifier: String? = null) =
  * }
  */
 inline fun <reified M : Module> dependency(identifier: String? = null): Lazy<M> = lazy {
-    Spezi.requireGraph().dependency(identifier)
+    requireDependency<M>(identifier)
+}
+
+/**
+ * Retrieve a required module dependency from the [SpeziApplication] dependency graph.
+ *
+ * This will throw an exception if the dependency is not found / have been registered beforehand
+ * in the [Configuration] block of [SpeziApplication].
+ */
+inline fun <reified M : Module> requireDependency(identifier: String? = null): M {
+    return Spezi.requireGraph().dependency<M>(identifier)
 }

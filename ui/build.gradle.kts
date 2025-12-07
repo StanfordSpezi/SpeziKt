@@ -9,10 +9,8 @@ android {
 }
 
 dependencies {
-    api(libs.bundles.compose.androidTest)
 
     api(project(":ui-theme"))
-    implementation(project(":core-logging"))
     implementation(project(":foundation"))
     androidTestImplementation(project(":testing-ui"))
 }

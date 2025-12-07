@@ -4,6 +4,7 @@ import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import edu.stanford.spezi.build.logic.convention.extensions.android
 import edu.stanford.spezi.build.logic.convention.extensions.findLibrary
 import edu.stanford.spezi.build.logic.convention.extensions.findVersion
+import edu.stanford.spezi.build.logic.convention.extensions.hasAndroidTests
 import edu.stanford.spezi.build.logic.convention.extensions.isLibrary
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
@@ -32,7 +33,7 @@ class SpeziBaseConfigConventionPlugin : Plugin<Project> {
             }
 
             buildTypes {
-                getByName("debug").enableAndroidTestCoverage = true
+                getByName("debug").enableAndroidTestCoverage = hasAndroidTests()
             }
 
             packaging {

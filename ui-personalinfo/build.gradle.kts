@@ -8,8 +8,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":core-logging"))
-
     api(project(":ui"))
     androidTestImplementation(project(":testing-ui"))
 }

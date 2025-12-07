@@ -11,7 +11,6 @@ android {
 dependencies {
     api(project(":core"))
     implementation(project(":core-coroutines"))
-    implementation(project(":core-logging"))
 
     androidTestImplementation(libs.bundles.compose.androidTest)
     androidTestImplementation(libs.hilt.test)
