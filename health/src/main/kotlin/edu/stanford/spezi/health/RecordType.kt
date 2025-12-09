@@ -89,6 +89,7 @@ data class RecordType<T : Record>(
      * Provides convenient typed references like [RecordType.heartRate] or [RecordType.weight].
      */
     @Suppress("TooManyFunctions", "unused", "MaxLineLength")
+    @OptIn(ExperimentalMindfulnessSessionApi::class)
     companion object {
         val activeCaloriesBurned = RecordType(type = ActiveCaloriesBurnedRecord::class, identifier = "ActiveCaloriesBurnedRecord")
         val basalBodyTemperature = RecordType(type = BasalBodyTemperatureRecord::class, identifier = "BasalBodyTemperatureRecord")
@@ -106,15 +107,14 @@ data class RecordType<T : Record>(
         val exerciseSession = RecordType(type = ExerciseSessionRecord::class, identifier = "ExerciseSessionRecord")
         val floorsClimbed = RecordType(type = FloorsClimbedRecord::class, identifier = "FloorsClimbedRecord")
         val heartRate = RecordType(type = HeartRateRecord::class, identifier = "HeartRateRecord")
-        val heartRateVariabilityRmssd = RecordType(type = HeartRateVariabilityRmssdRecord::class, identifier = "HeartRateVariabilityRmssdRecord")
+        val heartRateVariabilityRmssd =
+            RecordType(type = HeartRateVariabilityRmssdRecord::class, identifier = "HeartRateVariabilityRmssdRecord")
         val height = RecordType(type = HeightRecord::class, identifier = "HeightRecord")
         val hydration = RecordType(type = HydrationRecord::class, identifier = "HydrationRecord")
         val intermenstrualBleeding = RecordType(type = IntermenstrualBleedingRecord::class, identifier = "IntermenstrualBleedingRecord")
         val leanBodyMass = RecordType(type = LeanBodyMassRecord::class, identifier = "LeanBodyMassRecord")
         val menstruationFlow = RecordType(type = MenstruationFlowRecord::class, identifier = "MenstruationFlowRecord")
         val menstruationPeriod = RecordType(type = MenstruationPeriodRecord::class, identifier = "MenstruationPeriodRecord")
-
-        @OptIn(ExperimentalMindfulnessSessionApi::class)
         val mindfulnessSession = RecordType(type = MindfulnessSessionRecord::class, identifier = "MindfulnessSessionRecord")
         val nutrition = RecordType(type = NutritionRecord::class, identifier = "NutritionRecord")
         val ovulationTest = RecordType(type = OvulationTestRecord::class, identifier = "OvulationTestRecord")
@@ -133,5 +133,55 @@ data class RecordType<T : Record>(
         val vo2Max = RecordType(type = Vo2MaxRecord::class, identifier = "Vo2MaxRecord")
         val weight = RecordType(type = WeightRecord::class, identifier = "WeightRecord")
         val wheelchairPushes = RecordType(type = WheelchairPushesRecord::class, identifier = "WheelchairPushesRecord")
+
+        @Suppress("ComplexMethod", "LongMethod")
+        fun from(record: Record): RecordType<out Record> = when (record) {
+            is ActiveCaloriesBurnedRecord -> activeCaloriesBurned
+            is BasalBodyTemperatureRecord -> basalBodyTemperature
+            is BasalMetabolicRateRecord -> basalMetabolicRate
+            is BloodGlucoseRecord -> bloodGlucose
+            is BloodPressureRecord -> bloodPressure
+            is BodyFatRecord -> bodyFat
+            is BodyTemperatureRecord -> bodyTemperature
+            is BodyWaterMassRecord -> bodyWaterMass
+            is BoneMassRecord -> boneMass
+            is CervicalMucusRecord -> cervicalMucus
+            is CyclingPedalingCadenceRecord -> cyclingPedalingCadence
+            is DistanceRecord -> distance
+            is ElevationGainedRecord -> elevationGained
+            is ExerciseSessionRecord -> exerciseSession
+            is FloorsClimbedRecord -> floorsClimbed
+            is HeartRateRecord -> heartRate
+            is HeartRateVariabilityRmssdRecord -> heartRateVariabilityRmssd
+            is HeightRecord -> height
+            is HydrationRecord -> hydration
+            is IntermenstrualBleedingRecord -> intermenstrualBleeding
+            is LeanBodyMassRecord -> leanBodyMass
+            is MenstruationFlowRecord -> menstruationFlow
+            is MenstruationPeriodRecord -> menstruationPeriod
+            is MindfulnessSessionRecord -> mindfulnessSession
+            is NutritionRecord -> nutrition
+            is OvulationTestRecord -> ovulationTest
+            is OxygenSaturationRecord -> oxygenSaturation
+            is PlannedExerciseSessionRecord -> plannedExerciseSession
+            is PowerRecord -> power
+            is RespiratoryRateRecord -> respiratoryRate
+            is RestingHeartRateRecord -> restingHeartRate
+            is SexualActivityRecord -> sexualActivity
+            is SleepSessionRecord -> sleepSession
+            is SpeedRecord -> speed
+            is SkinTemperatureRecord -> skinTemperature
+            is StepsCadenceRecord -> stepsCadence
+            is StepsRecord -> steps
+            is TotalCaloriesBurnedRecord -> totalCaloriesBurned
+            is Vo2MaxRecord -> vo2Max
+            is WeightRecord -> weight
+            is WheelchairPushesRecord -> wheelchairPushes
+
+            else -> RecordType(
+                type = record::class,
+                identifier = record::class.simpleName ?: "UnknownRecord"
+            )
+        }
     }
 }

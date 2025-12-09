@@ -3,6 +3,7 @@ package edu.stanford.spezi.build.logic.convention.plugins
 import edu.stanford.spezi.build.logic.convention.extensions.android
 import edu.stanford.spezi.build.logic.convention.extensions.apply
 import edu.stanford.spezi.build.logic.convention.extensions.findBundle
+import edu.stanford.spezi.build.logic.convention.extensions.implementation
 import edu.stanford.spezi.build.logic.convention.extensions.testImplementation
 import edu.stanford.spezi.build.logic.convention.model.PluginId
 import org.gradle.api.Plugin
@@ -25,7 +26,14 @@ abstract class SpeziAbstractConfigPlugin(private val modulePlugin: PluginId) : P
             }
         }
         dependencies {
+            if (path != LOGGING_MODULE) {
+                implementation(project(LOGGING_MODULE))
+            }
             testImplementation(findBundle("unit-testing"))
         }
+    }
+
+    private companion object {
+        const val LOGGING_MODULE = ":core-logging"
     }
 }

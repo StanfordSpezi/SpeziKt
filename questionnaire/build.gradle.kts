@@ -18,10 +18,8 @@ android {
 
 dependencies {
     api(libs.android.fhir.data.capture)
-    api(libs.bundles.compose.androidTest)
 
     implementation(project(":core-coroutines"))
-    implementation(project(":core-logging"))
 
     api(project(":ui"))
 

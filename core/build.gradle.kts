@@ -7,7 +7,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":core-logging"))
     implementation(libs.kotlin.reflect)
     api(project(":foundation"))
 }

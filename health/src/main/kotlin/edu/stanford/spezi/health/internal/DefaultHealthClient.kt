@@ -4,6 +4,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.changes.DeletionChange
 import androidx.health.connect.client.changes.UpsertionChange
+import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.metadata.DataOrigin
 import androidx.health.connect.client.request.ChangesTokenRequest
@@ -11,10 +12,12 @@ import androidx.health.connect.client.request.ReadRecordsRequest
 import androidx.health.connect.client.response.ChangesResponse
 import androidx.health.connect.client.time.TimeRangeFilter
 import edu.stanford.spezi.core.coroutines.Concurrency
+import edu.stanford.spezi.core.lifecycle.AppLifecycle
 import edu.stanford.spezi.health.AnyRecordType
 import edu.stanford.spezi.health.CollectionMode
 import edu.stanford.spezi.health.Health
 import edu.stanford.spezi.health.HealthConstraint
+import edu.stanford.spezi.health.HealthDataAccessRequirements
 import edu.stanford.spezi.health.HealthQueryTimeRange
 import edu.stanford.spezi.health.QueryResult
 import edu.stanford.spezi.health.QuerySort
@@ -43,6 +46,7 @@ internal class DefaultHealthClient(
     private val standard: HealthConstraint?,
     concurrency: Concurrency,
     val healthConnectClient: HealthConnectClient,
+    private val appLifecycle: AppLifecycle,
     localStorage: LocalStorage,
 ) : HealthClient {
 
@@ -75,6 +79,7 @@ internal class DefaultHealthClient(
             configurations.forEach {
                 it.configure(client = this@DefaultHealthClient, standard = standard)
             }
+            setupAppLifecycle()
             configState = Health.ConfigState.Completed
             logger.i { "Completed configuration of health client" }
         }
@@ -128,6 +133,21 @@ internal class DefaultHealthClient(
         }
     }
 
+    override suspend fun insert(record: Record): Boolean {
+        val type = RecordType.from(record)
+        if (isAuthorizedToWrite(type).not()) {
+            logger.w { "Not authorized to write data of type: ${type.identifier}" }
+            return false
+        }
+        return runCatching {
+            healthConnectClient.insertRecords(listOf(record))
+        }.onSuccess {
+            logger.i { "Successfully inserted record $record (${it.recordIdsList})" }
+        }.onFailure { e ->
+            logger.e(e) { "Failed to insert record" }
+        }.isSuccess
+    }
+
     override suspend fun <T : Record> query(
         type: RecordType<T>,
         timeRange: HealthQueryTimeRange,
@@ -163,7 +183,7 @@ internal class DefaultHealthClient(
         anchor: String?,
         predicate: ((T) -> Boolean)?,
     ): QueryResult<T> {
-        if (!isAuthorizedToRead(type)) {
+        if (!isAuthorizedToRead(type) || !isAllowedToReadInCurrentLifecycle()) {
             logger.w { "Not authorized to read data for ${type.identifier}" }
             return QueryResult(added = emptyList(), deletedIds = emptyList(), nextAnchor = anchor)
         }
@@ -196,8 +216,15 @@ internal class DefaultHealthClient(
         anchor: String?,
         predicate: ((T) -> Boolean)?,
     ): Flow<QueryResult<T>> = flow {
-        if (!isAuthorizedToRead(type)) {
+        if (!isAuthorizedToRead(type) || !isAllowedToReadInCurrentLifecycle()) {
             logger.w { "Not authorized to read ${type.identifier}" }
+            emit(
+                QueryResult(
+                    added = emptyList(),
+                    deletedIds = emptyList(),
+                    nextAnchor = null
+                )
+            )
             return@flow
         }
 
@@ -211,15 +238,13 @@ internal class DefaultHealthClient(
                 predicate = predicate,
             )
 
-            if (result.added.isNotEmpty() || result.deletedIds.isNotEmpty()) {
-                emit(
-                    QueryResult(
-                        added = result.added,
-                        deletedIds = result.deletedIds,
-                        nextAnchor = result.nextAnchor
-                    )
+            emit(
+                QueryResult(
+                    added = result.added,
+                    deletedIds = result.deletedIds,
+                    nextAnchor = result.nextAnchor
                 )
-            }
+            )
 
             result.nextAnchor?.let { currentAnchor = it }
             delay(interval)
@@ -252,7 +277,14 @@ internal class DefaultHealthClient(
     }
 
     private suspend fun neededPermissions(): Set<String> {
-        return (allRequiredPermissions - getGrantedPermissions()).toSet()
+        val permissions = buildSet {
+            addAll(allRequiredPermissions)
+            add(HealthPermission.PERMISSION_READ_HEALTH_DATA_HISTORY)
+            if (registeredDataCollectors.any { it.deliverySetting.continueInBackground }) {
+                add(HealthPermission.PERMISSION_READ_HEALTH_DATA_IN_BACKGROUND)
+            }
+        }
+        return (permissions - getGrantedPermissions()).toSet()
     }
 
     override suspend fun addHealthDataCollector(collector: HealthDataCollector) {
@@ -316,6 +348,40 @@ internal class DefaultHealthClient(
 
     private suspend fun updateIsFullyAuthorizedState() {
         _isFullyAuthorizedState.update { neededPermissions().isEmpty() }
+    }
+
+    private fun setupAppLifecycle() {
+        ioScope.launch {
+            appLifecycle.state.collect { state ->
+                when (state) {
+                    AppLifecycle.State.BACKGROUND -> {
+                        val hasBackgroundPermission = hasBackgroundPermission()
+                        registeredDataCollectors.forEach { collector ->
+                            val continuesInBackground = collector.deliverySetting.continueInBackground
+                            if (continuesInBackground.not() || hasBackgroundPermission.not()) {
+                                collector.stopDataCollection()
+                                logger.i { "Stopped collection for ${collector.recordType.identifier} due to to background" }
+                            }
+                        }
+                    }
+
+                    AppLifecycle.State.FOREGROUND -> {
+                        registeredDataCollectors.forEach { collector ->
+                            logger.i { "Attempting to start collection for ${collector.recordType.identifier} due to foreground" }
+                            startAutomaticDataCollectionIfPossible(collector)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun hasBackgroundPermission(): Boolean {
+        return getGrantedPermissions().contains(HealthPermission.PERMISSION_READ_HEALTH_DATA_IN_BACKGROUND)
+    }
+
+    private suspend fun isAllowedToReadInCurrentLifecycle(): Boolean {
+        return appLifecycle.isInForeground || hasBackgroundPermission()
     }
 
     private suspend fun getGrantedPermissions(): Set<String> = runCatching {

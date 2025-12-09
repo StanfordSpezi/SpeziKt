@@ -45,6 +45,7 @@ rulesVersion = "1.7.0"
 runnerVersion = "1.7.0"
 securityCryptoKtx = "1.1.0"
 testCoreVersion = "1.7.0"
+targetSdk = "35"
 timberVersion = "5.0.1"
 truth = "1.4.5"
 
@@ -69,6 +70,7 @@ androidx-health-connect-client = { module = "androidx.health.connect:connect-cli
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleKtx" }
 androidx-lifecycle-view-model-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleKtx" }
+androidx-lifecycle-process = { group = "androidx.lifecycle", name = "lifecycle-process", version.ref = "lifecycleKtx" }
 androidx-security-crypto-ktx = { group = "androidx.security", name = "security-crypto-ktx", version.ref = "securityCryptoKtx" }
 androidx-test-core = { group = "androidx.test", name = "core", version.ref = "testCoreVersion" }
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "rulesVersion" }
@@ -141,6 +143,8 @@ spezi-serialization = { id = "spezi.serialization", version = "unspecified" }
 compose = [
     "androidx-activity-compose",
     "androidx-appcompat",
+    "navigation-compose",
+    "hilt-navigation-compose",
     "androidx-compose-material-icons",
     "androidx-core-ktx",
     "coil-compose",

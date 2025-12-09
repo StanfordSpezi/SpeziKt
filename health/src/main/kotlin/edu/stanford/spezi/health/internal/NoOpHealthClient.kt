@@ -4,6 +4,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.health.connect.client.records.Record
 import edu.stanford.spezi.health.AnyRecordType
 import edu.stanford.spezi.health.Health
+import edu.stanford.spezi.health.HealthDataAccessRequirements
 import edu.stanford.spezi.health.HealthQueryTimeRange
 import edu.stanford.spezi.health.QueryResult
 import edu.stanford.spezi.health.QuerySort
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import java.time.Instant
 import kotlin.time.Duration
 
+@Suppress("TooManyFunctions")
 internal class NoOpHealthClient : HealthClient {
     override val dataAccessRequirements: HealthDataAccessRequirements = HealthDataAccessRequirements()
     private val logger by healthLogger()
@@ -46,6 +48,11 @@ internal class NoOpHealthClient : HealthClient {
 
     override fun resetRecordCollection(type: AnyRecordType) {
         logger.w { "NoOpHealthClient can not reset record collections" }
+    }
+
+    override suspend fun insert(record: Record): Boolean {
+        logger.w { "NoOpHealthClient can not perform insert requests" }
+        return false
     }
 
     override suspend fun <T : Record> query(

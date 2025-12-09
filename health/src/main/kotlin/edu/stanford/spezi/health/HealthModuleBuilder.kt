@@ -15,6 +15,9 @@ class HealthModuleBuilder {
     @PublishedApi
     internal val components = mutableSetOf<HealthConfigurationComponent>()
 
+    @PublishedApi
+    internal val privacyConfigBuilder = PrivacyConfigBuilder()
+
     /**
      * Adds a [requestReadAccess] component for the given [Record] types.
      */
@@ -44,25 +47,6 @@ class HealthModuleBuilder {
     }
 
     /**
-     * Adds a [requestWriteAccess] component for categorized [Record] sets.
-     */
-    fun requestWriteAccess(
-        quantity: Set<AnyRecordType> = emptySet(),
-        category: Set<AnyRecordType> = emptySet(),
-        correlation: Set<AnyRecordType> = emptySet(),
-        other: Set<AnyRecordType> = emptySet(),
-    ) {
-        components.add(
-            RequestWriteAccess(
-                quantity = quantity,
-                category = category,
-                correlation = correlation,
-                other = other
-            )
-        )
-    }
-
-    /**
      * Adds a [edu.stanford.spezi.health.internal.CollectRecord] component to collect records of the specified [recordType].
      *
      * @param recordType The type of [Record] to collect.
@@ -87,5 +71,29 @@ class HealthModuleBuilder {
                 predicate = predicate,
             )
         )
+    }
+
+    /**
+     * Configures the privacy configuration for the Health module. If none is provided, a default privacy configuration will be used.
+     *
+     * Example usages:
+     *
+     * ```kotlin
+     * privacy {
+     *     // Simple explanation text
+     *     explanationText(
+     *         title = StringResource("Health Data Access"),
+     *         description = StringResource("This app uses Health Connect to read and write health data.")
+     *     )
+     *     // or a custom composable
+     *     composable { PrivacyComposableScreen() }
+     *
+     *     // or a composable content
+     *     content(PrivacyComposableContent())
+     * }
+     * ```
+     */
+    fun privacy(block: PrivacyConfigBuilder.() -> Unit) {
+        privacyConfigBuilder.apply(block)
     }
 }

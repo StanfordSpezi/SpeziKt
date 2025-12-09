@@ -5,6 +5,7 @@ import edu.stanford.spezi.health.AnyRecordType
 import edu.stanford.spezi.health.CollectionMode
 import edu.stanford.spezi.health.CollectionTimeRange
 import edu.stanford.spezi.health.HealthConstraint
+import edu.stanford.spezi.health.HealthDataAccessRequirements
 import edu.stanford.spezi.health.healthLogger
 
 /**

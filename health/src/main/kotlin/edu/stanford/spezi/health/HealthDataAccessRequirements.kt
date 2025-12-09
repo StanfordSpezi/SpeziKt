@@ -1,14 +1,11 @@
-package edu.stanford.spezi.health.internal
-
-import edu.stanford.spezi.health.AnyRecordType
-import edu.stanford.spezi.health.RecordType
+package edu.stanford.spezi.health
 
 /**
- * Describes the health data access requirements of a [edu.stanford.spezi.health.Health] module.
+ * Describes the health data access requirements of a [Health] module.
  */
-internal data class HealthDataAccessRequirements(
+data class HealthDataAccessRequirements(
     /**
-     * The set of [edu.stanford.spezi.health.RecordType] types that need to be read.
+     * The set of [RecordType] types that need to be read.
      */
     val read: Set<AnyRecordType>,
 
