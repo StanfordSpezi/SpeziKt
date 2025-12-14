@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="contact_profile_picture">Profile Picture</string>
+    <string name="contact_address">Address</string>
+    <string name="contact_email">Email</string>
+    <string name="contact_text">Text</string>
+    <string name="contact_call">Call</string>
+    <string name="contact_website">Website</string>
+</resources>

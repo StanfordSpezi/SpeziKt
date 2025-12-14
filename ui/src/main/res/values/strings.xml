@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="viewstate_default_error_title">Error</string>
+    <string name="viewstate_default_error_message">An unknown error occurred.</string>
+    <string name="viewstate_confirm_title">OK</string>
+</resources>
