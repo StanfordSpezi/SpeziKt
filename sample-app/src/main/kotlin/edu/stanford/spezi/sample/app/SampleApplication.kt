@@ -3,6 +3,10 @@ package edu.stanford.spezi.sample.app
 import android.app.Application
 import androidx.health.connect.client.records.Record
 import dagger.hilt.android.HiltAndroidApp
+import edu.stanford.spezi.account.AccountKeys
+import edu.stanford.spezi.account.InMemoryAccountService
+import edu.stanford.spezi.account.InMemoryAccountStorageProvider
+import edu.stanford.spezi.account.accountConfiguration
 import edu.stanford.spezi.core.Configuration
 import edu.stanford.spezi.core.SpeziApplication
 import edu.stanford.spezi.core.logging.SpeziLogger
@@ -35,6 +39,18 @@ class SampleApplication : Application(), SpeziApplication, HealthConstraint {
                 composable { HealthPrivacyScreen() }
             }
         }
+
+        accountConfiguration(
+            service = InMemoryAccountService(),
+            storageProvider = InMemoryAccountStorageProvider(),
+            configuration = {
+                requires(key = AccountKeys.accountId)
+                collects(key = AccountKeys.email)
+                collects(key = AccountKeys.password)
+                supports(key = AccountKeys.genderIdentity)
+                manual(key = AccountKeys.userId)
+            }
+        )
     }
 
     override fun onCreate() {

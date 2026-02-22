@@ -4,39 +4,62 @@ import edu.stanford.spezi.foundation.UUID
 import edu.stanford.spezi.ui.StringResource
 import java.util.UUID
 
-enum class CascadingValidationEffect {
-    CONTINUE, INTERCEPT
-}
-
 data class ValidationRule(
-    val rule: (String) -> Boolean,
+    val id: UUID = UUID(),
     val message: StringResource,
     val effect: CascadingValidationEffect = CascadingValidationEffect.CONTINUE,
+    private val rule: (String) -> Boolean,
 ) {
-    companion object
 
-    // Properties
+    override fun equals(other: Any?): Boolean {
+        return other is ValidationRule && id == other.id
+    }
 
-    @Suppress("detekt:VariableMinLength")
-    internal val id: UUID = UUID()
-
-    // Constructor
-
-    constructor(regex: Regex, message: StringResource) : this(
-        rule = { regex.matchEntire(it) != null },
+    constructor(
+        regex: Regex,
+        message: StringResource,
+        effect: CascadingValidationEffect = CascadingValidationEffect.CONTINUE,
+    ) : this(
         message = message,
+        effect = effect,
+        rule = { input -> regex.matches(input) },
     )
 
-    // Overrides
+    constructor(
+        copy: ValidationRule,
+        message: StringResource,
+    ) : this(
+        message = message,
+        effect = copy.effect,
+        rule = copy.rule,
+    )
 
-    override fun equals(other: Any?) =
-        id == (other as? ValidationRule)?.id
+    constructor(
+        pattern: String,
+        message: StringResource,
+        options: Set<RegexOption> = emptySet(),
+        effect: CascadingValidationEffect = CascadingValidationEffect.CONTINUE,
+    ) : this(
+        message = message,
+        effect = effect,
+        rule = { input -> Regex(pattern, options).matches(input) },
+    )
 
-    override fun hashCode() =
-        id.hashCode()
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
 
-    // Methods
+    fun validate(input: String): FailedValidationResult? {
+        return if (rule(input)) null else FailedValidationResult(this)
+    }
 
-    fun validate(input: String): FailedValidationResult? =
-        if (rule(input)) null else FailedValidationResult(this)
+    companion object
+}
+
+val ValidationRule.intercepting: ValidationRule
+    get() = copy(effect = CascadingValidationEffect.INTERCEPT)
+
+enum class CascadingValidationEffect {
+    CONTINUE,
+    INTERCEPT,
 }
