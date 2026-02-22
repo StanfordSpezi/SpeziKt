@@ -39,5 +39,6 @@ dependencies {
     implementation(project(":core-coroutines"))
     implementation(project(":health"))
     implementation(project(":ui"))
+    implementation(project(":account"))
     androidTestImplementation(project(":testing-ui"))
 }

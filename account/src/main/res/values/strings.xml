@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="account_category_title_credentials">Credentials</string>
+    <string name="account_category_title_name">Name</string>
+    <string name="account_category_title_contact_details">Contact Details</string>
+    <string name="account_category_title_personal_details">Personal Details</string>
+    <string name="account_gender_identity_female">Female</string>
+    <string name="account_gender_identity_male">Male</string>
+    <string name="account_gender_identity_non_binary">Non-binary</string>
+    <string name="account_gender_identity_transgender">Transgender</string>
+    <string name="account_gender_identity_prefer_not_to_state">Choose not to answer</string>
+</resources>

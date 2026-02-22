@@ -5,3 +5,7 @@ plugins {
 android {
     namespace = "edu.stanford.spezi.foundation"
 }
+
+dependencies {
+    implementation(libs.kotlin.reflect)
+}
