@@ -19,6 +19,11 @@ class AccountValueConfiguration(
     private val configuration = configurations.associateBy { it.key::class }
 
     /**
+     * All configured keys in this configuration, regardless of requirement level.
+     */
+    val allKeys: AccountKeyCollection = configuration.keys
+
+    /**
      * Retrieve the configuration for a given typed [AccountKeyType].
      *
      * @param key The account key type to query.

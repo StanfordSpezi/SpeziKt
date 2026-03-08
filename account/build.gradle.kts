@@ -14,6 +14,7 @@ dependencies {
     api(project(":ui"))
     api(project(":ui-validation"))
     api(libs.kotlinx.serialization.json)
+    implementation(libs.kotlin.reflect)
     implementation(project(":core-coroutines"))
     implementation(project(":core-lifecycle"))
     implementation(project(":storage-local"))

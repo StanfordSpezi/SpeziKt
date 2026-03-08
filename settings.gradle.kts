@@ -29,6 +29,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 // Please keep the projects sorted. Select all method calls below and in Android Studio `Edit > Sort Lines`
 include(":account")
+include(":account-firebase")
 include(":contact")
 include(":core")
 include(":core-coroutines")

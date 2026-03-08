@@ -30,6 +30,7 @@ import edu.stanford.spezi.core.SpeziDsl
  * @param storageProvider Optional provider to persist and retrieve additional account values that are not managed
  *        by the [service].
  * @param initialDetails Optional initial [AccountDetails]. If present, the account is considered associated.
+ * @param codecConfig Optional configuration for encoding/decoding account details when using an [AccountStorageProvider].
  * @param configuration DSL to declare configured account keys and their requirements.
  */
 @SpeziDsl
@@ -37,11 +38,13 @@ fun ConfigurationBuilder.accountConfiguration(
     service: AccountService,
     storageProvider: AccountStorageProvider? = null,
     initialDetails: AccountDetails? = null,
+    codecConfig: AccountDetailsCodecConfig = AccountDetailsCodecConfig(),
     configuration: AccountValueConfigurationBuilder.() -> Unit,
 ) {
     val modulesBuilder = AccountModulesBuilder(
         service = service,
         storageProvider = storageProvider,
+        codecConfig = codecConfig,
         valueConfigurationBuilder = configuration,
         initialDetails = initialDetails
     )
