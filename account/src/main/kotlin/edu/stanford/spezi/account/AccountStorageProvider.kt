@@ -25,22 +25,23 @@ interface AccountStorageProvider : Module {
      * It should retrieve the details from a local cache.
      *
      * If there is nothing found in the local cache and a network request has to be made,
-     * return `Result.success(null)` and update the details later by notifying the external
+     * return `Result.success(AccountDetails())` and update the details later by notifying the external
      * storage system once they arrive.
      *
      * ⚠ Important: This call must return immediately. Suspension should only be used for synchronization.
-     * If the details cannot be retrieved instantly, return `null`.
+     * If the details cannot be retrieved instantly, return `AccountDetails()`.
      *
      * If no externally stored data exists, return an empty [AccountDetails] value.
      *
      * @param accountId Primary identifier of the stored record.
      * @param keys The keys to load.
-     * @return The externally stored [AccountDetails] if immediately available. Otherwise `null` wrapped in [Result.success].
+     * @return The externally stored [AccountDetails] if immediately available. Otherwise empty `AccountDetails()`
+     * wrapped in [Result.success].
      */
     suspend fun load(
         accountId: String,
         keys: Set<AnyAccountKey>,
-    ): Result<AccountDetails?>
+    ): Result<AccountDetails>
 
     /**
      * Modify associated account data of an existing user account.

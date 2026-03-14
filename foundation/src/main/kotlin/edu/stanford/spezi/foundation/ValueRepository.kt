@@ -26,6 +26,7 @@ import kotlin.reflect.full.companionObjectInstance
  *
  * @param Anchor the type of the [RepositoryAnchor] this repository belongs to.
  */
+@Suppress("TooManyFunctions")
 data class ValueRepository<Anchor : RepositoryAnchor>(
     private val storage: ConcurrentHashMap<KnowledgeSourceType<Anchor, *>, Any> = ConcurrentHashMap(),
 ) : Sequence<Map.Entry<KnowledgeSourceType<Anchor, *>, Any>> {
@@ -61,6 +62,18 @@ data class ValueRepository<Anchor : RepositoryAnchor>(
      * operator with a source type
      */
     fun <Value : Any> getOrNull(source: KnowledgeSourceType<Anchor, Value>): Value? = get(source)
+
+    /**
+     * Returns any typed value the explicitly stored value for a [KnowledgeSource], or `null` if none is stored.
+     */
+    fun getAnyOrNull(source: KnowledgeSourceType<Anchor, *>): Any? = storage[source]
+
+    /**
+     * Stores or removes a value for a [KnowledgeSource] without requiring a specific value type.
+     */
+    fun setAny(source: KnowledgeSourceType<Anchor, *>, value: Any?) {
+        value?.let { storage[source] = it } ?: remove(source)
+    }
 
     /**
      * Stores or removes the value for a [KnowledgeSource].
@@ -209,8 +222,22 @@ data class ValueRepository<Anchor : RepositoryAnchor>(
     /**
      * Removes any stored value for the given [KnowledgeSource] type.
      */
-    fun <Value : Any> remove(type: KnowledgeSourceType<Anchor, Value>) {
+    fun remove(type: KnowledgeSourceType<Anchor, *>) {
         storage.remove(type)
+    }
+
+    /**
+     * Creates a copy of this repository with the same stored values.
+     *
+     * Changes to the copy will not affect the original, and vice versa.
+     */
+    fun copy(): ValueRepository<Anchor> = ValueRepository(ConcurrentHashMap(storage))
+
+    /**
+     * Adds all entries from another repository into this one, modifying this repository in place.
+     */
+    fun addContentsOf(other: ValueRepository<Anchor>) {
+        storage.putAll(other.storage)
     }
 
     override fun iterator() = storage.iterator()

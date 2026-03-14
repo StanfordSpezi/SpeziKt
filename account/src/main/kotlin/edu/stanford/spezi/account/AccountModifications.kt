@@ -4,8 +4,8 @@ package edu.stanford.spezi.account
  * Represents modifications to an account's details, including both changes to existing details and removals of details.
  */
 class AccountModifications private constructor(
-    private val modifiedDetails: AccountDetails,
-    private val removedAccountDetails: AccountDetails,
+    val modifiedDetails: AccountDetails,
+    val removedAccountDetails: AccountDetails,
 ) {
 
     /**
@@ -23,9 +23,19 @@ class AccountModifications private constructor(
     /**
      * Removes the specified account key types from both modifications and removals.
      */
-    fun removeModifications(keys: Set<AnyAccountKeyType>) {
+    fun removeModifications(keys: Set<AnyAccountKeyType>) = apply {
         modifiedDetails.removeAll(keys)
         removedAccountDetails.removeAll(keys)
+    }
+
+    /**
+     * Creates a deep copy of this [AccountModifications] instance, including copies of the modified details and removed account details.
+     */
+    fun copy(): AccountModifications {
+        return AccountModifications(
+            modifiedDetails = modifiedDetails.copy(),
+            removedAccountDetails = removedAccountDetails.copy(),
+        )
     }
 
     companion object {

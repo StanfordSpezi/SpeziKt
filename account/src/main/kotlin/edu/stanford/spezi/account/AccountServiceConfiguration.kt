@@ -1,5 +1,6 @@
 package edu.stanford.spezi.account
 
+import edu.stanford.spezi.core.SpeziDsl
 import edu.stanford.spezi.foundation.DefaultProvidingKnowledgeSource
 import edu.stanford.spezi.ui.validation.ValidationRule
 
@@ -45,6 +46,7 @@ class AccountServiceConfiguration(
  *
  * @param supportedAccountKeys the supported account keys to be included in the configuration
  */
+@SpeziDsl
 class AccountServiceConfigurationBuilder(
     private var supportedAccountKeys: SupportedAccountKeys,
 ) {
@@ -63,6 +65,13 @@ class AccountServiceConfigurationBuilder(
      */
     fun requiredKeys(vararg key: AccountKeyType<*>) {
         add(RequiredAccountKeys(keys = key.toSet()))
+    }
+
+    /**
+     * Convenience method for adding a required account key configuration entry to the account service configuration being built.
+     */
+    fun userIdType(idType: UserIdType) {
+        add(UserIdConfiguration(idType = idType))
     }
 
     /**
@@ -91,6 +100,7 @@ class AccountServiceConfigurationBuilder(
 /**
  * Convenience function for creating an [AccountServiceConfiguration] using a DSL style.
  */
+@SpeziDsl
 fun accountServiceConfiguration(
     supportedAccountKeys: SupportedAccountKeys,
     block: AccountServiceConfigurationBuilder.() -> Unit,

@@ -4,6 +4,7 @@ import edu.stanford.spezi.foundation.KnowledgeSource
 import edu.stanford.spezi.ui.StringResource
 import kotlinx.serialization.KSerializer
 import kotlin.reflect.KClass
+import kotlin.reflect.full.companionObjectInstance
 
 /**
  * A key representing a specific piece of account-related data.
@@ -51,6 +52,11 @@ interface AccountKey<V : Any> : KnowledgeSource<AccountAnchor, V> {
      * The composable used to enter or edit the data associated with this account key if options indicated [AccountKeyOptions.Mutable]
      */
     val entry: DataEntryComposable<V>?
+
+    /**
+     * The KClass of the value type associated with this account key, used for type checking and reflection.
+     */
+    val valueType: KClass<V>
 }
 
 /**
@@ -80,7 +86,7 @@ typealias AccountKeyType<T> = KClass<out AccountKey<T>>
 /**
  * A type alias for the KClass of an AccountKey with any type of data.
  */
-typealias AnyAccountKeyType = AccountKeyType<Any>
+typealias AnyAccountKeyType = AccountKeyType<*>
 
 /**
  * A typealias for a set of any account key types.
@@ -94,3 +100,24 @@ typealias AccountKeyCollection = Set<AccountKeyType<*>>
  * @return An [AccountKeyCollection] containing the provided keys.
  */
 fun accountKeyCollection(vararg keys: AccountKeyType<*>): AccountKeyCollection = keys.toSet()
+
+/**
+ * Retrieves the [AccountKey] instance corresponding to this [AccountKeyType].
+ *
+ * This function assumes that the [AccountKeyType] is either an object or has a companion object instance.
+ *
+ * @return The [AccountKey] instance associated with this type.
+ * @throws IllegalArgumentException if no instance can be found for this type.
+ */
+fun AccountKeyType<*>.instance(): AccountKey<*> {
+    return this.objectInstance ?: this.companionObjectInstance as? AccountKey<*>
+        ?: error("AccountKeyType ${this.simpleName} must be an object or have a companion object instance.")
+}
+
+/**
+ * Retrieves the set of [AccountKey] instances corresponding to the [AccountKeyType]s in this collection.
+ */
+@Suppress("UNCHECKED_CAST")
+fun AccountKeyCollection.keys(): Set<AccountKey<*>> {
+    return map { it.instance() }.toSet()
+}

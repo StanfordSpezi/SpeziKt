@@ -9,6 +9,7 @@ import edu.stanford.spezi.foundation.ValueRepository
 import edu.stanford.spezi.ui.StringResource
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
+import kotlin.reflect.KClass
 
 /**
  * An object holding all predefined account keys for easy reference.
@@ -39,6 +40,11 @@ object AccountKeys {
     val email = EmailKey
 
     /**
+     * Reference to the [NameKey]
+     */
+    val name = NameKey
+
+    /**
      * Reference to the [PasswordKey]
      */
     val password = PasswordKey
@@ -62,6 +68,7 @@ data object AccountIdKey : AccountKey<String> {
     override val initialValue = InitialValue.string
     override val display: DataDisplayComposable<String>? = null
     override val entry: DataEntryComposable<String>? = null
+    override val valueType: KClass<String> = String::class
 }
 
 /**
@@ -79,11 +86,12 @@ data object UserIdKey : AccountKey<String>, ComputedKnowledgeSource<AccountAncho
     override val category: AccountKeyCategory = AccountKeyCategory.Credentials
     override val display: DataDisplayComposable<String>? = null
     override val entry: DataEntryComposable<String>? = null
+    override val valueType: KClass<String> = String::class
 
     override fun compute(repository: ValueRepository<AccountAnchor>): String {
         val currentValue = repository.getOrNull(UserIdKey::class)
         if (currentValue != null) return currentValue
-        val accountId = AccountKeys.accountId
+        val accountId = accountId
         return repository[accountId::class] ?: accountId.initialValue.value
     }
 }
@@ -102,16 +110,32 @@ data object EmailKey : AccountKey<String>, OptionalComputedKnowledgeSource<Accou
     override val category: AccountKeyCategory = AccountKeyCategory.ContactDetails
     override val display: DataDisplayComposable<String>? = null
     override val entry: DataEntryComposable<String>? = null
+    override val valueType: KClass<String> = String::class
 
     override fun compute(repository: ValueRepository<AccountAnchor>): String? {
         val currentValue = repository.getOrNull(this::class)
         if (currentValue != null) return currentValue
         return if (repository.accountServiceConfiguration.userIdConfiguration.idType == UserIdType.Email) {
-            repository.getOrInitialValue(AccountKeys.userId)
+            repository.getOrInitialValue(userId)
         } else {
             null
         }
     }
+}
+
+/**
+ * The name key, which is an optional key that can be used to store the user's name if needed.
+ * This key is not required for all accounts and can be used at your discretion to store additional information about the user.
+ */
+data object NameKey : AccountKey<String> {
+    override val identifier: String = "name"
+    override val name: StringResource = StringResource("Name")
+    override val serializer: KSerializer<String> = String.serializer()
+    override val initialValue: InitialValue<String> = InitialValue.nullable()
+    override val category: AccountKeyCategory = AccountKeyCategory.ContactDetails
+    override val display: DataDisplayComposable<String>? = null
+    override val entry: DataEntryComposable<String>? = null
+    override val valueType: KClass<String> = String::class
 }
 
 /**
@@ -126,6 +150,7 @@ data object PasswordKey : AccountKey<String> {
     override val category: AccountKeyCategory = AccountKeyCategory.Credentials
     override val display: DataDisplayComposable<String>? = null
     override val entry: DataEntryComposable<String>? = null
+    override val valueType: KClass<String> = String::class
 }
 
 /**
@@ -139,4 +164,5 @@ data object GenderIdentityKey : AccountKey<GenderIdentity> {
     override val category: AccountKeyCategory = AccountKeyCategory.PersonalDetails
     override val display: DataDisplayComposable<GenderIdentity>? = null
     override val entry: DataEntryComposable<GenderIdentity>? = null
+    override val valueType: KClass<GenderIdentity> = GenderIdentity::class
 }

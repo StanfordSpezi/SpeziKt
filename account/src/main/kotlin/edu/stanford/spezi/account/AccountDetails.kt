@@ -39,6 +39,7 @@ import edu.stanford.spezi.foundation.OptionalComputedKnowledgeSourceType
  * val hasUserId: Boolean = details.contains(UserIdKey::class)
  * ```
  */
+@Suppress("TooManyFunctions")
 class AccountDetails(private val storage: AccountStorage) {
 
     /**
@@ -53,7 +54,7 @@ class AccountDetails(private val storage: AccountStorage) {
      * are only included if their computed/default value has been stored.
      */
     @Suppress("UNCHECKED_CAST")
-    val accountKeyTypes: Set<AnyAccountKeyType>
+    val accountKeyTypes: AccountKeyCollection
         get() = storage.keys().mapNotNull { it as? AnyAccountKeyType }.toSet()
 
     /**
@@ -63,6 +64,14 @@ class AccountDetails(private val storage: AccountStorage) {
      * depending on how they are defined and whether results are stored.
      */
     val isEmpty: Boolean get() = storage.isEmpty
+
+    /**
+     * Whether the underlying storage contains at least one stored entry.
+     *
+     * Note that default-providing or computed keys may still yield values even if this is `false`,
+     * depending on how they are defined and whether results are stored.
+     */
+    val isNotEmpty: Boolean get() = !isEmpty
 
     /**
      * Validates the current account details against the signup requirements defined in [configuration].
@@ -133,6 +142,30 @@ class AccountDetails(private val storage: AccountStorage) {
     }
 
     /**
+     * Returns the explicitly stored value for a plain account key, or `null` if none is stored.
+     */
+    fun <T : Any> getOrNull(key: KnowledgeSourceType<AccountAnchor, T>): T? {
+        return storage.getOrNull(key)
+    }
+
+    /**
+     * Returns the explicitly stored value for a plain account key, or `null` if none is stored.
+     */
+    fun getAnyOrNull(key: KnowledgeSourceType<AccountAnchor, *>): Any? {
+        return storage.getAnyOrNull(key)
+    }
+
+    /**
+     * Stores or removes the value for a plain account key.
+     *
+     * - If [value] is non-null, it is stored under [key].
+     * - If [value] is `null`, any existing value is removed.
+     */
+    fun setAny(key: KnowledgeSourceType<AccountAnchor, *>, value: Any?) {
+        storage.setAny(key, value)
+    }
+
+    /**
      * Returns the value for a default-providing account key.
      *
      * Behavior is defined by [edu.stanford.spezi.foundation.DefaultProvidingKnowledgeSource] for how the key is expected to be defined
@@ -179,5 +212,19 @@ class AccountDetails(private val storage: AccountStorage) {
      */
     operator fun <T : Any> set(key: KnowledgeSourceType<AccountAnchor, T>, value: T?) {
         storage[key] = value
+    }
+
+    /**
+     * Creates a copy of this [AccountDetails] with a copy of the underlying storage.
+     *
+     * Modifications to the copy will not affect the original, and vice versa.
+     */
+    fun copy() = AccountDetails(storage.copy())
+
+    /**
+     * Adds the contents of another [AccountDetails] instance into this one, modifying this instance's storage.
+     */
+    fun addContents(other: AccountDetails) {
+        storage.addContentsOf(other.storage)
     }
 }

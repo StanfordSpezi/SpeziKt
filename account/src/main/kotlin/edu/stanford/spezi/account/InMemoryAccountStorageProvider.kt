@@ -9,8 +9,8 @@ class InMemoryAccountStorageProvider : AccountStorageProvider {
     override suspend fun load(
         accountId: String,
         keys: Set<AnyAccountKey>,
-    ): Result<AccountDetails?> {
-        return Result.success(null)
+    ): Result<AccountDetails> {
+        return Result.success(AccountDetails())
     }
 
     override suspend fun store(
