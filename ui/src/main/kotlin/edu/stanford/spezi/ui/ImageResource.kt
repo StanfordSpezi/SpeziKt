@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
@@ -13,7 +14,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import edu.stanford.spezi.foundation.UUID
-import edu.stanford.spezi.ui.theme.Colors
 import edu.stanford.spezi.ui.theme.SpeziTheme
 import edu.stanford.spezi.ui.theme.ThemePreviews
 
@@ -27,33 +27,34 @@ import edu.stanford.spezi.ui.theme.ThemePreviews
 @Immutable
 sealed interface ImageResource : ComposableContent {
     val identifier: String
-    val contentDescription: StringResource
+    val contentDescription: StringResource?
+        get() = null
     val tint: ComposeValue<Color>
 
     data class Vector(
         val image: ImageVector,
-        override val contentDescription: StringResource,
-        override val tint: ComposeValue<Color> = { Colors.primary },
+        override val contentDescription: StringResource? = null,
+        override val tint: ComposeValue<Color> = { LocalContentColor.current },
     ) : ImageResource {
         override val identifier = UUID().toString()
     }
 
     data class Drawable(
         @DrawableRes val resId: Int,
-        override val contentDescription: StringResource,
-        override val tint: ComposeValue<Color> = { Colors.primary },
+        override val contentDescription: StringResource? = null,
+        override val tint: ComposeValue<Color> = { LocalContentColor.current },
     ) : ImageResource {
         override val identifier = UUID().toString()
     }
 
     @Composable
     override fun Content(modifier: Modifier) {
-        val imageModifier = modifier.then(Modifier.testContentIdentifier(identifier))
+        val imageModifier = modifier.testContentIdentifier(identifier)
         when (this) {
             is Vector -> {
                 Icon(
                     imageVector = image,
-                    contentDescription = contentDescription.text(),
+                    contentDescription = contentDescription?.text(),
                     tint = tint.invoke(),
                     modifier = imageModifier
                 )
@@ -62,12 +63,26 @@ sealed interface ImageResource : ComposableContent {
             is Drawable -> {
                 Icon(
                     painter = painterResource(id = resId),
-                    contentDescription = contentDescription.text(),
+                    contentDescription = contentDescription?.text(),
                     tint = tint.invoke(),
                     modifier = imageModifier,
                 )
             }
         }
+    }
+
+    companion object {
+        operator fun invoke(
+            image: ImageVector,
+            contentDescription: StringResource? = null,
+            tint: ComposeValue<Color> = { LocalContentColor.current },
+        ) = Vector(image, contentDescription, tint)
+
+        operator fun invoke(
+            @DrawableRes resId: Int,
+            contentDescription: StringResource? = null,
+            tint: ComposeValue<Color> = { LocalContentColor.current },
+        ) = Drawable(resId = resId, contentDescription = contentDescription, tint = tint)
     }
 }
 

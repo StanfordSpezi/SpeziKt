@@ -40,6 +40,7 @@ kspVersion = "2.1.21-2.0.1" # should align version with kotlin, see kotlin = "2.
 lifecycleKtx = "2.9.4"
 minSdk = "31"
 mockKVersion = "1.14.6"
+paparazziVersion = "2.0.0-alpha02"
 playServicesAuth = "21.4.0"
 rulesVersion = "1.7.0"
 runnerVersion = "1.7.0"
@@ -114,6 +115,7 @@ mockk-agent-jvm = { group = "io.mockk", name = "mockk-agent-jvm", version.ref = 
 mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockKVersion" }
 mockk-core = { group = "io.mockk", name = "mockk", version.ref = "mockKVersion" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
+paparazzi = { module = "app.cash.paparazzi:paparazzi", version.ref = "paparazziVersion" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timberVersion" }
 
@@ -130,6 +132,7 @@ hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersi
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazziVersion" }
 spezi-application = { id = "spezi.application", version = "unspecified" }
 spezi-base = { id = "spezi.base", version = "unspecified" }
 spezi-compose = { id = "spezi.compose", version = "unspecified" }

@@ -71,21 +71,9 @@ object Colors {
         @Composable
         @ReadOnlyComposable
         get() = Color.Transparent
+
+    val outlineVariant
+        @Composable
+        @ReadOnlyComposable
+        get() = scheme.outlineVariant
 }
-
-@Suppress("unused")
-internal val CardinalRed = Color(0xFF8C1515)
-internal val CardinalRedDark = Color(0xFF820000)
-internal val CardinalRedLight = Color(0xFFB83A4B)
-
-internal val White = Color(0xFFFFFFFF)
-internal val CoolGrey = Color(0xFF53565A)
-
-internal val Black = Color(0xFF2E2D29)
-internal val Black80 = Color(0xFF43423E)
-internal val Black60 = Color(0xFF767674)
-internal val Black40 = Color(0xFFABABA9)
-internal val Black20 = Color(0xFFD5D5D4)
-internal val Black10 = Color(0xFFEAEAEA)
-
-internal val RectangleBlue = Color(0xFFEBF2FC)

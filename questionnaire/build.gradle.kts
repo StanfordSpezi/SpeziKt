@@ -26,3 +26,9 @@ dependencies {
     implementation(libs.androidx.fragment.compose)
     androidTestImplementation(project(":testing-ui"))
 }
+
+configurations.configureEach {
+    resolutionStrategy {
+        force(libs.guava)
+    }
+}

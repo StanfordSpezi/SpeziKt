@@ -56,12 +56,6 @@ class SpeziBaseConfigConventionPlugin : Plugin<Project> {
             }
         }
 
-        configurations.all {
-            resolutionStrategy {
-                force(findLibrary("guava"))
-            }
-        }
-
         /**
          * The purpose of this function is to optimize the build process.
          * If there are no Android tests for a variant, there's no need to spend time

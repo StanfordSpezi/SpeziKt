@@ -1,4 +1,4 @@
-package edu.stanford.spezi.account
+package edu.stanford.spezi.ui.account
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

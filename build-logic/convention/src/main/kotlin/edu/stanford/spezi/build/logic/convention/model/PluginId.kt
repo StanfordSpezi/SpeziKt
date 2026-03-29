@@ -8,4 +8,5 @@ enum class PluginId(val id: String) {
     KSP(id = "com.google.devtools.ksp"),
     COMPOSE_COMPILER("org.jetbrains.kotlin.plugin.compose"),
     SERIALIZATION("org.jetbrains.kotlin.plugin.serialization"),
+    PAPARAZZI("app.cash.paparazzi"),
 }

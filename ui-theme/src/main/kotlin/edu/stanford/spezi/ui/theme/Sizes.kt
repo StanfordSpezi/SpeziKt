@@ -7,6 +7,11 @@ import androidx.compose.ui.unit.dp
 
 object Sizes {
     object Icon {
+        val extraSmall: Dp
+            @Composable
+            @ReadOnlyComposable
+            get() = 16.dp
+
         val small: Dp
             @Composable
             @ReadOnlyComposable
@@ -24,6 +29,11 @@ object Sizes {
     }
 
     object Border {
+        val small: Dp
+            @Composable
+            @ReadOnlyComposable
+            get() = 1.dp
+
         val medium: Dp
             @Composable
             @ReadOnlyComposable

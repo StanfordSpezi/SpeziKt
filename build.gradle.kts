@@ -14,6 +14,7 @@ plugins {
     alias(libs.plugins.google.gms.google.services) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.kotlin.parcelize) apply false
+    alias(libs.plugins.paparazzi) apply false
 }
 
 subprojects {
