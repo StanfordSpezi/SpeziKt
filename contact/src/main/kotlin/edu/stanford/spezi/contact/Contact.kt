@@ -54,7 +54,7 @@ import java.util.UUID
 data class Contact(
     val id: UUID = UUID.randomUUID(),
     val name: PersonNameComponents,
-    val image: ImageResource = ImageResource.Vector(Icons.Default.AccountBox, StringResource(R.string.contact_profile_picture)),
+    val image: ImageResource = ImageResource(Icons.Default.AccountBox, StringResource(R.string.contact_profile_picture)),
     val title: StringResource? = null,
     val description: StringResource? = null,
     val organization: StringResource? = null,
@@ -207,7 +207,7 @@ private object ContactContentFactory {
                 givenName = "Leland",
                 familyName = "Stanford"
             ),
-            image = ImageResource.Vector(Icons.Default.AccountBox, StringResource(R.string.contact_profile_picture)),
+            image = ImageResource(Icons.Default.AccountBox, StringResource(R.string.contact_profile_picture)),
             title = title,
             description = description,
             organization = StringResource("Stanford University"),

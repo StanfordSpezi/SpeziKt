@@ -3,19 +3,16 @@ package edu.stanford.spezi.sample.app.health
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.metadata.Metadata
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.spezi.health.AnyRecordType
@@ -24,11 +21,15 @@ import edu.stanford.spezi.health.HealthQueryTimeRange
 import edu.stanford.spezi.health.RecordType
 import edu.stanford.spezi.sample.app.NavigationEvent
 import edu.stanford.spezi.sample.app.Navigator
-import edu.stanford.spezi.ui.CommonScaffold
 import edu.stanford.spezi.ui.ComposableContent
 import edu.stanford.spezi.ui.DisplayedEffect
 import edu.stanford.spezi.ui.LoadingLayout
+import edu.stanford.spezi.ui.MutableSpeziScaffoldState
+import edu.stanford.spezi.ui.SpeziScaffold
+import edu.stanford.spezi.ui.SpeziScaffoldState
 import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.ui.coroutinesLauncher
+import edu.stanford.spezi.ui.speziAppBar
 import edu.stanford.spezi.ui.theme.Spacings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -46,11 +47,17 @@ class HealthViewModel @Inject constructor(
     private val navigator: Navigator,
     private val health: Health,
 ) : ViewModel() {
+    private val scaffoldState = MutableSpeziScaffoldState(
+        coroutinesLauncher = coroutinesLauncher,
+        appBar = speziAppBar {
+            title("Health")
+            back { navigator.navigateTo(NavigationEvent.PopBackStack) }
+        }
+    )
     private val _uiState = MutableStateFlow<HealthUiState>(HealthUiState.Loading)
 
     val content = HealthScreenContent(
-        title = "Health",
-        onBackClicked = { navigator.navigateTo(NavigationEvent.PopBackStack) },
+        scaffoldState = scaffoldState.asScaffoldState(),
         onDisplayed = ::update,
         state = _uiState.asStateFlow(),
     )
@@ -167,46 +174,31 @@ class HealthViewModel @Inject constructor(
 }
 
 data class HealthScreenContent(
-    val title: String,
+    val scaffoldState: SpeziScaffoldState,
     val onDisplayed: () -> Unit,
-    val onBackClicked: () -> Unit,
     val state: StateFlow<HealthUiState>,
 ) : ComposableContent {
 
     @Composable
     override fun Content(modifier: Modifier) {
         DisplayedEffect(onDisplayed = onDisplayed)
-        CommonScaffold(
-            title = title,
-            navigationIcon = {
-                IconButton(onClick = onBackClicked) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "",
-                    )
-                }
-            },
-            content = {
-                Box(
-                    modifier = Modifier.padding(Spacings.medium)
-                ) {
-                    val uiState = state.collectAsState().value
-                    when (uiState) {
-                        is HealthUiState.Loading -> LoadingLayout()
-                        is HealthUiState.Content -> {
-                            Column(
-                                modifier = Modifier.verticalScroll(rememberScrollState()),
-                                verticalArrangement = Arrangement.spacedBy(Spacings.medium)
-                            ) {
-                                uiState.permission.Content()
-                                uiState.queriesSection.Content()
-                                uiState.insertSection.Content()
-                            }
+        SpeziScaffold(state = scaffoldState) {
+            Box(modifier = Modifier.padding(Spacings.medium)) {
+                when (val uiState = state.collectAsStateWithLifecycle().value) {
+                    is HealthUiState.Loading -> LoadingLayout(modifier = Modifier.fillMaxSize())
+                    is HealthUiState.Content -> {
+                        Column(
+                            modifier = Modifier.verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(Spacings.medium)
+                        ) {
+                            uiState.permission.Content()
+                            uiState.queriesSection.Content()
+                            uiState.insertSection.Content()
                         }
                     }
                 }
             }
-        )
+        }
     }
 }
 

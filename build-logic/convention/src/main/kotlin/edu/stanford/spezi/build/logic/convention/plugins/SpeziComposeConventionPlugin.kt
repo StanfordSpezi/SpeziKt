@@ -41,14 +41,12 @@ class SpeziComposeConventionPlugin : Plugin<Project> {
         }
     }
 
-
     private fun Project.newModule(): Boolean {
         return path == NEW_MODULE
     }
 
     private companion object {
-        const val NEW_MODULE = ":ui-account"
+        const val NEW_MODULE = ":ui"
         const val SCREENSHOT_TESTING_MODULE = ":testing-screenshot"
     }
-
 }

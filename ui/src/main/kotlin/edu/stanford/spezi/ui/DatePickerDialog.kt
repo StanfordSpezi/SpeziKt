@@ -16,7 +16,7 @@ import java.time.Instant
 fun DatePickerDialog(
     onDateSelected: (Instant) -> Unit,
     selectableDatesPredicate: (Instant) -> Boolean = { it <= Instant.now() },
-    onDismiss: () -> Unit,
+    onDismiss: OnActionVoid,
 ) {
     val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
         override fun isSelectableDate(utcTimeMillis: Long): Boolean {

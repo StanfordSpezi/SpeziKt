@@ -110,7 +110,7 @@ private class UserProfileProvider : PreviewParameterProvider<UserProfilePreviewD
                 familyName = "Ravi",
             )
         ) {
-            ImageResource.Vector(
+            ImageResource(
                 Icons.Default.Person,
                 StringResource("Person")
             )

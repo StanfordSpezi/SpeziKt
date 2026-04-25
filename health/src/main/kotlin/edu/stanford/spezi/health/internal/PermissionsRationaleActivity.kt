@@ -7,10 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,7 +14,9 @@ import androidx.compose.ui.res.stringResource
 import edu.stanford.spezi.core.dependency
 import edu.stanford.spezi.health.Health
 import edu.stanford.spezi.health.R
-import edu.stanford.spezi.ui.CommonScaffold
+import edu.stanford.spezi.ui.SpeziScaffold
+import edu.stanford.spezi.ui.rememberMutableSpeziScaffoldState
+import edu.stanford.spezi.ui.rememberSpeziAppBar
 import edu.stanford.spezi.ui.theme.Spacings
 import edu.stanford.spezi.ui.theme.SpeziTheme
 import edu.stanford.spezi.ui.theme.TextStyles
@@ -56,28 +54,22 @@ internal class PermissionsRationaleActivity : AppCompatActivity() {
         title: String,
         description: String,
     ) {
-        CommonScaffold(
-            title = title,
-            navigationIcon = {
-                IconButton(onClick = { finish() }) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "",
-                    )
-                }
-            },
-            content = {
-                Column(
-                    modifier = Modifier
-                        .padding(Spacings.medium)
-                        .verticalScroll(rememberScrollState()),
-                ) {
-                    Text(
-                        text = description,
-                        style = TextStyles.bodyMedium
-                    )
-                }
+        val appBar = rememberSpeziAppBar(title) {
+            title(title)
+            back { finish() }
+        }
+        val scaffoldState = rememberMutableSpeziScaffoldState(appBar = appBar)
+        SpeziScaffold(state = scaffoldState) {
+            Column(
+                modifier = Modifier
+                    .padding(Spacings.medium)
+                    .verticalScroll(rememberScrollState()),
+            ) {
+                Text(
+                    text = description,
+                    style = TextStyles.bodyMedium
+                )
             }
-        )
+        }
     }
 }

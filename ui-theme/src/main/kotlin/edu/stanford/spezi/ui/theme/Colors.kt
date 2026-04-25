@@ -76,4 +76,9 @@ object Colors {
         @Composable
         @ReadOnlyComposable
         get() = scheme.outlineVariant
+
+    val scrim
+        @Composable
+        @ReadOnlyComposable
+        get() = scheme.scrim
 }

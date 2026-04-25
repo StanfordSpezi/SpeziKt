@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Shape
 import edu.stanford.spezi.ui.theme.Colors
 import edu.stanford.spezi.ui.theme.Sizes
 import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziShapes
 import edu.stanford.spezi.ui.theme.SpeziTheme
 import edu.stanford.spezi.ui.theme.ThemePreviews
 import kotlinx.coroutines.CoroutineScope
@@ -50,11 +51,11 @@ fun AsyncButton(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
     enabled: Boolean = isLoading.not(),
-    shape: Shape = ButtonDefaults.shape,
+    shape: Shape = SpeziShapes.medium,
     containerColor: Color = ButtonDefaults.buttonColors().containerColor,
     contentColor: Color = ButtonDefaults.buttonColors().contentColor,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
-    onClick: () -> Unit = {},
+    onClick: OnActionVoid = {},
     content: @Composable RowScope.() -> Unit,
 ) {
     Button(
@@ -114,11 +115,11 @@ fun AsyncTextButton(
     leadingIcon: ImageResource? = null,
     isLoading: Boolean = false,
     enabled: Boolean = isLoading.not(),
-    shape: Shape = ButtonDefaults.shape,
+    shape: Shape = SpeziShapes.medium,
     containerColor: Color = ButtonDefaults.buttonColors().containerColor,
     textColor: Color = ButtonDefaults.buttonColors().contentColor,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
-    onClick: () -> Unit = {},
+    onClick: OnActionVoid = {},
 ) {
     AsyncButton(
         modifier = modifier,
@@ -145,12 +146,12 @@ data class AsyncTextButton(
     val title: StringResource,
     val icon: ImageResource? = null,
     val enabled: Boolean = true,
-    val shape: ComposeValue<Shape> = { ButtonDefaults.shape },
+    val shape: ComposeValue<Shape> = { SpeziShapes.medium },
     val containerColor: ComposeValue<Color> = { ButtonDefaults.buttonColors().containerColor },
     val textColor: ComposeValue<Color> = { ButtonDefaults.buttonColors().contentColor },
     val contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     val coroutineScope: ComposeValue<CoroutineScope> = { rememberCoroutineScope() },
-    val action: suspend () -> Unit = {},
+    val action: OnAwaitActionVoid = {},
 ) : ComposableContent {
 
     @Composable
@@ -194,7 +195,7 @@ fun AsyncButtonPreviews() {
             AsyncTextButton(text = "AsyncTextButton")
             AsyncTextButton(
                 text = "AsyncTextButton",
-                leadingIcon = ImageResource.Vector(image = Icons.Default.ThumbUp)
+                leadingIcon = ImageResource(image = Icons.Default.ThumbUp)
             )
         }
     }
