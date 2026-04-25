@@ -1,0 +1,9 @@
+{
+  "name": "spezi",
+  "version": "0.1.0",
+  "description": "Design-principle review and scaffolding skills for the Stanford Spezi ecosystem.",
+  "author": {
+    "name": "Paul Johannes Kraft"
+  },
+  "license": "MIT"
+}

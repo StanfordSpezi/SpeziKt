@@ -1,0 +1,22 @@
+// Template for a Hilt module that bridges Spezi-runtime-graph-registered modules into Hilt.
+// Use when a consumer is Hilt-managed (e.g., a Compose ViewModel) and the provider is registered
+// in Spezi's runtime module graph rather than constructed by Hilt.
+// This is the recommended bridge pattern — not a workaround for DI circularity.
+
+package edu.stanford.spezi.<package-segment>
+
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import edu.stanford.spezi.core.requireDependency
+
+@Module
+@InstallIn(SingletonComponent::class)
+class <ModuleName>HiltBridge {
+    @Provides
+    fun provide<Thing>(): <Thing> = requireDependency()
+
+    // Add more @Provides functions for each Spezi-registered module that needs to be reachable from Hilt-injected consumers.
+    // Use `requireOptionalDependency<T>()` instead of `requireDependency<T>()` for optional dependencies that may not be registered.
+}
