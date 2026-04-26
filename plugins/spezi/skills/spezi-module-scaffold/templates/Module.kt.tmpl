@@ -1,0 +1,35 @@
+// Template for a canonical Spezi-Kotlin module class — the default scaffold for new modules.
+// Replace <package-segment> with the dotted package suffix (e.g., "account.firebase" for module "account-firebase").
+// Replace <ModuleName>, <Foo>, <Bar> with concrete names.
+//
+// Constructor parameters declare the module's dependencies. Wire them at registration time:
+//
+//     Configuration(standard = this) {
+//         module { <ModuleName>(foo = dependency(), bar = dependency()) }
+//     }
+//
+// If you prefer property-delegate consumption (resolved on first access, useful for breaking
+// construction-order issues or for genuinely optional dependencies), replace the constructor
+// parameters with:
+//
+//     private val foo by dependency<Foo>()
+//     private val analytics by optionalDependency<Analytics>()
+//
+// Override `configure()` only when you need a side-effect after the entire dependency graph
+// has been constructed (registering listeners, validating cross-module configuration, kicking
+// off background work). Do NOT request dependencies inside `configure()` — those should
+// already be available via the constructor or property delegates.
+
+package edu.stanford.spezi.<package-segment>
+
+import edu.stanford.spezi.core.Module
+
+class <ModuleName>(
+    private val foo: <Foo>,
+    private val bar: <Bar>,
+) : Module {
+
+    override fun configure() {
+        // Optional: setup that requires the full dependency graph.
+    }
+}

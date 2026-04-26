@@ -68,10 +68,10 @@ fun DetailRow(date: LocalDate) {
 }
 ```
 
-**Use sparingly.** `CompositionLocal` is power tool that turns into a footgun. Behavior smuggled through Environment / CompositionLocal is invisible to the caller and breaks across composition boundaries that don't carry the provider. Default to:
+**Use sparingly.** `CompositionLocal` is a power tool that turns into a footgun. Behavior smuggled through Environment / CompositionLocal is invisible to the caller and breaks across composition boundaries that don't carry the provider. Default to:
 
 1. Direct function parameters first.
-2. Hilt-injected ViewModels for app-wide state.
+2. DI-injected modules for app-wide state — a Spezi-native `Module` consumed via `dependency<T>()` for cross-cutting infrastructure (account, health, lifecycle), or a ViewModel exposing `StateFlow` for screen state. (See "ViewModels: Spezi-native DI is an open gap" below for the current Hilt-only situation on the ViewModel side.)
 3. `CompositionLocal` only when (a) the value is genuinely cross-cutting (theme, locale, accessibility settings), AND (b) virtually every leaf composable would otherwise forward the parameter.
 
 When porting from SwiftUI, audit every `@Environment` usage. For each one, ask: is this *really* cross-cutting, or did the SwiftUI author reach for `@Environment` because passing a parameter felt verbose? If the latter, port it as a parameter, not as a `CompositionLocal`.
@@ -128,6 +128,23 @@ fun CounterView(viewModel: CounterViewModel = hiltViewModel()) {
 
 **Why immutable state plus an `onAction` channel:** it gives you a single direction for data flow, makes state changes deterministic and testable, and lets the ViewModel stay free of UI types. The Swift `@Observable` pattern hides the mutation boundary inside the model class; the Kotlin pattern surfaces it as a function call. Don't translate the mutation style — translate the direction of flow.
 
+### ViewModels: Spezi-native DI is an open gap
+
+The Kotlin example above uses `@HiltViewModel` + `hiltViewModel<T>()`. Spezi-Kotlin is migrating its DI from Hilt to its own runtime DI graph (`Module` interface + `Configuration { }` + `dependency<T>()`). That migration is complete for **non-ViewModel** components — services, repositories, and modules are all Spezi-native — but **ViewModel / Compose-lifecycle integration is still an open gap.** There is no `SpeziViewModel` base class, no Spezi factory composable equivalent to `hiltViewModel<T>()`. Until that gap closes, `@HiltViewModel` + `hiltViewModel<T>()` remain the working shape for ViewModels in Spezi-Kotlin.
+
+When a `@HiltViewModel` constructor-injects a Spezi-native module (e.g., an `Account`, `Health`, or `Navigator` module), bridge it through a small Hilt module:
+
+```kotlin
+@Module
+@InstallIn(SingletonComponent::class)
+class AccountHiltBridge {
+    @Provides
+    fun provideAccount(): Account = requireDependency()
+}
+```
+
+This bridge is migration scaffolding — it goes away once the consuming ViewModel can drop `@HiltViewModel`. See [dependency-injection.md](dependency-injection.md) for the full migration story.
+
 ## `@State`
 
 `@State` in SwiftUI is for view-local state that survives recomposition. The Kotlin counterpart depends on what kind of state it is:
@@ -139,6 +156,108 @@ fun CounterView(viewModel: CounterViewModel = hiltViewModel()) {
 | Across configuration changes | edit-form draft text on screen rotation | ViewModel with `SavedStateHandle` |
 
 The thesis-derived rule of thumb: **default to a ViewModel for anything that has a counterpart on the other platform, and reserve `remember { mutableStateOf(...) }` for state that genuinely lives only in this composable**. SwiftUI authors sometimes use `@State` on the view because reaching for `@StateObject` is ergonomically heavier — don't carry that decision over.
+
+## Module-owned `StateFlow`
+
+There's a second valid `StateFlow` owner alongside ViewModels: a **`Module`** registered in Spezi's runtime DI graph. Application-lifetime infrastructure exposes its state directly from the module rather than through a ViewModel.
+
+```kotlin
+class Account : Module {
+    private val _details = MutableStateFlow<AccountDetails?>(null)
+    val details: StateFlow<AccountDetails?> = _details.asStateFlow()
+
+    fun supplyUserDetails(value: AccountDetails) { _details.value = value }
+    fun removeUserDetails() { _details.value = null }
+}
+```
+
+Consumers read it directly:
+
+```kotlin
+class HomeRepository : Module {
+    private val account by dependency<Account>()
+    val isSignedIn: Flow<Boolean> = account.details.map { it != null }
+}
+```
+
+**When to use module-owned vs ViewModel-owned `StateFlow`:**
+
+| State | Owner |
+|---|---|
+| Application-lifetime infrastructure (signed-in user, app foreground/background, permission grants) | Module-owned, registered in `Configuration { }` |
+| Screen / feature state (form fields, list filters, tab selection) | ViewModel-owned, via `MutableStateFlow` inside the ViewModel |
+
+Mutations stay inside the owning module/ViewModel; readers consume the flow read-only. The discipline is the same — only the lifetime and registration differ.
+
+## Compose render contract: `ComposableContent`
+
+A pattern used widely in the framework: a data type that knows how to render itself. The contract is a one-method interface:
+
+```kotlin
+interface ComposableContent {
+    @Composable fun Content(modifier: Modifier = Modifier)
+}
+```
+
+A data class implements `ComposableContent` and supplies the rendering logic. ViewModels hand the data class to a parent composable, which calls `.Content()`:
+
+```kotlin
+data class HomeScreenContent(
+    val title: StringResource,
+    val sections: List<SectionCard>,
+) : ComposableContent {
+    @Composable
+    override fun Content(modifier: Modifier) {
+        CommonScaffold(
+            title = title.text(),
+            content = {
+                LazyColumn(modifier = modifier) {
+                    items(sections) { it.Content() }
+                }
+            },
+        )
+    }
+}
+
+class HomeViewModel : ViewModel() {
+    val content = HomeScreenContent(
+        title = StringResource(R.string.app_name),
+        sections = listOf(/* … */),
+    )
+}
+
+@Composable
+fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
+    viewModel.content.Content()
+}
+```
+
+**Why this pattern:** it decouples the ViewModel from Compose internals. The ViewModel doesn't import `Modifier`, doesn't construct `Composable` lambdas, and stays testable as plain Kotlin. The data class owns the rendering decisions for one piece of UI and can compose nested `ComposableContent` instances for sub-sections.
+
+`ComposableContent` is also the implementation surface for sealed render hierarchies — e.g., `ImageResource` is `sealed interface ImageResource : ComposableContent` with `Vector(…)` and `Drawable(…)` cases, so callers pass an `ImageResource` and it renders itself regardless of the underlying source.
+
+## Render-time resource resolution
+
+`StringResource` and `ImageResource` defer their resolution to render time via `@Composable` accessors:
+
+```kotlin
+val title = StringResource(R.string.app_name)
+// later, inside a composable:
+Text(title.text())
+```
+
+```kotlin
+val icon = ImageResource.Vector(
+    image = Icons.Default.Star,
+    contentDescription = StringResource("Favorite"),
+)
+// later, inside a composable:
+icon.Content()
+```
+
+The accessors are `@Composable @ReadOnlyComposable` — they read theme, locale, and other `CompositionLocal` values at render time without forcing the caller to thread those through their constructors. This lets a `StringResource` or `ImageResource` flow through plain (non-composable) data classes and only resolve when actually rendered.
+
+When porting from Swift, this is the Kotlin shape for SwiftUI's "resource as a value, resolved by the renderer": don't materialize strings or images at instantiation; defer to the `@Composable` accessor.
 
 ## Customization surface
 

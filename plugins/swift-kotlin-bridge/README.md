@@ -40,6 +40,22 @@ The `translation-review` subagent does *not* auto-invoke — review is heavy. Th
 - UI design system reference (Material vs SwiftUI design language).
 - Mechanical migration tools — the plugin teaches and reviews; it does not produce compilable output blindly.
 
+## Differences from earlier Spezi-Kotlin documentation
+
+### *Updated 2026-04-26.*
+
+- **`dependency-injection.md` direction flipped.** The 2026-04-25 version of this skill positioned Dagger Hilt as the canonical Kotlin-side DI mechanism with the Spezi runtime graph as an overlay. The current strategic direction in Spezi-Kotlin is the opposite: Spezi has its own runtime DI (the `Module` interface + `Configuration { }` builder + `dependency<T>()` / `requireDependency<T>()` consumption helpers), and Hilt is being phased out. The skill now leads with Spezi-native DI; Hilt content is in a clearly-labeled "Migration from Hilt" section that explains the legacy patterns and conversion recipes. **ViewModels are a temporary exception** — Spezi-Kotlin does not yet have a `@HiltViewModel`-equivalent, so `@HiltViewModel` + `hiltViewModel<T>()` remain the working shape for ViewModels and the bridge `@Provides fun = requireDependency()` is migration scaffolding for `@HiltViewModel` consumers of Spezi-native modules.
+
+- **`concurrency.md` canonical scope source updated.** New code uses the `Concurrency` module (`concurrency.ioCoroutineScope()`, `concurrency.mainCoroutineScope()`, etc.) injected via Spezi-native DI. Hilt's `@Dispatching.{Main,Default,IO,Unconfined}` qualifiers and `CoroutinesModule` move to a "Migration from Hilt" subsection. Added a section on lifecycle-aware scopes via the `AppLifecycle` module.
+
+- **`state-management.md` additions:** new subsections on module-owned `StateFlow` (cross-cutting infrastructure state), `ComposableContent` (the framework's render-contract interface), render-time resource resolution (`StringResource.text()` / `ImageResource.Content()`), and an explicit "ViewModels: Spezi-native DI is an open gap" callout.
+
+- **`view-state-pattern.md` additions:** `ProcessingOverlay` for screen-level processing UX, the automatic 150ms debounce inside `SuspendButton`, and the `OperationState` interface for bridging domain state machines to `ViewState`.
+
+- **`property-wrappers-and-builders.md` `@SpeziDsl` note:** the framework ships `@SpeziDsl` (a `@DslMarker` annotation in `:core`) and applies it to all framework DSL builders. New Spezi DSL builders should annotate with `@SpeziDsl` rather than defining their own `@DslMarker`.
+
+These updates apply only to the Spezi-Kotlin-specific portions of this plugin's content. The general Swift↔Kotlin translation rules (type system, basic state management, basic concurrency, etc.) are unchanged.
+
 ## Self-containment
 
 Every skill file is self-contained. Code examples are inlined as literal Swift and Kotlin snippets. There are no references to repo-internal paths or to scratch documents. The plugin can be copied to any project and continue to work; only Swift / Kotlin standard-library identifiers and ecosystem-typical class names appear in examples.

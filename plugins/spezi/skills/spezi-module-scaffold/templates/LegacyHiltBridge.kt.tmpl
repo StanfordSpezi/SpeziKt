@@ -1,0 +1,29 @@
+// LEGACY TEMPLATE — migration scaffolding for `@HiltViewModel` consumers of Spezi-native modules.
+//
+// Use this only when a `@HiltViewModel` constructor-injects a Spezi-native module. The bridge
+// goes away when the consuming ViewModel migrates off `@HiltViewModel` (which depends on a
+// Spezi-native ViewModel/Compose-lifecycle integration that does not exist yet).
+//
+// Do NOT write Hilt bridges for non-ViewModel consumers — non-ViewModel code should consume
+// Spezi-native modules directly via `dependency<T>()`.
+//
+// Replace <package-segment>, <ModuleName>, <Thing> with concrete names.
+
+package edu.stanford.spezi.<package-segment>
+
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import edu.stanford.spezi.core.requireDependency
+
+@Module
+@InstallIn(SingletonComponent::class)
+class <ModuleName>HiltBridge {
+    @Provides
+    fun provide<Thing>(): <Thing> = requireDependency()
+
+    // Add more @Provides functions for each Spezi-registered module that needs to be reachable
+    // from a `@HiltViewModel` constructor. Use `requireOptionalDependency<T>()` for optional
+    // dependencies that may not be registered.
+}

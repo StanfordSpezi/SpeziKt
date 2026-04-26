@@ -98,6 +98,71 @@ An earlier Compose habit was to keep the state inside the button: `var isProcess
 
 Pattern: **declare `MutableState<ViewState>` at the lowest level that needs to read it; pass it down to every composable that should react.**
 
+## `ProcessingOverlay` — screen-level processing UX
+
+`SuspendButton` is for buttons. When an entire screen or a larger UI region is processing, use `ProcessingOverlay` from the framework's `:ui` module:
+
+```kotlin
+ProcessingOverlay(viewState = state.value) {
+    // your screen content; dimmed and overlaid with a spinner when ViewState.Processing
+}
+
+// or with a plain boolean:
+ProcessingOverlay(isProcessing = isUploading) {
+    // …
+}
+```
+
+`ProcessingOverlay` animates the content alpha (1.0 → 0.0 when processing) and overlays a `CircularProgressIndicator`. It composes with `ViewState` directly, so the same hoisted state that drives a `SuspendButton` can drive a screen-level overlay. Use it for "the whole screen is busy" cases (large form submission, long-running migrations); use `SuspendButton` alone for per-button busy states.
+
+## Debounce inside `SuspendButton`
+
+`SuspendButton` automatically debounces its visual processing state for 150ms before showing the spinner. Sub-150ms actions never flash the indicator — the button stays in `Idle`, completes the action, and stays `Idle`. This is built in; callers don't need to configure it.
+
+The debounce only affects the visual spinner. The underlying `MutableState<ViewState>` still transitions through `Processing` immediately on click — external observers see the full state transition; only the *visual* indicator is delayed. Nothing is lost: external observability is intact, and jarring flashes on very fast actions are suppressed.
+
+If you need a different debounce duration, a longer overload of `SuspendButton` accepts `processingDebounceDuration: Duration`:
+
+```kotlin
+SuspendButton(
+    processingDebounceDuration = 300.milliseconds,
+    state = state,
+    action = { /* … */ },
+    label = { Text("Submit") },
+)
+```
+
+## `OperationState` — bridging domain state machines to `ViewState`
+
+Some domain types have their own state machine — e.g., a download with `Idle / Downloading(progress) / Complete / Failed(reason)` — and you want it to drive the same `Processing` / `Error` UI affordances that `ViewState` drives. The framework exposes `OperationState`, a one-property interface:
+
+```kotlin
+interface OperationState {
+    val representation: ViewState
+}
+```
+
+Domain types implement `OperationState` to expose a `ViewState` projection of their own state. UI consumes either the domain state directly (full fidelity) or the `ViewState` representation (when only "is it busy / did it fail" matters):
+
+```kotlin
+sealed interface DownloadState : OperationState {
+    data object Idle : DownloadState {
+        override val representation = ViewState.Idle
+    }
+    data class Downloading(val progress: Float) : DownloadState {
+        override val representation = ViewState.Processing
+    }
+    data class Failed(val reason: Throwable) : DownloadState {
+        override val representation = ViewState.Error(reason)
+    }
+    data object Complete : DownloadState {
+        override val representation = ViewState.Idle
+    }
+}
+```
+
+The `:ui` module ships a `mapOperationStateToViewState()` helper and an `OperationStateAlert` composable that surfaces the same error-dialog UX you'd write by hand against `ViewState.Error`. Use this when domain logic has more states than `ViewState` exposes, but you want `ViewState`-driven UI to stay simple.
+
 ## Don't translate the `Task { … }` directly
 
 The naive port:

@@ -119,6 +119,8 @@ class ContactListBuilder { /* ... */ }
 class ContactBuilder { /* ... */ }
 ```
 
+**Spezi-Kotlin convention:** the framework ships `@SpeziDsl` (a `@DslMarker` annotation defined in `:core`) and applies it to all framework DSL builders — `ConfigurationBuilder`, `AccountServiceConfigurationBuilder`, `HealthModuleBuilder`, etc. When you introduce a new builder DSL inside a Spezi module, annotate the builder class with `@SpeziDsl` rather than defining your own `@DslMarker`. This keeps your DSL composing cleanly with the rest of the framework's DSLs and prevents scope leakage between, say, an `accountConfiguration { }` block nested inside `Configuration { }`.
+
 ## When the Swift uses `@resultBuilder` for view trees
 
 SwiftUI's `@ViewBuilder` is a result builder. The Compose equivalent is **just a function** — `@Composable` functions accept and emit other composables natively, no builder DSL is needed:

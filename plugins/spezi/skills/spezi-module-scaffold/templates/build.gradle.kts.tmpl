@@ -6,8 +6,9 @@
 plugins {
     alias(libs.plugins.spezi.library)
     // alias(libs.plugins.spezi.compose)         // uncomment when the module ships Compose UI
-    // alias(libs.plugins.spezi.hilt)            // uncomment when the module participates in Hilt DI
     // alias(libs.plugins.spezi.serialization)   // uncomment when the module uses kotlinx.serialization
+    // alias(libs.plugins.spezi.desugaring)      // uncomment when the module needs Java time / backported APIs
+    // alias(libs.plugins.spezi.hilt)            // LEGACY — do not apply to new modules. Spezi-native DI replaces Hilt.
 }
 
 android {
@@ -16,6 +17,7 @@ android {
 
 dependencies {
     // api(project(":foundation"))
-    // implementation(project(":core"))
+    // api(project(":core"))                      // for Module interface, Configuration, dependency<T>()
+    // implementation(project(":core-coroutines"))
     // androidTestImplementation(project(":testing-ui"))
 }

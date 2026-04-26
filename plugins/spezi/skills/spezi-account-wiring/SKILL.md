@@ -89,6 +89,37 @@ val AccountKeys.patientId get() = PatientIdKey
 - **Provide a `KSerializer<V>`** matching the value type. For primitives, use `String.serializer()`, `Int.serializer()`, etc. For custom types, mark them `@Serializable`.
 - **`display` and `entry` are optional.** Set them when the framework should render or edit this key in a default UI component. Most credential-style keys leave both `null`.
 
+### KnowledgeSource hierarchy (for advanced custom keys)
+
+Most `AccountKey`s carry their own value directly. Some compute their value from other keys (e.g., `UserIdKey` defaults to `AccountIdKey` if no `userId` is set). The full hierarchy in `:foundation`:
+
+- **`KnowledgeSource<Anchor, Value>`** — plain typed key. The base interface every `AccountKey` extends.
+- **`DefaultProvidingKnowledgeSource<Anchor, Value>`** — returns a default when no value is stored.
+- **`SomeComputedKnowledgeSource<Anchor, Value>`** — sealed base for both computed flavors (added Feb 2026 to factor out shared `storagePolicy`).
+- **`ComputedKnowledgeSource<Anchor, Value>`** — computes a **non-null** value from repository state. Has a `storagePolicy: ComputedKnowledgeSourceStoragePolicy` (`AlwaysCompute` | `Store`).
+- **`OptionalComputedKnowledgeSource<Anchor, Value>`** — same, but the computed value may be `null`.
+
+A computed key defines a `compute(repository: ValueRepository<Anchor>): Value` (or `Value?` for the optional flavor):
+
+```kotlin
+data object UserIdKey : AccountKey<String>, ComputedKnowledgeSource<AccountAnchor, String> {
+    override val storagePolicy = ComputedKnowledgeSourceStoragePolicy.AlwaysCompute
+
+    override val identifier: String = "userId"
+    // … other AccountKey<String> members …
+
+    override fun compute(repository: ValueRepository<AccountAnchor>): String {
+        val explicit = repository.getOrNull(UserIdKey::class)
+        if (explicit != null) return explicit
+        return repository[AccountIdKey::class] ?: AccountIdKey.initialValue.value
+    }
+}
+```
+
+Type aliases (`KnowledgeSourceType<Anchor, Value>`, `ComputedKnowledgeSourceType<Anchor, Value>`, etc.) are the `KClass` form used to look up keys in a `ValueRepository`. You usually won't reference these directly — the operator overloads on `ValueRepository` (e.g., `repository[SomeKey::class]`) handle the type machinery.
+
+Untyped accessors (`repository.getAnyOrNull(source)`, `repository.setAny(source, value)`) are framework-internal — used by serialization layers like `AccountDetails` to round-trip values without statically knowing every key type. Don't reach for them in app code.
+
 ## Step 2 — Pick identity providers (Firebase example)
 
 The `FirebaseAccountService` consumes a `FirebaseAuthProviders` collection that names which sign-in mechanisms are enabled. Each `FirebaseAuthProvider` is a `data object` (or `data class` carrying configuration):
@@ -160,20 +191,33 @@ Add `userIdType(idType = UserIdType.Email)` (or `.Username` / `.Custom(label = �
 
 ## Step 5 — Consuming `Account` from app code
 
-`Account` is registered by `accountConfiguration` and reachable from any Spezi-runtime-graph consumer via the property delegate `dependency<T>()`:
+`Account` is registered by `accountConfiguration` and is part of Spezi's runtime DI graph. Consume it the same way as any other Spezi module — via the `dependency<Account>()` lazy delegate or `requireDependency<Account>()` direct call:
 
 ```kotlin
 import edu.stanford.spezi.account.Account
+import edu.stanford.spezi.core.Module
 import edu.stanford.spezi.core.dependency
 
-class HomeViewModel @Inject constructor() : ViewModel() {
+class HomeRepository : Module {
     private val account by dependency<Account>()
 
     fun isSignedIn(): Boolean = account.signedInUser != null
 }
 ```
 
-Or — more commonly for Hilt-injected consumers like Compose ViewModels — bridge `Account` into Hilt by providing it from a Hilt `@Module`:
+Activities and Fragments work the same way:
+
+```kotlin
+class MyActivity : ComponentActivity() {
+    private val account by dependency<Account>()
+}
+```
+
+This is the canonical pattern under Spezi-native DI. **Don't add Hilt scaffolding for non-ViewModel `Account` consumers** — they consume the Spezi runtime graph directly.
+
+### Migration from Hilt: bridging `Account` for `@HiltViewModel` consumers
+
+ViewModels are the one area where Hilt is currently still required — Spezi-Kotlin does not yet have a ViewModel/Compose-lifecycle integration that would replace `@HiltViewModel` + `hiltViewModel<T>()`. When a `@HiltViewModel` constructor-injects `Account`, you'll need a small Hilt module that bridges from Spezi's runtime graph into Hilt:
 
 ```kotlin
 @Module
@@ -184,8 +228,6 @@ class AccountHiltBridge {
 }
 ```
 
-Then constructor-inject `Account` directly into your ViewModel:
-
 ```kotlin
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -193,15 +235,11 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel()
 ```
 
-**This bridge pattern (`requireDependency<T>()` inside a `@Provides` function) is the recommended way to expose Spezi-runtime-graph-registered modules to Hilt-injected consumers.** It is *not* a workaround for DI circularity — it is a deliberate seam between Spezi's runtime module graph (where `Account` lives) and Hilt's compile-time graph (where most app code lives).
-
-### Differences from earlier Spezi-Kotlin documentation
-
-Earlier writeups described a manual `inject()` call inside `AccountService` to break a DI circularity with `Account`. **Current Spezi-Kotlin code does not use that pattern.** The framework now exposes `Account` through Spezi's runtime module graph and uses `requireDependency<T>()` (or the lazy `dependency<T>()` delegate) at consumption time. If you find an `inject()`-style workaround in older code, update it to the bridge pattern above.
+This bridge is **migration scaffolding** — it goes away once the consuming ViewModel migrates off `@HiltViewModel` (when the Spezi-native ViewModel pattern lands). Earlier writeups described a manual `inject()` call inside `AccountService` to break a DI circularity with `Account`; current Spezi-Kotlin code does not use that pattern, and you should not introduce it in new code.
 
 ## Step 6 — Custom validation
 
-Per-key validation rules — for example, requiring passwords to be at least eight characters — go inside the configuration block via `validationRule`:
+Per-key validation rules — for example, enforcing password strength — go inside the configuration block via `validationRule`:
 
 ```kotlin
 configuration = {
@@ -211,12 +249,21 @@ configuration = {
 
     validationRule(
         keyType = AccountKeys.password::class,
-        rules = setOf(ValidationRule.minimumLength(8)),
+        rules = setOf(ValidationRule.minimalPassword),
     )
 }
 ```
 
-`ValidationRule`s come from `:ui-validation` and are the same engine used by `Validate` / `ReceiveValidation` composables.
+`ValidationRule`s come from `:ui-validation` and are the same engine used by `Validate` / `ReceiveValidation` composables. Shipped helpers: `nonEmpty`, `minimalEmail`, `minimalPassword` (8+ characters), `mediumPassword` (10+), `strongPassword` (12+), `unicodeLettersOnly`, `asciiLettersOnly`.
+
+For length-based rules at custom thresholds, or other custom predicates, construct a `ValidationRule` from a regex:
+
+```kotlin
+val sixCharsMinimum = ValidationRule(
+    rule = { input -> Regex(".{6,}").matches(input) },
+    message = StringResource("Must be at least 6 characters."),
+)
+```
 
 ## What you don't wire
 
@@ -236,11 +283,11 @@ After wiring:
 ## Step-by-step (summary)
 
 1. Decide which built-in `AccountKey`s the app uses.
-2. Define custom `AccountKey`s as `data object`s with explicit string `identifier`s.
+2. Define custom `AccountKey`s as `data object`s with explicit string `identifier`s; use `ComputedKnowledgeSource` / `OptionalComputedKnowledgeSource` for keys whose value derives from others.
 3. Pick `FirebaseAuthProviders` (or use `Default`).
 4. Pick a storage provider (`FirestoreAccountStorage` / `InMemoryAccountStorageProvider` / custom).
 5. Register everything inside the Spezi `Configuration { accountConfiguration { … } }` block.
-6. Bridge `Account` into Hilt with a `@Provides`-via-`requireDependency<Account>()` pattern.
+6. Consume `Account` via `dependency<Account>()` (canonical). Bridge into Hilt with a `@Provides fun provideAccount(): Account = requireDependency()` only for `@HiltViewModel` consumers (migration scaffolding).
 7. Optionally add per-key `validationRule`s.
 
 ## Proposing knowledge base improvements

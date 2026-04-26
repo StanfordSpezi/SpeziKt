@@ -1,0 +1,33 @@
+// LEGACY TEMPLATE — for editing existing Hilt-bearing Spezi-Kotlin modules only.
+// New modules should use Module.kt.tmpl (the Spezi-native scaffold).
+//
+// Spezi-Kotlin is migrating away from Hilt; only a small set of modules in current code still
+// applies the `spezi.hilt` convention plugin and ships Hilt `@Module` files. When working in
+// those modules, this template shows the canonical Hilt shape.
+//
+// Replace <package-segment>, <ModuleName>, <Interface>, <Thing> with concrete names.
+// Drop the nested Bindings class when only @Provides are present; drop the outer @Provides block
+// when only @Binds are present.
+
+package edu.stanford.spezi.<package-segment>
+
+import dagger.Binds
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+
+@Module
+@InstallIn(SingletonComponent::class)
+class <ModuleName>Module {
+
+    @Module
+    @InstallIn(SingletonComponent::class)
+    abstract class Bindings {
+        @Binds
+        internal abstract fun bind<Interface>(impl: <Interface>Impl): <Interface>
+    }
+
+    @Provides
+    fun provide<Thing>(): <Thing> = <Thing>Impl()
+}
