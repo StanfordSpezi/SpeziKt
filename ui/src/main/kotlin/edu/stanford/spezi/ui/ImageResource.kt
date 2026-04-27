@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import edu.stanford.spezi.foundation.UUID
 import edu.stanford.spezi.ui.theme.SpeziTheme
 import edu.stanford.spezi.ui.theme.ThemePreviews
 
@@ -26,37 +25,30 @@ import edu.stanford.spezi.ui.theme.ThemePreviews
  */
 @Immutable
 sealed interface ImageResource : ComposableContent {
-    val identifier: String
-    val contentDescription: StringResource?
-        get() = null
+    val contentDescription: StringResource? get() = null
     val tint: ComposeValue<Color>
 
     data class Vector(
         val image: ImageVector,
         override val contentDescription: StringResource? = null,
         override val tint: ComposeValue<Color> = { LocalContentColor.current },
-    ) : ImageResource {
-        override val identifier = UUID().toString()
-    }
+    ) : ImageResource
 
     data class Drawable(
         @DrawableRes val resId: Int,
         override val contentDescription: StringResource? = null,
         override val tint: ComposeValue<Color> = { LocalContentColor.current },
-    ) : ImageResource {
-        override val identifier = UUID().toString()
-    }
+    ) : ImageResource
 
     @Composable
     override fun Content(modifier: Modifier) {
-        val imageModifier = modifier.testContentIdentifier(identifier)
         when (this) {
             is Vector -> {
                 Icon(
                     imageVector = image,
                     contentDescription = contentDescription?.text(),
                     tint = tint.invoke(),
-                    modifier = imageModifier
+                    modifier = modifier
                 )
             }
 
@@ -65,7 +57,7 @@ sealed interface ImageResource : ComposableContent {
                     painter = painterResource(id = resId),
                     contentDescription = contentDescription?.text(),
                     tint = tint.invoke(),
-                    modifier = imageModifier,
+                    modifier = modifier,
                 )
             }
         }

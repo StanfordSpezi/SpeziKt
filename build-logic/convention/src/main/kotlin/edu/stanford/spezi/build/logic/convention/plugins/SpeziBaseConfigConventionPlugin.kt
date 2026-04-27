@@ -2,7 +2,6 @@ package edu.stanford.spezi.build.logic.convention.plugins
 
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import edu.stanford.spezi.build.logic.convention.extensions.android
-import edu.stanford.spezi.build.logic.convention.extensions.findLibrary
 import edu.stanford.spezi.build.logic.convention.extensions.findVersion
 import edu.stanford.spezi.build.logic.convention.extensions.hasAndroidTests
 import edu.stanford.spezi.build.logic.convention.extensions.isLibrary
@@ -10,10 +9,9 @@ import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 class SpeziBaseConfigConventionPlugin : Plugin<Project> {
     private val java = JavaVersion.VERSION_17
@@ -43,16 +41,15 @@ class SpeziBaseConfigConventionPlugin : Plugin<Project> {
             }
         }
 
-        tasks.withType<KotlinCompilationTask<*>>().configureEach {
+        extensions.configure(KotlinAndroidProjectExtension::class.java) {
+            jvmToolchain(java.majorVersion.toInt())
             compilerOptions {
+                jvmTarget.set(JvmTarget.JVM_17)
                 languageVersion.set(KotlinVersion.KOTLIN_2_0)
-                freeCompilerArgs.add("-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
-            }
-        }
-
-        tasks.withType<KotlinCompile>().configureEach {
-            kotlinOptions {
-                jvmTarget = java.toString()
+                freeCompilerArgs.addAll(
+                    "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                    "-Xannotation-default-target=param-property",
+                )
             }
         }
 

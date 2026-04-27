@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.spezi.library)
-    alias(libs.plugins.spezi.hilt)
     alias(libs.plugins.spezi.serialization)
 }
 
@@ -11,8 +10,7 @@ android {
 dependencies {
     api(project(":core"))
     implementation(project(":core-coroutines"))
-
-    androidTestImplementation(libs.bundles.compose.androidTest)
-    androidTestImplementation(libs.hilt.test)
-    androidTestImplementation(project(":testing-ui"))
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.security.crypto.ktx)
+    androidTestImplementation(libs.bundles.integration.testing)
 }

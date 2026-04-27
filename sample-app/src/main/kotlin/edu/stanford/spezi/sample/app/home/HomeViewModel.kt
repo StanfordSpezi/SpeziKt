@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.spezi.sample.app.NavigationEvent
 import edu.stanford.spezi.sample.app.Navigator
 import edu.stanford.spezi.sample.app.R
@@ -20,10 +19,8 @@ import edu.stanford.spezi.ui.StringResource
 import edu.stanford.spezi.ui.coroutinesLauncher
 import edu.stanford.spezi.ui.speziAppBar
 import edu.stanford.spezi.ui.theme.Spacings
-import javax.inject.Inject
 
-@HiltViewModel
-class HomeViewModel @Inject constructor(
+class HomeViewModel(
     private val navigator: Navigator,
 ) : ViewModel() {
     private val scaffoldState = MutableSpeziScaffoldState(

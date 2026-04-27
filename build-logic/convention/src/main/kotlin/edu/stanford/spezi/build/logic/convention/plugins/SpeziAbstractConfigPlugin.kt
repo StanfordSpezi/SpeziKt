@@ -1,6 +1,5 @@
 package edu.stanford.spezi.build.logic.convention.plugins
 
-import edu.stanford.spezi.build.logic.convention.extensions.android
 import edu.stanford.spezi.build.logic.convention.extensions.apply
 import edu.stanford.spezi.build.logic.convention.extensions.findBundle
 import edu.stanford.spezi.build.logic.convention.extensions.implementation
@@ -20,11 +19,6 @@ abstract class SpeziAbstractConfigPlugin(private val modulePlugin: PluginId) : P
 
         defaultConfig.apply(this)
 
-        android {
-            defaultConfig {
-                testInstrumentationRunner = "edu.stanford.spezi.testing.ui.HiltApplicationTestRunner"
-            }
-        }
         dependencies {
             if (path != LOGGING_MODULE) {
                 implementation(project(LOGGING_MODULE))

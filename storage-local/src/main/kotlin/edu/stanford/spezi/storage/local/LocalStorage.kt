@@ -1,10 +1,8 @@
 package edu.stanford.spezi.storage.local
 
 import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
 import edu.stanford.spezi.core.DefaultInitializer
 import edu.stanford.spezi.core.Module
-import edu.stanford.spezi.core.coroutines.Dispatching
 import edu.stanford.spezi.core.logging.speziLogger
 import edu.stanford.spezi.storage.local.LocalStorageSetting.Encrypted
 import edu.stanford.spezi.storage.local.LocalStorageSetting.EncryptedUsingKeyStore
@@ -20,7 +18,6 @@ import java.nio.charset.StandardCharsets
 import java.security.Key
 import java.security.KeyPair
 import javax.crypto.Cipher
-import javax.inject.Inject
 
 interface LocalStorage : Module {
 
@@ -63,10 +60,10 @@ interface LocalStorage : Module {
     }
 }
 
-internal class LocalStorageImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
-    @Dispatching.IO private val ioDispatcher: CoroutineDispatcher,
-    private val keyStorage: KeyStorage,
+internal class LocalStorageImpl(
+    private val context: Context,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val keyStorage: KeyStorage = KeyStorageImpl(),
 ) : LocalStorage {
 
     private val logger by speziLogger()

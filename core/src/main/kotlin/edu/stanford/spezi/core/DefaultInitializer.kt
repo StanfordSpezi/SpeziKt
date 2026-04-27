@@ -3,23 +3,25 @@ package edu.stanford.spezi.core
 import android.content.Context
 
 /**
- * An interface for providing a default module instance to be used in the module dependency graph in case no explicit instance is
- * registered in the configuration block of the [SpeziApplication]. In case the module is not registered, Spezi will try to create
- * the instance by checking whether the companion object of the Module type implements this interface.
+ * An interface for providing a default instance of any type [T] to be used in the dependency
+ * graph when no explicit registration is found in the configuration block of the [SpeziApplication].
+ *
+ * Spezi will check whether the companion object of the requested type implements this interface
+ * and, if so, call [create] to produce an instance automatically.
  *
  * Example usage:
  *
  * ```kotlin
- * class MyModule(val packageName: String) : Module {
+ * class MyService(val packageName: String) {
  *
- *     companion object : DefaultInitializer<MyModule> {
- *         override fun create(context: Context): MyModule {
- *             return MyModule(packageName = context.packageName)
+ *     companion object : DefaultInitializer<MyService> {
+ *         override fun create(context: Context): MyService {
+ *             return MyService(packageName = context.packageName)
  *         }
  *     }
  * }
  * ```
  */
-interface DefaultInitializer<out M : Module> {
-    fun create(context: Context): M
+interface DefaultInitializer<out T : Any> {
+    fun create(context: Context): T
 }

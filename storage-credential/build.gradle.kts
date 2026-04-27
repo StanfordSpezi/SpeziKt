@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.spezi.library)
-    alias(libs.plugins.spezi.hilt)
     alias(libs.plugins.spezi.serialization)
 }
 
@@ -11,8 +10,6 @@ android {
 dependencies {
     api(project(":core"))
 
-    implementation(libs.androidx.security.crypto.ktx)
-
-    androidTestImplementation(libs.hilt.test)
-    androidTestImplementation(project(":testing-ui"))
+    implementation(project(":storage-local"))
+    androidTestImplementation(libs.bundles.integration.testing)
 }

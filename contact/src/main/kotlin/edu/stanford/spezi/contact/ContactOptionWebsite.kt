@@ -1,9 +1,9 @@
 package edu.stanford.spezi.contact
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.core.net.toUri
 import edu.stanford.spezi.ui.StringResource
 
 fun ContactOption.Companion.website(uriString: String): ContactOption =
@@ -13,7 +13,7 @@ fun ContactOption.Companion.website(uriString: String): ContactOption =
         action = { context ->
             runCatching {
                 val browserIntent =
-                    Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
+                    Intent(Intent.ACTION_VIEW, uriString.toUri())
                 context.startActivity(browserIntent)
             }.onFailure {
                 logger.e(it) { "Failed to open intent for website at `$uriString`." }

@@ -4,17 +4,15 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import dagger.hilt.android.AndroidEntryPoint
 import edu.stanford.spezi.core.dependency
 import edu.stanford.spezi.sample.app.health.HealthScreen
 import edu.stanford.spezi.sample.app.home.HomeScreen
+import edu.stanford.spezi.ui.ConsumeEvents
 import edu.stanford.spezi.ui.theme.SpeziTheme
 
-@AndroidEntryPoint
 class SampleActivity : AppCompatActivity() {
     private val navigator by dependency<Navigator>()
 
@@ -43,13 +41,12 @@ class SampleActivity : AppCompatActivity() {
                 HealthScreen()
             }
         }
-        LaunchedEffect(Unit) {
-            navigator.events.collect { event ->
-                when (event) {
-                    is NavigationEvent.PopBackStack -> navHostController.popBackStack()
-                    is NavigationEvent.NavigateUp -> navHostController.navigateUp()
-                    is NavigationEvent.Health -> navHostController.navigate(Routes.Health)
-                }
+
+        ConsumeEvents(eventFlow = navigator.events) { event ->
+            when (event) {
+                is NavigationEvent.PopBackStack -> navHostController.popBackStack()
+                is NavigationEvent.NavigateUp -> navHostController.navigateUp()
+                is NavigationEvent.Health -> navHostController.navigate(Routes.Health)
             }
         }
     }

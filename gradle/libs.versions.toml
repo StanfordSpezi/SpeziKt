@@ -30,8 +30,6 @@ googleGmsGoogleServices = "4.4.4"
 googleid = "1.1.1"
 guava = "32.1.3-android" # is a fixed version which works with all other dependencies
 healthConnectClient = "1.1.0"
-hiltNavigation = "1.3.0"
-hiltVersion = "2.57.2"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 kotlin = "2.1.21" # latest kotlin version that we can support due to this ksp issue: https://github.com/google/ksp/issues/2463
@@ -39,7 +37,6 @@ kotlinxSerializationJson = "1.9.0"
 kspVersion = "2.1.21-2.0.1" # should align version with kotlin, see kotlin = "2.1.21"
 lifecycleKtx = "2.9.4"
 minSdk = "31"
-mockKVersion = "1.14.6"
 paparazziVersion = "2.0.0-alpha02"
 playServicesAuth = "21.4.0"
 rulesVersion = "1.7.0"
@@ -71,6 +68,8 @@ androidx-health-connect-client = { module = "androidx.health.connect:connect-cli
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleKtx" }
 androidx-lifecycle-view-model-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleKtx" }
+androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleKtx" }
+androidx-lifecycle-viewmodel-savedstate = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "lifecycleKtx" }
 androidx-lifecycle-process = { group = "androidx.lifecycle", name = "lifecycle-process", version.ref = "lifecycleKtx" }
 androidx-security-crypto-ktx = { group = "androidx.security", name = "security-crypto-ktx", version.ref = "securityCryptoKtx" }
 androidx-test-core = { group = "androidx.test", name = "core", version.ref = "testCoreVersion" }
@@ -100,20 +99,10 @@ firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage
 google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltVersion" }
-hilt-core = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltVersion" }
-hilt-gradle = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hiltVersion" }
-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigation" }
-hilt-test = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hiltVersion" }
-hilt-test-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hiltVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlin-gradle = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
-mockk-agent-core = { group = "io.mockk", name = "mockk-agent", version.ref = "mockKVersion" }
-mockk-agent-jvm = { group = "io.mockk", name = "mockk-agent-jvm", version.ref = "mockKVersion" }
-mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockKVersion" }
-mockk-core = { group = "io.mockk", name = "mockk", version.ref = "mockKVersion" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 paparazzi = { module = "app.cash.paparazzi:paparazzi", version.ref = "paparazziVersion" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
@@ -128,7 +117,6 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
@@ -137,27 +125,12 @@ spezi-application = { id = "spezi.application", version = "unspecified" }
 spezi-base = { id = "spezi.base", version = "unspecified" }
 spezi-compose = { id = "spezi.compose", version = "unspecified" }
 spezi-desugaring = { id = "spezi.desugaring", version = "unspecified" }
-spezi-hilt = { id = "spezi.hilt", version = "unspecified" }
 spezi-library = { id = "spezi.library", version = "unspecified" }
 spezi-serialization = { id = "spezi.serialization", version = "unspecified" }
 
 # Please keep [bundles] block sorted. Select all items and in Android Studio `Edit > Sort Lines`
 [bundles]
-compose = [
-    "androidx-activity-compose",
-    "androidx-appcompat",
-    "navigation-compose",
-    "hilt-navigation-compose",
-    "androidx-compose-material-icons",
-    "androidx-core-ktx",
-    "coil-compose",
-    "coil-network",
-    "compose-foundation",
-    "compose-material3",
-    "compose-ui",
-    "compose-ui-tooling",
-    "compose-ui-tooling-preview",
-]
-compose-androidTest = ["junit", "androidx-espresso-core", "compose-ui-test", "mockk-agent-core", "mockk-android", "google-truth"]
+
+integration-testing = ["androidx-espresso-core", "google-truth", "coroutines-test"]
 ktx-coroutines = ["coroutines-core", "coroutines-android"]
-unit-testing = ["junit", "mockk-core", "google-truth", "coroutines-test", "androidx-core-testing", "androidx-test-rules"]
+unit-testing = ["junit", "google-truth", "coroutines-test", "androidx-core-testing", "androidx-test-rules"]

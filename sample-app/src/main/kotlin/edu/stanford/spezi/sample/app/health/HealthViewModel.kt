@@ -14,7 +14,6 @@ import androidx.health.connect.client.records.metadata.Metadata
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.stanford.spezi.health.AnyRecordType
 import edu.stanford.spezi.health.Health
 import edu.stanford.spezi.health.HealthQueryTimeRange
@@ -38,12 +37,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Instant
-import javax.inject.Inject
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
 
-@HiltViewModel
-class HealthViewModel @Inject constructor(
+class HealthViewModel(
     private val navigator: Navigator,
     private val health: Health,
 ) : ViewModel() {

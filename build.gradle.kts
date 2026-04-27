@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.detekt) version libs.versions.detekt
     alias(libs.plugins.dokka) version libs.versions.dokka
     alias(libs.plugins.google.devtools.ksp) version libs.versions.kspVersion apply false
-    alias(libs.plugins.hilt.android) version libs.versions.hiltVersion apply false
     jacoco
     alias(libs.plugins.jetbrains.kotlin.android) apply false
     alias(libs.plugins.google.gms.google.services) apply false
@@ -104,8 +103,6 @@ fun Project.setupJacoco() {
         "**/R\$*.class",
         "**/BuildConfig.*",
         "**/Manifest*.*",
-        "**/*_Hilt*.class",
-        "**/Hilt_*.class",
         "**/*Activity.class",
         "**/*Application.class",
         "**/di/*Module.*",

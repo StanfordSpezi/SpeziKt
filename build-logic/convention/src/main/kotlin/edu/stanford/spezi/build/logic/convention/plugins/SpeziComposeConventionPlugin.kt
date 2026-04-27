@@ -28,11 +28,26 @@ class SpeziComposeConventionPlugin : Plugin<Project> {
             dependencies {
                 val composeBom = platform(findLibrary("compose-bom"))
                 implementation(composeBom)
-                implementation(findBundle("compose"))
+                implementation(findLibrary("androidx-activity-compose"))
+                implementation(findLibrary("androidx-appcompat"))
+                implementation(findLibrary("navigation-compose"))
+                implementation(findLibrary("androidx-compose-material-icons"))
+                implementation(findLibrary("androidx-core-ktx"))
+                implementation(findLibrary("coil-compose"))
+                implementation(findLibrary("coil-network"))
+                implementation(findLibrary("compose-foundation"))
+                implementation(findLibrary("compose-material3"))
+                implementation(findLibrary("compose-ui"))
+                implementation(findLibrary("compose-ui-tooling-preview"))
+
+                implementation(findLibrary("androidx-lifecycle-view-model-ktx"))
+                implementation(findLibrary("androidx-lifecycle-viewmodel-savedstate"))
+                implementation(findLibrary("androidx-lifecycle-viewmodel-compose"))
 
                 androidTestImplementation(composeBom)
                 androidTestImplementation(findBundle("unit-testing"))
-                androidTestImplementation(findBundle("compose-androidTest"))
+                androidTestImplementation(findBundle("integration-testing"))
+                androidTestImplementation(findLibrary("compose-ui-test"))
                 debugImplementation(findLibrary("compose-ui-tooling"))
                 debugImplementation(findLibrary("compose-ui-test-manifest"))
 

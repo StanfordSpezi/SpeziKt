@@ -1,11 +1,9 @@
 package edu.stanford.spezi.core.internal
 
-import android.app.Application
 import android.content.Context
 import com.google.common.truth.Truth.assertThat
 import edu.stanford.spezi.core.ApplicationModule
 import edu.stanford.spezi.core.Configuration
-import edu.stanford.spezi.core.ConfigurationBuilder
 import edu.stanford.spezi.core.DefaultInitializer
 import edu.stanford.spezi.core.Module
 import edu.stanford.spezi.core.SpeziApplication
@@ -14,20 +12,18 @@ import edu.stanford.spezi.core.Standard
 import edu.stanford.spezi.core.dependency
 import edu.stanford.spezi.core.optionalDependency
 import edu.stanford.spezi.core.plus
-import org.junit.Before
+import edu.stanford.spezi.core.requireDependency
+import edu.stanford.spezi.core.requireOptionalDependency
+import edu.stanford.spezi.testing.core.TestStandard
+import edu.stanford.spezi.testing.core.testSpeziApplication
 import org.junit.Test
 
 class SpeziTests {
 
-    @Before
-    fun setup() {
-        SpeziApplication.clear()
-    }
-
     @Test
     fun `it should register application module on configure`() {
         // given
-        val application = testApplication {
+        val application = testSpeziApplication {
             // empty
         }
 
@@ -42,7 +38,7 @@ class SpeziTests {
     fun `it should register use correct standard`() {
         // given
         val testStandard = object : Standard {}
-        testApplication(standard = testStandard) {
+        testSpeziApplication(standard = testStandard) {
             // empty
         }
 
@@ -56,7 +52,7 @@ class SpeziTests {
     @Test
     fun `it should be able to create and return modules with empty constructor`() {
         // given
-        testApplication {
+        testSpeziApplication {
             // no dependencies registered
         }
 
@@ -70,7 +66,7 @@ class SpeziTests {
     @Test
     fun `it should be able to create and return modules with context constructor`() {
         // given
-        testApplication {
+        testSpeziApplication {
             // no dependencies registered
         }
 
@@ -84,7 +80,7 @@ class SpeziTests {
     @Test
     fun `it should be able to create and return modules from Default initializer of companion object`() {
         // given
-        val application = testApplication {
+        val application = testSpeziApplication {
             // no dependencies registered
         }
 
@@ -99,7 +95,7 @@ class SpeziTests {
     @Test
     fun `it should keep formerly registered application module reconfiguration`() {
         // given
-        val application = testApplication { }
+        val application = testSpeziApplication { }
         SpeziApplication.configure(application.configuration.standard) { }
 
         // when
@@ -112,7 +108,7 @@ class SpeziTests {
     @Test
     fun `it should invoke configure on registered module`() {
         // given
-        testApplication {
+        testSpeziApplication {
             module { ConfigurableModule() }
         }
 
@@ -124,10 +120,10 @@ class SpeziTests {
     }
 
     @Test
-    fun `it should handle interface and impl type registration correclty`() {
+    fun `it should handle interface and impl type registration correctly`() {
         // given
         val implementation = OnboardingImpl()
-        testApplication {
+        testSpeziApplication {
             module<Onboarding> { implementation }
         }
 
@@ -141,6 +137,7 @@ class SpeziTests {
     @Test
     fun `it should throw a spezi error in case application is not configured yet`() {
         // when
+        SpeziApplication.clear()
         val applicationModule by dependency<ApplicationModule>()
         val expectedMessage = """
                 Spezi is not configured configured yet. Please make sure your main application conforms to [SpeziApplication],
@@ -157,7 +154,7 @@ class SpeziTests {
     @Test
     fun `it should return null in case the dependency is not registered on optionalDependency`() {
         // given
-        testApplication {
+        testSpeziApplication {
             // no dependencies registered
         }
 
@@ -172,7 +169,7 @@ class SpeziTests {
     fun `it should return the same instance on dependency and optionalDependency`() {
         // given
         val module1 = Module1(name = "Module 1")
-        testApplication {
+        testSpeziApplication {
             module { module1 }
         }
 
@@ -191,7 +188,7 @@ class SpeziTests {
         val identifier = "module-1-identifier"
         val module1 = Module1(name = "Module 1")
         val module1WithIdentifier = Module1(name = "Module 1 with identifier")
-        testApplication {
+        testSpeziApplication {
             module { module1 }
             module(identifier) { module1WithIdentifier }
         }
@@ -208,11 +205,11 @@ class SpeziTests {
     @Test
     fun `it should throw spezi error in case the dependency is not registered and return null on optionalDependency`() {
         // given
-        testApplication {
+        testSpeziApplication {
             // no dependencies registered
         }
         val expectedMessage =
-            "${ModuleKey<Module1>()} not found. Please make sure to register via in the configuration block of your app component"
+            "${DependencyKey<Module1>()} not found. Please make sure to register it in the configuration block of your app."
 
         // when
         val optionalDependency by optionalDependency<Module1>()
@@ -231,7 +228,7 @@ class SpeziTests {
             module { Module1(name = "Module 1") }
             module { Module2(age = "Module 2") }
         }
-        testApplication {
+        testSpeziApplication {
             include(configuration = configuration)
         }
 
@@ -249,7 +246,7 @@ class SpeziTests {
         // given
         val audioModule = AudioModule()
         val customIdentifier = "custom-audio-module-identifier"
-        testApplication {
+        testSpeziApplication {
             module { audioModule }
             module(customIdentifier) { AudioModule() }
             module { Preprocessor(module = dependency()) }
@@ -275,7 +272,7 @@ class SpeziTests {
         // given
         val module1 = Module1(name = "Module 1")
         val module2 = Module2(age = "Module 2")
-        testApplication {
+        testSpeziApplication {
             module { module1 }
             module { module2 }
             module { ModuleAlternative(module1 = dependency(), module2 = dependency()) }
@@ -304,7 +301,7 @@ class SpeziTests {
                 )
             }
         }
-        testApplication {
+        testSpeziApplication {
             include(configuration = customConfiguration)
             module<Onboarding> { OnboardingImpl() }
             module { Module1(name = "Module 1") }
@@ -349,7 +346,7 @@ class SpeziTests {
     fun `it should detect circular dependencies and throw during configuration`() {
         // when
         val result = runCatching {
-            testApplication {
+            testSpeziApplication {
                 module { CircularDep1(circularDep2 = dependency()) }
                 module { CircularDep2(circularDep1 = dependency()) }
             }
@@ -361,6 +358,125 @@ class SpeziTests {
     }
 
     @Test
+    fun `it should resolve a singleton non-module dependency`() {
+        // given
+        val service = UserService(name = "Alice")
+        testSpeziApplication {
+            singleton { service }
+        }
+
+        // when
+        val resolved = requireDependency<UserService>()
+        val optionalResolved = requireOptionalDependency<UserService>()
+
+        // then
+        assertThat(resolved).isEqualTo(service)
+        assertThat(optionalResolved).isEqualTo(service)
+    }
+
+    @Test
+    fun `it should return the same singleton instance on every resolution`() {
+        // given
+        testSpeziApplication {
+            singleton { UserService(name = "Bob") }
+        }
+
+        // when
+        val first = requireDependency<UserService>()
+        val second = requireDependency<UserService>()
+
+        // then
+        assertThat(first).isSameInstanceAs(second)
+    }
+
+    @Test
+    fun `it should create a new instance on every factory resolution`() {
+        // given
+        testSpeziApplication {
+            factory { UserService(name = "transient") }
+        }
+
+        // when
+        val first = requireDependency<UserService>()
+        val second = requireDependency<UserService>()
+
+        // then
+        assertThat(first).isNotSameInstanceAs(second)
+        assertThat(first.name).isEqualTo(second.name)
+    }
+
+    @Test
+    fun `it should allow singleton to resolve other registered dependencies`() {
+        // given
+        val module1 = Module1(name = "Module 1")
+        testSpeziApplication {
+            module { module1 }
+            singleton { UserService(name = dependency<Module1>().name) }
+        }
+
+        // when
+        val resolved = requireDependency<UserService>()
+
+        // then
+        assertThat(resolved.name).isEqualTo("Module 1")
+    }
+
+    @Test
+    fun `it should be able to create and return non-module types with empty constructor`() {
+        // given
+        testSpeziApplication {
+            // no dependencies registered
+        }
+
+        // when
+        val dependency by dependency<PlainServiceNoArg>()
+
+        // then
+        assertThat(dependency.label).isEqualTo("plain-no-arg")
+    }
+
+    @Test
+    fun `it should be able to create and return non-module types with context constructor`() {
+        // given
+        testSpeziApplication {
+            // no dependencies registered
+        }
+
+        // when
+        val dependency by dependency<PlainServiceContext>()
+
+        // then
+        assertThat(dependency.label).isEqualTo("plain-context")
+    }
+
+    @Test
+    fun `it should be able to create and return non-module types from DefaultInitializer companion`() {
+        // given
+        val application = testSpeziApplication {
+            // no dependencies registered
+        }
+
+        // when
+        val dependency by dependency<PlainServiceWithCompanion>()
+        val defaultInstance = PlainServiceWithCompanion.create(application)
+
+        // then
+        assertThat(dependency).isEqualTo(defaultInstance)
+    }
+
+    @Test
+    fun `it should return null for unregistered non-module dependency`() {
+        // given
+        testSpeziApplication { }
+
+        // when
+        val resolved = requireOptionalDependency<UserService>()
+
+        // then
+        assertThat(resolved).isNull()
+    }
+
+    @Test
     fun `it should register merged configurations correctly`() {
         // given
         val config1 = Configuration(standard = TestStandard) {
@@ -369,7 +485,7 @@ class SpeziTests {
         val config2 = Configuration(standard = TestStandard) {
             module { Module2(age = "Module 2") }
         }
-        testApplication {
+        testSpeziApplication {
             include(config1 + config2)
         }
 
@@ -381,27 +497,10 @@ class SpeziTests {
         assertThat(module1.name).isEqualTo("Module 1")
         assertThat(module2.age).isEqualTo("Module 2")
     }
-
-    private fun testApplication(
-        standard: Standard = TestStandard,
-        scope: ConfigurationBuilder.() -> Unit = {},
-    ): TestApplication {
-        val application = object : TestApplication(standard = standard, scope = scope) {}
-        SpeziApplication.configure(application)
-        return application
-    }
 }
 
 class CircularDep1(val circularDep2: CircularDep2) : Module
 class CircularDep2(val circularDep1: CircularDep1) : Module
-private object TestStandard : Standard
-
-private abstract class TestApplication(
-    standard: Standard,
-    scope: ConfigurationBuilder.() -> Unit = {},
-) : Application(), SpeziApplication {
-    override val configuration: Configuration = Configuration(standard = standard, scope = scope)
-}
 
 private interface Onboarding : Module
 private class OnboardingImpl : Onboarding
@@ -438,5 +537,25 @@ data class EmptyModuleWithCompanion(val name: String) : Module {
         override fun create(context: Context): EmptyModuleWithCompanion {
             return EmptyModuleWithCompanion(name = "empty-module-with-companion")
         }
+    }
+}
+
+/** A plain (non-[Module]) class used to test singleton / factory registrations. */
+data class UserService(val name: String)
+
+/** A plain (non-[Module]) class with a no-arg constructor for [DefaultInitializer] fallback tests. */
+class PlainServiceNoArg {
+    val label = "plain-no-arg"
+}
+
+/** A plain (non-[Module]) class with a [Context]-arg constructor for [DefaultInitializer] fallback tests. */
+data class PlainServiceContext(private val context: Context) {
+    val label = "plain-context"
+}
+
+/** A plain (non-[Module]) class with a [DefaultInitializer] companion for fallback tests. */
+data class PlainServiceWithCompanion(val label: String) {
+    companion object : DefaultInitializer<PlainServiceWithCompanion> {
+        override fun create(context: Context) = PlainServiceWithCompanion(label = "plain-companion")
     }
 }
