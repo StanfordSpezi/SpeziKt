@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -13,8 +14,8 @@ java {
     targetCompatibility = javaVersion
 }
 tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = javaVersion.toString()
+    compilerOptions {
+        jvmTarget.set(JvmTarget.fromTarget(javaVersion.toString()))
     }
 }
 
@@ -22,7 +23,6 @@ dependencies {
     compileOnly(libs.android.gradle)
     compileOnly(libs.android.tools.common)
     compileOnly(libs.kotlin.gradle)
-    compileOnly(libs.hilt.gradle)
 }
 
 tasks {
@@ -46,7 +46,6 @@ gradlePlugin {
         conventionPlugin(id = "base", className = "SpeziBaseConfigConventionPlugin")
         conventionPlugin(id = "compose", className = "SpeziComposeConventionPlugin")
         conventionPlugin(id = "desugaring", className = "DesugaringConventionPlugin")
-        conventionPlugin(id = "hilt", className = "HiltConventionPlugin")
         conventionPlugin(id = "library", className = "SpeziLibraryConventionPlugin")
         conventionPlugin(id = "serialization", className = "SpeziSerializationConventionPlugin")
     }

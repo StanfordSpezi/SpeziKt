@@ -8,7 +8,6 @@ import java.security.KeyPairGenerator
 import java.security.KeyStore
 import java.security.PrivateKey
 import java.security.PublicKey
-import javax.inject.Inject
 
 interface KeyStorage {
     fun create(tag: String, size: Int = DEFAULT_KEY_SIZE): Result<KeyPair>
@@ -27,7 +26,7 @@ interface KeyStorage {
     }
 }
 
-internal class KeyStorageImpl @Inject constructor() : KeyStorage {
+internal class KeyStorageImpl : KeyStorage {
     private val logger by speziLogger()
 
     private val keyStore: KeyStore by lazy {

@@ -7,6 +7,8 @@ import edu.stanford.spezi.foundation.ComputedKnowledgeSourceStoragePolicy
 import edu.stanford.spezi.foundation.OptionalComputedKnowledgeSource
 import edu.stanford.spezi.foundation.ValueRepository
 import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.ui.account.DataDisplayComposable
+import edu.stanford.spezi.ui.account.DataEntryComposable
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlin.reflect.KClass
@@ -131,7 +133,7 @@ data object NameKey : AccountKey<String> {
     override val identifier: String = "name"
     override val name: StringResource = StringResource("Name")
     override val serializer: KSerializer<String> = String.serializer()
-    override val initialValue: InitialValue<String> = InitialValue.nullable()
+    override val initialValue: InitialValue<String> = InitialValue.string
     override val category: AccountKeyCategory = AccountKeyCategory.ContactDetails
     override val display: DataDisplayComposable<String>? = null
     override val entry: DataEntryComposable<String>? = null
@@ -146,7 +148,7 @@ data object PasswordKey : AccountKey<String> {
     override val identifier: String = "password"
     override val name: StringResource = StringResource("Password")
     override val serializer: KSerializer<String> = String.serializer()
-    override val initialValue: InitialValue<String> = InitialValue.nullable()
+    override val initialValue: InitialValue<String> = InitialValue.string
     override val category: AccountKeyCategory = AccountKeyCategory.Credentials
     override val display: DataDisplayComposable<String>? = null
     override val entry: DataEntryComposable<String>? = null

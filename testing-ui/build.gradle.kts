@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.spezi.library)
     alias(libs.plugins.spezi.compose)
-    alias(libs.plugins.spezi.hilt)
 }
 
 android {
@@ -10,10 +9,6 @@ android {
 
 dependencies {
     api(project(":ui"))
-
-    implementation(libs.hilt.test)
-    implementation(libs.androidx.test.runner)
-
-    api(libs.bundles.unit.testing)
-    api(libs.bundles.compose.androidTest)
+    api(libs.compose.ui.test)
+    api(libs.androidx.test.runner)
 }

@@ -2,6 +2,8 @@ package edu.stanford.spezi.account
 
 import edu.stanford.spezi.foundation.KnowledgeSource
 import edu.stanford.spezi.ui.StringResource
+import edu.stanford.spezi.ui.account.DataDisplayComposable
+import edu.stanford.spezi.ui.account.DataEntryComposable
 import kotlinx.serialization.KSerializer
 import kotlin.reflect.KClass
 import kotlin.reflect.full.companionObjectInstance

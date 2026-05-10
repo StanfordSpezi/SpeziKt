@@ -12,6 +12,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -21,7 +22,7 @@ import androidx.core.view.WindowCompat
 @Composable
 fun SpeziTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
@@ -36,9 +37,11 @@ fun SpeziTheme(
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            val window = (view.context as? Activity)?.window
+            if (window != null) {
+                window.statusBarColor = colorScheme.primary.toArgb()
+                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            }
         }
     }
     val isPreview = LocalInspectionMode.current
@@ -56,32 +59,59 @@ fun SpeziTheme(
     )
 }
 
+private val AccentBlue = Color(0xFF2563EB)
+private val AccentBlueDark = Color(0xFF1D4ED8)
+
+private val White = Color(0xFFFFFFFF)
+private val Grey50 = Color(0xFFF9FAFB)
+private val Grey100 = Color(0xFFF3F4F6)
+private val Grey300 = Color(0xFFD1D5DB)
+private val Grey600 = Color(0xFF4B5563)
+private val Grey900 = Color(0xFF111827)
+
+private val Black = Color(0xFF000000)
+private val DarkSurface = Color(0xFF121212)
+private val DarkSurface2 = Color(0xFF1E1E1E)
+private val DarkSurface3 = Color(0xFF2A2A2A)
+private val DarkTextSecondary = Color(0xFFB3B3B3)
+
 private val DarkColorScheme = darkColorScheme(
-    primary = CardinalRed,
-    secondary = Black60,
-    tertiary = CardinalRedDark,
+    primary = AccentBlue,
+    onPrimary = White,
+
+    secondary = DarkTextSecondary,
+    onSecondary = White,
 
     background = Black,
-    surface = Black80,
-    onPrimary = White,
-    onSecondary = White,
-    onTertiary = White,
     onBackground = White,
+
+    surface = DarkSurface,
     onSurface = White,
+
+    surfaceVariant = DarkSurface2,
+    onSurfaceVariant = DarkTextSecondary,
+
+    outline = DarkSurface3,
+
+    error = Color.Red,
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = CardinalRed,
-    secondary = CoolGrey,
-    tertiary = RectangleBlue,
-
-    background = RectangleBlue,
-    surface = White,
-
+    primary = AccentBlueDark,
     onPrimary = White,
-    onSecondary = Black,
-    onTertiary = Black,
 
-    onBackground = Black,
-    onSurface = Black,
+    secondary = Grey600,
+    onSecondary = White,
+
+    background = White,
+    onBackground = Grey900,
+
+    surface = Grey100,
+    onSurface = Grey900,
+
+    surfaceVariant = Grey50,
+    onSurfaceVariant = Grey600,
+
+    outline = Grey300,
+    error = Color.Red,
 )

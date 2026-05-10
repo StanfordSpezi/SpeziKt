@@ -1,10 +1,10 @@
 package edu.stanford.spezi.sample.app.health
 
 import androidx.compose.runtime.Composable
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import edu.stanford.spezi.core.viewmodel.speziViewModel
 
 @Composable
 fun HealthScreen() {
-    val viewModel = hiltViewModel<HealthViewModel>()
+    val viewModel = speziViewModel<HealthViewModel>()
     viewModel.content.Content()
 }

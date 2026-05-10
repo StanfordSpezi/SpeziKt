@@ -1,21 +1,14 @@
 package edu.stanford.spezi.storage.credential
 
+import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.spezi.foundation.UUID
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import javax.inject.Inject
 
-@HiltAndroidTest
 class CredentialStorageTests {
-    @get:Rule
-    val hiltRule = HiltAndroidRule(this)
 
-    @Inject
     lateinit var credentialStorage: CredentialStorage
 
     private val serverCredential = Credential(
@@ -31,7 +24,7 @@ class CredentialStorageTests {
 
     @Before
     fun setup() {
-        hiltRule.inject()
+        credentialStorage = CredentialStorage.create(context = InstrumentationRegistry.getInstrumentation().targetContext)
     }
 
     @After

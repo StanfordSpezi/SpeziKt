@@ -2,7 +2,6 @@ package edu.stanford.spezi.contact
 
 import android.content.Intent
 import android.location.Address
-import android.net.Uri
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.core.net.toUri
 import edu.stanford.spezi.core.logging.SpeziLogger
 import edu.stanford.spezi.ui.DefaultElevatedCard
 import edu.stanford.spezi.ui.theme.Colors
@@ -55,7 +55,7 @@ internal fun AddressCard(address: Address, modifier: Modifier = Modifier) {
                     runCatching {
                         val addressQuery =
                             URLEncoder.encode(addressText, StandardCharsets.UTF_8.toString())
-                        val gmmIntentUri = Uri.parse("geo:0,0?q=$addressQuery")
+                        val gmmIntentUri = "geo:0,0?q=$addressQuery".toUri()
                         val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
                         mapIntent.setPackage("com.google.android.apps.maps")
                         context.startActivity(mapIntent)

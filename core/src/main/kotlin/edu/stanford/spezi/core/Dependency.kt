@@ -3,66 +3,46 @@ package edu.stanford.spezi.core
 import edu.stanford.spezi.core.internal.Spezi
 
 /**
- * Lazy delegate to retrieve an optional module dependency from the [SpeziApplication] dependency graph.
+ * Lazy delegate to retrieve an optional dependency of type [T] from the [SpeziApplication]
+ * dependency graph.
  *
- * Example usage:
- *
- * ```kotlin
- *
- * class MyComponent {
- *   val myModule by optionalDependency<MyModule>()
- *
- *   fun doSomething() {
- *      myModule.doSomething()
- *   }
- * }
+ * Resolves [Module] instances, singletons registered via [ConfigurationBuilder.singleton], and
+ * transient factories registered via [ConfigurationBuilder.factory].
  */
-inline fun <reified M : Module> optionalDependency(identifier: String? = null) = lazy {
-    requireOptionalDependency<M>(identifier)
+inline fun <reified T : Any> optionalDependency(identifier: String? = null) = lazy {
+    requireOptionalDependency<T>(identifier)
 }
 
 /**
- * Retrieve an optional module dependency from the [SpeziApplication] dependency graph.
+ * Retrieves an optional dependency of type [T] from the [SpeziApplication] dependency graph,
+ * returning `null` if not found.
  *
- * Example usage:
- *
- * ```kotlin
- *
- * val myModule: MyModule? = requireOptionalDependency()
- * ```
+ * Resolves [Module] instances, singletons, and transient factories.
  */
-inline fun <reified M : Module> requireOptionalDependency(identifier: String? = null): M? {
-    return Spezi.requireGraph().optionalDependency<M>(identifier)
+inline fun <reified T : Any> requireOptionalDependency(identifier: String? = null): T? {
+    return Spezi.requireGraph().optionalDependency<T>(identifier)
 }
 
 /**
- * Lazy delegate to retrieve a required module dependency from the [SpeziApplication] dependency graph.
+ * Lazy delegate to retrieve a required dependency of type [T] from the [SpeziApplication]
+ * dependency graph.
  *
- * This will throw an exception if the dependency is not found / have been registered beforehand
- * in the [Configuration] block of [SpeziApplication].
+ * Resolves [Module] instances, singletons registered via [ConfigurationBuilder.singleton], and
+ * transient factories registered via [ConfigurationBuilder.factory].
  *
- * Example usage:
- *
- * ```kotlin
- *
- * class MyComponent {
- *   val myModule by dependency<MyModule>()
- *
- *   fun doSomething() {
- *      myModule.doSomething()
- *   }
- * }
+ * Throws a [SpeziError] if the dependency is not registered.
  */
-inline fun <reified M : Module> dependency(identifier: String? = null): Lazy<M> = lazy {
-    requireDependency<M>(identifier)
+inline fun <reified T : Any> dependency(identifier: String? = null): Lazy<T> = lazy {
+    requireDependency<T>(identifier)
 }
 
 /**
- * Retrieve a required module dependency from the [SpeziApplication] dependency graph.
+ * Retrieves a required dependency of type [T] from the [SpeziApplication] dependency graph.
  *
- * This will throw an exception if the dependency is not found / have been registered beforehand
- * in the [Configuration] block of [SpeziApplication].
+ * Resolves [Module] instances, singletons, and transient factories.
+ *
+ * @throws [SpeziError] if the dependency is not registered.
  */
-inline fun <reified M : Module> requireDependency(identifier: String? = null): M {
-    return Spezi.requireGraph().dependency<M>(identifier)
+inline fun <reified T : Any> requireDependency(identifier: String? = null): T {
+    return Spezi.requireGraph().dependency<T>(identifier)
 }

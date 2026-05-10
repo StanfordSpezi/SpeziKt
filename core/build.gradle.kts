@@ -9,4 +9,5 @@ android {
 dependencies {
     implementation(libs.kotlin.reflect)
     api(project(":foundation"))
+    testImplementation(project(":testing-core"))
 }

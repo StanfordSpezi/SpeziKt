@@ -1,23 +1,15 @@
 package edu.stanford.spezi.sample.app
 
-import edu.stanford.spezi.core.Module
-import edu.stanford.spezi.core.coroutines.Concurrency
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.launch
+import edu.stanford.spezi.ui.EventSink
 import kotlinx.serialization.Serializable
 
-class Navigator(
-    concurrency: Concurrency,
-) : Module {
+class Navigator {
+    private val eventsSink = EventSink<NavigationEvent>()
 
-    private val ioScope = concurrency.ioCoroutineScope()
-    private val _events = MutableSharedFlow<NavigationEvent>()
-
-    val events = _events.asSharedFlow()
+    val events = eventsSink.source()
 
     fun navigateTo(event: NavigationEvent) {
-        ioScope.launch { _events.emit(event) }
+        eventsSink.push(event)
     }
 }
 

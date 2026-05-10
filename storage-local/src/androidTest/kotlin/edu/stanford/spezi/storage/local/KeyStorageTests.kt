@@ -1,28 +1,13 @@
 package edu.stanford.spezi.storage.local
 
 import com.google.common.truth.Truth.assertThat
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import javax.inject.Inject
 
-@HiltAndroidTest
 class KeyStorageTests {
 
-    @get:Rule
-    val hiltRule = HiltAndroidRule(this)
-
-    @Inject
-    lateinit var keyStorage: KeyStorage
+    private val keyStorage: KeyStorage = KeyStorageImpl()
 
     private val keyName = "TestKey"
-
-    @Before
-    fun setup() {
-        hiltRule.inject()
-    }
 
     @Test
     fun `it should create keys correctly`() {

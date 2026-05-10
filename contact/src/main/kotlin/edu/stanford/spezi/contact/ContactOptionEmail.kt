@@ -1,9 +1,9 @@
 package edu.stanford.spezi.contact
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.core.net.toUri
 import edu.stanford.spezi.ui.StringResource
 import java.net.URLEncoder
 
@@ -16,7 +16,7 @@ fun ContactOption.Companion.email(addresses: List<String>, subject: String? = nu
                 val intent = Intent(Intent.ACTION_SENDTO).apply {
                     val subjectLine = URLEncoder.encode(subject ?: "", "utf-8")
                     val addressLine = URLEncoder.encode(addresses.joinToString(","), "utf-8")
-                    data = Uri.parse("mailto:$addressLine?subject=$subjectLine")
+                    data = "mailto:$addressLine?subject=$subjectLine".toUri()
                 }
                 context.startActivity(intent)
             }.onFailure {

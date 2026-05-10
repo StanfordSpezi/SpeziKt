@@ -1,18 +1,21 @@
 package edu.stanford.spezi.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import edu.stanford.spezi.ui.theme.Colors
 import edu.stanford.spezi.ui.theme.Sizes
+import edu.stanford.spezi.ui.theme.Spacings
+import edu.stanford.spezi.ui.theme.SpeziShapes
 import edu.stanford.spezi.ui.theme.SpeziTheme
 import edu.stanford.spezi.ui.theme.ThemePreviews
 import kotlinx.coroutines.CoroutineScope
@@ -46,11 +51,11 @@ fun AsyncButton(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
     enabled: Boolean = isLoading.not(),
-    shape: Shape = ButtonDefaults.shape,
+    shape: Shape = SpeziShapes.medium,
     containerColor: Color = ButtonDefaults.buttonColors().containerColor,
     contentColor: Color = ButtonDefaults.buttonColors().contentColor,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
-    onClick: () -> Unit = {},
+    onClick: OnActionVoid = {},
     content: @Composable RowScope.() -> Unit,
 ) {
     Button(
@@ -107,13 +112,14 @@ fun AsyncButton(
 fun AsyncTextButton(
     text: String,
     modifier: Modifier = Modifier,
+    leadingIcon: ImageResource? = null,
     isLoading: Boolean = false,
     enabled: Boolean = isLoading.not(),
-    shape: Shape = ButtonDefaults.shape,
+    shape: Shape = SpeziShapes.medium,
     containerColor: Color = ButtonDefaults.buttonColors().containerColor,
     textColor: Color = ButtonDefaults.buttonColors().contentColor,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
-    onClick: () -> Unit = {},
+    onClick: OnActionVoid = {},
 ) {
     AsyncButton(
         modifier = modifier,
@@ -124,30 +130,39 @@ fun AsyncTextButton(
         contentColor = textColor,
         contentPadding = contentPadding,
         onClick = onClick,
-        content = { Text(text = text, color = textColor) }
+        content = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(Spacings.small)
+            ) {
+                leadingIcon?.Content(modifier = Modifier.size(Sizes.Icon.small))
+                Text(text = text, color = textColor)
+            }
+        }
     )
 }
 
 data class AsyncTextButton(
-    val title: String,
+    val title: StringResource,
+    val icon: ImageResource? = null,
     val enabled: Boolean = true,
-    private val shape: ComposeValue<Shape> = { ButtonDefaults.shape },
-    private val containerColor: ComposeValue<Color> = { ButtonDefaults.buttonColors().containerColor },
-    private val textColor: ComposeValue<Color> = { ButtonDefaults.buttonColors().contentColor },
-    private val contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
-    private val coroutineScope: ComposeValue<CoroutineScope> = { rememberCoroutineScope() },
-    val action: suspend () -> Unit = {},
+    val shape: ComposeValue<Shape> = { SpeziShapes.medium },
+    val containerColor: ComposeValue<Color> = { ButtonDefaults.buttonColors().containerColor },
+    val textColor: ComposeValue<Color> = { ButtonDefaults.buttonColors().contentColor },
+    val contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+    val coroutineScope: ComposeValue<CoroutineScope> = { rememberCoroutineScope() },
+    val action: OnAwaitActionVoid = {},
 ) : ComposableContent {
-    private val _loadingState = mutableStateOf(false)
-    val loadingState: State<Boolean> = _loadingState
 
     @Composable
     override fun Content(modifier: Modifier) {
         val scope = coroutineScope()
+        val loadingState = remember { mutableStateOf(false) }
 
         AsyncTextButton(
             modifier = modifier,
-            text = title,
+            text = title.text(),
+            leadingIcon = icon,
             isLoading = loadingState.value,
             enabled = enabled && loadingState.value.not(),
             shape = shape(),
@@ -155,10 +170,12 @@ data class AsyncTextButton(
             textColor = textColor(),
             contentPadding = contentPadding,
             onClick = {
-                _loadingState.value = true
-                scope.launch {
-                    action()
-                    _loadingState.value = false
+                if (!loadingState.value) {
+                    loadingState.value = true
+                    scope.launch {
+                        runCatching { action() }
+                        loadingState.value = false
+                    }
                 }
             },
         )
@@ -176,6 +193,10 @@ fun AsyncButtonPreviews() {
         Column {
             AsyncTextButton(text = "AsyncTextButton", isLoading = true)
             AsyncTextButton(text = "AsyncTextButton")
+            AsyncTextButton(
+                text = "AsyncTextButton",
+                leadingIcon = ImageResource(image = Icons.Default.ThumbUp)
+            )
         }
     }
 }

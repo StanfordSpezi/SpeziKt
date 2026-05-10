@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.spezi.library)
     alias(libs.plugins.spezi.compose)
-    alias(libs.plugins.spezi.hilt)
     alias(libs.plugins.spezi.desugaring)
 }
 
@@ -25,4 +24,10 @@ dependencies {
 
     implementation(libs.androidx.fragment.compose)
     androidTestImplementation(project(":testing-ui"))
+}
+
+configurations.configureEach {
+    resolutionStrategy {
+        force(libs.guava)
+    }
 }

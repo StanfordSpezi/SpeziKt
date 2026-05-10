@@ -13,6 +13,7 @@ dependencies {
     api(project(":foundation"))
     api(project(":ui"))
     api(project(":ui-validation"))
+    api(project(":ui-account"))
     api(libs.kotlinx.serialization.json)
     implementation(libs.kotlin.reflect)
     implementation(project(":core-coroutines"))

@@ -10,11 +10,10 @@ package edu.stanford.spezi.account
  * @param T The type of the value.
  */
 sealed interface InitialValue<T> {
-    val value: T?
+    val value: T
 
     data class Empty<T>(override val value: T) : InitialValue<T>
     data class Default<T>(override val value: T) : InitialValue<T>
-    data class Optional<T>(override val value: T?) : InitialValue<T>
 
     companion object {
         /**
@@ -32,14 +31,6 @@ sealed interface InitialValue<T> {
          * @return An [InitialValue] instance representing a default state.
          */
         fun <T> default(value: T) = Default(value)
-
-        /**
-         * Creates an [InitialValue] that can be null.
-         *
-         * @param T The type of the value.
-         * @return An [InitialValue] instance representing an optional state.
-         */
-        fun <T> nullable(value: T? = null) = Optional(value)
 
         /**
          * Empty string initial value.

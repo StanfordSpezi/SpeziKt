@@ -44,7 +44,7 @@ internal object Spezi {
         val configuration = application.configuration as ConfigurationImpl
         val registry = configuration.registry
         registry.register(
-            key = ModuleKey<ApplicationModule>(),
+            key = DependencyKey<ApplicationModule>(),
             factory = { ApplicationModule(application) },
         )
         val dependenciesGraph = DependenciesGraph(registry = registry)
@@ -65,7 +65,9 @@ internal object Spezi {
     ) {
         val builder = ConfigurationBuilder(standard = standard).apply(scope)
         val applicationModule = optionalDependency<ApplicationModule>().value
-        if (applicationModule != null) builder.module { applicationModule }
+        if (applicationModule != null) {
+            builder.module { applicationModule }
+        }
         val dependenciesGraph = DependenciesGraph(registry = builder.registry)
         graph.set(dependenciesGraph)
         dependenciesGraph.configure()

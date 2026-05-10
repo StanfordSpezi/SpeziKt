@@ -1,8 +1,14 @@
 package edu.stanford.spezi.storage.credential
 
-import javax.inject.Inject
+import android.content.Context
+import edu.stanford.spezi.core.DefaultInitializer
+import edu.stanford.spezi.core.Module
+import edu.stanford.spezi.storage.local.KeyValueStorageFactory
+import edu.stanford.spezi.storage.local.KeyValueStorageType
+import edu.stanford.spezi.storage.local.getSerializable
+import edu.stanford.spezi.storage.local.putSerializable
 
-interface CredentialStorage {
+interface CredentialStorage : Module {
     fun store(credential: Credential)
 
     fun update(
@@ -16,9 +22,17 @@ interface CredentialStorage {
 
     fun delete(username: String, server: String? = null)
     fun deleteAll(types: CredentialTypes)
+
+    companion object : DefaultInitializer<CredentialStorage> {
+        override fun create(context: Context): CredentialStorage {
+            return CredentialStorageImpl(
+                storageFactory = KeyValueStorageFactory.create(context)
+            )
+        }
+    }
 }
 
-internal class CredentialStorageImpl @Inject constructor(
+internal class CredentialStorageImpl(
     storageFactory: KeyValueStorageFactory,
 ) : CredentialStorage {
 
@@ -86,7 +100,7 @@ internal class CredentialStorageImpl @Inject constructor(
         "${server ?: ""}$SERVER_USERNAME_SEPARATOR$username"
 
     private companion object {
-        const val SECURE_STORAGE_FILE_NAME = "${Storage.STORAGE_FILE_PREFIX}CredentialStorage"
+        const val SECURE_STORAGE_FILE_NAME = "edu.stanford.spezi.storage.CredentialStorage"
         const val SERVER_USERNAME_SEPARATOR = "__@__"
     }
 }

@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.spezi.library)
-    alias(libs.plugins.spezi.hilt)
 }
 
 android {
@@ -11,4 +10,6 @@ dependencies {
     api(libs.bundles.ktx.coroutines)
 
     api(project(":core"))
+
+    testImplementation(project(":testing-concurrency"))
 }

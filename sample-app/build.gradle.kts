@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.spezi.application)
     alias(libs.plugins.spezi.compose)
-    alias(libs.plugins.spezi.hilt)
     alias(libs.plugins.spezi.serialization)
     alias(libs.plugins.kotlin.parcelize)
 }
@@ -36,6 +35,7 @@ android {
 
 dependencies {
     implementation(project(":core"))
+    implementation(project(":core-viewmodel"))
     implementation(project(":core-coroutines"))
     implementation(project(":health"))
     implementation(project(":ui"))

@@ -11,6 +11,6 @@ dependencies {
     api(project(":ui"))
     implementation(project(":foundation"))
 
-    androidTestImplementation(libs.bundles.compose.androidTest)
+    androidTestImplementation(libs.bundles.integration.testing)
     androidTestImplementation(project(":testing-ui"))
 }

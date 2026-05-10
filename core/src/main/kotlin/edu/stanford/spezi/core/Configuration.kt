@@ -1,6 +1,6 @@
 package edu.stanford.spezi.core
 
-import edu.stanford.spezi.core.internal.ModuleRegistry
+import edu.stanford.spezi.core.internal.DependencyRegistry
 
 /**
  * A configuration for the Spezi framework, which allows you to define and register modules and their dependencies.
@@ -49,20 +49,20 @@ operator fun Configuration.plus(other: Configuration): Configuration {
     require(standard == other.standard) {
         "Cannot combine configurations with different standards: $standard vs ${other.standard}"
     }
-    val registry = ModuleRegistry()
+    val registry = DependencyRegistry()
     registry.register(configuration = this)
     registry.register(configuration = other)
     return ConfigurationImpl(standard = standard, registry = registry)
 }
 
 /**
- * A internal implementation of the [Configuration] interface.
+ * An internal implementation of the [Configuration] interface.
  *
- * @param registry The [ModuleRegistry] that holds the registered modules and their dependencies.
+ * @param registry The [DependencyRegistry] that holds all registered dependencies.
  */
 @PublishedApi
 internal data class ConfigurationImpl(
     override val standard: Standard,
     @PublishedApi
-    internal val registry: ModuleRegistry,
+    internal val registry: DependencyRegistry,
 ) : Configuration

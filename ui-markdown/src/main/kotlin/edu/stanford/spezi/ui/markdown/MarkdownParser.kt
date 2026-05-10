@@ -1,12 +1,10 @@
 package edu.stanford.spezi.ui.markdown
 
-import javax.inject.Inject
-
 private const val HEADING_LEVEL_1 = 1
 private const val HEADING_LEVEL_2 = 2
 private const val HEADING_LEVEL_3 = 3
 
-class MarkdownParser @Inject constructor() {
+class MarkdownParser {
 
     fun parse(text: String): List<MarkdownElement> = buildList {
         text.lines().forEach { line ->

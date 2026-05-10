@@ -2,8 +2,6 @@ package edu.stanford.spezi.storage.local
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
 import edu.stanford.spezi.foundation.UUID
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.Serializable
@@ -11,30 +9,17 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 import org.junit.After
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import java.nio.charset.StandardCharsets
-import javax.inject.Inject
 import kotlin.random.Random
 
-@HiltAndroidTest
 class LocalStorageTests {
-    @get:Rule
-    val hiltRule = HiltAndroidRule(this)
 
-    @Inject
-    lateinit var localStorage: LocalStorage
-
-    @Inject
-    lateinit var keyStorage: KeyStorage
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private val keyStorage: KeyStorage = KeyStorageImpl()
+    private val localStorage: LocalStorage = LocalStorageImpl(context = context, keyStorage = keyStorage)
 
     private val key = "storage_key"
-
-    @Before
-    fun setup() {
-        hiltRule.inject()
-    }
 
     @After
     fun tearDown() = runTest {
