@@ -4,13 +4,14 @@ import android.content.Intent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.core.net.toUri
+import edu.stanford.spezi.resources.Strings
 import edu.stanford.spezi.ui.StringResource
 import java.net.URLEncoder
 
 fun ContactOption.Companion.email(addresses: List<String>, subject: String? = null): ContactOption =
     ContactOption(
         image = Icons.Default.Email,
-        title = StringResource(R.string.contact_email),
+        title = StringResource(Strings.contact_email),
         action = { context ->
             runCatching {
                 val intent = Intent(Intent.ACTION_SENDTO).apply {

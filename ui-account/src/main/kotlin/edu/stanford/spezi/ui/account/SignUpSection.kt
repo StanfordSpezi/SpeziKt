@@ -11,13 +11,13 @@ import edu.stanford.spezi.ui.theme.SpeziTheme
 import edu.stanford.spezi.ui.theme.ThemePreviews
 
 /**
- * Represents a section of the sign up form.
+ * Represents a section of the sign-up form.
  *
  * @param title The title of the section.
  * @param entries The entries in the section.
  */
 data class SignUpSection(
-    val title: StringResource,
+    val title: StringResource?,
     val entries: List<AnySignUpFormEntry>,
 ) : ComposableContent {
 

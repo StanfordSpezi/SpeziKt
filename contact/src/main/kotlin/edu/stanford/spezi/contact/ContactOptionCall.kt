@@ -4,12 +4,13 @@ import android.content.Intent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.core.net.toUri
+import edu.stanford.spezi.resources.Strings
 import edu.stanford.spezi.ui.StringResource
 
 fun ContactOption.Companion.call(number: String) =
     ContactOption(
         image = Icons.Default.Call,
-        title = StringResource(R.string.contact_call),
+        title = StringResource(Strings.contact_call),
         action = { context ->
             runCatching {
                 val intent = Intent(Intent.ACTION_DIAL).apply {

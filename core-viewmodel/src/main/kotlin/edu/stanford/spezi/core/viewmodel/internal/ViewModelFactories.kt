@@ -9,17 +9,16 @@ import kotlin.reflect.KClass
 
 /**
  * Internal class that holds all [ViewModel] factories registered via
- * [edu.stanford.spezi.core.viewmodel.viewModels] in the
+ * [edu.stanford.spezi.core.viewmodel.viewModel] in the
  * [edu.stanford.spezi.core.ConfigurationBuilder] DSL.
  *
  * This class is automatically registered and managed by the Spezi framework. It is not part of
  * the public API – consumers should use [edu.stanford.spezi.core.viewmodel.speziViewModel] to
- * retrieve ViewModel instances and [edu.stanford.spezi.core.viewmodel.viewModels] to register them.
+ * retrieve ViewModel instances and [edu.stanford.spezi.core.viewmodel.viewModel] to register them.
  */
 @PublishedApi
 internal class ViewModelFactories(
     private val graph: DependenciesGraph,
-    private val factories: Map<KClass<*>, ViewModelFactoryScope.() -> ViewModel>,
 ) {
     /**
      * Creates a [ViewModel] instance for [clazz] using its registered factory.
@@ -31,12 +30,14 @@ internal class ViewModelFactories(
      */
     @Suppress("UNCHECKED_CAST")
     fun <VM : ViewModel> create(clazz: KClass<VM>, savedStateHandle: SavedStateHandle): VM {
-        val factory = factories[clazz]
+        val identifier = ViewModelFactoryEntry.identifierFor(clazz)
+        val factoryEntry = graph.optionalDependency<ViewModelFactoryEntry>(identifier)
             ?: speziError(
                 "No ViewModel factory registered for ${clazz.simpleName}. " +
-                    "Register it via viewModels { viewModel { ${clazz.simpleName}(...) } } " +
+                    "Register it via viewModel { ${clazz.simpleName}(...) } " +
                     "in your Configuration block."
             )
-        return ViewModelFactoryScope(graph = graph, handle = savedStateHandle).factory() as VM
+        val scope = ViewModelFactoryScope(graph = graph, handle = savedStateHandle)
+        return factoryEntry.factory.invoke(scope) as VM
     }
 }

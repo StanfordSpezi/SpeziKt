@@ -1,6 +1,7 @@
 package edu.stanford.spezi.account
 
 import edu.stanford.spezi.foundation.DefaultProvidingKnowledgeSource
+import edu.stanford.spezi.resources.Strings
 import edu.stanford.spezi.ui.StringResource
 
 /**
@@ -38,23 +39,31 @@ data class UserIdConfiguration(
  * to drive the appropriate input experience.
  */
 sealed interface UserIdType {
+    /**
+     * The localized label to display in UI (e.g., "Email Address", "Username").
+     */
+    val label: StringResource
 
     /**
      * The user identifier is an email address.
      */
-    data object Email : UserIdType
+    data object Email : UserIdType {
+        override val label: StringResource = StringResource(Strings.account_login_user_id_email)
+    }
 
     /**
      * The user identifier is a username (non-email identifier).
      */
-    data object Username : UserIdType
+    data object Username : UserIdType {
+        override val label: StringResource = StringResource(Strings.account_login_user_id_username)
+    }
 
     /**
      * A custom user identifier type with a user-facing label.
      *
      * @param label The localized label to display in UI (e.g., "Patient ID", "Employee ID").
      */
-    data class Custom(val label: StringResource) : UserIdType
+    data class Custom(override val label: StringResource) : UserIdType
 }
 
 /**

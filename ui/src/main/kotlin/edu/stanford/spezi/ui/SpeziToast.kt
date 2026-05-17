@@ -82,7 +82,7 @@ data class SpeziToast(
  * Pass one of the built-in constants or construct a custom [AutoDismissible] duration:
  * ```kotlin
  * scaffoldState.showToast(
- *     message = StringResource(R.string.saved),
+ *     message = StringResource(Strings.saved),
  *     displayStyle = SpeziToastDisplayStyle.DefaultShort,
  * )
  * ```

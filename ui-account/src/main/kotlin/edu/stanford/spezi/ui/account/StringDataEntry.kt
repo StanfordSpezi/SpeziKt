@@ -25,7 +25,7 @@ data class StringDataEntry(
             onValueChanged = onValueChange,
             modifier = modifier,
             hideContent = hideContent,
-            placeholder = placeholder,
+            placeholder = placeholder?.text(),
         )
     }
 }

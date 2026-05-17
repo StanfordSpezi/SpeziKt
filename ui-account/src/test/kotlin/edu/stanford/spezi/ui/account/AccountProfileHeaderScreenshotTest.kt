@@ -12,7 +12,7 @@ class AccountProfileHeaderScreenshotTest : ScreenshotTest() {
         val header = AccountProfileHeader(
             initials = "LS",
             name = "Leland Stanford",
-            email = "lelandstanford@stanford.edu"
+            description = "lelandstanford@stanford.edu"
         )
 
         screenshot {

@@ -4,12 +4,13 @@ import android.content.Intent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.core.net.toUri
+import edu.stanford.spezi.resources.Strings
 import edu.stanford.spezi.ui.StringResource
 
 fun ContactOption.Companion.text(number: String): ContactOption =
     ContactOption(
         image = Icons.AutoMirrored.Default.Send,
-        title = StringResource(R.string.contact_text),
+        title = StringResource(Strings.contact_text),
         action = { context ->
             runCatching {
                 val intent = Intent(Intent.ACTION_DIAL).apply {

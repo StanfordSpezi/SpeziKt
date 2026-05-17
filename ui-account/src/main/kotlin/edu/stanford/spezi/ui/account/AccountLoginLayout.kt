@@ -14,8 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import edu.stanford.spezi.resources.Drawables
 import edu.stanford.spezi.ui.AsyncTextButton
-import edu.stanford.spezi.ui.CloseButton
 import edu.stanford.spezi.ui.ComposableContent
 import edu.stanford.spezi.ui.ImageResource
 import edu.stanford.spezi.ui.SpeziInputField
@@ -37,7 +37,6 @@ import edu.stanford.spezi.ui.theme.bold
  * @param signUpLink link to the sign up screen
  * @param loginButton button to login
  * @param alternativeSignIn alternative sign in options
- * @param onClose action to be performed when the close button is clicked
  */
 data class AccountLoginLayout(
     val title: StringResource,
@@ -48,7 +47,6 @@ data class AccountLoginLayout(
     val signUpLink: SignUpLink,
     val loginButton: AsyncTextButton,
     val alternativeSignIn: AlternativeSignIn?,
-    val onClose: () -> Unit,
 ) : ComposableContent {
     @Composable
     override fun Content(modifier: Modifier) {
@@ -59,13 +57,6 @@ data class AccountLoginLayout(
             verticalArrangement = Arrangement.spacedBy(Spacings.medium),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.CenterStart,
-            ) {
-                CloseButton(onClick = onClose)
-            }
-
             Text(
                 text = title.text(),
                 style = TextStyles.headlineLarge.bold(),
@@ -138,7 +129,7 @@ private fun Preview() {
             buttons = listOf(
                 AsyncTextButton(
                     title = StringResource("Sign in with Google"),
-                    icon = ImageResource(R.drawable.ic_google),
+                    icon = ImageResource(Drawables.ic_google),
                     action = {}
                 ),
                 AsyncTextButton(
@@ -148,7 +139,6 @@ private fun Preview() {
                 )
             )
         ),
-        onClose = {},
     )
 
     SpeziTheme {

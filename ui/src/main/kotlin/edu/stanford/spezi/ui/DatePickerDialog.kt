@@ -10,6 +10,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import edu.stanford.spezi.resources.Strings
 import java.time.Instant
 
 @Composable
@@ -36,12 +37,12 @@ fun DatePickerDialog(
                     onDismiss()
                 }
             ) {
-                Text(text = stringResource(R.string.date_picker_confirm_button_title))
+                Text(text = stringResource(Strings.date_picker_confirm_button_title))
             }
         },
         dismissButton = {
             Button(onClick = onDismiss) {
-                Text(text = stringResource(R.string.date_picker_dismiss_button_title))
+                Text(text = stringResource(Strings.date_picker_dismiss_button_title))
             }
         },
         content = { DatePicker(state = datePickerState) }

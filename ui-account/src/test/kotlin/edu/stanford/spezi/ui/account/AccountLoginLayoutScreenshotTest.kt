@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.School
 import androidx.compose.ui.Modifier
+import edu.stanford.spezi.resources.Drawables
 import edu.stanford.spezi.testing.screenshot.ScreenshotTest
 import edu.stanford.spezi.ui.AsyncTextButton
 import edu.stanford.spezi.ui.ImageResource
@@ -44,7 +45,7 @@ class AccountLoginLayoutScreenshotTest : ScreenshotTest() {
             buttons = listOf(
                 AsyncTextButton(
                     title = StringResource("Sign in with Google"),
-                    icon = ImageResource(R.drawable.ic_google),
+                    icon = ImageResource(Drawables.ic_google),
                     action = {}
                 ),
                 AsyncTextButton(
@@ -54,7 +55,6 @@ class AccountLoginLayoutScreenshotTest : ScreenshotTest() {
                 )
             )
         ),
-        onClose = {},
     )
 
     @Test

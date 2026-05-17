@@ -11,6 +11,8 @@ import androidx.compose.ui.platform.LocalContext
 
 sealed interface StringResource {
 
+    operator fun plus(other: StringResource): StringResource = CompositeStringResource(this, other)
+
     @Immutable
     private data class TextStringResource(private val text: String) : StringResource {
         override fun get(context: Context): String = text
@@ -22,6 +24,14 @@ sealed interface StringResource {
         private val args: List<Any>,
     ) : StringResource {
         override fun get(context: Context): String = context.getString(id, *args.toTypedArray())
+    }
+
+    @Immutable
+    private data class CompositeStringResource(
+        private val lhs: StringResource,
+        private val rhs: StringResource,
+    ) : StringResource {
+        override fun get(context: Context): String = lhs.get(context) + rhs.get(context)
     }
 
     fun get(context: Context): String

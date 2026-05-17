@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="edit_action_title">Edit</string>
-    <string name="date_picker_confirm_button_title">Ok</string>
-    <string name="date_picker_dismiss_button_title">Cancel</string>
-    <string name="viewstate_default_error_title">Error</string>
-    <string name="viewstate_default_error_message">An unknown error occurred.</string>
-    <string name="viewstate_confirm_title">OK</string>
-</resources>

@@ -151,7 +151,7 @@ data class AsyncTextButton(
     val textColor: ComposeValue<Color> = { ButtonDefaults.buttonColors().contentColor },
     val contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     val coroutineScope: ComposeValue<CoroutineScope> = { rememberCoroutineScope() },
-    val action: OnAwaitActionVoid = {},
+    val action: OnAwaitActionVoid,
 ) : ComposableContent {
 
     @Composable

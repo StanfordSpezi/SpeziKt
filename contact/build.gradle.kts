@@ -10,7 +10,7 @@ android {
 dependencies {
     implementation(project(":foundation"))
 
-    api(project(":ui-personalinfo"))
+    api(project(":ui"))
 
     implementation(libs.androidx.core.i18n)
     implementation(libs.androidx.core.ktx)

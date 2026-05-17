@@ -7,6 +7,7 @@ import edu.stanford.spezi.account.AccountService
 import edu.stanford.spezi.account.AccountValueConfiguration
 import edu.stanford.spezi.account.PasswordKey
 import edu.stanford.spezi.account.accountLogger
+import edu.stanford.spezi.account.accountServiceConfiguration
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -24,7 +25,8 @@ internal class AccountImpl(
     override fun supplyUserDetails(details: AccountDetails) {
         require(details.contains(AccountKeys.accountId)) { "AccountDetails must contain accountId." }
         details[PasswordKey::class] = null
-        _details.update { details }
+        details.accountServiceConfiguration = service.configuration
+        _details.update { details.copy() }
     }
 
     override fun removeUserDetails() {

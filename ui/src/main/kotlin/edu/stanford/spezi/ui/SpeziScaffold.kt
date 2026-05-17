@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -74,7 +76,7 @@ fun SpeziScaffold(
  *     )
  *
  *     fun onLoadError() {
- *         scaffoldState.showToast(message = StringResource(R.string.error_loading))
+ *         scaffoldState.showToast(message = StringResource(Strings.error_loading))
  *     }
  * }
  *
@@ -275,6 +277,18 @@ interface MutableSpeziScaffoldState : SpeziScaffoldState {
         )
     }
 }
+
+/**
+ * Shows a [Warning] toast with the given [message].
+ */
+fun MutableSpeziScaffoldState.showErrorToast(
+    message: StringResource,
+    displayStyle: SpeziToastDisplayStyle = SpeziToastDisplayStyle.DefaultShort,
+) = showToast(
+    imageResource = ImageResource(Icons.Default.Warning),
+    message = message,
+    displayStyle = displayStyle,
+)
 
 /**
  * Creates and remembers a [MutableSpeziScaffoldState] scoped to the current composition.

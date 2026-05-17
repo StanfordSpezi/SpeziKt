@@ -23,10 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import edu.stanford.spezi.resources.Strings
 import edu.stanford.spezi.ui.ComposableContent
 import edu.stanford.spezi.ui.ImageResource
 import edu.stanford.spezi.ui.StringResource
-import edu.stanford.spezi.ui.personalinfo.PersonNameComponents
 import edu.stanford.spezi.ui.testContentIdentifier
 import edu.stanford.spezi.ui.testIdentifier
 import edu.stanford.spezi.ui.theme.Sizes
@@ -53,8 +53,8 @@ import java.util.UUID
  */
 data class Contact(
     val id: UUID = UUID.randomUUID(),
-    val name: PersonNameComponents,
-    val image: ImageResource = ImageResource(Icons.Default.AccountBox, StringResource(R.string.contact_profile_picture)),
+    val name: String,
+    val image: ImageResource = ImageResource(Icons.Default.AccountBox, StringResource(Strings.contact_profile_picture)),
     val title: StringResource? = null,
     val description: StringResource? = null,
     val organization: StringResource? = null,
@@ -90,7 +90,7 @@ data class Contact(
                     )
                     Column {
                         Text(
-                            text = remember(name) { name.formatted() },
+                            text = name,
                             style = TextStyles.titleLarge,
                             modifier = Modifier.testIdentifier(ContactContentTestIdentifier.NAME)
                         )
@@ -203,11 +203,8 @@ private object ContactContentFactory {
         ),
     ): Contact {
         return Contact(
-            name = PersonNameComponents(
-                givenName = "Leland",
-                familyName = "Stanford"
-            ),
-            image = ImageResource(Icons.Default.AccountBox, StringResource(R.string.contact_profile_picture)),
+            name = "Leland Stanford",
+            image = ImageResource(Icons.Default.AccountBox, StringResource(Strings.contact_profile_picture)),
             title = title,
             description = description,
             organization = StringResource("Stanford University"),

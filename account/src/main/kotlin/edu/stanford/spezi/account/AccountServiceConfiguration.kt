@@ -51,6 +51,7 @@ class AccountServiceConfigurationBuilder(
     private var supportedAccountKeys: SupportedAccountKeys,
 ) {
     private val validationRules = mutableSetOf<FieldValidationRules>()
+    private val authProviders = mutableListOf<AuthProvider>()
     private val configuration: MutableSet<AccountServiceConfigurationKey<*>> = mutableSetOf()
 
     /**
@@ -88,8 +89,21 @@ class AccountServiceConfigurationBuilder(
         validationRules.add(FieldValidationRules(keyType = keyType, validationRules = rules.toSet()))
     }
 
+    /**
+     * Registers an [AuthProvider] that the account service supports for sign-in.
+     *
+     * Call this method once per provider. Providers are accumulated and exposed via
+     * [AccountServiceConfiguration.authProviders] after the configuration is built.
+     *
+     * @param provider The authentication provider to register.
+     */
+    fun authProvider(provider: AuthProvider) {
+        authProviders.add(provider)
+    }
+
     internal fun build(): AccountServiceConfiguration {
         if (validationRules.isNotEmpty()) add(FieldValidationRulesCollection(fieldRules = validationRules.toSet()))
+        if (authProviders.isNotEmpty()) add(RegisteredAuthProviders(providers = authProviders.toList()))
         return AccountServiceConfiguration(
             supportedAccountKeys = supportedAccountKeys,
             configuration = configuration,

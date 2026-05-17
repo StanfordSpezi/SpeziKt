@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModel
 import edu.stanford.spezi.core.DependenciesGraph
 
 /**
- * The receiver scope for ViewModel factory lambdas registered via [ViewModelsBuilderScope.viewModel].
+ * The receiver scope for ViewModel factory lambdas registered via
+ * [edu.stanford.spezi.core.viewmodel.viewModel].
  *
  * This scope exposes three resolution methods that can be used to construct a [ViewModel]:
  * - [dependency] – resolves any registered type from the dependency graph (modules, singletons,
@@ -16,11 +17,9 @@ import edu.stanford.spezi.core.DependenciesGraph
  *
  * Example:
  * ```kotlin
- * viewModels {
- *     viewModel { HomeViewModel(dependency(), dependency()) }
- *     viewModel { DetailViewModel(savedStateHandle(), dependency()) }
- *     viewModel { FeatureViewModel(optionalDependency(), dependency()) }
- * }
+ * viewModel { HomeViewModel(dependency(), dependency()) }
+ * viewModel { DetailViewModel(savedStateHandle(), dependency()) }
+ * viewModel { FeatureViewModel(optionalDependency(), dependency()) }
  * ```
  */
 class ViewModelFactoryScope internal constructor(

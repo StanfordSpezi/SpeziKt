@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ui -->
+    <string name="edit_action_title">Edit</string>
+    <string name="date_picker_confirm_button_title">OK</string>
+    <string name="date_picker_dismiss_button_title">Cancel</string>
+    <string name="viewstate_default_error_title">Error</string>
+    <string name="viewstate_default_error_message">An unknown error occurred.</string>
+    <string name="viewstate_confirm_title">OK</string>
+
+    <!-- account -->
+    <string name="account_key_account_id">Account ID</string>
+    <string name="account_key_user_id">User ID</string>
+    <string name="account_key_email">Email</string>
+    <string name="account_key_name">Name</string>
+    <string name="account_key_password">Password</string>
+    <string name="account_key_gender">Gender</string>
+    <string name="account_key_date_of_birth">Date of Birth</string>
+    <string name="account_key_date_of_birth_placeholder">Select date of birth</string>
+    <string name="account_key_date_of_birth_unspecified">Unspecified</string>
+    <string name="account_in_memory_sign_up_action">Sign up with random credentials</string>
+    <string name="account_login_title">Your account</string>
+    <string name="account_login_description">Please login to your account. Or create a new one if you don\'t have one already.</string>
+    <string name="account_login_or_divider">or</string>
+    <string name="account_login_password_placeholder">Password</string>
+    <string name="account_login_forgot_password">Forgot password?</string>
+    <string name="account_login_button">Login</string>
+    <string name="account_login_sign_up_info">Don\'t have an account yet?</string>
+    <string name="account_login_sign_up">Sign up</string>
+    <string name="account_login_user_id_email">E-Mail Address</string>
+    <string name="account_login_user_id_username">Username</string>
+    <string name="account_login_invalid_user_id_prefix">Please enter a valid&#160;</string>
+    <string name="account_login_password_reset_success">Password reset email sent.</string>
+    <string name="account_login_password_reset_failed">Password reset failed. Please try again.</string>
+    <string name="account_login_failed">Login failed. Please try again.</string>
+    <string name="account_login_sign_in_failed">Sign in failed. Please try again.</string>
+    <string name="account_overview_title">Account Overview</string>
+    <string name="account_overview_section_title">Account</string>
+    <string name="account_overview_logout_button">Logout</string>
+    <string name="account_overview_logout_failed">Logout failed. Please try again.</string>
+    <string name="account_overview_edit_button">Edit</string>
+    <string name="account_overview_done_button">Done</string>
+    <string name="account_overview_sign_in_security">Sign-In &amp; Security</string>
+    <string name="account_overview_change_password">Change Password</string>
+    <string name="account_name_given_name">First</string>
+    <string name="account_name_family_name">Last</string>
+    <string name="account_name_given_name_placeholder">Enter first name</string>
+    <string name="account_name_family_name_placeholder">Enter last name</string>
+    <string name="account_sign_up_title">Create a new Account</string>
+    <string name="account_sign_up_description">Please fill out the details below to create your new account.</string>
+    <string name="account_sign_up_button">Sign Up</string>
+    <string name="account_sign_up_failed">Sign-up failed. Please try again.</string>
+    <string name="account_edit_save_button">Save</string>
+    <string name="account_edit_failed">Update failed. Please try again.</string>
+    <string name="account_change_password_new_password">New Password</string>
+    <string name="account_change_password_confirm_password">Confirm Password</string>
+    <string name="account_change_password_no_match">Passwords do not match.</string>
+    <string name="account_change_password_failed">Password change failed. Please try again.</string>
+    <string name="account_category_title_credentials">Credentials</string>
+    <string name="account_category_title_name">Name</string>
+    <string name="account_category_title_contact_details">Contact Details</string>
+    <string name="account_category_title_personal_details">Personal Details</string>
+    <string name="account_gender_identity_female">Female</string>
+    <string name="account_gender_identity_male">Male</string>
+    <string name="account_gender_identity_non_binary">Non-binary</string>
+    <string name="account_gender_identity_transgender">Transgender</string>
+    <string name="account_gender_identity_prefer_not_to_state">Choose not to answer</string>
+
+    <!-- contact -->
+    <string name="contact_profile_picture">Profile Picture</string>
+    <string name="contact_address">Address</string>
+    <string name="contact_email">Email</string>
+    <string name="contact_text">Text</string>
+    <string name="contact_call">Call</string>
+    <string name="contact_website">Website</string>
+
+    <!-- ui-validation -->
+    <string name="ui_validation_empty_not_allowed">This field cannot be empty.</string>
+    <string name="ui_validation_password_min_length">Your password must be at least 8 characters long.</string>
+    <string name="ui_validation_password_med_length">Your password must be at least 10 characters long.</string>
+    <string name="ui_validation_password_strong_length">Your password must be at least 12 characters long.</string>
+    <string name="ui_validation_ascii_letters_only">Please use letters, numbers, and common punctuation only</string>
+    <string name="ui_validation_minimal_email">Please provide a correctly formatted email address.</string>
+    <string name="ui_validation_letters_only">The text must contain letters only.</string>
+
+    <!-- questionnaire -->
+    <string name="questionnaire_cancel">Cancel</string>
+    <string name="questionnaire_cancel_confirm_description">Do you really want to cancel?</string>
+    <string name="questionnaire_ok">OK</string>
+
+    <!-- firebase -->
+    <string name="firebase_sign_in_anonymous">Continue as Guest</string>
+    <string name="firebase_sign_in_google">Sign in with Google</string>
+
+    <!-- health -->
+    <string name="default_privacy_policy_title">Health Data Access</string>
+    <string name="default_privacy_policy_description">\nWe request access to your health data to provide personalized insights \nand support features that help you understand your activity, wellbeing, \nand overall health trends.\n\nHealth data accessed through Health Connect may include:\n• Activity information (steps, distance, exercise sessions)\n• Body measurements (weight, body fat, height)\n• Sleep data (sleep duration and patterns)\n• Nutrition and hydration information\n• Heart-related and vital signs data, when relevant to supported features\n\nWe only access the types of data you explicitly grant permission for.  \nYour data is used solely to enable in-app functionality such as progress \nvisualization, trend analysis, and personalized recommendations.\n\nYour health data remains on your device unless you choose to export or \nshare it. We do not sell your data, and we do not share it with third \nparties without your clear and explicit consent.\n\nFor more detailed information about how we handle your data, please \nreview our Privacy Policy.\n</string>
+</resources>

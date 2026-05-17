@@ -95,7 +95,7 @@ class SignUpFormEntryScreenshotTest : ScreenshotTest() {
             title = StringResource("Date of Birth"),
             entry = InstantDataEntry(
                 placeholder = StringResource("Select your birth date"),
-                formatter = { "" },
+                formatter = { StringResource("") },
             ),
             value = Instant.now(),
             onValueChange = {},
@@ -110,7 +110,7 @@ class SignUpFormEntryScreenshotTest : ScreenshotTest() {
             title = StringResource("Date of Birth"),
             entry = InstantDataEntry(
                 placeholder = StringResource("Select your birth date"),
-                formatter = { "01.01.2026" },
+                formatter = { StringResource("01.01.2026") },
             ),
             value = Instant.now(),
             onValueChange = {},

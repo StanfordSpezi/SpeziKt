@@ -1,5 +1,6 @@
 package edu.stanford.spezi.account
 
+import edu.stanford.spezi.resources.Strings
 import edu.stanford.spezi.ui.StringResource
 import kotlinx.serialization.Serializable
 
@@ -40,12 +41,12 @@ enum class GenderIdentity {
     val title: StringResource
         get() {
             val resId = when (this) {
-                FEMALE -> R.string.account_gender_identity_female
-                MALE -> R.string.account_gender_identity_male
-                TRANSGENDER -> R.string.account_gender_identity_transgender
-                NON_BINARY -> R.string.account_gender_identity_non_binary
-                PREFER_NOT_TO_STATE -> R.string.account_gender_identity_prefer_not_to_state
+                FEMALE -> Strings.account_gender_identity_female
+                MALE -> Strings.account_gender_identity_male
+                TRANSGENDER -> Strings.account_gender_identity_transgender
+                NON_BINARY -> Strings.account_gender_identity_non_binary
+                PREFER_NOT_TO_STATE -> Strings.account_gender_identity_prefer_not_to_state
             }
-            return StringResource.Companion(id = resId)
+            return StringResource(id = resId)
         }
 }

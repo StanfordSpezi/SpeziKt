@@ -18,8 +18,11 @@ import edu.stanford.spezi.account.AccountKeyCollection
 import edu.stanford.spezi.account.AccountKeys
 import edu.stanford.spezi.account.AccountModifications
 import edu.stanford.spezi.account.AccountServiceConfiguration
+import edu.stanford.spezi.account.AuthProvider
 import edu.stanford.spezi.account.ExternalAccountStorage
+import edu.stanford.spezi.account.PersonName
 import edu.stanford.spezi.account.SupportedAccountKeys
+import edu.stanford.spezi.account.UserIdPasswordCredential
 import edu.stanford.spezi.account.UserIdType
 import edu.stanford.spezi.account.accountKeyCollection
 import edu.stanford.spezi.account.accountLogger
@@ -49,9 +52,9 @@ import kotlin.coroutines.resumeWithException
 
 @Suppress("TooManyFunctions")
 internal class FirebaseAccountServiceImpl(
-    private val providers: FirebaseAuthProviders = FirebaseAuthProviders.Default,
-    private val emulatorSettings: FirebaseEmulatorSettings? = null,
-    private val passwordValidation: List<ValidationRule>? = null,
+    private val providers: FirebaseAuthProviders,
+    private val emulatorSettings: FirebaseEmulatorSettings?,
+    private val passwordValidation: List<ValidationRule>?,
 ) : FirebaseAccountService {
 
     private val account by dependency<Account>()
@@ -84,6 +87,7 @@ internal class FirebaseAccountServiceImpl(
 
         val passwordRules = passwordValidation ?: listOf(ValidationRule.minimalPassword)
         validationRule(AccountKeys.password::class, rules = passwordRules.toSet())
+        providers.configure(this)
     }
 
     override fun configure() {
@@ -117,20 +121,12 @@ internal class FirebaseAccountServiceImpl(
         account.supplyUserDetails(details)
     }
 
-    override suspend fun login(userId: String, password: String): Result<Unit> = execute {
-        if (!providers.contains(FirebaseAuthProvider.EmailAndPassword)) {
-            throw FirebaseAccountError.AuthenticationMethodNotAllowed()
-        }
-
+    override suspend fun login(credential: UserIdPasswordCredential): Result<Unit> = execute {
         signOutCurrentUserIfNonAnonymous()
-        auth.signInWithEmailAndPassword(userId, password).awaitVoid()
+        auth.signInWithEmailAndPassword(credential.userId, credential.password).awaitVoid()
     }
 
     override suspend fun signUp(signupDetails: AccountDetails): Result<Unit> = execute {
-        if (!providers.contains(FirebaseAuthProvider.EmailAndPassword)) {
-            throw FirebaseAccountError.AuthenticationMethodNotAllowed()
-        }
-
         val userId = signupDetails.getOrNull(AccountKeys.userId::class)
             ?: throw FirebaseAccountError.InvalidCredentials()
 
@@ -163,39 +159,28 @@ internal class FirebaseAccountServiceImpl(
         }
     }
 
-    override suspend fun signUp(credential: AuthCredential): Result<Unit> =
-        execute { signUpWithCredentialInternal(credential) }
-
-    override suspend fun signUpAnonymously(): Result<Unit> =
-        execute {
-            if (!providers.contains(FirebaseAuthProvider.Anonymous)) {
-                throw FirebaseAccountError.AuthenticationMethodNotAllowed()
+    override suspend fun signIn(provider: AuthProvider): Result<Unit> {
+        return when (provider) {
+            is FirebaseAuthProvider.Anonymous -> execute {
+                if (currentFirebaseUser?.isAnonymous == true) return@execute
+                signOutCurrentUserIfNonAnonymous()
+                auth.signInAnonymously().awaitVoid()
             }
 
-            if (currentFirebaseUser?.isAnonymous == true) return@execute
+            is FirebaseAuthProvider.SignInWithGoogle -> execute {
+                val credentialData =
+                    getCredential(filterByAuthorizedAccounts = true, serverClientId = provider.serverClientId)
+                        ?: getCredential(filterByAuthorizedAccounts = false, serverClientId = provider.serverClientId)
+                        ?: throw FirebaseAccountError.InvalidCredentials()
+                val firebaseCredential = GoogleAuthProvider.getCredential(credentialData.idToken, null)
+                signUpWithCredentialInternal(firebaseCredential)
+            }
 
-            signOutCurrentUserIfNonAnonymous()
-            auth.signInAnonymously().awaitVoid()
+            else -> Result.failure(FirebaseAccountError.AuthenticationMethodNotAllowed())
         }
-
-    override suspend fun signUpWithGoogle(): Result<Unit> = execute {
-        val googleProvider = providers.get<FirebaseAuthProvider.SignInWithGoogle>()
-            ?: throw FirebaseAccountError.AuthenticationMethodNotAllowed()
-
-        val credentialData =
-            getCredential(
-                filterByAuthorizedAccounts = true,
-                serverClientId = googleProvider.serverClientId
-            ) ?: getCredential(
-                filterByAuthorizedAccounts = false,
-                serverClientId = googleProvider.serverClientId
-            ) ?: throw FirebaseAccountError.InvalidCredentials()
-
-        val firebaseCredential = GoogleAuthProvider.getCredential(credentialData.idToken, null)
-        signUpWithCredentialInternal(firebaseCredential)
     }
 
-    override suspend fun resetPassword(userId: String): Result<Unit> =
+    override suspend fun onPasswordForgotten(userId: String): Result<Unit> =
         execute { auth.sendPasswordResetEmail(userId).awaitVoid() }
 
     override suspend fun logout(): Result<Unit> = execute {
@@ -223,12 +208,13 @@ internal class FirebaseAccountServiceImpl(
         val user = currentFirebaseUser ?: throw FirebaseAccountError.NotSignedIn()
         val modifiedDetails = modifications.modifiedDetails
 
-        modifiedDetails.getOrNull(AccountKeys.userId::class)?.let {
+        val email = modifiedDetails.getOrNull(AccountKeys.userId::class) ?: modifiedDetails.getOrNull(AccountKeys.email::class)
+        email?.let {
             user.updateEmail(it).awaitVoid()
         }
 
         modifiedDetails.getOrNull(AccountKeys.name::class)?.let {
-            user.updateProfile(userProfileChangeRequest { displayName = it }).awaitVoid()
+            user.updateProfile(userProfileChangeRequest { displayName = it.fullName }).awaitVoid()
         }
 
         modifiedDetails.getOrNull(AccountKeys.password::class)?.let {
@@ -319,7 +305,7 @@ internal class FirebaseAccountServiceImpl(
     private fun buildUserDetails(user: FirebaseUser, addingContentsOf: AccountDetails? = null): AccountDetails {
         return AccountDetails().apply {
             this[AccountKeys.accountId::class] = user.uid
-            user.displayName?.let { this[AccountKeys.name::class] = it }
+            user.displayName?.let { this[AccountKeys.name::class] = PersonName(fullName = it) }
             user.email?.let { this[AccountKeys.userId::class] = it }
             this.isVerified = user.isEmailVerified
             this.isAnonymousUser = user.isAnonymous

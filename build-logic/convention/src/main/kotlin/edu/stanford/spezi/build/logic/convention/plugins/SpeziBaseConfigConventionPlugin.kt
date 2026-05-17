@@ -45,7 +45,7 @@ class SpeziBaseConfigConventionPlugin : Plugin<Project> {
             jvmToolchain(java.majorVersion.toInt())
             compilerOptions {
                 jvmTarget.set(JvmTarget.JVM_17)
-                languageVersion.set(KotlinVersion.KOTLIN_2_0)
+                languageVersion.set(KotlinVersion.KOTLIN_2_1)
                 freeCompilerArgs.addAll(
                     "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
                     "-Xannotation-default-target=param-property",

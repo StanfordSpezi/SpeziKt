@@ -4,6 +4,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,6 +47,7 @@ data class SpeziInputField(
     val placeholder: StringResource? = null,
     val hideContent: Boolean = false,
     val showBorder: Boolean = true,
+    val validationMessage: StringResource? = null,
     val keyboardType: KeyboardType = KeyboardType.Text,
     val imeAction: ImeAction = ImeAction.Default,
     val onValueChanged: (String) -> Unit,
@@ -56,11 +58,12 @@ data class SpeziInputField(
         SpeziInputFieldComposable(
             modifier = modifier,
             value = value,
-            placeholder = placeholder,
+            placeholder = placeholder?.text(),
             keyboardType = keyboardType,
             imeAction = imeAction,
             hideContent = hideContent,
             showBorder = showBorder,
+            validationMessage = validationMessage?.text(),
             onValueChanged = onValueChanged,
         )
     }
@@ -70,10 +73,11 @@ data class SpeziInputField(
 fun SpeziInputFieldComposable(
     modifier: Modifier = Modifier,
     value: String,
-    placeholder: StringResource? = null,
+    placeholder: String? = null,
     contentPaddingValues: PaddingValues = PaddingValues(Spacings.small),
     hideContent: Boolean = false,
     showBorder: Boolean = true,
+    validationMessage: String? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Default,
     onValueChanged: (String) -> Unit,
@@ -96,65 +100,76 @@ fun SpeziInputFieldComposable(
         }
     }
 
-    BasicTextField(
-        value = value,
-        onValueChange = onValueChanged,
-        singleLine = true,
-        textStyle = TextStyles.bodyLarge.copy(color = LocalContentColor.current),
-        keyboardOptions = KeyboardOptions(
-            keyboardType = resolvedKeyboardType,
-            imeAction = imeAction,
-        ),
-        visualTransformation = visualTransformation,
-        modifier = modifier
-            .bringIntoViewOnFocusedEvent()
-            .heightIn(min = 52.dp)
-            .border(
-                width = Sizes.Border.small,
-                shape = SpeziShapes.medium,
-                color = if (showBorder) {
-                    Colors.outlineVariant
-                } else {
-                    Colors.transparent
-                }
+    Column(modifier = modifier) {
+        BasicTextField(
+            value = value,
+            onValueChange = onValueChanged,
+            singleLine = true,
+            textStyle = TextStyles.bodyLarge.copy(color = LocalContentColor.current),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = resolvedKeyboardType,
+                imeAction = imeAction,
             ),
-        decorationBox = { innerTextField ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(contentPaddingValues),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(Spacings.small),
-            ) {
-                Box(
-                    modifier = Modifier.weight(1f),
-                    contentAlignment = Alignment.CenterStart,
+            visualTransformation = visualTransformation,
+            modifier = Modifier
+                .fillMaxWidth()
+                .bringIntoViewOnFocusedEvent()
+                .heightIn(min = 52.dp)
+                .border(
+                    width = Sizes.Border.small,
+                    shape = SpeziShapes.medium,
+                    color = if (showBorder) {
+                        Colors.outlineVariant
+                    } else {
+                        Colors.transparent
+                    }
+                ),
+            decorationBox = { innerTextField ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(contentPaddingValues),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(Spacings.small),
                 ) {
-                    if (value.isEmpty() && placeholder != null) {
-                        Text(
-                            text = placeholder.text(),
-                            color = Colors.secondary,
-                            style = TextStyles.bodyLarge,
+                    Box(
+                        modifier = Modifier.weight(1f),
+                        contentAlignment = Alignment.CenterStart,
+                    ) {
+                        if (value.isEmpty() && placeholder != null) {
+                            Text(
+                                text = placeholder,
+                                color = Colors.secondary,
+                                style = TextStyles.bodyLarge,
+                            )
+                        }
+                        innerTextField()
+                    }
+
+                    if (hideContent) {
+                        val icon = if (isContentVisible) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility
+
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = Colors.secondary,
+                            modifier = Modifier
+                                .size(Sizes.Icon.small)
+                                .clickable { isContentVisible = !isContentVisible }
                         )
                     }
-                    innerTextField()
-                }
-
-                if (hideContent) {
-                    val icon = if (isContentVisible) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility
-
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = null,
-                        tint = Colors.secondary,
-                        modifier = Modifier
-                            .size(Sizes.Icon.small)
-                            .clickable { isContentVisible = !isContentVisible }
-                    )
                 }
             }
+        )
+        validationMessage?.let {
+            Text(
+                text = it,
+                color = Colors.error,
+                style = TextStyles.bodySmall,
+                modifier = Modifier.padding(top = Spacings.small),
+            )
         }
-    )
+    }
 }
 
 private class PreviewParams : PreviewParameterProvider<SpeziInputField> {
@@ -175,6 +190,7 @@ private class PreviewParams : PreviewParameterProvider<SpeziInputField> {
         ),
         base.copy(
             value = "",
+            validationMessage = StringResource("This field cannot be empty"),
         ),
     )
 }

@@ -55,7 +55,7 @@ class SignUpFormLayoutScreenshotTest : ScreenshotTest() {
                             title = StringResource("Date of birth"),
                             entry = InstantDataEntry(
                                 placeholder = StringResource("Select your birthday"),
-                                formatter = { "01.01.2026" },
+                                formatter = { StringResource("01.01.2026") },
                             ),
                             value = Instant.now(),
                             onValueChange = {}
@@ -67,7 +67,6 @@ class SignUpFormLayoutScreenshotTest : ScreenshotTest() {
                 title = StringResource("Signup"),
                 action = {}
             ),
-            onClose = {},
         )
 
         screenshot {

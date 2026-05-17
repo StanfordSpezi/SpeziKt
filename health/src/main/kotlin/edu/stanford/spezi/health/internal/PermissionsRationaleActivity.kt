@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import edu.stanford.spezi.core.dependency
 import edu.stanford.spezi.health.Health
-import edu.stanford.spezi.health.R
+import edu.stanford.spezi.resources.Strings
 import edu.stanford.spezi.ui.SpeziScaffold
 import edu.stanford.spezi.ui.rememberMutableSpeziScaffoldState
 import edu.stanford.spezi.ui.rememberSpeziAppBar
@@ -43,8 +43,8 @@ internal class PermissionsRationaleActivity : AppCompatActivity() {
             is PrivacyConfig.Composable -> config.composable.invoke()
             is PrivacyConfig.Content -> config.content.Content()
             is PrivacyConfig.Default -> RationaleScreen(
-                title = stringResource(R.string.default_privacy_policy_title),
-                description = stringResource(R.string.default_privacy_policy_description),
+                title = stringResource(Strings.default_privacy_policy_title),
+                description = stringResource(Strings.default_privacy_policy_description),
             )
         }
     }

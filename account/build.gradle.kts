@@ -16,6 +16,7 @@ dependencies {
     api(project(":ui-account"))
     api(libs.kotlinx.serialization.json)
     implementation(libs.kotlin.reflect)
+    implementation(project(":core-viewmodel"))
     implementation(project(":core-coroutines"))
     implementation(project(":core-lifecycle"))
     implementation(project(":storage-local"))

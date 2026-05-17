@@ -15,16 +15,23 @@ class Navigator {
 
 sealed interface NavigationEvent {
     data object Health : NavigationEvent
+    data object AccountLogin : NavigationEvent
+    data object AccountOverview : NavigationEvent
     data object PopBackStack : NavigationEvent
     data object NavigateUp : NavigationEvent
 }
 
 @Serializable
 sealed class Routes {
-
     @Serializable
     data object Home : Routes()
 
     @Serializable
     data object Health : Routes()
+
+    @Serializable
+    data object AccountLogin : Routes()
+
+    @Serializable
+    data object AccountOverview : Routes()
 }

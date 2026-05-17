@@ -17,14 +17,14 @@ import java.time.Instant
  */
 data class InstantDataEntry(
     val placeholder: StringResource,
-    val formatter: (Instant) -> String,
+    val formatter: (Instant) -> StringResource,
 ) : DataEntryComposable<Instant> {
     @Composable
     override fun Content(value: Instant, onValueChange: (Instant) -> Unit, modifier: Modifier) {
         DatePickerFormFieldItemComposable(
             placeholder = placeholder,
             onValueChange = onValueChange,
-            value = formatter(value),
+            value = formatter(value).text(),
             modifier = modifier,
         )
     }
@@ -35,7 +35,7 @@ data class InstantDataEntry(
 private fun Preview() {
     val entry = InstantDataEntry(
         placeholder = StringResource("Enter your birthdate"),
-        formatter = { "01.01.2026" },
+        formatter = { StringResource("01.01.2026") },
     )
     SpeziTheme {
         entry.Content(value = Instant.now(), onValueChange = {}, modifier = Modifier.fillMaxWidth())

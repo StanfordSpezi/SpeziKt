@@ -10,7 +10,7 @@ import edu.stanford.spezi.core.Configuration
 import edu.stanford.spezi.core.SpeziApplication
 import edu.stanford.spezi.core.logging.SpeziLogger
 import edu.stanford.spezi.core.logging.speziLogger
-import edu.stanford.spezi.core.viewmodel.viewModels
+import edu.stanford.spezi.core.viewmodel.viewModel
 import edu.stanford.spezi.health.CollectionMode
 import edu.stanford.spezi.health.HealthConstraint
 import edu.stanford.spezi.health.RecordType
@@ -26,18 +26,17 @@ class SampleApplication : Application(), SpeziApplication, HealthConstraint {
     override val configuration: Configuration = Configuration(standard = this) {
         singleton { Navigator() }
 
-        viewModels {
-            viewModel {
-                HomeViewModel(
-                    navigator = dependency()
-                )
-            }
-            viewModel {
-                HealthViewModel(
-                    navigator = dependency(),
-                    health = dependency(),
-                )
-            }
+        viewModel {
+            HomeViewModel(
+                navigator = dependency(),
+                account = dependency(),
+            )
+        }
+        viewModel {
+            HealthViewModel(
+                navigator = dependency(),
+                health = dependency(),
+            )
         }
 
         health {
@@ -58,8 +57,10 @@ class SampleApplication : Application(), SpeziApplication, HealthConstraint {
             storageProvider = InMemoryAccountStorageProvider(),
             configuration = {
                 requires(key = AccountKeys.accountId)
+                collects(key = AccountKeys.name)
                 collects(key = AccountKeys.email)
                 collects(key = AccountKeys.password)
+                collects(key = AccountKeys.dateOfBirth)
                 supports(key = AccountKeys.genderIdentity)
                 manual(key = AccountKeys.userId)
             }

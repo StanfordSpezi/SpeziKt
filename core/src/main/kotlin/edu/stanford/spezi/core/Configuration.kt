@@ -43,12 +43,9 @@ sealed interface Configuration {
 }
 
 /**
- * Combines two [Configuration] instances into a new one, merging their modules and factories.
+ * Combines two [Configuration] instances into a new one with the standard of [this], merging their modules and factories.
  */
 operator fun Configuration.plus(other: Configuration): Configuration {
-    require(standard == other.standard) {
-        "Cannot combine configurations with different standards: $standard vs ${other.standard}"
-    }
     val registry = DependencyRegistry()
     registry.register(configuration = this)
     registry.register(configuration = other)

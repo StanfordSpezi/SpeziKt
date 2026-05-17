@@ -3,6 +3,7 @@ package edu.stanford.spezi.ui
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -49,6 +50,16 @@ data class SpeziIconButton(
          */
         fun back(onClick: OnActionVoid) = SpeziIconButton(
             image = ImageResource(Icons.Default.ArrowBackIosNew),
+            onClick = onClick
+        )
+
+        /**
+         * Creates a [SpeziIconButton] with a default edit icon.
+         *
+         * @param onClick Action invoked when the button is pressed.
+         */
+        fun edit(onClick: OnActionVoid) = SpeziIconButton(
+            image = ImageResource(Icons.Default.Edit),
             onClick = onClick
         )
     }

@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.School
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import edu.stanford.spezi.resources.Drawables
 import edu.stanford.spezi.ui.AsyncTextButton
 import edu.stanford.spezi.ui.ComposableContent
 import edu.stanford.spezi.ui.ImageResource
@@ -50,7 +51,7 @@ private fun Preview() {
         buttons = listOf(
             AsyncTextButton(
                 title = StringResource("Sign in with Google"),
-                icon = ImageResource(R.drawable.ic_google),
+                icon = ImageResource(Drawables.ic_google),
                 action = {}
             ),
             AsyncTextButton(

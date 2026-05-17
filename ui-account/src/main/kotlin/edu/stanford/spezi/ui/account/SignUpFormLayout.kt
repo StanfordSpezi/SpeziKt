@@ -1,7 +1,6 @@
 package edu.stanford.spezi.ui.account
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import edu.stanford.spezi.ui.AsyncTextButton
 import edu.stanford.spezi.ui.ChoicesFormFieldItem
-import edu.stanford.spezi.ui.CloseButton
 import edu.stanford.spezi.ui.ComposableContent
 import edu.stanford.spezi.ui.ImageResource
 import edu.stanford.spezi.ui.StringResource
@@ -37,7 +35,6 @@ import java.time.Instant
  * @param description The description of the form
  * @param sections The sections of the form
  * @param signUpButton The button to be displayed at the bottom of the form
- * @param onClose The callback to be invoked when the close button is clicked
  */
 data class SignUpFormLayout(
     val headerIcon: ImageResource,
@@ -45,7 +42,6 @@ data class SignUpFormLayout(
     val description: StringResource,
     val sections: List<SignUpSection>,
     val signUpButton: AsyncTextButton,
-    val onClose: () -> Unit,
 ) : ComposableContent {
     @Composable
     override fun Content(modifier: Modifier) {
@@ -56,13 +52,6 @@ data class SignUpFormLayout(
             verticalArrangement = Arrangement.spacedBy(Spacings.medium),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.CenterStart,
-            ) {
-                CloseButton(onClick = onClose)
-            }
-
             headerIcon.Content(modifier = Modifier.size(Sizes.Icon.medium))
             Text(
                 text = title.text(),
@@ -124,7 +113,7 @@ private fun Preview() {
                         title = StringResource("Date of birth"),
                         entry = InstantDataEntry(
                             placeholder = StringResource("Select your birthday"),
-                            formatter = { it.toString() },
+                            formatter = { StringResource(it.toString()) },
                         ),
                         value = Instant.ofEpochMilli(0),
                         onValueChange = {}
@@ -167,7 +156,6 @@ private fun Preview() {
             title = StringResource("Signup"),
             action = {}
         ),
-        onClose = {},
     )
 
     SpeziTheme {

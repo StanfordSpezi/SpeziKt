@@ -15,9 +15,7 @@ class ViewModelsTests {
     fun `it should register a single viewModel factory`() {
         // given
         testSpeziApplication {
-            viewModels {
-                viewModel { CounterViewModel() }
-            }
+            viewModel { CounterViewModel() }
         }
 
         // when
@@ -29,15 +27,11 @@ class ViewModelsTests {
     }
 
     @Test
-    fun `it should accumulate factories across multiple viewModels calls`() {
+    fun `it should accumulate factories across multiple viewModel calls`() {
         // given
         testSpeziApplication {
-            viewModels {
-                viewModel { CounterViewModel() }
-            }
-            viewModels {
-                viewModel { MessageViewModel() }
-            }
+            viewModel { CounterViewModel() }
+            viewModel { MessageViewModel() }
         }
 
         // when
@@ -54,12 +48,8 @@ class ViewModelsTests {
     fun `it should override a factory when the same ViewModel type is registered twice`() {
         // given
         testSpeziApplication {
-            viewModels {
-                viewModel { MessageViewModel(text = "first") }
-            }
-            viewModels {
-                viewModel { MessageViewModel(text = "second") }
-            }
+            viewModel { MessageViewModel(text = "first") }
+            viewModel { MessageViewModel(text = "second") }
         }
 
         // when
@@ -76,9 +66,7 @@ class ViewModelsTests {
         val repo = UserRepository(name = "Alice")
         testSpeziApplication {
             singleton { repo }
-            viewModels {
-                viewModel { ProfileViewModel(repository = dependency()) }
-            }
+            viewModel { ProfileViewModel(repository = dependency()) }
         }
 
         // when
@@ -93,9 +81,7 @@ class ViewModelsTests {
     fun `it should resolve an optional dependency inside a viewModel factory`() {
         // given
         testSpeziApplication {
-            viewModels {
-                viewModel { ProfileViewModel(repository = optionalDependency()) }
-            }
+            viewModel { ProfileViewModel(repository = optionalDependency()) }
         }
 
         // when
@@ -111,9 +97,7 @@ class ViewModelsTests {
         // given
         val handle = SavedStateHandle(mapOf("id" to "42"))
         testSpeziApplication {
-            viewModels {
-                viewModel { DetailViewModel(handle = savedStateHandle()) }
-            }
+            viewModel { DetailViewModel(handle = savedStateHandle()) }
         }
 
         // when
@@ -128,9 +112,7 @@ class ViewModelsTests {
     fun `it should throw a spezi error when creating an unregistered viewModel`() {
         // given
         testSpeziApplication {
-            viewModels {
-                viewModel { CounterViewModel() }
-            }
+            viewModel { CounterViewModel() }
         }
 
         // when

@@ -21,6 +21,7 @@ import androidx.fragment.compose.rememberFragmentState
 import ca.uhn.fhir.context.FhirContext
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import edu.stanford.spezi.core.logging.SpeziLogger
+import edu.stanford.spezi.resources.Strings
 import edu.stanford.spezi.ui.testIdentifier
 import kotlinx.coroutines.launch
 import org.hl7.fhir.r4.model.Questionnaire
@@ -183,15 +184,15 @@ private fun QuestionnaireCancelAlert(
     AlertDialog(
         modifier = modifier,
         title = {
-            Text(text = stringResource(R.string.questionnaire_cancel))
+            Text(text = stringResource(Strings.questionnaire_cancel))
         },
         text = {
-            Text(text = stringResource(R.string.questionnaire_cancel_confirm_description))
+            Text(text = stringResource(Strings.questionnaire_cancel_confirm_description))
         },
         onDismissRequest = onClose,
         confirmButton = {
             TextButton(onClick = onClose) {
-                Text(text = stringResource(R.string.questionnaire_ok))
+                Text(text = stringResource(Strings.questionnaire_ok))
             }
         }
     )

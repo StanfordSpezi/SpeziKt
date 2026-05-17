@@ -1,5 +1,12 @@
 package edu.stanford.spezi.account.firebase
 
+import edu.stanford.spezi.account.AccountServiceConfigurationBuilder
+import edu.stanford.spezi.account.AuthProvider
+import edu.stanford.spezi.resources.Drawables
+import edu.stanford.spezi.resources.Strings
+import edu.stanford.spezi.ui.ImageResource
+import edu.stanford.spezi.ui.StringResource
+
 /**
  * A type-safe collection of supported [FirebaseAuthProvider]s for [FirebaseAccountService].
  *
@@ -15,7 +22,6 @@ package edu.stanford.spezi.account.firebase
  *     accountConfiguration(
  *         service = FirebaseAccountService(
  *             providers = FirebaseAuthProviders(
- *                 FirebaseAuthProvider.EmailAndPassword,
  *                 FirebaseAuthProvider.Anonymous,
  *                 FirebaseAuthProvider.SignInWithGoogle(serverClientId = "your-server-client-id"),
  *             )
@@ -47,71 +53,49 @@ data class FirebaseAuthProviders(
         }
     }
 
-    /**
-     * Returns whether the given [provider] is enabled.
-     *
-     * @param provider The provider to check.
-     * @return `true` if the provider is contained in this configuration, otherwise `false`.
-     */
-    operator fun contains(provider: FirebaseAuthProvider): Boolean = providers.contains(provider)
-
-    /**
-     * Returns the first configured provider matching the given provider type [T].
-     *
-     * This is useful for accessing provider-specific configuration, for example retrieving
-     * the [FirebaseAuthProvider.SignInWithGoogle] configuration and its `serverClientId`.
-     *
-     * @return The configured provider of type [T], or `null` if no such provider is enabled.
-     */
-    @Suppress("UNCHECKED_CAST")
-    inline fun <reified T : FirebaseAuthProvider> get(): T? =
-        providers.filterIsInstance<T>().firstOrNull()
+    fun configure(builder: AccountServiceConfigurationBuilder) {
+        providers.forEach { builder.authProvider(it) }
+    }
 
     companion object {
         /**
          * The default authentication provider configuration.
          *
-         * By default, [FirebaseAccountService] enables:
-         * - [FirebaseAuthProvider.EmailAndPassword]
-         * - [FirebaseAuthProvider.Anonymous]
+         * By default, [FirebaseAccountService] enables no providers
          */
-        val Default = FirebaseAuthProviders(
-            FirebaseAuthProvider.EmailAndPassword,
-            FirebaseAuthProvider.Anonymous,
-        )
+        val Default = FirebaseAuthProviders(emptySet())
     }
 }
 
 /**
  * Represents a Firebase Authentication provider supported by [FirebaseAccountService].
- *
- * Each implementation corresponds to a specific authentication mechanism that can be enabled
- * through [FirebaseAuthProviders].
  */
-sealed interface FirebaseAuthProvider {
-    /**
-     * Enables email and password based authentication.
-     *
-     * This provider supports flows such as:
-     * - account creation with email and password
-     * - login with email and password
-     * - password reset
-     */
-    data object EmailAndPassword : FirebaseAuthProvider
+sealed interface FirebaseAuthProvider : AuthProvider {
 
     /**
      * Enables anonymous authentication.
      *
-     * Anonymous authentication allows users to use the application without registering first.
-     * These accounts may later be linked or upgraded to a permanent account.
+     * Implements [AuthProvider] so it appears as a "Continue as Guest" button
+     * in the login screen when configured.
      */
-    data object Anonymous : FirebaseAuthProvider
+    data object Anonymous : FirebaseAuthProvider {
+        override val actionName: StringResource = StringResource(Strings.firebase_sign_in_anonymous)
+        override val icon: ImageResource? = null
+    }
 
     /**
      * Enables Google Sign-In based authentication.
      *
+     * Implements [AuthProvider] so it appears as a "Sign in with Google" button
+     * in the login screen when configured.
+     *
      * @property serverClientId The server client ID used to request Google ID tokens
      * for Firebase Authentication.
      */
-    data class SignInWithGoogle(val serverClientId: String) : FirebaseAuthProvider
+    data class SignInWithGoogle(
+        val serverClientId: String,
+    ) : FirebaseAuthProvider {
+        override val actionName: StringResource = StringResource(Strings.firebase_sign_in_google)
+        override val icon: ImageResource = ImageResource(Drawables.ic_google)
+    }
 }

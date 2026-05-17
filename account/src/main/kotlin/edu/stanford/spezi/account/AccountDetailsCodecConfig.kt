@@ -1,7 +1,5 @@
 package edu.stanford.spezi.account
 
-import edu.stanford.spezi.core.Module
-
 /**
  * Configuration for encoding and decoding account details, allowing for custom identifier mappings.
  *
@@ -13,7 +11,7 @@ import edu.stanford.spezi.core.Module
  */
 data class AccountDetailsCodecConfig(
     private val identifierMapping: Map<String, String> = emptyMap(),
-) : Module {
+) {
 
     fun encodingIdentifier(key: AnyAccountKey): String {
         return identifierMapping[key.identifier] ?: key.identifier

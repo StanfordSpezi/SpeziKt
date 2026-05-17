@@ -32,11 +32,9 @@ fun DescriptionGridRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
-            modifier = Modifier
-                .alignByBaseline()
-        ) {
-            description()
-        }
+            modifier = Modifier.alignByBaseline(),
+            content = description,
+        )
 
         Spacer(modifier = Modifier.widthIn(min = Spacings.small))
 
@@ -44,9 +42,8 @@ fun DescriptionGridRow(
             modifier = Modifier
                 .alignByBaseline()
                 .fillMaxWidth(),
-        ) {
-            content()
-        }
+            content = content,
+        )
     }
 }
 

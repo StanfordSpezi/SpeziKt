@@ -9,6 +9,7 @@ android {
 
 dependencies {
 
+    api(project(":resources"))
     api(project(":ui-theme"))
     api(project(":core-coroutines"))
 

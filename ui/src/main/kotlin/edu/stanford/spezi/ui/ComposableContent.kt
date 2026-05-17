@@ -8,10 +8,5 @@ import androidx.compose.ui.Modifier
  */
 interface ComposableContent {
     @Composable
-    fun Content(modifier: Modifier)
-
-    @Composable
-    fun Content() {
-        Content(Modifier)
-    }
+    fun Content(modifier: Modifier = Modifier)
 }

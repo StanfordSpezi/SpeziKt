@@ -2,7 +2,6 @@ package edu.stanford.spezi.core
 
 import edu.stanford.spezi.core.internal.DependencyKey
 import edu.stanford.spezi.core.internal.DependencyRegistry
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Builder for creating a [Configuration] for a [SpeziApplication].
@@ -11,18 +10,6 @@ import java.util.concurrent.ConcurrentHashMap
 class ConfigurationBuilder internal constructor(private val standard: Standard) {
     @PublishedApi
     internal val registry = DependencyRegistry()
-
-    @PublishedApi
-    internal val buildCache: ConcurrentHashMap<BuilderCacheKey<*>, Any> = ConcurrentHashMap()
-
-    /**
-     * Returns the value associated with [key], or stores and returns the result of [default] if
-     * absent. The return type is inferred from the [BuilderCacheKey] type parameter, so no unchecked
-     * cast is needed at call sites.
-     */
-    @Suppress("UNCHECKED_CAST")
-    fun <V : Any> getCached(key: BuilderCacheKey<V>, default: () -> V): V =
-        buildCache.getOrPut(key, default) as V
 
     /**
      * Registers a [Module] factory.
@@ -110,17 +97,5 @@ class ConfigurationBuilder internal constructor(private val standard: Standard) 
      *
      * @return A [Configuration] instance with the registered modules and factories.
      */
-    internal fun build(): ConfigurationImpl {
-        buildCache.clear()
-        return ConfigurationImpl(standard = standard, registry = registry)
-    }
+    internal fun build() = ConfigurationImpl(standard = standard, registry = registry)
 }
-
-/**
- * Marker interface for keys used to stash intermediate state in [ConfigurationBuilder]
- * during graph construction. Implement this in a private `object` inside the extension that owns
- * the state – this keeps the key type-safe and prevents accidental key collisions.
- *
- * @param V The type of value associated with this key.
- */
-interface BuilderCacheKey<V : Any>

@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import edu.stanford.spezi.account.AccountLoginScreen
+import edu.stanford.spezi.account.AccountOverviewScreen
 import edu.stanford.spezi.core.dependency
 import edu.stanford.spezi.sample.app.health.HealthScreen
 import edu.stanford.spezi.sample.app.home.HomeScreen
@@ -40,6 +42,19 @@ class SampleActivity : AppCompatActivity() {
             composable<Routes.Health> {
                 HealthScreen()
             }
+
+            composable<Routes.AccountLogin> {
+                AccountLoginScreen(
+                    onSuccess = { navHostController.popBackStack() },
+                    onDismiss = { navHostController.popBackStack() }
+                )
+            }
+
+            composable<Routes.AccountOverview> {
+                AccountOverviewScreen(
+                    onDismiss = { navHostController.popBackStack() }
+                )
+            }
         }
 
         ConsumeEvents(eventFlow = navigator.events) { event ->
@@ -47,6 +62,8 @@ class SampleActivity : AppCompatActivity() {
                 is NavigationEvent.PopBackStack -> navHostController.popBackStack()
                 is NavigationEvent.NavigateUp -> navHostController.navigateUp()
                 is NavigationEvent.Health -> navHostController.navigate(Routes.Health)
+                is NavigationEvent.AccountLogin -> navHostController.navigate(Routes.AccountLogin)
+                is NavigationEvent.AccountOverview -> navHostController.navigate(Routes.AccountOverview)
             }
         }
     }

@@ -4,12 +4,13 @@ import android.content.Intent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.core.net.toUri
+import edu.stanford.spezi.resources.Strings
 import edu.stanford.spezi.ui.StringResource
 
 fun ContactOption.Companion.website(uriString: String): ContactOption =
     ContactOption(
         image = Icons.Default.Info,
-        title = StringResource(R.string.contact_website),
+        title = StringResource(Strings.contact_website),
         action = { context ->
             runCatching {
                 val browserIntent =
