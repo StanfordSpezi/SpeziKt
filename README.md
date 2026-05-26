@@ -16,11 +16,11 @@ Spezi is a collection of modules that can be used to build Android applications
 ### Modules
 
 - **Design System**: Provides a cohesive user interface and user experience
-  components. [Read More](./core/design/README.md)
+  components. [Read More](./modules/design/README.md)
 - **Account**: Provides Account management components. [Read More](./modules/account/README.md)
 - **Onboarding**: Provides Onboarding screens for the
   application. [Read More](./modules/onboarding/README.md)
-- **Contact**: Provides Contact screens. [Read More](./modules/contact/README.md)
+- **Contact**: Provides Contact screens. [Read More](./contact/README.md)
 
 ### Continuous Integration and Delivery Setup
 
