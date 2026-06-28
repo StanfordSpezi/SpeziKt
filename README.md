@@ -20,18 +20,19 @@ Spezi is a collection of modules that can be used to build Android applications
   (`core`, `foundation`, `core-coroutines`, `core-lifecycle`, `core-logging`,
   `core-time`, `core-viewmodel`)
 - **UI & Design System**: Cohesive user interface and user experience
-  components. [Read More](./ui)
+  components. [Read More](./ui/README.md)
   (`ui`, `ui-theme`, `ui-account`, `ui-markdown`, `ui-personalinfo`, `ui-validation`)
 - **Account**: Account management components, with a Firebase-backed
-  implementation. [Read More](./account)
+  implementation. [Read More](./account/README.md)
   (`account`, `account-firebase`)
-- **Health**: Health data integration and FHIR questionnaire
-  rendering. [Read More](./health)
+- **Health**: Health Connect data integration ([Read More](./health/README.md)) and FHIR
+  questionnaire rendering ([Read More](./questionnaire/README.md))
   (`health`, `questionnaire`)
-- **Contact**: Contact screens. [Read More](./contact)
-- **Storage**: Credential and local storage. [Read More](./storage-local)
-  (`storage-credential`, `storage-local`)
-- **Testing**: Shared test infrastructure. [Read More](./testing-core)
+- **Contact**: Contact screens. [Read More](./contact/README.md)
+- **Storage**: Local object/key-value storage ([Read More](./storage-local/README.md)) and
+  credential storage ([Read More](./storage-credential/README.md))
+  (`storage-local`, `storage-credential`)
+- **Testing**: Shared test infrastructure. [Read More](./testing-core/README.md)
   (`testing-core`, `testing-ui`, `testing-screenshot`, `testing-concurrency`)
 
 A runnable demonstration of these modules is available in the
