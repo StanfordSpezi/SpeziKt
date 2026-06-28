@@ -15,12 +15,27 @@ Spezi is a collection of modules that can be used to build Android applications
 
 ### Modules
 
-- **Design System**: Provides a cohesive user interface and user experience
-  components. [Read More](./core/design/README.md)
-- **Account**: Provides Account management components. [Read More](./modules/account/README.md)
-- **Onboarding**: Provides Onboarding screens for the
-  application. [Read More](./modules/onboarding/README.md)
-- **Contact**: Provides Contact screens. [Read More](./modules/contact/README.md)
+- **Core & Foundation**: Shared building blocks and utilities used across the
+  framework. [Read More](./core/README.md)
+  (`core`, `foundation`, `core-coroutines`, `core-lifecycle`, `core-logging`,
+  `core-time`, `core-viewmodel`)
+- **UI & Design System**: Cohesive user interface and user experience
+  components. [Read More](./ui)
+  (`ui`, `ui-theme`, `ui-account`, `ui-markdown`, `ui-personalinfo`, `ui-validation`)
+- **Account**: Account management components, with a Firebase-backed
+  implementation. [Read More](./account)
+  (`account`, `account-firebase`)
+- **Health**: Health data integration and FHIR questionnaire
+  rendering. [Read More](./health)
+  (`health`, `questionnaire`)
+- **Contact**: Contact screens. [Read More](./contact)
+- **Storage**: Credential and local storage. [Read More](./storage-local)
+  (`storage-credential`, `storage-local`)
+- **Testing**: Shared test infrastructure. [Read More](./testing-core)
+  (`testing-core`, `testing-ui`, `testing-screenshot`, `testing-concurrency`)
+
+A runnable demonstration of these modules is available in the
+[`sample-app`](./sample-app).
 
 ### Continuous Integration and Delivery Setup
 
