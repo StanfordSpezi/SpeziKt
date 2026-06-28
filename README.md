@@ -39,6 +39,65 @@ Spezi is a collection of modules that can be used to build Android applications
 A runnable demonstration of these modules is available in the
 [`sample-app`](./sample-app).
 
+## Getting Started
+
+### Prerequisites
+
+- [Android Studio](https://developer.android.com/studio) (latest stable)
+- JDK 17
+- An Android device or emulator running API 31 (Android 12) or newer
+
+### Run the sample app
+
+The `sample-app` module is the quickest way to see the framework in action.
+
+```bash
+git clone https://github.com/StanfordSpezi/SpeziKt.git
+cd SpeziKt
+./gradlew :sample-app:installDebug   # build and install on a connected device/emulator
+```
+
+Or open the project in Android Studio, select the `sample-app` run configuration, and
+press **Run**. To build and test everything from the command line:
+
+```bash
+./gradlew build
+```
+
+### Use a module in your app
+
+Spezi is a multi-module Gradle project. Add the modules you need as project
+dependencies and apply the Spezi convention plugins in your module's
+`build.gradle.kts`:
+
+```kotlin
+plugins {
+    alias(libs.plugins.spezi.application)
+    alias(libs.plugins.spezi.compose)
+}
+
+dependencies {
+    implementation(project(":core"))
+    implementation(project(":ui"))
+    implementation(project(":account"))
+}
+```
+
+Then declare the modules you want in a `Configuration` on your `Application`. Spezi
+builds the dependency graph at startup and wires everything together:
+
+```kotlin
+class MyApplication : Application(), SpeziApplication {
+    override val configuration = Configuration {
+        // register the modules your app uses
+    }
+}
+```
+
+See each module's README (linked above) for its specific API and usage, and the
+[`core`](./core/README.md) module for how `Module`, `Standard`, and `Configuration`
+fit together.
+
 ### Continuous Integration and Delivery Setup
 
 #### Google Play Internal Deployment
