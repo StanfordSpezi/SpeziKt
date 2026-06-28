@@ -1,4 +1,4 @@
-# Credential Storage
+# Module storage-credential
 
 ## Overview
 

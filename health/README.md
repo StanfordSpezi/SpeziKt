@@ -1,4 +1,4 @@
-# Health
+# Module health
 
 The `health` module integrates [Android Health Connect](https://developer.android.com/health-and-fitness/guides/health-connect) into a Spezi application. It is registered as a Spezi `Module` and provides a type-safe DSL for declaring read/write permissions, configuring background record collection, querying health records (one-shot, paginated, or continuous), and inserting records.
 

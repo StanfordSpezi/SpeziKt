@@ -1,4 +1,4 @@
-# Module Contact
+# Module contact
 
 ## Overview
 

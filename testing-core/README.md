@@ -1,4 +1,4 @@
-# Module Testing Core
+# Module testing-core
 
 ## Overview
 
