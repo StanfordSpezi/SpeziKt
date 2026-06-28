@@ -46,23 +46,26 @@ optional encryption (`LocalStorage`) and a typed key/value store backed by Andro
 @Serializable
 data class Note(val title: String, val body: String)
 
-// File-based object storage, encrypted via the Android KeyStore
-val localStorage = LocalStorage.create(context)
+// LocalStorage.store / read are suspend functions, so call them from a coroutine
+suspend fun persistNote(context: Context) {
+    // File-based object storage, encrypted via the Android KeyStore
+    val localStorage = LocalStorage.create(context)
 
-localStorage.store(
-    key = "note",
-    value = Note("Reminder", "Take medication"),
-    settings = LocalStorageSetting.EncryptedUsingKeyStore,
-    serializer = Note.serializer(),
-)
+    localStorage.store(
+        key = "note",
+        value = Note("Reminder", "Take medication"),
+        settings = LocalStorageSetting.EncryptedUsingKeyStore,
+        serializer = Note.serializer(),
+    )
 
-val note: Note? = localStorage.read(
-    key = "note",
-    settings = LocalStorageSetting.EncryptedUsingKeyStore,
-    serializer = Note.serializer(),
-)
+    val note: Note? = localStorage.read(
+        key = "note",
+        settings = LocalStorageSetting.EncryptedUsingKeyStore,
+        serializer = Note.serializer(),
+    )
+}
 
-// Typed key/value storage backed by EncryptedSharedPreferences
+// Typed key/value storage backed by EncryptedSharedPreferences (not suspend)
 val factory = KeyValueStorageFactory.create(context)
 val preferences = factory.create(
     fileName = "settings",
