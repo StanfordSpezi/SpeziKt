@@ -15,12 +15,88 @@ Spezi is a collection of modules that can be used to build Android applications
 
 ### Modules
 
-- **Design System**: Provides a cohesive user interface and user experience
-  components. [Read More](./core/design/README.md)
-- **Account**: Provides Account management components. [Read More](./modules/account/README.md)
-- **Onboarding**: Provides Onboarding screens for the
-  application. [Read More](./modules/onboarding/README.md)
-- **Contact**: Provides Contact screens. [Read More](./modules/contact/README.md)
+- **[Core & Foundation](./core/README.md)**: Shared building blocks and utilities used
+  across the framework
+  (`core`, `foundation`, `core-coroutines`, `core-lifecycle`, `core-logging`,
+  `core-time`, `core-viewmodel`)
+- **[UI & Design System](./ui/README.md)**: Cohesive user interface and user experience
+  components
+  (`ui`, `ui-theme`, `ui-account`, `ui-markdown`, `ui-personalinfo`, `ui-validation`)
+- **[Account](./account/README.md)**: Account management components, with a Firebase-backed
+  implementation
+  (`account`, `account-firebase`)
+- **[Health](./health/README.md)**: Health Connect data integration, plus FHIR
+  [Questionnaire](./questionnaire/README.md) rendering
+  (`health`, `questionnaire`)
+- **[Contact](./contact/README.md)**: Contact screens
+  (`contact`)
+- **[Storage](./storage-local/README.md)**: Local object/key-value storage, plus
+  [Credential](./storage-credential/README.md) storage
+  (`storage-local`, `storage-credential`)
+- **[Testing](./testing-core/README.md)**: Shared test infrastructure
+  (`testing-core`, `testing-ui`, `testing-screenshot`, `testing-concurrency`)
+
+A runnable demonstration of these modules is available in the
+[`sample-app`](./sample-app).
+
+## Getting Started
+
+### Prerequisites
+
+- [Android Studio](https://developer.android.com/studio) (latest stable)
+- JDK 17
+- An Android device or emulator running API 31 (Android 12) or newer
+
+### Run the sample app
+
+The `sample-app` module is the quickest way to see the framework in action.
+
+```bash
+git clone https://github.com/StanfordSpezi/SpeziKt.git
+cd SpeziKt
+./gradlew :sample-app:installDebug   # build and install on a connected device/emulator
+```
+
+Or open the project in Android Studio, select the `sample-app` run configuration, and
+press **Run**. To build and test everything from the command line:
+
+```bash
+./gradlew build
+```
+
+### Use a module in your app
+
+Spezi is a multi-module Gradle project. Add the modules you need as project
+dependencies and apply the Spezi convention plugins in your module's
+`build.gradle.kts`:
+
+```kotlin
+plugins {
+    alias(libs.plugins.spezi.application)
+    alias(libs.plugins.spezi.compose)
+}
+
+dependencies {
+    implementation(project(":core"))
+    implementation(project(":ui"))
+    implementation(project(":account"))
+}
+```
+
+Then declare the modules you want in a `Configuration` on your `Application`. Spezi
+builds the dependency graph at startup and wires everything together:
+
+```kotlin
+class MyApplication : Application(), SpeziApplication {
+    override val configuration = Configuration {
+        // register the modules your app uses
+    }
+}
+```
+
+See each module's README (linked above) for its specific API and usage, and the
+[`core`](./core/README.md) module for how `Module`, `Standard`, and `Configuration`
+fit together.
 
 ### Continuous Integration and Delivery Setup
 
