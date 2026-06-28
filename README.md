@@ -15,24 +15,25 @@ Spezi is a collection of modules that can be used to build Android applications
 
 ### Modules
 
-- **Core & Foundation**: Shared building blocks and utilities used across the
-  framework. [Read More](./core/README.md)
+- **[Core & Foundation](./core/README.md)**: Shared building blocks and utilities used
+  across the framework
   (`core`, `foundation`, `core-coroutines`, `core-lifecycle`, `core-logging`,
   `core-time`, `core-viewmodel`)
-- **UI & Design System**: Cohesive user interface and user experience
-  components. [Read More](./ui/README.md)
+- **[UI & Design System](./ui/README.md)**: Cohesive user interface and user experience
+  components
   (`ui`, `ui-theme`, `ui-account`, `ui-markdown`, `ui-personalinfo`, `ui-validation`)
-- **Account**: Account management components, with a Firebase-backed
-  implementation. [Read More](./account/README.md)
+- **[Account](./account/README.md)**: Account management components, with a Firebase-backed
+  implementation
   (`account`, `account-firebase`)
-- **Health**: Health Connect data integration ([Read More](./health/README.md)) and FHIR
-  questionnaire rendering ([Read More](./questionnaire/README.md))
+- **[Health](./health/README.md)**: Health Connect data integration, plus FHIR
+  [Questionnaire](./questionnaire/README.md) rendering
   (`health`, `questionnaire`)
-- **Contact**: Contact screens. [Read More](./contact/README.md)
-- **Storage**: Local object/key-value storage ([Read More](./storage-local/README.md)) and
-  credential storage ([Read More](./storage-credential/README.md))
+- **[Contact](./contact/README.md)**: Contact screens
+  (`contact`)
+- **[Storage](./storage-local/README.md)**: Local object/key-value storage, plus
+  [Credential](./storage-credential/README.md) storage
   (`storage-local`, `storage-credential`)
-- **Testing**: Shared test infrastructure. [Read More](./testing-core/README.md)
+- **[Testing](./testing-core/README.md)**: Shared test infrastructure
   (`testing-core`, `testing-ui`, `testing-screenshot`, `testing-concurrency`)
 
 A runnable demonstration of these modules is available in the
