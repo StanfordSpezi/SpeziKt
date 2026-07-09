@@ -1,0 +1,9 @@
+{
+  "name": "swift-kotlin-bridge",
+  "version": "0.2.0",
+  "description": "Rules, review, and walkthroughs for Swift ↔ Kotlin translation.",
+  "author": {
+    "name": "Paul Johannes Kraft"
+  },
+  "license": "MIT"
+}

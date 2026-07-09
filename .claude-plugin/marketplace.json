@@ -1,0 +1,20 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "spezikt-local",
+  "description": "Local SpeziKt plugins for Spezi ecosystem review/scaffolding and Swift-Kotlin translation tooling.",
+  "owner": {
+    "name": "Paul Johannes Kraft"
+  },
+  "plugins": [
+    {
+      "name": "spezi",
+      "description": "Design-principle review and scaffolding skills for the Stanford Spezi ecosystem.",
+      "source": "./plugins/spezi"
+    },
+    {
+      "name": "swift-kotlin-bridge",
+      "description": "Rules, review, and walkthroughs for Swift Kotlin translation.",
+      "source": "./plugins/swift-kotlin-bridge"
+    }
+  ]
+}
