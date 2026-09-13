@@ -41,6 +41,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          lfs: true
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -58,6 +60,18 @@ jobs:
           build-mode: manual
       - name: Build and Test
         run: bundle exec fastlane test
+      - name: Build sample and verify screenshots
+        run: ./gradlew :sample-app:assembleDebug verifyPaparazziDebug
+      - name: Upload test and screenshot reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-and-screenshot-reports
+          path: |
+            **/build/reports/tests/
+            **/build/reports/paparazzi/
+            **/build/paparazzi/failures/
+          if-no-files-found: ignore
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:

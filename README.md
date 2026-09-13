@@ -45,6 +45,8 @@ A runnable demonstration of these modules is available in the
 
 - [Android Studio](https://developer.android.com/studio) (latest stable)
 - JDK 17
+- Android SDK Platform 36 and Build-Tools 35.0.0
+- Git LFS for the checked-in screenshot baselines
 - An Android device or emulator running API 31 (Android 12) or newer
 
 ### Run the sample app
@@ -54,15 +56,21 @@ The `sample-app` module is the quickest way to see the framework in action.
 ```bash
 git clone https://github.com/StanfordSpezi/SpeziKt.git
 cd SpeziKt
+git lfs pull
 ./gradlew :sample-app:installDebug   # build and install on a connected device/emulator
 ```
 
 Or open the project in Android Studio, select the `sample-app` run configuration, and
-press **Run**. To build and test everything from the command line:
+press **Run**. To build the sample, run unit tests, and compare screenshots with the
+checked-in baselines without a device:
 
 ```bash
-./gradlew build
+./gradlew :sample-app:assembleDebug test verifyPaparazziDebug
 ```
+
+Run device tests separately with `./gradlew connectedCheck` after starting an
+emulator. See the [build and test guide](<internal/guides/Build and Test.md>) for
+JDK/SDK setup, individual checks, report locations, and the CI device matrix.
 
 ### Use a module in your app
 
