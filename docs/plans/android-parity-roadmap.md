@@ -10,6 +10,8 @@ SPDX-License-Identifier: MIT
 
 Status: **Draft proposal for review.** Priorities and architecture recommendations are proposed, not an approved project commitment. Update this document as scope is agreed and milestones are completed.
 
+The [milestones and PR plan](android-parity-pr-plan.md) breaks this proposal into dependent, reviewable changes, with detailed scopes for the first five implementation PRs.
+
 Recommendation: finish a dependable, independently consumable Android SDK and an Android equivalent of SpeziTemplateApplication first. Keep the Kotlin monorepo. Then extend study-platform and specialized feature coverage according to real application requirements.
 
 This review enumerated all 55 public StanfordSpezi repositories and inspected their READMEs and metadata, including five archived repositories. It also inspected selected current Swift source, repository trees, the Study Platform API, the FHIR implementation guide, and local Kotlin implementations, tests, build files and CI. This is an architecture and source review, not an exhaustive code audit of every repository. Private repositories are outside its scope. The reviewed SpeziKt revision was `03b4c4624295c6163f9aff23edc0411054c6ade0`. No local build or test suite was run, and no implementation code was changed.
