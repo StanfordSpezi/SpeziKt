@@ -39,6 +39,9 @@ Spezi is a collection of modules that can be used to build Android applications
 A runnable demonstration of these modules is available in the
 [`sample-app`](./sample-app).
 
+The [draft Android parity roadmap](./docs/plans/android-parity-roadmap.md) proposes
+completion milestones and maps the Kotlin modules to the broader Spezi ecosystem.
+
 ## Getting Started
 
 ### Prerequisites
