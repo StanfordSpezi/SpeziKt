@@ -39,11 +39,17 @@ To record new screenshots or update existing ones:
 ./gradlew recordPaparazziDebug
 ```
 
-Paparazzi tests run as part of unit tests by default. They can also be executed separately via:
+Paparazzi tests run as part of unit tests by default and generate rendered reports.
+To compare the screenshots against the checked-in baselines, explicitly run:
 
 ```bash
 ./gradlew verifyPaparazziDebug
 ```
+
+The CI build runs this verification task with Git LFS snapshots checked out.
+Failures produce diffs under each module's `build/paparazzi/failures/`; CI uploads
+these along with the test reports. Inspect the changes before recording a new
+baseline. See the [build and test guide](<Build and Test.md>) for the full workflow.
 
 ## Setup
 
@@ -52,7 +58,10 @@ When working with screenshot snapshots, make sure Git LFS is installed locally:
 ```bash
 brew install git-lfs
 git lfs install
+git lfs pull
 ```
 
-Paparazzi is automatically configured in Spezi modules via `SpeziComposeConventionPlugin`.  
-When adding screenshot tests to a new module, ensure the module is included in `SpeziComposeConventionPlugin.NEW_MODULE` so that Paparazzi dependencies are applied.
+Paparazzi is configured by `SpeziComposeConventionPlugin` for Compose modules with
+a `src/test/snapshots` directory, and explicitly for `:ui`. To add screenshot tests
+to another Compose module, add its snapshot directory and record the initial
+baselines; the convention plugin then supplies the screenshot test dependency.
